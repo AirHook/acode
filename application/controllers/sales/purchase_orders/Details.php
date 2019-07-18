@@ -1,0 +1,188 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+class Details extends Sales_Controller {
+
+	/**
+	 * Constructor
+	 *
+	 * @return	void
+	 */
+	public function __construct()
+	{
+		parent::__construct();
+    }
+
+	// ----------------------------------------------------------------------
+
+	/**
+	 * Index - default method
+	 *
+	 * Purchase Order Details
+	 *
+	 * @return	void
+	 */
+	public function index($po_id = '')
+	{
+		if ( ! $po_id)
+		{
+			// nothing more to do...
+			// set flash data
+			$this->session->set_flashdata('error', 'no_id_passed');
+
+			// redirect user
+			redirect('sales/purchase_orders', 'location');
+		}
+
+		// generate the plugin scripts and css
+		$this->_create_plugin_scripts();
+
+		// load pertinent library/model/helpers
+		$this->load->library('products/size_names');
+		$this->load->library('products/product_details');
+		$this->load->library('purchase_orders/purchase_order_details');
+		$this->load->library('users/wholesale_user_details');
+		$this->load->library('users/sales_user_details');
+		$this->load->library('users/vendor_user_details');
+		$this->load->library('zend');
+		$this->zend->load('Zend/Barcode');
+
+		// initialize purchase order properties and items
+		$this->data['po_details'] = $this->purchase_order_details->initialize(
+			array(
+				'po_id' => $po_id
+			)
+		);
+
+		// get po items and other array stuff
+		$this->data['po_items'] = $this->purchase_order_details->items;
+		$this->data['po_options'] = $this->purchase_order_details->options;
+
+		// get vendor details
+		$this->data['vendor_details'] = $this->vendor_user_details->initialize(
+			array(
+				'vendor_id' => $this->purchase_order_details->vendor_id
+			)
+		);
+
+		// get ship to details
+		if (isset($this->data['po_options']['po_store_id']))
+		{
+			$this->data['store_details'] = $this->wholesale_user_details->initialize(
+				array(
+					'user_id' => $this->data['po_options']['po_store_id']
+				)
+			);
+		}
+		else $this->data['store_details'] = $this->wholesale_user_details->deinitialize();
+
+		// need to show loading at start
+		$this->data['show_loading'] = FALSE;
+
+		// set data variables...
+		$this->data['file'] = 'po_details';
+		$this->data['page_title'] = 'Purchase Order Details';
+		$this->data['page_description'] = 'Details of the purchase order to vendor';
+
+		// load views...
+		$this->load->view($this->data['sales_theme'].'/sales/template/template', $this->data);
+	}
+
+	// ----------------------------------------------------------------------
+
+	/**
+	 * PRIVATE - Creaet Plugin Scripts and CSS for the page
+	 *
+	 * @return	void
+	 */
+	private function _create_plugin_scripts()
+	{
+		$assets_url = base_url('assets/metronic');
+
+		/****************
+		 * page styles plugins inserted at <head>
+		 * after global mandatory styles, before theme global styles
+		 */
+		$this->data['page_level_styles_plugins'] = '';
+
+			// ladda - show loading or progress bar on buttons
+			$this->data['page_level_styles_plugins'].= '
+				<link href="'.$assets_url.'/assets/global/plugins/ladda/ladda-themeless.min.css" rel="stylesheet" type="text/css" />
+			';
+			// bootstrap select
+			$this->data['page_level_styles_plugins'].= '
+				<link href="'.$assets_url.'/assets/global/plugins/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
+				<link href="'.$assets_url.'/assets/global/plugins/select2/css/select2-bootstrap.min.css" rel="stylesheet" type="text/css" />
+				<link href="'.$assets_url.'/assets/global/plugins/bootstrap-select/css/bootstrap-select.min.css" rel="stylesheet" type="text/css" />
+			';
+			// fancybox
+			$this->data['page_level_styles_plugins'].= '
+				<link href="'.$assets_url.'/assets/global/plugins/fancybox/source/jquery.fancybox.css" rel="stylesheet" type="text/css" media="screen" />
+			';
+
+		/****************
+		 * page style sheets inserted at <head>
+		 */
+		$this->data['page_level_styles'] = '';
+
+			// this is a work around so that the inline jquery ajax request to add and remove items from the sales package to work
+			$this->data['page_level_styles'].= '
+				<script src="'.$assets_url.'/assets/global/plugins/jquery.min.js" type="text/javascript"></script>
+			';
+
+		/****************
+		 * page js plugins inserted at <bottom>
+		 * after core plugins, before global scripts
+		 */
+		$this->data['page_level_plugins'] = '';
+
+			// unveil - simple image lazy loading
+			$this->data['page_level_plugins'].= '
+				<script src="'.base_url().'assets/custom/js/jquery.unveil.js" type="text/javascript"></script>
+			';
+			// ladda - show loading or progress bar on buttons
+			$this->data['page_level_plugins'].= '
+				<script src="'.$assets_url.'/assets/global/plugins/ladda/spin.min.js" type="text/javascript"></script>
+				<script src="'.$assets_url.'/assets/global/plugins/ladda/ladda.min.js" type="text/javascript"></script>
+			';
+			// bootstrap select
+			$this->data['page_level_plugins'].= '
+				<script src="'.$assets_url.'/assets/global/plugins/select2/js/select2.full.min.js" type="text/javascript"></script>
+				<script src="'.$assets_url.'/assets/global/plugins/bootstrap-select/js/bootstrap-select.min.js" type="text/javascript"></script>
+			';
+			// fancybox
+			$this->data['page_level_plugins'].= '
+				<script src="'.$assets_url.'/assets/global/plugins/fancybox/source/jquery.fancybox.pack.js" type="text/javascript"></script>
+			';
+
+		/****************
+		 * page scripts inserted at <bottom>
+		 * after global scripts, before theme layout scripts
+		 */
+		$this->data['page_level_scripts'] = '';
+
+			// button spinners for ladda
+			$this->data['page_level_scripts'].= '
+				<script src="'.$assets_url.'/assets/pages/scripts/ui-buttons-spinners.min.js" type="text/javascript"></script>
+			';
+			// handle bootstrap select - make select class '.bs-select' a boostrap select picker
+			$this->data['page_level_scripts'].= '
+				<script src="'.$assets_url.'/assets/pages/scripts/components-bootstrap-select.min.js" type="text/javascript"></script>
+			';
+			// jspdf
+			$this->data['page_level_scripts'].= '
+				<script src="'.base_url().'assets/custom/js/jspdf.min.js" type="text/javascript"></script>
+			';
+			// html2canvas
+			$this->data['page_level_scripts'].= '
+				<script src="'.base_url().'assets/custom/js/html2canvas/html2canvas.min.js" type="text/javascript"></script>
+			';
+			// handle page scripts
+			$this->data['page_level_scripts'].= '
+				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/components-purchase_order_details.js" type="text/javascript"></script>
+			';
+	}
+
+	// ----------------------------------------------------------------------
+
+}

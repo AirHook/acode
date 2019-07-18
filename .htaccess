@@ -1,0 +1,47 @@
+RewriteEngine on
+Options +FollowSymLinks
+#RewriteBase /
+
+# security for hack on index.html files
+DirectoryIndex index.php
+
+# This allows you to redirect your entire website to any other domain put pound in front of redirect to put back to basix site
+# In case of emergencies
+# Just comment it out to reactivate site
+# Redirect 302 / http://www.domainname.com/
+
+### re-direct non-www to www
+
+#RewriteCond %{http_host} !^www.domainname.com$ [nc]
+#RewriteRule ^(.*)$ http://www.domainname.com/$1 [r=301,nc,L]
+
+### removing index.php for codeigniter
+
+# RewriteCond $1 !^(index\.php|images|robots\.txt)
+RewriteCond %{REQUEST_URI} !^(/index\.php|/img|/js|/css|/robots\.txt|/favicon\.ico|)
+RewriteRule ^(.*)$ index.php?/$1 [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.+)$ index.php?/$1 [L]
+
+### prevent viewing of .htaccess file
+
+<Files .htaccess>
+order allow,deny
+deny from all
+</Files>
+
+### allow all except those indicated here
+
+<Files *>
+order allow,deny
+allow from all
+deny from .*ifoundasecret\.com.*
+deny from .*newyorkdress\.com.*
+deny from .*shopdress\.com.*
+deny from .*edressme\.com.*
+deny from .*missesdressy\.com.*
+deny from .*promgirl\.com.*
+deny from .*jansboutique\.com.*
+deny from .*digitalocean\.com.*
+</Files>

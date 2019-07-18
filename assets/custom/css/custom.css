@@ -1,0 +1,85 @@
+
+/******
+ * General custom styles
+ */
+.multi-select-with-to-90-percent {
+	width: 90%;
+}
+
+.alert-metronics {
+	background-color: #ccc;
+    border-color: #ccc;
+    color: black;
+}
+
+
+/******
+ * Modal centering vertically
+ */
+.vertical-alignment-helper {
+    display:table;
+    height: 100%;
+    width: 100%;
+    pointer-events:none; /* This makes sure that we can still click outside of the modal to close it */
+}
+.vertical-align-center {
+    /* To center vertically */
+    display: table-cell;
+    vertical-align: middle;
+    pointer-events:none;
+}
+.modal-content {
+    /* Bootstrap sets the size of the modal in the modal-dialog class, we need to inherit it */
+    width:inherit;
+    max-width:inherit; /* For Bootstrap 4 - to avoid the modal window stretching full width */
+    height:inherit;
+    /* To center horizontally */
+    margin: 0 auto;
+    pointer-events: all;
+}
+
+/******
+ * Dropzone custom styles
+ */
+.dropzone .dz-preview.dz-error .dz-error-message {
+	margin-top: 20px;
+	color: white;
+}
+
+/* The fix bar */
+.floatbar {
+    position: fixed; /* Set the navbar to fixed position */
+    bottom: 50px; /* Position the navbar at the bottom of the page */
+	right: 50px;
+	background: #ccc;
+	box-shadow: 2px 2px 2px 1px #888888;
+}
+
+/******
+ * Admin items
+ */
+/* categories tabs */
+.categories-icons-description.nav-tabs > li > a {
+    border-color: #eee #eee #ddd;
+    text-decoration: none;
+    background-color: #eee;
+}
+.categories-icons-description.nav-tabs > li.active > a,
+.categories-icons-description.nav-tabs > li.active > a:focus,
+.categories-icons-description.nav-tabs > li.active > a:hover {
+    color: #555;
+    background-color: #fff;
+    border: 1px solid #ddd;
+	border-bottom-color: rgb(221, 221, 221);
+    border-bottom-color: transparent;
+    cursor: default;
+}
+
+/******
+ * Datatable Fixes
+ */
+table.dataTable thead th,
+table.dataTable tbody td {
+    padding: 5px 8px;
+    font-size: 0.8em;
+}

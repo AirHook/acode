@@ -1,0 +1,122 @@
+/******
+ * Admin header bar
+ */
+.page-header.navbar,
+.page-header .navbar-fixed-top {
+    background-color: black;
+}
+
+/******
+ * Changes to sidebar
+ */
+ .page-sidebar {
+    width: 250px;
+}
+.page-content-wrapper .page-content {
+    margin-left: 250px;
+}
+/*sidebar menu hightlight*/
+.page-sidebar .page-sidebar-menu > li.main-item > a,
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.main-item > a {
+    background: black;
+    color: #fff;
+}
+.page-sidebar .page-sidebar-menu > li.main-item.open > a,
+.page-sidebar .page-sidebar-menu > li.main-item:hover > a,
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.main-item.open > a,
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.main-item:hover > a {
+    background: black;
+    color: #fff;
+}
+.page-sidebar .page-sidebar-menu > li.active.open > a,
+.page-sidebar .page-sidebar-menu > li.active > a,
+.page-sidebar .page-sidebar-menu > li.main-item.active.open > a,
+.page-sidebar .page-sidebar-menu > li.main-item.active > a,
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active.open > a,
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active > a,
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.main-item.active.open > a,
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.main-item.active > a {
+    background: #747F8C;
+}
+.page-sidebar .page-sidebar-menu > li.active.open > a:hover,
+.page-sidebar .page-sidebar-menu > li.active > a:hover,
+.page-sidebar .page-sidebar-menu > li.main-item.active.open > a:hover,
+.page-sidebar .page-sidebar-menu > li.main-item.active > a:hover,
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active.open > a:hover,
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active > a:hover,
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.main-item.active.open > a:hover,
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.main-item.active > a:hover {
+    background: #747F8C;
+}
+.page-sidebar .page-sidebar-menu > li.active.open > a > .selected, .page-sidebar .page-sidebar-menu > li.active > a > .selected,
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active.open > a > .selected,
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active > a > .selected {
+    top: 0;
+    right: -8px;
+    border-top: 20px double transparent;
+    border-bottom: 20px double transparent;
+    border-right: 0;
+    border-left: 8px solid #747F8C;
+}
+.page-sidebar .page-sidebar-menu > li.main-item.active.open > a > .selected,
+.page-sidebar .page-sidebar-menu > li.main-item.active > a > .selected,
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.main-item.active.open > a > .selected,
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.main-item.active > a > .selected {
+    top: 0;
+    right: -8px;
+    border-top: 20px double transparent;
+    border-bottom: 20px double transparent;
+    border-right: 0;
+    border-left: 8px solid #747F8C;
+}
+.page-sidebar .page-sidebar-menu > li > a,
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a {
+    font-size: 0.8em;
+}
+/* sidebar sub menu */
+.page-sidebar .page-sidebar-menu .sub-menu li > .sub-menu > li > a,
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu .sub-menu li >
+.sub-menu > li > a {
+    padding-left: 50px;
+    font-size: 0.9em;
+}
+/* sidebar sub menu - documentation only */
+.page-sidebar .page-sidebar-menu .sub-menu li > .sub-menu.documentaiton > li > a,
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu .sub-menu.documentaiton li >
+.sub-menu > li > a {
+    padding-left: 50px;
+    font-size: 0.7em;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+/******
+ * Datatable and Table Fixes
+ */
+table.dataTable thead th,
+table.dataTable tbody td {
+    padding: 5px 8px;
+    font-size: 0.8em;
+}
+.table td, .table th,
+.table thead tr th {
+    font-size: 0.8em;
+}
+
+
+/******
+ * Custom CSS
+ */
+    /******
+     * Inventory Physical Input
+     */
+.input-invenotry {
+    border: 1px solid #ccc;
+    width: 100%;
+}
+.table.inventory-physical th.size {
+    width: 50px !important;
+}
+.table.inventory-physical tr td {
+    height: 31px;
+}

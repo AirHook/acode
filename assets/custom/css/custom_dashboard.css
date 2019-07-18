@@ -1,0 +1,11 @@
+.order_row{
+	margin-top:20px;
+}
+.order_row .table thead tr th {
+    /*font-size: 12 !important;*/
+    font-weight: 0;
+}
+.scrollportletId {
+   height:540px;
+   /*overflow: auto;*/
+}
