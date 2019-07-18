@@ -2,7 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 //require '/var/www/html/mysite/mailgun/vendor/autoload.php';
 //use Mailgun\Mailgun;
-class Test extends Frontend_Controller {
+class Test extends CI_Controller {
 	/**
 	 * Constructor
 	 *
@@ -38,7 +38,7 @@ class Test extends Frontend_Controller {
     $response = curl_exec($session);
     curl_close($session);
     $results = json_decode($response, true);
-    print_r($results); 
+    print_r($results);
 		}
 	}
 }
