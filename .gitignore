@@ -36,6 +36,7 @@ uploads/
 *.config
 *.mp3
 *.ini
+socket.io.js
 
 # Images #
 ###################
