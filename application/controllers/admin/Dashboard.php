@@ -84,6 +84,10 @@ class Dashboard extends Admin_Controller {
 		 */
 		$this->data['page_level_scripts'] = '';
 
+			// handle dashboard
+			$this->data['page_level_scripts'].= '
+				<script src="'.$assets_url.'/assets/pages/scripts/dashboard.min.js" type="text/javascript"></script>
+			';
 	}
 	// ----------------------------------------------------------------------
 }

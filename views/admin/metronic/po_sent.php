@@ -56,7 +56,9 @@
                                                                 <strong> PURCHASE ORDER #<?php echo $po_details->po_number; ?> </strong> <?php echo $this->purchase_order_details->rev ? '<small><b>rev</b></small><strong>'.$this->purchase_order_details->rev.'</strong>' : ''; ?> <br />
                                                                 <small> Date: <?php echo $po_details->po_date; ?> </small>
                                                             </h3>
-                                                            <br />
+                                                            <h3>
+                                                                References: <?php echo $po_options['references']; ?>
+                                                            </h3>
                                                             <p>
                                                                 D&amp;I Fashion Group <br />
                                                                 230 West 38th Street <br />

@@ -357,6 +357,7 @@ class Create extends Admin_Controller {
 
 			// will need to insert other items as options array
 			$options = array();
+			if ($this->input->post('references')) $options['references'] = $this->input->post('references');
 			if ($this->input->post('start_date')) $options['start_date'] = $this->input->post('start_date');
 			if ($this->input->post('cancel_date')) $options['cancel_date'] = $this->input->post('cancel_date');
 			if ($this->input->post('ship_via')) $options['ship_via'] = $this->input->post('ship_via');

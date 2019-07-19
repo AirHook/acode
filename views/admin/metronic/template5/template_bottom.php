@@ -27,7 +27,6 @@
         <!-- END THEME GLOBAL SCRIPTS -->
         <!-- BEGIN PAGE LEVEL SCRIPTS -->
         <?php echo @$page_level_scripts ?: ''; ?>
-        <script src="<?php echo base_url('assets/metronic'); ?>/assets/pages/scripts/dashboard.min.js" type="text/javascript"></script>
         <!-- END PAGE LEVEL SCRIPTS -->
         <!-- BEGIN THEME LAYOUT SCRIPTS -->
         <script src="<?php echo base_url('assets/metronic'); ?>/assets/layouts/layout5/scripts/layout.min.js" type="text/javascript"></script>
@@ -41,5 +40,72 @@
                 {
                     $('#radio1003').attr('checked', 'checked');
                 });
+                // image hover effect
+				$(".img-a").hover(
+					function() {
+						$(this).stop().animate({"opacity": "0"}, "slow");
+					},
+					function() {
+						$(this).stop().animate({"opacity": "1"}, "slow");
+					}
+				);
+                // fix for header search magnifier icon
+                $('.page-header .admin_tobbar_search .submit').click(function(e){
+                    e.preventDefault();
+                    e.stopPropagation();
+                    $(this).closest('.admin_tobbar_search').submit();
+                });
+                $('.ship-to-popovers').popover('show');
             })
+            <?php
+			/*********
+			 * Prevent browser from caching select options
+			 */
+			?>
+			$(window).unload(function() {
+			  //$('select option').remove();
+			  $('select option').prop('selected', function(){ return this.defaultSelected});
+			});
+            <?php
+			/*********
+			 * This click event listener is a fix to dropdown menus to show on overflow
+			 * while following datatable responsiveness relative position to cell.
+			 */
+			?>
+			$(document).click(function(e) {
+				if(!$(e.target).closest('.dropdown-toggle').length) {
+					$('.dropdown-wrap').addClass('dropdown-fix');
+				}
+			})
+            <?php
+			/*********
+			 * An auto remove script for those notices, growls, etc...
+			 */
+			?>
+			window.setTimeout(function() {
+				$(".auto-remove").fadeTo(500, 0).slideUp(500, function(){
+					$(this).hide();
+				});
+			}, 11000);
+            $(window).on('load',function(){
+				<?php
+				/*********
+				 * Launch different modals on page load
+				 */
+				if ($this->uri->uri_string() == $this->config->slash_item('admin_folder').'products/add') { ?>
+					$('#modal_add_product').modal('show');
+				<?php } ?>
+				<?php if ($this->uri->uri_string() == $this->config->slash_item('admin_folder').'campaigns/sales_package/create') { ?>
+					$('#modal_create_sales_package').modal('show');
+				<?php } ?>
+				<?php if ($this->uri->uri_string() == $this->config->slash_item('admin_folder').'designers/add_') { ?>
+					$('#modal-add_designer').modal('show');
+				<?php } ?>
+				<?php if ($this->session->flashdata('select_theme_after_add_webspace')) { ?>
+					$('#select_theme_after_add_webspace').modal('show');
+				<?php } ?>
+				<?php if (@$show_loading) { ?>
+					$('#loading-start').hide();
+				<?php } ?>
+			});
         </script>

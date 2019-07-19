@@ -49,9 +49,24 @@
                                                     </div>
 												</div>
 
+                                                <!-- BEGIN FORM =======================================================-->
+                                                <?php echo form_open(
+                                                    'admin/purchase_orders/create/step3',
+                                                    array(
+                                                        'class' => 'form-horizontal',
+                                                        'id' => 'form-po_summary_review'
+                                                    )
+                                                ); ?>
+
                                                 <div class="col-sm-12 po-summary-number">
 													<div class="row">
 														<div class="col-sm-12">
+                                                            <div class="row">
+                                                                <div class="col-xs-12 col-sm-6 col-md-3">
+                                                                    <input type="text" name="references" value="" class="form-control" />
+                                                                    <span class="help-block small">[Optional]: <cite>Here you can put reference PO#, or JO#, or SO#, etc...</cite></span>
+                                                                </div>
+                                                            </div>
 															<h3>
                                                                 PURCHASE ORDER #<?php echo $this->session->po_number ?: $po_number; ?> <br />
                                                                 <small> Date: <?php echo date('Y-m-d', time()); ?> </small>
@@ -105,22 +120,13 @@
                                                     </p>
                                                 </div>
 
-                                                <!-- BEGIN FORM =======================================================-->
-                                                <?php echo form_open(
-                                                    'admin/purchase_orders/create/step3',
-                                                    array(
-                                                        'class' => 'form-horizontal',
-                                                        'id' => 'form-po_summary_review'
-                                                    )
-                                                ); ?>
-
                                                 <input type="hidden" name="po_number" value="<?php echo $this->session->admin_po_number ?: $po_number; ?>" />
                                                 <input type="hidden" name="po_date" value="<?php echo date('Y-m-d', time()); ?>" />
                                                 <input type="hidden" name="des_id" value="<?php echo $des_id ?: '5'; ?>" />
 
-                                                <div class="col-sm-12 m-grid po-summary-dates">
+                                                <div class="col-sm-12 m-grid m-grid-responsive-sm po-summary-dates">
                                                     <div class="m-grid-row">
-                                                        <div class="m-grid-col m-grid-col-sm-2">
+                                                        <div class="m-grid-col">
 
                                                             <h5> Start Date: </h5>
                                                             <div class="form-group row">
@@ -131,7 +137,7 @@
                                                             </div>
 
 														</div>
-                                                        <div class="m-grid-col m-grid-col-sm-2">
+                                                        <div class="m-grid-col">
 
                                                             <h5> Cancel Date: </h5>
                                                             <div class="form-group row">
@@ -142,7 +148,7 @@
                                                             </div>
 
 														</div>
-                                                        <div class="m-grid-col m-grid-col-sm-2">
+                                                        <div class="m-grid-col">
 
                                                             <h5> Delivery Date: </h5>
                                                             <div class="form-group row">
@@ -153,7 +159,7 @@
                                                             </div>
 
 														</div>
-                                                        <div class="m-grid-col m-grid-col-sm-2">
+                                                        <div class="m-grid-col2">
 
                                                             <h5> Ship Via: </h5>
                                                             <div class="form-group row">
@@ -163,7 +169,7 @@
                                                             </div>
 
 														</div>
-                                                        <div class="m-grid-col m-grid-col-sm-2">
+                                                        <div class="m-grid-col">
 
                                                             <h5> F.O.B: </h5>
                                                             <div class="form-group row">
@@ -173,7 +179,7 @@
                                                             </div>
 
 														</div>
-                                                        <div class="m-grid-col m-grid-col-sm-2">
+                                                        <div class="m-grid-col">
 
                                                             <h5> Terms: </h5>
                                                             <div class="form-group row">
