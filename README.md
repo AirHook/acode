@@ -1,3 +1,3 @@
-# shop7
-Shop 7th Avenue Code
+# acode
+A Code
 Super Admin Panel
