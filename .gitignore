@@ -33,6 +33,7 @@ system/
 uploads/
 
 # Files #
+index.php
 .DS_Store
 *.config
 *.mp3
