@@ -22,18 +22,20 @@ assets/pdf/
 assets/roden_assets/
 assets/themes/
 chat_archive/
-csv/
-erp/
-for_rey/
-images/
-product_assets/
-rcpixel/
-sessions/
-system/
-uploads/
+./csv/
+./erp/
+./for_rey/
+./images/
+./product_assets/
+./rcpixel/
+./sessions/
+./system/
+./uploads/
 
-# Files #
-index.php
+# Files (Specific) #
+./index.php
+
+# Files (General) #
 .DS_Store
 *.config
 *.mp3
