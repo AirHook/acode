@@ -590,7 +590,7 @@
 																| Size
 																*/
 																?>
-																<span class="prdname product-form__label" style="margin-top:5px;"><strong>AVAILABLE SIZES:</strong> </span>
+																<span class="prdname product-form__label" style="margin-top:5px;"><strong>SIZE:</strong> Please select a size</span>
 
 																<input type="hidden" id="size" name="size" value="" />
 
@@ -723,7 +723,7 @@
                                                                     $this->webspace_details->slug != 'basixblacklabel'
                                                                 )
                                                                 { ?>
-																<div class="product-form__qty" style="width:100px;margin-bottom:62px;">
+																<div class="product-form__qty" style="width:100px;margin-bottom:25px;">
 																	<span class="key  product-form__label  product-form__label--alt  uppercase"><strong>Quantity:</strong></span>
 																	<input id="touchspin_5" type="text" value="" name="qty" class="center text-center" required="required" />
 																</div>
@@ -779,18 +779,7 @@
 																<?php } else { ?>
 																<button type="submit" class="btn dark btn-block size-qty-submit" onclick="return checkSizeQty();">ADD TO BAG</button>
 																<?php } ?>
-
-																<!--
-																<div class="cart-button cart-button-add-to-bag hide">
-																	<input type="submit" class="button button--small--text hidden-on-desktop button--<?php echo $this->webspace_details->slug; ?>" value="Add To Bag" onclick="return checkSizeQty();" />
-																	<input type="submit" class="button button--small--text hidden-on-mobile button--<?php echo $this->webspace_details->slug; ?>" value="Add To Bag" onclick="return checkSizeQty();" />
-																</div>
-
-																<div class="cart-button cart-button-preorder" style="display:none;">
-																	<input type="submit" class="button button--small--text hidden-on-desktop button--<?php echo $this->webspace_details->slug; ?> pre-order" value="Pre Order" onclick="return checkSizeQty();" />
-																	<input type="submit" class="button button--small--text hidden-on-mobile button--<?php echo $this->webspace_details->slug; ?> pre-order" value="Pre Order" onclick="return checkSizeQty();" />
-																</div>
-																-->
+                                                                <button type="button" class="btn btn-default btn-block size-qty-submit"><i class="icon icon-heart"></i> ADD TO FAVORITES</button>
 
 																<script>
 																function checkSizeQty(){
