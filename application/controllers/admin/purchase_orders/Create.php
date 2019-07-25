@@ -38,18 +38,6 @@ class Create extends Admin_Controller {
 		array_shift($this->data['url_segs']); // create
 		array_shift($this->data['url_segs']); // step
 
-		// set company information
-		$this->data['company_name'] = $this->webspace_details->company;
-		$this->data['company_address1'] = $this->webspace_details->address1;
-		$this->data['company_address2'] = $this->webspace_details->address2;
-		$this->data['company_city'] = $this->webspace_details->city;
-		$this->data['company_state'] = $this->webspace_details->state;
-		$this->data['company_zipcode'] = $this->webspace_details->zip;
-		$this->data['company_country'] = $this->webspace_details->country;
-		$this->data['company_telephone'] = $this->webspace_details->phone;
-		$this->data['company_contact_person'] = $this->webspace_details->owner;
-		$this->data['company_contact_email'] = $this->webspace_details->info_email;
-
 		/*****
 		 * Check for items in session
 		 */
@@ -341,6 +329,18 @@ class Create extends Admin_Controller {
 			$this->designer_details->initialize(array('designer.url_structure'=>$this->session->admin_po_des_url_structure));
 			$this->data['size_names'] = $this->size_names->get_size_names($this->designer_details->webspace_options['size_mode']);
 
+			// set company information
+			$this->data['company_name'] = $this->designer_details->company_name;
+			$this->data['company_address1'] = $this->designer_details->address1;
+			$this->data['company_address2'] = $this->designer_details->address2;
+			$this->data['company_city'] = $this->designer_details->city;
+			$this->data['company_state'] = $this->designer_details->state;
+			$this->data['company_zipcode'] = $this->designer_details->zipcode;
+			$this->data['company_country'] = $this->designer_details->country;
+			$this->data['company_telephone'] = $this->designer_details->phone;
+			$this->data['company_contact_person'] = $this->designer_details->owner;
+			$this->data['company_contact_email'] = $this->designer_details->info_email;
+
 			// some necessary variables
 			$this->data['steps'] = 3;
 
@@ -540,6 +540,19 @@ class Create extends Admin_Controller {
 			// po items
 			$this->data['po_items'] = $this->purchase_order_details->items;
 
+			// set company information
+			$this->designer_details->initialize(array('designer.des_id'=>$this->purchase_order_details->des_id));
+			$this->data['company_name'] = $this->designer_details->company_name;
+			$this->data['company_address1'] = $this->designer_details->address1;
+			$this->data['company_address2'] = $this->designer_details->address2;
+			$this->data['company_city'] = $this->designer_details->city;
+			$this->data['company_state'] = $this->designer_details->state;
+			$this->data['company_zipcode'] = $this->designer_details->zipcode;
+			$this->data['company_country'] = $this->designer_details->country;
+			$this->data['company_telephone'] = $this->designer_details->phone;
+			$this->data['company_contact_person'] = $this->designer_details->owner;
+			$this->data['company_contact_email'] = $this->designer_details->info_email;
+
 			// load the view as string
 			$html = $this->load->view('templates/purchase_order', $this->data, TRUE);
 
@@ -657,6 +670,18 @@ class Create extends Admin_Controller {
 		// get size names using des_id as reference
 		$this->designer_details->initialize(array('designer.des_id'=>$this->purchase_order_details->des_id));
 		$this->data['size_names'] = $this->size_names->get_size_names($this->designer_details->webspace_options['size_mode']);
+
+		// set company information
+		$this->data['company_name'] = $this->designer_details->company_name;
+		$this->data['company_address1'] = $this->designer_details->address1;
+		$this->data['company_address2'] = $this->designer_details->address2;
+		$this->data['company_city'] = $this->designer_details->city;
+		$this->data['company_state'] = $this->designer_details->state;
+		$this->data['company_zipcode'] = $this->designer_details->zipcode;
+		$this->data['company_country'] = $this->designer_details->country;
+		$this->data['company_telephone'] = $this->designer_details->phone;
+		$this->data['company_contact_person'] = $this->designer_details->owner;
+		$this->data['company_contact_email'] = $this->designer_details->info_email;
 
 		// some necessary variables
 		$this->data['steps'] = 4;
