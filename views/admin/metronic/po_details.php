@@ -38,7 +38,7 @@
                                 { ?>
 
                                 <div class="caption">
-                                    <a class="btn dark " href="<?php echo site_url('admin/purchase_orders/modify/index/'.$po_details->po_id); ?>">
+                                    <a class="btn dark " href="<?php echo site_url($this->uri->segment(1).'/purchase_orders/modify/index/'.$po_details->po_id); ?>">
                                         <i class="fa fa-pencil"></i> Modify PO
                                     </a>
                                 </div>
@@ -47,15 +47,15 @@
                                 } ?>
 
                                 <div class="actions btn-set">
-                                    <a class="btn dark" href="<?php echo site_url('admin/products/barcodes/print_po_barcodes/'.$po_details->po_id); ?>" target="_blank">
+                                    <a class="btn dark" href="<?php echo site_url($this->uri->segment(1).'/products/barcodes/print_po_barcodes/'.$po_details->po_id); ?>" target="_blank">
                                         <i class="fa fa-print"></i> Print PO Barcodes
                                     </a>
                                     &nbsp;
-                                    <a class="btn btn-default po-pdf-print_" href="<?php echo site_url('admin/purchase_orders/view_pdf/index/'.$po_details->po_id); ?>" target="_blank">
+                                    <a class="btn btn-default po-pdf-print_" href="<?php echo site_url($this->uri->segment(1).'/purchase_orders/view_pdf/index/'.$po_details->po_id); ?>" target="_blank">
                                         <i class="fa fa-eye"></i> View PDF for Print/Download
                                     </a>
                                     &nbsp;
-                                    <a class="btn dark " href="<?php echo site_url('admin/purchase_orders/send/index/'.$po_details->po_id); ?>">
+                                    <a class="btn dark " href="<?php echo site_url($this->uri->segment(1).'/purchase_orders/send/index/'.$po_details->po_id); ?>">
                                         <i class="fa fa-send"></i> Send PO Again
                                     </a>
                                 </div>
@@ -70,7 +70,7 @@
                                 <label class="control-label col-md-3">Status</label>
                                 <div class="col-md-9">
                                     <?php
-                                    if ($this->purchase_order_details->status == '1')
+                                    if ($this->purchase_order_details->status == '5')
                                     {
                                         $classes = 'disable-target disabled-link';
                                         $disabled = 'disabled';
@@ -94,7 +94,7 @@
                                         <label for="option3">Complete/Delivery</label>
                                     </div>
 
-                                    <?php if ($this->purchase_order_details->status == '1')
+                                    <?php if ($this->purchase_order_details->status == '5')
                                     { ?>
                                     <cite class="help-block small"> This PO is already closed for modification. </cite>
                                         <?php
@@ -118,16 +118,19 @@
                                         <strong> PURCHASE ORDER #<?php echo $po_details->po_number; ?> </strong> <?php echo $this->purchase_order_details->rev ? '<small><b>rev</b></small><strong>'.$this->purchase_order_details->rev.'</strong>' : ''; ?> <br />
                                         <small> Date: <?php echo $po_details->po_date; ?> </small>
                                     </h3>
-                                        References: <?php echo $po_options['references']; ?>
-                                    <h5>
-                                    </h5>
+                                    <h4>
+                                        <?php echo @$po_options['ref_po_no'] ? 'Reference Manual PO#: '.$po_options['ref_po_no'] : ''; ?>
+                                        <?php echo (@$po_options['ref_po_no'] && @$po_options['ref_so_no']) ? '<br />' : ''; ?>
+                                        <?php echo @$po_options['ref_so_no'] ? 'Reference SO#: '.$po_options['ref_so_no'] : ''; ?>
+                                    </h4>
                                     <br />
                                     <p>
-                                        D&amp;I Fashion Group <br />
-                                        230 West 38th Street <br />
-                                        New York, NY 10018 <br />
-                                        United State <br />
-                                        212.8400846
+                                        <?php echo $company_name; ?> <br />
+                                        <?php echo $company_address1; ?><br />
+                                        <?php echo $company_address2 ? $company_address2.'<br />' : ''; ?>
+                                        <?php echo $company_city.', '.$company_state.' '.$company_zipcode; ?><br />
+                                        <?php echo $company_country; ?><br />
+                                        <?php echo $company_telephone; ?>
                                     </p>
                                 </div>
                             </div>
@@ -156,13 +159,13 @@
                                     <p><strong> SHIP TO </strong></p>
 
                                     <p>
-                                        <?php echo $store_details->store_name ?: 'D&I Fashion Group'; ?> <br />
-                                        <?php echo $store_details->address1 ?: '230 West 38th Street'; ?> <br />
-                                        <?php echo $store_details->address2 ? $store_details->address2.'<br />' : ''; ?>
-                                        <?php echo $store_details->city ?: 'New York'; ?>, <?php echo $store_details->state ?: 'NY'; ?> <?php echo $store_details->zipcode ?: '10018'; ?> <br />
-                                        <?php echo $store_details->country ?: 'United States'; ?> <br />
-                                        <?php echo $store_details->telephone ?: '212.840.0846'; ?> <br />
-                                        ATTN: <?php echo $store_details->fname ? $store_details->fname.' '.$store_details->lname : 'Joe Taveras'; ?> <?php echo $store_details->email ? '('.safe_mailto($store_details->email).')': '('.safe_mailto('help@shop7thavenue.com').')'; ?>
+                                        <?php echo $store_details->store_name ?: $company_name; ?> <br />
+                                        <?php echo $store_details->address1 ?: $company_address1; ?> <br />
+                                        <?php echo $store_details->address2 ? $store_details->address2.'<br />' : $company_address2 ? $company_address2.'<br />' : ''; ?>
+                                        <?php echo $store_details->city ?: $company_city; ?>, <?php echo $store_details->state ?: $company_state; ?> <?php echo $store_details->zipcode ?: $company_zipcode; ?> <br />
+                                        <?php echo $store_details->country ?: $company_country; ?> <br />
+                                        <?php echo $store_details->telephone ?: $company_telephone; ?> <br />
+                                        ATTN: <?php echo $store_details->fname ? $store_details->fname.' '.$store_details->lname : $company_contact_person; ?> <?php echo $store_details->email ? '('.safe_mailto($store_details->email).')' : '('.safe_mailto($company_contact_email).')'; ?>
                                     </p>
 
                                 </div>
@@ -172,7 +175,7 @@
 
                         <div class="col-sm-12 sales_user_details">
                             <p>
-                                Ordered by: &nbsp;<?php echo $po_details->author_name.' ('.safe_mailto($po_details->author_email).')'; ?>
+                                Ordered by: &nbsp;<?php echo $author->fname.' '.$author->lname.' ('.safe_mailto($author->email).')'; ?>
                             </p>
                         </div>
 
@@ -281,15 +284,33 @@
                                                     );
 
                                                     // set image paths
-                                                    // the new way relating records with media library
-                                                    $style_no = $product->prod_no.'_'.$product->color_code;
-                                                    $image_new = $product->media_path.$style_no.'_f3.jpg';
-                                                    $img_front_new = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_f3.jpg';
-                                                    $img_back_new = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_b3.jpg';
-                                                    $img_linesheet = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_linesheet.jpg';
+                                                    $style_no = $item;
+                                                    $prod_no = $exp[0];
+                                                    $color_code = $exp[1];
+                                                    $temp_size_mode = 1; // default size mode
+
+                                                    if ($product)
+                                                    {
+                                                        $image_new = $product->media_path.$style_no.'_f3.jpg';
+                                                        $img_front_new = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_f3.jpg';
+                                                        $img_linesheet = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_linesheet.jpg';
+                                                        $size_mode = $product->size_mode;
+                                                        $color_name = $product->color_name;
+
+                                                        // take any existing product's size mode
+                                                        $temp_size_mode = $product->size_mode;
+                                                    }
+                                                    else
+                                                    {
+                                                        $image_new = 'images/instylelnylogo_3.jpg';
+                                                        $img_front_new = $this->config->item('PROD_IMG_URL').'images/instylelnylogo_3.jpg';
+                                                        $img_linesheet = '';
+                                                        $size_mode = @$this->designer_details->webspace_options['size_mode'] ?: $temp_size_mode;
+                                                        $color_name = $this->product_details->get_color_name($color_code);
+                                                    }
 
                                                     // get size names
-                                                    $size_names = $this->size_names->get_size_names($product->size_mode);
+                                                    $size_names = $this->size_names->get_size_names($size_mode);
                                                     ?>
 
                                             <tr class="summary-item-container">
@@ -300,8 +321,8 @@
                                                  */
                                                 ?>
                                                 <td style="vertical-align:top;">
-                                                    <a href="<?php echo $img_linesheet; ?>" class="fancybox pull-left">
-                                                        <img class="" src="<?php echo ($product->primary_img ? $img_front_new : $img_front_pre.$image); ?>" alt="" style="width:60px;height:auto;">
+                                                    <a href="<?php echo $img_linesheet ?: 'javascript:;'; ?>" class="<?php echo $img_linesheet ? 'fancybox' : ''; ?> pull-left">
+                                                        <img class="" src="<?php echo $img_front_new; ?>" alt="" style="width:60px;height:auto;" onerror="$(this).attr('src','<?php echo $this->config->item('PROD_IMG_URL').'images/instylelnylogo_3.jpg'; ?>');" />
                                                     </a>
                                                     <div class="shop-cart-item-details" style="margin-left:80px;">
                                                         <h4 style="margin:0px;">
@@ -310,7 +331,7 @@
                                                         <p style="margin:0px;">
                                                             <span style="color:#999;">Product#: <?php echo $item; ?></span><br />
                                                             Size: &nbsp; <?php echo '2'; ?><br />
-                                                            Color: &nbsp; <?php echo $product->color_name; ?>
+                                                            Color: &nbsp; <?php echo $color_name; ?>
                                                         </p>
                                                     </div>
                                                 </td>
@@ -364,7 +385,7 @@
 
                                                     <div style="display:inline-block;">
                                                         Total <br />
-                                                        <input tpye="text" class="this-total-qty <?php echo $item.' '.$product->prod_no; ?>" style="border:1px solid #ccc;font-size:12px;width:30px;padding-left:5px;background-color:white;" value="<?php echo $this_size_qty; ?>" readonly />
+                                                        <input tpye="text" class="this-total-qty <?php echo $item.' '.$prod_no; ?>" style="border:1px solid #ccc;font-size:12px;width:30px;padding-left:5px;background-color:white;" value="<?php echo $this_size_qty; ?>" readonly />
                                                     </div>
 
                                                     <div class="margin-top-10">
@@ -387,12 +408,12 @@
                                                 ?>
                                                 <td class="text-right" style="vertical-align:top;">
                                                     <?php
-                                                    $this_size_total = $this_size_qty * $product->vendor_price;
+                                                    $this_size_total = $this_size_qty * $size_qty['vendor_price'];
                                                     ?>
                                                     $ <?php echo $this->cart->format_number($this_size_total); ?>
                                                 </td>
 
-                                                <input type="hidden" class="input-order-subtotal <?php echo $item.' '.$product->prod_no; ?>" name="subtotal" value="<?php echo $this_size_total; ?>" />
+                                                <input type="hidden" class="input-order-subtotal <?php echo $item.' '.$prod_no; ?>" name="subtotal" value="<?php echo $this_size_total; ?>" />
 
                                                 <?php
                                                 /**********
@@ -416,9 +437,9 @@
                                                                     <?php
                                                                     $variables='';
                                                                     $all=$size_qty;
-                                                                    $all['prod_no']=$product->prod_no;
+                                                                    $all['prod_no']=$prod_no;
                                                                     $all['color_code']=$product->color_code;
-                                                                    $all['color_name']=$product->color_name;
+                                                                    $all['color_name']=$color_name;
                                                                     foreach ($all as $key => $row)
                                                                     {
                                                                         $variables.=$key.'='.$row.'&';

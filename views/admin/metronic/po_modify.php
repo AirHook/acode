@@ -40,12 +40,13 @@
 														<div class="col-sm-12">
 
                                                             <h3>
-                                                                D&I Fashion Group <br />
+                                                                <?php echo $company_name; ?><br />
                                                                 <small>
-                                                                    230 West 38th Street <br />
-                                                                    New York, NY 10018 <br />
-                                                                    United States <br />
-                                                                    212.840.0846
+                                                                <?php echo $company_address2 ? $company_address2.'<br />' : ''; ?>
+                                                                <?php echo $company_address1; ?><br />
+                                                                <?php echo $company_city.', '.$company_state.' '.$company_zipcode; ?><br />
+                                                                <?php echo $company_country; ?><br />
+                                                                <?php echo $company_telephone; ?>
     															</small>
                                                             </h3>
 
@@ -60,6 +61,11 @@
                                                                 PURCHASE ORDER <strong>#<?php echo $this->purchase_order_details->po_number; ?></strong> <?php echo $this->purchase_order_details->rev ? '<small><b>rev</b></small><strong>'.$this->purchase_order_details->rev.'</strong>' : ''; ?> <br />
                                                                 <small> Date: <?php echo $this->purchase_order_details->delivery_date; ?> </small>
                                                             </h3>
+                                                            <h4>
+                                                                <?php echo @$po_options['ref_po_no'] ? 'Reference Manual PO#: '.$po_options['ref_po_no'] : ''; ?>
+                                                                <?php echo (@$po_options['ref_po_no'] && @$po_options['ref_so_no']) ? '<br />' : ''; ?>
+                                                                <?php echo @$po_options['ref_so_no'] ? 'Reference SO#: '.$po_options['ref_so_no'] : ''; ?>
+                                                            </h4>
 														</div>
                                                     </div>
 												</div>
@@ -89,13 +95,13 @@
                                                             </h5>
 
 															<p>
-                                                                <?php echo $store_details->store_name ?: 'D&I Fashion Group'; ?> <br />
-                                                                <?php echo $store_details->address1 ?: '230 West 38th Street'; ?> <br />
-                                                                <?php echo $store_details->address2 ? $store_details->address2.'<br />' : ''; ?>
-                                                                <?php echo $store_details->city ?: 'New York'; ?>, <?php echo $store_details->state ?: 'NY'; ?> <?php echo $store_details->zipcode ?: '10018'; ?> <br />
-                                                                <?php echo $store_details->country ?: 'United States'; ?> <br />
-                                                                <?php echo $store_details->telephone ?: '212.840.0846'; ?> <br />
-                                                                ATTN: <?php echo $store_details->fname ? $store_details->fname.' '.$store_details->lname : 'Joe Taveras'; ?> <?php echo $store_details->email ? '('.safe_mailto($store_details->email).')': '('.safe_mailto('help@ship7thavenue.com').')'; ?>
+                                                                <?php echo $store_details->store_name ?: $company_name; ?> <br />
+                                                                <?php echo $store_details->address1 ?: $company_address1; ?> <br />
+                                                                <?php echo $store_details->address2 ? $store_details->address2.'<br />' : $company_address2 ? $company_address2.'<br />' : ''; ?>
+                                                                <?php echo $store_details->city ?: $company_city; ?>, <?php echo $store_details->state ?: $company_state; ?> <?php echo $store_details->zipcode ?: $company_zipcode; ?> <br />
+                                                                <?php echo $store_details->country ?: $company_country; ?> <br />
+                                                                <?php echo $store_details->telephone ?: $company_telephone; ?> <br />
+                                                                ATTN: <?php echo $store_details->fname ? $store_details->fname.' '.$store_details->lname : $company_contact_person; ?> <?php echo $store_details->email ? '('.safe_mailto($store_details->email).')' : '('.safe_mailto($company_contact_email).')'; ?>
 															</p>
 
                                                         </div>
@@ -110,13 +116,13 @@
         												 * Uses the same properties between admin and sales user
         												 */
         												?>
-                                                        Ordered by: &nbsp;<?php echo $po_details->author_name.' ('.safe_mailto($po_details->author_email).')'; ?>
+                                                        Ordered by: &nbsp;<?php echo $author->fname.' '.$author->lname.' ('.safe_mailto($author->email).')'; ?>
                                                     </p>
                                                 </div>
 
                                                 <!-- BEGIN FORM =======================================================-->
                                                 <?php echo form_open(
-                                                    'admin/purchase_orders/modify/index/'.$this->purchase_order_details->po_id,
+                                                    $this->uri->segment(1).'/purchase_orders/modify/index/'.$this->purchase_order_details->po_id,
                                                     array(
                                                         'class' => 'form-horizontal',
                                                         'id' => 'form-po_modify'
@@ -244,12 +250,33 @@
                                                                             }
 
                                                                             // set image paths
-                                                                            // the new way relating records with media library
-                                                                            $style_no = $product->prod_no.'_'.$product->color_code;
-                                                                            $image_new = $product->media_path.$style_no.'_f3.jpg';
-                                                                            $img_front_new = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_f3.jpg';
-                        													$img_back_new = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_b3.jpg';
-                                                                            $img_linesheet = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_linesheet.jpg';
+                                                                            $style_no = $item;
+                                                                            $prod_no = $exp[0];
+                                                                            $color_code = $exp[1];
+                                                                            $temp_size_mode = 1; // default size mode
+
+                                                                            if ($product)
+                                                                            {
+                                                                                $image_new = $product->media_path.$style_no.'_f3.jpg';
+                                                                                $img_front_new = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_f3.jpg';
+                                                                                $img_linesheet = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_linesheet.jpg';
+                                                                                $size_mode = $product->size_mode;
+                                                                                $color_name = $product->color_name;
+
+                                                                                // take any existing product's size mode
+                                                                                $temp_size_mode = $product->size_mode;
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                $image_new = 'images/instylelnylogo_3.jpg';
+                                                                                $img_front_new = $this->config->item('PROD_IMG_URL').'images/instylelnylogo_3.jpg';
+                                                                                $img_linesheet = '';
+                                                                                $size_mode = @$this->designer_details->webspace_options['size_mode'] ?: $temp_size_mode;
+                                                                                $color_name = $this->product_details->get_color_name($color_code);
+                                                                            }
+
+                                                                            // get size names
+                                                                            $size_names = $this->size_names->get_size_names($size_mode);
                                                                             ?>
 
 																	<tr class="summary-item-container">
@@ -260,8 +287,8 @@
 																		 */
 																		?>
 																		<td>
-                                                                            <a href="<?php echo $img_linesheet; ?>" class="fancybox pull-left">
-                                                                                <img class="img-a" src="<?php echo ($product->primary_img ? $img_front_new : $img_front_pre.$image); ?>" alt="" style="width:60px;height:auto;">
+                                                                            <a href="<?php echo $img_linesheet ?: 'javascript:;'; ?>" class="<?php echo $img_linesheet ? 'fancybox' : ''; ?> pull-left">
+                                                                                <img class="" src="<?php echo $img_front_new; ?>" alt="" style="width:60px;height:auto;" onerror="$(this).attr('src','<?php echo $this->config->item('PROD_IMG_URL').'images/instylelnylogo_3.jpg'; ?>');" />
                                                                             </a>
 																			<div class="shop-cart-item-details" style="margin-left:80px;">
                                                                                 <h4 style="margin:0px;">
@@ -270,7 +297,7 @@
                                                                                 <p style="margin:0px;">
                                                                                     <span style="color:#999;">Product#: <?php echo $item; ?></span><br />
                                                                                     Size: &nbsp; <?php echo '2'; ?><br />
-                                                                                    Color: &nbsp; <?php echo $product->color_name; ?>
+                                                                                    Color: &nbsp; <?php echo $color_name; ?>
                                                                                 </p>
 																			</div>
 																		</td>
@@ -296,20 +323,19 @@
                                                                                 }
                                                                             </style>
 
-                                                                            <?php if ($product->size_mode == 1)
+                                                                            <?php
+                                                                            $this_size_qty = 0;
+                                                                            //for ($s=0;$s<23;$s=$s+2)
+                                                                            foreach ($size_names as $size_label => $s)
                                                                             {
-                                                                                $this_size_qty = 0;
-                                                                                //for ($s=0;$s<23;$s=$s+2)
-                                                                                foreach ($size_names as $size_label => $s)
-                                                                                {
-                                                                                    //$size_label = 'size_'.$s;
-                                                                                    $size_qty =
-                                                                                        ! empty($qtty) && isset($qtty[$size_label])
-                                                                                        ? $qtty[$size_label]
-                                                                                        : 0
-                                                                                    ;
-                                                                                    $this_size_qty += $size_qty;
-                                                                                    ?>
+                                                                                //$size_label = 'size_'.$s;
+                                                                                $size_qty =
+                                                                                    ! empty($qtty) && isset($qtty[$size_label])
+                                                                                    ? $qtty[$size_label]
+                                                                                    : 0
+                                                                                ;
+                                                                                $this_size_qty += $size_qty;
+                                                                                ?>
 
                                                                             <div style="display:inline-block;">
                                                                                 <?php echo $s; ?> <br />
@@ -322,46 +348,14 @@
                                                                                 </select>
                                                                             </div>
 
-                                                                                    <?php
-                                                                                }
-                                                                            } ?>
-
-                                                                            <?php if ($product->size_mode == 0)
-                                                                            {
-                                                                                $this_size_qty = 0;
-                                                                                foreach ($size_names as $size_label => $s)
-                                                                                {
-                                                                                    $size_qty =
-                                                                                        ! empty($qtty) && isset($qtty[$size_label])
-                                                                                        ? $qtty[$size_label]
-                                                                                        : 0
-                                                                                    ;
-                                                                                    $this_size_qty += $size_qty;
-
-                                                                                    if ($s != 'XL1' && $s != 'XL2')
-                                                                                    { ?>
-
-                                                                            <div style="display:inline-block;">
-                                                                                <?php echo $s; ?> <br />
-                                                                                <select name="<?php echo $size_label; ?>" class="size-select" style="border:1px solid #<?php echo $size_qty > 0 ? '000' : 'ccc'; ?>;" data-page="modify" data-prod_no="<?php echo $item; ?>" data-vendor_price="<?php echo @$product->vendor_price; ?>">
-                                                                                    <?php
-                                                                                    for ($i=0;$i<31;$i++)
-                                                                                    {
-                                                                                        echo '<option value="'.$i.'" '.($i == $size_qty ? 'selected' : '').'>'.$i.'</option>';
-                                                                                    } ?>
-                                                                                </select>
-                                                                            </div>
-
-                                                                                        <?php
-                                                                                    }
-                                                                                }
+                                                                                <?php
                                                                             } ?>
 
                                                                             =
 
                                                                             <div style="display:inline-block;">
                                                                                 Total <br />
-                                                                                <input tpye="text" class="this-total-qty <?php echo $item.' '.$product->prod_no; ?>" style="border:1px solid #ccc;font-size:12px;width:30px;padding-left:5px;background-color:white;" value="<?php echo $this_size_qty; ?>" readonly />
+                                                                                <input tpye="text" class="this-total-qty <?php echo $item.' '.$prod_no; ?>" style="border:1px solid #ccc;font-size:12px;width:30px;padding-left:5px;background-color:white;" value="<?php echo $this_size_qty; ?>" readonly />
                                                                             </div>
 																		</td>
 
@@ -374,15 +368,15 @@
 																		?>
 																		<td class="unit-vendor-price-wrapper">
                                                                             <div class="clearfix">
-                                                                                <div class="unit-vendor-price <?php echo $product->prod_no; ?> pull-right" style="height:27px;width:40px;border:1px solid #ccc;padding-top:4px;padding-right:4px;text-align:right;">
-                                                                                    <?php echo number_format(@$product->vendor_price); ?>
+                                                                                <div class="unit-vendor-price <?php echo $prod_no; ?> pull-right" style="height:27px;width:40px;border:1px solid #ccc;padding-top:4px;padding-right:4px;text-align:right;">
+                                                                                    <?php echo $qtty['vendor_price']; ?>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="text-right">
                                                                                 <button data-toggle="modal" href="#modal-edit_vendor_price-<?php echo $item; ?>" type="button" class="btn btn-link btn-xs" style="padding-right:0;margin-right:0;"><i class="fa fa-pencil"></i> Edit</button>
                                                                             </div>
 
-                                                                            <!-- EDIT VENDO PRICE -->
+                                                                            <!-- EDIT VENDOR PRICE -->
                                                                             <div id="modal-edit_vendor_price-<?php echo $item; ?>" class="modal fade bs-modal-sm in" id="small" tabindex="-1" role="dialog" aria-hidden="true">
                                                                                 <div class="modal-dialog modal-sm">
                                                                                     <div class="modal-content">
@@ -399,7 +393,7 @@
                                                                                                 <label class="control-label col-md-4">New Price
                                                                                                 </label>
                                                                                                 <div class="col-md-4">
-                                                                                                    <input type="text" name="vendor_price-<?php echo $item; ?>" data-required="1" class="form-control input-sm modal-input-vendor-price <?php echo $product->prod_no; ?>" value="<?php echo @$product->vendor_price; ?>" size="2" data-prod_no="<?php echo $item; ?>" data-item="<?php echo $product->prod_no; ?>" />
+                                                                                                    <input type="text" name="vendor_price-<?php echo $item; ?>" data-required="1" class="form-control input-sm modal-input-vendor-price <?php echo $prod_no; ?>" value="<?php echo number_format($qtty['vendor_price']); ?>" size="2" data-prod_no="<?php echo $item; ?>" data-item="<?php echo $prod_no; ?>" data-page="modify" />
                                                                                                 </div>
                                                                                             </div>
 
@@ -426,14 +420,14 @@
 																		 * Subtotal
 																		 */
 																		?>
-																		<td class="text-right order-subtotal <?php echo $item.' '.$product->prod_no; ?>">
+																		<td class="text-right order-subtotal <?php echo $item.' '.$prod_no; ?>">
                                                                             <?php
-                                                                            $this_size_total = $this_size_qty * $product->vendor_price;
+                                                                            $this_size_total = $this_size_qty * $qtty['vendor_price'];
                                                                             ?>
 																			$ <?php echo $this->cart->format_number($this_size_total); ?>
 																		</td>
 
-                                                                        <input type="hidden" class="input-order-subtotal <?php echo $item.' '.$product->prod_no; ?>" name="subtotal" value="<?php echo $this_size_total; ?>" />
+                                                                        <input type="hidden" class="input-order-subtotal <?php echo $item.' '.$prod_no; ?>" name="subtotal" value="<?php echo $this_size_total; ?>" />
 																	</tr>
 																			<?php
 																			$i++;
@@ -496,7 +490,7 @@
         													</table>
 
                                                             <!-- DOC: add class "submit-po_summary_review" to execute script to send form -->
-                                                            <button class="btn dark btn-block mt-bootbox-new submit-po_summary_review"> Submit Purchase Order </button>
+                                                            <button class="btn dark btn-block mt-bootbox-new submit-po_summary_review"> Modify Purchase Order </button>
 
         												</div>
 

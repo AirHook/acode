@@ -977,6 +977,35 @@ class Product_details
 	 *
 	 * @return	object/boolean false
 	 */
+	public function get_color_name($color_code = '')
+	{
+		if ( ! $color_code)
+		{
+			// nothing more to do...
+			return FALSE;
+		}
+
+		$this->DB->select('color_name');
+		$this->DB->from('tblcolor');
+		$this->DB->where('color_code', $color_code);
+		$query = $this->DB->get();
+
+		$row = $query->row();
+
+		if (isset($row))
+		{
+			return $row->color_name;
+		}
+		else return FALSE;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Get specific variants for informational purposes
+	 *
+	 * @return	object/boolean false
+	 */
 	public function get_color_sizes($st_id = '', $param = 'physical')
 	{
 		if ( ! $st_id)

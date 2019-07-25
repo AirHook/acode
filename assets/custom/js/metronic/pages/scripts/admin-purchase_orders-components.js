@@ -257,9 +257,11 @@ var ComponentsEditors = function () {
             var el = $('[name="vendor_price-'+prod_no+'"]');
             var new_price = el.val();
             var style_no = el.data('item');
+            var page = el.data('page');
             objectData.vendor_price = new_price;
             objectData.prod_no = prod_no;
             objectData.style_no = style_no;
+            objectData.page = page;
             // perfom ajax
             $.ajax({
                 type:    "POST",
@@ -475,6 +477,7 @@ var ComponentsEditors = function () {
                     if ($(this).val() == 0) {
                         alert('An item must have no zero total qty order.\nPlease select quantity for any size required.');
                         must_return = true;
+                        return false;
                     }
                 });
 

@@ -254,3 +254,82 @@
 
 									</div>
 									<!-- END PRODUCT THUMGS GRID -->
+
+									<!-- ADD STYLE NUMBERS NOT YET UPLOADED -->
+									<div class="modal fade" id="modal-unlisted_style_no" tabindex="-1" role="basic" aria-hidden="true">
+										<div class="modal-dialog">
+											<div class="modal-content">
+												<div class="modal-header">
+													<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+													<h4 class="modal-title"> Add STYLE NUMBERS not on productl ist </h4>
+												</div>
+
+												<!-- BEGIN FORM-->
+												<!-- FORM =======================================================================-->
+												<?php echo form_open(
+													'sales/purchase_orders/addrem_excluded',
+													array(
+														'class' => 'form-horizontal'
+													)
+												); ?>
+
+												<input type="hidden" name="action" value="add_item" />
+												<input type="hidden" name="uri_string" value="<?php echo $this->uri->uri_string(); ?>" />
+
+												<div class="modal-body">
+
+													<div class="form margin-bottom-30">
+
+														<div class="form-group">
+						    								<label class="col-lg-4 control-label">Style Number:
+						    									<span class="required"> * </span>
+						    								</label>
+						    								<div class="col-lg-8">
+						    									<input type="text" class="form-control facet_name" name="prod_no" value="" style="text-transform:uppercase;">
+						    								</div>
+						    							</div>
+						    							<div class="form-group">
+						    								<label class="col-lg-4 control-label">Color Code:
+						    									<span class="required"> * </span>
+						    								</label>
+						    								<div class="col-lg-8">
+																<select class="form-control bs-select" name="color_code" data-live-search="true" data-size="8" data-show-subtext="true">
+																	<option value="" selected disabled> - Select a color - </option>
+
+																	<?php
+			                                                        if ($colors)
+			                                                        {
+			                                                            foreach ($colors as $color)
+			                                                            { ?>
+
+																	<option value="<?php echo $color->color_code; ?>" data-subtext="<cite>(<?php echo $color->color_code; ?>)</cite>">
+			                                                            <?php echo ucwords(strtolower($color->color_name)); ?>
+			                                                        </option>
+
+			                                                                <?php
+			                                                            }
+			                                                        } ?>
+
+			                                                    </select>
+						    								</div>
+						    							</div>
+														<div class="clearfix"></div>
+
+													</div>
+
+												</div>
+												<div class="modal-footer">
+													<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
+													<button type="submit" class="btn dark confirm-select_user"> Submit </button>
+												</div>
+
+												</form>
+												<!-- END FORM ===================================================================-->
+												<!-- END FORM-->
+
+											</div>
+											<!-- /.modal-content -->
+										</div>
+										<!-- /.modal-dialog -->
+									</div>
+									<!-- /.modal -->

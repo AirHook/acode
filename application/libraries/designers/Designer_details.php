@@ -119,6 +119,10 @@ class Designer_details
 	 */
 	public $address1 = '';
 	public $address2 = '';
+	public $city = '';
+	public $state = '';
+	public $zipcode = '';
+	public $country = '';
 	public $phone = '';
 	public $info_email = '';
 
@@ -142,6 +146,8 @@ class Designer_details
 	 * @var	string
 	 */
 	public $company_name = '';
+	public $company = ''; // alias of $company_name
+	public $owner = '';
 
 	/**
 	 * Info Status
@@ -252,10 +258,14 @@ class Designer_details
 			$this->with_products = $row->with_products;
 
 			// using designer info or account info
-			$this->address1 = $row->designer_address1 ?: $this->address1;
-			$this->address2 = $row->designer_address2 ?: $this->address2;
-			$this->phone = $row->designer_phone ?: $this->phone;
-			$this->info_email = $row->designer_info_email ?: $this->info_email; // webspace info
+			$this->address1 = $row->address1;
+			$this->address2 = $row->address2;
+			$this->city = $row->city;
+			$this->state = $row->state;
+			$this->zipcode = $row->zip;
+			$this->country = $row->country;
+			$this->phone = $row->phone;
+			$this->info_email = $row->info_email; // webspace info
 
 			// webspace options
 			//$this->options = $row->designer_options != '' ? json_decode($row->designer_options , TRUE) : array();
@@ -263,6 +273,8 @@ class Designer_details
 
 			$this->webspace_id = $row->webspace_id;
 			$this->company_name = $row->company_name;
+			$this->company = $row->company_name;
+			$this->owner = $row->owner_name;
 		}
 		else
 		{
@@ -350,6 +362,10 @@ class Designer_details
 
 		$this->address1 = '';
 		$this->address2 = '';
+		$this->city = '';
+		$this->state = '';
+		$this->zipcode = '';
+		$this->country = '';
 		$this->phone = '';
 		$this->info_email = '';
 
@@ -357,6 +373,8 @@ class Designer_details
 
 		$this->webspace_id = '';
 		$this->company_name = '';
+		$this->company = '';
+		$this->owner = '';
 
 		$this->complete_info_status = FALSE;
 

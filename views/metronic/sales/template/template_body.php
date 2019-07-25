@@ -41,6 +41,9 @@
                                                     case 'purchase_orders';
                                                     case 'purchase_orders_add';
                                                     case 'purchase_orders_details';
+                                                    case 'po_list';
+                                                    case 'po_details';
+                                                    case 'po_modify';
                     									$pre = 'admin/metronic/';
                     								break;
                     								default:

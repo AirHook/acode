@@ -38,10 +38,12 @@ class Details extends Admin_Controller {
 		$this->_create_plugin_scripts();
 
 		// load pertinent library/model/helpers
+		$this->load->library('designers/designer_details');
 		$this->load->library('products/size_names');
 		$this->load->library('products/product_details');
 		$this->load->library('purchase_orders/purchase_order_details');
 		$this->load->library('users/wholesale_user_details');
+		$this->load->library('users/sales_user_details');
 		$this->load->library('users/vendor_user_details');
 		$this->load->library('zend');
 		$this->zend->load('Zend/Barcode');
@@ -54,6 +56,7 @@ class Details extends Admin_Controller {
 		);
 
 		// get po items and other array stuff
+		$this->data['po_number'] = $this->purchase_order_details->po_number;
 		$this->data['po_items'] = $this->purchase_order_details->items;
 		$this->data['po_options'] = $this->purchase_order_details->options;
 
@@ -74,6 +77,58 @@ class Details extends Admin_Controller {
 			);
 		}
 		else $this->data['store_details'] = $this->wholesale_user_details->deinitialize();
+
+		// get PO author
+		switch ($this->purchase_order_details->c)
+		{
+			case '2': //sales
+				$this->data['author'] = $this->sales_user_details->initialize(
+					array(
+						'admin_sales_id' => $this->purchase_order_details->author
+					)
+				);
+				$this->data['company_details'] = $this->designer_details->initialize(
+					array(
+						'designer.url_structure' => $this->sales_user_details->designer
+					)
+				);
+			break;
+			case '1': //admin
+			default:
+				$this->data['author'] = $this->admin_user_details->initialize(
+					array(
+						'admin_id' => ($this->purchase_order_details->author ?: '1')
+					)
+				);
+				if ($this->admin_user_details->webspace_id)
+				{
+					$this->data['company_details'] = $this->webspace_details->initialize(
+						array(
+							'webspaces.webspace_id' => $this->admin_user_details->webspace_id
+						)
+					);
+				}
+				else
+				{
+					$this->data['company_details'] = $this->webspace_details->initialize(
+						array(
+							'webspaces.webspace_slug' => SITESLUG
+						)
+					);
+				}
+		}
+
+		// set company information
+		$this->data['company_name'] = $this->data['company_details']->company;
+		$this->data['company_address1'] = $this->data['company_details']->address1;
+		$this->data['company_address2'] = $this->data['company_details']->address2;
+		$this->data['company_city'] = $this->data['company_details']->city;
+		$this->data['company_state'] = $this->data['company_details']->state;
+		$this->data['company_zipcode'] = $this->data['company_details']->zipcode;
+		$this->data['company_country'] = $this->data['company_details']->country;
+		$this->data['company_telephone'] = $this->data['company_details']->phone;
+		$this->data['company_contact_person'] = $this->data['company_details']->owner;
+		$this->data['company_contact_email'] = $this->data['company_details']->info_email;
 
 		// need to show loading at start
 		$this->data['show_loading'] = FALSE;

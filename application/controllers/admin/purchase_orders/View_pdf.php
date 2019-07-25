@@ -22,11 +22,14 @@ class View_pdf extends CI_Controller
 	function index($po_id = '')
 	{
 		// load pertinent library/model/helpers
+		$this->load->library('designers/designer_details');
+		$this->load->library('webspaces/webspace_details');
 		$this->load->library('products/size_names');
 		$this->load->library('products/product_details');
 		$this->load->library('purchase_orders/purchase_order_details');
 		$this->load->library('users/vendor_user_details');
 		$this->load->library('users/sales_user_details');
+		$this->load->library('users/admin_user_details');
 		$this->load->library('users/wholesale_user_details');
 
 		// initialize purchase order properties and items
@@ -35,6 +38,11 @@ class View_pdf extends CI_Controller
 				'po_id' => $po_id
 			)
 		);
+
+		// get po items and other array stuff
+		$data['po_number'] = $this->purchase_order_details->po_number;
+		$data['po_items'] = $this->purchase_order_details->items;
+		$data['po_options'] = $this->purchase_order_details->options;
 
 		// get vendor details
 		$data['vendor_details'] = $this->vendor_user_details->initialize(
@@ -57,8 +65,57 @@ class View_pdf extends CI_Controller
 		}
 		else $data['store_details'] = $this->wholesale_user_details->deinitialize();
 
-		// po items
-		$data['po_items'] = $this->purchase_order_details->items;
+		// get PO author
+		switch ($this->purchase_order_details->c)
+		{
+			case '2': //sales
+				$data['author'] = $this->sales_user_details->initialize(
+					array(
+						'admin_sales_id' => $this->purchase_order_details->author
+					)
+				);
+				$data['company_details'] = $this->designer_details->initialize(
+					array(
+						'designer.url_structure' => $this->sales_user_details->designer
+					)
+				);
+			break;
+			case '1': //admin
+			default:
+				$data['author'] = $this->admin_user_details->initialize(
+					array(
+						'admin_id' => ($this->purchase_order_details->author ?: '1')
+					)
+				);
+				if ($this->admin_user_details->webspace_id)
+				{
+					$data['company_details'] = $this->webspace_details->initialize(
+						array(
+							'webspaces.webspace_id' => $this->admin_user_details->webspace_id
+						)
+					);
+				}
+				else
+				{
+					$data['company_details'] = $this->webspace_details->initialize(
+						array(
+							'webspaces.webspace_slug' => SITESLUG
+						)
+					);
+				}
+		}
+
+		// set company information
+		$data['company_name'] = $data['company_details']->company;
+		$data['company_address1'] = $data['company_details']->address1;
+		$data['company_address2'] = $data['company_details']->address2;
+		$data['company_city'] = $data['company_details']->city;
+		$data['company_state'] = $data['company_details']->state;
+		$data['company_zipcode'] = $data['company_details']->zipcode;
+		$data['company_country'] = $data['company_details']->country;
+		$data['company_telephone'] = $data['company_details']->phone;
+		$data['company_contact_person'] = $data['company_details']->owner;
+		$data['company_contact_email'] = $data['company_details']->info_email;
 
 		// load the view as string
 		$html = $this->load->view('templates/purchase_order_pdf', $data, TRUE);

@@ -1,6 +1,23 @@
-                    <!-- BEGIN PAGE CONTENT BODY -->
                     <div class="row">
                         <div class="col-md-12">
+
+                            <?php
+                            /***********
+                             * Noification area
+                             */
+                            ?>
+                            <div class="notifications col-sm-12 clearfix">
+                                <div class="alert alert-danger display-hide">
+                                    <button class="close" data-close="alert"></button> You have some form errors. Please check below. </div>
+                                <div class="alert alert-success display-hide">
+                                    <button class="close" data-close="alert"></button> Your form validation is successful! </div>
+                                <?php if ($this->session->flashdata('success') == 'add') { ?>
+                                <div class="alert alert-success ">
+                                    <button class="close" data-close="alert"></button> Purchase Order successfully sent
+                                </div>
+                                <?php } ?>
+                            </div>
+
                             <!-- BEGIN EXAMPLE TABLE PORTLET-->
                             <div class="portlet light ">
 
@@ -593,9 +610,3 @@
                             <!-- END EXAMPLE TABLE PORTLET-->
                         </div>
                     </div>
-                    <!-- END PAGE CONTENT BODY -->
-
-                </div>
-                <!-- END CONTENT BODY -->
-            </div>
-            <!-- END CONTENT -->

@@ -1,4 +1,4 @@
-<?php 
+<?php
 if ( ! defined('BASEPATH')) exit('ERROR: 404 Not Found');
 
 /**
@@ -10,7 +10,7 @@ if ( ! defined('BASEPATH')) exit('ERROR: 404 Not Found');
  * @subpackage	Custom Libraries
  * @category	Users, Sales User Details
  * @author		WebGuy
- * @link		
+ * @link
  */
 class Webspace_details
 {
@@ -67,14 +67,14 @@ class Webspace_details
 	 * @var	string
 	 */
 	public $info_email = '';
-	
+
 	/**
 	 * Reference Account ID
 	 *
 	 * @var	string
 	 */
 	public $account_id = '';
-	
+
 	/**
 	 * Webspace Status
 	 *
@@ -88,6 +88,7 @@ class Webspace_details
 	 * @var	array
 	 */
 	public $options = array();
+	public $webspace_options = array(); // alias of $options
 
 
 	/**
@@ -115,6 +116,7 @@ class Webspace_details
 	public $state = '';
 	public $country = '';
 	public $zip = '';
+	public $zipcode = ''; // alias of $zip
 	public $phone = '';
 
 	/**
@@ -163,8 +165,8 @@ class Webspace_details
 	public $theme_name = '';
 	public $theme_options = '';
 
-	
-	
+
+
 	/**
 	 * DB Object
 	 *
@@ -185,16 +187,16 @@ class Webspace_details
 	 * Constructor
 	 *
 	 * @param	array	$param	Initialization parameter - the item id
-	 * 
+	 *
 	 * @return	void
 	 */
 	public function __construct($param = array())
 	{
 		$this->CI =& get_instance();
-		
+
 		// connect to database
 		$this->DB = $this->CI->load->database('instyle', TRUE);
-		
+
 		$this->initialize($param);
 		log_message('info', 'Page Details Class Initialized');
 	}
@@ -215,38 +217,38 @@ class Webspace_details
 			// nothing more to do...
 			return FALSE;
 		}
-		
+
 		// selects
 		$this->DB->select('webspaces.*');
 		$this->DB->select('
-			accounts.company_name, 
-			accounts.owner_name, 
-			accounts.owner_email, 
-			accounts.address1, 
-			accounts.address2, 
-			accounts.city, 
-			accounts.state, 
-			accounts.country, 
-			accounts.zip, 
-			accounts.phone, 
-			accounts.industry, 
-			accounts.account_status 
+			accounts.company_name,
+			accounts.owner_name,
+			accounts.owner_email,
+			accounts.address1,
+			accounts.address2,
+			accounts.city,
+			accounts.state,
+			accounts.country,
+			accounts.zip,
+			accounts.phone,
+			accounts.industry,
+			accounts.account_status
 		');
 		$this->DB->select('
-			(CASE 
+			(CASE
 				WHEN EXISTS (SELECT * FROM accounts WHERE accounts.account_id = webspaces.account_id)
 				THEN "1"
 				ELSE "0"
 			END) AS has_account
 		');
-		
+
 		// get recrods
 		$this->DB->join('accounts', 'accounts.account_id = webspaces.account_id', 'left');
 		$this->DB->where($params);
 		$query1 = $this->DB->get('webspaces');
-		
+
 		$row = $query1->row();
-		
+
 		if (isset($row))
 		{
 			// initialize properties
@@ -267,6 +269,7 @@ class Webspace_details
 			$this->last_modified = @$row->last_modified;
 			// the options
 			$this->options = ($row->webspace_options && $row->webspace_options != '') ? json_decode($row->webspace_options , TRUE) : array();
+			$this->webspace_options = ($row->webspace_options && $row->webspace_options != '') ? json_decode($row->webspace_options , TRUE) : array();
 			// joined account details
 			$this->has_account = $row->has_account;
 			$this->company = $row->company_name;
@@ -278,6 +281,7 @@ class Webspace_details
 			$this->state = $row->state;
 			$this->country = $row->country;
 			$this->zip = $row->zip;
+			$this->zipcode = $row->zip;
 			$this->phone = $row->phone;
 			$this->industry = $row->industry;
 			$this->account_status = $row->account_status;
@@ -286,31 +290,31 @@ class Webspace_details
 		{
 			return FALSE;
 		}
-		
+
 		// if there is a selected theme, let's get the information as well
 		if (isset($this->options['theme']) && ! empty($this->options['theme']))
 		{
 			$this->DB->where('theme', $this->options['theme']);
 			$query2 = $this->DB->get('themes');
-			
+
 			if ($query2->num_rows() > 0)
 			{
 				$row2 = $query2->row();
-				
+
 				$this->theme = $row2->theme;
 				$this->theme_id = $row2->theme_id;
 				$this->theme_name = $row2->theme_name;
 				$this->theme_options = $row2->theme_options != '' ? json_decode($row->theme_options , TRUE) : array();
 			}
 		}
-		
+
 		return $this;
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
-	 * Record Recent Users edited 
+	 * Record Recent Users edited
 	 * for the specific webspace which is added to webspace 'options'
 	 *
 	 * @return	void
@@ -322,7 +326,7 @@ class Webspace_details
 			// nothing more to do...
 			return FALSE;
 		}
-		
+
 		switch ($params['user_type'])
 		{
 			case 'admin_users':
@@ -345,13 +349,13 @@ class Webspace_details
 				$key = 'recent_vendor_users';
 			break;
 		}
-		
+
 		// capture sales user options
 		$options = $this->options;
-		
+
 		// get the array of recent users, and add the user selection
 		$recent_users_ary = @$options[$key] ?: array();
-		
+
 		// update recent list of users edited
 		if (is_array($recent_users_ary) && array_key_exists($params['user_id'], $recent_users_ary))
 		{
@@ -369,10 +373,10 @@ class Webspace_details
 		{
 			$recent_users_ary[$params['user_id']] = array($params['user_name'], 1);
 		}
-	
+
 		// slice array to maintain on record up to 5 items only
 		$recent_users_ary = array_slice($recent_users_ary, 0, 5, TRUE);
-		
+
 		// sort arrays decending to stats
 		// using custom comparison function
 		if ( ! function_exists('cmpwd'))
@@ -385,20 +389,20 @@ class Webspace_details
 			}
 		}
 		uasort($recent_users_ary, 'cmpwd');
-		
+
 		$options[$key] = $recent_users_ary;
-		
+
 		// udpate the sales package items...
 		$this->DB->set('webspace_options', json_encode($options));
 		$this->DB->where('webspace_id', $this->id);
 		$q = $this->DB->update('webspaces');
-		
+
 		// RE-initialize class
 		$this->initialize(array('webspace_id'=>$this->id));
-		
+
 		return $this;
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -414,27 +418,27 @@ class Webspace_details
 			// nothing more to do...
 			return FALSE;
 		}
-		
+
 		// capture sales user options
 		$options = $this->options;
-		
+
 		// get the array of recent users, and add the user selection
 		$recent_sales_package = @$options['recent_sales_package'] ?: array();
-		
+
 		// update recent list of users edited
 		if (is_array($recent_sales_package) && array_key_exists($params['sales_package_id'], $recent_sales_package))
 		{
 			$recent_sales_package[$params['sales_package_id']][1] = $recent_sales_package[$params['sales_package_id']][1] + 1;
 			array_values($recent_sales_package[$params['sales_package_id']]);
 		}
-		else 
+		else
 		{
 			$recent_sales_package[$params['sales_package_id']] = array($params['sales_package_name'], 1);
 		}
-	
+
 		// slice array to maintain on record up to 3 items only
 		array_slice($recent_sales_package, 0, 5, TRUE);
-		
+
 		// sort arrays decending to stats
 		// set comparison function
 		if ( ! function_exists('cmpwd1'))
@@ -447,20 +451,20 @@ class Webspace_details
 			}
 		}
 		uasort($recent_sales_package, 'cmpwd1');
-		
+
 		$options['recent_sales_package'] = $recent_sales_package;
-		
+
 		// udpate the sales package items...
 		$this->DB->set('webspace_options', json_encode($options));
 		$this->DB->where('webspace_id', $this->id);
 		$q = $this->DB->update('webspaces');
-		
+
 		// RE-initialize class
 		$this->initialize(array('webspace_id'=>$this->id));
-		
+
 		return $this;
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -476,27 +480,27 @@ class Webspace_details
 			// nothing more to do...
 			return FALSE;
 		}
-		
+
 		// capture sales user options
 		$options = $this->options;
-		
+
 		// get the array of recent users, and add the user selection
 		$recent_designers = @$options['recent_designers'] ?: array();
-		
+
 		// update recent list of users edited
 		if (is_array($recent_designers) && array_key_exists($params['designer_id'], $recent_designers))
 		{
 			$recent_designers[$params['designer_id']][1] = $recent_designers[$params['designer_id']][1] + 1;
 			array_values($recent_designers[$params['designer_id']]);
 		}
-		else 
+		else
 		{
 			$recent_designers[$params['designer_id']] = array($params['designer_name'], 1);
 		}
-	
+
 		// slice array to maintain on record up to 3 items only
 		array_slice($recent_designers, 0, 5, TRUE);
-		
+
 		// sort arrays decending to stats
 		// set comparison function
 		if ( ! function_exists('cmpwd2'))
@@ -509,20 +513,20 @@ class Webspace_details
 			}
 		}
 		uasort($recent_designers, 'cmpwd2');
-		
+
 		$options['recent_designers'] = $recent_designers;
-		
+
 		// udpate the sales package items...
 		$this->DB->set('webspace_options', json_encode($options));
 		$this->DB->where('webspace_id', $this->id);
 		$q = $this->DB->update('webspaces');
-		
+
 		// RE-initialize class
 		$this->initialize(array('webspace_id'=>$this->id));
-		
+
 		return $this;
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -537,13 +541,13 @@ class Webspace_details
 			// nothing more to do...
 			return FALSE;
 		}
-		
+
 		$this->DB->select('webspace_options');
 		$this->DB->where($params);
 		$query = $this->DB->get('webspaces');
-		
+
 		//echo $this->DB->last_query(); die('<br />DIED');
-		
+
 		if ($query->num_rows() == 0)
 		{
 			// nothing more to do...
@@ -553,12 +557,12 @@ class Webspace_details
 		{
 			$row = $query->row();
 			$options = json_decode($row->webspace_options, TRUE);
-			
+
 			// return the object
 			return $options['size_mode'];
 		}
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -574,7 +578,7 @@ class Webspace_details
 		);
 		$this->CI->session->set_userdata($sesdata);
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -590,7 +594,7 @@ class Webspace_details
 		);
 		$this->CI->session->unset_userdata($sesdata);
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -620,7 +624,8 @@ class Webspace_details
 		$this->status = '';
 		// the options
 		$this->options = array();
-		
+		$this->webspace_options = array();
+
 		$this->has_account = '';
 		$this->company = '';
 		$this->owner = '';
@@ -631,15 +636,16 @@ class Webspace_details
 		$this->state = '';
 		$this->country = '';
 		$this->zip = '';
+		$this->zipcode = '';
 		$this->phone = '';
 		$this->industry = '';
 		$this->account_status = '';
-		
+
 		$this->last_modified = '';
-		
+
 		return $this;
 	}
-	
+
 	// --------------------------------------------------------------------
 
 }

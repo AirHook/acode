@@ -38,6 +38,18 @@ class Create extends Admin_Controller {
 		array_shift($this->data['url_segs']); // create
 		array_shift($this->data['url_segs']); // step
 
+		// set company information
+		$this->data['company_name'] = $this->webspace_details->company;
+		$this->data['company_address1'] = $this->webspace_details->address1;
+		$this->data['company_address2'] = $this->webspace_details->address2;
+		$this->data['company_city'] = $this->webspace_details->city;
+		$this->data['company_state'] = $this->webspace_details->state;
+		$this->data['company_zipcode'] = $this->webspace_details->zip;
+		$this->data['company_country'] = $this->webspace_details->country;
+		$this->data['company_telephone'] = $this->webspace_details->phone;
+		$this->data['company_contact_person'] = $this->webspace_details->owner;
+		$this->data['company_contact_email'] = $this->webspace_details->info_email;
+
 		/*****
 		 * Check for items in session
 		 */
@@ -112,6 +124,7 @@ class Create extends Admin_Controller {
 				unset($_SESSION['admin_po_size_qty']);
 				unset($_SESSION['admin_po_store_id']);
 				// remove po mod details
+				unset($_SESSION['admin_po_mod_po_id']);
 				unset($_SESSION['admin_po_mod_size_qty']);
 			}
 
@@ -161,6 +174,12 @@ class Create extends Admin_Controller {
 	{
 		// generate the plugin scripts and css
 		$this->_create_plugin_scripts();
+
+		// load pertinent library/model/helpers
+		$this->load->library('color_list');
+
+		// get color list
+		$this->data['colors'] = $this->color_list->select();
 
 		// get vendor details
 		$this->data['vendor'] = $this->vendor_user_details->initialize(
@@ -265,6 +284,7 @@ class Create extends Admin_Controller {
 		$this->load->library('users/wholesale_users_list');
 		$this->load->library('users/wholesale_user_details');
 		$this->load->library('users/sales_user_details');
+		$this->load->library('designers/designer_details');
 
 		// set validation rules
 		$this->form_validation->set_rules('delivery_date', 'Deliver Data', 'trim|required');
@@ -357,12 +377,16 @@ class Create extends Admin_Controller {
 
 			// will need to insert other items as options array
 			$options = array();
-			if ($this->input->post('references')) $options['references'] = $this->input->post('references');
 			if ($this->input->post('start_date')) $options['start_date'] = $this->input->post('start_date');
 			if ($this->input->post('cancel_date')) $options['cancel_date'] = $this->input->post('cancel_date');
 			if ($this->input->post('ship_via')) $options['ship_via'] = $this->input->post('ship_via');
 			if ($this->input->post('fob')) $options['fob'] = $this->input->post('fob');
 			if ($this->input->post('terms')) $options['terms'] = $this->input->post('terms');
+
+			foreach ($this->input->post('options') as $key => $val)
+			{
+				$options[$key] = $val;
+			}
 
 			// check for ship to details
 			// get store details if any
@@ -371,17 +395,25 @@ class Create extends Admin_Controller {
 			// initialize designer details
 			$this->designer_details->initialize(array('designer.des_id'=>$this->input->post('des_id')));
 
+			// to ensure that no doulbe entry on new po# when 2 users
+			// coincidentally creates PO at the exact same time
+			$po_number = $this->purchase_orders_list->max_po_number() + 1;
+			for($c = strlen($po_number);$c < 6;$c++)
+			{
+				$po_number = '0'.$po_number;
+			}
+
 			// insert record
 			// contents of a PO
 			$post_ary['des_code'] = strtoupper($this->designer_details->des_code);
-			$post_ary['po_number'] = $this->input->post('po_number');
+			$post_ary['po_number'] = $po_number;
 			$post_ary['rev'] = '0';
 			$post_ary['des_id'] = $this->input->post('des_id');
 			$post_ary['vendor_id'] = $this->session->admin_po_vendor_id;
-			$post_ary['user_id'] = $this->admin_user_details->admin_id;
+			$post_ary['user_id'] = 0;
 			$post_ary['po_date'] = strtotime($this->input->post('po_date'));
 			$post_ary['delivery_date'] = strtotime($this->input->post('delivery_date'));
-			$post_ary['author'] = $this->admin_user_details->admin_id;
+			$post_ary['author'] = $this->admin_user_details->admin_id; // author
 			$post_ary['c'] = '1'; // 1-admin,2-sales
 			$post_ary['status'] = '0';
 			$post_ary['options'] = json_encode($options);
@@ -424,8 +456,16 @@ class Create extends Admin_Controller {
 				}
 
 				// set color name
-				$size_qty['color_name'] = $product->color_name;
-				$size_qty['vendor_price'] = $product->vendor_price ?: ($product->wholesale_price / 3);
+				if ($product)
+				{
+					$size_qty['color_name'] = $product->color_name;
+					$size_qty['vendor_price'] = $product->vendor_price ?: ($product->wholesale_price / 3);
+				}
+				else
+				{
+					$size_qty['color_name'] = $this->product_details->get_color_name($exp[1]);
+					$size_qty['vendor_price'] = @$size_qty['vendor_price'] ?: 0;
+				}
 
 				$po_items[$item] = $size_qty;
 			}
@@ -477,6 +517,25 @@ class Create extends Admin_Controller {
 				);
 			}
 			else $this->data['store_details'] = $this->wholesale_user_details->deinitialize();
+
+			// get PO author
+			switch ($this->purchase_order_details->c)
+			{
+				case '2': //sales
+					$this->data['author'] = $this->sales_user_details->initialize(
+						array(
+							'admin_sales_id' => $this->purchase_order_details->author
+						)
+					);
+				break;
+				case '1': //admin
+				default:
+					$this->data['author'] = $this->admin_user_details->initialize(
+						array(
+							'admin_id' => ($this->purchase_order_details->author ?: '1')
+						)
+					);
+			}
 
 			// po items
 			$this->data['po_items'] = $this->purchase_order_details->items;
@@ -575,6 +634,25 @@ class Create extends Admin_Controller {
 			);
 		}
 		else $this->data['store_details'] = $this->wholesale_user_details->deinitialize();
+
+		// get PO author
+		switch ($this->purchase_order_details->c)
+		{
+			case '2': //sales
+				$this->data['author'] = $this->sales_user_details->initialize(
+					array(
+						'admin_sales_id' => $this->purchase_order_details->author
+					)
+				);
+			break;
+			case '1': //admin
+			default:
+				$this->data['author'] = $this->admin_user_details->initialize(
+					array(
+						'admin_id' => ($this->purchase_order_details->author ?: '1')
+					)
+				);
+		}
 
 		// get size names using des_id as reference
 		$this->designer_details->initialize(array('designer.des_id'=>$this->purchase_order_details->des_id));

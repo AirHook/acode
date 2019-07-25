@@ -24,49 +24,6 @@ class Modify extends Admin_Controller {
 		$this->load->library('users/vendor_user_details');
 		$this->load->library('categories/categories_tree');
 
-		/*
-		// let's ensure that there are no admin session for po
-		unset($_SESSION['admin_po_vendor_id']);
-		unset($_SESSION['admin_po_items']);
-		unset($_SESSION['admin_po_size_qty']);
-		unset($_SESSION['admin_po_store_id']);
-
-		// get the vendor data
-		$this->data['vendors'] = $this->vendor_users_list->select();
-
-		// let's remove the segments (up to controller class method/function)
-		$this->data['url_segs'] = explode('/', $this->uri->uri_string());
-		array_shift($this->data['url_segs']); // admin
-		array_shift($this->data['url_segs']); // purchase_orders
-		array_shift($this->data['url_segs']); // create
-		array_shift($this->data['url_segs']); // step
-
-		/*****
-		 * Check for items in session
-		 *
-		// check for po items
-		$this->data['po_items'] =
-			$this->session->admin_po_items
-			? json_decode($this->session->admin_po_items, TRUE)
-			: array()
-		;
-		$po_items_count = 0;
-		foreach ($this->data['po_items'] as $key => $val)
-		{
-			if (is_array($val))
-			{
-				$po_items_count += array_sum($ary_val);
-			}
-			else $po_items_count += 1;
-		}
-		$this->data['po_items_count'] = $po_items_count;
-		$this->data['po_size_qty'] =
-			$this->session->admin_po_size_qty
-			? json_decode($this->session->admin_po_size_qty, TRUE)
-			: array()
-		;
-		*/
-
 		// connect to database
 		$this->DB = $this->load->database('instyle', TRUE);
     }
@@ -92,6 +49,19 @@ class Modify extends Admin_Controller {
 			redirect('admin/purchase_orders', 'location');
 		}
 
+		// let's ensure that there are no admin session for po create
+		if ($this->session->admin_po_items)
+		{
+			// new po modify access
+			unset($_SESSION['admin_po_vendor_id']);
+			unset($_SESSION['admin_po_des_url_structure']);
+			unset($_SESSION['admin_po_items']);
+			unset($_SESSION['admin_po_size_qty']);
+			unset($_SESSION['admin_po_store_id']);
+			// unset mod session as well
+			unset($_SESSION['admin_po_mod_size_qty']);
+		}
+
 		// generate the plugin scripts and css
 		$this->_create_plugin_scripts();
 
@@ -104,7 +74,7 @@ class Modify extends Admin_Controller {
 		$this->load->library('users/wholesale_users_list');
 		$this->load->library('users/wholesale_user_details');
 		$this->load->library('users/sales_user_details');
-		$this->load->library('users/designer_details');
+		$this->load->library('designers/designer_details');
 
 		// initialize purchase order properties and items
 		$this->data['po_details'] = $this->purchase_order_details->initialize(
@@ -145,17 +115,16 @@ class Modify extends Admin_Controller {
 				redirect('admin/purchase_orders', 'location');
 			}
 
-			// get store details
-			$this->data['store_details'] = $this->wholesale_user_details->initialize(
-				array(
-					'user_id' => $this->purchase_order_details->user_id
-				)
-			);
-			if ( ! $this->data['store_details'])
+			// get ship to details
+			if (isset($this->data['po_options']['po_store_id']))
 			{
-				// this will use default on view file
-				$this->data['store_details'] = $this->wholesale_user_details->deinitialize();
+				$this->data['store_details'] = $this->wholesale_user_details->initialize(
+					array(
+						'user_id' => $this->data['po_options']['po_store_id']
+					)
+				);
 			}
+			else $this->data['store_details'] = $this->wholesale_user_details->deinitialize();
 
 			// get PO author
 			switch ($this->purchase_order_details->c)
@@ -166,6 +135,11 @@ class Modify extends Admin_Controller {
 							'admin_sales_id' => $this->purchase_order_details->author
 						)
 					);
+					$this->data['company_details'] = $this->designer_details->initialize(
+						array(
+							'designer.url_structure' => $this->sales_user_details->designer
+						)
+					);
 				break;
 				case '1': //admin
 				default:
@@ -174,7 +148,39 @@ class Modify extends Admin_Controller {
 							'admin_id' => ($this->purchase_order_details->author ?: '1')
 						)
 					);
+					if ($this->admin_user_details->webspace_id)
+					{
+						$this->data['company_details'] = $this->webspace_details->initialize(
+							array(
+								'webspaces.webspace_id' => $this->admin_user_details->webspace_id
+							)
+						);
+					}
+					else
+					{
+						$this->data['company_details'] = $this->webspace_details->initialize(
+							array(
+								'webspaces.webspace_slug' => SITESLUG
+							)
+						);
+					}
 			}
+
+			// set company information
+			$this->data['company_name'] = $this->data['company_details']->company;
+			$this->data['company_address1'] = $this->data['company_details']->address1;
+			$this->data['company_address2'] = $this->data['company_details']->address2;
+			$this->data['company_city'] = $this->data['company_details']->city;
+			$this->data['company_state'] = $this->data['company_details']->state;
+			$this->data['company_zipcode'] = $this->data['company_details']->zipcode;
+			$this->data['company_country'] = $this->data['company_details']->country;
+			$this->data['company_telephone'] = $this->data['company_details']->phone;
+			$this->data['company_contact_person'] = $this->data['company_details']->owner;
+			$this->data['company_contact_email'] = $this->data['company_details']->info_email;
+
+			// get po items and other array stuff
+			$this->data['po_number'] = $this->purchase_order_details->po_number;
+			$this->data['po_options'] = $this->purchase_order_details->options;
 
 			// get the po items and count
 			// if session is present, then modify has already started
@@ -186,6 +192,8 @@ class Modify extends Admin_Controller {
 			{
 				if (is_array($val))
 				{
+					unset($val['color_name']);
+					unset($val['vendor_price']);
 					$po_items_count += array_sum($val);
 				}
 				else $po_items_count += 1;
@@ -244,10 +252,13 @@ class Modify extends Admin_Controller {
 			)
 			// */
 
+			// set options
+			$options = $this->purchase_order_details->options;
+
 			/***********
 			 * Process the input data
 			 */
-			// will need to insert other items as options array
+			// will need to update any changesto some options data
 			if ($this->input->post('start_date')) $options['start_date'] = $this->input->post('start_date');
 			if ($this->input->post('cancel_date')) $options['cancel_date'] = $this->input->post('cancel_date');
 			if ($this->input->post('ship_via')) $options['ship_via'] = $this->input->post('ship_via');
@@ -256,7 +267,7 @@ class Modify extends Admin_Controller {
 
 			// check for changes ship to details
 			// get store details if any
-			if ($this->session->admin_po_store_id) $options['po_store_id'] = $this->session->admin_po_store_id;
+			//if ($this->session->admin_po_store_id) $options['po_store_id'] = $this->session->admin_po_store_id;
 
 			// update record
 			// contents of a PO
@@ -292,28 +303,42 @@ class Modify extends Admin_Controller {
 			$po_size_qty = json_decode($this->session->admin_po_mod_size_qty, TRUE);
 			foreach ($po_size_qty as $item => $size_qty)
 			{
-				// get product details
-				$product = $this->product_details->initialize(
-					array(
-						'tbl_product.prod_no' => $item
-					)
-				);
-				if ( ! $product)
+				unset($size_qty['color_name']);
+				unset($size_qty['vendor_price']);
+
+				if (array_sum($size_qty) != 0)
 				{
-					$exp = explode('_', $item);
+					// get product details
 					$product = $this->product_details->initialize(
 						array(
-							'tbl_product.prod_no' => $exp[0],
-							'color_code' => $exp[1]
+							'tbl_product.prod_no' => $item
 						)
 					);
+					if ( ! $product)
+					{
+						$exp = explode('_', $item);
+						$product = $this->product_details->initialize(
+							array(
+								'tbl_product.prod_no' => $exp[0],
+								'color_code' => $exp[1]
+							)
+						);
+					}
+
+					// set color name
+					if ($product)
+					{
+						$size_qty['color_name'] = $product->color_name;
+						$size_qty['vendor_price'] = $product->vendor_price ?: ($product->wholesale_price / 3);
+					}
+					else
+					{
+						$size_qty['color_name'] = $this->product_details->get_color_name($exp[1]);
+						$size_qty['vendor_price'] = @$size_qty['vendor_price'] ?: 0;
+					}
+
+					$po_items[$item] = $size_qty;
 				}
-
-				// set color name
-				$size_qty['color_name'] = $product->color_name;
-				$size_qty['vendor_price'] = $product->vendor_price ?: ($product->wholesale_price / 3);
-
-				$po_items[$item] = $size_qty;
 			}
 
 			// set po items`
@@ -336,7 +361,7 @@ class Modify extends Admin_Controller {
 			$this->session->set_flashdata('success', 'edit');
 
 			// redirect user
-			redirect('admin/purchase_orders/modify/index/'.$po_id, 'location');
+			redirect('admin/purchase_orders/details/index/'.$po_id, 'location');
 		}
 	}
 

@@ -79,13 +79,20 @@
 										<strong style="font-size:12px;"> PURCHASE ORDER #<?php echo $po_details->po_number; ?> </strong><br />
 										<small> Date: <?php echo $po_details->po_date; ?> </small>
 
+										<h4>
+											<?php echo @$po_options['ref_po_no'] ? 'Reference Manual PO#: '.$po_options['ref_po_no'] : ''; ?>
+											<?php echo (@$po_options['ref_po_no'] && @$po_options['ref_so_no']) ? '<br />' : ''; ?>
+											<?php echo @$po_options['ref_so_no'] ? 'Reference SO#: '.$po_options['ref_so_no'] : ''; ?>
+										</h4>
+
 										<br><br>
 
-										D&I Fashion Group <br />
-										230 West 38th Street <br />
-										New York, NY 10018 <br />
-										United States <br />
-										212.840.0846 <br />
+										<?php echo $company_name; ?> <br />
+										<?php echo $company_address1; ?><br />
+										<?php echo $company_address2 ? $company_address2.'<br />' : ''; ?>
+										<?php echo $company_city.', '.$company_state.' '.$company_zipcode; ?><br />
+										<?php echo $company_country; ?><br />
+										<?php echo $company_telephone; ?>
 									</td>
 								</tr>
 							</table>
@@ -123,13 +130,13 @@
 
 										<br /><br />
 
-										<?php echo @$store_details->store_name ?: 'D&I Fashion Group'; ?> <br />
-										<?php echo @$store_details->address1 ?: '230 West 38th Street'; ?> <br />
-										<?php echo @$store_details->address2 ? @$store_details->address2.'<br />' : ''; ?>
-										<?php echo @$store_details->city ? @$store_details->city.',': 'New York,'; ?> <?php echo @$store_details->state ?: 'NY'; ?> <?php echo @$store_details->zipcode ?: '10018'; ?> <br />
-										<?php echo @$store_details->country ?: 'United States'; ?> <br />
-										<?php echo @$store_details->telephone ?: '212.840.0846'; ?> <br />
-										ATTN: <?php echo @$store_details->fname ? @$store_details->fname.' '.@$store_details->lname : 'Joe Taveras'; ?> <?php echo @$store_details->email ? '('.@$store_details->email.')' : '(help@shop7thavenue.com)'; ?>
+										<?php echo $store_details->store_name ?: $company_name; ?> <br />
+										<?php echo $store_details->address1 ?: $company_address1; ?> <br />
+										<?php echo $store_details->address2 ? $store_details->address2.'<br />' : $company_address2 ? $company_address2.'<br />' : ''; ?>
+										<?php echo $store_details->city ?: $company_city; ?>, <?php echo $store_details->state ?: $company_state; ?> <?php echo $store_details->zipcode ?: $company_zipcode; ?> <br />
+										<?php echo $store_details->country ?: $company_country; ?> <br />
+										<?php echo $store_details->telephone ?: $company_telephone; ?> <br />
+										ATTN: <?php echo $store_details->fname ? $store_details->fname.' '.$store_details->lname : $company_contact_person; ?> <?php echo $store_details->email ? '('.$store_details->email.')' : '('.$company_contact_email.')'; ?>
 
 									</td>
 								</tr>
@@ -142,7 +149,7 @@
 							 * Author
 							 */
 							?>
-							<strong> Ordered by: </strong> <?php echo $po_details->author_name ?: ''; ?> <?php echo $po_details->author_email ? '('.$po_details->author_email.')' : ''; ?>
+							<strong> Ordered by: </strong>  &nbsp;<?php echo $author->fname.' '.$author->lname.' ('.$author->email.')'; ?>
 
 							<br><br>
 
@@ -229,13 +236,34 @@
 
 											// set image paths
 											// the new way relating records with media library
-											$style_no = $product->prod_no.'_'.$product->color_code;
-											$img_front_new = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_f3.jpg';
+											$style_no = $item;
+											$prod_no = $exp[0];
+											$color_code = $exp[1];
+											$temp_size_mode = 1; // default size mode
 
-											// and other items
-											$color_name = $product->color_name;
-											$size_mode = $product->size_mode;
-											$vendor_price = @$size_qty['vendor_price'] ?: $product->vendor_price;
+											if ($product)
+											{
+												$image_new = $product->media_path.$style_no.'_f3.jpg';
+												$img_front_new = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_f3.jpg';
+												$img_linesheet = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_linesheet.jpg';
+												$size_mode = $product->size_mode;
+												$color_name = $product->color_name;
+												$vendor_price = @$size_qty['vendor_price'] ?: $product->vendor_price;
+
+												// take any existing product's size mode
+												$temp_size_mode = $product->color_name;
+											}
+											else
+											{
+												$image_new = 'images/instylelnylogo_3.jpg';
+												$img_front_new = $this->config->item('PROD_IMG_URL').'images/instylelnylogo_3.jpg';
+												$img_linesheet = '';
+												$size_mode = $company_details->webspace_options['size_mode'] ?: $temp_size_mode;
+												$color_name = $this->product_details->get_color_name($color_code);
+												$vendor_price = @$size_qty['vendor_price'] ?: 0;
+											}
+
+											// get size names
 											$size_names = $this->size_names->get_size_names($size_mode);
 											?>
 

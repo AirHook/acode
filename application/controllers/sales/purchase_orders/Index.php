@@ -46,7 +46,7 @@ class Index extends Sales_Controller {
 		}
 
 		// set data variables...
-		$this->data['file'] = 'purchase_orders';
+		$this->data['file'] = 'po_list';
 		$this->data['page_title'] = 'Purchase Orders';
 		$this->data['page_description'] = 'List of Purchase Orders of items for order from vendors of designers for their wholesale users';
 

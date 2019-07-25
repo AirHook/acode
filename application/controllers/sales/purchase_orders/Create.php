@@ -54,6 +54,19 @@ class Create extends Sales_Controller {
 			)
 		);
 
+		// set company information
+		$this->designer_details->initialize(array('url_structure'=>$this->sales_user_details->designer));
+		$this->data['company_name'] = $this->designer_details->company_name;
+		$this->data['company_address1'] = $this->designer_details->address1;
+		$this->data['company_address2'] = $this->designer_details->address2;
+		$this->data['company_city'] = $this->designer_details->city;
+		$this->data['company_state'] = $this->designer_details->state;
+		$this->data['company_zipcode'] = $this->designer_details->zipcode;
+		$this->data['company_country'] = $this->designer_details->country;
+		$this->data['company_telephone'] = $this->designer_details->phone;
+		$this->data['company_contact_person'] = $this->designer_details->owner;
+		$this->data['company_contact_email'] = $this->designer_details->info_email;
+
 		// let's remove the segments (up to controller class method/function)
 		$this->data['url_segs'] = explode('/', $this->uri->uri_string());
 		array_shift($this->data['url_segs']); // sales
@@ -135,7 +148,11 @@ class Create extends Sales_Controller {
 				unset($_SESSION['po_size_qty']);
 				unset($_SESSION['po_store_id']);
 				// remove po mod details
-				unset($_SESSION['po_mod_size_qty']);
+				unset($_SESSION['po_mod_vendor_id']);
+				unset($_SESSION['po_mod_des_url_structure']);
+				unset($_SESSION['po_mod_items']);
+				unset($_SESSION['po_mod_mod_size_qty']);
+				unset($_SESSION['po_store_id']);
 			}
 
 			// some necessary variables
@@ -184,6 +201,12 @@ class Create extends Sales_Controller {
 	{
 		// generate the plugin scripts and css
 		$this->_create_plugin_scripts();
+
+		// load pertinent library/model/helpers
+		$this->load->library('color_list');
+
+		// get color list
+		$this->data['colors'] = $this->color_list->select();
 
 		// get vendor details
 		$this->data['vendor'] = $this->vendor_user_details->initialize(
@@ -339,6 +362,10 @@ class Create extends Sales_Controller {
 
 			// set po number
 			$this->data['po_number'] = $this->purchase_orders_list->max_po_number() + 1;
+			for($c = strlen($this->data['po_number']);$c < 6;$c++)
+			{
+				$this->data['po_number'] = '0'.$this->data['po_number'];
+			}
 
 			// get size names using des_id as reference
 			$this->designer_details->initialize(array('designer.url_structure'=>$this->session->po_des_url_structure));
@@ -386,6 +413,11 @@ class Create extends Sales_Controller {
 			if ($this->input->post('fob')) $options['fob'] = $this->input->post('fob');
 			if ($this->input->post('terms')) $options['terms'] = $this->input->post('terms');
 
+			foreach ($this->input->post('options') as $key => $val)
+			{
+				$options[$key] = $val;
+			}
+
 			// check for ship to details
 			// get store details if any
 			if ($this->session->po_store_id) $options['po_store_id'] = $this->session->po_store_id;
@@ -393,17 +425,25 @@ class Create extends Sales_Controller {
 			// initialize designer details
 			$this->designer_details->initialize(array('designer.des_id'=>$this->input->post('des_id')));
 
+			// to ensure that no doulbe entry on new po# when 2 users
+			// coincidentally creates PO at the exact same time
+			$po_number = $this->purchase_orders_list->max_po_number() + 1;
+			for($c = strlen($po_number);$c < 6;$c++)
+			{
+				$po_number = '0'.$po_number;
+			}
+
 			// insert record
 			// contents of a PO
 			$post_ary['des_code'] = strtoupper($this->designer_details->des_code);
-			$post_ary['po_number'] = $this->input->post('po_number');
+			$post_ary['po_number'] = $po_number;
 			$post_ary['rev'] = '0';
 			$post_ary['des_id'] = $this->input->post('des_id');
 			$post_ary['vendor_id'] = $this->session->po_vendor_id;
-			$post_ary['user_id'] = $this->sales_user_details->admin_sales_id;
+			$post_ary['user_id'] = 0;
 			$post_ary['po_date'] = strtotime($this->input->post('po_date'));
 			$post_ary['delivery_date'] = strtotime($this->input->post('delivery_date'));
-			$post_ary['author'] = $this->sales_user_details->admin_sales_id;
+			$post_ary['author'] = $this->sales_user_details->admin_sales_id; // author
 			$post_ary['c'] = '2'; // 1-admin,2-sales
 			$post_ary['status'] = '0';
 			$post_ary['options'] = json_encode($options);
@@ -446,13 +486,21 @@ class Create extends Sales_Controller {
 				}
 
 				// set color name
-				$size_qty['color_name'] = $product->color_name;
-				$size_qty['vendor_price'] = $product->vendor_price ?: ($product->wholesale_price / 3);
+				if ($product)
+				{
+					$size_qty['color_name'] = $product->color_name;
+					$size_qty['vendor_price'] = $product->vendor_price ?: ($product->wholesale_price / 3);
+				}
+				else
+				{
+					$size_qty['color_name'] = $this->product_details->get_color_name($exp[1]);
+					$size_qty['vendor_price'] = @$size_qty['vendor_price'] ?: 0;
+				}
 
 				$po_items[$item] = $size_qty;
 			}
 
-			// set po items`
+			// set po items
 			$post_ary['items'] = json_encode($po_items);
 
 			/***********
@@ -499,6 +547,25 @@ class Create extends Sales_Controller {
 				);
 			}
 			else $this->data['store_details'] = $this->wholesale_user_details->deinitialize();
+
+			// get PO author
+			switch ($this->purchase_order_details->c)
+			{
+				case '2': //sales
+					$this->data['author'] = $this->sales_user_details->initialize(
+						array(
+							'admin_sales_id' => $this->purchase_order_details->author
+						)
+					);
+				break;
+				case '1': //admin
+				default:
+					$this->data['author'] = $this->admin_user_details->initialize(
+						array(
+							'admin_id' => ($this->purchase_order_details->author ?: '1')
+						)
+					);
+			}
 
 			// po items
 			$this->data['po_items'] = $this->purchase_order_details->items;
@@ -565,7 +632,6 @@ class Create extends Sales_Controller {
 		$this->load->library('products/product_details');
 		$this->load->library('purchase_orders/purchase_order_details');
 		$this->load->library('users/wholesale_user_details');
-		$this->load->library('users/sales_user_details');
 		$this->load->library('zend');
 		$this->zend->load('Zend/Barcode');
 
@@ -598,6 +664,25 @@ class Create extends Sales_Controller {
 			);
 		}
 		else $this->data['store_details'] = $this->wholesale_user_details->deinitialize();
+
+		// get PO author
+		switch ($this->purchase_order_details->c)
+		{
+			case '2': //sales
+				$this->data['author'] = $this->sales_user_details->initialize(
+					array(
+						'admin_sales_id' => $this->purchase_order_details->author
+					)
+				);
+			break;
+			case '1': //admin
+			default:
+				$this->data['author'] = $this->admin_user_details->initialize(
+					array(
+						'admin_id' => ($this->purchase_order_details->author ?: '1')
+					)
+				);
+		}
 
 		// get size names using des_id as reference
 		$this->designer_details->initialize(array('designer.des_id'=>$this->purchase_order_details->des_id));
@@ -636,15 +721,19 @@ class Create extends Sales_Controller {
 		$this->load->library('purchase_orders/purchase_order_sending');
 		$this->purchase_order_sending->send($po_id);
 
+		// set flash data
+		$this->session->set_flashdata('success', 'add');
+
 		if ($action === 'send')
 		{
-			// set flash data
-			$this->session->set_flashdata('success', 'add');
-
-			// redirect user
+			// redirect user on step4
 			redirect('sales/purchase_orders/create/step4/'.$po_id, 'location');
 		}
-		// else, return to step4 as only step4 and send button uses this method
+		else
+		{
+			// redirect user
+			redirect('sales/purchase_orders/details/index/'.$po_id, 'location');
+		}
 	}
 
 	// ----------------------------------------------------------------------
