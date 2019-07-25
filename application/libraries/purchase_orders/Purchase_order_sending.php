@@ -189,16 +189,16 @@ class Purchase_order_sending
 
 		// load email library class
 		// set company information
-		$this->data['company_name'] = $this->CI->designer_details->company_name;
-		$this->data['company_address1'] = $this->CI->designer_details->address1;
-		$this->data['company_address2'] = $this->CI->designer_details->address2;
-		$this->data['company_city'] = $this->CI->designer_details->city;
-		$this->data['company_state'] = $this->CI->designer_details->state;
-		$this->data['company_zipcode'] = $this->CI->designer_details->zipcode;
-		$this->data['company_country'] = $this->CI->designer_details->country;
-		$this->data['company_telephone'] = $this->CI->designer_details->phone;
-		$this->data['company_contact_person'] = $this->CI->designer_details->owner;
-		$this->data['company_contact_email'] = $this->CI->designer_details->info_email;
+		$data['company_name'] = $this->CI->designer_details->company_name;
+		$data['company_address1'] = $this->CI->designer_details->address1;
+		$data['company_address2'] = $this->CI->designer_details->address2;
+		$data['company_city'] = $this->CI->designer_details->city;
+		$data['company_state'] = $this->CI->designer_details->state;
+		$data['company_zipcode'] = $this->CI->designer_details->zipcode;
+		$data['company_country'] = $this->CI->designer_details->country;
+		$data['company_telephone'] = $this->CI->designer_details->phone;
+		$data['company_contact_person'] = $this->CI->designer_details->owner;
+		$data['company_contact_email'] = $this->CI->designer_details->info_email;
 
 		$this->CI->load->library('email');
 
