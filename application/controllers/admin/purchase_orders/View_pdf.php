@@ -88,16 +88,16 @@ class View_pdf extends CI_Controller
 		$this->designer_details->initialize(array('designer.des_id'=>$this->purchase_order_details->des_id));
 
 		// set company information
-		$this->data['company_name'] = $this->designer_details->company_name;
-		$this->data['company_address1'] = $this->designer_details->address1;
-		$this->data['company_address2'] = $this->designer_details->address2;
-		$this->data['company_city'] = $this->designer_details->city;
-		$this->data['company_state'] = $this->designer_details->state;
-		$this->data['company_zipcode'] = $this->designer_details->zipcode;
-		$this->data['company_country'] = $this->designer_details->country;
-		$this->data['company_telephone'] = $this->designer_details->phone;
-		$this->data['company_contact_person'] = $this->designer_details->owner;
-		$this->data['company_contact_email'] = $this->designer_details->info_email;
+		$data['company_name'] = $this->designer_details->company_name;
+		$data['company_address1'] = $this->designer_details->address1;
+		$data['company_address2'] = $this->designer_details->address2;
+		$data['company_city'] = $this->designer_details->city;
+		$data['company_state'] = $this->designer_details->state;
+		$data['company_zipcode'] = $this->designer_details->zipcode;
+		$data['company_country'] = $this->designer_details->country;
+		$data['company_telephone'] = $this->designer_details->phone;
+		$data['company_contact_person'] = $this->designer_details->owner;
+		$data['company_contact_email'] = $this->designer_details->info_email;
 
 		// load the view as string
 		$html = $this->load->view('templates/purchase_order_pdf', $data, TRUE);
