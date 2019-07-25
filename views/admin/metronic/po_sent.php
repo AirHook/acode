@@ -28,6 +28,8 @@
                                                             <a class="btn dark " href="<?php echo site_url('admin/purchase_orders/modify/index/'.$po_details->po_id); ?>">
                                                                 <i class="fa fa-pencil"></i> Modify PO
                                                             </a>
+                                                            <a class="btn btn-secondary-outline" href="<?php echo $this->uri->segment(1) === 'sales' ? site_url('sales/purchase_orders') : site_url($this->config->slash_item('admin_folder').'purchase_orders'); ?>">
+                                                                <i class="fa fa-reply"></i> Back to PO list</a>
                                                         </div>
                                                         <div class="actions btn-set">
                                                             <a class="btn dark" href="<?php echo site_url('admin/products/barcodes/print_po_barcodes/'.$po_details->po_id); ?>" target="_blank">

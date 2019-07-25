@@ -151,9 +151,6 @@ class Purchase_order_sending
 			)
 		);
 
-		// other options
-		$data['po_options'] = $this->purchase_order_details->options;
-
 		// get ship to details
 		if (isset($data['po_options']['po_store_id']))
 		{
@@ -219,13 +216,10 @@ class Purchase_order_sending
 		$this->CI->email->message($message);
 
 		// attachment
-		// set pdf path for attachment
-		// load the view as string
-		$html = $this->CI->load->view('templates/purchase_order_pdf', $data, TRUE);
 		// load pertinent library/model/helpers
 		$this->CI->load->library('m_pdf');
 		// generate pdf
-		$this->CI->m_pdf->pdf->WriteHTML($html);
+		$this->CI->m_pdf->pdf->WriteHTML($message);
 		// set filename and file path
 		$pdf_file_path = 'assets/pdf/pdf_po_selected.pdf';
 		// download it "D" - download, "I" - inline, "F" - local file, "S" - string

@@ -168,7 +168,7 @@
 									<td width="16.66%"> Terms </td>
 								</tr>
 								<tr>
-									<td style="border:1px solid #ccc;height:24px;padding-left:5px;"> <?php echo @$po_options['start_date']; ?>
+									<td style="border:1px solid #ccc;height:24px;padding-left:5px;"> <?php echo $po_options['start_date']; ?>
 									</td>
 									<td style="border:1px solid #ccc;height:24px;padding-left:5px;"> <?php echo @$po_options['cancel_date']; ?>
 									</td>
