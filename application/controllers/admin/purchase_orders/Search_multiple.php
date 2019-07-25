@@ -56,6 +56,10 @@ class Search_multiple extends Admin_Controller {
 				redirect('admin/purchase_orders/create/step1', 'location');
 			}
 
+			// let's do some defaults...
+			// get the designer details for the sidebar
+			$this->data['designer'] = $this->designer_details->initialize(array('url_structure'=>$this->session->admin_po_des_url_structure));
+
 			// some necessary variables
 			$this->data['steps'] = 2;
 
