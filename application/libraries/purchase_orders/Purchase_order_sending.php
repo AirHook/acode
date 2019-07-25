@@ -174,11 +174,6 @@ class Purchase_order_sending
 						'admin_sales_id' => $this->CI->purchase_order_details->author
 					)
 				);
-				$data['company_details'] = $this->CI->designer_details->initialize(
-					array(
-						'designer.url_structure' => $this->CI->sales_user_details->designer
-					)
-				);
 			break;
 			case '1': //admin
 			default:
@@ -187,40 +182,24 @@ class Purchase_order_sending
 						'admin_id' => ($this->CI->purchase_order_details->author ?: '1')
 					)
 				);
-				if ($this->CI->admin_user_details->webspace_id)
-				{
-					$data['company_details'] = $this->CI->webspace_details->initialize(
-						array(
-							'webspaces.webspace_id' => $this->CI->admin_user_details->webspace_id
-						)
-					);
-				}
-				else
-				{
-					$data['company_details'] = $this->CI->webspace_details->initialize(
-						array(
-							'webspaces.webspace_slug' => SITESLUG
-						)
-					);
-				}
 		}
-
-		// set company information
-		$data['company_name'] = $data['company_details']->company;
-		$data['company_address1'] = $data['company_details']->address1;
-		$data['company_address2'] = $data['company_details']->address2;
-		$data['company_city'] = $data['company_details']->city;
-		$data['company_state'] = $data['company_details']->state;
-		$data['company_zipcode'] = $data['company_details']->zipcode;
-		$data['company_country'] = $data['company_details']->country;
-		$data['company_telephone'] = $data['company_details']->phone;
-		$data['company_contact_person'] = $data['company_details']->owner;
-		$data['company_contact_email'] = $data['company_details']->info_email;
 
 		// get designer details
 		$this->CI->designer_details->initialize(array('designer.des_id'=>$this->CI->purchase_order_details->des_id));
 
 		// load email library class
+		// set company information
+		$this->data['company_name'] = $this->CI->designer_details->company_name;
+		$this->data['company_address1'] = $this->CI->designer_details->address1;
+		$this->data['company_address2'] = $this->CI->designer_details->address2;
+		$this->data['company_city'] = $this->CI->designer_details->city;
+		$this->data['company_state'] = $this->CI->designer_details->state;
+		$this->data['company_zipcode'] = $this->CI->designer_details->zipcode;
+		$this->data['company_country'] = $this->CI->designer_details->country;
+		$this->data['company_telephone'] = $this->CI->designer_details->phone;
+		$this->data['company_contact_person'] = $this->CI->designer_details->owner;
+		$this->data['company_contact_email'] = $this->CI->designer_details->info_email;
+
 		$this->CI->load->library('email');
 
 		$this->CI->email->clear(TRUE);

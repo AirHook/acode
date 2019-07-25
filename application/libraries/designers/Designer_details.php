@@ -38,7 +38,8 @@ class Designer_details
 	 * @var	string
 	 */
 	public $name = '';
-	public $designer = '';
+	public $designer_name = ''; // alias of $name
+	public $designer = ''; // alias of $name
 
 	/**
 	 * Designer Code
@@ -82,7 +83,6 @@ class Designer_details
 	public $keyword = '';
 	public $alttags = '';
 	public $footer = '';
-	public $url_structure = '';
 
 	/**
 	 * Designer Slug (folder/url_structure/domain_name)
@@ -90,6 +90,8 @@ class Designer_details
 	 * @var	string
 	 */
 	public $slug = '';
+	public $designer_slug = ''; // alias
+	public $url_structure = ''; // alias
 
 	/**
 	 * Designer webspace domain (ex., domain.com)
@@ -234,9 +236,11 @@ class Designer_details
 			// initialize properties
 			$this->des_id = $row->des_id;
 			$this->name = $row->designer;
+			$this->designer_name = $row->designer;
 			$this->designer = $row->designer;
 			$this->des_code = $row->des_code;
 			$this->slug = $row->url_structure == 'basix-black-label' ? 'basixblacklabel' : $row->url_structure;
+			$this->designer_slug = $row->url_structure == 'basix-black-label' ? 'basixblacklabel' : $row->url_structure;
 
 			$this->logo = $row->logo; // full path and filename used in current admin add/edit designer
 			$this->logo_image = $row->logo_image; // filename (for depracation)
@@ -343,9 +347,12 @@ class Designer_details
 		// reset variables to default
 		$this->des_id = '';
 		$this->name = '';
+		$this->designer_name = '';
 		$this->designer = '';
 		$this->des_code = '';
 		$this->slug = '';
+		$this->designer_slug = '';
+		$this->url_structure = '';
 		$this->logo = '';
 		$this->logo_image = '';
 		$this->icon = '';
@@ -356,7 +363,6 @@ class Designer_details
 		$this->keyword = '';
 		$this->alttags = '';
 		$this->footer = '';
-		$this->url_structure = '';
 		$this->site_domain = '';
 		$this->view_status = '';
 
