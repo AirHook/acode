@@ -213,7 +213,7 @@
 						$vendor_price = @$size_qty['vendor_price'] ?: $product->vendor_price;
 
 						// take any existing product's size mode
-						$temp_size_mode = $product->color_name;
+						$temp_size_mode = $product->size_mode;
 					}
 					else
 					{

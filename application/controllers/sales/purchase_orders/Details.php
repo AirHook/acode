@@ -87,11 +87,6 @@ class Details extends Sales_Controller {
 						'admin_sales_id' => $this->purchase_order_details->author
 					)
 				);
-				$this->data['company_details'] = $this->designer_details->initialize(
-					array(
-						'designer.url_structure' => $this->sales_user_details->designer
-					)
-				);
 			break;
 			case '1': //admin
 			default:
@@ -100,35 +95,22 @@ class Details extends Sales_Controller {
 						'admin_id' => ($this->purchase_order_details->author ?: '1')
 					)
 				);
-				if ($this->admin_user_details->webspace_id)
-				{
-					$this->data['company_details'] = $this->webspace_details->initialize(
-						array(
-							'webspaces.webspace_id' => $this->admin_user_details->webspace_id
-						)
-					);
-				}
-				else
-				{
-					$this->data['company_details'] = $this->webspace_details->initialize(
-						array(
-							'webspaces.webspace_slug' => SITESLUG
-						)
-					);
-				}
 		}
 
+		// get size names using des_id as reference
+		$this->designer_details->initialize(array('designer.des_id'=>$this->purchase_order_details->des_id));
+
 		// set company information
-		$this->data['company_name'] = $this->data['company_details']->company;
-		$this->data['company_address1'] = $this->data['company_details']->address1;
-		$this->data['company_address2'] = $this->data['company_details']->address2;
-		$this->data['company_city'] = $this->data['company_details']->city;
-		$this->data['company_state'] = $this->data['company_details']->state;
-		$this->data['company_zipcode'] = $this->data['company_details']->zipcode;
-		$this->data['company_country'] = $this->data['company_details']->country;
-		$this->data['company_telephone'] = $this->data['company_details']->phone;
-		$this->data['company_contact_person'] = $this->data['company_details']->owner;
-		$this->data['company_contact_email'] = $this->data['company_details']->info_email;
+		$this->data['company_name'] = $this->designer_details->company_name;
+		$this->data['company_address1'] = $this->designer_details->address1;
+		$this->data['company_address2'] = $this->designer_details->address2;
+		$this->data['company_city'] = $this->designer_details->city;
+		$this->data['company_state'] = $this->designer_details->state;
+		$this->data['company_zipcode'] = $this->designer_details->zipcode;
+		$this->data['company_country'] = $this->designer_details->country;
+		$this->data['company_telephone'] = $this->designer_details->phone;
+		$this->data['company_contact_person'] = $this->designer_details->owner;
+		$this->data['company_contact_email'] = $this->designer_details->info_email;
 
 		// need to show loading at start
 		$this->data['show_loading'] = FALSE;

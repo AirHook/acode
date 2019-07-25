@@ -74,11 +74,6 @@ class View_pdf extends CI_Controller
 						'admin_sales_id' => $this->purchase_order_details->author
 					)
 				);
-				$data['company_details'] = $this->designer_details->initialize(
-					array(
-						'designer.url_structure' => $this->sales_user_details->designer
-					)
-				);
 			break;
 			case '1': //admin
 			default:
@@ -87,35 +82,22 @@ class View_pdf extends CI_Controller
 						'admin_id' => ($this->purchase_order_details->author ?: '1')
 					)
 				);
-				if ($this->admin_user_details->webspace_id)
-				{
-					$data['company_details'] = $this->webspace_details->initialize(
-						array(
-							'webspaces.webspace_id' => $this->admin_user_details->webspace_id
-						)
-					);
-				}
-				else
-				{
-					$data['company_details'] = $this->webspace_details->initialize(
-						array(
-							'webspaces.webspace_slug' => SITESLUG
-						)
-					);
-				}
 		}
 
+		// get size names using des_id as reference
+		$this->designer_details->initialize(array('designer.des_id'=>$this->purchase_order_details->des_id));
+
 		// set company information
-		$data['company_name'] = $data['company_details']->company;
-		$data['company_address1'] = $data['company_details']->address1;
-		$data['company_address2'] = $data['company_details']->address2;
-		$data['company_city'] = $data['company_details']->city;
-		$data['company_state'] = $data['company_details']->state;
-		$data['company_zipcode'] = $data['company_details']->zipcode;
-		$data['company_country'] = $data['company_details']->country;
-		$data['company_telephone'] = $data['company_details']->phone;
-		$data['company_contact_person'] = $data['company_details']->owner;
-		$data['company_contact_email'] = $data['company_details']->info_email;
+		$this->data['company_name'] = $this->designer_details->company_name;
+		$this->data['company_address1'] = $this->designer_details->address1;
+		$this->data['company_address2'] = $this->designer_details->address2;
+		$this->data['company_city'] = $this->designer_details->city;
+		$this->data['company_state'] = $this->designer_details->state;
+		$this->data['company_zipcode'] = $this->designer_details->zipcode;
+		$this->data['company_country'] = $this->designer_details->country;
+		$this->data['company_telephone'] = $this->designer_details->phone;
+		$this->data['company_contact_person'] = $this->designer_details->owner;
+		$this->data['company_contact_email'] = $this->designer_details->info_email;
 
 		// load the view as string
 		$html = $this->load->view('templates/purchase_order_pdf', $data, TRUE);

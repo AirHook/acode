@@ -31,19 +31,12 @@ class Index extends Sales_Controller {
 		// load pertinent library/model/helpers
 		$this->load->library('purchase_orders/purchase_orders_list');
 
-		// get data
-		if (@$this->webspace_details->options['site_type'] != 'hub_site')
-		{
-			$this->data['orders'] = $this->purchase_orders_list->select(
-				array(
-					'designer.url_structure' => $this->webspace_details->slug
-				)
-			);
-		}
-		else
-		{
-			$this->data['orders'] = $this->purchase_orders_list->select();
-		}
+		// get data of sales user
+		$this->data['orders'] = $this->purchase_orders_list->select(
+			array(
+				'author' => $this->sales_user_details->admin_sales_id
+			)
+		);
 
 		// set data variables...
 		$this->data['file'] = 'po_list';
