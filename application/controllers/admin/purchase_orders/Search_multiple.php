@@ -35,8 +35,14 @@ class Search_multiple extends Admin_Controller {
 		$this->_create_plugin_scripts();
 
 		// load pertinent library/model/helpers
+		$this->load->helper('metronic/create_category_treelist');
 		$this->load->library('users/vendor_users_list');
 		$this->load->library('users/vendor_user_details');
+		$this->load->library('categories/categories_tree');
+		$this->load->library('color_list');
+
+		// get color list
+		$this->data['colors'] = $this->color_list->select();
 
 		if ( ! $this->input->post())
 		{
@@ -55,10 +61,6 @@ class Search_multiple extends Admin_Controller {
 				// redirect user
 				redirect('admin/purchase_orders/create/step1', 'location');
 			}
-
-			// let's do some defaults...
-			// get the designer details for the sidebar
-			$this->data['designer'] = $this->designer_details->initialize(array('url_structure'=>$this->session->admin_po_des_url_structure));
 
 			// some necessary variables
 			$this->data['steps'] = 2;
@@ -135,6 +137,9 @@ class Search_multiple extends Admin_Controller {
 			$prod_no = array_map('strtoupper', array_filter($post_ary['style_ary']));
 
 			// let's do some defaults...
+			// get the designer details for the sidebar
+			$this->data['designer'] = $this->designer_details->initialize(array('url_structure'=>$this->session->admin_po_des_url_structure));
+
 	 		// active designer selection
 	 		$this->data['active_designer'] = $this->session->admin_po_des_url_structure;
 

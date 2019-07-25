@@ -36,26 +36,6 @@ class Search_multiple extends Sales_Controller {
 
 		if ( ! $this->input->post())
 		{
-			// get vendor details
-			$this->data['vendor'] = $this->vendor_user_details->initialize(
-				array(
-					'vendor_id' => $this->session->po_vendor_id
-				)
-			);
-			if ( ! $this->data['vendor'])
-			{
-				// no vendor yet, let user selecct vendor
-				// set flash data
-				$this->session->set_flashdata('error', 'no_id_passed');
-
-				// redirect user
-				redirect('sales/purchase_orders/create/step1', 'location');
-			}
-
-			// let's do some defaults...
-			// get the designer details for the sidebar
-			$this->data['designer'] = $this->designer_details->initialize(array('url_structure'=>$this->session->po_des_url_structure));
-
 			// some necessary variables
 			$this->data['steps'] = 2;
 
@@ -105,6 +85,9 @@ class Search_multiple extends Sales_Controller {
 			$prod_no = array_map('strtoupper', array_filter($post_ary['style_ary']));
 
 			// let's do some defaults...
+			// get the designer details for the sidebar
+			$this->data['designer'] = $this->designer_details->initialize(array('url_structure'=>$this->session->po_des_url_structure));
+
 	 		// active designer selection
 	 		$this->data['active_designer'] = $this->sales_user_details->designer;
 

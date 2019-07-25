@@ -326,7 +326,7 @@
 										</div>
 										<div class="modal-footer">
 											<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-											<button type="submit" class="btn dark confirm-select_user"> Submit </button>
+											<button type="submit" class="btn dark"> Submit </button>
 										</div>
 
 										</form>

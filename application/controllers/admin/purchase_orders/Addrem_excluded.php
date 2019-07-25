@@ -35,7 +35,7 @@ class Addrem_excluded extends Admin_Controller {
 			$this->session->set_flashdata('error', 'no_id_passed');
 
 			// redirect user
-			redirect(($this->input->post('uri_string') ?: 'admin/purchase_orders/create/step1'), 'location');
+			redirect('admin/purchase_orders/create/step1', 'location');
 		}
 
 		// grab the post variable
@@ -84,7 +84,7 @@ class Addrem_excluded extends Admin_Controller {
 		$this->session->set_flashdata('success', 'item_added');
 
 		// redirect user
-		redirect(($this->input->post('uri_string') ?: 'admin/purchase_orders/create/step1'), 'location');
+		redirect('admin/purchase_orders/create/step1', 'location');
 	}
 
 	// ----------------------------------------------------------------------
