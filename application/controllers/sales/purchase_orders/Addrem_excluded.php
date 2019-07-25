@@ -37,7 +37,7 @@ class Addrem_excluded extends Admin_Controller {
 			// redirect user
 			if (strpos($this->input->post('uri_string'), 'sales/purchase_orders/create/step2') !== false)
 			{
-				redirect($this->iinput->post('uri_string'), 'location');
+				redirect($this->input->post('uri_string'), 'location');
 			}
 			else redirect('sales/purchase_orders/create/step2', 'location');
 		}
@@ -90,7 +90,7 @@ class Addrem_excluded extends Admin_Controller {
 		// redirect user
 		if (strpos($this->input->post('uri_string'), 'sales/purchase_orders/create/step2') !== false)
 		{
-			redirect($this->iinput->post('uri_string'), 'location');
+			redirect($this->input->post('uri_string'), 'location');
 		}
 		else redirect('sales/purchase_orders/create/step2', 'location');
 	}

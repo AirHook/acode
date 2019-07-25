@@ -388,7 +388,7 @@
                                                         <input tpye="text" class="this-total-qty <?php echo $item.' '.$prod_no; ?>" style="border:1px solid #ccc;font-size:12px;width:30px;padding-left:5px;background-color:white;" value="<?php echo $this_size_qty; ?>" readonly />
                                                     </div>
 
-                                                    <div class="margin-top-10">
+                                                    <div class="margin-top-10 hide">
                                                         <a href="#barcode-<?php echo $item?>" data-toggle="modal" class="btn dark btn-outline btn-sm">Print Barcode Labels</a>
                                                     </div>
 
@@ -438,7 +438,7 @@
                                                                     $variables='';
                                                                     $all=$size_qty;
                                                                     $all['prod_no']=$prod_no;
-                                                                    $all['color_code']=$product->color_code;
+                                                                    $all['color_code']=$color_code;
                                                                     $all['color_name']=$color_name;
                                                                     foreach ($all as $key => $row)
                                                                     {
@@ -447,7 +447,7 @@
 
                                                                     ?>
                                                                     <div class="col col-sm-3 margin-bottom-10">
-                                                                        <a href="<?php echo site_url('admin/products/barcodes/print_all_barcodes/'.$product->st_id); ?>?<?php echo $variables ?>" class="btn dark btn-outline btn-sm" target="_blank">Print All Barcodes</a>
+                                                                        <a href="<?php echo site_url('admin/products/barcodes/print_all_barcodes/'.@$product->st_id); ?>?<?php echo $variables ?>" class="btn dark btn-outline btn-sm" target="_blank">Print All Barcodes</a>
                                                                     </div>
                                                                 </div>
                                                                 <div class="row margin-bottom-10">
@@ -480,8 +480,8 @@
                                                                     </div>
                                                                     <div class="col col-sm-4">
                                                                         <?php
-                                                                        $code_text = $product->prod_no.'-'.$product->color_code.'-'.$size_label.'-'.$product->st_id;
-                                                                        $barcode_image_name = $product->prod_no.'_'.$product->color_code.'_'.$size_label.'_'.$product->st_id;
+                                                                        $code_text = $prod_no.'-'.$color_code.'-'.$size_label.'-'.(@$product->st_id ?: '000');
+                                                                        $barcode_image_name = $prod_no.'_'.$color_code.'_'.$size_label.'_'.(@$product->st_id ?: '000');
                                                                         $imageResource = Zend_Barcode::draw(
                                                                             'code128',
                                                                             'image',
@@ -495,16 +495,16 @@
                                                                         <div style="display:inline-block;text-align:justify;margin:0 auto;">
                                                                             <img src="<?php echo base_url(); ?>assets/barcodes/<?php echo $barcode_image_name; ?>.png" style="max-width:102%;" />
                                                                             <div style="width:100%;font-size:10px;padding:0 3px;">
-                                                                                <span style="float:right;">STOCK ID: <?php echo isset($product->st_id) ? $product->st_id :''; ?></span>
-                                                                                <span><?php echo isset($product->prod_no) ? $product->prod_no:''; ?></span><br />
-                                                                                <span><?php echo isset($product->color_name) ? $product->color_name :''; ?></span><br />
-                                                                                <span><?php echo isset($size_label) ? strtoupper(str_replace('_',' ',$size_label)) :''; ?></span>
+                                                                                <span style="float:right;">STOCK ID: <?php echo $product->st_id ?: ''; ?></span>
+                                                                                <span><?php echo $prod_no ?: ''; ?></span><br />
+                                                                                <span><?php echo $color_name ?: ''; ?></span><br />
+                                                                                <span><?php echo $size_label ? strtoupper(str_replace('_',' ',$size_label)) :''; ?></span>
                                                                             </div>
                                                                         </div>
                                                                     </div>
                                                                     <div class="col col-sm-4">
-                                                                        <a href="<?php echo site_url('admin/products/barcodes/print_barcode/'.$product->st_id); ?>?size_label=<?php echo $size_label; ?>" class="btn dark btn-outline btn-sm" target="_blank">Print Barcode</a>
-                                                                         <a href="<?php echo site_url('admin/products/barcodes/print_all/'.$product->st_id.'/'.$qty.'/'.$size_label); ?>" class="btn dark btn-outline btn-sm" target="_blank">Print All</a>
+                                                                        <a href="<?php echo site_url('admin/products/barcodes/print_barcode/'.@$product->st_id); ?>?size_label=<?php echo $size_label; ?>" class="btn dark btn-outline btn-sm" target="_blank">Print Barcode</a>
+                                                                         <a href="<?php echo site_url('admin/products/barcodes/print_all/'.@$product->st_id.'/'.$qty.'/'.$size_label); ?>" class="btn dark btn-outline btn-sm" target="_blank">Print All</a>
                                                                     </div>
                                                                 </div>
                                                               <?php }  }  } ?>
