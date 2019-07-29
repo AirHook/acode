@@ -211,7 +211,12 @@ var ComponentsEditors = function () {
             objectData.page = $(this).data('page');
             if (objectData.qty > 0) $(this).css('border-color', 'black');
             else $(this).css('border-color', '#ccc');
-            var vendor_price = $('[name="vendor_price-'+objectData.prod_no+'"]').val();
+            var checked = $('.show_vendor_price').is(":checked");
+            if (checked) {
+                var vendor_price = $('[name="vendor_price-'+objectData.prod_no+'"]').val();
+            } else {
+                var vendor_price = 0;
+            }
             $.ajax({
                 type:    "POST",
                 url:     base_url + "admin/purchase_orders/set_size_qty.html",
@@ -248,15 +253,42 @@ var ComponentsEditors = function () {
             return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
         }
 
+        // show edit vendor price actions
+        $('.show_vendor_price').on('change', function(){
+            $('.edit_on, .edit_off').toggle();
+            var el = $(this).closest('table').find('td.unit-vendor-price-wrapper');
+            var item = el.data('item');
+            var prod_no = el.data('prod_no');
+            var checked = $(this).is(":checked");
+            if (checked) {
+                var data = $('.unit-vendor-price.'+prod_no).html().trim();
+            } else {
+                var data = 0;
+            }
+            // update each variant's subtotal
+            $('.order-subtotal').each(function(){
+                var thisQty = $(this).siblings('.size-and-qty-wrapper').find('.this-total-qty').val();
+                $(this).html('$ '+formatNumber((thisQty * data).toFixed(2)));
+                //$('.input-order-subtotal.'+objectData.prod_no).val(data.thisQty*vendor_price);
+                $(this).closest('tr').children('.input-order-subtotal').val(thisQty * data);
+            });
+            // set this PO over all total amount
+            var orderTotal = 0;
+            $('.input-order-subtotal').each(function(){
+                orderTotal += parseInt($(this).val());
+            });
+            $('.order-total').html('$ '+formatNumber(orderTotal.toFixed(2)));
+        });
+
         // edit vendor price actions
         // attach a submit handler to the form
         $('.edit_vendor_prices').on('click', function(){
             var objectData = $(this).closest('table').data('object_data');
-            var prod_no = $(this).data('prod_no');
+            var prod_no = $(this).data('prod_no'); // <prod_no>_<color_code>
             var this_size_qty = $('.this-total-qty').val();
             var el = $('[name="vendor_price-'+prod_no+'"]');
             var new_price = el.val();
-            var style_no = el.data('item');
+            var style_no = el.data('item'); // prod_no
             var page = el.data('page');
             objectData.vendor_price = new_price;
             objectData.prod_no = prod_no;

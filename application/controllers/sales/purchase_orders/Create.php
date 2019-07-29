@@ -47,6 +47,25 @@ class Create extends Sales_Controller {
 			redirect('sales/purchase_orders/create/step1', 'location');
 		}
 
+		// let's ensure that there are no sales session for po mod
+		if ($this->session->po_mod_size_qty)
+		{
+			// new po sales access
+			unset($_SESSION['po_vendor_id']);
+			unset($_SESSION['po_des_url_structure']);
+			unset($_SESSION['po_items']);
+			unset($_SESSION['po_size_qty']);
+			unset($_SESSION['po_store_id']);
+			unset($_SESSION['po_edit_vendor_price']);
+			// remove po mod details
+			unset($_SESSION['po_mod_vendor_id']);
+			unset($_SESSION['po_mod_des_url_structure']);
+			unset($_SESSION['po_mod_items']);
+			unset($_SESSION['po_mod_mod_size_qty']);
+			unset($_SESSION['po_mod_store_id']);
+			unset($_SESSION['po_mod_edit_vendor_price']);
+		}
+
 		// get the vendor data
 		$this->data['vendors'] = $this->vendor_users_list->select(
 			array(
@@ -125,23 +144,6 @@ class Create extends Sales_Controller {
 
 		if ($this->form_validation->run() == FALSE)
 		{
-			// let's ensure that there are no sales session for po mod
-			if ($this->session->po_mod_size_qty)
-			{
-				// new po sales access
-				unset($_SESSION['po_vendor_id']);
-				unset($_SESSION['po_des_url_structure']);
-				unset($_SESSION['po_items']);
-				unset($_SESSION['po_size_qty']);
-				unset($_SESSION['po_store_id']);
-				// remove po mod details
-				unset($_SESSION['po_mod_vendor_id']);
-				unset($_SESSION['po_mod_des_url_structure']);
-				unset($_SESSION['po_mod_items']);
-				unset($_SESSION['po_mod_mod_size_qty']);
-				unset($_SESSION['po_store_id']);
-			}
-
 			// some necessary variables
 			$this->data['steps'] = 1;
 

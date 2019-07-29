@@ -38,6 +38,22 @@ class Create extends Admin_Controller {
 		array_shift($this->data['url_segs']); // create
 		array_shift($this->data['url_segs']); // step
 
+		// let's ensure that there are no admin session for po mod
+		if ($this->session->admin_po_mod_size_qty)
+		{
+			// new po admin access
+			unset($_SESSION['admin_po_vendor_id']);
+			unset($_SESSION['admin_po_des_url_structure']);
+			unset($_SESSION['admin_po_items']);
+			unset($_SESSION['admin_po_size_qty']);
+			unset($_SESSION['admin_po_store_id']);
+			unset($_SESSION['admin_po_edit_vendor_price']);
+			// remove po mod details
+			unset($_SESSION['admin_po_mod_po_id']);
+			unset($_SESSION['admin_po_mod_size_qty']);
+			unset($_SESSION['admin_po_mod_edit_vendor_price']);
+		}
+
 		/*****
 		 * Check for items in session
 		 */
@@ -102,20 +118,6 @@ class Create extends Admin_Controller {
 
 		if ($this->form_validation->run() == FALSE)
 		{
-			// let's ensure that there are no admin session for po mod
-			if ($this->session->admin_po_mod_size_qty)
-			{
-				// new po admin access
-				unset($_SESSION['admin_po_vendor_id']);
-				unset($_SESSION['admin_po_des_url_structure']);
-				unset($_SESSION['admin_po_items']);
-				unset($_SESSION['admin_po_size_qty']);
-				unset($_SESSION['admin_po_store_id']);
-				// remove po mod details
-				unset($_SESSION['admin_po_mod_po_id']);
-				unset($_SESSION['admin_po_mod_size_qty']);
-			}
-
 			// some necessary variables
 			$this->data['steps'] = 1;
 
@@ -137,10 +139,12 @@ class Create extends Admin_Controller {
 			{
 				// reset vendor id amont others
 				unset($_SESSION['admin_po_vendor_id']);
+				unset($_SESSION['admin_po_des_url_structure']);
 				unset($_SESSION['admin_po_items']);
 				unset($_SESSION['admin_po_size_qty']);
 				unset($_SESSION['admin_po_store_id']);
-			}
+				unset($_SESSION['admin_po_edit_vendor_price']);
+		}
 
 			// set sessions for vendor id
 			$this->session->set_userdata('admin_po_vendor_id', $this->input->post('vendor_id'));
@@ -583,6 +587,7 @@ class Create extends Admin_Controller {
 			unset($_SESSION['admin_po_items']);
 			unset($_SESSION['admin_po_size_qty']);
 			unset($_SESSION['admin_po_store_id']);
+			unset($_SESSION['admin_po_edit_vendor_price']);
 
 			// set flash data
 			$this->session->set_flashdata('success', 'add');

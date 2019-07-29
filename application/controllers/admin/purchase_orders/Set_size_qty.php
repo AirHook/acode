@@ -62,16 +62,6 @@ class Set_size_qty extends MY_Controller {
 			$items_array[$item][$size] = $qty;
 		}
 
-		// get this item total qty
-		$this_sum = array_sum($items_array[$item]);
-
-		// sum all sizes
-		$sum = 0;
-		foreach ($items_array as $key => $val)
-		{
-			$sum += array_sum($val);
-		}
-
 		// reset session value for items array
 		if ($page == 'modify')
 		{
@@ -80,6 +70,20 @@ class Set_size_qty extends MY_Controller {
 		else
 		{
 			$this->session->set_userdata('admin_po_size_qty', json_encode($items_array));
+		}
+
+		// unset some items
+		unset($items_array[$item]['color_name']);
+		unset($items_array[$item]['vendor_price']);
+
+		// get this item total qty
+		$this_sum = array_sum($items_array[$item]);
+
+		// sum all sizes
+		$sum = 0;
+		foreach ($items_array as $key => $val)
+		{
+			$sum += array_sum($val);
 		}
 
 		// echo the following

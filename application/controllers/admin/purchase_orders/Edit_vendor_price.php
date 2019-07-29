@@ -39,41 +39,32 @@ class Edit_vendor_price extends MY_Controller {
 		$vendor_price = $this->input->post('vendor_price');
 		$page = $this->input->post('page');
 
-		// connect to DB
-		$DB = $this->load->database('instyle', TRUE);
+		$admin_po_size_qty =
+			$page == 'modify'
+			? $this->session->admin_po_mod_size_qty
+			: $this->session->admin_po_size_qty
+		;
 
-		// update records
-		$DB->set('vendor_price', $vendor_price);
-		$DB->where('prod_no', $style_no);
-		$DB->update('tbl_product');
+		// set the items array
+		$items_array =
+			$admin_po_size_qty
+			? json_decode($admin_po_size_qty, TRUE)
+			: array()
+		;
 
-		if ($DB->affected_rows() == 0)
+		// process the item
+		$items_array[$item]['vendor_price'] = $vendor_price;
+
+		// reset session value for items array
+		if ($page == 'modify')
 		{
-			$admin_po_size_qty =
-				$page == 'modify'
-				? $this->session->admin_po_mod_size_qty
-				: $this->session->admin_po_size_qty
-			;
-
-			// set the items array
-			$items_array =
-				$admin_po_size_qty
-				? json_decode($admin_po_size_qty, TRUE)
-				: array()
-			;
-
-			// process the item
-			$items_array[$item]['vendor_price'] = $vendor_price;
-
-			// reset session value for items array
-			if ($page == 'modify')
-			{
-				$this->session->set_userdata('admin_po_mod_size_qty', json_encode($items_array));
-			}
-			else
-			{
-				$this->session->set_userdata('admin_po_size_qty', json_encode($items_array));
-			}
+			$this->session->set_userdata('admin_po_mod_size_qty', json_encode($items_array));
+			$this->session->set_userdata('admin_po_mod_edit_vendor_price', TRUE);
+		}
+		else
+		{
+			$this->session->set_userdata('admin_po_size_qty', json_encode($items_array));
+			$this->session->set_userdata('admin_po_edit_vendor_price', TRUE);
 		}
 
 		echo $vendor_price;
