@@ -59,7 +59,9 @@ class Modify extends Sales_Controller {
 			unset($_SESSION['po_size_qty']);
 			unset($_SESSION['po_store_id']);
 			// unset po mod sessions as well
+			unset($_SESSION['po_mod_po_id']);
 			unset($_SESSION['po_mod_size_qty']);
+			unset($_SESSION['po_mod_edit_vendor_price']);
 		}
 
 		// generate the plugin scripts and css
@@ -256,12 +258,14 @@ class Modify extends Sales_Controller {
 			// indented and commented items are not to be touched
 				//$post_ary['des_code'] = 'BAX';
 				//$post_ary['po_number'] = $this->admin_user_details->po_number;
+				//$post_ary['rev'] = '0'; // set below
 				//$post_ary['des_id'] = $this->input->post('des_id');
 				//$post_ary['vendor_id'] = $this->session->admin_po_vendor_id;
 				//$post_ary['user_id'] = $this->admin_user_details->admin_id;
 				//$post_ary['po_date'] = strtotime($this->input->post('po_date'));
 			$post_ary['delivery_date'] = strtotime($this->input->post('delivery_date'));
 				//$post_ary['author'] = $this->admin_user_details->admin_id;
+				//$post_ary['c'] = '1'; // 1-admin,2-sales
 				//$post_ary['status'] = '0';
 			$post_ary['options'] = json_encode($options);
 			$post_ary['remarks'] = $this->input->post('remarks');
@@ -337,7 +341,9 @@ class Modify extends Sales_Controller {
 			$this->DB->update('purchase_orders', $post_ary);
 
 			// once done, we now remove session items
+			unset($_SESSION['po_mod_po_id']);
 			unset($_SESSION['po_mod_size_qty']);
+			unset($_SESSION['po_mod_edit_vendor_price']);
 
 			// set flash data
 			$this->session->set_flashdata('success', 'edit');
@@ -345,190 +351,6 @@ class Modify extends Sales_Controller {
 			// redirect user
 			redirect('sales/purchase_orders/details/index/'.$po_id, 'location');
 		}
-	}
-
-	// ----------------------------------------------------------------------
-
-	public function step4($po_id = '')
-	{
-		//if ( ! $this->session->flashdata('po_id'))
-		if ( ! $po_id)
-		{
-			// nothing more to do...
-			// set flash data
-			$this->session->set_flashdata('error', 'no_id_passed');
-
-			// redirect user
-			redirect('sales/purchase_orders/create/step1', 'location');
-		}
-
-		// generate the plugin scripts and css
-		$this->_create_plugin_scripts();
-
-		// load pertinent library/model/helpers
-		$this->load->library('products/product_details');
-		$this->load->library('purchase_orders/purchase_order_details');
-		$this->load->library('users/wholesale_user_details');
-		$this->load->library('users/sales_user_details');
-		$this->load->library('zend');
-		$this->zend->load('Zend/Barcode');
-
-		// initialize purchase order properties and items
-		$this->data['po_details'] = $this->purchase_order_details->initialize(
-			array(
-				'po_id' => $po_id
-			)
-		);
-
-		// get po items and other array stuff
-		$this->data['po_number'] = $this->purchase_order_details->po_number;
-		$this->data['po_items'] = $this->purchase_order_details->items;
-		$this->data['po_options'] = $this->purchase_order_details->options;
-
-		// get vendor details
-		$this->data['vendor_details'] = $this->vendor_user_details->initialize(
-			array(
-				'vendor_id' => $this->purchase_order_details->vendor_id
-			)
-		);
-
-		// get author details
-		$this->data['author'] = $this->sales_user_details->initialize(
-			array(
-				'admin_sales_id' => $this->purchase_order_details->author
-			)
-		);
-
-		// get ship to details
-		if (isset($this->data['po_options']['po_store_id']))
-		{
-			$this->data['store_details'] = $this->wholesale_user_details->initialize(
-				array(
-					'user_id' => $this->data['po_options']['po_store_id']
-				)
-			);
-		}
-		else $this->data['store_details'] = $this->wholesale_user_details->deinitialize();
-
-
-		// some necessary variables
-		$this->data['steps'] = 4;
-
-		// need to show loading at start
-		$this->data['show_loading'] = FALSE;
-
-		// set data variables...
-		$this->data['file'] = 'create_purchase_order_step4';
-		$this->data['page_title'] = 'Purchase Order';
-		$this->data['page_description'] = 'Send Purchase Order';
-
-		// load views...
-		$this->load->view('admin/'.($this->config->slash_item('admin_template') ?: 'metronic/').'template/template', $this->data);
-		//$this->load->view($this->data['sales_theme'].'/sales/template/template', $this->data);
-	}
-
-	// ----------------------------------------------------------------------
-
-	public function send($po_id = '', $action = '')
-	{
-		if ( ! $po_id)
-		{
-			// nothing more to do
-			// set flash data
-			$this->session->set_flashdata('error', 'no_id_passed');
-
-			// redirect user
-			redirect('admin/purchase_orders/create/step1', 'location');
-		}
-
-		// send PO
-		$this->load->library('purchase_orders/purchase_order_sending');
-		$this->purchase_order_sending->send($po_id);
-
-		// set flash data
-		$this->session->set_flashdata('success', 'add');
-
-		if ($action === 'send')
-		{
-			// redirect user on step4
-			redirect('admin/purchase_orders/create/step4/'.$po_id, 'location');
-		}
-		else
-		{
-			// redirect user
-			redirect('admin/purchase_orders/details/index/'.$po_id, 'location');
-		}
-	}
-
-	// ----------------------------------------------------------------------
-
-	/**
-	 * PRIVATE - Creaet Plugin Scripts and CSS for the page
-	 *
-	 * @return	void
-	 */
-	public function filter($id = '')
-	{
-		if ( ! $id)
-		{
-			// nothing more to do...
-			// set flash data
-			$this->session->set_flashdata('error', 'no_id_passed');
-
-			// redirect user
-			redirect($this->config->slash_item('admin_folder').'campaigns/sales_package/');
-		}
-
-		if ($this->input->post('designer')) $this->session->set_userdata('designer', $this->input->post('designer'));
-		if ($this->input->post('category')) $this->session->set_userdata('category', $this->input->post('category'));
-		if ($this->input->post('categories')) $this->session->set_userdata('categories', $this->input->post('categories'));
-		if ($this->input->post('order_by')) $this->session->set_userdata('order_by', $this->input->post('order_by'));
-
-		redirect($this->config->slash_item('admin_folder').'campaigns/sales_package/edit/index/'.$id);
-	}
-
-	// ----------------------------------------------------------------------
-
-	/**
-	 * Clear Recent User Edit List
-	 *
-	 * @return	void
-	 */
-	public function clear_recent()
-	{
-		// capture webspace details options
-		$options = $this->webspace_details->options;
-
-		// get the array of recent users and unset it
-		if (
-			isset($options['recent_sales_package'])
-			&& ! empty($options['recent_sales_package'])
-		) unset($options['recent_sales_package']);
-
-		// udpate the sales package items...
-		$this->DB->set('webspace_options', json_encode($options));
-		$this->DB->where('webspace_id', $this->webspace_details->id);
-		$q = $this->DB->update('webspaces');
-
-		// set flash data
-		$this->session->set_flashdata('clear_recent_sales_package', TRUE);
-
-		// reload page
-		redirect($_SERVER['HTTP_REFERER'], 'location');
-	}
-
-	// ----------------------------------------------------------------------
-
-	/**
-	 * PRIVATE - Creaet Plugin Scripts and CSS for the page
-	 *
-	 * @return	void
-	 */
-	public function reset_ship_to()
-	{
-		unset($_SESSION['admin_po_store_id']);
-
-		redirect('admin/purchase_orders/create/step3');
 	}
 
 	// ----------------------------------------------------------------------
