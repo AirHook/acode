@@ -585,7 +585,7 @@ class Create extends Sales_Controller {
 			$this->data['company_contact_email'] = $this->designer_details->info_email;
 
 			// load the view as string
-			$html = $this->load->view('templates/purchase_order', $this->data, TRUE);
+			$html = $this->load->view('templates/purchase_order_pdf', $this->data, TRUE);
 
 			/* */
 			// load pertinent library/model/helpers

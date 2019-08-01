@@ -216,10 +216,12 @@ class Purchase_order_sending
 		$this->CI->email->message($message);
 
 		// attachment
+		// load the view as string
+		$html = $this->CI->load->view('templates/purchase_order_pdf', $this->data, TRUE);
 		// load pertinent library/model/helpers
 		$this->CI->load->library('m_pdf');
 		// generate pdf
-		$this->CI->m_pdf->pdf->WriteHTML($message);
+		$this->CI->m_pdf->pdf->WriteHTML($html);
 		// set filename and file path
 		$pdf_file_path = 'assets/pdf/pdf_po_selected.pdf';
 		// download it "D" - download, "I" - inline, "F" - local file, "S" - string

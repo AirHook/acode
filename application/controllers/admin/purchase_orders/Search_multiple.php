@@ -339,7 +339,7 @@ class Search_multiple extends Admin_Controller {
 			// handle summernote wysiwyg
 			// and click scripts
 			$this->data['page_level_scripts'].= '
-				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/sales-purchase_orders-components.js" type="text/javascript"></script>
+				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/admin-purchase_orders-components.js" type="text/javascript"></script>
 			';
 			// handle multiSelect
 			$this->data['page_level_scripts'].= '

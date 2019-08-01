@@ -583,7 +583,8 @@ var ComponentsEditors = function () {
             $('.date-picker').datepicker({
                 rtl: App.isRTL(),
                 orientation: "right",
-                autoclose: true
+                autoclose: true,
+                startDate: '01/01/2000'
             });
             //$('body').removeClass("modal-open"); // fix bug when inline picker is used in modal
         }

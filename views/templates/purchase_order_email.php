@@ -73,19 +73,18 @@
 							 * PO Letter Head
 							 */
 							?>
-							<table align="left" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;">
+							<table align="left" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;margin-bottom:20px;">
 								<tr>
 									<td>
 										<strong style="font-size:12px;"> PURCHASE ORDER #<?php echo $po_details->po_number; ?> </strong><br />
 										<small> Date: <?php echo $po_details->po_date; ?> </small>
 
 										<h4>
-											<?php echo @$po_options['ref_po_no'] ? 'Reference Manual PO#: '.$po_options['ref_po_no'] : ''; ?>
-											<?php echo (@$po_options['ref_po_no'] && @$po_options['ref_so_no']) ? '<br />' : ''; ?>
+											<?php echo @$po_options['ref_po_no'] ? 'Reference Manual PO#: '.$po_options['ref_po_no'].'<br />' : ''; ?>
 											<?php echo @$po_options['ref_so_no'] ? 'Reference SO#: '.$po_options['ref_so_no'] : ''; ?>
 										</h4>
 
-										<br><br>
+										<br>
 
 										<?php echo $company_name; ?> <br />
 										<?php echo $company_address1; ?><br />
@@ -107,7 +106,7 @@
 							 * PO Address Details
 							 */
 							?>
-							<table align="left" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;vertical-align:top;">
+							<table align="left" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;vertical-align:top;margin-bottom:20px;">
 								<tr>
 									<td width="50%" valign="top" style="vertical-align:top;">
 

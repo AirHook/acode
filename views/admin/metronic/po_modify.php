@@ -138,7 +138,7 @@
                                                             <h5> Start Date: </h5>
                                                             <div class="form-group row">
                                                                 <div class="col-md-12">
-                                                                    <input class="form-control form-control-inline date-picker" size="16" type="text" value="<?php echo $this->purchase_order_details->options['start_date']; ?>" name="start_date" data-date-format="yyyy-mm-dd" data-date-start-date="+0d" />
+                                                                    <input class="form-control form-control-inline date-picker" size="16" type="text" value="<?php echo @$this->purchase_order_details->options['start_date']; ?>" name="start_date" data-date-format="yyyy-mm-dd" data-date-start-date="+0d" />
                                                                     <span class="help-block"> Click to Select date </span>
                                                                 </div>
                                                             </div>
@@ -149,7 +149,7 @@
                                                             <h5> Cancel Date: </h5>
                                                             <div class="form-group row">
                                                                 <div class="col-md-12">
-                                                                    <input class="form-control form-control-inline date-picker" size="16" type="text" value="<?php echo $this->purchase_order_details->options['cancel_date']; ?>" name="cancel_date" data-date-format="yyyy-mm-dd" data-date-start-date="+0d" />
+                                                                    <input class="form-control form-control-inline date-picker" size="16" type="text" value="<?php echo @$this->purchase_order_details->options['cancel_date']; ?>" name="cancel_date" data-date-format="yyyy-mm-dd" data-date-start-date="+0d" />
                                                                     <span class="help-block"> Click to Select date </span>
                                                                 </div>
                                                             </div>
@@ -171,7 +171,7 @@
                                                             <h5> Ship Via: </h5>
                                                             <div class="form-group row">
                                                                 <div class="col-md-12">
-                                                                    <input class="form-control form-control-inline" size="16" type="text" value="<?php echo $this->purchase_order_details->options['ship_via']; ?>" name="ship_via" />
+                                                                    <input class="form-control form-control-inline" size="16" type="text" value="<?php echo @$this->purchase_order_details->options['ship_via']; ?>" name="ship_via" />
                                                                 </div>
                                                             </div>
 
@@ -181,7 +181,7 @@
                                                             <h5> F.O.B: </h5>
                                                             <div class="form-group row">
                                                                 <div class="col-md-12">
-                                                                    <input class="form-control form-control-inline" size="16" type="text" value="<?php echo $this->purchase_order_details->options['fob']; ?>" name="fob" />
+                                                                    <input class="form-control form-control-inline" size="16" type="text" value="<?php echo @$this->purchase_order_details->options['fob']; ?>" name="fob" />
                                                                 </div>
                                                             </div>
 
@@ -191,7 +191,7 @@
                                                             <h5> Terms: </h5>
                                                             <div class="form-group row">
                                                                 <div class="col-md-12">
-                                                                    <input class="form-control form-control-inline" size="16" type="text" value="<?php echo $this->purchase_order_details->options['terms']; ?>" name="terms" />
+                                                                    <input class="form-control form-control-inline" size="16" type="text" value="<?php echo @$this->purchase_order_details->options['terms']; ?>" name="terms" />
                                                                 </div>
                                                             </div>
 
@@ -213,11 +213,15 @@
 															<table class="table table-striped table-hover table-light" data-object_data='{"<?php echo $this->security->get_csrf_token_name(); ?>":"<?php echo $this->security->get_csrf_hash(); ?>"}'>
 																<thead>
 																	<tr>
-																		<th> Items (<?php echo count($this->purchase_order_details->items); ?>) </th>
-																		<th> Size and Qty </th>
-                                                                        <th> </th>
-																		<th class="text-right"> Vendor Price </th>
-																		<th class="text-right"> Subtotal </th>
+																		<th style="vertical-align:top;"> Items (<?php echo count($this->purchase_order_details->items); ?>) </th>
+																		<th style="vertical-align:top;"> Size and Qty </th>
+                                                                        <th style="vertical-align:top;"> </th>
+																		<th style="vertical-align:top;" class="text-right">
+                                                                            Vendor Price <br />
+                                                                            <cite class="small" style="font-weight:100;">show/edit vendor price</cite>
+                                                                            <input type="checkbox" class="show_vendor_price" name="show_vendor_price" value="1" <?php echo $this->session->admin_po_mod_edit_vendor_price ? 'checked' : ''; ?> />
+                                                                        </th>
+																		<th style="vertical-align:top;" class="text-right"> Subtotal </th>
 																	</tr>
 																</thead>
 																<tbody>
@@ -366,53 +370,60 @@
 																		 * Unit Vendor Price
 																		 */
 																		?>
-																		<td class="unit-vendor-price-wrapper">
-                                                                            <div class="clearfix">
-                                                                                <div class="unit-vendor-price <?php echo $prod_no; ?> pull-right" style="height:27px;width:40px;border:1px solid #ccc;padding-top:4px;padding-right:4px;text-align:right;">
-                                                                                    <?php echo $qtty['vendor_price']; ?>
+                                                                        <td class="unit-vendor-price-wrapper" data-item="<?php echo $item; ?>" data-prod_no="<?php echo $prod_no; ?>">
+                                                                            <div class="edit_off" style="<?php echo $this->session->admin_po_mod_edit_vendor_price === TRUE ? 'display:none;' : ''; ?>">
+                                                                                <div class="zero-unit-vendor-price <?php echo $prod_no; ?> pull-right">
+                                                                                    $ 0.00
                                                                                 </div>
                                                                             </div>
-                                                                            <div class="text-right">
-                                                                                <button data-toggle="modal" href="#modal-edit_vendor_price-<?php echo $item; ?>" type="button" class="btn btn-link btn-xs" style="padding-right:0;margin-right:0;"><i class="fa fa-pencil"></i> Edit</button>
-                                                                            </div>
+                                                                            <div class="edit_on" style="<?php echo $this->session->admin_po_mod_edit_vendor_price === TRUE ? '' : 'display:none;'; ?>">
+                                                                                <div class="clearfix">
+                                                                                    <div class="unit-vendor-price <?php echo $prod_no; ?> pull-right" style="height:27px;width:40px;border:1px solid #ccc;padding-top:4px;padding-right:4px;text-align:right;">
+                                                                                        <?php echo $qtty['vendor_price']; ?>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="text-right">
+                                                                                    <button data-toggle="modal" href="#modal-edit_vendor_price-<?php echo $item; ?>" type="button" class="btn btn-link btn-xs" style="padding-right:0;margin-right:0;"><i class="fa fa-pencil"></i> Edit</button>
+                                                                                </div>
 
-                                                                            <!-- EDIT VENDOR PRICE -->
-                                                                            <div id="modal-edit_vendor_price-<?php echo $item; ?>" class="modal fade bs-modal-sm in" id="small" tabindex="-1" role="dialog" aria-hidden="true">
-                                                                                <div class="modal-dialog modal-sm">
-                                                                                    <div class="modal-content">
+                                                                                <!-- EDIT VENDOR PRICE -->
+                                                                                <div id="modal-edit_vendor_price-<?php echo $item; ?>" class="modal fade bs-modal-sm in" id="small" tabindex="-1" role="dialog" aria-hidden="true">
+                                                                                    <div class="modal-dialog modal-sm">
+                                                                                        <div class="modal-content">
 
-                                                                                        <div class="modal-header">
-                                                                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                                                                            <h4 class="modal-title">Edit Vendor Price</h4>
-                                                                                        </div>
-                                                                                        <div class="modal-body">
+                                                                                            <div class="modal-header">
+                                                                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                                                                                <h4 class="modal-title">Edit Vendor Price</h4>
+                                                                                            </div>
+                                                                                            <div class="modal-body">
 
-                                                                                            <?php echo $item; ?>
+                                                                                                <?php echo $item; ?>
 
-                                                                                            <div class="form-group clearfix">
-                                                                                                <label class="control-label col-md-4">New Price
-                                                                                                </label>
-                                                                                                <div class="col-md-4">
-                                                                                                    <input type="text" name="vendor_price-<?php echo $item; ?>" data-required="1" class="form-control input-sm modal-input-vendor-price <?php echo $prod_no; ?>" value="<?php echo number_format($qtty['vendor_price']); ?>" size="2" data-prod_no="<?php echo $item; ?>" data-item="<?php echo $prod_no; ?>" data-page="modify" />
+                                                                                                <div class="form-group clearfix">
+                                                                                                    <label class="control-label col-md-4">New Price
+                                                                                                    </label>
+                                                                                                    <div class="col-md-4">
+                                                                                                        <input type="text" name="vendor_price-<?php echo $item; ?>" data-required="1" class="form-control input-sm modal-input-vendor-price <?php echo $prod_no; ?>" value="<?php echo number_format($qtty['vendor_price']); ?>" size="2" data-prod_no="<?php echo $item; ?>" data-item="<?php echo $prod_no; ?>" data-page="modify" />
+                                                                                                    </div>
                                                                                                 </div>
+
+                                                                                                <div class="alert alert-danger">
+                                            														<button class="close hide" data-close="alert"></button> NOTE: this changes the price of all variants of this product item
+                                            													</div>
+
+                                                                                            </div>
+                                                                                            <div class="modal-footer">
+                                                                                                <button type="button" class="btn dark btn-outline" data-dismiss="modal" tabindex="-1">Cancel</button>
+                                                                                                <button type="button" class="btn dark edit_vendor_prices" data-prod_no="<?php echo $item; ?>">Apply changes</button>
                                                                                             </div>
 
-                                                                                            <div class="alert alert-danger">
-                                        														<button class="close hide" data-close="alert"></button> NOTE: this changes the price of all variants of this product item
-                                        													</div>
-
                                                                                         </div>
-                                                                                        <div class="modal-footer">
-                                                                                            <button type="button" class="btn dark btn-outline" data-dismiss="modal" tabindex="-1">Cancel</button>
-                                                                                            <button type="button" class="btn dark edit_vendor_prices" data-prod_no="<?php echo $item; ?>">Apply changes</button>
-                                                                                        </div>
-
+                                                                                        <!-- /.modal-content -->
                                                                                     </div>
-                                                                                    <!-- /.modal-content -->
+                                                                                    <!-- /.modal-dialog -->
                                                                                 </div>
-                                                                                <!-- /.modal-dialog -->
+                                                                                <!-- /.modal -->
                                                                             </div>
-                                                                            <!-- /.modal -->
 
                                                                         </td>
                                                                         <?php

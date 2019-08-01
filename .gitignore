@@ -41,9 +41,12 @@
 
 # Files (Specific) #
 /index.php
+/LICENSE
+/README.md
 
 # Files (General) #
 .DS_Store
+.httaccess
 *.config
 *.mp3
 *.ini
