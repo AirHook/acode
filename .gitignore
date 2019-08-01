@@ -12,6 +12,8 @@
 /application/third_party/
 /application/views/
 
+/application/libraries/mailgun_/
+
 /views/admin/metronic/template_old/
 
 /assets/barcodes/
