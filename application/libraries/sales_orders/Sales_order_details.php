@@ -21,9 +21,12 @@ class Sales_order_details
 	 * @var	int
 	 */
 	public $sales_order_id = '';
+	public $so_id = ''; // alias
 	public $sales_order_number = '';
+	public $so_number = ''; // alias
 	public $rev = '';
 	public $amount = '';
+	public $so_amount = '';
 	public $so_id = ''; // alias
 	public $so_number = ''; // alias
 

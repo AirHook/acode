@@ -17,7 +17,7 @@ class Test extends CI_Controller {
 		$this->load->view('test/test');
 	}
 	function sendmail(){
-		$this->config->load('api');
+		//$this->config->load('api');
 		$campaignList = array(
 			'campaign1' => array(
 				'subject'=> 'Campaign 1',
@@ -41,33 +41,17 @@ class Test extends CI_Controller {
 			),
 		);
 		if(isset($_POST)){
-			foreach($campaignList as $campaign){	
-				$array_data = array(
-					'from'=> 'expertcoder04@gmail.com',
-					'to'=>'rsbgm@rcpixel.com,rsbgm@instylenewyork.com,developer.ranjan88@gmail.com',
-					'subject'=>$campaign['subject'],
-				//'html'=>$html,
-					'text'=>$campaign['message'],
-				);
-			
-				$domain = $this->config->item('mailgun_domain');
-				$key = $this->config->item('mailgun_api');
-				
-				
-				$session = curl_init($domain.'/messages');
-				curl_setopt($session, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-				curl_setopt($session, CURLOPT_USERPWD, 'api:'.$key);
-				curl_setopt($session, CURLOPT_POST, true);
-				curl_setopt($session, CURLOPT_POSTFIELDS, $array_data);
-				curl_setopt($session, CURLOPT_HEADER, false);
-				curl_setopt($session, CURLOPT_ENCODING, 'UTF-8');
-				curl_setopt($session, CURLOPT_RETURNTRANSFER, true);
-				curl_setopt($session, CURLOPT_SSL_VERIFYPEER, false);
-				$response = curl_exec($session); 
-				curl_close($session);  
-				$results = json_decode($response, true);
-				print_r($results);
-			}
+			//Load library and send mail.  
+			$this->load->library('mailgun/mailgun'); 
+			$to = array('developer.ranjan88@gmail.com','joe@rcpixel.com','rsbgm@instylenewyork.com','rsbgm@rcpixel.com');
+			$messageList = array(
+				'message'=>array(
+				'subject' => 'Campaign 5',
+				'message' => 'Email sending number 005'
+				)
+			);
+			$this->mailgun->SendMail($to,$messageList); 
+		
 		}
 	}
 }

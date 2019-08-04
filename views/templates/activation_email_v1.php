@@ -256,114 +256,116 @@
                                                 base_url()
                                                 .'shop/womens_apparel.html?filter=&availability=instock'
                                                 .'&act='.time()
-                                                .'&ws='.$user_id
+                                                .'&ws='.(@$user_id ?: '6854')
                                             ;
 
             								$icol = 1; // count the number of columns (5 for 5 thumbs per row)
             								$irow = 1; // counter for number of rows upto 2 rows for 5 items each row
             								$ii = 0; // items count
-            								foreach($instock_products as $item)
-            								{
-            									// get product details
-            									$product = $this->product_details->initialize(array('tbl_product.prod_no'=>$item));
+                                            if (@$instock_products)
+                                            {
+                								foreach($instock_products as $item)
+                								{
+                									// get product details
+                									$product = $this->product_details->initialize(array('tbl_product.prod_no'=>$item));
 
-            									if ( ! $product)
-            									{
-            										$exp = explode('_', $item);
-            										$product = $this->product_details->initialize(
-            											array(
-            												'tbl_product.prod_no' => $exp[0],
-            												'color_code' => $exp[1]
-            											)
-            										);
+                									if ( ! $product)
+                									{
+                										$exp = explode('_', $item);
+                										$product = $this->product_details->initialize(
+                											array(
+                												'tbl_product.prod_no' => $exp[0],
+                												'color_code' => $exp[1]
+                											)
+                										);
 
-            									}
+                									}
 
-            									// set image paths
-            									// old folder structure system (for depracation)
-            									$pre_url =
-            										$this->config->item('PROD_IMG_URL')
-            										.'product_assets/WMANSAPREL/'
-            										.$product->d_url_structure.'/'
-            										.$product->sc_url_structure
-            									;
-            									$img_front_pre = $pre_url.'/product_front/thumbs/';
-            									$img_back_pre = $pre_url.'/product_back/thumbs/';
-            									$img_side_pre = $pre_url.'/product_side/thumbs/';
-            									$color_icon_pre = $pre_url.'/product_coloricon//';
-            									// the image filename
-            									// the old ways dependent on category and folder structure
-            									$image = $product->prod_no.'_'.$product->color_code.'_3.jpg';
-            									// the color icon
-            									$color_icon = $product->prod_no.'_'.$product->color_code.'.jpg';
+                									// set image paths
+                									// old folder structure system (for depracation)
+                									$pre_url =
+                										$this->config->item('PROD_IMG_URL')
+                										.'product_assets/WMANSAPREL/'
+                										.$product->d_url_structure.'/'
+                										.$product->sc_url_structure
+                									;
+                									$img_front_pre = $pre_url.'/product_front/thumbs/';
+                									$img_back_pre = $pre_url.'/product_back/thumbs/';
+                									$img_side_pre = $pre_url.'/product_side/thumbs/';
+                									$color_icon_pre = $pre_url.'/product_coloricon//';
+                									// the image filename
+                									// the old ways dependent on category and folder structure
+                									$image = $product->prod_no.'_'.$product->color_code.'_3.jpg';
+                									// the color icon
+                									$color_icon = $product->prod_no.'_'.$product->color_code.'.jpg';
 
-            									// the new way relating records with media library
-            									$new_pre_url =
-            										$this->config->item('PROD_IMG_URL')
-            										.$product->media_path
-            										.$product->prod_no.'_'.$product->color_code
-            									;
-            									$img_front_new = $new_pre_url.'_f3.jpg';
-            									$img_back_new = $new_pre_url.'_b3.jpg';
-            									$img_side_new = $new_pre_url.'_s3.jpg';
-            									$img_coloricon = $new_pre_url.'_c.jpg';
+                									// the new way relating records with media library
+                									$new_pre_url =
+                										$this->config->item('PROD_IMG_URL')
+                										.$product->media_path
+                										.$product->prod_no.'_'.$product->color_code
+                									;
+                									$img_front_new = $new_pre_url.'_f3.jpg';
+                									$img_back_new = $new_pre_url.'_b3.jpg';
+                									$img_side_new = $new_pre_url.'_s3.jpg';
+                									$img_coloricon = $new_pre_url.'_c.jpg';
 
-            									if ($icol == 5)
-            									{
-            										$icol = 1;
-            										echo '</tr><tr>';
-            									}
-            									?>
+                									if ($icol == 5)
+                									{
+                										$icol = 1;
+                										echo '</tr><tr>';
+                									}
+                									?>
 
-            								<td align="center" style="vertical-align:top;padding-bottom:10px;" data-item="<?php echo $item; ?>">
+                								<td align="center" style="vertical-align:top;padding-bottom:10px;" data-item="<?php echo $item; ?>">
 
-                                                <!-- BEGIN IMAGE -->
-            									<a href="<?php echo @$access_link ?: $this->config->item('PROD_IMG_URL').'wholesale/signin.html'; ?>" style="text-decoration:none;margin:0;padding:0;color:inherit;display:inline-block;">
-            										<div id="spthumbdiv_<?php echo $item; ?>" class="fadehover" style="width:140px;height:210px;">
-            											<img src="<?php echo $product->primary_img ? $img_front_new : $img_front_pre.$image; ?>" alt="<?php echo $product->prod_no; ?>" title="<?php echo $product->prod_no; ?>" border="0" width="140" style="width:140px;">
-            										</div>
-            									</a>
-                                                <!-- END IMAGE -->
+                                                    <!-- BEGIN IMAGE -->
+                									<a href="<?php echo @$access_link ?: $this->config->item('PROD_IMG_URL').'wholesale/signin.html'; ?>" style="text-decoration:none;margin:0;padding:0;color:inherit;display:inline-block;">
+                										<div id="spthumbdiv_<?php echo $item; ?>" class="fadehover" style="width:140px;height:210px;">
+                											<img src="<?php echo $product->primary_img ? $img_front_new : $img_front_pre.$image; ?>" alt="<?php echo $product->prod_no; ?>" title="<?php echo $product->prod_no; ?>" border="0" width="140" style="width:140px;">
+                										</div>
+                									</a>
+                                                    <!-- END IMAGE -->
 
-                                                <!-- BEGIN PRODUCT INFO -->
-            									<div style="margin:3px 0 0;text-align:left;padding-left:13px;">
-            										<img src="<?php echo ($product->primary_img ? $img_coloricon : $color_icon_pre.$color_icon); ?>" width="10" height="10">
-            									</div>
+                                                    <!-- BEGIN PRODUCT INFO -->
+                									<div style="margin:3px 0 0;text-align:left;padding-left:13px;">
+                										<img src="<?php echo ($product->primary_img ? $img_coloricon : $color_icon_pre.$color_icon); ?>" width="10" height="10">
+                									</div>
 
-            									<div style="text-align:left;padding-left:13px;">
-            										<span style="font-size:10px;">
-                                                        <?php echo $product->prod_no.' ('.$product->color_name.')'; ?>
-                                                    </span>
-                                                    <br />
-                                                    <span style="font-size:10px;text-decoration:">
-            											$ <?php echo number_format($product->wholesale_price, 2); ?>
-            										</span>
-            									</div>
-                                                <!-- END PRODUCT INFO -->
+                									<div style="text-align:left;padding-left:13px;">
+                										<span style="font-size:10px;">
+                                                            <?php echo $product->prod_no.' ('.$product->color_name.')'; ?>
+                                                        </span>
+                                                        <br />
+                                                        <span style="font-size:10px;text-decoration:">
+                											$ <?php echo number_format($product->wholesale_price, 2); ?>
+                										</span>
+                									</div>
+                                                    <!-- END PRODUCT INFO -->
 
-            								</td>
+                								</td>
 
-            									<?php
-            									$icol++;
-            									$ii++;
+                									<?php
+                									$icol++;
+                									$ii++;
 
-            									// finish iteration at 15 items max
-                                                /*
-            									if ($ii == 15)
-            									{
-            										$load_more = TRUE;
-            										break;
-            									}
-            									else $load_more = FALSE;
-                                                */
-            								}
+                									// finish iteration at 15 items max
+                                                    /*
+                									if ($ii == 15)
+                									{
+                										$load_more = TRUE;
+                										break;
+                									}
+                									else $load_more = FALSE;
+                                                    */
+                								}
 
-            								// let us finish the columns to 5 if less than 5 on the last item
-            								for($icol; $icol <= 4; $icol++)
-            								{
-            									echo '<td style="vertical-align:top;"></td>';
-            								}
-            								?>
+                								// let us finish the columns to 5 if less than 5 on the last item
+                								for($icol; $icol <= 4; $icol++)
+                								{
+                									echo '<td style="vertical-align:top;"></td>';
+                								}
+                                            } ?>
 
 									</tr>
 								</table>
@@ -394,121 +396,123 @@
                                                 base_url()
                                                 .'shop/womens_apparel.html?filter=&availability=preorder'
                                                 .'&act='.time()
-                                                .'&ws='.$user_id
+                                                .'&ws='.(@$user_id ?: '6854')
                                             ;
 
             								$icol = 1; // count the number of columns (5 for 5 thumbs per row)
             								$irow = 1; // counter for number of rows upto 2 rows for 5 items each row
             								$ii = 0; // items count
-            								foreach($preorder_products as $item)
-            								{
-            									// get product details
-            									$product = $this->product_details->initialize(array('tbl_product.prod_no'=>$item));
+                                            if (@$preorder_products)
+                                            {
+                								foreach($preorder_products as $item)
+                								{
+                									// get product details
+                									$product = $this->product_details->initialize(array('tbl_product.prod_no'=>$item));
 
-            									if ( ! $product)
-            									{
-            										$exp = explode('_', $item);
-            										$product = $this->product_details->initialize(
-            											array(
-            												'tbl_product.prod_no' => $exp[0],
-            												'color_code' => $exp[1]
-            											)
-            										);
+                									if ( ! $product)
+                									{
+                										$exp = explode('_', $item);
+                										$product = $this->product_details->initialize(
+                											array(
+                												'tbl_product.prod_no' => $exp[0],
+                												'color_code' => $exp[1]
+                											)
+                										);
 
-            									}
+                									}
 
-            									$options_array =
-            										$this->session->sa_options
-            										? json_decode($this->session->sa_options, TRUE)
-            										: array()
-            									;
-            									$price = @$options_array['e_prices'][$item] ?: $product->wholesale_price;
+                									$options_array =
+                										$this->session->sa_options
+                										? json_decode($this->session->sa_options, TRUE)
+                										: array()
+                									;
+                									$price = @$options_array['e_prices'][$item] ?: $product->wholesale_price;
 
-            									// set image paths
-            									// old folder structure system (for depracation)
-            									$pre_url =
-            										$this->config->item('PROD_IMG_URL')
-            										.'product_assets/WMANSAPREL/'
-            										.$product->d_url_structure.'/'
-            										.$product->sc_url_structure
-            									;
-            									$img_front_pre = $pre_url.'/product_front/thumbs/';
-            									$img_back_pre = $pre_url.'/product_back/thumbs/';
-            									$img_side_pre = $pre_url.'/product_side/thumbs/';
-            									$color_icon_pre = $pre_url.'/product_coloricon//';
-            									// the image filename
-            									// the old ways dependent on category and folder structure
-            									$image = $product->prod_no.'_'.$product->color_code.'_3.jpg';
-            									// the color icon
-            									$color_icon = $product->prod_no.'_'.$product->color_code.'.jpg';
+                									// set image paths
+                									// old folder structure system (for depracation)
+                									$pre_url =
+                										$this->config->item('PROD_IMG_URL')
+                										.'product_assets/WMANSAPREL/'
+                										.$product->d_url_structure.'/'
+                										.$product->sc_url_structure
+                									;
+                									$img_front_pre = $pre_url.'/product_front/thumbs/';
+                									$img_back_pre = $pre_url.'/product_back/thumbs/';
+                									$img_side_pre = $pre_url.'/product_side/thumbs/';
+                									$color_icon_pre = $pre_url.'/product_coloricon//';
+                									// the image filename
+                									// the old ways dependent on category and folder structure
+                									$image = $product->prod_no.'_'.$product->color_code.'_3.jpg';
+                									// the color icon
+                									$color_icon = $product->prod_no.'_'.$product->color_code.'.jpg';
 
-            									// the new way relating records with media library
-            									$new_pre_url =
-            										$this->config->item('PROD_IMG_URL')
-            										.$product->media_path
-            										.$product->prod_no.'_'.$product->color_code
-            									;
-            									$img_front_new = $new_pre_url.'_f3.jpg';
-            									$img_back_new = $new_pre_url.'_b3.jpg';
-            									$img_side_new = $new_pre_url.'_s3.jpg';
-            									$img_coloricon = $new_pre_url.'_c.jpg';
+                									// the new way relating records with media library
+                									$new_pre_url =
+                										$this->config->item('PROD_IMG_URL')
+                										.$product->media_path
+                										.$product->prod_no.'_'.$product->color_code
+                									;
+                									$img_front_new = $new_pre_url.'_f3.jpg';
+                									$img_back_new = $new_pre_url.'_b3.jpg';
+                									$img_side_new = $new_pre_url.'_s3.jpg';
+                									$img_coloricon = $new_pre_url.'_c.jpg';
 
-            									if ($icol == 5)
-            									{
-            										$icol = 1;
-            										echo '</tr><tr>';
-            									}
-            									?>
+                									if ($icol == 5)
+                									{
+                										$icol = 1;
+                										echo '</tr><tr>';
+                									}
+                									?>
 
-            								<td align="center" style="vertical-align:top;padding-bottom:10px;" data-item="<?php echo $item; ?>">
+                								<td align="center" style="vertical-align:top;padding-bottom:10px;" data-item="<?php echo $item; ?>">
 
-                                                <!-- BEGIN IMAGE -->
-            									<a href="<?php echo @$access_link ?: $this->config->item('PROD_IMG_URL').'wholesale/signin.html'; ?>" style="text-decoration:none;margin:0;padding:0;color:inherit;display:inline-block;">
-            										<div id="spthumbdiv_<?php echo $item; ?>" class="fadehover" style="width:140px;height:210px;">
-            											<img src="<?php echo $product->primary_img ? $img_front_new : $img_front_pre.$image; ?>" alt="<?php echo $product->prod_no; ?>" title="<?php echo $product->prod_no; ?>" border="0" width="140" style="width:140px;">
-            										</div>
-            									</a>
-                                                <!-- END IMAGE -->
+                                                    <!-- BEGIN IMAGE -->
+                									<a href="<?php echo @$access_link ?: $this->config->item('PROD_IMG_URL').'wholesale/signin.html'; ?>" style="text-decoration:none;margin:0;padding:0;color:inherit;display:inline-block;">
+                										<div id="spthumbdiv_<?php echo $item; ?>" class="fadehover" style="width:140px;height:210px;">
+                											<img src="<?php echo $product->primary_img ? $img_front_new : $img_front_pre.$image; ?>" alt="<?php echo $product->prod_no; ?>" title="<?php echo $product->prod_no; ?>" border="0" width="140" style="width:140px;">
+                										</div>
+                									</a>
+                                                    <!-- END IMAGE -->
 
-                                                <!-- BEGIN PRODUCT INFO -->
-            									<div style="margin:3px 0 0;text-align:left;padding-left:13px;">
-            										<img src="<?php echo ($product->primary_img ? $img_coloricon : $color_icon_pre.$color_icon); ?>" width="10" height="10">
-            									</div>
+                                                    <!-- BEGIN PRODUCT INFO -->
+                									<div style="margin:3px 0 0;text-align:left;padding-left:13px;">
+                										<img src="<?php echo ($product->primary_img ? $img_coloricon : $color_icon_pre.$color_icon); ?>" width="10" height="10">
+                									</div>
 
-            									<div style="text-align:left;padding-left:13px;">
-            										<span style="font-size:10px;">
-                                                        <?php echo $product->prod_no.' ('.$product->color_name.')'; ?>
-                                                    </span>
-            										<br />
-                                                    <span style="font-size:10px;text-decoration:">
-            											$ <?php echo number_format($product->wholesale_price, 2); ?>
-            										</span>
-            									</div>
-                                                <!-- END PRODUCT INFO -->
+                									<div style="text-align:left;padding-left:13px;">
+                										<span style="font-size:10px;">
+                                                            <?php echo $product->prod_no.' ('.$product->color_name.')'; ?>
+                                                        </span>
+                										<br />
+                                                        <span style="font-size:10px;text-decoration:">
+                											$ <?php echo number_format($product->wholesale_price, 2); ?>
+                										</span>
+                									</div>
+                                                    <!-- END PRODUCT INFO -->
 
-            								</td>
+                								</td>
 
-            									<?php
-            									$icol++;
-            									$ii++;
+                									<?php
+                									$icol++;
+                									$ii++;
 
-            									// finish iteration at 15 items max
-                                                /*
-            									if ($ii == 15)
-            									{
-            										$load_more = TRUE;
-            										break;
-            									}
-            									else $load_more = FALSE;
-                                                */
-            								}
+                									// finish iteration at 15 items max
+                                                    /*
+                									if ($ii == 15)
+                									{
+                										$load_more = TRUE;
+                										break;
+                									}
+                									else $load_more = FALSE;
+                                                    */
+                								}
 
-            								// let us finish the columns to 5 if less than 5 on the last item
-            								for($icol; $icol <= 4; $icol++)
-            								{
-            									echo '<td style="vertical-align:top;"></td>';
-            								}
-            								?>
+                								// let us finish the columns to 5 if less than 5 on the last item
+                								for($icol; $icol <= 4; $icol++)
+                								{
+                									echo '<td style="vertical-align:top;"></td>';
+                								}
+            								} ?>
 
 									</tr>
 								</table>
@@ -539,128 +543,130 @@
                                                 base_url()
                                                 .'shop/womens_apparel.html?filter=&availability=onsale'
                                                 .'&act='.time()
-                                                .'&ws='.$user_id
+                                                .'&ws='.(@$user_id ?: '6854')
                                             ;
 
             								$icol = 1; // count the number of columns (5 for 5 thumbs per row)
             								$irow = 1; // counter for number of rows upto 2 rows for 5 items each row
             								$ii = 0; // items count
-            								foreach($onsale_products as $item)
-            								{
-            									// get product details
-            									$product = $this->product_details->initialize(array('tbl_product.prod_no'=>$item));
+                                            if (@$onsale_products)
+                                            {
+                								foreach($onsale_products as $item)
+                								{
+                									// get product details
+                									$product = $this->product_details->initialize(array('tbl_product.prod_no'=>$item));
 
-            									if ( ! $product)
-            									{
-            										$exp = explode('_', $item);
-            										$product = $this->product_details->initialize(
-            											array(
-            												'tbl_product.prod_no' => $exp[0],
-            												'color_code' => $exp[1]
-            											)
-            										);
+                									if ( ! $product)
+                									{
+                										$exp = explode('_', $item);
+                										$product = $this->product_details->initialize(
+                											array(
+                												'tbl_product.prod_no' => $exp[0],
+                												'color_code' => $exp[1]
+                											)
+                										);
 
-            									}
+                									}
 
-            									$options_array =
-            										$this->session->sa_options
-            										? json_decode($this->session->sa_options, TRUE)
-            										: array()
-            									;
-            									$price = @$options_array['e_prices'][$item] ?: $product->wholesale_price;
+                									$options_array =
+                										$this->session->sa_options
+                										? json_decode($this->session->sa_options, TRUE)
+                										: array()
+                									;
+                									$price = @$options_array['e_prices'][$item] ?: $product->wholesale_price;
 
-            									// set image paths
-            									// old folder structure system (for depracation)
-            									$pre_url =
-            										$this->config->item('PROD_IMG_URL')
-            										.'product_assets/WMANSAPREL/'
-            										.$product->d_url_structure.'/'
-            										.$product->sc_url_structure
-            									;
-            									$img_front_pre = $pre_url.'/product_front/thumbs/';
-            									$img_back_pre = $pre_url.'/product_back/thumbs/';
-            									$img_side_pre = $pre_url.'/product_side/thumbs/';
-            									$color_icon_pre = $pre_url.'/product_coloricon//';
-            									// the image filename
-            									// the old ways dependent on category and folder structure
-            									$image = $product->prod_no.'_'.$product->color_code.'_3.jpg';
-            									// the color icon
-            									$color_icon = $product->prod_no.'_'.$product->color_code.'.jpg';
+                									// set image paths
+                									// old folder structure system (for depracation)
+                									$pre_url =
+                										$this->config->item('PROD_IMG_URL')
+                										.'product_assets/WMANSAPREL/'
+                										.$product->d_url_structure.'/'
+                										.$product->sc_url_structure
+                									;
+                									$img_front_pre = $pre_url.'/product_front/thumbs/';
+                									$img_back_pre = $pre_url.'/product_back/thumbs/';
+                									$img_side_pre = $pre_url.'/product_side/thumbs/';
+                									$color_icon_pre = $pre_url.'/product_coloricon//';
+                									// the image filename
+                									// the old ways dependent on category and folder structure
+                									$image = $product->prod_no.'_'.$product->color_code.'_3.jpg';
+                									// the color icon
+                									$color_icon = $product->prod_no.'_'.$product->color_code.'.jpg';
 
-            									// the new way relating records with media library
-            									$new_pre_url =
-            										$this->config->item('PROD_IMG_URL')
-            										.$product->media_path
-            										.$product->prod_no.'_'.$product->color_code
-            									;
-            									$img_front_new = $new_pre_url.'_f3.jpg';
-            									$img_back_new = $new_pre_url.'_b3.jpg';
-            									$img_side_new = $new_pre_url.'_s3.jpg';
-            									$img_coloricon = $new_pre_url.'_c.jpg';
+                									// the new way relating records with media library
+                									$new_pre_url =
+                										$this->config->item('PROD_IMG_URL')
+                										.$product->media_path
+                										.$product->prod_no.'_'.$product->color_code
+                									;
+                									$img_front_new = $new_pre_url.'_f3.jpg';
+                									$img_back_new = $new_pre_url.'_b3.jpg';
+                									$img_side_new = $new_pre_url.'_s3.jpg';
+                									$img_coloricon = $new_pre_url.'_c.jpg';
 
-            									if ($icol == 5)
-            									{
-            										$icol = 1;
-            										echo '</tr><tr>';
-            									}
-            									?>
+                									if ($icol == 5)
+                									{
+                										$icol = 1;
+                										echo '</tr><tr>';
+                									}
+                									?>
 
-            								<td align="center" style="vertical-align:top;padding-bottom:10px;" data-item="<?php echo $item; ?>">
+                								<td align="center" style="vertical-align:top;padding-bottom:10px;" data-item="<?php echo $item; ?>">
 
-                                                <!-- BEGIN IMAGE -->
-            									<a href="<?php echo @$access_link ?: $this->config->item('PROD_IMG_URL').'wholesale/signin.html'; ?>" style="text-decoration:none;margin:0;padding:0;color:inherit;display:inline-block;">
-            										<div id="spthumbdiv_<?php echo $item; ?>" class="fadehover" style="width:140px;height:210px;">
-            											<img src="<?php echo $product->primary_img ? $img_front_new : $img_front_pre.$image; ?>" alt="<?php echo $product->prod_no; ?>" title="<?php echo $product->prod_no; ?>" border="0" width="140" style="width:140px;">
-            										</div>
-            									</a>
-                                                <!-- END IMAGE -->
+                                                    <!-- BEGIN IMAGE -->
+                									<a href="<?php echo @$access_link ?: $this->config->item('PROD_IMG_URL').'wholesale/signin.html'; ?>" style="text-decoration:none;margin:0;padding:0;color:inherit;display:inline-block;">
+                										<div id="spthumbdiv_<?php echo $item; ?>" class="fadehover" style="width:140px;height:210px;">
+                											<img src="<?php echo $product->primary_img ? $img_front_new : $img_front_pre.$image; ?>" alt="<?php echo $product->prod_no; ?>" title="<?php echo $product->prod_no; ?>" border="0" width="140" style="width:140px;">
+                										</div>
+                									</a>
+                                                    <!-- END IMAGE -->
 
-                                                <!-- BEGIN PRODUCT INFO -->
-            									<div style="margin:3px 0 0;text-align:left;padding-left:13px;">
-            										<img src="<?php echo ($product->primary_img ? $img_coloricon : $color_icon_pre.$color_icon); ?>" width="10" height="10">
-            									</div>
+                                                    <!-- BEGIN PRODUCT INFO -->
+                									<div style="margin:3px 0 0;text-align:left;padding-left:13px;">
+                										<img src="<?php echo ($product->primary_img ? $img_coloricon : $color_icon_pre.$color_icon); ?>" width="10" height="10">
+                									</div>
 
-            									<div style="text-align:left;padding-left:13px;">
-            										<span style="font-size:10px;">
-                                                        <?php echo $product->prod_no.' ('.$product->color_name.')'; ?>
-                                                    </span>
-            										<br />
-            										<span style="font-size:10px;text-decoration:line-through;position:relative;top:-3px;">
-            											<span style="position:relative;top:3px;">$ <?php echo number_format($product->wholesale_price, 2); ?></span>
-            										</span>
-                                                    <br />
-            										<span style="font-size:10px;color:red;">
-                                                        <?php
-                                                        $price = ceil($product->wholesale_price / 2);
-                                                        ?>
-            											Now $ <?php echo number_format($price, 2); ?>
-            										</span>
-            									</div>
-                                                <!-- END PRODUCT INFO -->
+                									<div style="text-align:left;padding-left:13px;">
+                										<span style="font-size:10px;">
+                                                            <?php echo $product->prod_no.' ('.$product->color_name.')'; ?>
+                                                        </span>
+                										<br />
+                										<span style="font-size:10px;text-decoration:line-through;position:relative;top:-3px;">
+                											<span style="position:relative;top:3px;">$ <?php echo number_format($product->wholesale_price, 2); ?></span>
+                										</span>
+                                                        <br />
+                										<span style="font-size:10px;color:red;">
+                                                            <?php
+                                                            $price = ceil($product->wholesale_price / 2);
+                                                            ?>
+                											Now $ <?php echo number_format($price, 2); ?>
+                										</span>
+                									</div>
+                                                    <!-- END PRODUCT INFO -->
 
-            								</td>
+                								</td>
 
-            									<?php
-            									$icol++;
-            									$ii++;
+                									<?php
+                									$icol++;
+                									$ii++;
 
-            									// finish iteration at 15 items max
-                                                /*
-            									if ($ii == 15)
-            									{
-            										$load_more = TRUE;
-            										break;
-            									}
-            									else $load_more = FALSE;
-                                                */
-            								}
+                									// finish iteration at 15 items max
+                                                    /*
+                									if ($ii == 15)
+                									{
+                										$load_more = TRUE;
+                										break;
+                									}
+                									else $load_more = FALSE;
+                                                    */
+                								}
 
-            								// let us finish the columns to 5 if less than 5 on the last item
-            								for($icol; $icol <= 4; $icol++)
-            								{
-            									echo '<td style="vertical-align:top;"></td>';
-            								}
-            								?>
+                								// let us finish the columns to 5 if less than 5 on the last item
+                								for($icol; $icol <= 4; $icol++)
+                								{
+                									echo '<td style="vertical-align:top;"></td>';
+                								}
+            								} ?>
 
 									</tr>
 								</table>
