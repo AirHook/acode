@@ -5,6 +5,7 @@
 
 /application/cache/
 /application/config_/
+/application/config/
 /application/test/
 /application/language/
 /application/logs/
