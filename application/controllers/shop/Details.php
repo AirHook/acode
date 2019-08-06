@@ -46,6 +46,7 @@ class Details extends Frontend_Controller
 		$this->load->library('designers/designer_details');
 		$this->load->library('products/product_details');
 		$this->load->library('products/product_clicks');
+		$this->load->library('products/size_names');
 
 		// generate the plugin scripts and css
 		$this->_create_plugin_scripts();
@@ -125,6 +126,8 @@ class Details extends Frontend_Controller
 			$str_qry = $this->_get_prod_listing_query($this->product_details->d_url_structure, $last_category);
 			$prev_qry = $this->DB->query($str_qry);
 		}
+
+		$this->data['size_names'] = $this->size_names->get_size_names($this->product_details->size_mode);
 
 		// we get prev's and next's products details for (< Prev & Next >)'s url link purposes
 		if ($prod_list_seq[0] > 1)

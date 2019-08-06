@@ -609,90 +609,49 @@
 
                                                                     <?php
                                                                     // assumptions: max # of sizes is 12 (ref: size mode 1)
+                                                                    $count = count($size_names);
                                                                     $skey = 1;
-                                                                    for($si=0;$si<=22;$si=$si+2)
+                                                                    foreach ($size_names as $size_label => $size)
                                                                     {
                                                                         if (
-                                                                            $si == 0
-                                                                            OR $si == 8
-                                                                            OR $si == 16
+                                                                            $size != 'XXL'
+                                                                            && $size != 'XL1'
+                                                                            && $size != 'XL2'
                                                                         )
                                                                         {
-                                                                            if ($si == 8 OR $si == 16) echo '</div>';
-                                                                            echo '
-                                                                            <div class="col-md-4">
+                                                                            if (
+                                                                                $skey == 1
+                                                                                OR $skey == 5
+                                                                                OR $skey == 9
+                                                                            )
+                                                                            {
+                                                                                if ($skey == 5 OR $skey == 9) echo '</div>';
+                                                                                echo '
+                                                                                <div class="col-md-4">
 
-                                                                                <div class="row '.(($si == 8 OR $si == 16) ? 'hidden-xs hidden-sm' : '').'">
-                                                                                    <div class="col-xs-4">
-                                                                                        <strong>SIZES:</strong>
+                                                                                    <div class="row '.(($skey == 4 OR $skey == 8) ? 'hidden-xs hidden-sm' : '').'">
+                                                                                        <div class="col-xs-4">
+                                                                                            <strong>SIZES:</strong>
+                                                                                        </div>
+                                                                                        <div class="col-xs-8">
+                                                                                            QUANITY:
+                                                                                        </div>
                                                                                     </div>
-                                                                                    <div class="col-xs-8">
-                                                                                        QUANITY:
-                                                                                    </div>
-                                                                                </div>
-                                                                            ';
-                                                                        }
+                                                                                ';
+                                                                            }
 
-                                                                        switch ($this->product_details->size_mode)
-                                                                        {
-                                                                            case '0':
-                                                                                $size_class = '';
-                                                                                $size =
-                                                                                    $si == 0
-                                                                                    ? 'S'
-                                                                                    : (
-                                                                                        $si == 2
-                                                                                        ? 'M'
-                                                                                        : (
-                                                                                            $si == 4
-                                                                                            ? 'L'
-                                                                                            : (
-                                                                                                $si == 8
-                                                                                                ? 'XL'
-                                                                                                : ''
-                                                                                            )
-                                                                                        )
-                                                                                    )
-                                                                                ;
-                                                                                $size_html = $size;
-                                                                                $size_key = 's'.strtolower($size);
-                                                                                $qty = $this->product_details->size_.$size_key;
-                                                                            break;
-                                                                            case '2':
-                                                                                $size_class = $si == 0 ? 's_prepak' : '';
-                                                                                $size = $si == 0 ? 'PRE PACK' : '';
-                                                                                $size_html = $si == 0 ? 'PRE<br />PACK' : '';
-                                                                                $size_key = $si == 0 ? 'sprepack1221' : '';
-                                                                                $qty = $si == 0 ? $this->product_details->size_sprepack1221 : 0;
-                                                                            break;
-                                                                            case '3':
-                                                                                $size_class = $si == 0 ? 's_sm' : ($si == 2 ? 's_ml' : '');
-                                                                                $size = $si == 0 ? 'S-M' : ($si == 2 ? 'M-L' : '');
-                                                                                $size_html = $si == 0 ? 'S-M' : ($si == 2 ? 'M-L' : '');
-                                                                                $size_key = $si == 0 ? 'ssm' : ($si == 2 ? 'sml' : '');
-                                                                                $qty =
-                                                                                    $si == 0
-                                                                                    ? $this->product_details->size_ssm
-                                                                                    : ($si == 2 ? $this->product_details->size_sml : '')
-                                                                                ;
-                                                                            break;
-                                                                            case '4':
-                                                                                $size_class = $si == 0 ? 's_onesize' : '';
-                                                                                $size = $si == 0 ? 'ONE SIZE' : '';
-                                                                                $size_html = $si == 0 ? 'ONE<br />SIZE' : '';
-                                                                                $size_key = $si == 0 ? 'sonesizefitsall' : '';
-                                                                                $qty = $si == 0 ? $this->product_details->size_sonesizefitsall : 0;
-                                                                            break;
-                                                                            case '1':
-                                                                            default:
-                                                                                $size_class = '';
-                                                                                $size = $si;
-                                                                                $size_html = $si;
-                                                                                $size_key = $si;
-                                                                                $prod_size_property = 'size_'.$si;
-                                                                                $qty = $this->product_details->$prod_size_property;
-                                                                            break;
-                                                                        } ?>
+                                                                            $qty = $this->product_details->$size_label;
+
+                                                                            if ($size_label == 'size_ssm') $size_class = 's_sm';
+                                                                            elseif ($size_label == 'size_sml') $size_class = 's_ml';
+                                                                            elseif ($size_label == 'size_sprepack1221') $size_class = 's_prepak';
+                                                                            elseif ($size_label == 'size_sonesizefitsall') $size_class = 's_onesize';
+                                                                            else $size_class = '';
+
+                                                                            if ($size_label == 'size_sprepack1221') $size_html = 'PRE<br />PACK';
+                                                                            elseif ($size_label == 'size_sonesizefitsall') $size_html = 'ONE<br />SIZE';
+                                                                            else $size_html = $size;
+                                                                            ?>
 
                                                                         <div class="row" onmouseover="$(this).find('span.details.unavailable').show();" onmouseout="$(this).find('span.details.unavailable').hide();">
 
@@ -705,7 +664,7 @@
                                                                                 <div class="hoverable product-form__list-item">
                                                                                     <a href="javascript:void();" class="input-control parent-select product-form__product-size unavailable product-form__product-size--out-of-stock product_details-size_box <?php echo $size_class; ?>" style="z-index:10;" data-size_key="<?php echo $skey; ?>" data-dsize="<?php echo $size; ?>" data-available_qty="<?php echo $qty ?: 30; ?>">
         																				<span>
-                                                                                            <?php echo $size; ?>
+                                                                                            <?php echo $size_html; ?>
                                                                                         </span>
         																			</a>
         																			<span class="ico"></span>
@@ -746,10 +705,12 @@
                     																</div>
                                                                                 </div>
                                                                             </div>
-                                                                            
+
                                                                         </div>
 
-                                                                        <?php
+                                                                            <?php
+                                                                        }
+
                                                                         $skey++;
                                                                     }
 
@@ -780,32 +741,6 @@
 																<?php } else { ?>
 																<button type="submit" class="btn dark btn-block size-qty-submit-wholesale">ADD TO INQUIRY</button>
 																<?php } ?>
-
-																<script>
-																function checkSizeQty(){
-
-                                                                    /*
-                                                                    var dsizes = $(this).parent('form').find('.size_key');
-
-                                                                    var dsize = dsizes.length;
-                                                                    alert(dsize);
-
-                                                                    return false;
-
-																	var size = document.getElementById('size').value;
-																	var qty = document.getElementById('touchspin_5').value;
-																	if (size == ''){
-																		alert('Please select a size.');
-																		return false;
-																	}
-																	if (qty == 0){
-																		alert('Quantity must be more than 1.');
-																		return false;
-																	}
-																	return true;
-                                                                    */
-																}
-																</script>
 
 															<?php
 															echo form_close();

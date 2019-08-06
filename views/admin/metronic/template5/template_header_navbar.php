@@ -28,6 +28,11 @@
                                             <a href="<?php echo site_url('admin/inventory/physical'); ?>">
                                                 Inventory Manager </a>
                                         </li>
+
+                                        <?php
+                                        // available only on hub sites only for now
+                                        if ($this->webspace_details->options['site_type'] == 'hub_site')
+                                        { ?>
                                         <li>
                                             <a href="<?php echo site_url('admin/production'); ?>">
                                                 Production Manager </a>
@@ -36,6 +41,9 @@
                                             <a href="<?php echo site_url('admin/accounting'); ?>">
                                                 Accounting Manager </a>
                                         </li>
+                                            <?php
+                                        } ?>
+
                                     </ul>
                                 </li>
                                 <?php
@@ -57,10 +65,17 @@
                                         <i class="icon-settings hidden-md"></i> General
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-fw">
+
+                                        <?php
+                                        // available only on hub sites for now
+                                        if ($this->webspace_details->options['site_type'] == 'hub_site')
+                                        { ?>
                                         <li class="<?php echo strpos($this->uri->uri_string(), 'admin/change_pass') !== FALSE ? 'active' : ''; ?>">
                                             <a href="<?php echo site_url('admin/change_pass'); ?>">
                                                 Admin Change Password </a>
                                         </li>
+                                            <?php
+                                        } ?>
 
                                         <li class="dropdown more-dropdown-sub <?php echo strpos($this->uri->uri_string(), 'admin/settings') !== FALSE ? 'active' : ''; ?> ">
                                             <a href="javascript:;" class="text-uppercase">
@@ -185,10 +200,17 @@
                                         <i class="icon-settings hidden-md"></i> General
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-fw">
+
+                                        <?php
+                                        // available only on hub sites for now
+                                        if ($this->webspace_details->options['site_type'] == 'hub_site')
+                                        { ?>
                                         <li class="<?php echo strpos($this->uri->uri_string(), 'admin/change_pass') !== FALSE ? 'active' : ''; ?>">
                                             <a href="<?php echo site_url('admin/change_pass'); ?>">
                                                 Admin Change Password </a>
                                         </li>
+                                            <?php
+                                        } ?>
 
                                         <li class="dropdown more-dropdown-sub <?php echo strpos($this->uri->uri_string(), 'admin/settings') !== FALSE ? 'active' : ''; ?> open">
                                             <a href="javascript:;" class="text-uppercase">
@@ -355,15 +377,15 @@
                                             </ul>
                                         </li>
 
-                                        <?php
-                                        // available only on hub sites for now
-                                        if ($this->webspace_details->options['site_type'] == 'hub_site')
-                                        { ?>
                                         <li class="<?php echo strpos($this->uri->uri_string(), 'admin/products/index') !== FALSE ? 'active' : ''; ?>">
                                             <a href="<?php echo site_url('admin/products'); ?>">
                                                 All Products </a>
                                         </li>
 
+                                        <?php
+                                        // available only on hub sites for now
+                                        if ($this->webspace_details->options['site_type'] == 'hub_site')
+                                        { ?>
                                         <!-- keeping this here for plausible usage
                                         <li class="hide">
                                             <a href="<?php echo site_url('admin/products/add'); ?>">
@@ -451,15 +473,15 @@
                                             </ul>
                                         </li>
 
-                                        <?php
-                                        // available only on hub sites for now
-                                        if ($this->webspace_details->options['site_type'] == 'hub_site')
-                                        { ?>
                                         <li class="<?php echo strpos($this->uri->uri_string(), 'admin/products/index') !== FALSE ? 'active selected' : ''; ?> ">
                                             <a href="<?php echo site_url('admin/products'); ?>">
                                                 All Products </a>
                                         </li>
 
+                                        <?php
+                                        // available only on hub sites for now
+                                        if ($this->webspace_details->options['site_type'] == 'hub_site')
+                                        { ?>
                                         <!-- keeping this here for plausible usage
                                         <li class="hide">
                                             <a href="<?php echo site_url('admin/products/add'); ?>">
@@ -933,10 +955,6 @@
                                     </ul>
                                 </li>
 
-                                <?php
-                                // available only on hub sites only for now
-                                if ($this->webspace_details->options['site_type'] == 'hub_site')
-                                { ?>
                                 <!-- DOC: Add class "more-dropdown" to make nav item drop down on hover -->
                                 <!-- DOC: Add classes "dropdown-fw dropdown-fw-disabled" to disable dropdown -->
                                 <!-- DOC: use class "open" on active to show fw dropdown items -->
@@ -958,6 +976,10 @@
                                                 On-Order Stocks </a>
                                         </li>
 
+                                        <?php
+                                        // available only on hub sites only for now
+                                        if ($this->webspace_details->options['site_type'] == 'hub_site')
+                                        { ?>
                                         <li class="hide">
                                             <a href="javascript:;" class=" disabled-link disable-target">
                                                 Stocks Reports </a>
@@ -973,6 +995,9 @@
                                             <button class="btn btn-link btn-sm" href="#modal-barcode_scan" data-toggle="modal" style="color:#6c7b88;">
                                                 SCAN BARCODES </button>
                                         </li>
+                                            <?php
+                                        } ?>
+
                                     </ul>
                                 </li>
                                 <?php
@@ -997,22 +1022,35 @@
                                             <a href="<?php echo site_url('admin/inventory/onorder'); ?>">
                                                 On-Order Stocks </a>
                                         </li>
+
+                                        <?php
+                                        // available only on hub sites only for now
+                                        if ($this->webspace_details->options['site_type'] == 'hub_site')
+                                        { ?>
                                         <li>
                                             <button class="btn btn-link btn-sm" href="#modal-barcode_scan" data-toggle="modal" style="color:#6c7b88;">
                                                 SCAN BARCODES </button>
                                         </li>
+                                            <?php
+                                        } ?>
+
                                     </ul>
                                 </li>
 
+                                <?php
+                                // available only on hub sites only for now
+                                if ($this->webspace_details->options['site_type'] == 'hub_site')
+                                { ?>
                                 <li class="dropdown <?php echo in_array('production', $this->uri->segment_array()) ? 'active selected' : ''; ?>" >
                                     <a href="<?php echo site_url('admin/production'); ?>" class="text-uppercase">
                                         <i class="icon-wallet hidden-md"></i> Production Mgr </a>
                                 </li>
-                                <?php } ?>
 
                                 <li class="dropdown <?php echo in_array('accounting', $this->uri->segment_array()) ? 'active selected' : ''; ?>" >
                                     <a href="<?php echo site_url('admin/accounting'); ?>" class="text-uppercase">
                                         <i class="icon-wallet hidden-md"></i> Accounting Mgr </a>
                                 </li>
+                                    <?php
+                                } ?>
 
                             </ul>

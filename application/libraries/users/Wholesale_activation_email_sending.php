@@ -90,10 +90,6 @@ class Wholesale_activation_email_sending
 		$this->CI->load->library('users/wholesale_user_details');
 		$this->CI->load->library('products/product_details');
 
-		$data['instock_products'] = $this->_get_thumbs('instock');
-		$data['preorder_products'] = $this->_get_thumbs('preorder');
-		$data['onsale_products'] = $this->_get_thumbs('onsale');
-
 		// connect to database
 		$DB = $this->CI->load->database('instyle', TRUE);
 		// get privay Policy
@@ -111,6 +107,10 @@ class Wholesale_activation_email_sending
 
 				return FALSE;
 			}
+
+			$data['instock_products'] = $this->_get_thumbs('instock');
+			$data['preorder_products'] = $this->_get_thumbs('preorder');
+			$data['onsale_products'] = $this->_get_thumbs('onsale');
 
 			$this->CI->email->clear();
 
@@ -196,7 +196,7 @@ class Wholesale_activation_email_sending
 		$this->CI->products_list->initialize($params);
 		$products = $this->CI->products_list->select(
 			array(
-				'designer.url_structure' => (@$this->sales_user_details->designer ?: 'basixblacklabel')
+				'designer.url_structure' => $this->CI->wholesale_user_details->reference_designer
 			),
 			array( // order conditions
 				'seque' => 'asc',
@@ -206,14 +206,18 @@ class Wholesale_activation_email_sending
 		);
 
 		// capture product numbers and set items array
-		$cnt = 0;
-		$items_array = array();
-		foreach ($products as $product)
+		if ($products)
 		{
-			array_push($items_array, $product->prod_no.'_'.$product->color_code);
-		}
+			$cnt = 0;
+			$items_array = array();
+			foreach ($products as $product)
+			{
+				array_push($items_array, $product->prod_no.'_'.$product->color_code);
+			}
 
-		return $items_array;
+			return $items_array;
+		}
+		else return FALSE;
 	}
 
 	// --------------------------------------------------------------------

@@ -95,35 +95,23 @@ class Add extends Admin_Controller {
 			unset($post_ary['passconf']);
 			unset($post_ary['send_activation_email']);
 
-			// connect to database
+			// connect and add record to database
 			$DB = $this->load->database('instyle', TRUE);
 			$query = $DB->insert('tbluser_data_wholesale', $post_ary);
 			$insert_id = $DB->insert_id();
-
-			// set some items for odoo
-			unset($post_ary['create_date']);
-			unset($post_ary['active_date']);
-			$post_ary['user_id'] = $insert_id;
-
-			/***********
-			 * Update ODOO
-			 */
-
-			// pass data to odoo
-			if (
-				ENVIRONMENT !== 'development'
-				&& $post_ary['reference_designer'] === 'basixblacklabel'
-			)
-			{
-				$odoo_response = $this->odoo->post_data($post_ary, 'wholesale_users', 'add');
-			}
 
 			// do we send out activation email?
 			if ($this->input->post('send_activation_email') === '1')
 			{
 				// load and initialize wholesale activation email sending library
 				$this->load->library('users/wholesale_activation_email_sending');
-				$this->wholesale_activation_email_sending->initialize(array('users'=>array($this->input->post('email'))));
+				$this->wholesale_activation_email_sending->initialize(
+					array(
+						'users' => array(
+							$this->input->post('email')
+						)
+					)
+				);
 
 				if ( ! $this->wholesale_activation_email_sending->send())
 				{
@@ -136,11 +124,6 @@ class Add extends Admin_Controller {
 				}
 
 			}
-
-			//echo '<pre>';
-			//print_r($post_ary);
-			//echo $odoo_response;
-			//die();
 
 			// set flash data
 			$this->session->set_flashdata('success', 'add');

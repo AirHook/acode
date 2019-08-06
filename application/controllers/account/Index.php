@@ -48,22 +48,47 @@ class Index extends Frontend_Controller {
 		else
 		{
 			// authenticate user
-			if (
-				! $this->wholesale_user_details->initialize(array(
-					'email' => $this->input->post('email'),
-					'pword' => $this->input->post('password')
-				))
-				&& ! $this->consumer_user_details->initialize(array(
-					'email' => $this->input->post('email'),
-					'password' => $this->input->post('password')
-				))
-			)
+			if ($this->webspace_details->options['site_type'] !== 'hub_site')
 			{
-				// set flash notice
-				$this->session->set_flashdata('error', 'invalid_credentials');
+				if (
+					! $this->wholesale_user_details->initialize(array(
+						'email' => $this->input->post('email'),
+						'pword' => $this->input->post('password'),
+						'reference_designer' => $this->webspace_details->slug
+					))
+					&& ! $this->consumer_user_details->initialize(array(
+						'email' => $this->input->post('email'),
+						'password' => $this->input->post('password'),
+						'reference_designer' => $this->webspace_details->slug
+					))
+				)
+				{
+					// set flash notice
+					$this->session->set_flashdata('error', 'invalid_credentials');
 
-				// rediect back to sign in page
-				redirect('account');
+					// rediect back to sign in page
+					redirect('account');
+				}
+			}
+			else
+			{
+				if (
+					! $this->wholesale_user_details->initialize(array(
+						'email' => $this->input->post('email'),
+						'pword' => $this->input->post('password')
+					))
+					&& ! $this->consumer_user_details->initialize(array(
+						'email' => $this->input->post('email'),
+						'password' => $this->input->post('password')
+					))
+				)
+				{
+					// set flash notice
+					$this->session->set_flashdata('error', 'invalid_credentials');
+
+					// rediect back to sign in page
+					redirect('account');
+				}
 			}
 
 			// if user is inactive or suspended...

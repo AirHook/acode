@@ -18,16 +18,19 @@ class Onorder extends Admin_Controller {
 		$this->load->library('categories/categories_tree');
 		$this->load->library('designers/designers_list');
 
-		// get some data
-		$this->data['designers'] = $this->designers_list->select();
-
 		// for categories, we check conditions of site type
 		if ($this->webspace_details->options['site_type'] == 'hub_site')
 		{
+			$this->data['designers'] = $this->designers_list->select();
 			$this->data['categories'] = $this->categories_tree->treelist(array('with_products' => TRUE));
 		}
 		else
 		{
+			$this->data['designers'] = $this->designers_list->select(
+				array(
+					'url_structure' => $this->webspace_details->slug
+				)
+			);
 			$this->data['categories'] = $this->categories_tree->treelist(
 				array(
 					'with_products' => TRUE,
@@ -82,7 +85,14 @@ class Onorder extends Admin_Controller {
 		else
 		{
 			// defauls to all dresses under womens apparel
-			redirect($this->config->slash_item('admin_folder').'inventory/onorder/index/basixblacklabel/womens_apparel/dresses/evening_dresses');
+			if ($this->webspace_details->options['site_type'] == 'hub_site')
+			{
+				redirect($this->config->slash_item('admin_folder').'inventory/onorder/index/basixblacklabel/womens_apparel/dresses/evening_dresses');
+			}
+			else
+			{
+				redirect($this->config->slash_item('admin_folder').'inventory/onorder/index/'.$this->webspace_details->slug);
+			}
 		}
 
 		// generate the plugin scripts and css

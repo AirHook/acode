@@ -39,11 +39,14 @@ class MY_Controller extends CI_Controller
 		 * For TEMPOPARIS only
 		 */
 		if (
-			$this->webspace_details->slug === 'tempoparis'
-			&& (
-				DOMAINNAME === 'tempoparis.com'
-				OR DOMAINNAME === 'tempo-paris.com'
-			)
+            (
+    			$this->webspace_details->slug === 'tempoparis'
+    			&& (
+    				DOMAINNAME === 'tempoparis.com'
+    				OR DOMAINNAME === 'tempo-paris.com'
+    			)
+                OR @$this->webspace_details->options['wholesale_only_site']
+            )
 			&& $this->uri->segment(1) !== $this->config->item('admin_folder')
 		)
 		{
@@ -56,6 +59,7 @@ class MY_Controller extends CI_Controller
 				//&& $this->session->user_cat == 'wholesale'
 				&& (
 					// wholesale pages
+                    $this->uri->uri_string() !== 'account' &&
 					$this->uri->uri_string() !== 'wholesale/signin' &&
 					$this->uri->uri_string() !== 'wholesale/authenticate' &&
 					$this->uri->uri_string() !== 'wholesale/authenticated' &&

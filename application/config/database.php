@@ -104,9 +104,12 @@ switch (SITESLUG)
 	case 'tempoparis':
 		if (DOMAINNAME == 'tempoparis.com')
 		{
-			$username = 'temp0';
+			//$username = 'temp0';
+			//$password = '!@R00+@dm!N';
+			//$database = 'instyle_tempo';
+			$username = 'shopseven';
 			$password = '!@R00+@dm!N';
-			$database = 'instyle_tempo';
+			$database = 'db_shopseven';
 		}
 		if (DOMAINNAME == 'tempoparis.net')
 		{

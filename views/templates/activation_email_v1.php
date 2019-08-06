@@ -239,6 +239,8 @@
 						 * IN STOCK Product Thumbs
 						 */
 						-->
+                        <?php if (@$instock_products)
+                        { ?>
 						<tr>
 							<td class="" bgcolor="" style="padding-top:40px;padding-bottom:50px;">
 
@@ -372,6 +374,8 @@
 
 							</td>
 						</tr>
+                            <?php
+                        } ?>
 
                         <!--
 						/***********
@@ -379,6 +383,8 @@
 						 * PRE ORDER Product Thumbs
 						 */
 						-->
+                        <?php if (@$preorder_products)
+                        { ?>
 						<tr>
 							<td class="" bgcolor="" style="padding-bottom:50px;">
 
@@ -519,6 +525,8 @@
 
 							</td>
 						</tr>
+                            <?php
+                        } ?>
 
                         <!--
 						/***********
@@ -526,6 +534,8 @@
 						 * ON SALE Product Thumbs
 						 */
 						-->
+                        <?php if (@$onsale_products)
+                        { ?>
 						<tr>
 							<td class="" bgcolor="" style="padding-bottom:50px;">
 
@@ -673,6 +683,8 @@
 
 							</td>
 						</tr>
+                            <?php
+                        } ?>
 
                         <!--
 						/***********

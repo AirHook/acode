@@ -18,6 +18,10 @@ class Index extends MY_Controller {
 	 */
 	public function index()
 	{
+		// redirect user for now...
+		redirect('admin/dcn/create', 'location');
+
+		/* *
 		// set data variables...
 		$this->data['file'] = 'dcn_dashboard';
 		$this->data['page_title'] = 'Dcomentation';
@@ -25,5 +29,6 @@ class Index extends MY_Controller {
 
 		// load views...
 		$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template5/template', $this->data);
+		// */
 	}
 }
