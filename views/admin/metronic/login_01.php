@@ -44,6 +44,34 @@ License: You must have a valid license purchased only from themeforest(the above
         <!-- BEGIN PAGE LEVEL STYLES -->
         <link href="<?php echo base_url('assets/metronic'); ?>/assets/pages/css/login.min.css" rel="stylesheet" type="text/css" />
         <!-- END PAGE LEVEL STYLES -->
+        <style>
+        body {
+            background-image:url("<?php echo base_url(); ?>assets/images/bg/bg-login.jpg");
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+        }
+        html {
+            height: 100%;
+        }
+        .login .content {
+            background-color: #000;
+            border: 2px solid white;
+        }
+        .login .content .form-actions {
+            border-bottom: 2px solid white;
+        }
+        .login .content .create-account {
+            background-color: #2f353b;
+        }
+        .login .content .form-actions .btn.black {
+            border: 1px solid white;
+            background: black;
+        }
+        .login .content .rememberme,
+        .login .content .forget-password {
+            color: white;
+        }
+        </style>
         <!-- BEGIN THEME LAYOUT STYLES -->
         <!-- END THEME LAYOUT STYLES -->
         <link rel="shortcut icon" href="<?php echo base_url(); ?>favicon.ico" /> </head>
@@ -57,7 +85,7 @@ License: You must have a valid license purchased only from themeforest(the above
                 <img src="<?php echo $this->webspace_details->options['logo']; ?>" alt="" />
 				<?php } else { ?>
                 <!--<img src="<?php echo base_url('assets/metronic'); ?>/assets/pages/img/logo-big.png" alt="" />-->
-				<img src="<?php echo base_url(); ?>assets/images/logo/logo-<?php echo $this->webspace_details->slug; ?>.png" alt="" width="300px" />
+				<img src="<?php echo base_url(); ?>assets/images/logo/logo-<?php echo $this->webspace_details->slug; ?>-light.png" alt="" width="300px" />
 				<?php } ?>
 			</a>
         </div>
@@ -75,7 +103,7 @@ License: You must have a valid license purchased only from themeforest(the above
                 )
             ); ?>
 
-                <h3 class="form-title font-green">Log In</h3>
+                <h3 class="form-title font-white text-uppercase">Log In</h3>
 				<?php if ($this->session->flashdata('invalid')) { ?>
                 <div class="alert alert-danger auto-remove">
                     <button class="close" data-close="alert"></button>
@@ -106,7 +134,7 @@ License: You must have a valid license purchased only from themeforest(the above
                     <label class="control-label visible-ie8 visible-ie9">Password</label>
                     <input class="form-control form-control-solid placeholder-no-fix" type="password" autocomplete="off" placeholder="Password" name="password" <?php echo $this->session->userdata('remember-at-admin') ? 'autofocus' : ''; ?> /> </div>
                 <div class="form-actions">
-                    <button type="submit" class="btn green uppercase">Login</button>
+                    <button type="submit" class="btn green black uppercase">Login</button>
                     <label class="rememberme check mt-checkbox mt-checkbox-outline">
                         <input type="checkbox" name="remember-at-admin" value="1" <?php echo $this->session->userdata('remember-at-admin'); ?> />Remember
                         <span></span>
@@ -465,7 +493,7 @@ License: You must have a valid license purchased only from themeforest(the above
             <!-- END REGISTRATION FORM -->
         </div>
         <!-- BEGIN COPYRIGHT -->
-        <div class="copyright"> <?php echo @date('Y', @time()); ?> &copy; <?php echo $this->webspace_details->name ?: 'Rcpixel'; ?> Admin Panel. </div>
+        <div class="copyright" style="color:white;"> <?php echo @date('Y', @time()); ?> &copy; <?php echo $this->webspace_details->name ?: 'Rcpixel'; ?> Admin Panel. </div>
         <!-- END COPYRIGHT -->
         <!--[if lt IE 9]>
 <script src="<?php echo base_url('assets/metronic'); ?>/assets/global/plugins/respond.min.js"></script>
