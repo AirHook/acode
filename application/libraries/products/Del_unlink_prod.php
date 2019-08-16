@@ -119,8 +119,8 @@ class Del_unlink_prod extends Admin_Controller {
 		// set path to images
 		// to do this, get category slugs, designer slug, and image path
 		// $this->product_details->category_slugs - array of category slugs
-		$category_slugs = implode('/', $this->CI->product_details->category_slugs;
-		$designer_slug = $this->CI->product_details->desinger_slug;
+		$category_slugs = implode('/', $this->CI->product_details->category_slugs);
+		$designer_slug = $this->CI->product_details->designer_slug;
 		$image_path = 'uploads/products/'.$designer_slug.'/'.$category_slugs;
 
 		// process variants
