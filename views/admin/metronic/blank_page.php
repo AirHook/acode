@@ -3,8 +3,3 @@
                         <h3>Blank Page</h3>
                     </div>
                     <!-- END PAGE CONTENT BODY -->
-
-                </div>
-                <!-- END CONTENT BODY -->
-            </div>
-            <!-- END CONTENT -->

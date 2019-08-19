@@ -135,9 +135,16 @@
                                 </td>
                                 <td>
                                     <a href="<?php echo $edit_link; ?>">
-                                        <?php echo $order->sales_order_number; ?>
+                                        <?php
+                                        $so_number = $order->sales_order_number;
+                                        for($c = strlen($so_number);$c < 6;$c++)
+                                		{
+                                			$so_number = '0'.$so_number;
+                                		}
+                                        echo $so_number;
+                                        ?>
                                     </a>
-                                    <a href="<?php echo $edit_link; ?>" class="hidden_first_edit_link" style="font-size:0.7em;display:none;">
+                                    <a href="<?php echo $edit_link; ?>" class="hidden_first_edit_link_" style="font-size:0.7em;display:inline-block;">
                                         <cite>view details</cite>
                                     </a>
                                 </td>

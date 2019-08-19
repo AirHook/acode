@@ -35,28 +35,6 @@ var FormValidation = function () {
 		});
     }
 
-	// sales resource pages
-    // sales package sidebar nav actions
-    $('.sidebar-nav-sales-package').on('click', function(){
-        var items_count = $(this).closest('ul').data('items_count');
-        var link = $(this).data('link');
-        //alert(items_count);
-        if (items_count != '0') {
-            //$('#modal-items_on_cart .contiue-items_on_cart').attr('href', link);
-            $('#modal-items_on_cart').modal('show');
-            $('#modal-items_on_cart .continue-items_on_cart').click(function(){
-                // continue means to clear items on cart
-                $.get(base_url + "sales/sales_package/clear_all_items.html", function(data){
-					// we need to wait for ajax call response before continuing
-					// to alleviate session handling execution time error
-					if (data == 'clear') window.location.href=link;
-				});
-            });
-        } else {
-            window.location.href=link;
-        }
-    });
-
 	return {
         //main function to initiate the module
         init: function () {

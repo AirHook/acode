@@ -27,8 +27,6 @@ class Sales_order_details
 	public $rev = '';
 	public $amount = '';
 	public $so_amount = '';
-	public $so_id = ''; // alias
-	public $so_number = ''; // alias
 
 	/**
 	 * Order Date (timestamp)
@@ -289,7 +287,7 @@ class Sales_order_details
 
 			$this->status = $row->status; // 1 - complete, 2 - hold, 3 - return, 4 - pending
 			$this->return_remarks = $row->return_remarks; // 1 - for exchange, 2 - for store credit, 3 - for refund, 4 - others
-			$this->comments = $row->comments;
+			//$this->comments = $row->comments;
 
 			$this->ship_id = $row->ship_id;
 			$this->courier = $row->courier;

@@ -14,6 +14,7 @@
         <!-- BEGIN GLOBAL PLUGINS -->
 		<script src="<?php echo base_url('assets/metronic'); ?>/assets/global/plugins/typeahead/typeahead.bundle.min.js" type="text/javascript"></script>
 		<script src="<?php echo base_url(); ?>assets/custom/js/metronic/pages/scripts/components-search_typeahead.js" type="text/javascript"></script>
+        <script src="<?php echo base_url(); ?>assets/custom/jscript/jsbarcode/jsbarcode.all.min.js" type="text/javascript"></script>
         <script src="<?php echo base_url('assets/metronic'); ?>/assets/global/plugins/morris/morris.min.js" type="text/javascript"></script>
         <!-- // handle datatable -->
         <script src="<?php echo base_url(); ?>assets/custom/js/metronic/pages/scripts/barcode-components-script.js" type="text/javascript"></script>
@@ -56,6 +57,8 @@
                     $(this).closest('.admin_tobbar_search').submit();
                 });
                 $('.ship-to-popovers').popover('show');
+                // init jsbarcode
+                JsBarcode(".barcode").init();
             })
             <?php
 			/*********

@@ -179,7 +179,9 @@ body {
 .cart_basket_wrapper .cart_basket .shop-cart-item-details > h4 > a,
 .cart_basket_wrapper .cart_basket .shop-cart-item-details > h4 > a:hover,
 .cart_basket_wrapper .cart_basket .table.table-light > thead > tr > th,
-.cart_basket_wrapper .cart_basket .table.table-light > tbody > tr > td {
+.cart_basket_wrapper .cart_basket .table.table-light > tbody > tr > td,
+.table > thead:first-child > tr:first-child > th,
+.table.table-light > tbody > tr > td {
     color: black;
 }
 .cart_basket_wrapper .cart_basket .table td, .table th {

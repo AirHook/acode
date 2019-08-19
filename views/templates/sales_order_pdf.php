@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>Purchase Order Confirmation Email</title>
+	<title>Sales Order Confirmation Email</title>
 
 	<?php
 	/***********
@@ -63,16 +63,17 @@
 
 	<br>
 
-	<strong style="font-size:12px;"> SALES ORDER #<?php echo $so_details->so_number; ?> <?php echo $so_details->rev ? '<small><b>rev</b></small>'.$so_details->rev : ''; ?> </strong><br />
-	<small> Date: <?php echo $so_details->so_date; ?> </small>
+	<strong style="font-size:12px;"> SALES ORDER INVOICE#<?php echo $so_number; ?> <?php echo @$so_details->rev ? '<small><b>rev</b></small>'.$so_details->rev : ''; ?> </strong><br />
+	<small> Date: <?php echo @$so_details->so_date ?: $so_date; ?> </small>
 
 	<br><br>
 
-	D&I Fashion Group <br />
-	230 West 38th Street <br />
-	New York, NY 10018 <br />
-	United States <br />
-	212.840.0846 <br />
+	<?php echo $company_name; ?> <br />
+	<?php echo $company_address1; ?><br />
+	<?php echo $company_address2 ? $company_address2.'<br />' : ''; ?>
+	<?php echo $company_city.', '.$company_state.' '.$company_zipcode; ?><br />
+	<?php echo $company_country; ?><br />
+	<?php echo $company_telephone; ?>
 
 	<br><br>
 
@@ -80,32 +81,31 @@
 		<tr>
 			<td width="50%">
 
-				<strong> Bill To </strong>
+				<strong> BILLING ADDRESS </strong>
 
 				<br /><br />
 
-				<?php echo $so_details->store_name ?: 'STORE NAME'; ?> <br />
-				<?php echo $so_details->bill_address1 ?: 'Address1'; ?> <br />
-				<?php echo $so_details->bill_address2 ? $so_details->bill_address2.'<br />' : ''; ?>
-				<?php echo $so_details->bill_city ?: 'City'; ?>, <?php echo $so_details->bill_state ?: 'State'; ?> <?php echo $so_details->bill_zipcode ?: 'Zipcode' ?>  <br />
-				<?php echo $so_details->bill_country ?: 'Country'; ?> <br />
-				<?php echo $so_details->telephone ?: 'Telephone'; ?> <br />
-				ATTN: <?php echo $so_details->firstname ? $so_details->firstname.' '.$so_details->lastname : 'Contact Name'; ?> <?php echo $so_details->email ? '('.safe_mailto($so_details->email).')': '(Email)'; ?>
+				<?php echo $store_details->store_name; ?> <br />
+				<?php echo $store_details->address1; ?> <br />
+				<?php echo $store_details->address2 ? $store_details->address2.'<br />' : ''; ?>
+				<?php echo $store_details->city.', '.$store_details->state.' '.$store_details->zipcode; ?> <br />
+				<?php echo $store_details->country; ?> <br />
+				<?php echo $store_details->telephone; ?> <br />
 
 			</td>
 			<td width="50%">
 
-				<strong> Ship To </strong>
+				<strong> SHIPING ADDRESS </strong>
 
 				<br /><br />
 
-				<?php echo $so_details->store_name ?: 'STORE NAME'; ?> <br />
-				<?php echo $so_details->ship_address1 ?: $so_details->bill_address1; ?> <br />
-				<?php echo $so_details->ship_address2 ? $so_details->ship_address2.'<br />' : ($so_details->bill_address2 ? $so_details->bill_address2.'<br />' : ''); ?>
-				<?php echo $so_details->ship_city ?: $so_details->bill_city; ?>, <?php echo $so_details->ship_state ?: $so_details->bill_state; ?> <?php echo $so_details->ship_zipcode ?: $so_details->bill_zipcode; ?> <br />
-				<?php echo $so_details->ship_country ?: $so_details->bill_country; ?> <br />
-				<?php echo $so_details->telephone ?: 'Telephone'; ?> <br />
-				ATTN: <?php echo $so_details->firstname ? $so_details->firstname.' '.$so_details->lastname : 'Contact Name'; ?> <?php echo $so_details->email ? '('.safe_mailto($so_details->email).')': '(Email)'; ?>
+				<?php echo $store_details->store_name; ?> <br />
+				<?php echo $store_details->address1; ?> <br />
+				<?php echo $store_details->address2 ? $store_details->address2.'<br />' : ''; ?>
+				<?php echo $store_details->city.', '.$store_details->state.' '.$store_details->zipcode; ?> <br />
+				<?php echo $store_details->country; ?> <br />
+				<?php echo $store_details->telephone; ?> <br />
+				ATTN: <?php echo $store_details->fname ? $store_details->fname.' '.$store_details->lname : ''; ?> <?php echo $store_details->email ? '('.$store_details->email.')': ''; ?>
 
 			</td>
 		</tr>
@@ -113,29 +113,35 @@
 
 	<br><br>
 
-	<strong>Ordered by:</strong> &nbsp;<?php echo $author->fname.' '.$author->lname ?: ''; ?> &nbsp; <cite class="small"><?php echo $author->email ? '('.$author->email.')' : ''; ?></cite>
-	<br />
-	<strong>Designer:</strong> &nbsp;<?php echo $so_details->designer ?: 'General Items'; ?>
-	<br />
-	<?php echo $so_details->vendor_name ? '<strong>Vendor:</strong> &nbsp;'.$so_details->vendor_name : '';?>
+	<span style="font-size:0.8em;">Sales Person:</span> &nbsp;<?php echo $this->session->admin_loggedin ? 'IN-HOUSE' : @$author->fname.' '.@$author->lname.' &nbsp;('.@$author->email.')'; ?>
 
 	<br><br>
 
 	<table cellpadding="0" cellspacing="0" style="width:100%;">
 		<tr>
-			<td width="25%"> Due Date </td>
-			<td width="25%"> Shipping Method </td>
-			<td width="25%"> Shipping Terms </td>
-			<td width="25%"> Payment Terms </td>
+			<td width="33%" style="font-size:0.8em;"> Shipping Method </td>
+			<td width="33%" style="font-size:0.8em;"> Shipping Terms </td>
+			<td width="33%" style="font-size:0.8em;"> Payment Terms </td>
 		</tr>
 		<tr>
-			<td style="border:1px solid #ccc;height:24px;text-align:center;"> <?php echo @$so_details->due_date; ?>
-			</td>
 			<td style="border:1px solid #ccc;height:24px;text-align:center;"> <?php echo @$so_options['ship_via']; ?>
 			</td>
 			<td style="border:1px solid #ccc;height:24px;text-align:center;"> <?php echo @$so_options['fob']; ?>
 			</td>
 			<td style="border:1px solid #ccc;height:24px;text-align:center;"> <?php echo @$so_options['terms']; ?>
+			</td>
+		</tr>
+		<tr>
+			<td width="33%" style="font-size:0.8em;"> Purchase Order Reference </td>
+			<td width="33%" style="font-size:0.8em;"> Order Date </td>
+			<td width="33%" style="font-size:0.8em;"> Our Order </td>
+		</tr>
+		<tr>
+			<td style="border:1px solid #ccc;height:24px;text-align:center;"> <?php echo @$so_options['reference_po']; ?>
+			</td>
+			<td style="border:1px solid #ccc;height:24px;text-align:center;"> <?php echo @$so_options['reference_po_date']; ?>
+			</td>
+			<td style="border:1px solid #ccc;height:24px;text-align:center;"> <?php echo @$so_options['our_order']; ?>
 			</td>
 		</tr>
 	</table>
@@ -149,42 +155,39 @@
 	<table cellpadding="0" cellspacing="0" style="width:100%;vertical-align:top;">
 
 		<tr>
-			<td width="18%" style="font-weight:bold;"> Items (<?php echo count($so_items); ?>) </td>
-			<td width="50%" style="font-weight:bold;"> Size and Quantity </td>
-			<td width="16%" align="right" style="font-weight:bold;"> Unit Price </td>
-			<td width="16%" align="right" style="font-weight:bold;"> Extended </td>
+			<th style="8%" align="left"> Qty<br />Req'd </th>
+			<th style="8%" align="left"> Qty<br />Ship'd </th>
+			<th style="8%" align="left"> B.O. </th>
+			<td width="18%" style="font-weight:bold;"> Items </td>
+			<td width="11%" style="font-weight:bold;"> Description </td>
+			<td width="23%"></td>
+			<td width="12%" align="right" style="font-weight:bold;"> Unit Price </td>
+			<td width="12%" align="right" style="font-weight:bold;"> Extended </td>
 		</tr>
 
-		<tr><td colspan="4" style="height:10px;border-bottom:1px solid #ccc;"> <td></tr>
-		<tr><td colspan="4" style="height:10px;"> <td></tr>
+		<tr><td colspan="8" style="height:10px;border-bottom:1px solid #ccc;"> <td></tr>
+		<tr><td colspan="8" style="height:10px;"> <td></tr>
 
 			<?php
 			if ( ! @empty($so_items))
 			{
 				$overall_qty = 0;
 				$overall_total = 0;
-				$this_size_qty = 0;
+				//$this_size_qty = 0;
 				$i = 1;
 				foreach ($so_items as $item => $size_qty)
 				{
 					// get product details
+					$exp = explode('_', $item);
 					$product = $this->product_details->initialize(
 						array(
-							'tbl_product.prod_no' => $item
+							'tbl_product.prod_no' => $exp[0],
+							'color_code' => $exp[1]
 						)
 					);
 
-					if ( ! $product)
-					{
-						$exp = explode('_', $item);
-						$product = $this->product_details->initialize(
-							array(
-								'tbl_product.prod_no' => $exp[0],
-								'color_code' => $exp[1]
-							)
-						);
-
-					}
+					// this is like a catch all error...
+					//if ( ! $product) continue;
 
 					// set image paths
 					// the new way relating records with media library
@@ -196,86 +199,69 @@
 					$size_mode = $product->size_mode;
 					$vendor_price = @$size_qty['vendor_price'] ?: $product->vendor_price;
 					$size_names = $this->size_names->get_size_names($size_mode);
-					?>
+
+					$this_size_qty = 0;
+					foreach ($size_qty as $size_label => $qty)
+					{
+						$this_size_qty += $qty;
+						$s = $size_names[$size_label];
+
+						if (
+							isset($so_items[$item][$size_label])
+							&& $s != 'XXL' && $s != 'XL1' && $s != 'XL2' && $s != '22'
+						)
+						{
+							?>
 
 		<tr>
 
 			<?php
 			/**********
-			 * IMAGE and info
+			 * Quantities
 			 */
 			?>
-			<td style="padding-bottom:20px;" class=" <?php echo $product->media_path.$style_no; ?> <?php echo $img_front_new; ?> ">
-				<img src="<?php echo $img_front_new; ?>" width="60" /> <br />
+			<td style="vertical-align:top;"><?php echo $qty; ?></td>
+			<td style="vertical-align:top;"><?php echo $qty; ?></td>
+			<td style="vertical-align:top;">0</td>
+
+			<?php
+			/**********
+			 * Item Number
+			 */
+			?>
+			<td style="vertical-align:top;">
+				<?php echo $item; ?><br />
+				<?php echo 'Size '.$s; ?>
+			</td>
+
+			<?php
+			/**********
+			 * Image
+			 */
+			?>
+			<td style="vertical-align:top;padding-bottom:10px;">
+				<img src="<?php echo $img_front_new; ?>" width="60" style="float:left;" />
+			</td>
+
+			<?php
+			/**********
+			 * Description
+			 */
+			?>
+			<td style="vertical-align:top" class=" <?php echo $product->media_path.$style_no; ?> <?php echo $img_front_new; ?> ">
 				<strong> <?php echo $product->prod_no; ?> </strong> <br />
 				<span style="color:#999;">Style#: <?php echo $item; ?></span><br />
 				Color: &nbsp; <?php echo $color_name; ?>
+				<?php echo @$product->category_names ? '<br /><cite class="small">('.end($product->category_names).')</cite>' : ''; ?>
 			</td>
 
 			<?php
 			/**********
-			 * Size and Qty
-			 */
-			?>
-			<td>
-
-				<table cellpadding="0" cellspacing="0" style="width:100%;">
-					<tr>
-
-						<?php
-						foreach ($size_names as $size_label => $s)
-						{
-							if ($s != 'XL1' && $s != 'XL2')
-							{
-								?>
-
-						<td width="7.69%" style="font-size:8px;"> <?php echo $s; ?> </td>
-
-								<?php
-							}
-						} ?>
-
-						<td width="7.69%" align="right"> Total </td>
-
-					</tr>
-					<tr>
-
-						<?php
-						$this_size_qty = 0;
-						foreach ($size_names as $size_label => $s)
-						{
-							$s_qty =
-								isset($size_qty[$size_label])
-								? $size_qty[$size_label]
-								: 0
-							;
-							$this_size_qty += $s_qty;
-
-							if ($s != 'XL1' && $s != 'XL2')
-							{ ?>
-
-						<td style="border:1px solid #ccc;height:18px;font-size:8px;text-align:center;">
-							<?php echo $s_qty ?: ''; ?>
-						</td>
-
-								<?php
-							}
-						} ?>
-
-						<td align="right"> = <?php echo $this_size_qty; ?> </td>
-
-					</tr>
-				</table>
-
-			</td>
-
-			<?php
-			/**********
-			 * Unit Vendor Price
+			 * Unit Price
 			 */
 			?>
 			<td align="right">
-				$ <?php echo number_format($size_qty['wholesale_price'], 2); ?>
+				$ <?php echo number_format(@$product->wholesale_price, 2); ?>
 			</td>
 
 			<?php
@@ -285,40 +271,80 @@
 			?>
 			<td align="right">
 				<?php
-				$this_size_total = @$this_size_qty * $size_qty['wholesale_price'];
+				$this_size_total = @$this_size_qty * @$product->wholesale_price;
 				?>
 				$ <?php echo number_format($this_size_total, 2); ?>
 			</td>
 
 		</tr>
 
-					<?php
+							<?php
+						}
+					}
+
 					$i++;
 					$overall_qty += $this_size_qty;
 					$overall_total += $this_size_total;
 				}
 			} ?>
 
-		<tr><td colspan="4" style="height:10px;border-bottom:1px solid #ccc;"> <td></tr>
-		<tr><td colspan="4" style="height:20px;"> <td></tr>
+		<tr><td colspan="8" style="height:10px;border-bottom:1px solid #ccc;"> <td></tr>
+		<tr><td colspan="8" style="height:20px;"> <td></tr>
 
 		<tr>
-			<td colspan="2" rowspan="2" align="left">
+			<td colspan="5" rowspan="4" align="left">
 				<?php
-				if($so_details->remarks)
+				if(@$so_details->remarks)
 				{
 					echo 'Remarks/Instructions:<br /><br />';
 					echo $so_details->remarks;
 				}
+				else
+				{
+					echo $remarks ? 'Remarks/Instructions:<br /><br />'.$remarks : '';
+				}
 				?>
 			</td>
-			<td colspan="1" align="right" style="height:24px;"> Quantity Total </td>
+			<td colspan="2" align="right" style="height:24px;"> Quantity Total </td>
 			<td width="16%" align="right" style="height:24px;"> <?php echo $overall_qty; ?> </td>
 		</tr>
 
 		<tr>
-			<td colspan="1" align="right" style="height:24px;font-weight:bold;"> Order Grand Total </td>
-			<td width="16%" align="right" style="height:24px;font-weight:bold;"> $ <?php echo @number_format($overall_total, 2); ?> </td>
+			<td colspan="2" align="right" style="height:24px;"> Order Total </td>
+			<td width="16%" align="right" style="height:24px;;"> $ <?php echo @number_format($overall_total, 2); ?> </td>
+		</tr>
+
+		<tr>
+			<td colspan="2" align="right" style="height:24px;"> Tax Due </td>
+			<td width="16%" align="right" style="height:24px;;">
+				<?php
+				$fed_tax_id =
+					is_numeric(@$store_details->fed_tax_id)
+					? floatval(@$store_details->fed_tax_id)
+					: 0
+				;
+				$tax_due =
+					$fed_tax_id
+					? '$ '.number_format($fed_tax_id, 2)
+					: '-'
+				;
+				echo $tax_due;
+				?>
+			</td>
+		</tr>
+
+		<tr>
+			<td colspan="2" align="right" style="height:24px;font-weight:bold;"> Order Grand Total </td>
+			<td width="16%" align="right" style="height:24px;font-weight:bold;">
+				<?php
+				$grand_total =
+					$fed_tax_id
+					? $overall_total * $fed_tax_id
+					: $overall_total
+				;
+				echo '$ '.number_format($grand_total, 2);
+				?>
+			</td>
 		</tr>
 
 	</table>

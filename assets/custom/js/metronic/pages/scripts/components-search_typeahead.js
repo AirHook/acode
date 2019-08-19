@@ -20,7 +20,7 @@ var ComponentsTypeahead = function () {
 		//custom.initialize();
 		// instantiate the typeahead UI
 		//if (App.isRTL()) {
-		//	$('#search_by_style').attr("dir", "rtl");  
+		//	$('#search_by_style').attr("dir", "rtl");
 		//}
 		$('#search_by_style, .search_by_style').typeahead({
 			hint: false,

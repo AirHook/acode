@@ -1669,6 +1669,139 @@ if ( ! defined('BASEPATH')) exit('ERROR: 404 Not Found');
 		}
 	}
 
+	// ------------------------------------------------------------------------
+
+/**
+ * Create Admin Product Sidebar Category Tree List at Frontend Thumbs page
+ *
+ *
+ * @access	public
+ * @params	object and strings
+ * @return	string/boolean false
+ */
+	if ( ! function_exists('create_admin_so_create_sidebar_category_list'))
+	{
+		function create_admin_so_create_sidebar_category_list (
+			array $categories, // the list of categories to list in a tree like manner already
+			array $uri_segments, // categories in the uri
+			$row_count = 0
+		)
+		{
+			// set instances
+			$CI =& get_instance();
+
+			if (empty($categories))
+			{
+				// nothing more to help with...
+				return FALSE;
+			}
+
+			if (
+				! $row_count
+				OR $row_count == 0
+			)
+			{
+				// nothing more to help with...
+				return FALSE;
+			}
+
+			// open the list
+			echo '<ul class="list-unstyled nested-nav" style="margin-left:15px;" data-row_count="'.$row_count.'">';
+
+			$pre_link = 'admin/sales_orders/create/';
+
+			// strip off segments from uri
+			$uri_segment_array = $CI->uri->segment_array();
+			array_shift($uri_segment_array); // admin
+			array_shift($uri_segment_array); // sales_orders
+			array_shift($uri_segment_array); // create
+
+			// generate url link
+			$li_a_link = array();
+			$ic = 1;
+			foreach ($categories as $category)
+			{
+				// set select if category is already active
+				if ( ! empty($uri_segments) && $uri_segments === $uri_segment_array)
+				{
+					$active = in_array($category->category_slug, $uri_segments) ? 'active': '';
+				}
+				else $active = '';
+
+				// let do first row...
+				if ($ic == 1)
+				{
+					// create link
+					array_push($li_a_link, $category->category_slug);
+
+					// first row is usually the top main category...
+					echo '<li class="category_list '.$category->category_id.'" data-category_id="'.$category->category_id.'" data-parent_category="'.$category->parent_category.'" data-category_slug="'.$category->category_slug.'" data-category_name="'.$category->category_name.'" data-category_level="'.$category->category_level.'" '.$active.'><a href="'.site_url($pre_link.implode('/', $li_a_link)).'" style="font-size:0.8em;"> '.($active ? '<strong>' : '').$category->category_name.($active ? '</strong>' : '').' </a>';
+
+					// save as previous level
+					$prev_level = $category->category_level;
+
+					$ic++;
+					continue;
+				}
+
+				// if same category level, close previous </li> and open another one
+				if ($category->category_level == $prev_level)
+				{
+					// create new link
+					$pop = array_pop($li_a_link);
+					array_push($li_a_link, $category->category_slug);
+
+					echo '</li><li class="category_list '.$category->category_id.' " data-category_id="'.$category->category_id.'" data-parent_category="'.$category->parent_category.'" data-category_slug="'.$category->category_slug.'" data-category_name="'.$category->category_name.'" data-category_level="'.$category->category_level.'" '.$active.'><a href="'.site_url($pre_link.implode('/', $li_a_link)).'" style="font-size:0.8em;"> '.($active ? '<strong>' : '').$category->category_name.($active ? '</strong>' : '').' </a>';
+				}
+
+				// NOTE: next greater level is always greater by only 1 level
+				// if so, create new open list <ul>
+				if ($category->category_level == $prev_level + 1)
+				{
+					// append to previous link
+					array_push($li_a_link, $category->category_slug);
+
+					echo '<ul class="list-unstyled '.($category->category_level == '1' ? 'ul-first-level' : '').'" style="margin-left:15px;"><li class="category_list '.$category->category_id.'" data-category_id="'.$category->category_id.'" data-parent_category="'.$category->parent_category.'" data-category_slug="'.$category->category_slug.'" data-category_name="'.$category->category_name.'" data-category_level="'.$category->category_level.'" '.$active.'><a href="'.site_url($pre_link.implode('/', $li_a_link)).'" style="font-size:0.8em;"> '.($active ? '<strong>' : '').$category->category_name.($active ? '</strong>' : '').' </a>';
+				}
+
+				// if next category level is lower, close previous </li></ul> and open another one
+				// dont forget to count the depth of levels
+				if ($category->category_level < $prev_level)
+				{
+					for ($deep = $prev_level - $category->category_level; $deep >= 0; $deep--)
+					{
+						echo '</li></ul>';
+
+						// update link
+						$pop = array_pop($li_a_link);
+					}
+
+					// append to link
+					array_push($li_a_link, $category->category_slug);
+
+					echo '<ul class="list-unstyled '.($category->category_level == '1' ? 'ul-first-level' : '').'" style="margin-left:15px;"><li class="category_list '.$category->category_id.'" data-category_id="'.$category->category_id.'" data-parent_category="'.$category->parent_category.'" data-category_slug="'.$category->category_slug.'" data-category_name="'.$category->category_name.'" data-category_level="'.$category->category_level.'" '.$active.'><a href="'.site_url($pre_link.implode('/', $li_a_link)).'" style="font-size:0.8em;"> '.($active ? '<strong>' : '').$category->category_name.($active ? '</strong>' : '').' </a>';
+				}
+
+				// if this is last row, close it
+				// again, check coutn of depth of levels
+				if ($ic == $row_count)
+				{
+					for ($deep = $category->category_level; $deep > 0; $deep--)
+					{
+						echo '</li data-row_count="'.$row_count.'"></ul>';
+					}
+					echo '</li>';
+				}
+
+				$prev_level = $category->category_level;
+				$ic++;
+			}
+
+			// close the list
+			echo '</ul>';
+		}
+	}
+
 // ------------------------------------------------------------------------
 
 /* End of file Sate_country_helper.php */

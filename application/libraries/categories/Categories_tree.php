@@ -26,6 +26,7 @@ class Categories_tree
 	 * @var	string
 	 */
 	public $d_url_structure = '';
+	public $vendor_id = '';
 	//public $with_products = FALSE;
 	//public $view_status = '';
 	//public $special_sale = FALSE;
@@ -148,7 +149,8 @@ class Categories_tree
 					$select_pre_last = '(CASE WHEN c'.($level + 1).'.parent_category != c'.($level + 1).'.category_id THEN (SELECT view_status FROM categories WHERE category_id = c'.($level + 1).'.parent_category) ELSE NULL END) AS parent_view_status, ';
 
 					// check if category has products regardless of designer
-					$w_d_url_structure = $this->d_url_structure ? "designer.url_structure = '".$this->d_url_structure."' AND (" : '';
+					$w_vendor_id = $this->vendor_id ? "AND tbl_product.vendor_id = '".$this->vendor_id."' ": '';
+					$w_d_url_structure = $this->d_url_structure ? "designer.url_structure = '".$this->d_url_structure."' ".$w_vendor_id."AND (" : '';
 					$select_pre_last1i = '(SELECT COUNT(*) FROM tbl_product LEFT JOIN designer ON designer.des_id = tbl_product.designer WHERE '.$w_d_url_structure.'cat_id LIKE c'.($level + 1).'.category_id OR cat_id LIKE CONCAT(c'.($level + 1).'.category_id, \',\') OR subcat_id LIKE c'.($level + 1).'.category_id OR subcat_id LIKE CONCAT(c'.($level + 1).'.category_id, \',\') OR categories LIKE CONCAT(\'%"\', c'.($level + 1).'.category_id, \'"%\')'.($this->d_url_structure ? ")": '').' AND tbl_product.view_status = \'Y\')';
 					$select_pre_last1  = '(SELECT COUNT(*) FROM tbl_product LEFT JOIN designer ON designer.des_id = tbl_product.designer WHERE '.$w_d_url_structure.'cat_id LIKE c'.($level + 1).'.category_id OR cat_id LIKE CONCAT(c'.($level + 1).'.category_id, \',\') OR subcat_id LIKE c'.($level + 1).'.category_id OR subcat_id LIKE CONCAT(c'.($level + 1).'.category_id, \',\') OR categories LIKE CONCAT(\'%"\', c'.($level + 1).'.category_id, \'"%\')'.($this->d_url_structure ? ")": '').')';
 					$select_pre_last2  = $select_pre_last1.' AS with_products, ';
@@ -226,6 +228,10 @@ class Categories_tree
 
 						case 'with_products':
 							$where_last .= "AND ".$select_pre_last1i." ".($val ? '!=' : '=')." '0' ";
+						break;
+
+						case 'vendor_id':
+							//$where_last .= "AND ".$select_pre_last1i." ".($val ? '!=' : '=')." '0' ";
 						break;
 
 						case 'view_status':

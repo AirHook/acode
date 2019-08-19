@@ -1,50 +1,138 @@
-<?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Create extends Admin_Controller {
-
-	/**
-	 * SO stock ordering status whether instock or preorder
-	 * Ordering is separate
-	 * 		0 - start (default)
-	 *		1 - instock
-	 *		2 - preorder
-	 *
-	 * @return	void
-	 */
-	public $so_stocstat = '1';
-
-
+/****************
+ * Frontend Controller holds any general front end items
+ *
+ * Shop Controller are for items used for shop thumbs pages
+ *
+ */
+class Create extends Admin_Controller
+{
 	/**
 	 * Constructor
 	 *
 	 * @return	void
 	 */
-	public function __construct()
+	function __Construct()
 	{
-		parent::__construct();
+		parent::__Construct();
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Primary method - index
+	 *
+	 * @return	void
+	 */
+	function index()
+	{
+		// generate the plugin scripts and css
+		$this->_create_plugin_scripts();
 
 		// load pertinent library/model/helpers
-		$this->load->library('form_validation');
-		$this->load->library('users/sales_users_list');
+		$this->load->helper('metronic/create_category_treelist');
 		$this->load->library('designers/designers_list');
-		$this->load->library('users/wholesale_users_list');
 		$this->load->library('users/vendor_users_list');
-		$this->load->library('color_list');
-		$this->load->library('sales_orders/sales_orders_list');
+		$this->load->library('users/wholesale_users_list');
 		$this->load->library('users/sales_user_details');
-		$this->load->library('designers/designer_details');
 		$this->load->library('categories/categories_tree');
-		$this->load->library('categories/sidebar_categories');
+		$this->load->library('products/product_details');
 		$this->load->library('products/size_names');
+		$this->load->library('color_list');
 
-		// let's remove the segments (up to controller class method/function)
-		// for category sidebar links to work
-		$this->data['url_segs'] = explode('/', $this->uri->uri_string());
-		array_shift($this->data['url_segs']); // admin/sales
-		array_shift($this->data['url_segs']); // sales_orders
-		array_shift($this->data['url_segs']); // create
-		array_shift($this->data['url_segs']); // step
+		// get color list
+		$this->data['colors'] = $this->color_list->select();
+
+		// let's ensure that there are no admin session for so mod
+		if ($this->session->admin_so_mod_size_qty)
+		{
+			// new po admin access
+			unset($_SESSION['admin_so_designer']);
+			unset($_SESSION['admin_so_vendor_id']);
+			unset($_SESSION['admin_so_store_id']);
+			unset($_SESSION['admin_so_author']);
+			unset($_SESSION['admin_so_dely_date']);
+			unset($_SESSION['admin_so_items']);
+			unset($_SESSION['admin_so_slug_segs']);
+			// remove po mod details
+			unset($_SESSION['admin_so_mod_so_id']);
+			unset($_SESSION['admin_so_mod_so_items']);
+		}
+
+		// admin - either all designers or per designer admin
+		$this->data['designers'] =
+			$this->webspace_details->options['site_type'] == 'hub_site'
+			? $this->designers_list->select()
+			: $this->designers_list->select(
+				array(
+					'des_id' => $this->webspace_details->des_id
+				)
+			)
+		;
+
+		// get some data
+		if ($this->session->admin_so_designer)
+		{
+			// initialize a property and then get list
+			$this->categories_tree->d_url_structure = $this->session->admin_so_designer;
+			$this->data['categories'] = $this->categories_tree->treelist();
+			// get lists
+			$this->data['vendors'] = $this->vendor_users_list->select(
+				array(
+					'reference_designer' => $this->session->admin_so_designer
+				)
+			);
+			$this->data['users'] = $this->wholesale_users_list->select(
+				array(
+					'reference_designer' => $this->session->admin_so_designer
+				)
+			);
+
+			// get details
+			$this->data['designer_details'] = $this->designer_details->initialize(
+				array(
+					'designer.url_structure' => $this->session->admin_so_designer
+				)
+			);
+
+			// get active category if any
+			$this->data['slug_segs'] =
+				$this->session->admin_so_slug_segs
+				? json_decode($this->session->admin_so_slug_segs, TRUE)
+				: array()
+			;
+
+			// get the designer category tree
+			if ($this->session->admin_so_vendor_id)
+			{
+				$this->data['des_subcats'] = $this->categories_tree->treelist(
+					array(
+						'd_url_structure' => $this->data['designer_details']->url_structure,
+						'vendor_id' => $this->session->admin_so_vendor_id,
+						'with_products' => TRUE
+					)
+				);
+				$this->data['row_count'] = $this->categories_tree->row_count;
+				$this->data['max_level'] = $this->categories_tree->max_category_level;
+
+				foreach ($this->data['des_subcats'] as $subcat)
+				{
+					if ($subcat->category_level == $this->data['max_level'])
+					{
+						$category_id = $subcat->category_id;
+						break;
+					}
+				}
+			}
+		}
+
+		// set the author
+		$this->data['author'] = $this->sales_user_details->initialize(
+			array(
+				'admin_sales_email' => $this->webspace_details->info_email
+			)
+		);
 
 		/*****
 		 * Check for items in session
@@ -55,216 +143,65 @@ class Create extends Admin_Controller {
 			? json_decode($this->session->admin_so_items, TRUE)
 			: array()
 		;
-		$so_items_count = 0;
+		$items_count = 0;
 		foreach ($this->data['so_items'] as $key => $val)
 		{
 			if (is_array($val))
 			{
-				$so_items_count += array_sum($val);
+				$items_count += array_sum($val);
 			}
-			else $so_items_count += 1;
+			else $items_count += 1;
 		}
-		$this->data['so_items_count'] = $so_items_count;
-		$this->data['so_size_qty'] =
-			$this->session->admin_so_size_qty
-			? json_decode($this->session->admin_so_size_qty, TRUE)
-			: array()
-		;
-
-		// instock/preorder ordering session switch
-		$this->so_stocstat = $this->session->admin_so_stocstat ?: '1';
-
-		// connect to database
-		$this->DB = $this->load->database('instyle', TRUE);
-    }
-
-	// ----------------------------------------------------------------------
-
-	/**
-	 * Index - Primary function
-	 *
-	 * @return	void
-	 */
-	public function index()
-	{
-		// redirect user to use url segs
-		redirect('sales/sales_orders/create/step1', 'location');
-	}
-
-	// ----------------------------------------------------------------------
-
-	/**
-	* Step 1 - select items
-	 *
-	 * @return	void
-	 */
-	public function step1()
-	{
-		// generate the plugin scripts and css
-		$this->_create_plugin_scripts();
-
-		// let's ensure that there are no sessions for so mod
-		if ($this->session->so_mod)
-		{
-			// new so admin access
-			unset($_SESSION['admin_so_items']);
-			unset($_SESSION['admin_so_size_qty']);
-			unset($_SESSION['admin_so_stocstat']);
-			// remove so mod details
-			unset($_SESSION['admin_so_mod']);
-		}
-
-		// last segment as category slug
-		$this->data['active_category'] =
-			$this->uri->segment(3) == 'create'
-			? ((count($this->data['url_segs']) - 1) >= 0 ? $this->data['url_segs'][count($this->data['url_segs']) - 1] : 'womens_apparel')
-			: 'womens_apparel'
-		;
-
-		// get respective active category ID for use on product list where condition
-		$category_id = $this->categories_tree->get_id($this->data['active_category']);
-
-		// let's do some defaults...
-		// get size names
-		$this->data['size_names'] = $this->size_names->get_size_names();
-
-		// active designer selection
-		$this->data['active_designer'] = $this->designer_details->url_structure;
+		$this->data['items_count'] = count($this->data['so_items']);
 
 		// set array for where condition of get product list
-		if ($this->data['active_designer'])
+		if ($this->webspace_details->options['site_type'] == 'hub_site')
 		{
-			$where = array(
-				'designer.url_structure' => $this->data['active_designer'],
-				'tbl_product.categories LIKE' => '%'.$category_id.'%'
-			);
+			if ($this->session->admin_so_designer) $where['designer.url_structure'] = $this->session->admin_so_designer;
+			if ($this->session->admin_so_vendor_id) $where['tbl_product.vendor_id'] = $this->session->admin_so_vendor_id;
+			if (@$this->data['des_subcats']) $where['tbl_product.categories LIKE'] = '%'.$category_id.'%';
 		}
+		/*
 		else
 		{
 			$where = array(
-				'tbl_product.categories LIKE' => '%'.$category_id.'%'
+				'designer.url_structure' => $this->data['active_designer'],
+				'tbl_product.categories LIKE' => '%'.$category_id.'%',
+				'tbl_product.vendor_id' => $this->session->admin_po_vendor_id
 			);
 		}
+		*/
 
-		// get the products list
-		$params['show_private'] = TRUE; // all items general public (Y) - N for private
-		$params['view_status'] = 'ALL'; // ALL items view status (Y, Y1, Y2, N)
-		$params['variant_publish'] = 'ALL'; // ALL variant level color publish (view status)
-		$params['group_products'] = FALSE; // group per product number or per variant
-		// show items even without stocks at all
-		$params['with_stocks'] = FALSE;
-		$this->load->library('products/products_list', $params);
-		$this->data['products'] = $this->products_list->select(
-			$where,
-			array( // order conditions
-				'seque' => 'desc',
-				'tbl_product.prod_no' => 'desc'
-			)
-		);
-		$this->data['products_count'] = $this->products_list->row_count;
-
-		// some necessary variables and data
-		$this->data['steps'] = 1;
+		if (@$where)
+		{
+			// get the products list
+			$params['show_private'] = TRUE; // all items general public (Y) - N for private
+			$params['view_status'] = 'ALL'; // ALL items view status (Y, Y1, Y2, N)
+			$params['variant_publish'] = 'ALL'; // ALL variant level color publish (view status)
+			$params['group_products'] = FALSE; // group per product number or per variant
+			// show items even without stocks at all
+			$params['with_stocks'] = FALSE;
+			$this->load->library('products/products_list', $params);
+			$this->data['products'] = $this->products_list->select(
+				$where,
+				array( // order conditions
+					'seque' => 'desc',
+					'tbl_product.prod_no' => 'desc'
+				)
+			);
+			$this->data['products_count'] = $this->products_list->row_count;
+		}
 
 		// need to show loading at start
 		$this->data['show_loading'] = TRUE;
 		$this->data['search_string'] = FALSE;
 
-		// set data variables...
-		$this->data['file'] = 'so_create_steps'; //'purchase_orders';
-		$this->data['page_title'] = 'Sales Order Create';
-		$this->data['page_description'] = 'Create Sales Orders';
+		$this->data['file'] = 'so_create';
+		$this->data['page_title'] = 'Sales Order';
+		$this->data['page_description'] = 'A summary of recent activities';
 
 		// load views...
-		$this->load->view('admin/'.($this->config->slash_item('admin_template') ?: 'metronic/').'template/template', $this->data);
-	}
-
-	// ----------------------------------------------------------------------
-
-	/**
-	 * PRIVATE - Callback function to check on submitted domain name
-	 * if it exists already or not
-	 *
-	 * @return	boolean
-	 */
-	public function check_domain_name($str)
-	{
-		// let's check if the domain name exists already
-		$query = $this->DB->get_where('webspaces', array('domain_name'=>$str));
-		if ($query->num_rows() == 1)
-		{
-			// domain_name exists
-			$this->form_validation->set_message('check_domain_name', 'The {field} field already exists.');
-			return FALSE;
-		}
-
-		// let's validate the domain name
-		$domain = $str;
-
-		// remove the http protocol
-		if(stripos($domain, 'http://') === 0)
-		{
-			$domain = str_replace('http://', '', $domain);
-		}
-
-		// remove the www prefix to be able to manipulate the domain name
-		if(stripos($domain, 'www.') === 0)
-		{
-			$domain = str_replace('www.', '', $domain);
-		}
-
-		// Not even a single . this will eliminate things like abcd, since http://abcd is reported valid
-		if( ! substr_count($domain, '.'))
-		{
-			// no dot at all
-			$this->form_validation->set_message('check_domain_name', 'The {field} is not a domain.');
-			return false;
-		}
-
-		// check for TLD validity
-		$valid_tlds = array('com', 'net');
-		$exp = explode('.', $domain);
-		$tld = $exp[count($exp) - 1];
-		if ( ! in_array($tld, $valid_tlds))
-		{
-			// not the correct tld
-			$this->form_validation->set_message('check_domain_name', 'The {field} has an invalid TLD.');
-			return false;
-		}
-
-		$again = 'http://' . $domain;
-		if ( ! filter_var($again, FILTER_VALIDATE_URL))
-		{
-			// invalid domain
-			$this->form_validation->set_message('check_domain_name', 'The {field} is invalid');
-			return false;
-		}
-		return TRUE;
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Form Validation Callback Functions
-	 *
-	 * @return	boolean
-	 */
-	function validate_email($str)
-	{
-		if ($str == '')
-		{
-			$this->form_validation->set_message('validate_email', 'Please enter an email address of the Email field.');
-			return FALSE;
-		}
-		else
-		{
-			if ( ! filter_var($str, FILTER_VALIDATE_EMAIL))
-			{
-				$this->form_validation->set_message('validate_email', 'The Email field must contain a valid email address.');
-				return FALSE;
-			}
-			else return TRUE;
-		}
+		$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template5/template', $this->data);
 	}
 
 	// ----------------------------------------------------------------------
@@ -290,7 +227,9 @@ class Create extends Admin_Controller {
 			';
 			// bootstrap select
 			$this->data['page_level_styles_plugins'].= '
-				<link href="'.$assets_url.'/assets/global/plugins/bootstrap-select/css/bootstrap-select.css" rel="stylesheet" type="text/css" />
+				<link href="'.$assets_url.'/assets/global/plugins/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
+				<link href="'.$assets_url.'/assets/global/plugins/select2/css/select2-bootstrap.min.css" rel="stylesheet" type="text/css" />
+				<link href="'.$assets_url.'/assets/global/plugins/bootstrap-select/css/bootstrap-select.min.css" rel="stylesheet" type="text/css" />
 			';
 			// datepicker & date-time-pickers
 			$this->data['page_level_styles_plugins'].= '
@@ -315,7 +254,12 @@ class Create extends Admin_Controller {
 			';
 			// bootstrap select
 			$this->data['page_level_plugins'].= '
+				<script src="'.$assets_url.'/assets/global/plugins/select2/js/select2.full.min.js" type="text/javascript"></script>
 				<script src="'.$assets_url.'/assets/global/plugins/bootstrap-select/js/bootstrap-select.min.js" type="text/javascript"></script>
+			';
+			// bootbox
+			$this->data['page_level_plugins'].= '
+				<script src="'.$assets_url.'/assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
 			';
 			// form validation
 			$this->data['page_level_plugins'].= '
@@ -326,9 +270,9 @@ class Create extends Admin_Controller {
 			$this->data['page_level_plugins'].= '
 				<script src="'.$assets_url.'/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js" type="text/javascript"></script>
 			';
-			// input repeater
+			// unveil - lazy script for images
 			$this->data['page_level_plugins'].= '
-				<script src="'.$assets_url.'/assets/global/plugins/jquery-repeater/jquery.repeater.js" type="text/javascript"></script>
+				<script src="'.base_url().'assets/custom/js/jquery.unveil.js" type="text/javascript"></script>
 			';
 
 		/****************
@@ -346,10 +290,10 @@ class Create extends Admin_Controller {
 			';
 			// handle form validation, datepickers, and scripts
 			$this->data['page_level_scripts'].= '
-				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/form-validation-sales_orders_create.js" type="text/javascript"></script>
+				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/admin-so-components.js" type="text/javascript"></script>
 			';
 	}
 
-	// ----------------------------------------------------------------------
+	// --------------------------------------------------------------------
 
 }

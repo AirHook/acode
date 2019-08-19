@@ -40,47 +40,80 @@ class Details extends Admin_Controller {
 
 		// load pertinent library/model/helpers
 		$this->load->library('products/size_names');
-		$this->load->library('products/product_details');
 		$this->load->library('sales_orders/sales_order_details');
 		$this->load->library('designers/designer_details');
+		$this->load->library('users/vendor_user_details');
+		$this->load->library('users/wholesale_user_details');
 		$this->load->library('users/sales_user_details');
+		$this->load->library('products/product_details');
+		$this->load->library('barcodes/upc_barcodes');
 		$this->load->library('zend');
 		$this->zend->load('Zend/Barcode');
 
 		// initialize...
-		$this->data['so_details'] = $this->sales_order_details->initialize(array('sales_orders.sales_order_id'=>$id));
+		$this->data['so_details'] = $this->sales_order_details->initialize(
+			array(
+				'sales_orders.sales_order_id' => $id
+			)
+		);
 
 		// get the author
-		if ($this->sales_order_details->c != '2')
-		{
-			// aahhh... you are an admin user
-			// we have to determine if we need to filter list according to
-			// access level like super admins and staff admins
-			// in the meantime, just set admin author for now
-			$this->data['author'] = $this->admin_user_details->initialize(
-				array(
-					'admin_id' => $this->sales_order_details->author
-				)
-			);
-		}
-		else
-		{
-			$this->data['author'] = $this->sales_user_details->initialize(
-				array(
-					'admin_sales_id' => $this->sales_order_details->author
-				)
-			);
-		}
+		$this->data['author'] = $this->sales_user_details->initialize(
+			array(
+				'admin_sales_id' => $this->sales_order_details->author
+			)
+		);
+
+		// get designer details
+		$this->data['designer_details'] = $this->designer_details->initialize(
+			array(
+				'designer.des_id' => $this->sales_order_details->des_id
+			)
+		);
+
+		// get vendor details
+		// vendor id is always present at this time given create step1
+		$this->data['vendor_details'] = $this->vendor_user_details->initialize(
+			array(
+				'vendor_id' => $this->sales_order_details->vendor_id
+			)
+		);
+
+		// get store details
+		$this->data['store_details'] = $this->wholesale_user_details->initialize(
+			array(
+				'user_id' => $this->sales_order_details->user_id
+			)
+		);
+
+		// get designer id and size names
+		$this->data['des_id'] = $this->sales_order_details->des_id;
+		$this->data['size_names'] = $this->size_names->get_size_names($this->designer_details->webspace_options['size_mode']);
 
 		// set the items
 		$this->data['so_items'] = $this->sales_order_details->items;
+		$this->data['so_date'] = $this->sales_order_details->so_date;
+		$this->data['so_number'] = $this->sales_order_details->so_number;
+		for($c = strlen($this->data['so_number']);$c < 6;$c++)
+		{
+			$this->data['so_number'] = '0'.$this->data['so_number'];
+		}
+		$this->data['so_options'] = $this->sales_order_details->options;
 
-		// get size names using des_id as reference
-		$this->designer_details->initialize(array('designer.des_id'=>$this->sales_order_details->des_id));
-		$this->data['size_names'] = $this->size_names->get_size_names($this->designer_details->webspace_options['size_mode']);
+		// set company information
+		$this->data['company_name'] = $this->designer_details->company_name;
+		$this->data['company_address1'] = $this->designer_details->address1;
+		$this->data['company_address2'] = $this->designer_details->address2;
+		$this->data['company_city'] = $this->designer_details->city;
+		$this->data['company_state'] = $this->designer_details->state;
+		$this->data['company_zipcode'] = $this->designer_details->zipcode;
+		$this->data['company_country'] = $this->designer_details->country;
+		$this->data['company_telephone'] = $this->designer_details->phone;
+		$this->data['company_contact_person'] = $this->designer_details->owner;
+		$this->data['company_contact_email'] = $this->designer_details->info_email;
 
 		// set data variables...
-		$this->data['file'] = 'so_details'; // sales_orders_details
+		$this->data['file'] = 'so_details_v2'; // sales_orders_details
 		$this->data['page_title'] = 'Sales Order Details';
 		$this->data['page_description'] = 'Details of the sales order from sales for wholesale user';
 
@@ -115,11 +148,6 @@ class Details extends Admin_Controller {
 				<link href="'.$assets_url.'/assets/global/plugins/select2/css/select2-bootstrap.min.css" rel="stylesheet" type="text/css" />
 				<link href="'.$assets_url.'/assets/global/plugins/bootstrap-select/css/bootstrap-select.min.css" rel="stylesheet" type="text/css" />
 			';
-			// datatable
-			$this->data['page_level_styles_plugins'].= '
-				<link href="'.$assets_url.'/assets/global/plugins/datatables/datatables.min.css" rel="stylesheet" type="text/css" />
-				<link href="'.$assets_url.'/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css" rel="stylesheet" type="text/css" />
-			';
 
 		/****************
 		 * page style sheets inserted at <head>
@@ -142,12 +170,6 @@ class Details extends Admin_Controller {
 			$this->data['page_level_plugins'].= '
 				<script src="'.$assets_url.'/assets/global/plugins/select2/js/select2.full.min.js" type="text/javascript"></script>
 				<script src="'.$assets_url.'/assets/global/plugins/bootstrap-select/js/bootstrap-select.min.js" type="text/javascript"></script>
-			';
-			// datatable
-			$this->data['page_level_plugins'].= '
-				<script src="'.$assets_url.'/assets/global/scripts/datatable.js" type="text/javascript"></script>
-				<script src="'.$assets_url.'/assets/global/plugins/datatables/datatables.min.js" type="text/javascript"></script>
-				<script src="'.$assets_url.'/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>
 			';
 
 		/****************

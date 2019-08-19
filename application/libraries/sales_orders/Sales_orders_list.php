@@ -247,7 +247,7 @@ class Sales_orders_list
 	 *
 	 * @return	String
 	 */
-	public function max_sales_order_number()
+	public function max_so_number()
 	{
 		$this->DB->select_max('sales_order_number');
 		$query = $this->DB->get('sales_orders');

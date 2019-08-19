@@ -6,8 +6,10 @@
     </head>
     <body onload="window.print();">
 
-        <?php if (isset($barcode))
-        { ?>
+        <?php if (! empty($barcodes))
+        {
+            foreach ($barcodes as $barcode)
+            { ?>
 
         <div style="text-align:center;padding-top:15px">
             <div style="display:inline-block;text-align:justify;margin:0 auto;">
@@ -22,8 +24,8 @@
             </div>
         </div>
 
-
-            <?php
+                <?php
+            }
         } ?>
 
         <script src="<?php echo base_url(); ?>assets/custom/jscript/jsbarcode/jsbarcode.all.min.js" type="text/javascript"></script>

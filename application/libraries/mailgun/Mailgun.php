@@ -6,7 +6,7 @@ class Mailgun
     private $CI;
 	private $key;
 	private $domain;
-	public $to = array(), $messageList = array(),$ishtml = false;
+	public $to,$subject,$message, $messageList = array(),$ishtml = true;
 	
 
     public function __construct()
@@ -19,16 +19,17 @@ class Mailgun
 
     public function Send()
     {	
-		foreach($this->messageList as $campaign){	
+	//echo $this->message; 
+		//foreach($this->messageList as $campaign){	
 		$array_data = array(
 			'from'=> 'expertcoder04@gmail.com',
 			'to'=>$this->to,//'developer.ranjan88@gmail.com',//rsbgm@rcpixel.com,rsbgm@instylenewyork.com,
-			'subject'=>$campaign['subject'],
+			'subject'=>$this->subject,
 		);
 		if($this->ishtml){
-			$array_data['html']=$campaign['message'];
+			$array_data['html']=$this->message;
 		}else{
-			$array_data['text']=$campaign['message'];
+			$array_data['text']=$this->message;
 		}		
 		$session = curl_init($this->domain.'/messages');
 		//$this->key;
@@ -45,7 +46,7 @@ class Mailgun
 		curl_close($session);  
 		$results = json_decode($response, true);
 		print_r($results); 
-		}
+		//}
 		// if(count($messageList)==1){
 			// $this->sendSingleMail($to,$messageList['message'],$ishtml = true);
 		// }
