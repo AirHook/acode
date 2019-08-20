@@ -10,7 +10,7 @@
         { ?>
 
         <div style="text-align:center;padding-top:15px">
-            <div style="display:inline-block;text-align:justify;margin:0 auto;">
+            <div style="display:inline-block;text-align:justify;margin:0 auto;" data-max_st_id="<?php echo $this->upc_barcodes->max_st_id; ?>">
                 <svg class="barcode"
                     jsbarcode-format="upc"
                     jsbarcode-value="<?php echo $barcode; ?>"

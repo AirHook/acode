@@ -285,7 +285,7 @@
                                         <a href="#modal-unlisted_style_no" data-toggle="modal" class="btn grey btn-sm">
                                             <span style="color:red;">CLICK</span> HERE TO ADD STYLE NUMBERS NOT IN THE LIST
                                         </a>
-                                        <a href="#modal-size_qty" data-toggle="modal" class="btn grey btn-sm">
+                                        <a href="#modal-size_qty" data-toggle="modal" class="btn grey btn-sm hide">
                                             SIZE QTY MODAL
                                         </a>
                                     </p>

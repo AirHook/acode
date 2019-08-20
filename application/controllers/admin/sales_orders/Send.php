@@ -44,7 +44,7 @@ class Send extends Admin_Controller {
 		$this->session->set_flashdata('success', 'sent');
 
 		// redirect user
-		$this->_redirect($from);
+		$this->_redirect($from, $id);
 	}
 
 	// ----------------------------------------------------------------------
@@ -54,12 +54,12 @@ class Send extends Admin_Controller {
 	 *
 	 * @return	void
 	 */
-	private function _redirect($from)
+	private function _redirect($from, $id)
 	{
 		// redirect user
 		if ($from == 'details')
 		{
-			redirect('admin/sales_orders/details/index/'.$this_so_id, 'location');
+			redirect('admin/sales_orders/details/index/'.$id, 'location');
 		}
 		else
 		{

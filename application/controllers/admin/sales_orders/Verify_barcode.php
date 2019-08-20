@@ -38,17 +38,19 @@ class Verify_barcode extends Admin_Controller {
 			// grab the post variables
 			$designer = $this->input->post('designer');
 			$vendor_id = $this->input->post('vendor_id');
-			$barcode = $this->input->post('barcode');
+			$barcode = '710780999998';//$this->input->post('barcode');
 
 			$this->load->library('barcodes/upc_barcodes');
 
 			if ($this->upc_barcodes->validate($barcode))
 			{
+				// check and get stock id
+				$st_id = $this->upc_barcodes->st_id;
+
 				// load pertinent library/model/helpers
 				$this->load->library('products/product_details');
 
-				$st_id = ltrim($barcode[6].$barcode[7].$barcode[8].$barcode[9], '0');
-
+				// get details
 				$product = $this->product_details->initialize(
 					array(
 						'tbl_stock.st_id' => $st_id

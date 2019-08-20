@@ -21,7 +21,8 @@ class So_item extends Admin_Controller {
 	 *
 	 * @return	void
 	 */
-    public function index($st_id = NULL, $size_label = NULL)
+    //public function index($st_id = NULL, $size_label = NULL)
+	public function index($st_id = '31', $size_label = 'size_2')
     {
     	if (
 			$st_id != NULL

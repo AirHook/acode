@@ -206,7 +206,7 @@ class Sales_order_sending
 		//$this->m_pdf->pdf->Output(); // output to browser
 		$this->CI->m_pdf->pdf->Output($pdf_file_path, "F");
 
-		$pdf_attachment = 'assets/pdf/pdf_po_selected.pdf';
+		$pdf_attachment = 'assets/pdf/pdf_so_selected.pdf';
 		$this->CI->email->attach($pdf_attachment);
 
 		if (ENVIRONMENT !== 'development')

@@ -27,7 +27,7 @@
 
 		                                <div class="caption modify-so">
 		                                    <!--
-		                                    <a class="btn dark " href="<?php echo site_url($this->uri->segment(1).'/purchase_orders/modify/index/'.$so_details->sales_order_id); ?>">
+		                                    <a class="btn dark " href="<?php echo site_url($this->uri->segment(1).'/sales_orders/modify/index/'.$so_details->sales_order_id); ?>">
 		                                    -->
 		                                    <a class="btn dark " href="javascript:;">
 		                                        <i class="fa fa-pencil"></i> Modify SO
@@ -357,7 +357,8 @@
 																		$upcfg['st_id'] = $product->st_id;
 																		$upcfg['size_label'] = $size_label;
 																		$this->upc_barcodes->initialize($upcfg);
-																		echo $this->upc_barcodes->generate();
+																		echo $this->upc_barcodes->max_st_id;
+																		//echo $this->upc_barcodes->generate();
 																		?>
 																	<div style="display:inline-block;float:right;text-align:center;">
 																		<svg style="float:right;"
