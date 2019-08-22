@@ -85,9 +85,9 @@
                                                 $image_new = $product->media_path.$style_no.'_f3.jpg';
                                                 $img_front_large = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_f.jpg';
 
-                                                $img_front_new = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_f4.jpg';
-                                                $img_back_new = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_b4.jpg';
-                                                $img_side_new = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_s4.jpg';
+                                                $img_front_new = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_f3.jpg';
+                                                $img_back_new = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_b3.jpg';
+                                                $img_side_new = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_s3.jpg';
                                                 $img_coloricon = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_c.jpg';
 
                                                 $img_linesheet = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_linesheet.jpg';
@@ -588,9 +588,9 @@
 														/**********
 														 * Other Views Thumbs
 														 */
-                                                        $img_front_new = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_f4.jpg';
-                                                        $img_back_new = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_b4.jpg';
-                                                        $img_side_new = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_s4.jpg';
+                                                        $img_front_new = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_f3.jpg';
+                                                        $img_back_new = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_b3.jpg';
+                                                        $img_side_new = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_s3.jpg';
 
                                                         $img_front_large = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_f.jpg';
                                                         $img_back_large = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_b.jpg';
