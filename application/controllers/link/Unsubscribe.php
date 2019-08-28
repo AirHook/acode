@@ -180,7 +180,7 @@ class Unsubscribe extends MY_Controller
 			<br /><br />
 			'.ucfirst($this->user_details->fname.' '.$this->user_details->lname).' ('.$this->user_details->email.') has UNSUBSCRIBED.<br />
 			A click on an unsubscribe link has been detected from '.$this->email_type.'.<br />
-			His or her status is now INACTIVE.
+			His or her status is now INACTIVE/SUSPENDED/OPTEDOUT.
 			<br /><br />
 			<br />
 		';
@@ -196,21 +196,21 @@ class Unsubscribe extends MY_Controller
 		else
 		{
 			// load email library
-			$this->CI->load->library('email');
+			$this->load->library('email');
 
 			// notify admin
-			$this->CI->email->clear();
+			$this->email->clear();
 
-			$this->CI->email->from($this->designer_info_email, $this->designer);
+			$this->email->from($this->webspace_details->info_email, $this->webspace_details->name);
 
-			$this->CI->email->to($this->CI->webspace_details->info_email);
+			$this->email->to($this->webspace_details->info_email);
 
-			//$this->email->bcc($this->CI->config->item('dev1_email')); // --> for debuggin purposes
+			$this->email->bcc($this->config->item('dev1_email')); // --> for debuggin purposes
 
-			$this->CI->email->subject('WHOLESALE USER IS ON LINE - '.strtoupper($this->CI->webspace_details->name));
-			$this->CI->email->message($email_message);
+			$this->email->subject('UNSUBSCRIBE Detected');
+			$this->email->message($email_message);
 
-			$this->CI->email->send();
+			$this->email->send();
 		}
 	}
 
