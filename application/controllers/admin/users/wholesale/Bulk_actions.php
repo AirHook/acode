@@ -27,16 +27,11 @@ class Bulk_actions extends Admin_Controller {
 	{
 		echo 'Processing...';
 
-		//echo '<pre>';
-		//print_r($this->input->post());
-		//die();
-
 		// connect to database
 		$DB = $this->load->database('instyle', TRUE);
 
 		// load pertinent library/model/helpers
 		$this->load->library('users/wholesale_user_details');
-		$this->load->library('odoo');
 
 		// set database set clause based on bulk_action for activate and suspend
 		switch ($this->input->post('bulk_action'))
@@ -77,37 +72,6 @@ class Bulk_actions extends Admin_Controller {
 					'remove'
 				);
 			}
-
-			// set some items for odoo
-			$post_ary['user_id'] = $id;
-			$post_ary['store_name'] = $this->wholesale_user_details->store_name;
-			if (@$status) $post_ary['status'] = $status;
-
-			/***********
-			 * Update ODOO
-			 */
-
-			// pass data to odoo
-			// this is needed here because of the vendor_id that is needed to pass
-			if (
-				ENVIRONMENT !== 'development'
-				&& $this->wholesale_user_details->reference_designer == 'basixblacklabel'
-			)
-			{
-				if ($this->input->post('bulk_action') === 'del')
-				{
-					$odoo_response = $this->odoo->post_data($post_ary, 'wholesale_users', 'del');
-				}
-				else
-				{
-					$odoo_response = $this->odoo->post_data($post_ary, 'wholesale_users', 'edit');
-				}
-			}
-
-			//echo '<pre>';
-			//print_r($post_ary);
-			//echo $odoo_response;
-			//die('<br />Died!');
 		}
 
 		// update or delete items from database

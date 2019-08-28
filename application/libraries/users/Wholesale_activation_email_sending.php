@@ -108,9 +108,17 @@ class Wholesale_activation_email_sending
 				return FALSE;
 			}
 
+			// set emailtracker_id
+			$data['emailtracker_id'] =
+				$this->CI->wholesale_user_details->user_id
+				.'wi0010t'
+				.time()
+			;
+
+			// get product list
 			$data['instock_products'] = $this->_get_thumbs('instock');
 			$data['preorder_products'] = $this->_get_thumbs('preorder');
-			$data['onsale_products'] = $this->_get_thumbs('onsale');
+			$data['onsale_products'] = ''; //$this->_get_thumbs('onsale');
 
 			$this->CI->email->clear();
 
@@ -122,7 +130,7 @@ class Wholesale_activation_email_sending
 
 			$this->CI->email->to($this->CI->wholesale_user_details->email);
 
-			// let's set some data and get the message
+			// let's set some data and get the message template
 			$data['username'] = ucwords(strtolower(trim($this->CI->wholesale_user_details->fname).' '.trim($this->CI->wholesale_user_details->lname)));
 			$data['email'] = $this->CI->wholesale_user_details->email;
 			$data['password'] = $this->CI->wholesale_user_details->password;
@@ -154,11 +162,37 @@ class Wholesale_activation_email_sending
 			}
 			else
 			{
-				if ( ! @$this->CI->email->send())
-				{
-					$this->error .= 'Unable to send to - "'.$email.'"<br />';
+				$sendby = @$this->CI->webspace_details->options['email_send_by'] ?: 'mailgun'; // options: mailgun, default (CI native emailer)
 
-					return FALSE;
+				if ($sendby == 'mailgun')
+				{
+					// load pertinent library/model/helpers
+					$this->CI->load->library('mailgun/mailgun');
+					$this->CI->mailgun->from = $this->CI->wholesale_user_details->designer.' <'.$this->CI->wholesale_user_details->designer_info_email.'>';
+					$this->CI->mailgun->to = $this->CI->wholesale_user_details->email;
+					$this->CI->mailgun->cc = $this->CI->webspace_details->info_email;
+					$this->CI->mailgun->bcc = $this->CI->config->item('dev1_email');
+					$this->CI->mailgun->subject = 'Welcome to '.$this->CI->wholesale_user_details->designer.' Wholesale Order System';
+					$this->CI->mailgun->message = $message;
+
+					if ( ! $this->CI->mailgun->Send())
+					{
+						$this->error .= 'Unable to send to - "'.$email.'"<br />';
+						$this->error .= $this->CI->mailgun->error_message;
+
+						return FALSE;
+					}
+
+					$this->CI->mailgun->clear();
+				}
+				else
+				{
+					if ( ! @$this->CI->email->send())
+					{
+						$this->error .= 'Unable to send to - "'.$email.'"<br />';
+
+						return FALSE;
+					}
 				}
 			}
 		}

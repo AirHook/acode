@@ -24,23 +24,23 @@ class Mailgun
 	 *
 	 * @var	string
 	 */
-    public $to;
-    public $cc;
-    public $bcc;
+    public $to = '';
+    public $cc = '';
+    public $bcc = '';
 
     /**
 	 * Email Subject
 	 *
 	 * @var	string
 	 */
-	public $subject;
+	public $subject = '';
 
     /**
 	 * Email Message
 	 *
 	 * @var	string
 	 */
-	public $message;
+	public $message = '';
 
     /**
 	 * Error Message
@@ -54,7 +54,7 @@ class Mailgun
 	 *
 	 * @var	boolean
 	 */
-	public $ishtml = true;
+	public $ishtml = TRUE;
 
     /**
 	 * Mailgun API Key
@@ -104,7 +104,7 @@ class Mailgun
         )
         {
             // nothing more to do...
-            $this->error_message = 'FROM/TO field is required.'
+            $this->error_message = 'FROM/TO field is required.';
 
             return FALSE;
         }
@@ -112,7 +112,7 @@ class Mailgun
         if ( ! $this->message)
         {
             // nothing more to do...
-            $this->error_message = 'MESSAGE field is required.'
+            $this->error_message = 'MESSAGE field is required.';
 
             return FALSE;
         }
@@ -137,28 +137,33 @@ class Mailgun
 		}
 
         // let do the curl
-        $session = curl_init($this->domain.'/messages');
+        $csess = curl_init($this->domain.'/messages');
 
         // set settings
-        curl_setopt($session, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-        curl_setopt($session, CURLOPT_USERPWD, 'api:'.$this->key);
-        curl_setopt($session, CURLOPT_POST, true);
-        curl_setopt($session, CURLOPT_POSTFIELDS, $params);
-        curl_setopt($session, CURLOPT_HEADER, false);
-        curl_setopt($session, CURLOPT_ENCODING, 'UTF-8');
-        curl_setopt($session, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($session, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($csess, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+        curl_setopt($csess, CURLOPT_USERPWD, 'api:'.$this->key);
+        curl_setopt($csess, CURLOPT_POST, true);
+        curl_setopt($csess, CURLOPT_POSTFIELDS, $params);
+        curl_setopt($csess, CURLOPT_HEADER, false);
+        curl_setopt($csess, CURLOPT_ENCODING, 'UTF-8');
+        curl_setopt($csess, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($csess, CURLOPT_SSL_VERIFYPEER, false);
 
         // get response
-        $response = curl_exec($session);
+        $response = curl_exec($csess);
 
         // close curl
-        curl_close($session);
+        curl_close($csess);
 
+        // convert to array
         $results = json_decode($response, true);
 
+        // check for message error
         if ($results["message"] == "Queued. Thank you.")
         {
+            // clear properties
+            $this->clear();
+
             // successful
         	return TRUE;
         }
@@ -169,6 +174,23 @@ class Mailgun
 
         	return FALSE;
         }
+    }
+
+    // ----------------------------------------------------------------------
+
+    public function clear()
+    {
+        $this->from = '';
+        $this->to = '';
+        $this->cc = '';
+        $this->bcc = '';
+        $this->subject = '';
+        $this->message = '';
+        $this->ishtml = TRUE;
+        $this->key = '';
+        $this->domain = '';
+
+        return $this;
     }
 
     // ----------------------------------------------------------------------

@@ -288,7 +288,7 @@ class Details extends Frontend_Controller
 			'1' => array(140, 210),
 			'2' => array(60, 90),
 			'3' => array(340, 510),
-			'4' => array(800, 1200)
+			'4' => array(800, 1200) // removing use of this
 		);
 		*/
 

@@ -63,6 +63,13 @@
 	-->
     <body yahoo style="margin: 10px 0 0;padding: 0; min-width: 100% !important;">
 
+        <?php
+        /***********
+         * Open email tracker image
+         */
+        ?>
+        <img src="<?php echo base_url(); ?>link/open.html?id=<?php echo @$emailtracker_id; ?>" alt="" />
+
         <table width="100%" border="0" cellpadding="0" cellspacing="0" align="center">
             <tr>
                 <td>
@@ -714,7 +721,7 @@
 
                                             <br /><br />
 
-                                            <a href="javascript:;" style="color:#aaa;">
+                                            <a href="<?php echo $emailtracker_id ? base_url().'link/unsubscribe.html?id='.$emailtracker_id : 'javascript:;'; ?>" target="_blank" style="color:#aaa;">
                                                 UNSUBSCRIBE
                                             </a>
 
