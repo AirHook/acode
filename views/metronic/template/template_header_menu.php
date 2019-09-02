@@ -436,8 +436,8 @@
 													$main_category->view_status == '1'
 													&& $main_category->with_products > 0
 													&& (
-														$main_category->category_slug !== 'outerwear'
-														&& $main_category->category_slug !== 'accessories'
+														$main_category->category_slug !== 'accessories'
+														//&& $main_category->category_slug !== 'outerwear'
 													)
 												)
 												{
