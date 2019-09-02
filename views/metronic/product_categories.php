@@ -190,7 +190,10 @@
 													$prev_level = $category->category_level;
 
 													$ic++;
-												} ?>
+                                                }
+
+                                                if ($this->webspace_details->slug !== 'junnieleigh')
+                                                { ?>
 
                                                 <div class="cbp-item on-sale-general clearfix" style="height:345px;">
                                                     <a href="<?php echo site_url('shop/womens_apparel'); ?>?filter=&availability=onsale" class="cbp-caption cbp-singlePageInline_" data-title="Womens Apparel<br>On Sale Items" rel="nofollow">
@@ -210,6 +213,9 @@
                                                     <div class="cbp-l-grid-projects-title text-center hidden-lg"> Womens Apparel </div>
                                                     <div class="cbp-l-grid-projects-desc text-center hidden-lg"> On sale items </div>
                                                 </div>
+
+                                                <?php
+                                            } ?>
 
                                             </div>
 											<!-- DOC: Apply/remove class "hide" to show/hide element -->

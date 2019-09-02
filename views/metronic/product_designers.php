@@ -14,7 +14,7 @@
 										</h3>
 
                                         <div class="portfolio-content portfolio-3 margin-top-30">
-                                            
+
                                             <div id="js-grid-lightbox-gallery-<?php echo $designer->url_structure; ?>" class="cbp">
 
 												<?php
@@ -139,7 +139,10 @@
 													$prev_level = $category->category_level;
 
 													$ic++;
-												} ?>
+												}
+
+                                                if ($designer->slug !== 'junnieleigh')
+                                                { ?>
 
                                                 <div class="cbp-item on-sale-general clearfix" style="height:345px;">
                                                     <a href="<?php echo site_url('shop/'.$designer->slug.'/womens_apparel'); ?>?filter=&availability=onsale" class="cbp-caption cbp-singlePageInline_" data-title="Womens Apparel<br>On Sale Items" rel="nofollow">
@@ -158,6 +161,9 @@
                                                     <div class="cbp-l-grid-projects-title text-center"> Special Sale </div>
                                                     <div class="cbp-l-grid-projects-desc text-center hidden-lg"> On sale items </div>
                                                 </div>
+
+                                                    <?php
+                                                } ?>
 
                                             </div>
                                         </div>

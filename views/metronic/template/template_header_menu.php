@@ -14,6 +14,7 @@
 										 * Hub Site
 										 * DESIGNERS
 										 * Main menu item that drops down list of designers and it's major subcats
+                                         * Doesn't not show on satellite sites
 										 */
 										if ($this->webspace_details->options['site_type'] == 'hub_site')
 										{ ?>
@@ -579,16 +580,25 @@
 											}
 										} ?>
 
-                                        <li aria-haspopup="true" class="menu-dropdown classic-menu-dropdown">
+                                        <!-- DOC: Apply "hide" class to hide element -->
+                                        <li aria-haspopup="true" class="menu-dropdown classic-menu-dropdown hide">
                                             <a href="<?php echo site_url(); ?>"> Home
                                                 <span class="arrow hide"></span>
                                             </a>
                                         </li>
+
+                                        <?php if ($this->webspace_details->slug != 'junnieleigh')
+                                        { ?>
+
                                         <li aria-haspopup="true" class="menu-dropdown classic-menu-dropdown">
-                                            <a class="margin-right-0" href="<?php echo $this->config->item('PROD_IMG_URL'); ?>shop/womens_apparel.html?filter=&availability=onsale"> Clearance Sale
+                                            <a class="margin-right-0 font-red" href="<?php echo $this->config->item('PROD_IMG_URL'); ?>shop/womens_apparel.html?filter=&availability=onsale"> Clearance
                                                 <span class="arrow hide"></span>
                                             </a>
                                         </li>
+
+                                            <?php
+                                        } ?>
+
                                     </ul>
                                 </div>
                                 <!-- END MEGA MENU -->

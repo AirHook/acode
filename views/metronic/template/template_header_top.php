@@ -42,28 +42,41 @@
 										<a href="<?php echo site_url(); ?>">
 											<?php
 
+                                                // get respective logo for desinger pages
     											if (
     												$this->uri->segment(2)
     												OR $this->uri->segment(3)
 
     											)
     											{
-    												$designer =
-    													$this->designer_details->initialize(array('url_structure'=>$this->uri->segment(2)))
-    													OR $this->designer_details->initialize(array('url_structure'=>$this->uri->segment(3)))
-    												;
-    												if ($designer = $this->designer_details->initialize(array('url_structure'=>$this->uri->segment(2))))
-    												{
-    													$des_logo = $this->designer_details->logo;
-    												}
-    												else if ($designer = $this->designer_details->initialize(array('url_structure'=>$this->uri->segment(3))))
+    												$designer = $this->designer_details->initialize(array('url_structure'=>$this->uri->segment(2)));
+                                                    if ( ! $designer)
+                                                    {
+                                                        $designer = $this->designer_details->initialize(array('url_structure'=>$this->uri->segment(3)));
+                                                    }
+
+    												if ($designer)
     												{
     													$des_logo = $this->designer_details->logo;
     												}
     												else $des_logo = '';
     											}
-    											else $des_logo = '';
+    											else
+                                                {
+                                                    if (@$this->webspace_details->options['site_type'] == 'sat_site')
+                                                    {
+                                                        $designer = $this->designer_details->initialize(
+                                                            array(
+                                                                'url_structure' => $this->webspace_details->slug
+                                                            )
+                                                        );
 
+                                                        $des_logo = $this->designer_details->logo;
+                                                    }
+                                                    else $des_logo = '';
+                                                }
+
+                                                // set $logo per designer or as per webspace details
     											$logo = $des_logo
     												? $this->config->item('PROD_IMG_URL').$this->designer_details->logo
     												: @$this->webspace_details->options['logo']

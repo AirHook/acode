@@ -590,7 +590,7 @@
 																| Size
 																*/
 																?>
-																<span class="prdname product-form__label" style="margin-top:5px;"><strong>SIZE:</strong> Please select a size</span>
+																<span class="prdname product-form__label" style="margin-top:5px;"><strong>AVAILABLE SIZES:</strong> Please select a size</span>
 
 																<input type="hidden" id="size" name="size" value="" />
 
@@ -723,8 +723,8 @@
                                                                     $this->webspace_details->slug != 'basixblacklabel'
                                                                 )
                                                                 { ?>
+                                                                    <span class="key  product-form__label  product-form__label--alt  uppercase"><strong>SELECT QUANTITY:</strong></span>
 																<div class="product-form__qty" style="width:100px;margin-bottom:25px;">
-																	<span class="key  product-form__label  product-form__label--alt  uppercase"><strong>Quantity:</strong></span>
 																	<input id="touchspin_5" type="text" value="" name="qty" class="center text-center" required="required" />
 																</div>
                                                                     <?php

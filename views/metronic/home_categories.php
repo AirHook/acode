@@ -186,7 +186,10 @@
 													$prev_level = $category->category_level;
 
 													$ic++;
-												} ?>
+                                                }
+
+                                                if ($designer->url_structure !== 'junnieleigh')
+                                                { ?>
 
                                                 <div class="cbp-item on-sale-general clearfix" style="height:345px;">
                                                     <a href="<?php echo site_url('shop/womens_apparel'); ?>?filter=&availability=onsale" class="cbp-caption cbp-singlePageInline_" data-title="Womens Apparel<br>On Sale Items" rel="nofollow">
@@ -197,15 +200,18 @@
                                                             <div class="cbp-l-caption-alignLeft">
                                                                 <div class="cbp-l-caption-body">
                                                                     <div class="cbp-l-caption-title"> Womens Apparel </div>
-                                                                    <div class="cbp-l-caption-desc"> On sale items </div>
+                                                                    <div class="cbp-l-caption-desc"> Clearance </div>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </a>
-                                                    <div class="cbp-l-grid-projects-title text-center hidden-xs hidden-sm hidden-md"> On Sale Items </div>
+                                                    <div class="cbp-l-grid-projects-title text-center hidden-xs hidden-sm hidden-md"> Clearance </div>
                                                     <div class="cbp-l-grid-projects-title text-center hidden-lg"> Womens Apparel </div>
-                                                    <div class="cbp-l-grid-projects-desc text-center hidden-lg"> On sale items </div>
+                                                    <div class="cbp-l-grid-projects-desc text-center hidden-lg"> Clearance </div>
                                                 </div>
+
+                                                <?php
+                                            } ?>
 
                                             </div>
                                             <div id="js-loadMore-lightbox-gallery" class="cbp-l-loadMore-button hide">
