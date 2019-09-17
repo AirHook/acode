@@ -187,7 +187,7 @@ class Email extends MY_Controller {
 					case '0012':
 						$param = 'instock';
 					break;
-					case '0013':
+					case '0013': // gneral items
 					default:
 						$param = '';
 				}

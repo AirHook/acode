@@ -28,6 +28,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * 		0014 - sales package [sp_ids]
  *		0015 - special sale invite
  *		0016 - product email
+ *		0017 - vendor po
  *
  * saved to user option as:
  * option[emailtrack][0010][$ts] = <#oftimes>
@@ -95,24 +96,35 @@ class Open extends MY_Controller {
 			$user_id = rtrim($email_id_ary, $user_code);
 
 			// load pertinent library/model/helpers
-			$this->load->library('users/wholesale_user_details');
+			$this->load->library('users/vendor_user_details');
 			$this->load->library('users/consumer_user_details');
+			$this->load->library('users/wholesale_user_details');
 
 			// at the moment, tracking only for consumer and wholesale user
 			switch ($user_code)
 			{
-				case 'w':
-					$db_table = 'tbluser_data_wholesale';
-					$user_details = $this->wholesale_user_details->initialize(
+				case 'v':
+					$db_table = 'vendors';
+					$id_label = 'vendor_id';
+					$user_details = $this->vendor_user_details->initialize(
+						array(
+							'vendor_id' => $user_id
+						)
+					);
+				break;
+				case 'c':
+					$db_table = 'tbluser_data';
+					$id_label = 'user_id';
+					$user_details = $this->consumer_user_details->initialize(
 						array(
 							'user_id' => $user_id
 						)
 					);
 				break;
-
-				case 'c':
-					$db_table = 'tbluser_data';
-					$user_details = $this->consumer_user_details->initialize(
+				case 'w':
+					$db_table = 'tbluser_data_wholesale';
+					$id_label = 'user_id';
+					$user_details = $this->wholesale_user_details->initialize(
 						array(
 							'user_id' => $user_id
 						)
@@ -133,7 +145,7 @@ class Open extends MY_Controller {
 			// connect to database
 			$DB = $this->load->database('instyle', TRUE);
 			$DB->set('options', json_encode($options));
-			$DB->where('user_id', $user_id);
+			$DB->where($id_label, $user_id);
 			$DB->update($db_table);
 		}
 
