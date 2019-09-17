@@ -43,6 +43,13 @@ class Mailgun
 	public $message = '';
 
     /**
+	 * Attachment
+	 *
+	 * @var	mixed
+	 */
+	public $attachment;
+
+    /**
 	 * Error Message
 	 *
 	 * @var	string
@@ -133,8 +140,11 @@ class Mailgun
 		}
         else
         {
-			$params['text']=$this->message;
+			$params['text'] = $this->message;
 		}
+
+        // attachments
+        if ($this->attachment) $params['attachment'] = $this->attachment;
 
         // let do the curl
         $csess = curl_init($this->domain.'/messages');
@@ -144,7 +154,8 @@ class Mailgun
         curl_setopt($csess, CURLOPT_USERPWD, 'api:'.$this->key);
         curl_setopt($csess, CURLOPT_POST, true);
         curl_setopt($csess, CURLOPT_POSTFIELDS, $params);
-        curl_setopt($csess, CURLOPT_HEADER, false);
+        curl_setopt($csess, CURLOPT_HEADER, true);
+        curl_setopt($csess, CURLOPT_HTTPHEADER, array('Content-Type: multipart/form-data'));
         curl_setopt($csess, CURLOPT_ENCODING, 'UTF-8');
         curl_setopt($csess, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($csess, CURLOPT_SSL_VERIFYPEER, false);

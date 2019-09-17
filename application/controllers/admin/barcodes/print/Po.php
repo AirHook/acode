@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class So extends Admin_Controller {
+class Po extends Admin_Controller {
 
 	/**
 	 * Constructor
@@ -21,34 +21,35 @@ class So extends Admin_Controller {
 	 *
 	 * @return	void
 	 */
-    public function index($so_id = NULL)
+    public function index($id = NULL)
     {
-    	if ($so_id != NULL)
+    	if ($id != NULL)
     	{
 			// load pertinent library/model/helpers
-			$this->load->library('barcodes/upc_barcodes');
-			$this->load->library('sales_orders/sales_order_details');
-			$this->load->library('products/product_details');
 			$this->load->library('products/size_names');
+			$this->load->library('designers/designer_details');
+			$this->load->library('purchase_orders/purchase_order_details');
+			$this->load->library('products/product_details');
+			$this->load->library('barcodes/upc_barcodes');
 
 			// initialize...
-			$so_details = $this->sales_order_details->initialize(
+			$po_details = $this->purchase_order_details->initialize(
 				array(
-					'sales_orders.sales_order_id' => $so_id
+					'purchase_orders.po_id' => $id
 				)
 			);
 
-			// set the items
-			$items = $so_details->items;
+			// get the items
+			$items = $po_details->items;
 
 			// get designer details
-			$this->designer_details->initialize(array('designer.des_id'=>$so_details->des_id));
+			$this->designer_details->initialize(array('designer.des_id'=>$this->purchase_order_details->des_id));
 
 			// get the barcodes
 			$barcodes = array();
 			if ( ! empty($items))
 			{
-				foreach ($items as $item => $size_qty)
+				foreach ($items as $item => $options)
 				{
 					// get product details
 					$exp = explode('_', $item);
@@ -69,22 +70,25 @@ class So extends Admin_Controller {
 					// get size names
 					$size_names = $this->size_names->get_size_names($size_mode);
 
-					foreach ($size_qty as $size_label => $qty)
+					foreach ($size_names as $size_label => $s)
 					{
-						if (isset($items[$item][$size_label]))
+						if ($s != 'XL1' && $s != 'XL2')
 						{
-							$upcfg['prod_no'] = $prod_no;
-							$upcfg['st_id'] = $st_id;
-							$upcfg['size_label'] = $size_label;
-							$this->upc_barcodes->initialize($upcfg);
+							if (isset($items[$item][$size_label]))
+							{
+								$upcfg['prod_no'] = $prod_no;
+								$upcfg['st_id'] = $st_id;
+								$upcfg['size_label'] = $size_label;
+								$this->upc_barcodes->initialize($upcfg);
 
-							// generate array to pass to view file
-							//array_push($barcodes, $this->upc_barcodes->generate());
-							$barcodes[$this->upc_barcodes->generate()] = array(
-								'prod_no' => $prod_no,
-								'color_name' => $color_name,
-								'size' => $size_names[$size_label]
-							);
+								// generate array to pass to view file
+								//array_push($barcodes, $this->upc_barcodes->generate());
+								$barcodes[$this->upc_barcodes->generate()] = array(
+									'prod_no' => $prod_no,
+									'color_name' => $color_name,
+									'size' => $s
+								);
+							}
 						}
 					}
 				}

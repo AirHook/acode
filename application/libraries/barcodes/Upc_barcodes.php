@@ -7,8 +7,22 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * This class generates barcode based on items on the list on a
  * per size basis using the stock id 'st_id' as a reference item number
  *
+ * Exisintg products and with sizes withtin size 0 to size 18 (size mode A/1)
+ * to which also encompases other size labels, we do not record it on the
+ * upc_item_numbers db table... only custom item number assigned to
+ * any of the following:
+ *
+ *		1.	Items not existing on product list
+ *		2.	Items existing but with size label 20 and 22
+ *
  * Helpful links on how-to's for UPC code:
  * https://electronics.howstuffworks.com/gadgets/high-tech-gadgets/upc.htm
+ *
+ *
+ 	NOTE:
+	There is a need to do a function to clean up upc_item_numbers custom item numbers
+	for those items that initially is not in the product list to give way on those
+	item numbers for use on other items...
  *
  *
  * @package		CodeIgniter
@@ -39,6 +53,14 @@ class Upc_barcodes
 	 * @var	string
 	 */
 	public $size_label = '';
+
+	/**
+	 * Prod Number - esp when item is not yet uploaded to product list
+	 * <prod_no>
+	 *
+	 * @var	string
+	 */
+	public $prod_no = '';
 
 	/**
 	 * Max st_id - threshold for item numbers
@@ -116,7 +138,7 @@ class Upc_barcodes
 			{
 				if (property_exists($this, $key))
 				{
-					$this->$key = $val;
+					$this->$key = trim($val);
 				}
 			}
 		}
@@ -133,10 +155,13 @@ class Upc_barcodes
 	 */
 	public function generate()
 	{
-		// process the stock id
-		for ($c = strlen($this->st_id);$c < 4;$c++)
+		// process the stock id by adding zeros in front for length less than 4
+		if ($this->st_id != '')
 		{
-			$this->st_id = '0'.$this->st_id;
+			for ($c = strlen($this->st_id);$c < 4;$c++)
+			{
+				$this->st_id = '0'.$this->st_id;
+			}
 		}
 
 		// process the size_label
@@ -198,7 +223,7 @@ class Upc_barcodes
 		// starting from 99999 assigning it to that specifc stock number
 		// and size label, e.g., 99999 - st_id# 1234, size_20. reuse item
 		// number when stock level is zero
-		if ($size_index != '-')
+		if ($size_index != '-' && $this->st_id != '')
 		{
 			// default
 			$item_number = $this->st_id.$size_index;
@@ -220,7 +245,7 @@ class Upc_barcodes
 	// --------------------------------------------------------------------
 
 	/**
-	 * PRIVATE - Get Custom Item Number for Sizes 20 and 22
+	 * PRIVATE - Get Custom Item Number for Sizes 20 and 22 and non-existing items
 	 *
 	 * @return	string numeric
 	 */
@@ -232,7 +257,8 @@ class Upc_barcodes
 			$first_custom_item_number = '99999';
 			$data = array(
 				'item_number' => $first_custom_item_number,
-				'st_id' => $this->st_id,
+				'prod_no' => $this->prod_no,
+				'st_id' => $this->st_id, // including empty st_id (non existing product)
 				'size_label' => $this->size_label
 			);
 			$q1 = $this->DB->insert('upc_item_numbers', $data);
@@ -243,7 +269,8 @@ class Upc_barcodes
 		// check for existing assigned item number
 		$this->DB->select('item_number');
 		$this->DB->from('upc_item_numbers');
-		$this->DB->where('upc_item_numbers.st_id', $this->st_id);
+		$this->DB->where('prod_no', $this->prod_no);
+		$this->DB->where('st_id', $this->st_id);
 		$this->DB->where('size_label', $this->size_label);
 		$q2 = $this->DB->get();
 		$r2 = $q2->row();
@@ -253,55 +280,60 @@ class Upc_barcodes
 			$existing_item_number = $r2->item_number;
 			return $existing_item_number;
 		}
-		else
+
+		/*
+		Conditions:
+		1. existing products with size 20 or 22
+		2. non-existing product
+			a. non-existing product with size 20 or 22
+			b. non-existing product with encompassing size label
+		*/
+
+		// get highest assigned item number from existing custom item numbers
+		// focusing on size 20 and 22 that is no longer used due to no stock
+		// see NOTE on start comment of the this class
+		$this->DB->select('item_number');
+		$this->DB->select('
+			(CASE
+				WHEN upc_item_numbers.size_label="size_20" THEN tbl_stock.size_20
+				WHEN upc_item_numbers.size_label="size_22" THEN tbl_stock.size_20
+			END) AS size_stock
+		');
+		$this->DB->from('upc_item_numbers');
+		$this->DB->join('tbl_stock', 'tbl_stock.st_id = upc_item_numbers.st_id', 'left');
+		$this->DB->having('size_stock', '0');
+		$this->DB->order_by('item_number', 'DESC');
+		$q3 = $this->DB->get();
+		$r3 = $q3->row(); // we need the first row only
+
+		if (isset($r3))
 		{
-			// get highest assigned item number with no stock
-			$this->DB->select('item_number');
-			$this->DB->select('
-				(CASE
-					WHEN
-						tbl_stock.size_20 == "0"
-						AND tbl_stock.size_22 == "0"
-					THEN "0"
-					ELSE "1"
-				END) AS with_stock
-			');
-			$this->DB->from('upc_item_numbers');
-			$this->DB->join('tbl_stock', 'tbl_stock.st_id = upc_item_numbers.st_id', 'left');
-			$this->DB->where('with_stock', '0');
-			$this->DB->orcer_by('item_number', 'DESC');
-			$q3 = $this->DB->get();
-			$r3 = $q3->row(); // we need the first row only
+			$new_assignment = $r3->item_number;
 
-			if (isset($r3))
-			{
-				$new_assignment = $r3->item_number;
+			// update the assignment with new info
+			$this->DB->set('prod_no', $this->prod_no);
+			$this->DB->set('st_id', $this->st_id);
+			$this->DB->set('size_label', $this->size_label);
+			$this->DB->where('item_number', $new_assignment);
+			$q4 = $this->DB->udpate('upc_item_numbers');
 
-				// update the assignment with new info
-				$this->DB->set('st_id', $this->st_id);
-				$this->DB->set('size_label', $this->size_label);
-				$this->DB->where('item_number', $new_assignment);
-				$q4 = $this->DB->udpate('upc_item_numbers');
-
-				return $new_assignment;
-			}
-			else
-			{
-				// set new lowest item number
-				$new_low = $this->min_custom_item_number - 1;
-				$data = array(
-					'item_number' => $new_low,
-					'st_id' => $this->st_id,
-					'size_label' => $this->size_label
-				);
-				$q5 = $this->DB->insert('upc_item_numbers', $data);
-
-				// update property
-				$this->_min_custom_item_number();
-
-				return $new_low;
-			}
+			return $new_assignment;
 		}
+
+		// if all else fails, set new lowest item number
+		$new_low = $this->min_custom_item_number - 1;
+		$data = array(
+			'item_number' => $new_low,
+			'prod_no' => $this->prod_no,
+			'st_id' => $this->st_id,
+			'size_label' => $this->size_label
+		);
+		$q5 = $this->DB->insert('upc_item_numbers', $data);
+
+		// update property
+		$this->_min_custom_item_number();
+
+		return $new_low;
 	}
 
 	// --------------------------------------------------------------------
@@ -409,11 +441,11 @@ class Upc_barcodes
 	{
 		$this->DB->select('MAX(st_id) AS max_st_id');
 		$this->DB->from('tbl_stock');
-		$query = $this->DB->get();
-		$row = $query->row();
-		if (isset($row))
+		$q7 = $this->DB->get();
+		$r7 = $q7->row();
+		if (isset($r7))
 		{
-			$this->max_st_id = $row->max_st_id;
+			$this->max_st_id = $r7->max_st_id;
 		}
 		else $this->max_st_id = FALSE;
 	}
@@ -421,7 +453,10 @@ class Upc_barcodes
 	// --------------------------------------------------------------------
 
 	/**
-	 * PRIVATE - Get max st_id on record as threshold for barcode item number
+	 * PRIVATE - Get minimum custom item number on record
+	 * Setting custom item number starts from 99999 downwards
+	 * both for items with sizes 20 and 22 (size mode A/1)
+	 * and for items on PO that is not existing in product list
 	 *
 	 * @return	string object
 	 */
@@ -429,11 +464,14 @@ class Upc_barcodes
 	{
 		$this->DB->select('MIN(item_number) AS min_custom_item_number');
 		$this->DB->from('upc_item_numbers');
-		$query = $this->DB->get();
-		$row = $query->row();
-		if (isset($row))
+		$q8 = $this->DB->get();
+
+		//$q8 = $this->DB->query("SELECT MIN(item_number) AS min_custom_item_number FROM upc_item_numbers");
+
+		$r8 = $q8->row();
+		if (isset($r8))
 		{
-			$this->min_custom_item_number = $row->min_custom_item_number;
+			$this->min_custom_item_number = $r8->min_custom_item_number;
 		}
 		else $this->min_custom_item_number = FALSE;
 	}
