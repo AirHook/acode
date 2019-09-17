@@ -6,7 +6,7 @@
  * Shop Controller are for items used for shop thumbs pages
  *
  */
-class View_wholesale_activation_email extends Frontend_Controller
+class View_consumer_special_sale_email_invite extends Frontend_Controller
 {
 	/**
 	 * Constructor
@@ -27,19 +27,11 @@ class View_wholesale_activation_email extends Frontend_Controller
 	 */
 	function index()
 	{
-		// connect to database
-		$DB = $this->load->database('instyle', TRUE);
-		// get privay Policy
-		$DB->select('text');
-		$DB->where('title_code', 'wholesale_privacy_notice');
-		$q = $DB->get('pages')->row();
-		$data['privacy_policy'] = $q->text;
-
 		// let's get some thumbs
-		$data['instock_products'] = $this->_get_thumbs('instock');
+		$data['onsale_products'] = $this->_get_thumbs('onsale');
 
 		// load the view
-		$message = $this->load->view('templates/activation_email_v1', $data, TRUE);
+		$message = $this->load->view('templates/consumer_special_sale_invite_v3', $data, TRUE);
 
 		echo $message;
 	}
@@ -67,8 +59,8 @@ class View_wholesale_activation_email extends Frontend_Controller
 		$params['variant_publish'] = 'ALL'; // ALL variant level color publish (view status)
 		$params['group_products'] = FALSE; // group per product number or per variant
 		// show items even without stocks at all
-		$params['with_stocks'] = $params == 'instock' ? TRUE : FALSE;
-		$params['group_products'] = TRUE;
+		$params['with_stocks'] = FALSE;	// FALSE for including no stock items
+		$params['group_products'] = FALSE; // FALSE for all variants
 		// others
 		$this->products_list->initialize($params);
 		$products = $this->products_list->select(
@@ -77,10 +69,9 @@ class View_wholesale_activation_email extends Frontend_Controller
 			),
 			array( // order conditions
 				'seque' => 'asc',
-				'tbl_product.categories' => 'asc',
 				'tbl_product.prod_no' => 'desc'
 			),
-			12
+			30
 		);
 
 		// capture product numbers and set items array

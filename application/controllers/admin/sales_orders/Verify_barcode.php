@@ -38,7 +38,7 @@ class Verify_barcode extends Admin_Controller {
 			// grab the post variables
 			$designer = $this->input->post('designer');
 			$vendor_id = $this->input->post('vendor_id');
-			$barcode = '710780999998';//$this->input->post('barcode');
+			$barcode = $this->input->post('barcode');
 
 			$this->load->library('barcodes/upc_barcodes');
 

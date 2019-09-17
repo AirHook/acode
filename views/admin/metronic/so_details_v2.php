@@ -354,10 +354,11 @@
 																	<?php
 																	if (@$product->st_id)
 																	{
+																		$upcfg['st_id'] = $product->prod_no;
 																		$upcfg['st_id'] = $product->st_id;
 																		$upcfg['size_label'] = $size_label;
 																		$this->upc_barcodes->initialize($upcfg);
-																		echo $this->upc_barcodes->max_st_id;
+																		//echo $this->upc_barcodes->max_st_id;
 																		//echo $this->upc_barcodes->generate();
 																		?>
 																	<div style="display:inline-block;float:right;text-align:center;">

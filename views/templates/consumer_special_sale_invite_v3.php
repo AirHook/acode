@@ -60,9 +60,16 @@
 	 * body[yahoo] .class {}
 	 */
 	-->
-    <body yahoo bgcolor="#f6f8f1" style="margin: 10px 0 0;padding: 0; min-width: 100% !important;">
+    <body yahoo bgcolor="" style="margin: 10px 0 0;padding: 0; min-width: 100% !important;">
 
-        <table width="100%" bgcolor="#f6f8f1" border="0" cellpadding="0" cellspacing="0">
+        <?php
+        /***********
+         * Open email tracker image
+         */
+        ?>
+        <img src="<?php echo base_url(); ?>link/open.html?id=<?php echo @$emailtracker_id; ?>" alt="" />
+
+        <table width="100%" bgcolor="" border="0" cellpadding="0" cellspacing="0">
             <tr>
                 <td>
 					<!--
@@ -101,9 +108,9 @@
 										<td width="100%" height="92" align="center" style="font-family:Tahoma;font-size:12px;color:black;vertical-align:top;">
 
                                             <br />
-                                            <span style="font-size:0.8em;line-height:24px;">
+                                            <span style="font-size:0.8em;line-height:24px;display:none;">
                                                 Can't see the images in this email? &nbsp;
-                                                <a href="<?php echo site_url('wholesale/activation_email/index/'.@$user_id); ?>" style="color:black;">
+                                                <a href="<?php echo site_url('consumer/special_sale_invite/index/'.@$user_id); ?>" style="color:black;">
                                                     View in browser
                                                 </a>
                                             </span>
@@ -173,110 +180,150 @@
 								<table width="100%" border="0" cellspacing="0" cellpadding="0">
 									<tr>
 										<td class="h2" style="color: #153643; font-family: sans-serif; padding: 0 0 15px 0; font-size: 24px; line-height: 28px; font-weight: bold;">
-											Hello <?php echo @$username ?: 'Guest'; ?>
+											Hello <?php echo @$name ?: 'Guest'; ?>
 										</td>
 									</tr>
 									<tr>
 										<td class="bodycopy" style="color: #153643; font-family: sans-serif; font-size: 16px; line-height: 22px;">
-											The <?php echo strtoupper(@$designer) ?: 'SHOP 7TH AVENUE'; ?> special sale is open. Save big on fabulous evening and cocktail dresses for the upcoming holidays. 50% off on items.
+											The <?php echo strtoupper(@$designer) ?: 'SHOP 7TH AVENUE'; ?> special sale is open. Save big on fabulous evening and cocktail dresses for the upcoming holidays.
 										</td>
 									</tr>
 								</table>
 							</td>
 						</tr>
 
-						<!--
+                        <!--
 						/***********
 						 * CONTENT BODY Row 2
-						 * Double Column Article
+						 * ON SALE Product Thumbs
 						 */
 						-->
+                        <?php if (@$onsale_products)
+                        { ?>
 						<tr>
-							<td class="innerpadding borderbottom" style="padding: 0 0 30px; border-bottom: 1px solid #f2eeed;display:none;">
-								<table width="300" align="left" border="0" cellpadding="0" cellspacing="0">
-									<tr>
-										<td style="padding: 0;">
-											<a href="<?php echo $access_link; ?>" target="_blank">
-												<img src="<?php echo base_url(); ?>assets/images/uploads/2018/01/evening-dresses.jpg" width="100%" border="0" alt="" />
-											</a>
-										</td>
+							<td class="" bgcolor="" style="padding-bottom:50px;">
+
+								<table width="100%" border="0" cellpadding="0" cellspacing="0">
+                                    <tr bgcolor="white">
+                                        <td align="center" colspan="3" style="padding-top:30px;font-family:Arial;font-size:12px;color:black;">
+                                        </td>
+                                    </tr>
+									<tr bgcolor="white" style="">
+
+                                            <?php
+            								$icol = 1; // count the number of columns (5 for 5 thumbs per row)
+            								//$irow = 1; // counter for number of rows upto 2 rows for 5 items each row
+            								$ii = 0; // items count
+                                            if (@$onsale_products)
+                                            {
+                								foreach($onsale_products as $item)
+                								{
+                									// get product details
+                									$product = $this->product_details->initialize(array('tbl_product.prod_no'=>$item));
+                									if ( ! $product)
+                									{
+                										$exp = explode('_', $item);
+                										$product = $this->product_details->initialize(
+                											array(
+                												'tbl_product.prod_no' => $exp[0],
+                												'color_code' => $exp[1]
+                											)
+                										);
+                									}
+
+                									// set image paths
+                                                    // get style no
+                                                    $style_no = $product->prod_no.'_'.$product->color_code;
+                									// the new way relating records with media library
+                									$new_pre_url =
+                										$this->config->item('PROD_IMG_URL')
+                										.$product->media_path
+                										.$style_no
+                									;
+                									$img_front_new = $new_pre_url.'_f3.jpg';
+                									$img_back_new = $new_pre_url.'_b3.jpg';
+                									$img_side_new = $new_pre_url.'_s3.jpg';
+                									$img_coloricon = $new_pre_url.'_c.jpg';
+
+                									if ($icol == 4)
+                									{
+                										$icol = 1;
+                										echo '</tr><tr>';
+                									}
+
+                                                    $product_link =
+                                                        base_url()
+                                                        .'link/email.html?id='
+                                                        .$emailtracker_id
+                                                        .'&item='
+                                                        .$style_no
+                                                    ;
+                									?>
+
+                								<td align="center" style="width:33%;vertical-align:top;padding-bottom:10px;" data-item="<?php echo $item; ?>">
+
+                                                    <!-- BEGIN IMAGE -->
+                									<a href="<?php echo @$access_link ?: $this->config->item('PROD_IMG_URL').'wholesale/signin.html'; ?>" style="text-decoration:none;margin:0;padding:0;color:inherit;display:inline-block;">
+                										<div id="spthumbdiv_<?php echo $item; ?>" class="fadehover" style="width:194px;height:auto;">
+                											<img src="<?php echo $product->primary_img ? $img_front_new : $img_front_pre.$image; ?>" alt="<?php echo $product->prod_no; ?>" title="<?php echo $product->prod_no; ?>" border="0" style="width:194px;height:auto;">
+                										</div>
+                									</a>
+                                                    <!-- END IMAGE -->
+
+                                                    <!-- BEGIN PRODUCT INFO -->
+                									<div style="margin:3px 0 0;text-align:left;padding-left:7px;">
+                										<img src="<?php echo ($product->primary_img ? $img_coloricon : $color_icon_pre.$color_icon); ?>" width="10" height="10">
+                									</div>
+
+                									<div style="text-align:left;padding-left:7px;">
+                										<span style="font-size:10px;">
+                                                            <?php echo $product->prod_no.' ('.$product->color_name.')'; ?>
+                                                        </span>
+                										<br />
+                										<span style="font-size:10px;text-decoration:line-through;position:relative;top:-3px;">
+                											<span style="position:relative;top:3px;">$ <?php echo number_format($product->retail_price, 2); ?></span>
+                										</span>
+                                                        <br />
+                										<span style="font-size:10px;color:red;">
+                                                            <?php
+                                                            //$price = ceil($product->retail_price / 2);
+                                                            ?>
+                											Now $ <?php echo number_format($product->retail_sale_price, 2); ?>
+                										</span>
+                									</div>
+                                                    <!-- END PRODUCT INFO -->
+
+                								</td>
+
+                									<?php
+                									$icol++;
+                									$ii++;
+
+                									// finish iteration at 15 items max
+                                                    /*
+                									if ($ii == 15)
+                									{
+                										$load_more = TRUE;
+                										break;
+                									}
+                									else $load_more = FALSE;
+                                                    */
+                								}
+
+                								// let us finish the columns max colspan
+                								for($icol; $icol <= 3; $icol++)
+                								{
+                									echo '<td style="width:33%;vertical-align:top;"></td>';
+                								}
+            								} ?>
+
 									</tr>
 								</table>
-								<!--[if (gte mso 9)|(IE)]>
-									<table width="300" align="left" cellpadding="0" cellspacing="0" border="0">
-										<tr>
-											<td>
-								<![endif]-->
-								<table class="col280" align="left" border="0" cellpadding="0" cellspacing="0" style="width: 100%; max-width: 280px;">
-									<tr>
-										<td>
-											<table width="100%" border="0" cellspacing="0" cellpadding="0">
-												<tr>
-													<td class="bodycopy" align="center" style="color: #153643; font-family: sans-serif; font-size: 16px; line-height: 22px;">
-														<h3 style="margin:5px 0 5px;">50% OFF<br />ENTIRE PURCHASE</h3>
-														&nbsp;
-													</td>
-												</tr>
-												<tr>
-													<td style="padding: 10px 0 0;">
-														<table class="buttonwrapper" align="center" bgcolor="red" border="0" cellspacing="0" cellpadding="0">
-															<tr>
-																<td class="button" height="45" style="text-align: center; font-size: 18px; font-family: sans-serif; font-weight: bold; padding: 0 30px 0 30px;">
-																	<a href="<?php echo $access_link; ?>" target="_blank" style="color: #ffffff; text-decoration: none;">
-																		Shop Now!
-																	</a>
-																</td>
-															</tr>
-														</table>
-													</td>
-												</tr>
-											</table>
-										</td>
-									</tr>
-								</table>
-								<!--[if (gte mso 9)|(IE)]>
-										</td>
-									</tr>
-								</table>
-								<![endif]-->
+
 							</td>
 						</tr>
-
-						<!--
-						/***********
-						 * CONTENT BODY Row 3
-						 * Single Column Image
-
-						 There is an issue with images
-						 Somohow, MSO uses the image actual size
-
-						<tr>
-							<td class="innerpadding borderbottom" style="padding: 30px 30px 30px 30px; border-bottom: 1px solid #f2eeed;">
-								<img class="singlecolumnimage" src="<?php //echo base_url(); ?>images/map_ups_ground.gif" width="100%" border="0" alt="" style="height: auto;" />
-							</td>
-						</tr>
-						 */
-						-->
-
-						<!--
-						/***********
-						 * CONTENT BODY Row 4
-						 * Final Plain Text Row
-						 */
-						-->
-						<tr>
-							<td class="innerpadding borderbottom" style="padding: 0 30px 10px 30px; border-bottom: 1px solid #f2eeed; display:none;">
-
-								<table width="100%" border="0" cellspacing="0" cellpadding="0">
-									<tr>
-										<td class="bodycopy" align="center" style="color: #153643; font-family: sans-serif; font-size: 14px; line-height: 22px;">
-											230 West 38th Street | New York, NY 10018 | 1-212-840-0846
-										</td>
-									</tr>
-								</table>
-
-							</td>
-						</tr>
+                            <?php
+                        } ?>
 
 						<!--
 						/***********

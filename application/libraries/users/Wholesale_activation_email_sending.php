@@ -79,7 +79,7 @@ class Wholesale_activation_email_sending
 	// --------------------------------------------------------------------
 
 	/**
-	 * Send Sales Package Email
+	 * Send Wholesale User Activation Email
 	 *
 	 * @return	boolean
 	 */
@@ -230,7 +230,8 @@ class Wholesale_activation_email_sending
 		$this->CI->products_list->initialize($params);
 		$products = $this->CI->products_list->select(
 			array(
-				'designer.url_structure' => $this->CI->wholesale_user_details->reference_designer
+				'designer.url_structure' => $this->CI->wholesale_user_details->reference_designer,
+				'tbl_product.categories LIKE' => '195'	// evening dresses for activation email
 			),
 			array( // order conditions
 				'seque' => 'asc',

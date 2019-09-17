@@ -260,7 +260,7 @@ var ComponentsEditors = function () {
                             },
                             error:   function(jqXHR, textStatus, errorThrown) {
                                 $('#loading').modal('hide');
-                                alert("Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
+                                alert("Vendor List Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
                                 //$('#reloading').modal('show');
                                 //location.reload();
                             }
@@ -276,7 +276,7 @@ var ComponentsEditors = function () {
                             },
                             error:   function(jqXHR, textStatus, errorThrown) {
                                 $('#loading').modal('hide');
-                                alert("Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
+                                alert("Stores List Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
                                 //$('#reloading').modal('show');
                                 //location.reload();
                             }
@@ -322,7 +322,7 @@ var ComponentsEditors = function () {
                                         },
                                         error:   function(jqXHR, textStatus, errorThrown) {
                                             $('#loading').modal('hide');
-                                            alert("Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
+                                            alert("Thumbs Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
                                             //$('#reloading').modal('show');
                                             //location.reload();
                                         }
@@ -336,7 +336,7 @@ var ComponentsEditors = function () {
                             },
                             error:   function(jqXHR, textStatus, errorThrown) {
                                 $('#loading').modal('hide');
-                                alert("Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
+                                alert("Cateogry Tree Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
                                 //$('#reloading').modal('show');
                                 //location.reload();
                             }
@@ -361,7 +361,7 @@ var ComponentsEditors = function () {
                             },
                             error:   function(jqXHR, textStatus, errorThrown) {
                                 $('#loading').modal('hide');
-                                alert("Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
+                                alert("Get Item Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
                                 //$('#reloading').modal('show');
                                 //location.reload();
                             }
@@ -377,7 +377,7 @@ var ComponentsEditors = function () {
             });
             verifyBarcode.fail(function(jqXHR, textStatus, errorThrown) {
                 $('#loading').modal('hide');
-                alert("Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
+                alert("Barcode Validation Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
                 //$('#reloading').modal('show');
                 //location.reload();
             });

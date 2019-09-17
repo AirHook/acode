@@ -1,4 +1,4 @@
-<?php 
+<?php
 if ( ! defined('BASEPATH')) exit('ERROR: 404 Not Found');
 
 /**
@@ -8,7 +8,7 @@ if ( ! defined('BASEPATH')) exit('ERROR: 404 Not Found');
  * @subpackage	Custom Libraries
  * @category	Users, Vendor User Details
  * @author		WebGuy
- * @link		
+ * @link
  */
 class Vendor_user_details
 {
@@ -28,7 +28,7 @@ class Vendor_user_details
 	public $contact_email_2 = '';
 	public $contact_3 = '';
 	public $contact_email_3 = '';
-	
+
 	public $address1 = '';
 	public $address2 = '';
 	public $city = '';
@@ -41,9 +41,11 @@ class Vendor_user_details
 	public $vendor_type_id = '';
 	public $vendor_type = '';
 	public $vendor_type_slug = '';
-	
+
 	public $reference_designer = '';
 	public $designer = '';
+
+	public $options = array();
 
 	/**
 	 * Is Active
@@ -79,10 +81,10 @@ class Vendor_user_details
 	public function __construct($param = array())
 	{
 		$this->CI =& get_instance();
-		
+
 		// connect to database
 		$this->DB = $this->CI->load->database('instyle', TRUE);
-		
+
 		$this->initialize($param);
 		log_message('info', 'Page Details Class Initialized');
 	}
@@ -110,7 +112,7 @@ class Vendor_user_details
 		}
 		// nothing more to do...
 		else return FALSE;
-		
+
 		// selects
 		$this->DB->select('vendors.*');
 		$this->DB->select('
@@ -118,21 +120,21 @@ class Vendor_user_details
 			designer.url_structure
 		');
 		$this->DB->select('vendor_types.id, vendor_types.type, vendor_types.slug');
-		
+
 		// joins
 		$this->DB->join('designer', 'designer.folder = vendors.reference_designer', 'left');
 		$this->DB->join('vendor_types', 'vendor_types.id = vendors.vendor_type_id', 'left');
-		
+
 		// order by
 		$this->DB->order_by('vendors.vendor_name', 'ASC');
-		
+
 		// get records
 		$query = $this->DB->get('vendors');
-		
+
 		//echo $this->DB->last_query(); die('<br />DIED');
-		
+
 		$row = $query->row();
-		
+
 		// return object or FALSE on failure
 		if (isset($row))
 		{
@@ -148,7 +150,7 @@ class Vendor_user_details
 			$this->contact_email_2 = $row->contact_email_2;
 			$this->contact_3 = $row->contact_3;
 			$this->contact_email_3 = $row->contact_email_3;
-			
+
 			$this->address1 = $row->address1;
 			$this->address2 = $row->address2;
 			$this->city = $row->city;
@@ -157,16 +159,18 @@ class Vendor_user_details
 			$this->zipcode = $row->zipcode;
 			$this->telephone = $row->telephone;
 			$this->fax = $row->fax;
-		
+
 			$this->vendor_type_id = $row->id;
 			$this->vendor_type = $row->type;
 			$this->vendor_type_slug = $row->slug;
-			
+
 			$this->reference_designer = $row->reference_designer;	// slug
 			$this->designer = $row->designer;	// designer name
-			
+
 			$this->status = $row->is_active;
-			
+
+			$this->options = $row->options != '' ? json_decode($row->options , TRUE) : array();
+
 			return $this;
 		}
 		else
@@ -174,7 +178,7 @@ class Vendor_user_details
 			return FALSE;
 		}
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -191,10 +195,10 @@ class Vendor_user_details
 		$this->DB->set('is_active', '1');
 		$this->DB->where('vendor_id', $this->vendor_id);
 		$query = $this->DB->update('vendors');
-		
+
 		$this->status = '1';
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -215,7 +219,7 @@ class Vendor_user_details
 		$this->contact_email_2 = '';
 		$this->contact_3 = '';
 		$this->contact_email_3 = '';
-		
+
 		$this->address1 = '';
 		$this->address2 = '';
 		$this->city = '';
@@ -224,17 +228,18 @@ class Vendor_user_details
 		$this->zipcode = '';
 		$this->telephone = '';
 		$this->fax = '';
-	
+
 		$this->vendor_type_id = '';
 		$this->vendor_type = '';
 		$this->vendor_type_slug = '';
-		
+
 		$this->reference_designer = '';
 		$this->designer = '';
-		
+
 		$this->status = 0;
+		$this->options = array();
 	}
-	
+
 	// --------------------------------------------------------------------
 
 }

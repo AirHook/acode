@@ -216,7 +216,7 @@
                                                         		<br>
                                                         		After first order we send 1 by 1 as ordered
                                                         		<br>
-                                                        		All production orders require 30% deposit to begin Balance prior to shipping
+                                                        		All production orders require 50% deposit to begin. Balance prior to shipping
                                                         		<br>
                                                         		All production orders take 14 weeks to produce from date of deposit
                                                         	</span>
@@ -254,7 +254,7 @@
 								<table width="100%" border="0" cellpadding="0" cellspacing="0">
                                     <tr bgcolor="white">
                                         <td align="center" colspan="4" style="padding:30px 50px;font-family:Arial;font-size:12px;color:black;">
-                                            <span style="font-size:1.6em;color:red;">VIEW / ORDER IN STOCK ITEMS</span>
+                                            <span style="font-size:1.6em;color:red;">ORDER IN STOCK ITEMS</span>
                                         </td>
                                     </tr>
 									<tr bgcolor="white" style="">
@@ -268,8 +268,8 @@
                                                 .'&ws='.(@$user_id ?: '6854')
                                             ;
 
-            								$icol = 1; // count the number of columns (5 for 5 thumbs per row)
-            								$irow = 1; // counter for number of rows upto 2 rows for 5 items each row
+            								$icol = 1; // count the number of columns
+            								//$irow = 1; // counter for number of rows upto 2 rows for 5 items each row
             								$ii = 0; // items count
                                             if (@$instock_products)
                                             {
@@ -319,19 +319,21 @@
                 									$img_side_new = $new_pre_url.'_s3.jpg';
                 									$img_coloricon = $new_pre_url.'_c.jpg';
 
-                									if ($icol == 5)
+                									if ($icol == 4)
                 									{
                 										$icol = 1;
                 										echo '</tr><tr>';
                 									}
+                                                    //style="width:140px;height:210px;
+                                                    //style="width:340px;height:510px;
                 									?>
 
                 								<td align="center" style="vertical-align:top;padding-bottom:10px;" data-item="<?php echo $item; ?>">
 
                                                     <!-- BEGIN IMAGE -->
                 									<a href="<?php echo @$access_link ?: $this->config->item('PROD_IMG_URL').'wholesale/signin.html'; ?>" style="text-decoration:none;margin:0;padding:0;color:inherit;display:inline-block;">
-                										<div id="spthumbdiv_<?php echo $item; ?>" class="fadehover" style="width:140px;height:210px;">
-                											<img src="<?php echo $product->primary_img ? $img_front_new : $img_front_pre.$image; ?>" alt="<?php echo $product->prod_no; ?>" title="<?php echo $product->prod_no; ?>" border="0" width="140" style="width:140px;">
+                										<div id="spthumbdiv_<?php echo $item; ?>" class="fadehover" style="width:194px;height:auto;">
+                											<img src="<?php echo $product->primary_img ? $img_front_new : $img_front_pre.$image; ?>" alt="<?php echo $product->prod_no; ?>" title="<?php echo $product->prod_no; ?>" border="0" width="194" style="width:194px;height:auto;">
                 										</div>
                 									</a>
                                                     <!-- END IMAGE -->
@@ -369,8 +371,8 @@
                                                     */
                 								}
 
-                								// let us finish the columns to 5 if less than 5 on the last item
-                								for($icol; $icol <= 4; $icol++)
+                								// let us finish the columns on the last item
+                								for($icol; $icol <= 3; $icol++)
                 								{
                 									echo '<td style="vertical-align:top;"></td>';
                 								}
@@ -398,7 +400,7 @@
 								<table width="100%" border="0" cellpadding="0" cellspacing="0">
                                     <tr bgcolor="white">
                                         <td align="center" colspan="4" style="padding:30px 50px;font-family:Arial;font-size:12px;color:black;">
-                                            <span style="font-size:1.6em;color:red;">VIEW / ORDER PRE ORDER ITEMS</span>
+                                            <span style="font-size:1.6em;color:red;">ORDER PRE ORDER ITEMS</span>
                                         </td>
                                     </tr>
 									<tr bgcolor="white" style="">
@@ -413,7 +415,7 @@
                                             ;
 
             								$icol = 1; // count the number of columns (5 for 5 thumbs per row)
-            								$irow = 1; // counter for number of rows upto 2 rows for 5 items each row
+            								//$irow = 1; // counter for number of rows upto 2 rows for 5 items each row
             								$ii = 0; // items count
                                             if (@$preorder_products)
                                             {
@@ -470,7 +472,7 @@
                 									$img_side_new = $new_pre_url.'_s3.jpg';
                 									$img_coloricon = $new_pre_url.'_c.jpg';
 
-                									if ($icol == 5)
+                									if ($icol == 4)
                 									{
                 										$icol = 1;
                 										echo '</tr><tr>';
@@ -481,8 +483,8 @@
 
                                                     <!-- BEGIN IMAGE -->
                 									<a href="<?php echo @$access_link ?: $this->config->item('PROD_IMG_URL').'wholesale/signin.html'; ?>" style="text-decoration:none;margin:0;padding:0;color:inherit;display:inline-block;">
-                										<div id="spthumbdiv_<?php echo $item; ?>" class="fadehover" style="width:140px;height:210px;">
-                											<img src="<?php echo $product->primary_img ? $img_front_new : $img_front_pre.$image; ?>" alt="<?php echo $product->prod_no; ?>" title="<?php echo $product->prod_no; ?>" border="0" width="140" style="width:140px;">
+                										<div id="spthumbdiv_<?php echo $item; ?>" class="fadehover" style="width:194px;height:auto;">
+                											<img src="<?php echo $product->primary_img ? $img_front_new : $img_front_pre.$image; ?>" alt="<?php echo $product->prod_no; ?>" title="<?php echo $product->prod_no; ?>" border="0" width="194" style="width:194px;height:auto;">
                 										</div>
                 									</a>
                                                     <!-- END IMAGE -->
@@ -521,7 +523,7 @@
                 								}
 
                 								// let us finish the columns to 5 if less than 5 on the last item
-                								for($icol; $icol <= 4; $icol++)
+                								for($icol; $icol <= 3; $icol++)
                 								{
                 									echo '<td style="vertical-align:top;"></td>';
                 								}
@@ -549,7 +551,7 @@
 								<table width="100%" border="0" cellpadding="0" cellspacing="0">
                                     <tr bgcolor="white">
                                         <td align="center" colspan="4" style="padding:30px 50px;font-family:Arial;font-size:12px;color:black;">
-                                            <span style="font-size:1.6em;color:red;">VIEW / ORDER OFF PRICE ITEMS</span>
+                                            <span style="font-size:1.6em;color:red;">ORDER OFF PRICE ITEMS</span>
                                         </td>
                                     </tr>
 									<tr bgcolor="white" style="">
@@ -564,7 +566,7 @@
                                             ;
 
             								$icol = 1; // count the number of columns (5 for 5 thumbs per row)
-            								$irow = 1; // counter for number of rows upto 2 rows for 5 items each row
+            								//$irow = 1; // counter for number of rows upto 2 rows for 5 items each row
             								$ii = 0; // items count
                                             if (@$onsale_products)
                                             {
@@ -621,7 +623,7 @@
                 									$img_side_new = $new_pre_url.'_s3.jpg';
                 									$img_coloricon = $new_pre_url.'_c.jpg';
 
-                									if ($icol == 5)
+                									if ($icol == 4)
                 									{
                 										$icol = 1;
                 										echo '</tr><tr>';
@@ -632,8 +634,8 @@
 
                                                     <!-- BEGIN IMAGE -->
                 									<a href="<?php echo @$access_link ?: $this->config->item('PROD_IMG_URL').'wholesale/signin.html'; ?>" style="text-decoration:none;margin:0;padding:0;color:inherit;display:inline-block;">
-                										<div id="spthumbdiv_<?php echo $item; ?>" class="fadehover" style="width:140px;height:210px;">
-                											<img src="<?php echo $product->primary_img ? $img_front_new : $img_front_pre.$image; ?>" alt="<?php echo $product->prod_no; ?>" title="<?php echo $product->prod_no; ?>" border="0" width="140" style="width:140px;">
+                										<div id="spthumbdiv_<?php echo $item; ?>" class="fadehover" style="width:194px;height:auto;">
+                											<img src="<?php echo $product->primary_img ? $img_front_new : $img_front_pre.$image; ?>" alt="<?php echo $product->prod_no; ?>" title="<?php echo $product->prod_no; ?>" border="0" width="194" style="width:194px;height:auto;">
                 										</div>
                 									</a>
                                                     <!-- END IMAGE -->
@@ -679,7 +681,7 @@
                 								}
 
                 								// let us finish the columns to 5 if less than 5 on the last item
-                								for($icol; $icol <= 4; $icol++)
+                								for($icol; $icol <= 3; $icol++)
                 								{
                 									echo '<td style="vertical-align:top;"></td>';
                 								}
@@ -721,13 +723,20 @@
 
                                             <br /><br />
 
-                                            <a href="<?php echo $emailtracker_id ? base_url().'link/unsubscribe.html?id='.$emailtracker_id : 'javascript:;'; ?>" target="_blank" style="color:#aaa;">
+                                            <a href="<?php echo @$emailtracker_id ? base_url().'link/unsubscribe.html?id='.$emailtracker_id : 'javascript:;'; ?>" target="_blank" style="color:#aaa;">
                                                 UNSUBSCRIBE
                                             </a>
 
                                             <br /><br />
 
-                                            <div style="widt:100%;text-align:left;">
+                                            <style>
+                                            .policy a {
+                                                text-decoration: none;
+                                                color: inherit;
+                                            }
+                                            </style>
+
+                                            <div class="policy" style="widt:100%;text-align:left;">
                                                 <?php echo @$privacy_policy; ?>
                                             </div>
 
