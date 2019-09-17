@@ -991,10 +991,12 @@
                                                 Scaning Barcodes </a>
                                         </li>
 
+                                        <!--
                                         <li>
                                             <button class="btn btn-link btn-sm" href="#modal-barcode_scan" data-toggle="modal" style="color:#6c7b88;">
                                                 SCAN BARCODES </button>
                                         </li>
+                                        -->
                                             <?php
                                         } ?>
 
