@@ -23,7 +23,7 @@ class Send extends MY_Controller {
 	 *
 	 * @return	void
 	 */
-	public function index($po_id = '', $action = '')
+	public function index($po_id = '')
 	{
 		if ($po_id == '')
 		{
@@ -32,27 +32,20 @@ class Send extends MY_Controller {
 			$this->session->set_flashdata('error', 'no_id_passed');
 
 			// redirect user
-			if ($action === 'send') redirect('admin/purchase_orders/create/step1', 'location');
-			else redirect('admin/purchase_orders/details/index/'.$po_id, 'location');
+			redirect('admin/purchase_orders/details/index/'.$po_id, 'location');
 		}
 
-		// send PO
+		/***********
+		 * Send po email confirmation with PDF attachment
+		 */
 		$this->load->library('purchase_orders/purchase_order_sending');
 		$this->purchase_order_sending->send($po_id);
 
 		// set flash data
-		$this->session->set_flashdata('success', 'add');
+		$this->session->set_flashdata('success', 'sent');
 
-		if ($action === 'send')
-		{
-			// redirect user on step4
-			redirect('admin/purchase_orders/create/step4/'.$po_id, 'location');
-		}
-		else
-		{
-			// redirect user
-			redirect('admin/purchase_orders/details/index/'.$po_id, 'location');
-		}
+		// redirect user
+		redirect('admin/purchase_orders/details/index/'.$po_id, 'location');
 	}
 
 	// ----------------------------------------------------------------------

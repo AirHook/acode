@@ -118,7 +118,7 @@ class Purchase_order_sending
 	 *
 	 * @return	boolean
 	 */
-	public function send($po_id = '')
+	public function send($po_id = '', $send_to = '')
 	{
 		// load pertinent library/model/helpers
 		$this->CI->load->library('designers/designer_details');
@@ -160,7 +160,6 @@ class Purchase_order_sending
 				)
 			);
 		}
-		else $data['store_details'] = $this->CI->wholesale_user_details->set_initial_state();
 
 		// get PO author
 		switch ($this->CI->purchase_order_details->c)
@@ -197,27 +196,46 @@ class Purchase_order_sending
 		$data['company_contact_person'] = $this->CI->designer_details->owner;
 		$data['company_contact_email'] = $this->CI->designer_details->info_email;
 
+		// set emailtracker_id
+		if ($send_to != 'admin')
+		{
+			$data['emailtracker_id'] =
+				$this->CI->purchase_order_details->vendor_id
+				.'vi0017t'
+				.time()
+			;
+		}
+
 		$this->CI->load->library('email');
 
 		$this->CI->email->clear(TRUE);
 
 		$this->CI->email->from($data['author']->email, $this->CI->designer_details->designer_name);
 		$this->CI->email->reply_to($this->CI->webspace_details->info_email, $this->CI->designer_details->designer_name);
-		//$this->CI->email->cc($this->CI->config->item('info_email'));
 		$this->CI->email->bcc($this->CI->config->item('dev1_email'));
 
-		$this->CI->email->subject('PO #'.$this->CI->purchase_order_details->po_number);
+		$this->CI->email->subject('PO #'.$this->CI->purchase_order_details->po_number.('admin' ? ' - for approval' : ''));
 
-		//$this->CI->email->to($data['vendor_details']->vendor_email);
-		$this->CI->email->to($this->CI->webspace_details->info_email);
+		if ($send_to == 'admin')
+		{
+			$to = $this->CI->webspace_details->info_email;
+		}
+		else
+		{
+			//$to = $data['vendor_details']->vendor_email;
+			$to = $this->CI->config->item('info_email');
+			$this->CI->email->cc($this->CI->config->item('dev1_email'));
+		}
+		$this->CI->email->to($to);
 
 		// let's get the message
-		$message = $this->CI->load->view('templates/purchase_order_email', $data, TRUE);
+		$template = $send_to == 'admin' ? 'po_email_for_approval' : 'purchase_order_email';
+		$message = $this->CI->load->view('templates/'.$template, $data, TRUE);
 		$this->CI->email->message($message);
 
 		// attachment
 		// load the view as string
-		$html = $this->CI->load->view('templates/purchase_order_pdf', $this->data, TRUE);
+		$html = $this->CI->load->view('templates/purchase_order_pdf', $data, TRUE);
 		// load pertinent library/model/helpers
 		$this->CI->load->library('m_pdf');
 		// generate pdf
@@ -233,182 +251,45 @@ class Purchase_order_sending
 
 		if (ENVIRONMENT !== 'development')
 		{
-			if ( ! $this->CI->email->send())
+			$sendby = @$this->CI->webspace_details->options['email_send_by'] ?: 'mailgun'; // options: mailgun, default (CI native emailer)
+
+			if ($sendby == 'mailgun')
 			{
-				$this->error .= 'Unable to send to - "'.$email.'"<br />';
-				return FALSE;
+				// load pertinent library/model/helpers
+				$this->CI->load->library('mailgun/mailgun');
+				$this->CI->mailgun->from = $this->CI->wholesale_user_details->designer.' <'.$data['author']->email.'>';
+				$this->CI->mailgun->to = $to;
+				$this->CI->mailgun->cc = $this->CI->webspace_details->info_email;
+				$this->CI->mailgun->bcc = $this->CI->config->item('dev1_email');
+				$this->CI->mailgun->subject = 'PO #'.$this->CI->purchase_order_details->po_number.('admin' ? ' - for approval' : '');
+				$this->CI->mailgun->message = $message;
+
+				$this->CI->mailgun->attachment = curl_file_create($pdf_file_path, 'application/pdf', 'pdf_po_selected.pdf');
+
+				if ( ! $this->CI->mailgun->Send())
+				{
+					$this->error .= 'Unable to send to - "'.$email.'"<br />';
+					$this->error .= $this->CI->mailgun->error_message;
+
+					return FALSE;
+				}
+
+				$this->CI->mailgun->clear();
+			}
+			else
+			{
+				if ( ! $this->CI->email->send())
+				{
+					$this->error .= 'Unable to send to - "'.$email.'"<br />';
+					return FALSE;
+				}
 			}
 		}
 		else
 		{
-			// if first sending
-			if ( ! $this->CI->session->dev_first_sending)
-			{
-				// show sending
-				echo $message;
-				$this->CI->session->set_userdata('dev_first_sending', TRUE);
-				die();
-			}
-			else
-			{
-				unset($_SESSION['dev_first_sending']);
-			}
-		}
-
-		$this->CI->email->clear(TRUE);
-
-		// set flashdata
-		$this->CI->session->set_flashdata('success', 'pacakge_sent');
-
-		return TRUE;
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Send Sales Package Email
-	 *
-	 * This sending is set to make any sales offer with more than 10 items
-	 * send in separate emails of 10 items each upto 30 items
-	 *
-	 * @return	boolean
-	 */
-	public function send_30()
-	{
-		// load email library class
-		// used on view file to set image paths
-		// to access product details
-		$this->CI->load->library('products/product_details');
-
-		// load user details class
-		// used during $users iteration
-		// to get user details
-		$this->CI->load->library('users/wholesale_user_details');
-
-		// get and initialize the sales package
-		$this->CI->load->library('sales_package/sales_package_details');
-		$this->CI->sales_package_details->initialize(array('sales_package_id'=>$this->sales_package_id));
-
-		// let's get the items, check number of items, divide by 3 for 3 emails where necessary
-		$index = 0;	// key for the items array which will identify how many email to send (+1)
-		$count_to_10 = 0; // counting items 1 - 10 only per email
-		$items_ary = array();
-		foreach($this->CI->sales_package_details->items as $item)
-		{
-			// next index after 10 items
-			if ($count_to_10 == 10)
-			{
-				$count_to_10 = 0;
-				$index++;
-			}
-
-			$items_ary[$index][$count_to_10] = $item;
-
-			$count_to_10++;
-		}
-
-		// load email library class
-		$this->CI->load->library('email');
-
-		// for each user
-		foreach ($this->users as $email)
-		{
-			if ( ! $this->CI->wholesale_user_details->initialize(array('email'=>$email)))
-			{
-				$this->error .= 'Invalid email address - "'.$email.'"<br />';
-			}
-
-			// lets prepare for the url hash tags for the session login of wholesale user
-			// clicks through the sales package
-			//$sa1 = md5($email);
-
-			// lets set the hashed time code here so that the batched hold the same tc only
-			$tc = md5(@date('Y-m-d', time()));
-
-			$batch = 0;	// email batch sending
-			for($batch = 0; $batch < ($index + 1); $batch++)
-			{
-				$data['username'] = ucwords(strtolower(trim($this->CI->wholesale_user_details->fname).' '.trim($this->CI->wholesale_user_details->lname)));
-				$data['email_message'] = $this->CI->sales_package_details->email_message;
-
-				$data['access_link'] = site_url(
-					'sales_package/link/index/'
-					.$this->CI->sales_package_details->sales_package_id.'/'
-					.$this->CI->wholesale_user_details->user_id.'/'
-					.$tc
-				);
-
-				$data['items'] = $items_ary[$batch];
-				$data['email'] = $email;
-				$data['w_prices'] = $this->w_prices;
-				$data['w_images'] = $this->w_images;
-				$data['linesheets_only'] = $this->linesheets_only;
-				$data['sales_username'] = @$this->CI->sales_user_details->admin_sales_id ? ucwords(strtolower(trim($this->CI->sales_user_details->fname).' '.trim($this->CI->sales_user_details->lname))) : ucwords(strtolower(trim($this->CI->wholesale_user_details->admin_sales_user).' '.trim($this->CI->wholesale_user_details->admin_sales_lname)));
-				$data['sales_ref_designer'] = @$this->CI->sales_user_details->admin_sales_id ? $this->CI->sales_user_details->designer_name : $this->CI->wholesale_user_details->designer;
-
-				$this->CI->email->clear(TRUE);
-
-				$this->CI->email->from((@$this->CI->sales_user_details->email ?: $this->CI->wholesale_user_details->designer_info_email), (@$this->CI->sales_user_details->designer_name ?: $this->CI->wholesale_user_details->designer));
-				$this->CI->email->reply_to((@$this->CI->sales_user_details->email ?: $this->CI->wholesale_user_details->designer_info_email));
-				//$this->CI->email->cc($this->CI->config->item('info_email'));
-				$this->CI->email->bcc($this->CI->config->item('info_email').', '.$this->CI->config->item('dev1_email'));
-
-				$this->CI->email->subject($this->CI->sales_package_details->email_subject);
-
-				$this->CI->email->to($this->CI->wholesale_user_details->email);
-
-				// let's get the message
-				$message = $this->CI->load->view('templates/sales_package', $data, TRUE);
-				$this->CI->email->message($message);
-
-				// attachment
-				if ($this->w_images === 'Y' OR $this->linesheets_only == 'Y')
-				{
-					foreach ($data['items'] as $product)
-					{
-						// get product details
-						$this->CI->product_details->initialize(array('prod_no'=>$product));
-
-						// set image paths
-						$img_pre = 'product_assets/WMANSAPREL/'.$this->CI->product_details->d_folder.'/'.$this->CI->product_details->sc_folder.'/product_linesheet/';
-						// the image filename (using 1 - 140x210)
-						$image = $this->CI->product_details->prod_no.'_'.$this->CI->product_details->primary_img_id.'.jpg';
-
-						$this->CI->email->attach($img_pre.$image);
-					}
-				}
-
-				if (ENVIRONMENT === 'development')
-				{
-					// set flashdata
-					$this->CI->session->set_flashdata('success', 'pacakge_sent'); return TRUE;
-
-					if (@$this->CI->data['sales_theme'] == 'roden2') $this->CI->session->set_flashdata('success', 'sales_package_sent');
-					else $this->CI->session->set_flashdata('success', 'pacakge_sent');
-					echo 'Email batch - '.$batch.'<br />';
-					echo $message;
-					echo '<br />';
-					echo '<br />';
-					if ($this->send_from == 'front_end')
-					{
-						if ($this->CI->data['sales_theme'] == 'roden2') echo '<a href="'.site_url('sales/view/index/'.$this->sales_package_id).'">continue...</a>';
-						if ($this->CI->data['sales_theme'] == 'default') echo '<a href="'.site_url('sales/sent').'">continue...</a>';
-					}
-					else echo '<a href="'.($this->CI->uri->segment(1) === 'sales' ? site_url('sales/wholesale') : site_url($this->CI->config->slash_item('admin_folder').'users/wholesale')).'">continue...</a>';
-					echo '<br />';
-					echo '<br />';
-					//die();
-					//echo $message;
-					//die();
-				}
-				else
-				{
-					if ( ! $this->CI->email->send())
-					{
-						$this->error .= 'Unable to send to - "'.$email.'"<br />';
-					}
-				}
-			}
+			// show email
+			echo $message;
+			die();
 		}
 
 		$this->CI->email->clear(TRUE);

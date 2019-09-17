@@ -45,8 +45,7 @@ class Details extends Admin_Controller {
 		$this->load->library('users/wholesale_user_details');
 		$this->load->library('users/sales_user_details');
 		$this->load->library('users/vendor_user_details');
-		$this->load->library('zend');
-		$this->zend->load('Zend/Barcode');
+		$this->load->library('barcodes/upc_barcodes');
 
 		// initialize purchase order properties and items
 		$this->data['po_details'] = $this->purchase_order_details->initialize(

@@ -52,14 +52,17 @@ class Modify extends Admin_Controller {
 		// let's ensure that there are no admin session for po create
 		if ($this->session->admin_po_items)
 		{
-			// new po modify access
+			// new po admin access
 			unset($_SESSION['admin_po_vendor_id']);
 			unset($_SESSION['admin_po_des_url_structure']);
 			unset($_SESSION['admin_po_items']);
 			unset($_SESSION['admin_po_size_qty']);
 			unset($_SESSION['admin_po_store_id']);
-			// unset mod session as well
+			unset($_SESSION['admin_po_edit_vendor_price']);
+			unset($_SESSION['admin_po_slug_segs']);
+			// remove po mod details
 			unset($_SESSION['admin_po_mod_po_id']);
+			unset($_SESSION['admin_po_mod_items']);
 			unset($_SESSION['admin_po_mod_size_qty']);
 			unset($_SESSION['admin_po_mod_edit_vendor_price']);
 		}
@@ -126,7 +129,6 @@ class Modify extends Admin_Controller {
 					)
 				);
 			}
-			else $this->data['store_details'] = $this->wholesale_user_details->deinitialize();
 
 			// get PO author
 			switch ($this->purchase_order_details->c)
@@ -147,8 +149,13 @@ class Modify extends Admin_Controller {
 					);
 			}
 
-			// get size names using des_id as reference
-			$this->designer_details->initialize(array('designer.des_id'=>$this->purchase_order_details->des_id));
+			// get the designer details
+			$this->data['designer_details'] = $this->designer_details->initialize(
+				array(
+					'designer.des_id' => $this->purchase_order_details->des_id
+				)
+			);
+			$this->data['des_id'] = $this->designer_details->des_id;
 
 			// set company information
 			$this->data['company_name'] = $this->designer_details->company_name;
@@ -170,6 +177,7 @@ class Modify extends Admin_Controller {
 			// if session is present, then modify has already started
 			$this->data['po_items'] = $this->purchase_order_details->items;
 			// each time this page loads, this set session
+			$this->session->set_userdata('admin_po_mod_items', json_encode($this->data['po_items']));
 			$this->session->set_userdata('admin_po_mod_size_qty', json_encode($this->data['po_items']));
 			$po_items_count = 0;
 			foreach ($this->data['po_items'] as $key => $val)
@@ -183,10 +191,6 @@ class Modify extends Admin_Controller {
 				else $po_items_count += 1;
 			}
 			$this->data['po_items_count'] = $po_items_count;
-
-			// get size names using des_id as reference
-			$this->designer_details->initialize(array('designer.des_id'=>$this->purchase_order_details->des_id));
-			$this->data['size_names'] = $this->size_names->get_size_names($this->designer_details->webspace_options['size_mode']);
 
 			// get user list for the edit ship to function
 			$this->data['users'] = $this->wholesale_users_list->select();

@@ -12,7 +12,17 @@
                                 <button class="close" data-close="alert"></button> Your form validation is successful! </div>
                             <?php if ($this->session->flashdata('success') == 'add') { ?>
                             <div class="alert alert-success ">
+                                <button class="close" data-close="alert"></button> Purchase Order successfully added
+                            </div>
+                            <?php } ?>
+                            <?php if ($this->session->flashdata('success') == 'sent') { ?>
+                            <div class="alert alert-success ">
                                 <button class="close" data-close="alert"></button> Purchase Order successfully sent
+                            </div>
+                            <?php } ?>
+                            <?php if ($this->session->flashdata('success') == 'approved') { ?>
+                            <div class="alert alert-success ">
+                                <button class="close" data-close="alert"></button> Purchase Order approved and successfully sent to vendor
                             </div>
                             <?php } ?>
                         </div>
@@ -47,8 +57,8 @@
                                 } ?>
 
                                 <div class="actions btn-set">
-                                    <a class="btn dark" href="<?php echo site_url($this->uri->segment(1).'/products/barcodes/print_po_barcodes/'.$po_details->po_id); ?>" target="_blank">
-                                        <i class="fa fa-print"></i> Print PO Barcodes
+                                    <a class="btn dark" href="<?php echo site_url($this->uri->segment(1).'/barcodes/print/po/index/'.$po_details->po_id); ?>" target="_blank">
+                                        <i class="fa fa-print"></i> Print All Barcodes
                                     </a>
                                     &nbsp;
                                     <a class="btn btn-default po-pdf-print_" href="<?php echo site_url($this->uri->segment(1).'/purchase_orders/view_pdf/index/'.$po_details->po_id); ?>" target="_blank">
@@ -65,45 +75,49 @@
                     </div>
 
                     <div class="row">
+                        <?php
+                        /***********
+                         * Status
+                         */
+                        ?>
                         <div class="col-md-6 pull-right">
                             <div class="form-group" data-site_section="<?php echo $this->uri->segment(1); ?>" data-object_data='{"po_id":"<?php echo $this->purchase_order_details->po_id; ?>","<?php echo $this->security->get_csrf_token_name(); ?>":"<?php echo $this->security->get_csrf_hash(); ?>"}'>
-                                <label class="control-label col-md-3">Status</label>
-                                <div class="col-md-9">
-                                    <?php
-                                    if ($this->purchase_order_details->status == '5')
-                                    {
-                                        $classes = 'disable-target disabled-link';
-                                        $disabled = 'disabled';
-                                    }
-                                    else
-                                    {
-                                        $classes = '';
-                                        $disabled = '';
-                                    }
-                                    ?>
-                                    <div class="margin-bottom-10">
-                                        <input id="option1" type="radio" name="status" value="0" class="make-switch switch-status <?php echo $classes; ?>" data-size="mini" data-on-text="<i class='icon-plus'></i>" data-off-text="&nbsp;-&nbsp;" <?php echo $disabled; ?> <?php echo $this->purchase_order_details->status == '0' ? 'checked' : ''; ?> />
-                                        <label for="option1" class="<?php echo $classes; ?>">Open/Pending</label>
-                                    </div>
-                                    <div class="margin-bottom-10">
-                                        <input id="option2" type="radio" name="status" value="1" class="make-switch switch-status <?php echo $classes; ?>" data-size="mini" data-on-color="danger" data-on-text="<i class='icon-ban'></i>" data-off-text="&nbsp;-&nbsp;" <?php echo $disabled; ?> <?php echo $this->purchase_order_details->status == '1' ? 'checked' : ''; ?> />
-                                        <label for="option2" class="<?php echo $classes; ?>">On HOLD</label>
-                                    </div>
-                                    <div class="margin-bottom-10">
-                                        <input id="option3" type="radio" name="status" value="5" class="make-switch switch-status mt-bootbox-status-complete" data-size="mini" data-on-color="success" data-on-text="<i class='icon-check'></i>" data-off-text="&nbsp;-&nbsp;" <?php echo $this->purchase_order_details->status == '5' ? 'checked' : ''; ?> />
-                                        <label for="option3">Complete/Delivery</label>
-                                    </div>
-
-                                    <?php if ($this->purchase_order_details->status == '5')
-                                    { ?>
-                                    <cite class="help-block small"> This PO is already closed for modification. </cite>
-                                        <?php
-                                    }
-                                    else
-                                    { ?>
-                                    <cite class="help-block small"> Changing the PO Status will update the PO almost immediately.<br />Be sure you know what you are doing. </cite>
-                                        <?php
-                                    } ?>
+                                <label class="control-label col-md-2">Status</label>
+                                <div class="col-md-10">
+                                    <cite class="small" style="font-weight:100;display:block;">
+                                        <i class="fa fa-<?php echo in_array($this->purchase_order_details->status, array('0','1','2','3','4','5')) ? 'check-' : ''; ?>square-o"></i>
+                                         &nbsp; Open/Pending Approval
+                                    </cite>
+                                    <cite class="small" style="font-weight:100;display:block;">
+                                        <i class="fa fa-<?php echo in_array($this->purchase_order_details->status, array('1','2','3','4','5')) ? 'check-' : ''; ?>square-o"></i>
+                                         &nbsp; Approved
+                                    </cite>
+                                    <cite class="small" style="font-weight:100;display:block;">
+                                        <i class="fa fa-<?php echo in_array($this->purchase_order_details->status, array('2','3','4','5')) ? 'check-' : ''; ?>square-o"></i>
+                                         &nbsp; Sent to Vendor
+                                    </cite>
+                                    <cite class="small" style="font-weight:100;display:block;">
+                                        <i class="fa fa-<?php echo in_array($this->purchase_order_details->status, array('3','4','5')) ? 'check-' : ''; ?>square-o"></i>
+                                         &nbsp; Email Viewed by Vendor
+                                    </cite>
+                                    <cite class="small" style="font-weight:100;display:block;">
+                                        <i class="fa fa-<?php echo in_array($this->purchase_order_details->status, array('4','5')) ? 'check-' : ''; ?>square-o"></i>
+                                         &nbsp; In Transit
+                                    </cite>
+                                    <cite class="small" style="font-weight:100;display:block;">
+                                        <i class="fa fa-<?php echo in_array($this->purchase_order_details->status, array('5')) ? 'check-' : ''; ?>square-o"></i>
+                                         &nbsp; Complete/Delivered
+                                    </cite>
+                                    <br />
+                                    Others:
+                                    <cite class="small" style="font-weight:100;display:block;">
+                                        <i class="fa fa-<?php echo $this->purchase_order_details->status == '6' ? 'check-' : ''; ?>square-o"></i>
+                                         &nbsp; On Hold
+                                    </cite>
+                                    <cite class="small" style="font-weight:100;display:block;">
+                                        <i class="fa fa-<?php echo $this->purchase_order_details->status == '7' ? 'check-' : ''; ?>square-o"></i>
+                                         &nbsp; Cancelled
+                                    </cite>
                                 </div>
                             </div>
                         </div>
@@ -324,8 +338,8 @@
                                                     <a href="<?php echo $img_linesheet ?: 'javascript:;'; ?>" class="<?php echo $img_linesheet ? 'fancybox' : ''; ?> pull-left">
                                                         <img class="" src="<?php echo $img_front_new; ?>" alt="" style="width:60px;height:auto;" onerror="$(this).attr('src','<?php echo $this->config->item('PROD_IMG_URL').'images/instylelnylogo_3.jpg'; ?>');" />
                                                     </a>
-                                                    <div class="shop-cart-item-details" style="margin-left:80px;">
-                                                        <h4 style="margin:0px;">
+                                                    <div class="shop-cart-item-details" style="margin-left:70px;">
+                                                        <h4 style="margin:0px;" data-st_id="<?php echo @$product->st_id; ?>">
                                                             <?php echo $item; ?>
                                                         </h4>
                                                         <p style="margin:0px;">
@@ -358,10 +372,9 @@
                                                     </style>
                                                     <?php
                                                     $this_size_qty = 0;
-                                                    //for ($s=0;$s<23;$s=$s+2)
                                                     foreach ($size_names as $size_label => $s)
                                                     {
-                                                        //$size_label = 'size_'.$s;
+                                                        //$size_label = 'size_ss'; for example
                                                         $s_qty =
                                                             isset($size_qty[$size_label])
                                                             ? $size_qty[$size_label]
@@ -388,10 +401,9 @@
                                                         <input tpye="text" class="this-total-qty <?php echo $item.' '.$prod_no; ?>" style="border:1px solid #ccc;font-size:12px;width:30px;padding-left:5px;background-color:white;" value="<?php echo $this_size_qty; ?>" readonly />
                                                     </div>
 
-                                                    <div class="margin-top-10 hide">
-                                                        <a href="#barcode-<?php echo $item?>" data-toggle="modal" class="btn dark btn-outline btn-sm">Print Barcode Labels</a>
+                                                    <div class="margin-top-10">
+                                                        <a href="<?php echo site_url($this->uri->segment(1).'/barcodes/print/po_item/index/'.$po_details->po_id.'/'.$item); ?>" class="btn dark btn-outline btn-sm" target="_blank">Print Barcode Labels</a>
                                                     </div>
-
                                                 </td>
                                                 <?php
                                                 /**********
@@ -399,7 +411,10 @@
                                                  */
                                                 ?>
                                                 <td class="text-right" style="vertical-align:top;">
-                                                    $ <?php echo number_format($size_qty['vendor_price'], 2); ?>
+                                                    <?php
+                                                    $v_price = @$size_qty['vendor_price'] ?: @$product->vendor_price;
+                                                    ?>
+                                                    $ <?php echo number_format($v_price, 2); ?>
                                                 </td>
                                                 <?php
                                                 /**********
@@ -408,117 +423,12 @@
                                                 ?>
                                                 <td class="text-right" style="vertical-align:top;">
                                                     <?php
-                                                    $this_size_total = $this_size_qty * $size_qty['vendor_price'];
+                                                    $this_size_total = $this_size_qty * $v_price;
                                                     ?>
-                                                    $ <?php echo $this->cart->format_number($this_size_total); ?>
+                                                    $ <?php echo number_format($this_size_total, 2); ?>
                                                 </td>
 
                                                 <input type="hidden" class="input-order-subtotal <?php echo $item.' '.$prod_no; ?>" name="subtotal" value="<?php echo $this_size_total; ?>" />
-
-                                                <?php
-                                                /**********
-                                                 * Modal for barcode labels
-                                                 */
-                                                ?>
-                                                <!-- BARCODES -->
-                                                <div class="modal fade bs-modal-md" id="barcode-<?php echo $item; ?>" tabindex="-1" role="dialog" aria-hidden="true">
-                                                    <div class="modal-dialog modal-md">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <button type="button" class="close dismiss-publish-modal" data-dismiss="modal" aria-hidden="true"></button>
-                                                                <h4 class="modal-title">Barcode Labels</h4>
-                                                            </div>
-                                                            <div class="modal-body">
-
-                                                                <div class="row">
-                                                                    <div class="col col-sm-9 margin-bottom-10">
-                                                                        PO# <?php echo $po_details->po_number; ?> - <strong><?php echo $item; ?></strong> Barcodes
-                                                                    </div>
-                                                                    <?php
-                                                                    $variables='';
-                                                                    $all=$size_qty;
-                                                                    $all['prod_no']=$prod_no;
-                                                                    $all['color_code']=$color_code;
-                                                                    $all['color_name']=$color_name;
-                                                                    foreach ($all as $key => $row)
-                                                                    {
-                                                                        $variables.=$key.'='.$row.'&';
-                                                                    }
-
-                                                                    ?>
-                                                                    <div class="col col-sm-3 margin-bottom-10">
-                                                                        <a href="<?php echo site_url('admin/products/barcodes/print_all_barcodes/'.@$product->st_id); ?>?<?php echo $variables ?>" class="btn dark btn-outline btn-sm" target="_blank">Print All Barcodes</a>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="row margin-bottom-10">
-                                                                    <div class="col col-sm-2">
-                                                                        <strong>Size</strong>
-                                                                    </div>
-                                                                    <div class="col col-sm-2">
-                                                                        <strong>Qty</strong>
-                                                                    </div>
-                                                                    <div class="col col-sm-4">
-                                                                        <strong>Barcode</strong>
-                                                                    </div>
-                                                                    <div class="col col-sm-4">
-                                                                        <strong>Actions</strong>
-                                                                    </div>
-                                                                </div>
-
-                                                                    <?php foreach ($size_qty as $size_label => $qty)
-                                                                    {
-                                                                        if($qty > 0){
-                                                                        if ($size_label != 'color_name' && $size_label != 'vendor_price' && $size_label != 'prod_no' && $size_label != 'color_code' )
-                                                                        { ?>
-
-                                                                <div class="row margin-bottom-10">
-                                                                    <div class="col col-sm-2">
-                                                                        <?php echo $size_label; ?>
-                                                                    </div>
-                                                                    <div class="col col-sm-2">
-                                                                        <?php echo $qty; ?>
-                                                                    </div>
-                                                                    <div class="col col-sm-4">
-                                                                        <?php
-                                                                        $code_text = $prod_no.'-'.$color_code.'-'.$size_label.'-'.(@$product->st_id ?: '000');
-                                                                        $barcode_image_name = $prod_no.'_'.$color_code.'_'.$size_label.'_'.(@$product->st_id ?: '000');
-                                                                        $imageResource = Zend_Barcode::draw(
-                                                                            'code128',
-                                                                            'image',
-                                                                            //$barcodeOptions,
-                                                                            array('text' => $code_text,'drawText'=>false,'barHeight' => 50),
-                                                                            //$rendererOptions
-                                                                            array()
-                                                                        );
-                                                                        $store_image = imagepng($imageResource, "assets/barcodes/".$barcode_image_name.".png");
-                                                                        ?>
-                                                                        <div style="display:inline-block;text-align:justify;margin:0 auto;">
-                                                                            <img src="<?php echo base_url(); ?>assets/barcodes/<?php echo $barcode_image_name; ?>.png" style="max-width:102%;" />
-                                                                            <div style="width:100%;font-size:10px;padding:0 3px;">
-                                                                                <span style="float:right;">STOCK ID: <?php echo $product->st_id ?: ''; ?></span>
-                                                                                <span><?php echo $prod_no ?: ''; ?></span><br />
-                                                                                <span><?php echo $color_name ?: ''; ?></span><br />
-                                                                                <span><?php echo $size_label ? strtoupper(str_replace('_',' ',$size_label)) :''; ?></span>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col col-sm-4">
-                                                                        <a href="<?php echo site_url('admin/products/barcodes/print_barcode/'.@$product->st_id); ?>?size_label=<?php echo $size_label; ?>" class="btn dark btn-outline btn-sm" target="_blank">Print Barcode</a>
-                                                                         <a href="<?php echo site_url('admin/products/barcodes/print_all/'.@$product->st_id.'/'.$qty.'/'.$size_label); ?>" class="btn dark btn-outline btn-sm" target="_blank">Print All</a>
-                                                                    </div>
-                                                                </div>
-                                                              <?php }  }  } ?>
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn dark btn-outline dismiss-publish-modal" data-dismiss="modal">Close</button>
-                                                                </a>
-                                                            </div>
-                                                        </div>
-                                                        <!-- /.modal-content -->
-                                                    </div>
-                                                    <!-- /.modal-dialog -->
-                                                </div>
-                                                <!-- /.modal -->
 
                                             </tr>
                                                     <?php

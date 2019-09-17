@@ -63,9 +63,11 @@
 							<div class="col-lg-3 col-md-4">
 								<select class="bs-select form-control" id="bulk_actions_select" name="bulk_action" disabled>
 									<option value="" selected="selected">Bulk Actions</option>
-									<option value="pe">Set as Pending</option>
-									<option value="ho">Set as On Hold</option>
+									<!--<option value="pe">Set as Pending</option>-->
+									<option value="it">Set as In-Transit</option>
 									<option value="co">Set as Complete</option>
+									<option value="ho">Set as On Hold</option>
+									<option value="ca">Set as Cancelled</option>
 									<option value="del">Permanently Delete</option>
 								</select>
 							</div>
@@ -140,7 +142,7 @@
 									{
 										$po_number = '0'.$po_number;
 									}
-									echo $po_number; 
+									echo $po_number;
 									?>
 								</td>
                                 <td>
@@ -197,18 +199,30 @@
                                         </button>
 										<!-- DOC: Remove "pull-right" class to default to left alignment -->
                                         <ul class="dropdown-menu pull-right">
+											<?php if ($order->status != '5')
+											{ ?>
                                             <li>
                                                 <a data-toggle="modal" href="#pending-<?php echo $order->po_id; ?>">
-                                                    <i class="fa fa-<?php echo $order->status == '0' ? 'check': 'ellipsis-h'; ?>"></i> Pending </a>
+                                                    <i class="fa fa-<?php echo in_array($order->status, array('0','1','2','3','4')) ? 'check': 'ellipsis-h'; ?>"></i> Pending </a>
                                             </li>
                                             <li>
                                                 <a data-toggle="modal" href="#on_hold-<?php echo $order->po_id; ?>">
-                                                    <i class="fa fa-<?php echo $order->status == '1' ? 'check': 'ellipsis-h'; ?>"></i> On Hold </a>
+                                                    <i class="fa fa-<?php echo $order->status == '4' ? 'check': 'ellipsis-h'; ?>"></i> In Transit </a>
                                             </li>
                                             <li>
                                                 <a data-toggle="modal" href="#complete-<?php echo $order->po_id; ?>">
                                                     <i class="fa fa-<?php echo $order->status == '5' ? 'check': 'ellipsis-h'; ?>"></i> Complete </a>
                                             </li>
+											<li>
+                                                <a data-toggle="modal" href="#on_hold-<?php echo $order->po_id; ?>">
+                                                    <i class="fa fa-<?php echo $order->status == '6' ? 'check': 'ellipsis-h'; ?>"></i> On Hold </a>
+                                            </li>
+											<li>
+                                                <a data-toggle="modal" href="#on_hold-<?php echo $order->po_id; ?>">
+                                                    <i class="fa fa-<?php echo $order->status == '7' ? 'check': 'ellipsis-h'; ?>"></i> Cancel </a>
+                                            </li>
+												<?php
+											} ?>
                                             <li class="divider"> </li>
                                             <li>
                                                 <a href="<?php echo $edit_link; ?>">
@@ -238,7 +252,7 @@
 										<!-- /.modal-dialog -->
 									</div>
 									<!-- /.modal -->
-									<!-- ON HOLD -->
+									<!-- IN-TRANSIT -->
 									<div class="modal fade bs-modal-sm" id="on_hold-<?php echo $order->po_id?>" tabindex="-1" role="dialog" aria-hidden="true">
 										<div class="modal-dialog modal-sm">
 											<div class="modal-content">
@@ -246,10 +260,10 @@
 													<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
 													<h4 class="modal-title">Update Order Info</h4>
 												</div>
-												<div class="modal-body"> Set order as ON HOLD? </div>
+												<div class="modal-body"> Set order as IN-TRANSIT? </div>
 												<div class="modal-footer">
 													<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-													<a href="<?php echo $this->uri->segment(1) === 'sales' ? site_url('sales/purchase_orders/status/update/'.$order->po_id.'/1') : site_url($this->config->slash_item('admin_folder').'purchase_orders/status/update/'.$order->po_id.'/1'); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+													<a href="<?php echo $this->uri->segment(1) === 'sales' ? site_url('sales/purchase_orders/status/update/'.$order->po_id.'/4') : site_url($this->config->slash_item('admin_folder').'purchase_orders/status/update/'.$order->po_id.'/4'); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
 														<span class="ladda-label">Confirm?</span>
 														<span class="ladda-spinner"></span>
 													</a>
@@ -272,6 +286,50 @@
 												<div class="modal-footer">
 													<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
 													<a href="<?php echo $this->uri->segment(1) === 'sales' ? site_url('sales/purchase_orders/status/update/'.$order->po_id.'/5') : site_url($this->config->slash_item('admin_folder').'purchase_orders/status/update/'.$order->po_id.'/5'); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+														<span class="ladda-label">Confirm?</span>
+														<span class="ladda-spinner"></span>
+													</a>
+												</div>
+											</div>
+											<!-- /.modal-content -->
+										</div>
+										<!-- /.modal-dialog -->
+									</div>
+									<!-- /.modal -->
+									<!-- ON HOLD -->
+									<div class="modal fade bs-modal-sm" id="on_hold-<?php echo $order->po_id?>" tabindex="-1" role="dialog" aria-hidden="true">
+										<div class="modal-dialog modal-sm">
+											<div class="modal-content">
+												<div class="modal-header">
+													<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+													<h4 class="modal-title">Update Order Info</h4>
+												</div>
+												<div class="modal-body"> Set order as ON HOLD? </div>
+												<div class="modal-footer">
+													<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
+													<a href="<?php echo $this->uri->segment(1) === 'sales' ? site_url('sales/purchase_orders/status/update/'.$order->po_id.'/6') : site_url($this->config->slash_item('admin_folder').'purchase_orders/status/update/'.$order->po_id.'/6'); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+														<span class="ladda-label">Confirm?</span>
+														<span class="ladda-spinner"></span>
+													</a>
+												</div>
+											</div>
+											<!-- /.modal-content -->
+										</div>
+										<!-- /.modal-dialog -->
+									</div>
+									<!-- /.modal -->
+									<!-- CANCELLED -->
+									<div class="modal fade bs-modal-sm" id="on_hold-<?php echo $order->po_id?>" tabindex="-1" role="dialog" aria-hidden="true">
+										<div class="modal-dialog modal-sm">
+											<div class="modal-content">
+												<div class="modal-header">
+													<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+													<h4 class="modal-title">Update Order Info</h4>
+												</div>
+												<div class="modal-body"> Set order as CANCELLED? </div>
+												<div class="modal-footer">
+													<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
+													<a href="<?php echo $this->uri->segment(1) === 'sales' ? site_url('sales/purchase_orders/status/update/'.$order->po_id.'/7') : site_url($this->config->slash_item('admin_folder').'purchase_orders/status/update/'.$order->po_id.'/7'); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
 														<span class="ladda-label">Confirm?</span>
 														<span class="ladda-spinner"></span>
 													</a>

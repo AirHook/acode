@@ -107,13 +107,13 @@
 
 				<br /><br />
 
-				<?php echo $store_details->store_name ?: $company_name; ?> <br />
-				<?php echo $store_details->address1 ?: $company_address1; ?> <br />
-				<?php echo $store_details->address2 ? $store_details->address2.'<br />' : $company_address2 ? $company_address2.'<br />' : ''; ?>
-				<?php echo $store_details->city ?: $company_city; ?>, <?php echo $store_details->state ?: $company_state; ?> <?php echo $store_details->zipcode ?: $company_zipcode; ?> <br />
-				<?php echo $store_details->country ?: $company_country; ?> <br />
-				<?php echo $store_details->telephone ?: $company_telephone; ?> <br />
-				ATTN: <?php echo $store_details->fname ? $store_details->fname.' '.$store_details->lname : $company_contact_person; ?> <?php echo $store_details->email ? '('.$store_details->email.')' : '('.$company_contact_email.')'; ?>
+				<?php echo @$store_details->store_name ?: $company_name; ?> <br />
+				<?php echo @$store_details->address1 ?: $company_address1; ?> <br />
+				<?php echo @$store_details->address2 ? $store_details->address2.'<br />' : $company_address2 ? $company_address2.'<br />' : ''; ?>
+				<?php echo @$store_details->city ?: $company_city; ?>, <?php echo @$store_details->state ?: $company_state; ?> <?php echo @$store_details->zipcode ?: $company_zipcode; ?> <br />
+				<?php echo @$store_details->country ?: $company_country; ?> <br />
+				<?php echo @$store_details->telephone ?: $company_telephone; ?> <br />
+				ATTN: <?php echo @$store_details->fname ? $store_details->fname.' '.@$store_details->lname : $company_contact_person; ?> <?php echo @$store_details->email ? '('.$store_details->email.')' : '('.$company_contact_email.')'; ?>
 
 			</td>
 		</tr>

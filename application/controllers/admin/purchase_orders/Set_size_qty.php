@@ -30,31 +30,36 @@ class Set_size_qty extends MY_Controller {
 		if ( ! $this->input->post('prod_no'))
 		{
 			// nothing more to do...
-			echo 'false';
+			//echo 'false';
+			//exit;
 		}
 
 		// grab the post variables
+		//$item = '807M_BLAC1';
+		//$size = 'size_sm';
+		//$qty = '5';
 		$item = $this->input->post('prod_no');
 		$size = $this->input->post('size');
 		$qty = $this->input->post('qty');
 		$page = $this->input->post('page');
 
-		$admin_po_size_qty =
+		$admin_po_items =
 			$page == 'modify'
-			? $this->session->admin_po_mod_size_qty
-			: $this->session->admin_po_size_qty
+			? $this->session->admin_po_mod_items
+			: $this->session->admin_po_items
 		;
 
 		// set the items array
 		$items_array =
-			$admin_po_size_qty
-			? json_decode($admin_po_size_qty, TRUE)
+			$admin_po_items
+			? json_decode($admin_po_items, TRUE)
 			: array()
 		;
 
 		// process the item
 		if ($qty == 0)
 		{
+			if (isset($items_array[$item][$size]))
 			unset($items_array[$item][$size]);
 		}
 		else
@@ -65,16 +70,16 @@ class Set_size_qty extends MY_Controller {
 		// reset session value for items array
 		if ($page == 'modify')
 		{
-			$this->session->set_userdata('admin_po_mod_size_qty', json_encode($items_array));
+			$this->session->set_userdata('admin_po_mod_items', json_encode($items_array));
 		}
 		else
 		{
-			$this->session->set_userdata('admin_po_size_qty', json_encode($items_array));
+			$this->session->set_userdata('admin_po_items', json_encode($items_array));
 		}
 
 		// unset some items
-		unset($items_array[$item]['color_name']);
-		unset($items_array[$item]['vendor_price']);
+		if (isset($items_array[$item]['color_name'])) unset($items_array[$item]['color_name']);
+		if (isset($items_array[$item]['vendor_price'])) unset($items_array[$item]['vendor_price']);
 
 		// get this item total qty
 		$this_sum = array_sum($items_array[$item]);

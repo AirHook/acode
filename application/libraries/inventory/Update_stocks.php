@@ -66,28 +66,31 @@ class Update_stocks {
 				)
 			);
 
-			unset($size_qty['color_name']);
-			unset($size_qty['vendor_price']);
-
-			// update size quantities
-			$size_qty_to_udpate_available = $size_qty;
-			$size_qty_to_udpate_physical = $size_qty;
-			foreach ($size_qty as $key => $val)
+			if ($product)
 			{
-				$size_qty_to_udpate_available[$key] = $val + $product->$key;
-				$exp = explode('_', $key);
-				$new_key = 'physical_'.$exp[1];
-				$size_qty_to_udpate_physical[$key] = $val + $product->$new_key;
+				unset($size_qty['color_name']);
+				unset($size_qty['vendor_price']);
+
+				// update size quantities
+				$size_qty_to_udpate_available = $size_qty;
+				$size_qty_to_udpate_physical = $size_qty;
+				foreach ($size_qty as $key => $val)
+				{
+					$size_qty_to_udpate_available[$key] = $val + $product->$key;
+					$exp = explode('_', $key);
+					$new_key = 'physical_'.$exp[1];
+					$size_qty_to_udpate_physical[$key] = $val + $product->$new_key;
+				}
+
+				// update records
+				// available stocks
+				$this->DB->where('st_id', $product->st_id);
+				$this->DB->update('tbl_stock', $size_qty);
+
+				// physical stocks
+				$this->DB->where('st_id', $product->st_id);
+				$this->DB->update('tbl_stock_physical', $size_qty);
 			}
-
-			// update records
-			// available stocks
-			$this->DB->where('st_id', $product->st_id);
-			$this->DB->update('tbl_stock', $size_qty);
-
-			// physical stocks
-			$this->DB->where('st_id', $product->st_id);
-			$this->DB->update('tbl_stock_physical', $size_qty);
 		}
 
 		return TRUE;

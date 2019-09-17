@@ -56,7 +56,6 @@
                     e.stopPropagation();
                     $(this).closest('.admin_tobbar_search').submit();
                 });
-                $('.ship-to-popovers').popover('show');
                 // init jsbarcode
                 JsBarcode(".barcode").init();
             })

@@ -33,16 +33,20 @@ class Bulk_actions extends Admin_Controller {
 		// set database set clause based on bulk_action for activate and suspend
 		switch ($this->input->post('bulk_action'))
 		{
-			case 'pe':
+			case 'pe': // pending
 				$DB->set('status', '0');
 			break;
-
-			case 'ho':
-				$DB->set('status', '1');
+			case 'it':
+				$DB->set('status', '4');
 			break;
-
 			case 'co':
 				$DB->set('status', '5');
+			break;
+			case 'ho':
+				$DB->set('status', '6');
+			break;
+			case 'ca':
+				$DB->set('status', '7');
 			break;
 		}
 

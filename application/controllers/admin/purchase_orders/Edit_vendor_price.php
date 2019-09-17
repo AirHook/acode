@@ -31,24 +31,25 @@ class Edit_vendor_price extends MY_Controller {
 		{
 			// nothing more to do...
 			echo 'false';
+			exit;
 		}
 
 		// grab the post variable
 		$item = $this->input->post('prod_no'); // <prod_no>_<color_code>
-		$style_no = $this->input->post('style_no'); // prod_no
+		//$style_no = $this->input->post('style_no'); // prod_no
 		$vendor_price = $this->input->post('vendor_price');
 		$page = $this->input->post('page');
 
-		$admin_po_size_qty =
+		$admin_po_items =
 			$page == 'modify'
-			? $this->session->admin_po_mod_size_qty
-			: $this->session->admin_po_size_qty
+			? $this->session->admin_po_mod_items
+			: $this->session->admin_po_items
 		;
 
 		// set the items array
 		$items_array =
-			$admin_po_size_qty
-			? json_decode($admin_po_size_qty, TRUE)
+			$admin_po_items
+			? json_decode($admin_po_items, TRUE)
 			: array()
 		;
 
@@ -58,12 +59,12 @@ class Edit_vendor_price extends MY_Controller {
 		// reset session value for items array
 		if ($page == 'modify')
 		{
-			$this->session->set_userdata('admin_po_mod_size_qty', json_encode($items_array));
+			$this->session->set_userdata('admin_po_mod_items', json_encode($items_array));
 			$this->session->set_userdata('admin_po_mod_edit_vendor_price', TRUE);
 		}
 		else
 		{
-			$this->session->set_userdata('admin_po_size_qty', json_encode($items_array));
+			$this->session->set_userdata('admin_po_items', json_encode($items_array));
 			$this->session->set_userdata('admin_po_edit_vendor_price', TRUE);
 		}
 

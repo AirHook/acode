@@ -1,326 +1,70 @@
-<?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Create extends Admin_Controller {
-
-	/**
-	 * DB Object
-	 *
-	 * @var	object
-	 */
-	protected $DB;
-
+/****************
+ * Create PO Class
+ *
+ *
+ */
+class Create extends Admin_Controller
+{
 	/**
 	 * Constructor
 	 *
 	 * @return	void
 	 */
-	public function __construct()
+	function __Construct()
 	{
-		parent::__construct();
+		parent::__Construct();
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Primary method - index
+	 *
+	 * @return	void
+	 */
+	function index()
+	{
+		// generate the plugin scripts and css
+		$this->_create_plugin_scripts();
 
 		// load pertinent library/model/helpers
-		$this->load->helper('metronic/create_category_treelist');
-		$this->load->library('products/size_names');
-		$this->load->library('designers/designer_details');
+		$this->load->library('form_validation');
 		$this->load->library('users/vendor_users_list');
-		$this->load->library('users/vendor_user_details');
+			$this->load->library('users/wholesale_users_list');
 		$this->load->library('categories/categories_tree');
-
-		// get the vendor data
-		$this->data['vendors'] = $this->vendor_users_list->select();
-
-		// let's remove the segments (up to controller class method/function)
-		// for category sidebar links to work
-		$this->data['url_segs'] = explode('/', $this->uri->uri_string());
-		array_shift($this->data['url_segs']); // admin
-		array_shift($this->data['url_segs']); // purchase_orders
-		array_shift($this->data['url_segs']); // create
-		array_shift($this->data['url_segs']); // step
-
-		// let's ensure that there are no admin session for po mod
-		if ($this->session->admin_po_mod_size_qty)
-		{
-			// new po admin access
-			unset($_SESSION['admin_po_vendor_id']);
-			unset($_SESSION['admin_po_des_url_structure']);
-			unset($_SESSION['admin_po_items']);
-			unset($_SESSION['admin_po_size_qty']);
-			unset($_SESSION['admin_po_store_id']);
-			unset($_SESSION['admin_po_edit_vendor_price']);
-			// remove po mod details
-			unset($_SESSION['admin_po_mod_po_id']);
-			unset($_SESSION['admin_po_mod_size_qty']);
-			unset($_SESSION['admin_po_mod_edit_vendor_price']);
-		}
-
-		/*****
-		 * Check for items in session
-		 */
-		// check for po items
-		$this->data['po_items'] =
-			$this->session->admin_po_items
-			? json_decode($this->session->admin_po_items, TRUE)
-			: array()
-		;
-		$po_items_count = 0;
-		foreach ($this->data['po_items'] as $key => $val)
-		{
-			if (is_array($val))
-			{
-				$po_items_count += array_sum($val);
-			}
-			else $po_items_count += 1;
-		}
-		$this->data['po_items_count'] = $po_items_count;
-		$this->data['po_size_qty'] =
-			$this->session->admin_po_size_qty
-			? json_decode($this->session->admin_po_size_qty, TRUE)
-			: array()
-		;
-
-		// connect to database
-		$this->DB = $this->load->database('instyle', TRUE);
-    }
-
-	// ----------------------------------------------------------------------
-
-	/**
-	 * Index
-	 *
-	 * Edit selected sales pacakge or newly created sales package
-	 *
-	 * @return	void
-	 */
-	public function index()
-	{
-		// redirect user
-		redirect('admin/purchase_orders/create/step1', 'location');
-	}
-
-	// ----------------------------------------------------------------------
-
-	/**
-	 * STEP 1 - Select vendor
-	 *
-	 * @return	void
-	 */
-	public function step1()
-	{
-		// generate the plugin scripts and css
-		$this->_create_plugin_scripts();
-
-		// load pertinent library/model/helpers
-		$this->load->library('form_validation');
-
-		// set validation rules
-		$this->form_validation->set_rules('vendor_id', 'Vendor', 'trim|required');
-
-		if ($this->form_validation->run() == FALSE)
-		{
-			// some necessary variables
-			$this->data['steps'] = 1;
-
-			// need to show loading at start
-			$this->data['show_loading'] = FALSE;
-
-			// set data variables...
-			$this->data['file'] = 'create_purchase_order_step1';
-			$this->data['page_title'] = 'Purchase Order';
-			$this->data['page_description'] = 'Create Purchase Order';
-
-			// load views...
-			$this->load->view('admin/'.($this->config->slash_item('admin_template') ?: 'metronic/').'template/template', $this->data);
-		}
-		else
-		{
-			// check for existing vendor id on session
-			if ($this->session->admin_po_vendor_id !== $this->input->post('vendor_id'))
-			{
-				// reset vendor id amont others
-				unset($_SESSION['admin_po_vendor_id']);
-				unset($_SESSION['admin_po_des_url_structure']);
-				unset($_SESSION['admin_po_items']);
-				unset($_SESSION['admin_po_size_qty']);
-				unset($_SESSION['admin_po_store_id']);
-				unset($_SESSION['admin_po_edit_vendor_price']);
-		}
-
-			// set sessions for vendor id
-			$this->session->set_userdata('admin_po_vendor_id', $this->input->post('vendor_id'));
-			// set sessions for des id
-			$this->session->set_userdata('admin_po_des_url_structure', $this->input->post('url_structure'));
-
-			redirect('admin/purchase_orders/create/step2/womens_apparel', 'location');
-		}
-	}
-
-	// ----------------------------------------------------------------------
-
-	/**
-	 * STEP 2 - Select product items via thumbs
-	 *
-	 * @return	void
-	 */
-	public function step2()
-	{
-		// generate the plugin scripts and css
-		$this->_create_plugin_scripts();
-
-		// load pertinent library/model/helpers
-		$this->load->library('color_list');
-
-		// get color list
-		$this->data['colors'] = $this->color_list->select();
-
-		// get vendor details
-		$this->data['vendor'] = $this->vendor_user_details->initialize(
-			array(
-				'vendor_id' => $this->session->admin_po_vendor_id
-			)
-		);
-		if ( ! $this->data['vendor'])
-		{
-			// no vendor yet, let user selecct vendor
-			// set flash data
-			$this->session->set_flashdata('error', 'no_id_passed');
-
-			// redirect user
-			redirect('admin/purchase_orders/create/step1', 'location');
-		}
-
-		// last segment as category slug
-		$this->data['active_category'] =
-			$this->uri->segment(3) == 'create'
-			? ((count($this->data['url_segs']) - 1) >= 0 ? $this->data['url_segs'][count($this->data['url_segs']) - 1] : 'womens_apparel')
-			: 'womens_apparel'
-		;
-
-		// get respective active category ID for use on product list where condition
-		$category_id = $this->categories_tree->get_id($this->data['active_category']);
-
-		// let's do some defaults...
-		// get the designer details for the sidebar
-		$this->data['designer'] = $this->designer_details->initialize(array('url_structure'=>$this->session->admin_po_des_url_structure));
-
- 		// active designer selection
- 		$this->data['active_designer'] = $this->designer_details->url_structure;
-
-		// set array for where condition of get product list
-		if ($this->data['active_designer'])
-		{
-			$where = array(
-				'designer.url_structure' => $this->data['active_designer'],
-				'tbl_product.categories LIKE' => '%'.$category_id.'%',
-				'tbl_product.vendor_id' => $this->session->admin_po_vendor_id
-			);
-		}
-		else
-		{
-			$where = array(
-				'tbl_product.categories LIKE' => '%'.$category_id.'%',
-				'tbl_product.vendor_id' => $this->session->admin_po_vendor_id
-			);
-		}
-
-		// get the products list
-		$params['show_private'] = TRUE; // all items general public (Y) - N for private
-		$params['view_status'] = 'ALL'; // ALL items view status (Y, Y1, Y2, N)
-		$params['variant_publish'] = 'ALL'; // ALL variant level color publish (view status)
-		$params['group_products'] = FALSE; // group per product number or per variant
-		// show items even without stocks at all
-		$params['with_stocks'] = FALSE;
-		$this->load->library('products/products_list', $params);
-		$this->data['products'] = $this->products_list->select(
-			$where,
-			array( // order conditions
-				'seque' => 'desc',
-				'tbl_product.prod_no' => 'desc'
-			)
-		);
-		$this->data['products_count'] = $this->products_list->row_count;
-
-		// some necessary variables and data
-		$this->data['steps'] = 2;
-
-		// need to show loading at start
-		$this->data['show_loading'] = TRUE;
-		$this->data['search_string'] = FALSE;
-
-		// set data variables...
-		$this->data['file'] = 'create_purchase_order_step2'; //'purchase_orders';
-		$this->data['page_title'] = 'Purchase Order';
-		$this->data['page_description'] = 'Create Purchase Orders';
-
-		// load views...
-		$this->load->view('admin/'.($this->config->slash_item('admin_template') ?: 'metronic/').'template/template', $this->data);
-	}
-
-	// ----------------------------------------------------------------------
-
-	/**
-	 * STEP 3 - Refie purchase order options, ship to info, size and qty, etc...
-	 *
-	 * @return	void
-	 */
-	public function step3()
-	{
-		// generate the plugin scripts and css
-		$this->_create_plugin_scripts();
-
-		// load pertinent library/model/helpers
-		$this->load->helper('state_country_helper');
-		$this->load->library('form_validation');
 		$this->load->library('products/product_details');
+		$this->load->library('products/size_names');
+		$this->load->library('color_list');
 		$this->load->library('purchase_orders/purchase_orders_list');
-		$this->load->library('users/wholesale_users_list');
-		$this->load->library('users/wholesale_user_details');
-		$this->load->library('users/sales_user_details');
-		$this->load->library('designers/designer_details');
 
 		// set validation rules
 		$this->form_validation->set_rules('delivery_date', 'Deliver Data', 'trim|required');
 
 		if ($this->form_validation->run() == FALSE)
 		{
-			// get user list for the edit ship to function
-			$this->data['users'] = $this->wholesale_users_list->select();
+			// get color list
+			// used for "add product not in list"
+			$this->data['colors'] = $this->color_list->select();
 
-			// get vendor details
-			// vendor id is always present at this time given create step1
-			$this->data['vendor_details'] = $this->vendor_user_details->initialize(
-				array(
-					'vendor_id' => $this->session->admin_po_vendor_id
-				)
-			);
-			if ( ! $this->data['vendor_details'])
+			// let's ensure that there are no admin session for po mod
+			if ($this->session->admin_po_mod_items)
 			{
-				// no vendor yet, let user selecct vendor
-				// set flash data
-				$this->session->set_flashdata('error', 'no_id_passed');
-
-				// redirect user
-				redirect('admin/purchase_orders/create/step1', 'location');
+				// new po admin access
+				unset($_SESSION['admin_po_vendor_id']);
+				unset($_SESSION['admin_po_des_url_structure']);
+				unset($_SESSION['admin_po_items']);
+				unset($_SESSION['admin_po_size_qty']);
+				unset($_SESSION['admin_po_store_id']);
+				unset($_SESSION['admin_po_edit_vendor_price']);
+				unset($_SESSION['admin_po_slug_segs']);
+				// remove po mod details
+				unset($_SESSION['admin_po_mod_po_id']);
+				unset($_SESSION['admin_po_mod_items']);
+				unset($_SESSION['admin_po_mod_size_qty']);
+				unset($_SESSION['admin_po_mod_edit_vendor_price']);
 			}
-
-			// get store details if any
-			if ($this->session->admin_po_store_id)
-			{
-				$this->data['store_details'] = $this->wholesale_user_details->initialize(
-					array(
-						'user_id' => $this->session->admin_po_store_id
-					)
-				);
-			}
-			else $this->data['store_details'] = $this->wholesale_user_details->deinitialize();
-
-			// set author info for the summary view
-			$this->data['author_name'] = $this->admin_user_details->fname.' '.$this->admin_user_details->lname;
-			$this->data['author_email'] = $this->admin_user_details->email;
-
-			// get designer id
-			$this->designer_details->initialize(array('designer.url_structure'=>$this->session->admin_po_des_url_structure));
-			$this->data['des_id'] = $this->designer_details->des_id;
 
 			// set po number
 			$this->data['po_number'] = $this->purchase_orders_list->max_po_number() + 1;
@@ -329,34 +73,129 @@ class Create extends Admin_Controller {
 				$this->data['po_number'] = '0'.$this->data['po_number'];
 			}
 
-			// get size names using des_id as reference
-			$this->designer_details->initialize(array('designer.url_structure'=>$this->session->admin_po_des_url_structure));
-			$this->data['size_names'] = $this->size_names->get_size_names($this->designer_details->webspace_options['size_mode']);
+			// step 1, get list for select vendor
+			$this->data['vendors'] = $this->vendor_users_list->select();
+
+			// get the designer details
+			if ($this->session->admin_po_des_url_structure)
+			{
+				$this->data['designer_details'] = $this->designer_details->initialize(
+					array(
+						'url_structure' => $this->session->admin_po_des_url_structure
+					)
+				);
+				$this->data['des_id'] = $this->designer_details->des_id;
+			}
 
 			// set company information
-			$this->data['company_name'] = $this->designer_details->company_name;
-			$this->data['company_address1'] = $this->designer_details->address1;
-			$this->data['company_address2'] = $this->designer_details->address2;
-			$this->data['company_city'] = $this->designer_details->city;
-			$this->data['company_state'] = $this->designer_details->state;
-			$this->data['company_zipcode'] = $this->designer_details->zipcode;
-			$this->data['company_country'] = $this->designer_details->country;
-			$this->data['company_telephone'] = $this->designer_details->phone;
-			$this->data['company_contact_person'] = $this->designer_details->owner;
-			$this->data['company_contact_email'] = $this->designer_details->info_email;
+			$this->data['company_name'] = $this->designer_details->company_name ?: $this->webspace_details->name;
+			$this->data['company_address1'] = $this->designer_details->address1 ?: $this->webspace_details->address1;
+			$this->data['company_address2'] = $this->designer_details->address2 ?: $this->webspace_details->address2;
+			$this->data['company_city'] = $this->designer_details->city ?: $this->webspace_details->city;
+			$this->data['company_state'] = $this->designer_details->state ?: $this->webspace_details->state;
+			$this->data['company_zipcode'] = $this->designer_details->zipcode ?: $this->webspace_details->zipcode;
+			$this->data['company_country'] = $this->designer_details->country ?: $this->webspace_details->country;
+			$this->data['company_telephone'] = $this->designer_details->phone ?: $this->webspace_details->phone;
+			$this->data['company_contact_person'] = $this->designer_details->owner ?: $this->webspace_details->owner;
+			$this->data['company_contact_email'] = $this->designer_details->info_email ?: $this->webspace_details->info_email;
 
-			// some necessary variables
-			$this->data['steps'] = 3;
+			// get some data
+			if ($this->session->admin_po_des_url_structure)
+			{
+				// get the designer category tree
+				$this->data['des_subcats'] = $this->categories_tree->treelist(
+					array(
+						'd_url_structure' => $this->data['designer_details']->url_structure,
+						'vendor_id' => $this->session->admin_po_vendor_id,
+						'with_products' => TRUE
+					)
+				);
+				$this->data['row_count'] = $this->categories_tree->row_count;
+				$this->data['max_level'] = $this->categories_tree->max_category_level;
+			}
+
+			// set author info for the summary view
+			$this->data['author_name'] = $this->admin_user_details->fname.' '.$this->admin_user_details->lname;
+			$this->data['author_email'] = $this->admin_user_details->email;
+
+			/*****
+			 * Check for items in session
+			 */
+			// check for po items
+			$this->data['po_items'] =
+				$this->session->admin_po_items
+				? json_decode($this->session->admin_po_items, TRUE)
+				: array()
+			;
+			$items_count = 0;
+			foreach ($this->data['po_items'] as $key => $val)
+			{
+				if (is_array($val))
+				{
+					$items_count += array_sum($val);
+				}
+				else $items_count += 1;
+			}
+			$this->data['items_count'] = count($this->data['po_items']);
+
+			// set slugs segments if any
+			$this->data['slug_segs'] =
+				$this->session->admin_po_slug_segs
+				? json_decode($this->session->admin_po_slug_segs, TRUE)
+				: array()
+			;
+
+			$category_slug = end($this->data['slug_segs']);
+			$category_id = $this->categories_tree->get_id($category_slug);
+
+			// set array for where condition of get product list
+			if ($this->webspace_details->options['site_type'] == 'hub_site')
+			{
+				if ($this->session->admin_po_des_url_structure) $where['designer.url_structure'] = $this->session->admin_po_des_url_structure;
+				if ($this->session->admin_po_vendor_id) $where['tbl_product.vendor_id'] = $this->session->admin_po_vendor_id;
+				if (@$this->data['des_subcats']) $where['tbl_product.categories LIKE'] = '%'.$category_id.'%';
+			}
+			/*
+			else
+			{
+				$where = array(
+					'designer.url_structure' => $this->data['active_designer'],
+					'tbl_product.categories LIKE' => '%'.$category_id.'%',
+					'tbl_product.vendor_id' => $this->session->admin_po_vendor_id
+				);
+			}
+			*/
+
+			if (@$where)
+			{
+				// get the products list
+				$params['show_private'] = TRUE; // all items general public (Y) - N for private
+				$params['view_status'] = 'ALL'; // ALL items view status (Y, Y1, Y2, N)
+				$params['variant_publish'] = 'ALL'; // ALL variant level color publish (view status)
+				$params['group_products'] = FALSE; // group per product number or per variant
+				// show items even without stocks at all
+				$params['with_stocks'] = FALSE;
+				$this->load->library('products/products_list', $params);
+				$this->data['products'] = $this->products_list->select(
+					$where,
+					array( // order conditions
+						'seque' => 'desc',
+						'tbl_product.prod_no' => 'desc'
+					)
+				);
+				$this->data['products_count'] = $this->products_list->row_count;
+			}
 
 			// need to show loading at start
-			$this->data['show_loading'] = FALSE;
+			$this->data['show_loading'] = TRUE;
+			$this->data['search_string'] = FALSE;
 
-			// set data variables...
-			$this->data['file'] = 'create_purchase_order_step3'; //'purchase_orders';
+			$this->data['file'] = 'po_create';
 			$this->data['page_title'] = 'Purchase Order';
-			$this->data['page_description'] = 'Create Purchase Order';
+			$this->data['page_description'] = 'Purcahse Order Create';
 
-			$this->load->view('admin/'.($this->config->slash_item('admin_template') ?: 'metronic/').'template/template', $this->data);
+			// load views...
+			$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template5/template', $this->data);
 		}
 		else
 		{
@@ -419,7 +258,7 @@ class Create extends Admin_Controller {
 			$post_ary['delivery_date'] = strtotime($this->input->post('delivery_date'));
 			$post_ary['author'] = $this->admin_user_details->admin_id; // author
 			$post_ary['c'] = '1'; // 1-admin,2-sales
-			$post_ary['status'] = '0';
+			$post_ary['status'] = '0'; // set to pending approval
 			$post_ary['options'] = json_encode($options);
 			$post_ary['remarks'] = $this->input->post('remarks');
 
@@ -435,47 +274,10 @@ class Create extends Admin_Controller {
 					// sizes not indicated defaults to zero
 				)
 			)
-			// this is actually the $po_size_qty array plus the color name
 			// */
 
-			// grab $po_size_qty and iterate and set $po_items
-			$po_size_qty = json_decode($this->session->admin_po_size_qty, TRUE);
-			foreach ($po_size_qty as $item => $size_qty)
-			{
-				// get product details
-				$product = $this->product_details->initialize(
-					array(
-						'tbl_product.prod_no' => $item
-					)
-				);
-				if ( ! $product)
-				{
-					$exp = explode('_', $item);
-					$product = $this->product_details->initialize(
-						array(
-							'tbl_product.prod_no' => $exp[0],
-							'color_code' => $exp[1]
-						)
-					);
-				}
-
-				// set color name
-				if ($product)
-				{
-					$size_qty['color_name'] = $product->color_name;
-					$size_qty['vendor_price'] = $product->vendor_price ?: ($product->wholesale_price / 3);
-				}
-				else
-				{
-					$size_qty['color_name'] = $this->product_details->get_color_name($exp[1]);
-					$size_qty['vendor_price'] = @$size_qty['vendor_price'] ?: 0;
-				}
-
-				$po_items[$item] = $size_qty;
-			}
-
 			// set po items
-			$post_ary['items'] = json_encode($po_items);
+			$post_ary['items'] = $this->session->admin_po_items;
 
 			/***********
 			 * Save it to the database
@@ -485,326 +287,33 @@ class Create extends Admin_Controller {
 			$query = $DB->insert('purchase_orders', $post_ary);
 			$this_po_id = $DB->insert_id();
 
-			/***********
-			 * Save pdf on a temp file
-			 */
-			// reload data
-			// load pertinent library/model/helpers
-			$this->load->library('products/product_details');
-			$this->load->library('purchase_orders/purchase_order_details');
-			$this->load->library('users/vendor_user_details');
-
-			// initialize purchase order properties and items
-			$this->data['po_details'] = $this->purchase_order_details->initialize(
-				array(
-					'po_id' => $this_po_id
-				)
-			);
-
-			// get vendor details
-			$this->data['vendor_details'] = $this->vendor_user_details->initialize(
-				array(
-					'vendor_id' => $this->purchase_order_details->vendor_id
-				)
-			);
-
-			// other options
-			$this->data['po_options'] = $this->purchase_order_details->options;
-
-			// get ship to details
-			if (isset($this->data['po_options']['po_store_id']))
-			{
-				$this->data['store_details'] = $this->wholesale_user_details->initialize(
-					array(
-						'user_id' => $this->data['po_options']['po_store_id']
-					)
-				);
-			}
-			else $this->data['store_details'] = $this->wholesale_user_details->deinitialize();
-
-			// get PO author
-			switch ($this->purchase_order_details->c)
-			{
-				case '2': //sales
-					$this->data['author'] = $this->sales_user_details->initialize(
-						array(
-							'admin_sales_id' => $this->purchase_order_details->author
-						)
-					);
-				break;
-				case '1': //admin
-				default:
-					$this->data['author'] = $this->admin_user_details->initialize(
-						array(
-							'admin_id' => ($this->purchase_order_details->author ?: '1')
-						)
-					);
-			}
-
-			// po items
-			$this->data['po_items'] = $this->purchase_order_details->items;
-
-			// set company information
-			$this->designer_details->initialize(array('designer.des_id'=>$this->purchase_order_details->des_id));
-			$this->data['company_name'] = $this->designer_details->company_name;
-			$this->data['company_address1'] = $this->designer_details->address1;
-			$this->data['company_address2'] = $this->designer_details->address2;
-			$this->data['company_city'] = $this->designer_details->city;
-			$this->data['company_state'] = $this->designer_details->state;
-			$this->data['company_zipcode'] = $this->designer_details->zipcode;
-			$this->data['company_country'] = $this->designer_details->country;
-			$this->data['company_telephone'] = $this->designer_details->phone;
-			$this->data['company_contact_person'] = $this->designer_details->owner;
-			$this->data['company_contact_email'] = $this->designer_details->info_email;
-
-			// load the view as string
-			$html = $this->load->view('templates/purchase_order_pdf', $this->data, TRUE);
-
-			/* */
-			// load pertinent library/model/helpers
-			$this->load->library('m_pdf');
-
-			// generate pdf
-			$this->m_pdf->pdf->WriteHTML($html);
-
-			// set filename and file path
-			$pdf_file_path = 'assets/pdf/pdf_po_selected.pdf';
-
-			// download it "D" - download, "I" - inline, "F" - local file, "S" - string
-			//$this->m_pdf->pdf->Output(); // output to browser
-			$this->m_pdf->pdf->Output($pdf_file_path, "F");
-			// */
-
-			/***********
-			 * Send po email confirmation with PDF attachment
-			 */
-			$this->load->library('purchase_orders/purchase_order_sending');
-	 		$this->purchase_order_sending->send($this_po_id);
-
 			// once done, we now remove session items
+			// new po admin access
 			unset($_SESSION['admin_po_vendor_id']);
 			unset($_SESSION['admin_po_des_url_structure']);
 			unset($_SESSION['admin_po_items']);
 			unset($_SESSION['admin_po_size_qty']);
 			unset($_SESSION['admin_po_store_id']);
 			unset($_SESSION['admin_po_edit_vendor_price']);
+			unset($_SESSION['admin_po_slug_segs']);
+			// remove po mod details
+			unset($_SESSION['admin_po_mod_po_id']);
+			unset($_SESSION['admin_po_mod_items']);
+			unset($_SESSION['admin_po_mod_size_qty']);
+			unset($_SESSION['admin_po_mod_edit_vendor_price']);
+
+			/***********
+			 * Send po email confirmation with PDF attachment
+			 */
+			$this->load->library('purchase_orders/purchase_order_sending');
+	 		$this->purchase_order_sending->send($this_po_id, 'admin');
 
 			// set flash data
 			$this->session->set_flashdata('success', 'add');
-			//$this->session->set_flashdata('po_id', $DB->insert_id());
 
 			// redirect user
-			redirect('admin/purchase_orders/create/step4/'.$this_po_id, 'location');
+			redirect('admin/purchase_orders/details/index/'.$this_po_id, 'location');
 		}
-	}
-
-	// ----------------------------------------------------------------------
-
-	public function step4($po_id = '')
-	{
-		//if ( ! $this->session->flashdata('po_id'))
-		if ( ! $po_id)
-		{
-			// nothing more to do...
-			// set flash data
-			$this->session->set_flashdata('error', 'no_id_passed');
-
-			// redirect user
-			redirect('admin/purchase_orders/create/step1', 'location');
-		}
-
-		// generate the plugin scripts and css
-		$this->_create_plugin_scripts();
-
-		// load pertinent library/model/helpers
-		$this->load->library('products/product_details');
-		$this->load->library('purchase_orders/purchase_order_details');
-		$this->load->library('users/wholesale_user_details');
-		$this->load->library('zend');
-		$this->zend->load('Zend/Barcode');
-
-		// initialize purchase order properties and items
-		$this->data['po_details'] = $this->purchase_order_details->initialize(
-			array(
-				'po_id' => $po_id
-			)
-		);
-
-		// get po items and other array stuff
-		$this->data['po_number'] = $this->purchase_order_details->po_number;
-		$this->data['po_items'] = $this->purchase_order_details->items;
-		$this->data['po_options'] = $this->purchase_order_details->options;
-
-		// get vendor details
-		$this->data['vendor_details'] = $this->vendor_user_details->initialize(
-			array(
-				'vendor_id' => $this->purchase_order_details->vendor_id
-			)
-		);
-
-		// get ship to details
-		if (isset($this->data['po_options']['po_store_id']))
-		{
-			$this->data['store_details'] = $this->wholesale_user_details->initialize(
-				array(
-					'user_id' => $this->data['po_options']['po_store_id']
-				)
-			);
-		}
-		else $this->data['store_details'] = $this->wholesale_user_details->deinitialize();
-
-		// get PO author
-		switch ($this->purchase_order_details->c)
-		{
-			case '2': //sales
-				$this->data['author'] = $this->sales_user_details->initialize(
-					array(
-						'admin_sales_id' => $this->purchase_order_details->author
-					)
-				);
-			break;
-			case '1': //admin
-			default:
-				$this->data['author'] = $this->admin_user_details->initialize(
-					array(
-						'admin_id' => ($this->purchase_order_details->author ?: '1')
-					)
-				);
-		}
-
-		// get size names using des_id as reference
-		$this->designer_details->initialize(array('designer.des_id'=>$this->purchase_order_details->des_id));
-		$this->data['size_names'] = $this->size_names->get_size_names($this->designer_details->webspace_options['size_mode']);
-
-		// set company information
-		$this->data['company_name'] = $this->designer_details->company_name;
-		$this->data['company_address1'] = $this->designer_details->address1;
-		$this->data['company_address2'] = $this->designer_details->address2;
-		$this->data['company_city'] = $this->designer_details->city;
-		$this->data['company_state'] = $this->designer_details->state;
-		$this->data['company_zipcode'] = $this->designer_details->zipcode;
-		$this->data['company_country'] = $this->designer_details->country;
-		$this->data['company_telephone'] = $this->designer_details->phone;
-		$this->data['company_contact_person'] = $this->designer_details->owner;
-		$this->data['company_contact_email'] = $this->designer_details->info_email;
-
-		// some necessary variables
-		$this->data['steps'] = 4;
-
-		// need to show loading at start
-		$this->data['show_loading'] = FALSE;
-
-		// set data variables...
-		$this->data['file'] = 'create_purchase_order_step4';
-		$this->data['page_title'] = 'Purchase Order';
-		$this->data['page_description'] = 'Send Purchase Order';
-
-		// load views...
-		$this->load->view('admin/'.($this->config->slash_item('admin_template') ?: 'metronic/').'template/template', $this->data);
-	}
-
-	// ----------------------------------------------------------------------
-
-	public function send($po_id = '', $action = '')
-	{
-		if ($po_id == '')
-		{
-			// nothing more to do
-			// set flash data
-			$this->session->set_flashdata('error', 'no_id_passed');
-
-			// redirect user
-			redirect('admin/purchase_orders/create/step1', 'location');
-		}
-
-		// send PO
-		$this->load->library('purchase_orders/purchase_order_sending');
-		$this->purchase_order_sending->send($po_id);
-
-		// set flash data
-		$this->session->set_flashdata('success', 'add');
-
-		if ($action === 'send')
-		{
-			// redirect user on step4
-			redirect('admin/purchase_orders/create/step4/'.$po_id, 'location');
-		}
-		else
-		{
-			// redirect user
-			redirect('admin/purchase_orders/details/index/'.$po_id, 'location');
-		}
-	}
-
-	// ----------------------------------------------------------------------
-
-	/**
-	 * PRIVATE - Creaet Plugin Scripts and CSS for the page
-	 *
-	 * @return	void
-	 */
-	public function filter($id = '')
-	{
-		if ( ! $id)
-		{
-			// nothing more to do...
-			// set flash data
-			$this->session->set_flashdata('error', 'no_id_passed');
-
-			// redirect user
-			redirect($this->config->slash_item('admin_folder').'campaigns/sales_package/');
-		}
-
-		if ($this->input->post('designer')) $this->session->set_userdata('designer', $this->input->post('designer'));
-		if ($this->input->post('category')) $this->session->set_userdata('category', $this->input->post('category'));
-		if ($this->input->post('categories')) $this->session->set_userdata('categories', $this->input->post('categories'));
-		if ($this->input->post('order_by')) $this->session->set_userdata('order_by', $this->input->post('order_by'));
-
-		redirect($this->config->slash_item('admin_folder').'campaigns/sales_package/edit/index/'.$id);
-	}
-
-	// ----------------------------------------------------------------------
-
-	/**
-	 * Clear Recent User Edit List
-	 *
-	 * @return	void
-	 */
-	public function clear_recent()
-	{
-		// capture webspace details options
-		$options = $this->webspace_details->options;
-
-		// get the array of recent users and unset it
-		if (
-			isset($options['recent_sales_package'])
-			&& ! empty($options['recent_sales_package'])
-		) unset($options['recent_sales_package']);
-
-		// udpate the sales package items...
-		$this->DB->set('webspace_options', json_encode($options));
-		$this->DB->where('webspace_id', $this->webspace_details->id);
-		$q = $this->DB->update('webspaces');
-
-		// set flash data
-		$this->session->set_flashdata('clear_recent_sales_package', TRUE);
-
-		// reload page
-		redirect($_SERVER['HTTP_REFERER'], 'location');
-	}
-
-	// ----------------------------------------------------------------------
-
-	/**
-	 * PRIVATE - Creaet Plugin Scripts and CSS for the page
-	 *
-	 * @return	void
-	 */
-	public function reset_ship_to()
-	{
-		unset($_SESSION['admin_po_store_id']);
-
-		redirect('admin/purchase_orders/create/step3');
 	}
 
 	// ----------------------------------------------------------------------
@@ -834,21 +343,18 @@ class Create extends Admin_Controller {
 				<link href="'.$assets_url.'/assets/global/plugins/select2/css/select2-bootstrap.min.css" rel="stylesheet" type="text/css" />
 				<link href="'.$assets_url.'/assets/global/plugins/bootstrap-select/css/bootstrap-select.min.css" rel="stylesheet" type="text/css" />
 			';
-			// fancybox
+			// datepicker & date-time-pickers
 			$this->data['page_level_styles_plugins'].= '
-				<link href="'.$assets_url.'/assets/global/plugins/fancybox/source/jquery.fancybox.css" rel="stylesheet" type="text/css" media="screen" />
+				<link href="'.$assets_url.'/assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet" type="text/css" />
 			';
 			// summernote wysiwyg
 			$this->data['page_level_styles_plugins'].= '
 				<link href="'.$assets_url.'/assets/global/plugins/bootstrap-summernote/summernote.css" rel="stylesheet" type="text/css" />
 			';
-			// multi-select
+			// fancybox
 			$this->data['page_level_styles_plugins'].= '
-				<link href="'.$assets_url.'/assets/global/plugins/jquery-multi-select/css/multi-select.css" rel="stylesheet" type="text/css" />
-			';
-			// datepicker
-			$this->data['page_level_styles_plugins'].= '
-				<link href="'.$assets_url.'/assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet" type="text/css" />
+				<link href="'.$assets_url.'/assets/global/plugins/fancybox/source/jquery.fancybox.css" rel="stylesheet" type="text/css" media="screen" />
+				<link href="'.$assets_url.'/assets/global/plugins/fancybox/source/helpers/jquery.fancybox-buttons.css" rel="stylesheet" type="text/css" media="screen" />
 			';
 
 		/****************
@@ -856,21 +362,12 @@ class Create extends Admin_Controller {
 		 */
 		$this->data['page_level_styles'] = '';
 
-			// this is a work around so that the inline jquery ajax request to add and remove items from the sales package to work
-			$this->data['page_level_styles'].= '
-				<script src="'.$assets_url.'/assets/global/plugins/jquery.min.js" type="text/javascript"></script>
-			';
-
 		/****************
 		 * page js plugins inserted at <bottom>
 		 * after core plugins, before global scripts
 		 */
 		$this->data['page_level_plugins'] = '';
 
-			// unveil - simple image lazy loading
-			$this->data['page_level_plugins'].= '
-				<script src="'.base_url().'assets/custom/js/jquery.unveil.js" type="text/javascript"></script>
-			';
 			// ladda - show loading or progress bar on buttons
 			$this->data['page_level_plugins'].= '
 				<script src="'.$assets_url.'/assets/global/plugins/ladda/spin.min.js" type="text/javascript"></script>
@@ -881,35 +378,36 @@ class Create extends Admin_Controller {
 				<script src="'.$assets_url.'/assets/global/plugins/select2/js/select2.full.min.js" type="text/javascript"></script>
 				<script src="'.$assets_url.'/assets/global/plugins/bootstrap-select/js/bootstrap-select.min.js" type="text/javascript"></script>
 			';
-			// fancybox
+			// bootbox
 			$this->data['page_level_plugins'].= '
-				<script src="'.$assets_url.'/assets/global/plugins/fancybox/source/jquery.fancybox.pack.js" type="text/javascript"></script>
+				<script src="'.$assets_url.'/assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
+			';
+			// form validation
+			$this->data['page_level_plugins'].= '
+				<script src="'.$assets_url.'/assets/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
+				<script src="'.$assets_url.'/assets/global/plugins/jquery-validation/js/additional-methods.min.js" type="text/javascript"></script>
+			';
+			// datepicker & date-time-pickers
+			$this->data['page_level_plugins'].= '
+				<script src="'.$assets_url.'/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js" type="text/javascript"></script>
+			';
+			// unveil - lazy script for images
+			$this->data['page_level_plugins'].= '
+				<script src="'.base_url().'assets/custom/js/jquery.unveil.js" type="text/javascript"></script>
 			';
 			// summernote wysiwyg
 			$this->data['page_level_plugins'].= '
 				<script src="'.$assets_url.'/assets/global/plugins/bootstrap-summernote/summernote.min.js" type="text/javascript"></script>
 			';
-			// form wizard - jquery validate is needed for the wizard to function
+			// fancybox
 			$this->data['page_level_plugins'].= '
-				<script src="'.$assets_url.'/assets/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
-				<script src="'.$assets_url.'/assets/global/plugins/bootstrap-wizard/jquery.bootstrap.wizard.min.js" type="text/javascript"></script>
-			';
-			// multi-select
-			$this->data['page_level_plugins'].= '
-				<script src="'.$assets_url.'/assets/global/plugins/jquery-multi-select/js/jquery.multi-select.js" type="text/javascript"></script>
-			';
-			// bootbox
-			$this->data['page_level_plugins'].= '
-				<script src="'.$assets_url.'/assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
-			';
-			// datetimepicker
-			$this->data['page_level_plugins'].= '
-				<script src="'.$assets_url.'/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js" type="text/javascript"></script>
+				<script src="'.$assets_url.'/assets/global/plugins/fancybox/source/jquery.fancybox.pack.js" type="text/javascript"></script>
+				<script src="'.$assets_url.'/assets/global/plugins/fancybox/source/helpers/jquery.fancybox-buttons.js" type="text/javascript"></script>
+				<script src="'.$assets_url.'/assets/global/plugins/fancybox/source/helpers/jquery.fancybox-media.js" type="text/javascript"></script>
 			';
 
 		/****************
 		 * page scripts inserted at <bottom>
-		 * after global scripts, before theme layout scripts
 		 */
 		$this->data['page_level_scripts'] = '';
 
@@ -921,29 +419,12 @@ class Create extends Admin_Controller {
 			$this->data['page_level_scripts'].= '
 				<script src="'.$assets_url.'/assets/pages/scripts/components-bootstrap-select.min.js" type="text/javascript"></script>
 			';
-			// handle form wizard
+			// handle form validation, datepickers, and scripts
 			$this->data['page_level_scripts'].= '
-				<script src="'.$assets_url.'/assets/pages/scripts/form-wizard.min.js" type="text/javascript"></script>
-			';
-			// jspdf
-			$this->data['page_level_scripts'].= '
-				<script src="'.base_url().'assets/custom/js/jspdf.min.js" type="text/javascript"></script>
-			';
-			// html2canvas
-			$this->data['page_level_scripts'].= '
-				<script src="'.base_url().'assets/custom/js/html2canvas/html2canvas.min.js" type="text/javascript"></script>
-			';
-			// handle summernote wysiwyg
-			// and click scripts
-			$this->data['page_level_scripts'].= '
-				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/admin-purchase_orders-components.js" type="text/javascript"></script>
-			';
-			// handle multiSelect
-			$this->data['page_level_scripts'].= '
-				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/sales_package-send.js" type="text/javascript"></script>
+				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/admin-po-components.js" type="text/javascript"></script>
 			';
 	}
 
-	// ----------------------------------------------------------------------
+	// --------------------------------------------------------------------
 
 }

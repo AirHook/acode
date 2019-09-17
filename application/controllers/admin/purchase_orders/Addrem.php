@@ -31,6 +31,7 @@ class Addrem extends MY_Controller {
 		{
 			// nothing more to do...
 			echo 'false';
+			exit;
 		}
 
 		// grab the post variable
@@ -46,17 +47,19 @@ class Addrem extends MY_Controller {
 		// process the item
 		if ($this->input->post('action') == 'add_item')
 		{
-			if ( ! in_array($item, $items_array))
+			if ( ! array_key_exists($item, $items_array))
 			{
-				array_push($items_array, $item);
+				// set items array with $item as key
+				$items_array[$item] = array();
 			}
+
 		}
 		if ($this->input->post('action') == 'rem_item')
 		{
-			if (($key = array_search($item, $items_array)) !== false) {
-				unset($items_array[$key]);
+			if (array_key_exists($item, $items_array))
+			{
+				unset($items_array[$item]);
 			}
-			$items_array = array_values($items_array);
 
 			// remove item from po_size_qty if any
 			/* */
@@ -71,6 +74,10 @@ class Addrem extends MY_Controller {
 			if ( ! empty($options_array)) $this->session->set_userdata('admin_po_size_qty', json_encode($options_array));
 			// */
 		}
+
+		// sort array
+		//array_filter($items_array);
+		//sort($items_array);
 
 		// reset session value for items array
 		$this->session->set_userdata('admin_po_items', json_encode($items_array));

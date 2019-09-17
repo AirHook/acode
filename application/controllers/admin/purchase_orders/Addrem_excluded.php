@@ -35,11 +35,11 @@ class Addrem_excluded extends Admin_Controller {
 			$this->session->set_flashdata('error', 'no_id_passed');
 
 			// redirect user
-			if (strpos($this->input->post('uri_string'), 'admin/purchase_orders/create/step2') !== false)
+			if (strpos($this->input->post('uri_string'), 'admin/purchase_orders/create') !== false)
 			{
 				redirect($this->input->post('uri_string'), 'location');
 			}
-			else redirect('admin/purchase_orders/create/step2', 'location');
+			else redirect('admin/purchase_orders/create', 'location');
 		}
 
 		// grab the post variable
