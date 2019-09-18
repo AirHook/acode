@@ -27,6 +27,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * 		0014 - sales package [sp_ids]
  *		0015 - special sale invite
  *		0016 - product email
+ *		0017 - vendor po
  *
  * saved to user option as:
  * option[unsubscribe][0011][$ts] = <#oftimes>
@@ -45,6 +46,7 @@ class Unsubscribe extends MY_Controller
 	 * 		0014 - sales package [sp_ids]
 	 *		0015 - special sale invite
 	 *		0016 - product email
+	 *		0017 - vendor po
 	 *
 	 * @return	string
 	 */

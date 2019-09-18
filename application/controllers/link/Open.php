@@ -41,6 +41,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Open extends MY_Controller {
 
 	/**
+	 * This Class database object holder
+	 *
+	 * @var	object
+	 */
+	protected $DB = '';
+
+	// --------------------------------------------------------------------
+
+	/**
 	 * Constructor
 	 *
 	 * @return	void
@@ -48,6 +57,9 @@ class Open extends MY_Controller {
 	public function __construct()
 	{
 		parent::__construct();
+
+		// connect to database
+		$this->DB = $this->CI->load->database('instyle', TRUE);
     }
 
 	// ----------------------------------------------------------------------
@@ -142,14 +154,37 @@ class Open extends MY_Controller {
 				: 1
 			;
 
+			// if user code is vendor, update records accordinglly
+			if ($user_code == 'v' && $options['emailtrack'][$email_type][$ts] == 1)
+			{
+				$po_id = $this->input->get('vpo');
+				$this->_update_po_status($po_id, '3');
+			}
+
 			// connect to database
-			$DB = $this->load->database('instyle', TRUE);
-			$DB->set('options', json_encode($options));
-			$DB->where($id_label, $user_id);
-			$DB->update($db_table);
+			$this->DB->set('options', json_encode($options));
+			$this->DB->where($id_label, $user_id);
+			$this->DB->update($db_table);
 		}
 
 		exit;
+	}
+
+	// ----------------------------------------------------------------------
+
+	/**
+	 * Update Vendor PO Status
+	 *
+	 * @return	void
+	 */
+	private function _update_po_status($po_id = '', $status = '')
+	{
+		// update records
+		$this->DB->set('status', $status);
+		$this->DB->where('po_id', $po_id);
+		$this->DB->update('purchase_orders');
+
+		return;
 	}
 
 	// ----------------------------------------------------------------------

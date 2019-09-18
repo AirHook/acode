@@ -203,6 +203,8 @@ class Purchase_order_sending
 				$this->CI->purchase_order_details->vendor_id
 				.'vi0017t'
 				.time()
+				.'&vpo='
+				.$this->CI->purchase_order_details->vendor_id
 			;
 		}
 
