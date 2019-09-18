@@ -27,6 +27,14 @@ class Purchase_order_details
 
 	/**
 	 * Order Statuses
+	 *		0 - open pending approval
+	 *		1 - approved
+	 *		2 - sent to vendor
+	 *		3 - view by vendor
+	 *		4 - in transit
+	 *		5 - complete/delivered
+	 *		6 - on hold
+	 *		7 - cancelled
 	 *
 	 * @var	string/array
 	 */

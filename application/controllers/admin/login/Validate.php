@@ -9,6 +9,7 @@ class Validate extends MY_Controller {
 
 		// lets check for status of webspace and account
 		$this->load->library('users/admin_user_details');
+		$this->load->library('users/vendor_user_details');
     }
 
 	// ----------------------------------------------------------------------
@@ -48,21 +49,12 @@ class Validate extends MY_Controller {
 				$this->session->unset_userdata('remember-at-admin');
 			}
 
-			// if user it not authenticated...
+			// validate if admin
 			if (
-				! $this->admin_user_details->initialize(
-					array(
-						'admin_name' => $this->input->post('username'),
-						'admin_password' => $this->input->post('password')
-					)
-				)
+				! $this->_validate_admin()
+				&& ! $this->_validate_vendor()
 			)
 			{
-				// invalid credentials
-				// destroy sales user session if any and reset class to initial state
-				$this->admin_user_details->unset_session();
-				$this->admin_user_details->set_initial_state();
-
 				// set flash message
 				$this->session->set_flashdata('invalid', TRUE);
 
@@ -70,36 +62,105 @@ class Validate extends MY_Controller {
 				redirect($this->config->slash_item('admin_folder').'login');
 			}
 
-			// authenticate satellite site admin access
-			if ($this->admin_user_details->account_id != 0)
+			if ($this->_validate_admin())
 			{
-				if ($this->admin_user_details->webspace_id != $this->webspace_details->id)
-				{
-					// set flash message
-					$this->session->set_flashdata('invalid', TRUE);
-
-					// redirect login page
-					redirect($this->config->slash_item('admin_folder').'login');
-				}
+				// send user to respective page...
+				redirect(($this->session->flashdata('access_uri') ?: $this->config->slash_item('admin_folder').'dashboard'));
 			}
 
-			// set session data
-			// new feature using Admin User Details class
-			$this->admin_user_details->set_session();
-
-			// set the session lapse time if it has not been set
-			if ( ! $this->session->userdata('admin_login_time'))
+			if ($this->_validate_vendor())
 			{
-				$this->session->set_userdata('admin_login_time', @time());
+				// send user to respective page...
+				redirect(($this->session->flashdata('access_uri') ?: 'my_account/vendors/dashboard'));
 			}
-
-			// let us notify admin/dev of login
-			//if (ENVIRONMENT !== 'development')
-			//$this->_notify_admin();
-
-			// send user to respective page...
-			redirect(($this->session->flashdata('access_uri') ?: $this->config->slash_item('admin_folder').'dashboard'));
 		}
+	}
+
+	// ----------------------------------------------------------------------
+
+	private function _validate_admin()
+	{
+		// if user it not authenticated...
+		if (
+			! $this->admin_user_details->initialize(
+				array(
+					'admin_name' => $this->input->post('username'),
+					'admin_password' => $this->input->post('password')
+				)
+			)
+		)
+		{
+			// invalid credentials
+			// destroy sales user session if any and reset class to initial state
+			$this->admin_user_details->unset_session();
+			$this->admin_user_details->set_initial_state();
+
+			return FALSE;
+		}
+
+		// authenticate satellite site admin access
+		if ($this->admin_user_details->account_id != 0)
+		{
+			if ($this->admin_user_details->webspace_id != $this->webspace_details->id)
+			{
+				return FALSE;
+			}
+		}
+
+		// set session data
+		// new feature using Admin User Details class
+		$this->admin_user_details->set_session();
+
+		// set the session lapse time if it has not been set
+		if ( ! $this->session->userdata('admin_login_time'))
+		{
+			$this->session->set_userdata('admin_login_time', @time());
+		}
+
+		// let us notify admin/dev of login
+		//if (ENVIRONMENT !== 'development')
+		//$this->_notify_admin();
+
+		return TRUE;
+	}
+
+	// ----------------------------------------------------------------------
+
+	private function _validate_vendor()
+	{
+		// if user it not authenticated...
+		if (
+			! $this->vendor_user_details->initialize(
+				array(
+					'vendor_email' => $this->input->post('username'),
+					'password' => $this->input->post('password')
+				)
+			)
+		)
+		{
+			// invalid credentials
+			// destroy sales user session if any and reset class to initial state
+			$this->vendor_user_details->unset_session();
+			$this->vendor_user_details->set_initial_state();
+
+			return FALSE;
+		}
+
+		// set session data
+		// new feature using Admin User Details class
+		$this->vendor_user_details->set_session();
+
+		// set the session lapse time if it has not been set
+		if ( ! $this->session->userdata('vendor_login_time'))
+		{
+			$this->session->set_userdata('vendor_login_time', @time());
+		}
+
+		// let us notify admin/dev of login
+		//if (ENVIRONMENT !== 'development')
+		//$this->_notify_admin();
+
+		return TRUE;
 	}
 
 	// ----------------------------------------------------------------------

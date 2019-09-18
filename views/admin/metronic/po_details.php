@@ -29,7 +29,7 @@
 
                         <div class="portlet solid " style="padding-right:15px;">
 
-                            <div class="portlet-title">
+                            <div class="portlet-title <?php echo $this->session->vendor_loggedin ? 'hide' : ''; ?>">
                                 <div class="caption font-dark">
                                 </div>
                                 <div class="actions btn-set">

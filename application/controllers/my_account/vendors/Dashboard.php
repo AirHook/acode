@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Dashboard extends Admin_Controller {
+class Dashboard extends Vendor_Controller {
 
 	public function __construct()
 	{
@@ -29,7 +29,7 @@ class Dashboard extends Admin_Controller {
 		$this->data['page_description'] = 'A summary of recent activities';
 
 		// load views...
-		$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template/template', $this->data);
+		$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template_vendor/template', $this->data);
 	}
 
 	// ----------------------------------------------------------------------

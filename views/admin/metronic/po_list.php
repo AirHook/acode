@@ -46,7 +46,7 @@
 					</div>
 
                     <div class="table-toolbar">
-                        <div class="row ">
+                        <div class="row <?php echo $this->session->vendor_loggedin ? 'hide' : ''; ?>">
                             <div class="col-md-6">
                                 <div class="btn-group">
                                     <a href="<?php echo $this->uri->segment(1) === 'sales' ? site_url('sales/purchase_orders/create') : site_url($this->config->slash_item('admin_folder').'purchase_orders/create'); ?>" class="btn sbold blue"> Create a New PO
@@ -119,11 +119,10 @@
 								$i = 1;
 								foreach ($orders as $order)
 								{
-                                    $edit_link =
-                                        $this->uri->segment(1) === 'sales'
-                                        ? site_url('sales/purchase_orders/details/index/'.$order->po_id)
-                                        : site_url($this->config->slash_item('admin_folder').'purchase_orders/details/index/'.$order->po_id)
-                                    ; ?>
+									if ($this->uri->segment(1) === 'sales') $edit_link = site_url('sales/purchase_orders/details/index/'.$order->po_id);
+									else if ($this->uri->segment(1) === 'my_account') $edit_link = site_url($this->uri->uri_string().'/details/index/'.$order->po_id);
+									else $edit_link = site_url($this->config->slash_item('admin_folder').'purchase_orders/details/index/'.$order->po_id);
+                                    ?>
 
                             <tr class="odd gradeX " onmouseover="$(this).find('.hidden_first_edit_link').show();" onmouseout="$(this).find('.hidden_first_edit_link').hide();">
                                 <td class="hidden-xs hidden-sm">

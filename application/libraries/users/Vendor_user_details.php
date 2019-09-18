@@ -142,6 +142,7 @@ class Vendor_user_details
 			$this->vendor_id = $row->vendor_id;
 			$this->vendor_name = $row->vendor_name;
 			$this->vendor_email = $row->vendor_email;
+			$this->vendor_password = $row->password;
 			$this->vendor_code = $row->vendor_code;
 
 			$this->contact_1 = $row->contact_1;
@@ -177,6 +178,87 @@ class Vendor_user_details
 		{
 			return FALSE;
 		}
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Reset Password when forgotten
+	 *
+	 * @return	string
+	 */
+	public function reset_password($password = '')
+	{
+		if ( ! $password)
+		{
+			// nothing more to do...
+			return FALSE;
+		}
+
+		// get recrods
+		$this->DB->set('password', $password);
+		$this->DB->where('vendor_email', $this->email);
+		$query = $this->DB->update('vendors');
+
+		return $this->DB->affected_rows();
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Universally SET Admin Sales only session
+	 *
+	 * @return	void
+	 */
+	public function set_session()
+	{
+		// this is legacy method and redundancy method
+		$sesdata = array(
+			'vendor_loggedin'			=> TRUE,
+			'vendor_id'					=> $this->vendor_id
+		);
+		$this->CI->session->set_userdata($sesdata);
+
+		// forward compatibility
+		$_SESSION['vendor_loggedin'] = TRUE;
+		$_SESSION['vendor_id'] = $this->vendor_id;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Universally Unset Admin Sales only and related session
+	 *
+	 * @return	void
+	 */
+	public function unset_session()
+	{
+		if (CI_VERSION < '3')
+		{
+			// this is here for backwards compatibility
+			$sesdata = array(
+				'vendor_loggedin'			=> FALSE,
+				'vendor_id'					=> '',
+				'vendor_login_time'			=> ''		// related to session_lapse property
+			);
+			$this->CI->session->unset_userdata($sesdata);
+		}
+		else
+		{
+			// this is legacy method and redundancy method
+			$sesdata = array(
+				'vendor_loggedin',
+				'vendor_id',
+				'vendor_login_time'
+			);
+			$this->CI->session->unset_userdata($sesdata);
+		}
+
+		// for redundancy purposes...
+		// and forward compatibility
+		if (isset($_SESSION['vendor_loggedin'])) unset($_SESSION['vendor_loggedin']);
+		if (isset($_SESSION['vendor_id'])) unset($_SESSION['vendor_id']);
+		if (isset($_SESSION['vendor_login_time'])) unset($_SESSION['vendor_login_time']);
 	}
 
 	// --------------------------------------------------------------------
