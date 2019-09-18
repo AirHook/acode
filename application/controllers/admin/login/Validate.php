@@ -71,7 +71,7 @@ class Validate extends MY_Controller {
 			if ($this->_validate_vendor())
 			{
 				// send user to respective page...
-				redirect(($this->session->flashdata('access_uri') ?: 'my_account/vendors/dashboard'));
+				redirect(($this->session->flashdata('access_uri') ?: 'my_account/vendors/orders'));
 			}
 		}
 	}
