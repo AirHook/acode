@@ -569,16 +569,37 @@
                                         { ?>
                                         <li class="dropdown more-dropdown-sub <?php echo preg_match('(purchase_orders|admin/orders)', $this->uri->uri_string()) === 1 ? 'active selected' : ''; ?> ">
                                             <a href="javascript:;" class="text-uppercase">
-                                                Orders Manager
+                                                Purchase Orders Manager
                                             </a>
                                             <ul class="dropdown-menu">
                                                 <li class="<?php echo strpos($this->uri->uri_string(), 'admin/purchase_orders') !== FALSE ? 'active' : ''; ?>">
                                                     <a href="<?php echo site_url('admin/purchase_orders'); ?>">
-                                                        Puchase Orders </a>
+                                                        List Puchase Orders </a>
+                                                </li>
+                                                <li class="<?php echo strpos($this->uri->uri_string(), 'admin/purchase_orders/create') !== FALSE ? 'active' : ''; ?>">
+                                                    <a href="<?php echo site_url('admin/purchase_orders/create'); ?>">
+                                                        Create New Purchase Orders </a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <?php } ?>
+
+                                        <?php
+                                        // available only on hub sites for now
+                                        if ($this->webspace_details->options['site_type'] == 'hub_site')
+                                        { ?>
+                                        <li class="dropdown more-dropdown-sub <?php echo preg_match('(purchase_orders|admin/orders)', $this->uri->uri_string()) === 1 ? 'active selected' : ''; ?> ">
+                                            <a href="javascript:;" class="text-uppercase">
+                                                Orders Manager
+                                            </a>
+                                            <ul class="dropdown-menu">
+                                                <li class="<?php echo strpos($this->uri->uri_string(), 'admin/orders') !== FALSE ? 'active' : ''; ?>">
+                                                    <a href="<?php echo site_url('admin/orders'); ?>">
+                                                        Wholesale Orders Log </a>
                                                 </li>
                                                 <li class="<?php echo strpos($this->uri->uri_string(), 'admin/orders') !== FALSE ? 'active' : ''; ?>">
                                                     <a href="<?php echo site_url('admin/orders'); ?>">
-                                                        Wholesale and Consumer Orders </a>
+                                                        Retail Orders Log </a>
                                                 </li>
                                             </ul>
                                         </li>
@@ -661,16 +682,37 @@
                                         { ?>
                                         <li class="dropdown more-dropdown-sub <?php echo preg_match('(purchase_orders|admin/orders)', $this->uri->uri_string()) === 1 ? 'active selected' : ''; ?> open">
                                             <a href="javascript:;" class="text-uppercase">
-                                                Orders Manager
+                                                Purchase Orders Manager
                                             </a>
                                             <ul class="dropdown-menu">
                                                 <li class="<?php echo strpos($this->uri->uri_string(), 'admin/purchase_orders') !== FALSE ? 'active' : ''; ?>">
                                                     <a href="<?php echo site_url('admin/purchase_orders'); ?>">
                                                         Puchase Orders </a>
                                                 </li>
+                                                <li class="<?php echo strpos($this->uri->uri_string(), 'admin/purchase_orders/create') !== FALSE ? 'active' : ''; ?>">
+                                                    <a href="<?php echo site_url('admin/purchase_orders/create'); ?>">
+                                                        Create New Purchase Orders </a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <?php } ?>
+
+                                        <?php
+                                        // available only on hub sites for now
+                                        if ($this->webspace_details->options['site_type'] == 'hub_site')
+                                        { ?>
+                                        <li class="dropdown more-dropdown-sub <?php echo preg_match('(purchase_orders|admin/orders)', $this->uri->uri_string()) === 1 ? 'active selected' : ''; ?> open">
+                                            <a href="javascript:;" class="text-uppercase">
+                                                Orders Manager
+                                            </a>
+                                            <ul class="dropdown-menu">
                                                 <li class="<?php echo strpos($this->uri->uri_string(), 'admin/orders') !== FALSE ? 'active' : ''; ?>">
                                                     <a href="<?php echo site_url('admin/orders'); ?>">
-                                                        Wholesale and Consumer Orders </a>
+                                                        Wholesale Orders Log </a>
+                                                </li>
+                                                <li class="<?php echo strpos($this->uri->uri_string(), 'admin/orders') !== FALSE ? 'active' : ''; ?>">
+                                                    <a href="<?php echo site_url('admin/orders'); ?>">
+                                                        Retail Orders Log </a>
                                                 </li>
                                             </ul>
                                         </li>
