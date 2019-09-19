@@ -567,7 +567,7 @@
                                         // available only on hub sites for now
                                         if ($this->webspace_details->options['site_type'] == 'hub_site')
                                         { ?>
-                                        <li class="dropdown more-dropdown-sub <?php echo preg_match('(purchase_orders|admin/orders)', $this->uri->uri_string()) === 1 ? 'active selected' : ''; ?> ">
+                                        <li class="dropdown more-dropdown-sub <?php echo preg_match('(purchase_orders)', $this->uri->uri_string()) === 1 ? 'active selected' : ''; ?> ">
                                             <a href="javascript:;" class="text-uppercase">
                                                 Purchase Orders Manager
                                             </a>
@@ -588,7 +588,7 @@
                                         // available only on hub sites for now
                                         if ($this->webspace_details->options['site_type'] == 'hub_site')
                                         { ?>
-                                        <li class="dropdown more-dropdown-sub <?php echo preg_match('(purchase_orders|admin/orders)', $this->uri->uri_string()) === 1 ? 'active selected' : ''; ?> ">
+                                        <li class="dropdown more-dropdown-sub <?php echo preg_match('(admin/orders)', $this->uri->uri_string()) === 1 ? 'active selected' : ''; ?> ">
                                             <a href="javascript:;" class="text-uppercase">
                                                 Orders Manager
                                             </a>
