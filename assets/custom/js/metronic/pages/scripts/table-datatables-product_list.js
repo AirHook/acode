@@ -93,7 +93,7 @@ var TableDatatablesManaged = function () {
             "columnDefs": [
                 {  // set default column settings
                     'orderable': false,
-                    'targets': [0, 1, 3, 4, 8]
+                    'targets': [0, 1, 3, 8]
                 },
                 {
                     "width": "30px",

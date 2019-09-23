@@ -379,7 +379,13 @@
 															<strong> AVAILABLE COLORS: </strong>
 															<span class="style1" style="margin-left:30px;">
 																<?php
-																//$url 	   = explode('/',get_full_breadcrumb_url());
+                                                                // use cases
+                                                                // default/general pages:
+                                                                // at hub, show public items only
+                                                                // at sat site, public at sat_site only
+                                                                // wholesale pages use product_details_wholesale
+                                                                // so need to worry on that
+                                                                // sales packages use product_details_sa
 																$url	   = explode('/',$this->uri->uri_string());
 																$uri_count = count($url)-3;
 
@@ -388,11 +394,9 @@
 																	@$new_url .= $url[$i].'/';
 																}
 
-																///if ($get_color_list->num_rows() > 0)
 																if ($get_color_list)
 																{
 																	$i = 0;
-																	//foreach ($get_color_list->result() as $color)
 																	foreach ($get_color_list as $color)
 																	{
 																		/*
@@ -404,50 +408,59 @@
 																		}
 																		*/
 
-																		/**********
-																		 * On regular pages, show only regular items
-																		 */
-																		if (
-																			$this->uri->segment(1) !== 'special_sale'
-																			OR $color->custom_order !== '3'
-																		)
-																		{
-																			$id2 = $this->product_details->prod_no.'_'.$color->color_code;
-																			$java3 = "showObj('".$id2."',this)";
-																			$java4 = "closetime()";
+                                                                        // show only public variants
+                                                                        if (
+                                                                            $color->new_color_publish != '0'
+                                                                            && $color->new_color_publish != '2'
+                                                                            && $color->new_color_publish != '3'
+                                                                            && $color->color_publish != 'N'
+                                                                        )
+                                                                        {
+    																		/**********
+    																		 * On regular pages, show only regular items
+    																		 */
+    																		if (
+    																			$this->uri->segment(1) !== 'special_sale'
+    																			OR $color->custom_order !== '3'
+    																		)
+    																		{
+    																			$id2 = $this->product_details->prod_no.'_'.$color->color_code;
+    																			$java3 = "showObj('".$id2."',this)";
+    																			$java4 = "closetime()";
 
-																			$link_txt = $this->product_details->color_code == $color->color_code ? 'style="text-decoration:underline;"' : '';
-																			if ($i != 0) echo nbs().' | '.nbs();
-																			?>
+    																			$link_txt = $this->product_details->color_code == $color->color_code ? 'style="text-decoration:underline;"' : '';
+    																			if ($i != 0) echo nbs().' | '.nbs();
+    																			?>
 
-																<a href="<?php echo site_url($new_url.str_replace(' ','-',strtolower(trim($color->color_name))).'/'.str_replace('/','-',str_replace(' ','-',$this->product_details->prod_name)).'/'.$url[6]); ?>" class="pdp--color-name" onmouseover="<?php echo $java3; ?>" onmouseout="<?php echo $java4; ?>" data-with-stocks="<?php echo $color->with_stocks; ?>" <?php echo $link_txt; ?>>
+																<a href="<?php echo site_url($new_url.str_replace(' ','-',strtolower(trim($color->color_name))).'/'.str_replace('/','-',str_replace(' ','-',$this->product_details->prod_name)).'/'.$url[6]); ?>" class="pdp--color-name" onmouseover="<?php echo $java3; ?>" onmouseout="<?php echo $java4; ?>" data-with-stocks="<?php echo $color->with_stocks; ?>" <?php echo $link_txt; ?> data-publish="<?php echo $color->custom_order; ?>">
 																	<?php echo $color->color_name; ?>
 																</a>
 
-																			<?php
-																		/**********
-																		 * On special sale pages...
-																		 */
-																		}
-																		else
-																		{
+    																			<?php
+    																		/**********
+    																		 * On special sale pages...
+    																		 */
+    																		}
+    																		else
+    																		{
 
-																			$id2 = $this->product_details->prod_no.'_'.$color->color_code;
-																			$java3 = "showObj('".$id2."',this)";
-																			$java4 = "closetime()";
+    																			$id2 = $this->product_details->prod_no.'_'.$color->color_code;
+    																			$java3 = "showObj('".$id2."',this)";
+    																			$java4 = "closetime()";
 
-																			$link_txt = $this->product_details->color_code == $color->color_code ? 'txt_page_black' : 'normal_txtn';
-																			if ($i != 0) echo nbs().' | '.nbs();
-																			?>
+    																			$link_txt = $this->product_details->color_code == $color->color_code ? 'txt_page_black' : 'normal_txtn';
+    																			if ($i != 0) echo nbs().' | '.nbs();
+    																			?>
 
-																<a href="<?php echo site_url($new_url.str_replace(' ','-',strtolower(trim($color->color_name))).'/'.str_replace('/','-',str_replace(' ','-',$this->product_details->prod_name)).'/'.$url[6]); ?>" class="pdp--color-name <?php echo $link_txt; ?>" onmouseover="<?php echo $java3; ?>" onmouseout="<?php echo $java4; ?>">
+																<a href="<?php echo site_url($new_url.str_replace(' ','-',strtolower(trim($color->color_name))).'/'.str_replace('/','-',str_replace(' ','-',$this->product_details->prod_name)).'/'.$url[6]); ?>" class="pdp--color-name <?php echo $link_txt; ?>" onmouseover="<?php echo $java3; ?>" onmouseout="<?php echo $java4; ?>" data-publish="<?php echo $color->custom_order; ?>">
 																	<?php echo $color->color_name; ?>
 																</a>
 
-																			<?php
-																		}
+                                                                                <?php
+                                                                            }
 
-																		$i++;
+                                                                            $i++;
+																		}
 																	}
 																}
 																else
@@ -467,65 +480,73 @@
 															//foreach ($get_color_list->result() as $color)
 															foreach ($get_color_list as $color)
 															{
-																/**********
-																 * On regular pages, show only regular items
-																 */
-																if ($color->custom_order !== '3'):
+                                                                // show only public variants
+                                                                if (
+                                                                    $color->new_color_publish != '0'
+                                                                    && $color->new_color_publish != '2'
+                                                                    && $color->new_color_publish != '3'
+                                                                    && $color->color_publish != 'N'
+                                                                )
+                                                                {
+    																/**********
+    																 * On regular pages, show only regular items
+    																 */
+    																if ($color->custom_order !== '3')
+                                                                    {
+        																$id3 = $this->product_details->prod_no.'_'.$color->color_code;
+        																$java5 = "showObj('".$id3."',this)";
+        																$java6 = "closetime()";
 
-																$id3 = $this->product_details->prod_no.'_'.$color->color_code;
-																$java5 = "showObj('".$id3."',this)";
-																$java6 = "closetime()";
+        																$swatch_style = $this->product_details->color_code == $color->color_code ? 'border:1px solid #333;padding:2px;' : 'padding: 3px;';
+        																echo anchor(
+        																	$new_url.str_replace(' ','-',strtolower(trim($color->color_name))).'/'.str_replace('/','-',str_replace(' ','-',$this->product_details->prod_name)).'/'.$url[6],
+        																	img(
+        																		array(
+        																			'src'=>(
+        																				$color->image_url_path
+        																				? $this->config->item('PROD_IMG_URL').$color->media_path.$color->media_name.'_c.jpg'
+        																				: $this->config->item('PROD_IMG_URL').$img_path.'product_coloricon/'.$this->product_details->prod_no.'_'.$color->color_code.'.jpg'
+        																			),
+        																			'width'=>'20',
+        																			'alt'=>$color->color_name,
+        																			'class'=>'tooltips',
+        																			'data-original-title'=>$color->color_name,
+        																			'style'=>$swatch_style
+        																		)
+        																	),
+        																	array('onmouseover'=>$java5,'onmouseout'=>$java6)
+        																).nbs(7);
+                                                                    }
+    																/**********
+    																 * On special sale pages...
+    																 */
+    																else
+                                                                    {
+        																$id3 = $this->product_details->prod_no.'_'.$color->color_code;
+        																$java5 = "showObj('".$id3."',this)";
+        																$java6 = "closetime()";
 
-																$swatch_style = $this->product_details->color_code == $color->color_code ? 'border:1px solid #333;padding:2px;' : 'padding: 3px;';
-																echo anchor(
-																	$new_url.str_replace(' ','-',strtolower(trim($color->color_name))).'/'.str_replace('/','-',str_replace(' ','-',$this->product_details->prod_name)).'/'.$url[6],
-																	img(
-																		array(
-																			'src'=>(
-																				$color->image_url_path
-																				? $this->config->item('PROD_IMG_URL').$color->media_path.$color->media_name.'_c.jpg'
-																				: $this->config->item('PROD_IMG_URL').$img_path.'product_coloricon/'.$this->product_details->prod_no.'_'.$color->color_code.'.jpg'
-																			),
-																			'width'=>'20',
-																			'alt'=>$color->color_name,
-																			'class'=>'tooltips',
-																			'data-original-title'=>$color->color_name,
-																			'style'=>$swatch_style
-																		)
-																	),
-																	array('onmouseover'=>$java5,'onmouseout'=>$java6)
-																).nbs(7);
-
-																/**********
-																 * On special sale pages...
-																 */
-																else:
-
-																$id3 = $this->product_details->prod_no.'_'.$color->color_code;
-																$java5 = "showObj('".$id3."',this)";
-																$java6 = "closetime()";
-
-																$swatch_style = $this->product_details->color_code == $color->color_code ? 'border:1px solid #333;padding:2px;' : 'padding: 3px;';
-																echo anchor(
-																	$new_url.str_replace(' ','-',strtolower(trim($color->color_name))).'/'.str_replace('/','-',str_replace(' ','-',$this->product_details->prod_name)).'/'.$url[6],
-																	img(
-																		array(
-																			'src'=>(
-																				$color->image_url_path
-																				? $this->config->item('PROD_IMG_URL').$color->media_path.$color->media_name.'_c.jpg'
-																				: $this->config->item('PROD_IMG_URL').$img_path.'product_coloricon/'.$this->product_details->prod_no.'_'.$color->color_code.'.jpg'
-																			),
-																			'width'=>'20',
-																			'alt'=>$color->color_name,
-																			'class'=>'tooltips',
-																			'data-original-title'=>$color->color_name,
-																			'style'=>$swatch_style
-																		)
-																	),
-																	array('onmouseover'=>$java5,'onmouseout'=>$java6)
-																).nbs(7);
-
-																endif;
+        																$swatch_style = $this->product_details->color_code == $color->color_code ? 'border:1px solid #333;padding:2px;' : 'padding: 3px;';
+        																echo anchor(
+        																	$new_url.str_replace(' ','-',strtolower(trim($color->color_name))).'/'.str_replace('/','-',str_replace(' ','-',$this->product_details->prod_name)).'/'.$url[6],
+        																	img(
+        																		array(
+        																			'src'=>(
+        																				$color->image_url_path
+        																				? $this->config->item('PROD_IMG_URL').$color->media_path.$color->media_name.'_c.jpg'
+        																				: $this->config->item('PROD_IMG_URL').$img_path.'product_coloricon/'.$this->product_details->prod_no.'_'.$color->color_code.'.jpg'
+        																			),
+        																			'width'=>'20',
+        																			'alt'=>$color->color_name,
+        																			'class'=>'tooltips',
+        																			'data-original-title'=>$color->color_name,
+        																			'style'=>$swatch_style
+        																		)
+        																	),
+        																	array('onmouseover'=>$java5,'onmouseout'=>$java6)
+        																).nbs(7);
+    																}
+                                                                }
 															}
 														}
 														?>

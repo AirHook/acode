@@ -2,33 +2,33 @@
 
 /****************
  * Back end search engine for suggestions to searhc input boxes
- * 
+ *
  * @return	json
  */
 class Suggestions extends Admin_Controller
 {
 	/**
 	 * Designer Url - Property
-	 * 
+	 *
 	 * @return	string
 	 */
     public $d_url_structure = '';
-	
+
 	/**
 	 * Search String
 	 *
 	 * @return	string
 	 */
 	public $search_string = '';
-	
+
 	/**
 	 * DB Object
 	 *
 	 * @return	object
 	 */
 	protected $DB;
-	
-	
+
+
 	/**
 	 * Constructor
 	 *
@@ -37,25 +37,25 @@ class Suggestions extends Admin_Controller
 	function __Construct()
 	{
 		parent::__Construct();
-		
+
 		// connect to database for use by model
 		$this->DB = $this->load->database('instyle', TRUE);
-		
+
 		// get the designer slug
 		// helps filter the top nav for non-hub sites
 		// helps filter the side nav on browse by designer
 		// if not hub sites, we use the webspace slug
-		$this->d_url_structure = 
+		$this->d_url_structure =
 			(
-				$this->webspace_details->options['site_type'] == 'sat_site' 
-				OR $this->webspace_details->options['site_type'] == 'sal_site' 
+				$this->webspace_details->options['site_type'] == 'sat_site'
+				OR $this->webspace_details->options['site_type'] == 'sal_site'
 			)
 			? $this->webspace_details->slug
 			: '';
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Primary method - index
 	 *
@@ -64,16 +64,15 @@ class Suggestions extends Admin_Controller
 	function index($search_string)
 	{
 		$this->search_string = $search_string;
-		
+
 		$results = array();
-		
+
 		if ($this->search_string)
 		{
 			// get the products list and total count based on parameters
-			$params['wholesale'] = $this->session->userdata('user_cat') == 'wholesale' ? TRUE : FALSE;
-			$params['show_private'] = $this->session->userdata('user_cat') == 'wholesale' ? TRUE : FALSE;
-			if ($this->webspace_details->options['site_type'] != 'hub_site') $params['view_at_hub'] = FALSE;
-			if ($this->webspace_details->options['site_type'] == 'hub_site') $params['view_at_satellite'] = FALSE;
+			$params['show_private'] = 'ALL';
+            $params['view_status'] = 'ALL';
+            $params['variant_publish'] = 'ALL';
 			// show items even without stocks at all
 			$params['with_stocks'] = FALSE;
 			$params['group_products'] = TRUE;
@@ -95,7 +94,7 @@ class Suggestions extends Admin_Controller
 					'tbl_stock.color_name' => $this->search_string,
 					'tbl_stock.color_facets' => $this->search_string,
 					'designer.url_structure' => (
-						$this->webspace_details->options['site_type'] == 'hub_site' 
+						$this->webspace_details->options['site_type'] == 'hub_site'
 						? $this->search_string
 						: $this->d_url_structure
 					)
@@ -106,7 +105,7 @@ class Suggestions extends Admin_Controller
 				0,
 				'SEARCH'
 			);
-			
+
 			// filter the array of elements that does not have the search_string
 			function array_filter_by_search_string($v)
 			{
@@ -117,7 +116,7 @@ class Suggestions extends Admin_Controller
 				}
 				else return FALSE;
 			}
-			
+
 			if ($products)
 			{
 				// iterate through the result object
@@ -129,14 +128,14 @@ class Suggestions extends Admin_Controller
 						{
 							//$search_string_pos = stripos($val, $search_string);
 							//$right_dash_pos = stripos($val, '-', $search_string_pos);
-							
+
 							$exploded_val = explode('-', $val);
-							
+
 							$filtered_val = array_filter($exploded_val, 'array_filter_by_search_string');
-							
+
 							$val = implode('-', $filtered_val);
 						}
-						
+
 						// lets preg_match $val to $search_string
 						if (preg_match('/'.$this->search_string.'/i', $val))
 						{
@@ -149,16 +148,16 @@ class Suggestions extends Admin_Controller
 					}
 				}
 			}
-			
+
 			// let's sort array according to search_string
 			function sort_search_string($a, $b)
 			{
 				$CI =& get_instance();
-				
+
 				// get the search_string position
 				$aa = stripos($a, $CI->search_string);
 				$bb = stripos($b, $CI->search_string);
-				
+
 				// check search_string position to be at beggining
 				if ($aa == $bb)
 				{
@@ -171,13 +170,13 @@ class Suggestions extends Admin_Controller
 				if (strlen($a) > strlen($b)) return 1;
 				else return -1;
 			}
-			
+
 			usort($results, 'sort_search_string');
 		}
-		
+
 		echo json_encode($results);
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 }

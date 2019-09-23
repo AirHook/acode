@@ -13,7 +13,7 @@
         <!-- END CORE PLUGINS -->
         <!-- BEGIN GLOBAL PLUGINS -->
 		<script src="<?php echo base_url('assets/metronic'); ?>/assets/global/plugins/typeahead/typeahead.bundle.min.js" type="text/javascript"></script>
-		<script src="<?php echo base_url(); ?>assets/custom/js/metronic/pages/scripts/components-search_typeahead.js" type="text/javascript"></script>
+		<script src="<?php echo base_url(); ?>assets/custom/js/metronic/pages/scripts/components-search_typeahead<?php echo $this->uri->segment(1) == 'admin' ? '_admin' : ''; ?>.js" type="text/javascript"></script>
         <script src="<?php echo base_url(); ?>assets/custom/jscript/jsbarcode/jsbarcode.all.min.js" type="text/javascript"></script>
         <script src="<?php echo base_url('assets/metronic'); ?>/assets/global/plugins/morris/morris.min.js" type="text/javascript"></script>
         <!-- // handle datatable -->

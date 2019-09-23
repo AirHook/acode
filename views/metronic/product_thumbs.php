@@ -239,6 +239,18 @@
 																	{
 																		$subcat_name = $thumb->subcat_name;
 
+                                                                        // some show item conditions
+                                                                        // by default, wholesale users are not allowed to see
+                                                                        // CLEARANCE or ON SALE items
+                                                                        $show_item = TRUE;
+                                                                        if (
+                                                                            $this->session->userdata('user_cat') == 'wholesale'
+                                                                            && $thumb->custom_order == '3'
+                                                                        )
+                                                                        {
+                                                                            $show_item = FALSE;
+                                                                        }
+
 																		if (@$grouped_products) // -> from Shop_Controller class
 																		{
 																			// since thumbs are grouped by prod_no, we can now query available colors for
@@ -335,7 +347,9 @@
 																				$wrapper_thumbs = 'padding-left:7px;padding-right:0px;';
 																			}
 																		}
-																	?>
+
+                                                                        if ($show_item)
+                                                                        { ?>
 
 																<div class="col col-center col-xs-6 col-sm-4 wrapper_thumbs" style="<?php echo $wrapper_thumbs; ?>">
 
@@ -532,7 +546,9 @@
 
 																</div>
 
-																		<?php
+                                                                            <?php
+                                                                        }
+
 																		// need to close the m-grid-row in case $ipadding is not exacting to
 																		// the number of columns
 																		if ($ipadding == $this->products_list->row_count) echo '</div> <!-- class="row" -->';

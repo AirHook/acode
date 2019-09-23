@@ -188,6 +188,27 @@
                                             </ul>
                                         </li>
 
+                                        <?php
+                                        // available only on hub sites for now
+                                        if ($this->webspace_details->options['site_type'] == 'hub_site')
+                                        { ?>
+                                        <li class="dropdown more-dropdown-sub">
+                                            <a href="javascript:;" class="text-uppercase disabled-link disable-target" style="cursor:default;">
+                                                Newsletter Manager
+                                            </a>
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    <a href="javascript:;" class=" disabled-link disable-target">
+                                                        List Newletters </a>
+                                                </li>
+                                                <li>
+                                                    <a href="javascript:;" class=" disabled-link disable-target">
+                                                        Create Newletter </a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <?php } ?>
+
                                     </ul>
                                 </li>
                                 <?php
@@ -322,6 +343,27 @@
                                                 </li>
                                             </ul>
                                         </li>
+
+                                        <?php
+                                        // available only on hub sites for now
+                                        if ($this->webspace_details->options['site_type'] == 'hub_site')
+                                        { ?>
+                                        <li class="dropdown more-dropdown-sub open">
+                                            <a href="javascript:;" class="text-uppercase disabled-link disable-target" style="cursor:default;">
+                                                Newsletter Manager
+                                            </a>
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    <a href="javascript:;" class=" disabled-link disable-target">
+                                                        List Newletters </a>
+                                                </li>
+                                                <li>
+                                                    <a href="javascript:;" class=" disabled-link disable-target">
+                                                        Create Newletter </a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <?php } ?>
 
                                     </ul>
                                 </li>
@@ -522,12 +564,12 @@
                                 <!-- DOC: use class "open" on active to show fw dropdown items -->
                                 <li class="dropdown dropdown-fw dropdown-fw-disabled hidden-xs hidden-sm <?php echo (! empty(array_intersect(array('campaigns','sales_orders','purchase_orders','orders'),$this->uri->segment_array()))) ? 'active open selected' : ''; ?>" >
                                     <a href="<?php echo site_url('admin/sales_orders'); ?>" class="text-uppercase">
-                                        <i class="icon-tag hidden-md"></i> Sales Manager
+                                        <i class="icon-tag hidden-md"></i> Order Manager
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-fw">
 
                                         <li class="dropdown more-dropdown-sub <?php echo strpos($this->uri->uri_string(), 'admin/campaigns') !== FALSE ? 'active selected' : ''; ?> ">
-                                            <a href="javascript:;" class="text-uppercase">
+                                            <a href="<?php echo site_url('admin/campaigns/sales_package'); ?>" class="text-uppercase">
                                                 Sales Package Manager
                                             </a>
                                             <ul class="dropdown-menu">
@@ -543,7 +585,7 @@
                                         </li>
 
                                         <li class="dropdown more-dropdown-sub <?php echo strpos($this->uri->uri_string(), 'admin/sales_orders') !== FALSE ? 'active selected' : ''; ?> ">
-                                            <a href="javascript:;" class="text-uppercase">
+                                            <a href="<?php echo site_url('admin/sales_orders'); ?>" class="text-uppercase">
                                                 Sales Order Manager
                                             </a>
                                             <ul class="dropdown-menu">
@@ -568,8 +610,8 @@
                                         if ($this->webspace_details->options['site_type'] == 'hub_site')
                                         { ?>
                                         <li class="dropdown more-dropdown-sub <?php echo preg_match('(purchase_orders)', $this->uri->uri_string()) === 1 ? 'active selected' : ''; ?> ">
-                                            <a href="javascript:;" class="text-uppercase">
-                                                Purchase Orders Manager
+                                            <a href="<?php echo site_url('admin/purchase_orders'); ?>" class="text-uppercase">
+                                                Purchase Order Manager
                                             </a>
                                             <ul class="dropdown-menu">
                                                 <li class="<?php echo strpos($this->uri->uri_string(), 'admin/purchase_orders') !== FALSE ? 'active' : ''; ?>">
@@ -578,7 +620,7 @@
                                                 </li>
                                                 <li class="<?php echo strpos($this->uri->uri_string(), 'admin/purchase_orders/create') !== FALSE ? 'active' : ''; ?>">
                                                     <a href="<?php echo site_url('admin/purchase_orders/create'); ?>">
-                                                        Create New Purchase Orders </a>
+                                                        Create New Purchase Order </a>
                                                 </li>
                                             </ul>
                                         </li>
@@ -589,38 +631,17 @@
                                         if ($this->webspace_details->options['site_type'] == 'hub_site')
                                         { ?>
                                         <li class="dropdown more-dropdown-sub <?php echo preg_match('(admin/orders)', $this->uri->uri_string()) === 1 ? 'active selected' : ''; ?> ">
-                                            <a href="javascript:;" class="text-uppercase">
-                                                Orders Manager
+                                            <a href="<?php echo site_url('admin/orders'); ?>" class="text-uppercase">
+                                                Order Logs
                                             </a>
                                             <ul class="dropdown-menu">
                                                 <li class="<?php echo strpos($this->uri->uri_string(), 'admin/orders') !== FALSE ? 'active' : ''; ?>">
                                                     <a href="<?php echo site_url('admin/orders'); ?>">
-                                                        Wholesale Orders Log </a>
+                                                        Wholesale Order Logs </a>
                                                 </li>
                                                 <li class="<?php echo strpos($this->uri->uri_string(), 'admin/orders') !== FALSE ? 'active' : ''; ?>">
                                                     <a href="<?php echo site_url('admin/orders'); ?>">
-                                                        Retail Orders Log </a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        <?php } ?>
-
-                                        <?php
-                                        // available only on hub sites for now
-                                        if ($this->webspace_details->options['site_type'] == 'hub_site')
-                                        { ?>
-                                        <li class="dropdown more-dropdown-sub">
-                                            <a href="javascript:;" class="text-uppercase disabled-link disable-target" style="cursor:default;">
-                                                Newsletter Manager
-                                            </a>
-                                            <ul class="dropdown-menu">
-                                                <li>
-                                                    <a href="javascript:;" class=" disabled-link disable-target">
-                                                        List Newletters </a>
-                                                </li>
-                                                <li>
-                                                    <a href="javascript:;" class=" disabled-link disable-target">
-                                                        Create Newletter </a>
+                                                        Retail Order Logs </a>
                                                 </li>
                                             </ul>
                                         </li>
@@ -635,7 +656,7 @@
                                 ?>
                                 <li class="dropdown dropdown-fw dropdown-fw-disabled hidden-md hidden-lg <?php echo (! empty(array_intersect(array('campaigns','sales_orders','purchase_orders','orders'),$this->uri->segment_array()))) ? 'active open selected' : ''; ?>" >
                                     <a href="javascript:;" class="text-uppercase">
-                                        <i class="icon-tag hidden-md"></i> Sales Manager
+                                        <i class="icon-tag hidden-md"></i> Order Manager
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-fw">
 
@@ -682,16 +703,16 @@
                                         { ?>
                                         <li class="dropdown more-dropdown-sub <?php echo preg_match('(purchase_orders|admin/orders)', $this->uri->uri_string()) === 1 ? 'active selected' : ''; ?> open">
                                             <a href="javascript:;" class="text-uppercase">
-                                                Purchase Orders Manager
+                                                Purchase Order Manager
                                             </a>
                                             <ul class="dropdown-menu">
                                                 <li class="<?php echo strpos($this->uri->uri_string(), 'admin/purchase_orders') !== FALSE ? 'active' : ''; ?>">
                                                     <a href="<?php echo site_url('admin/purchase_orders'); ?>">
-                                                        Puchase Orders </a>
+                                                        List Puchase Orders </a>
                                                 </li>
                                                 <li class="<?php echo strpos($this->uri->uri_string(), 'admin/purchase_orders/create') !== FALSE ? 'active' : ''; ?>">
                                                     <a href="<?php echo site_url('admin/purchase_orders/create'); ?>">
-                                                        Create New Purchase Orders </a>
+                                                        Create New Purchase Order </a>
                                                 </li>
                                             </ul>
                                         </li>
@@ -703,37 +724,16 @@
                                         { ?>
                                         <li class="dropdown more-dropdown-sub <?php echo preg_match('(purchase_orders|admin/orders)', $this->uri->uri_string()) === 1 ? 'active selected' : ''; ?> open">
                                             <a href="javascript:;" class="text-uppercase">
-                                                Orders Manager
+                                                Order Logs
                                             </a>
                                             <ul class="dropdown-menu">
                                                 <li class="<?php echo strpos($this->uri->uri_string(), 'admin/orders') !== FALSE ? 'active' : ''; ?>">
                                                     <a href="<?php echo site_url('admin/orders'); ?>">
-                                                        Wholesale Orders Log </a>
+                                                        Wholesale Order Logs </a>
                                                 </li>
                                                 <li class="<?php echo strpos($this->uri->uri_string(), 'admin/orders') !== FALSE ? 'active' : ''; ?>">
                                                     <a href="<?php echo site_url('admin/orders'); ?>">
-                                                        Retail Orders Log </a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        <?php } ?>
-
-                                        <?php
-                                        // available only on hub sites for now
-                                        if ($this->webspace_details->options['site_type'] == 'hub_site')
-                                        { ?>
-                                        <li class="dropdown more-dropdown-sub open">
-                                            <a href="javascript:;" class="text-uppercase disabled-link disable-target" style="cursor:default;">
-                                                Newsletter Manager
-                                            </a>
-                                            <ul class="dropdown-menu">
-                                                <li>
-                                                    <a href="javascript:;" class=" disabled-link disable-target">
-                                                        List Newletters </a>
-                                                </li>
-                                                <li>
-                                                    <a href="javascript:;" class=" disabled-link disable-target">
-                                                        Create Newletter </a>
+                                                        Retail Order Logs </a>
                                                 </li>
                                             </ul>
                                         </li>

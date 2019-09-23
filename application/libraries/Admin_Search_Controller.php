@@ -80,10 +80,9 @@ class Admin_Search_Controller extends Admin_Controller {
 		}
 
 		// get the products list and total count based on parameters
-		$params['wholesale'] = $this->session->userdata('user_cat') == 'wholesale' ? TRUE : FALSE;
-		$params['show_private'] = $this->session->userdata('user_cat') == 'wholesale' ? TRUE : FALSE;
-		if ($this->webspace_details->options['site_type'] != 'hub_site') $params['view_at_hub'] = FALSE;
-		if ($this->webspace_details->options['site_type'] == 'hub_site') $params['view_at_satellite'] = FALSE;
+        $params['show_private'] = 'ALL';
+        $params['view_status'] = 'ALL';
+        $params['variant_publish'] = 'ALL';
 		// show items even without stocks at all
 		$params['with_stocks'] = FALSE;
 		$params['group_products'] = FALSE;
