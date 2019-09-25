@@ -35,6 +35,17 @@
                                                     </div>
                                                 </div>
 
+                                                <!-- BEGIN FORM =======================================================-->
+                                                <?php echo form_open(
+                                                    $this->uri->segment(1).'/purchase_orders/modify/index/'.$this->purchase_order_details->po_id,
+                                                    array(
+                                                        'class' => 'form-horizontal',
+                                                        'id' => 'form-po_modify'
+                                                    )
+                                                ); ?>
+
+                                                <input type="hidden" name="action" value="modify" />
+
 												<div class="col-sm-8 po-summary-company clearfix">
 													<div class="row">
 														<div class="col-sm-12">
@@ -61,10 +72,16 @@
                                                                 PURCHASE ORDER <strong>#<?php echo $this->purchase_order_details->po_number; ?></strong> <?php echo $this->purchase_order_details->rev ? '<small><b>rev</b></small><strong>'.$this->purchase_order_details->rev.'</strong>' : ''; ?> <br />
                                                                 <small> Date: <?php echo $this->purchase_order_details->delivery_date; ?> </small>
                                                             </h3>
+                                                            <input type="hidden" name="rev" value="<?php echo $this->purchase_order_details->rev + 1; ?>" />
                                                             <h4>
-                                                                <?php echo @$po_options['ref_po_no'] ? 'Reference Manual PO#: '.$po_options['ref_po_no'] : ''; ?>
-                                                                <?php echo (@$po_options['ref_po_no'] && @$po_options['ref_so_no']) ? '<br />' : ''; ?>
-                                                                <?php echo @$po_options['ref_so_no'] ? 'Reference SO#: '.$po_options['ref_so_no'] : ''; ?>
+                                                                <?php
+                                                                if (@$po_options['ref_po_no'])
+                                                                {
+                                                                    echo 'Reference Manual PO#: '.$po_options['ref_po_no'];
+                                                                    echo '<input type="hidden" name="options[ref_po_no]" value="'.$po_options['ref_po_no'].'" />';
+                                                                }
+                                                                else echo '<input type="hidden" name="options[ref_po_no]" value="" />';
+                                                                ?>
                                                             </h4>
 														</div>
                                                     </div>
@@ -120,18 +137,64 @@
                                                     </p>
                                                 </div>
 
-                                                <!-- BEGIN FORM =======================================================-->
-                                                <?php echo form_open(
-                                                    $this->uri->segment(1).'/purchase_orders/modify/index/'.$this->purchase_order_details->po_id,
-                                                    array(
-                                                        'class' => 'form-horizontal',
-                                                        'id' => 'form-po_modify'
-                                                    )
-                                                ); ?>
+                                                <div class="col-sm-12 m-grid m-grid-responsive-sm po-summary-options1">
+                                                    <div class="m-grid-row">
+                                                        <div class="m-grid-col">
 
-                                                <input type="hidden" name="action" value="modify" />
+                                                            <h6> Reference SO# (if any): </h6>
+                                                            <div class="form-group row">
+                                                                <div class="col-md-12">
+                                                                    <input class="form-control form-control-inline bg-white" size="16" type="text" value="<?php echo @$this->purchase_order_details->options['ref_so_no']; ?>" name="options[ref_so_no]" readonly />
+                                                                </div>
+                                                            </div>
 
-                                                <div class="col-sm-12 m-grid po-summary-dates">
+                                                        </div>
+                                                        <div class="m-grid-col">
+
+                                                            <h6> Store Name (optional): </h6>
+                                                            <div class="form-group row" data-object_data='{"<?php echo $this->security->get_csrf_token_name(); ?>":"<?php echo $this->security->get_csrf_hash(); ?>"}'>
+                                                                <div class="col-md-12">
+                                                                    <select class="bs-select form-control pull-right" name="options[po_store_id]" data-live-search="true" data-size="5" data-show-subtext="true" data-container="body" readonly>
+                                                                        <option class="option-placeholder" value="">Select Store...</option>
+                                                                        <?php
+                                                                        if (@$stores)
+                                                                        {
+                                                                            foreach ($stores as $store)
+                                                                            { ?>
+
+                                                                        <option value="<?php echo $store->user_id; ?>" data-subtext="<em><?php echo $store->email; ?></em>" data-des_slug="<?php echo $store->reference_designer; ?>" <?php echo $store->user_id === @$this->purchase_order_details->options['po_store_id'] ? 'selected="selected"' : ''; ?>>
+                                                                            <?php echo ucwords(strtolower($store->store_name)); ?>
+                                                                        </option>
+
+                                                                                <?php
+                                                                            }
+                                                                        } ?>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                        <div class="m-grid-col">
+
+                                                            <h6> Replenishment Options: </h6>
+                                                            <div class="form-group row">
+                                                                <div class="col-md-12">
+                                                                    <div class="input-group">
+                                                                        <span class="input-group-addon">
+                                                                            <input type="checkbox" name="options[stock_replenishment]" value="1" <?php echo @$this->purchase_order_details->options['stock_replenishment'] ? 'checked="checked"' : ''; ?> />
+                                                                            <span></span>
+                                                                        </span>
+                                                                        <input type="text" class="form-control bg-white" value="Stock Replenishment" readonly />
+                                                                    </div>
+                                                                    <!-- /input-group -->
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-sm-12 m-grid po-summary-options2">
                                                     <div class="m-grid-row">
                                                         <div class="m-grid-col m-grid-col-sm-2">
 
@@ -171,7 +234,7 @@
                                                             <h5> Ship Via: </h5>
                                                             <div class="form-group row">
                                                                 <div class="col-md-12">
-                                                                    <input class="form-control form-control-inline" size="16" type="text" value="<?php echo @$this->purchase_order_details->options['ship_via']; ?>" name="ship_via" />
+                                                                    <input class="form-control form-control-inline" size="16" type="text" value="<?php echo @$this->purchase_order_details->options['ship_via']; ?>" name="options[ship_via]" />
                                                                 </div>
                                                             </div>
 
@@ -181,7 +244,7 @@
                                                             <h5> F.O.B: </h5>
                                                             <div class="form-group row">
                                                                 <div class="col-md-12">
-                                                                    <input class="form-control form-control-inline" size="16" type="text" value="<?php echo @$this->purchase_order_details->options['fob']; ?>" name="fob" />
+                                                                    <input class="form-control form-control-inline" size="16" type="text" value="<?php echo @$this->purchase_order_details->options['fob']; ?>" name="options[fob]" />
                                                                 </div>
                                                             </div>
 
@@ -191,7 +254,7 @@
                                                             <h5> Terms: </h5>
                                                             <div class="form-group row">
                                                                 <div class="col-md-12">
-                                                                    <input class="form-control form-control-inline" size="16" type="text" value="<?php echo @$this->purchase_order_details->options['terms']; ?>" name="terms" />
+                                                                    <input class="form-control form-control-inline" size="16" type="text" value="<?php echo @$this->purchase_order_details->options['terms']; ?>" name="options[terms]" />
                                                                 </div>
                                                             </div>
 
@@ -234,9 +297,9 @@
 																		<th style="vertical-align:top;"> Size and Qty </th>
                                                                         <th style="vertical-align:top;"> </th>
 																		<th style="vertical-align:top;" class="text-right">
-                                                                            Vendor Price <br />
-                                                                            <cite class="small" style="font-weight:100;">show/edit vendor price</cite>
-                                                                            <input type="checkbox" class="show_vendor_price" name="show_vendor_price" value="1" <?php echo $this->session->admin_po_mod_edit_vendor_price ? 'checked' : ''; ?> />
+                                                                            Unit Price <br />
+                                                                            <cite class="small" style="font-weight:100;">show/edit unit price</cite>
+                                                                            <input type="checkbox" class="show_vendor_price" name="options[show_vendor_price]" value="1" <?php echo @$po_options['show_vendor_price'] ? 'checked' : ''; ?> />
                                                                         </th>
 																		<th style="vertical-align:top;" class="text-right"> Subtotal </th>
 																	</tr>
@@ -265,8 +328,8 @@
                                                                             $prod_no = $exp[0];
                                                                             $color_code = $exp[1];
                                                                             $vendor_price =
-                                                                                isset($po_items[$item]['vendor_price'])
-                                                                                ? $po_items[$item]['vendor_price']
+                                                                                isset($options['vendor_price'])
+                                                                                ? $options['vendor_price']
                                                                                 : (@$product->vendor_price ?: 0)
                                                                             ;
                                                                             $temp_size_mode = 1; // default size mode
@@ -365,8 +428,8 @@
 																		 * Unit Vendor Price
 																		 */
 																		?>
-                                                                        <td class="unit-vendor-price-wrapper" data-item="<?php echo $item; ?>" data-prod_no="<?php echo $prod_no; ?>">
-                                                                            <div class="edit_off" style="<?php echo $this->session->admin_po_mod_edit_vendor_price === TRUE ? 'display:none;' : ''; ?>">
+                                                                        <td class="unit-vendor-price-wrapper" data-item="<?php echo $item; ?>" data-prod_no="<?php echo $prod_no; ?>" data-vendor_price="<?php echo $this->session->admin_po_edit_vendor_price ?: 0; ?>">
+                                                                            <div class="edit_off" style="<?php echo @$po_options['show_vendor_price'] ? 'display:none;' : ''; ?>">
                                                                                 <div class="zero-unit-vendor-price <?php echo $prod_no; ?> pull-right">
                                                                                     <?php
                                                                                     $v_price = 0;
@@ -374,20 +437,20 @@
                                                                                     ?>
                                                                                 </div>
                                                                             </div>
-                                                                            <div class="edit_on" style="<?php echo $this->session->admin_po_mod_edit_vendor_price === TRUE ? '' : 'display:none;'; ?>">
+                                                                            <div class="edit_on" style="<?php echo @$po_options['show_vendor_price'] ? '' : 'display:none;'; ?>">
                                                                                 <div class="clearfix">
                                                                                     <div class="unit-vendor-price <?php echo $prod_no; ?> pull-right" style="height:27px;width:40px;border:1px solid #ccc;padding-top:4px;padding-right:4px;text-align:right;">
                                                                                         <?php
-                                                                                        $v_price = @$options['vendor_price'] ?: $vendor_price;
+                                                                                        $v_price = $vendor_price;
                                                                                         echo $v_price;
                                                                                         ?>
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="text-right">
-                                                                                    <!--
                                                                                     <button data-toggle="modal" href="#modal-edit_vendor_price-<?php echo $item; ?>" type="button" class="btn btn-link btn-xs" style="padding-right:0;margin-right:0;"><i class="fa fa-pencil"></i> Edit</button>
-                                                                                    -->
+                                                                                    <!--
                                                                                     <button type="button" data-prod_no="<?php echo $item; ?>" class="btn btn-link btn-xs btn-edit_vendor_price" style="padding-right:0;margin-right:0;"><i class="fa fa-pencil"></i> Edit</button>
+                                                                                    -->
                                                                                 </div>
 
                                                                                 <!-- EDIT VENDOR PRICE -->
@@ -438,7 +501,7 @@
 																		<td class="text-right order-subtotal <?php echo $item.' '.$prod_no; ?>">
                                                                             <?php
                                                                             $this_size_total =
-                                                                                $this->session->admin_po_edit_vendor_price === TRUE
+                                                                                @$po_options['show_vendor_price']
                                                                                 ? $this_size_qty * $v_price
                                                                                 : 0
                                                                             ;

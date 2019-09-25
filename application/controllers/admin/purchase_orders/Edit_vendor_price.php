@@ -36,7 +36,6 @@ class Edit_vendor_price extends MY_Controller {
 
 		// grab the post variable
 		$item = $this->input->post('prod_no'); // <prod_no>_<color_code>
-		//$style_no = $this->input->post('style_no'); // prod_no
 		$vendor_price = $this->input->post('vendor_price');
 		$page = $this->input->post('page');
 
@@ -57,6 +56,7 @@ class Edit_vendor_price extends MY_Controller {
 		$items_array[$item]['vendor_price'] = $vendor_price;
 
 		// reset session value for items array
+		// and edit vendor price session
 		if ($page == 'modify')
 		{
 			$this->session->set_userdata('admin_po_mod_items', json_encode($items_array));

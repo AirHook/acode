@@ -38,13 +38,23 @@ class Set_items extends MY_Controller {
 		// grab the post variables
 		//$item = '192H_GREE1';
 		$item = $this->input->post('prod_no');
-		$page = $this->input->post('page');
 		*/
+		$page = $this->input->post('page');
+
+		echo $page;
+
+		$admin_po_items =
+			$page == 'modify'
+			? $this->session->admin_po_mod_items
+			: $this->session->admin_po_items
+		;
+
+		print_r($admin_po_items);
 
 		// get the items array
 		$items_array =
-			$this->session->admin_po_items
-			? json_decode($this->session->admin_po_items, TRUE)
+			$admin_po_items
+			? json_decode($admin_po_items, TRUE)
 			: array()
 		;
 
@@ -144,6 +154,7 @@ class Set_items extends MY_Controller {
 					: 0
 				;
 				$this_size_qty += $size_qty;
+				if ($s == 'XL1' OR $s == 'XL2') continue;
 
 				$html.= '
 					<div class="sizes" style="display:inline-block;">'
@@ -183,18 +194,16 @@ class Set_items extends MY_Controller {
 			;
 
 			// table col - Remove button
-			$html.= '<td class="text-right">'
-				.'<button type="button" class="btn btn-link btn-xs summary-item-checkbox tooltips" data-original-title="Remove Item" data-prod_no="'
-				.$item
-				.'"><i class="fa fa-close"></i> <cite class="small">rem</cite>'
-				.'</button></td>'
-			;
-
-			if ($this->session->admin_po_edit_vendor_price === TRUE)
+			if ($page == 'modify') $html.= '<td></td>';
+			else
 			{
-				$v_price = @$options['vendor_price'] ?: $vendor_price;
+				$html.= '<td class="text-right">'
+					.'<button type="button" class="btn btn-link btn-xs summary-item-checkbox tooltips" data-original-title="Remove Item" data-prod_no="'
+					.$item
+					.'"><i class="fa fa-close"></i> <cite class="small">rem</cite>'
+					.'</button></td>'
+				;
 			}
-			else $v_price = 0;
 
 			// table col - Unit Vendor Price
 			$html.= '<td class="unit-vendor-price-wrapper" data-item="'
@@ -208,8 +217,7 @@ class Set_items extends MY_Controller {
 				.($this->session->admin_po_edit_vendor_price === TRUE ? 'display:none;' : '')
 				.'"><div class="zero-unit-vendor-price '
 				.$prod_no
-				.' pull-right">$ '
-				.number_format($v_price, 2)
+				.' pull-right">$ 0.00'
 				.'</div></div>'
 				.'<div class="edit_on" style="'
 				.($this->session->admin_po_edit_vendor_price === TRUE ? '' : 'display:none;')
@@ -217,7 +225,7 @@ class Set_items extends MY_Controller {
 				.'<div class="unit-vendor-price '
 				.$prod_no
 				.' pull-right" style="height:27px;width:40px;border:1px solid #ccc;padding-top:4px;padding-right:4px;text-align:right;">'
-				.$v_price
+				.$vendor_price
 				.'</div></div><div class="text-right">'
 				.'<button type="button" data-prod_no="'
 				.$item
@@ -227,7 +235,7 @@ class Set_items extends MY_Controller {
 
 			$this_size_total =
 				$this->session->admin_po_edit_vendor_price === TRUE
-				? $this_size_qty * $v_price
+				? $this_size_qty * $vendor_price
 				: 0
 			;
 

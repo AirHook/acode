@@ -121,7 +121,7 @@ class Get_thumbs extends Admin_Controller {
 				$path_to_image = $product->media_path.$style_no.'_f3.jpg';
 				$img_front_new = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_f3.jpg';
 				$img_back_new = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_b3.jpg';
-				$img_linesheet = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_linesheet.jpg';
+				$img_large = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_f.jpg';
 
 				// after the first batch, hide the images
 				if ($cnti > 0 && fmod($cnti, 100) == 0)
@@ -161,41 +161,25 @@ class Get_thumbs extends Admin_Controller {
 					.'">'
 				;
 				$html.= '<a href="'
-					.$img_linesheet
-					.'" class="fancybox">'
+					.$img_large
+					.'" class="fancybox tooltips" data-original-title="Click to zoom">'
 				;
 
-				if ($product->publish == '0' OR $product->publish == '3' OR $product->view_status == 'N' OR $product->public == 'N')
-				{
-					$html.= '<div class="ribbon ribbon-shadow ribbon-round ribbon-border-dash ribbon-vertical-left ribbon-color-'
-						.$ribbon_color
-						.' uppercase tooltips" data-placement="top" data-container="body" data-original-title="'
-						.$tooltip
-						.'" style="position:absolute;left:-3px;width:28px;padding:1em 0;"><i class="fa fa-ban"></i></div>'
-					;
-				}
-
-				if ($product->with_stocks == '0')
-				{
-					$html.= '<div class="ribbon ribbon-shadow ribbon-round ribbon-border-dash ribbon-vertical-right ribbon-color-danger uppercase tooltips" data-placement="top" data-container="body" data-original-title="Pre Order" style="position:absolute;right:-3px;width:28px;padding:1em 0;"><i class="fa fa-ban"></i></div>'
-					;
-				}
-
-				$html.= '<div class="corner"></div><div class="check"> </div><div class="tile-body"><img class="img-b img-unveil" '
+				$html.= '<div class="corner"></div><div class="check"> </div><div class="tile-body"><img class="img-b_ img-unveil" '
 					.(
 						$unveil
 						? 'data-src="'.($product->primary_img ? $img_back_new : $img_back_pre.$image).'"'
 						: 'src="'.($product->primary_img ? $img_back_new : $img_back_pre.$image).'"'
 					)
-					.' alt=""><img class="img-a img-unveil" '
+					.' alt=""><img class="img-a_ img-unveil" '
 					.(
 						$unveil
 						? 'data-src="'.($product->primary_img ? $img_front_new : $img_front_pre.$image).'"'
 						: 'src="'.($product->primary_img ? $img_front_new : $img_front_pre.$image).'"'
 					)
-					.' alt=""><noscript><img class="img-b" src="'
+					.' alt=""><noscript><img class="img-b_" src="'
 					.($product->primary_img ? $img_back_new : $img_back_pre.$image)
-					.'" alt=""><img class="img-a" src="'
+					.'" alt=""><img class="img-a_" src="'
 					.($product->primary_img ? $img_front_new : $img_front_pre.$image)
 					.'" alt=""></noscript></div><div class="tile-object"><div class="name">'
 					.$product->prod_no
@@ -205,14 +189,14 @@ class Get_thumbs extends Admin_Controller {
 				;
 
 				$html.= '</a>';
-				$html.= '<div class="" style="color:red;font-size:0.9rem;"><span> Add to Purchase Order: </span>'
+				$html.= '<div class="" style="color:red;font-size:1rem;">'
 					.'<input type="checkbox" class="package_items '
 					.$product->prod_no.'_'.$product->color_code
 					.'" name="prod_no[]" value="'
 					.$product->prod_no.'_'.$product->color_code
-					.'" style="float:right;" '
+					.'" '
 					.$checkbox_check
-					.'></i></div>'
+					.'/> &nbsp;<span style="text-transform:uppercase;"> Add to Order </span></div>'
 				;
 				$html.= '</div>';
 

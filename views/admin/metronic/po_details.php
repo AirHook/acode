@@ -193,14 +193,61 @@
                             </p>
                         </div>
 
-                        <div class="col-sm-12 m-grid po-summary-dates">
+                        <div class="col-sm-12 m-grid m-grid-responsive-sm po-summary-options1">
+                            <div class="m-grid-row">
+                                <div class="m-grid-col">
+
+                                    <h6> Reference SO# (if any): </h6>
+                                    <div class="form-group row">
+                                        <div class="col-md-12">
+                                            <input class="form-control form-control-inline bg-white" size="16" type="text" value="<?php echo @$po_options['ref_so_no']; ?>" name="options[ref_so_no]" readonly />
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="m-grid-col">
+
+                                    <h6> Store Name (optional): </h6>
+                                    <div class="form-group row" data-object_data='{"<?php echo $this->security->get_csrf_token_name(); ?>":"<?php echo $this->security->get_csrf_hash(); ?>"}'>
+                                        <div class="col-md-12">
+                                            <select class="bs-select form-control pull-right" name="options[po_store_id]" data-live-search="true" data-size="5" data-show-subtext="true" data-container="body" disabled>
+                                                <option value="<?php echo $store_details->user_id; ?>" data-subtext="<em><?php echo $store_details->email; ?></em>" data-des_slug="<?php echo $store_details->reference_designer; ?>">
+                                                    <?php echo ucwords(strtolower($store_details->store_name)); ?>
+                                                </option>
+                                            </select>
+                                            <input class="form-control form-control-inline" size="16" type="hidden" value="<?php echo $this->session->admin_po_store_id; ?>" name="po_store_id" readonly />
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="m-grid-col">
+
+                                    <h6> Replenishment Options: </h6>
+                                    <div class="form-group row">
+                                        <div class="col-md-12">
+                                            <div class="input-group">
+                                                <span class="input-group-addon">
+                                                    <input type="checkbox" name="options[stock_replenishment]" value="1" <?php echo @$po_options['stock_replenishment'] == '1' ? 'checked="checked" disabled' : ''; ?> />
+                                                    <span></span>
+                                                </span>
+                                                <input type="text" class="form-control" value="Stock Replenishment" readonly style="background-color:transparent;" />
+                                            </div>
+                                            <!-- /input-group -->
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-12 m-grid po-summary-options2">
                             <div class="m-grid-row">
                                 <div class="m-grid-col m-grid-col-sm-2">
 
                                     <h5> Start Date: </h5>
                                     <div class="form-group row">
                                         <div class="col-md-12">
-                                            <input class="form-control form-control-inline" size="16" type="text" value="<?php echo @$po_options['start_date']; ?>" readonly />
+                                            <input class="form-control form-control-inline bg-white" size="16" type="text" value="<?php echo @$po_options['start_date']; ?>" readonly />
                                         </div>
                                     </div>
 
@@ -210,7 +257,7 @@
                                     <h5> Cancel Date: </h5>
                                     <div class="form-group row">
                                         <div class="col-md-12">
-                                            <input class="form-control form-control-inline" size="16" type="text" value="<?php echo @$po_options['cancel_date']; ?>" readonly />
+                                            <input class="form-control form-control-inline bg-white" size="16" type="text" value="<?php echo @$po_options['cancel_date']; ?>" readonly />
                                         </div>
                                     </div>
 
@@ -220,7 +267,7 @@
                                     <h5> Delivery Date: </h5>
                                     <div class="form-group row">
                                         <div class="col-md-12">
-                                            <input class="form-control form-control-inline" size="16" type="text" value="<?php echo $this->purchase_order_details->delivery_date; ?>" readonly />
+                                            <input class="form-control form-control-inline bg-white" size="16" type="text" value="<?php echo $this->purchase_order_details->delivery_date; ?>" readonly />
                                         </div>
                                     </div>
 
@@ -230,7 +277,7 @@
                                     <h5> Ship Via: </h5>
                                     <div class="form-group row">
                                         <div class="col-md-12">
-                                            <input class="form-control form-control-inline" size="16" type="text" value="<?php echo @$po_options['ship_via']; ?>" readonly />
+                                            <input class="form-control form-control-inline bg-white" size="16" type="text" value="<?php echo @$po_options['ship_via']; ?>" readonly />
                                         </div>
                                     </div>
 
@@ -240,7 +287,7 @@
                                     <h5> F.O.B: </h5>
                                     <div class="form-group row">
                                         <div class="col-md-12">
-                                            <input class="form-control form-control-inline" size="16" type="text" value="<?php echo @$po_options['fob']; ?>" readonly />
+                                            <input class="form-control form-control-inline bg-white" size="16" type="text" value="<?php echo @$po_options['fob']; ?>" readonly />
                                         </div>
                                     </div>
 
@@ -250,7 +297,7 @@
                                     <h5> Terms: </h5>
                                     <div class="form-group row">
                                         <div class="col-md-12">
-                                            <input class="form-control form-control-inline" size="16" type="text" value="<?php echo @$po_options['terms']; ?>" readonly />
+                                            <input class="form-control form-control-inline bg-white" size="16" type="text" value="<?php echo @$po_options['terms']; ?>" readonly />
                                         </div>
                                     </div>
 
@@ -274,7 +321,7 @@
                                             <tr>
                                                 <th> Items (<?php echo count($po_items); ?>) </th>
                                                 <th> Size and Qty </th>
-                                                <th class="text-right"> Vendor Price </th>
+                                                <th class="text-right"> Unit Price </th>
                                                 <th class="text-right"> Subtotal </th>
                                             </tr>
                                         </thead>
@@ -301,6 +348,11 @@
                                                     $style_no = $item;
                                                     $prod_no = $exp[0];
                                                     $color_code = $exp[1];
+                                                    $vendor_price =
+                                                        isset($size_qty['vendor_price'])
+                                                        ? $size_qty['vendor_price']
+                                                        : (@$product->vendor_price ?: 0)
+                                                    ;
                                                     $temp_size_mode = 1; // default size mode
 
                                                     if ($product)
@@ -412,7 +464,7 @@
                                                 ?>
                                                 <td class="text-right" style="vertical-align:top;">
                                                     <?php
-                                                    $v_price = @$size_qty['vendor_price'] ?: @$product->vendor_price;
+                                                    $v_price = @$po_options['show_vendor_price'] == '1' ? $vendor_price : 0;
                                                     ?>
                                                     $ <?php echo number_format($v_price, 2); ?>
                                                 </td>

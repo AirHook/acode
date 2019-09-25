@@ -171,22 +171,32 @@
 									<?php
 									switch ($order->status)
 									{
+										case '0':
+											$label = 'info';
+											$text = 'Pending';
+										break;
+										case '4':
+											$label = 'info';
+											$text = 'In Transit';
+										break;
 										case '5':
 											$label = 'success';
 											$text = 'Complete';
 										break;
-                                        case '2':
+										case '6':
+											$label = 'danger';
+											$text = 'On Hold';
+										break;
+                                        case '7':
 											$label = 'warning';
 											$text = 'Cancelled';
 										break;
 										case '1':
-											$label = 'danger';
-											$text = 'On Hold';
-										break;
-										case '0':
+										case '2':
+										case '3':
 										default:
 											$label = 'info';
-											$text = 'Pending';
+											$text = 'Vendor Action';
 									}
 									?>
                                     <span class="label label-sm label-<?php echo $label; ?>"> <?php echo $text; ?> </span>

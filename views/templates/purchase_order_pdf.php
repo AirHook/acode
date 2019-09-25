@@ -127,6 +127,20 @@
 
 	<table cellpadding="0" cellspacing="0" style="width:100%;">
 		<tr>
+			<td colspan="2"> Reference SO# </td>
+			<td colspan="2"> Store Name: </td>
+			<td colspan="2"> Replenishment Options </td>
+		</tr>
+		<tr>
+			<td  colspan="2" style="border:1px solid #ccc;height:24px;padding-left:5px;"> <?php echo @$po_options['ref_so_no']; ?>
+			</td>
+			<td  colspan="2" style="border:1px solid #ccc;height:24px;padding-left:5px;"><?php echo @$store_details->store_name ? ucwords(strtolower($store_details->store_name)).' <em style="font-size:0.8rem">'.$store_details->email.'<em>' : ''; ?>
+			</td>
+			<td  colspan="2" style="border:1px solid #ccc;height:24px;padding-left:5px;"> <?php echo @$po_options['stock_replenishment'] == '1' ? 'For Replenishment' : ''; ?>
+			</td>
+		</tr>
+		<tr><td>&nbsp;</td></tr>
+		<tr>
 			<td width="16.66%"> Start Date </td>
 			<td width="16.66%"> Cancel Date </td>
 			<td width="16.66%"> Delivery Date </td>

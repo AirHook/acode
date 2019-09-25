@@ -96,14 +96,25 @@ class Modify extends Admin_Controller {
 			redirect('admin/purchase_orders', 'location');
 		}
 
-		// for check purposes, set admin_po_mod_po_id session
-		$this->session->set_userdata('admin_po_mod_po_id', $this->purchase_order_details->po_id);
-
 		// set validation rules
+		$this->form_validation->set_rules('delivery_date', 'Deliver Data', 'trim|required');
+		$this->form_validation->set_rules('cancel_date', 'Deliver Data', 'trim|required');
 		$this->form_validation->set_rules('delivery_date', 'Deliver Data', 'trim|required');
 
 		if ($this->form_validation->run() == FALSE)
 		{
+			// for check purposes, set admin_po_mod_po_id session
+			$this->session->set_userdata('admin_po_mod_po_id', $this->purchase_order_details->po_id);
+
+			// check for show vendor price
+			if (
+				isset($this->purchase_order_details->options['show_vendor_price'])
+				&& $this->purchase_order_details->options['show_vendor_price']
+			)
+			{
+				$this->session->set_userdata('admin_po_mod_edit_vendor_price', $this->purchase_order_details->options['show_vendor_price']);
+			}
+
 			// get vendor details
 			$this->data['vendor_details'] = $this->vendor_user_details->initialize(
 				array(
@@ -174,9 +185,7 @@ class Modify extends Admin_Controller {
 			$this->data['po_options'] = $this->purchase_order_details->options;
 
 			// get the po items and count
-			// if session is present, then modify has already started
 			$this->data['po_items'] = $this->purchase_order_details->items;
-			// each time this page loads, this set session
 			$this->session->set_userdata('admin_po_mod_items', json_encode($this->data['po_items']));
 			$this->session->set_userdata('admin_po_mod_size_qty', json_encode($this->data['po_items']));
 			$po_items_count = 0;
@@ -193,7 +202,11 @@ class Modify extends Admin_Controller {
 			$this->data['po_items_count'] = $po_items_count;
 
 			// get user list for the edit ship to function
-			$this->data['users'] = $this->wholesale_users_list->select();
+			$this->data['stores'] = $this->wholesale_users_list->select(
+				array(
+					'tbluser_data_wholesale.reference_designer' => $this->data['designer_details']->slug
+				)
+			);
 
 			// need to show loading at start
 			$this->data['show_loading'] = FALSE;
@@ -208,61 +221,65 @@ class Modify extends Admin_Controller {
 		}
 		else
 		{
+			echo '<pre>';
+			print_r($this->input->post());
+			die();
 			// input post data
 			// index indeces are not needed
 			/* *
 			Array
 			(
 			    [action] => modify
-			    [start_date] => 2019-05-17
-			    [cancel_date] => 2019-05-31
-			    [delivery_date] => 2019-05-29
-			    [ship_via] => UPS
-			    [fob] => China
-			    [terms] => Net 15
+			    [options] => Array
+			        (
+						[ref_po_no] =>
+			            [ref_so_no] =>
+			            [po_store_id] => 6854
+						[po_purpose] => Stock Replenishment
+						[show_vendor_price] => 1
+			            [ship_via] => UPS
+			            [fob] => China
+			            [terms] => Net 15
+			        )
+			    [start_date] => 2019-09-23
+			    [cancel_date] => 2019-09-30
+			    [delivery_date] => 2019-09-27
 				    [size_0] => 0
-				    [size_2] => 3
-				    [size_4] => 0
-				    [size_6] => 6
+				    [size_2] => 5
+				    [size_4] => 5
+				    [size_6] => 5
 				    [size_8] => 0
-				    [size_10] => 3
+				    [size_10] => 0
 				    [size_12] => 0
 				    [size_14] => 0
 				    [size_16] => 0
 				    [size_18] => 0
 				    [size_20] => 0
 				    [size_22] => 0
-				    [vendor_price-D9388L_REDBLAC1] => 109
-				    [subtotal] => 588
-				    [vendor_price-SH4114_GOLD1] => 49
+				    [vendor_price-D8587L_MULT1] => 65
+				    [subtotal] => 0
+				    [vendor_price-D8589L_MULT1] => 75
 			    [remarks] =>
 			    	[files] =>
 			)
 			// */
 
-			// set options
-			$options = $this->purchase_order_details->options;
+			// capture options array
+			$options = $this->input->post('options');
 
-			/***********
-			 * Process the input data
-			 */
-			// will need to update any changesto some options data
+			// will need to insert other items as options array
 			if ($this->input->post('start_date')) $options['start_date'] = $this->input->post('start_date');
 			if ($this->input->post('cancel_date')) $options['cancel_date'] = $this->input->post('cancel_date');
-			if ($this->input->post('ship_via')) $options['ship_via'] = $this->input->post('ship_via');
-			if ($this->input->post('fob')) $options['fob'] = $this->input->post('fob');
-			if ($this->input->post('terms')) $options['terms'] = $this->input->post('terms');
 
-			// check for changes ship to details
-			// get store details if any
-			//if ($this->session->admin_po_store_id) $options['po_store_id'] = $this->session->admin_po_store_id;
+			// set rev#
+
 
 			// update record
 			// contents of a PO
 			// indented and commented items are not to be touched
 				//$post_ary['des_code'] = 'BAX';
 				//$post_ary['po_number'] = $this->admin_user_details->po_number;
-				//$post_ary['rev'] = '0'; // set below
+			$post_ary['rev'] = $this->input->post('rev'); // set below
 				//$post_ary['des_id'] = $this->input->post('des_id');
 				//$post_ary['vendor_id'] = $this->session->admin_po_vendor_id;
 				//$post_ary['user_id'] = $this->admin_user_details->admin_id;
@@ -289,49 +306,7 @@ class Modify extends Admin_Controller {
 			// this is actually the $po_size_qty array plus the color name
 			// */
 
-			// grab $po_size_qty and iterate and set $po_items
-			$po_size_qty = json_decode($this->session->admin_po_mod_size_qty, TRUE);
-			foreach ($po_size_qty as $item => $size_qty)
-			{
-				unset($size_qty['color_name']);
-				unset($size_qty['vendor_price']);
-
-				if (array_sum($size_qty) != 0)
-				{
-					// get product details
-					$product = $this->product_details->initialize(
-						array(
-							'tbl_product.prod_no' => $item
-						)
-					);
-					if ( ! $product)
-					{
-						$exp = explode('_', $item);
-						$product = $this->product_details->initialize(
-							array(
-								'tbl_product.prod_no' => $exp[0],
-								'color_code' => $exp[1]
-							)
-						);
-					}
-
-					// set color name
-					if ($product)
-					{
-						$size_qty['color_name'] = $product->color_name;
-						$size_qty['vendor_price'] = $product->vendor_price ?: ($product->wholesale_price / 3);
-					}
-					else
-					{
-						$size_qty['color_name'] = $this->product_details->get_color_name($exp[1]);
-						$size_qty['vendor_price'] = @$size_qty['vendor_price'] ?: 0;
-					}
-
-					$po_items[$item] = $size_qty;
-				}
-			}
-
-			// set po items`
+			// set po items
 			$post_ary['items'] = json_encode($po_items);
 
 			// set revision #
@@ -346,6 +321,7 @@ class Modify extends Admin_Controller {
 
 			// once done, we now remove session items
 			unset($_SESSION['admin_po_mod_po_id']);
+			unset($_SESSION['admin_po_mod_items']);
 			unset($_SESSION['admin_po_mod_size_qty']);
 			unset($_SESSION['admin_po_mod_edit_vendor_price']);
 
@@ -456,6 +432,10 @@ class Modify extends Admin_Controller {
 			$this->data['page_level_plugins'].= '
 				<script src="'.$assets_url.'/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js" type="text/javascript"></script>
 			';
+			// jquery loading
+			$this->data['page_level_plugins'].= '
+			<script src="'.base_url().'assets/custom/jscript/jquery-loading/jquery.loading.min.js" type="text/javascript"></script>
+			';
 
 		/****************
 		 * page scripts inserted at <bottom>
@@ -486,7 +466,7 @@ class Modify extends Admin_Controller {
 			// handle summernote wysiwyg
 			// and click scripts
 			$this->data['page_level_scripts'].= '
-				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/admin-purchase_orders-components.js" type="text/javascript"></script>
+				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/admin-po-mod-components.js" type="text/javascript"></script>
 			';
 			// handle multiSelect
 			$this->data['page_level_scripts'].= '

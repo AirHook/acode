@@ -66,11 +66,11 @@
 								 */
 								?>
                                 <div class="form-group form-group-badge select-vendor-dropdown">
-                                    <label class="control-label col-md-3">
+                                    <label class="control-label col-md-4">
                                         <span class="badge custom-badge active pull-left step1"> 1 </span>
                                         <span class="badge-label"> Select Vendor </span>
                                     </label>
-                                    <div class="col-md-9">
+                                    <div class="col-md-8">
                                         <select class="bs-select form-control" name="vendor_id" data-live-search="true" data-size="5" data-show-subtext="true" data-vendor_id="<?php echo $this->session->admin_po_vendor_id; ?>">
                                             <?php if ( ! $this->session->admin_po_vendor_id) { ?>
                                             <option class="option-placeholder" value="">Select Vendor...</option>
@@ -81,7 +81,7 @@
                                                 foreach ($vendors as $vendor)
                                                 { ?>
 
-                                            <option value="<?php echo $vendor->vendor_id; ?>" data-subtext="<em><?php echo $vendor->designer; ?></em>" data-des_slug="<?php echo $vendor->url_structure; ?>" data-des_idg349="<?php echo $vendor->des_id; ?>" <?php echo set_select('vendor_id', $vendor->vendor_id, ($vendor->vendor_id === $this->session->admin_po_vendor_id)); ?>>
+                                            <option value="<?php echo $vendor->vendor_id; ?>" data-subtext="<em><?php echo $vendor->designer; ?></em>" data-des_slug="<?php echo $vendor->url_structure; ?>" data-des_id="<?php echo $vendor->des_id; ?>" <?php echo $vendor->vendor_id === $this->session->admin_po_vendor_id ? 'selected="selected"' : ''; ?>>
                                                 <?php echo ucwords(strtolower($vendor->vendor_name)).' ('.$vendor->vendor_code.')'; ?>
                                             </option>
 
@@ -94,26 +94,26 @@
                                     </div>
                                 </div>
 								<div class="form-group form-group-badge">
-                                    <label class="control-label col-md-3">
+                                    <label class="control-label col-md-4">
                                         <span class="badge custom-badge pull-left step2 <?php echo $this->session->admin_po_vendor_id ? 'active' : ''; ?>"> 2 </span>
-                                        <span class="badge-label"> Select Products </span>
+                                        <span class="badge-label"> Select / Search Products </span>
                                     </label>
-                                    <div class="col-md-9">
+                                    <div class="col-md-8">
                                         <cite class="help-block font-red" style="padding-top:3px;">
-                                            Use options below to ADD Products to Purchase Order
+                                            Select From Options below
                                         </cite>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <div class="col-md-12">
-                                        <a href="javascript:;" class="btn dark btn-md select-product-options thumbs-grid-view col-md-4">
+                                        <a href="javascript:;" class="btn dark btn-md select-product-options thumbs-grid-view col-md-4" style="<?php echo $this->session->admin_po_vendor_id ? 'background-color:#696969;' : ''; ?>">
                                             Select From Thumbnails
                                         </a>
                                         <a href="javascript:;" class="btn dark btn-md select-product-options search-multiple-form col-md-4">
-                                            Select Product By Style Search
+                                            Multi Style Search
                                         </a>
                                         <a href="javascript:;" data-toggle="modal" data-modal-id="modal-unlisted_style_no" class="btn dark btn-md select-product-options add-unlisted-style-no col-md-4">
-                                            Add Product Not In List
+                                            Add New Product
                                         </a>
                                     </div>
                                 </div>
@@ -450,12 +450,12 @@
                                             font-size: 13px;
                                             color: #fff;
                                         }
-                                        .img-a {
+                                        .img-a, .img-a_ {
                                             position: absolute;
                                             left: 0;
                                             top: 0;
                                         }
-                                        .img-b {
+                                        .img-b, .img-b_ {
                                             position: absolute;
                                             left: 0;
                                             top: 0;
@@ -487,7 +487,6 @@
         											$path_to_image = $product->media_path.$style_no.'_f3.jpg';
         											$img_front_new = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_f3.jpg';
         											$img_back_new = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_b3.jpg';
-        											$img_linesheet = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_linesheet.jpg';
                                                     $img_large = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_f.jpg';
 
         											// after the first batch, hide the images
@@ -520,16 +519,16 @@
 
         									<div class="thumb-tile image bg-blue-hoki <?php echo $classes; ?>" style="<?php echo $styles; ?>">
 
-        										<a href="<?php echo $img_large; ?>" class="fancybox">
+        										<a href="<?php echo $img_large; ?>" class="fancybox tooltips" data-original-title="Click to zoom">
 
         											<div class="corner"> </div>
         											<div class="check"> </div>
         											<div class="tile-body">
-        												<img class="img-b img-unveil" <?php echo $unveil ? 'data-src="'.($product->primary_img ? $img_back_new : $img_back_pre.$image).'"' : 'src="'.($product->primary_img ? $img_back_new : $img_back_pre.$image).'"'; ?> alt="">
-        												<img class="img-a img-unveil" <?php echo $unveil ? 'data-src="'.($product->primary_img ? $img_front_new : $img_front_pre.$image).'"' : 'src="'.($product->primary_img ? $img_front_new : $img_front_pre.$image).'"'; ?> alt="">
+        												<img class="img-b_ img-unveil" <?php echo $unveil ? 'data-src="'.($product->primary_img ? $img_back_new : $img_back_pre.$image).'"' : 'src="'.($product->primary_img ? $img_back_new : $img_back_pre.$image).'"'; ?> alt="">
+        												<img class="img-a_ img-unveil" <?php echo $unveil ? 'data-src="'.($product->primary_img ? $img_front_new : $img_front_pre.$image).'"' : 'src="'.($product->primary_img ? $img_front_new : $img_front_pre.$image).'"'; ?> alt="">
         												<noscript>
-        													<img class="img-b" src="<?php echo ($product->primary_img ? $img_back_new : $img_back_pre.$image); ?>" alt="">
-        													<img class="img-a" src="<?php echo ($product->primary_img ? $img_front_new : $img_front_pre.$image); ?>" alt="">
+        													<img class="img-b_" src="<?php echo ($product->primary_img ? $img_back_new : $img_back_pre.$image); ?>" alt="">
+        													<img class="img-a_" src="<?php echo ($product->primary_img ? $img_front_new : $img_front_pre.$image); ?>" alt="">
         												</noscript>
         											</div>
         											<div class="tile-object">
@@ -541,13 +540,13 @@
 
         										</a>
 
-        										<div class="" style="color:red;font-size:0.9rem;">
-        											<span> Add to Purchase Order: </span>
+        										<div class="" style="color:red;font-size:1rem;">
                                                     <!-- Plusbox
                                                     <i class="fa fa-plus package_items <?php echo $product->prod_no.'_'.$product->color_code; ?>" style="position:relative;left:5px;background:#ddd;line-height:normal;padding:1px 2px;" data-item="<?php echo $product->prod_no.'_'.$product->color_code; ?>"></i>
                                                     -->
                                                     <!-- Checkbox -->
-        											<input type="checkbox" class="package_items <?php echo $product->prod_no.'_'.$product->color_code; ?>" name="prod_no" value="<?php echo $product->prod_no.'_'.$product->color_code; ?>" style="float:right;" <?php echo $checkbox_check; ?> />
+        											<input type="checkbox" class="package_items <?php echo $product->prod_no.'_'.$product->color_code; ?>" name="prod_no" value="<?php echo $product->prod_no.'_'.$product->color_code; ?>" <?php echo $checkbox_check; ?> /> &nbsp;
+                                                    <span style="text-transform:uppercase;"> Add to Order </span>
         										</div>
 
         									</div>
@@ -612,7 +611,7 @@
                                         </div>
 
                                         <div style="position:relative;">
-                                        	Please enter one STYLE NUMBER per box for as many as 40 items only. <span style="color:red;font-style:italic;">(Sylte Numbers only please.)</span>
+                                        	Please enter one STYLE NUMBER per box or as many as 40 items. <span style="color:red;font-style:italic;">(Style Numbers only please.)</span>
                                         	<br /><br />
 
                                         	<!--bof form==========================================================================-->
@@ -944,10 +943,6 @@
                                                         <input type="text" name="options[ref_po_no]" value="" class="form-control" />
                                                         <span class="help-block small">[Optional]: <cite>Reference manual PO#.</cite></span>
                                                     </div>
-                                                    <div>
-                                                        <input type="text" name="options[ref_so_no]" value="" class="form-control" />
-                                                        <span class="help-block small">[Optional]: <cite>Reference SO#.</cite></span>
-                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -976,7 +971,7 @@
 
                                             <h5> SHIP TO
                                                 <span class="edit-reset-ship-to <?php echo $this->session->admin_po_vendor_id ?: 'display-none'; ?>">
-                                                    <a href="javascript:;" data-toggle="modal" data-modal-id="modal-edit_ship_to" class="small ship-to-popovers popovers" data-trigger="hover" data-placement="top" data-container="body" data-content="Click here to change 'Ship To' address. Reset to return to default." data-original-title="EDIT Shipt To" style="margin-left:10px;color:red;"> edit </a> <small>/</small> <a href="javascript:;" class="reset-ship-to small"> reset </a>
+                                                    <a href="#modal-edit_ship_to" data-toggle="modal" data-modal-id="modal-edit_ship_to" class="small ship-to-popovers popovers hide" data-trigger="hover" data-placement="top" data-container="body" data-content="Click here to change 'Ship To' address. Reset to return to default." data-original-title="EDIT Ship To" style="margin-left:10px;color:red;"> edit </a> <small class="hide">/</small> <a href="javascript:;" class="reset-ship-to small"> <em>reset to defualt</em> </a>
                                                 </span>
                                             </h5>
 
@@ -1016,67 +1011,125 @@
                                     </p>
                                 </div>
 
-                                <div class="col-sm-12 m-grid m-grid-responsive-sm po-summary-dates">
+                                <div class="col-sm-12 m-grid m-grid-responsive-sm po-summary-options1">
                                     <div class="m-grid-row">
                                         <div class="m-grid-col">
 
-                                            <h5> Start Date: </h5>
+                                            <h6> Reference SO# (if any): </h6>
                                             <div class="form-group row">
                                                 <div class="col-md-12">
-                                                    <input class="form-control form-control-inline date-picker" size="16" type="text"   value="" name="start_date" data-date-format="yyyy-mm-dd" data-date-start-date="+0d" />
-                                                    <span class="help-block small"> Click to Select date </span>
+                                                    <input class="form-control form-control-inline" size="16" type="text" value="" name="options[ref_so_no]" />
                                                 </div>
                                             </div>
 
                                         </div>
                                         <div class="m-grid-col">
 
-                                            <h5> Cancel Date: </h5>
+                                            <h6> Store Name (optional): </h6>
+                                            <div class="form-group row" data-object_data='{"<?php echo $this->security->get_csrf_token_name(); ?>":"<?php echo $this->security->get_csrf_hash(); ?>"}'>
+                                                <div class="col-md-12">
+                                                    <select class="bs-select form-control pull-right" name="options[po_store_id]" data-live-search="true" data-size="5" data-show-subtext="true" data-container="body">
+                                                        <option class="option-placeholder" value="">Select Store...</option>
+                                                        <?php
+                                                        if (@$stores)
+                                                        {
+                                                            foreach ($stores as $store)
+                                                            { ?>
+
+                                                        <option value="<?php echo $store->user_id; ?>" data-subtext="<em><?php echo $store->email; ?></em>" data-des_slug="<?php echo $store->reference_designer; ?>" <?php echo set_select('user_id', $store->user_id, ($store->user_id === $this->session->admin_po_store_id)); ?>>
+                                                            <?php echo ucwords(strtolower($store->store_name)); ?>
+                                                        </option>
+
+                                                                <?php
+                                                            }
+                                                        } ?>
+                                                    </select>
+                                                    <input class="form-control form-control-inline" size="16" type="hidden" value="<?php echo $this->session->admin_po_store_id; ?>" name="po_store_id" readonly />
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="m-grid-col">
+
+                                            <h6> For Stock Replenishment </h6>
+                                            <div class="form-group row">
+                                                <div class="col-md-12">
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon">
+                                                            <input type="checkbox" name="options[stock_replenishment]" value="1" />
+                                                            <span></span>
+                                                        </span>
+                                                        <input type="text" class="form-control" value="Stock Replenishment" readonly style="background-color:transparent;" />
+                                                    </div>
+                                                    <!-- /input-group -->
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12 m-grid m-grid-responsive-sm po-summary-options2">
+                                    <div class="m-grid-row">
+                                        <div class="m-grid-col">
+
+                                            <h6> Start Date: </h6>
+                                            <div class="form-group row">
+                                                <div class="col-md-12">
+                                                    <input class="form-control form-control-inline date-picker" size="16" type="text" value="" name="start_date" data-date-format="yyyy-mm-dd" data-date-start-date="+0d" />
+                                                    <span class="help-block small" style="font-size:0.8em;"> Click to Select date </span>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="m-grid-col">
+
+                                            <h6> Cancel Date: </h6>
                                             <div class="form-group row">
                                                 <div class="col-md-12">
                                                     <input class="form-control form-control-inline date-picker" size="16" type="text" value="" name="cancel_date" data-date-format="yyyy-mm-dd" data-date-start-date="+0d" />
-                                                    <span class="help-block small"> Click to Select date </span>
+                                                    <span class="help-block small" style="font-size:0.8em;"> Click to Select date </span>
                                                 </div>
                                             </div>
 
                                         </div>
                                         <div class="m-grid-col">
 
-                                            <h5> Delivery Date: </h5>
+                                            <h6> Delivery Date: </h6>
                                             <div class="form-group row">
                                                 <div class="col-md-12">
                                                     <input class="form-control form-control-inline date-picker" size="16" type="text" value="<?php echo set_value('delivery_date'); ?>" name="delivery_date" data-date-format="yyyy-mm-dd" data-date-start-date="+0d" />
-                                                    <span class="help-block small"> Click to Select date </span>
+                                                    <span class="help-block small" style="font-size:0.8em;"> Click to Select date </span>
                                                 </div>
                                             </div>
 
                                         </div>
                                         <div class="m-grid-col">
 
-                                            <h5> Ship Via: </h5>
+                                            <h6> Ship Via: </h6>
                                             <div class="form-group row">
                                                 <div class="col-md-12">
-                                                    <input class="form-control form-control-inline" size="16" type="text" value="" name="ship_via" />
+                                                    <input class="form-control form-control-inline" size="16" type="text" value="" name="options[ship_via]" />
                                                 </div>
                                             </div>
 
                                         </div>
                                         <div class="m-grid-col">
 
-                                            <h5> F.O.B: </h5>
+                                            <h6> F.O.B: </h6>
                                             <div class="form-group row">
                                                 <div class="col-md-12">
-                                                    <input class="form-control form-control-inline" size="16" type="text" value="" name="fob" />
+                                                    <input class="form-control form-control-inline" size="16" type="text" value="" name="options[fob]" />
                                                 </div>
                                             </div>
 
                                         </div>
                                         <div class="m-grid-col">
 
-                                            <h5> Terms: </h5>
+                                            <h6> Terms: </h6>
                                             <div class="form-group row">
                                                 <div class="col-md-12">
-                                                    <input class="form-control form-control-inline" size="16" type="text" value="" name="terms" />
+                                                    <input class="form-control form-control-inline" size="16" type="text" value="" name="options[terms]" />
                                                 </div>
                                             </div>
 
@@ -1121,22 +1174,22 @@
                                                 }
                                             </style>
 
-                                            <table class="table table-striped table-hover table-light" data-object_data='{"<?php echo $this->security->get_csrf_token_name(); ?>":"<?php echo $this->security->get_csrf_hash(); ?>"}'>
+                                            <table class="table table-striped table-hover table-light " data-object_data='{"<?php echo $this->security->get_csrf_token_name(); ?>":"<?php echo $this->security->get_csrf_hash(); ?>"}'>
                                                 <thead>
                                                     <tr>
                                                         <th style="vertical-align:top;"> Items (<span class="items_count"><?php echo $items_count; ?></span>) </th>
                                                         <th style="vertical-align:top;"> Size and Qty </th>
                                                         <th style="vertical-align:top;"> </th>
-                                                        <th style="vertical-align:top;" class="text-right">
-                                                            Vendor<br />Price <br />
+                                                        <th style="vertical-align:top;min-width:80px;" class="text-right">
+                                                            Unit Price <br />
                                                         </th>
-                                                        <th style="vertical-align:top;" class="text-right"> Subtotal </th>
+                                                        <th style="vertical-align:top;min-width:80px;" class="text-right"> Subtotal </th>
                                                     </tr>
                                                     <tr>
                                                         <th colspan="1"></th>
                                                         <th colspan="3" class="text-right">
-                                                            <cite class="small" style="font-weight:100;">show/edit vendor price</cite>
-                                                            <input type="checkbox" class="show_vendor_price" name="show_vendor_price" value="1" <?php echo $this->session->admin_po_edit_vendor_price ? 'checked' : ''; ?> />
+                                                            <cite class="small" style="font-weight:100;">show/edit unit price</cite>
+                                                            <input type="checkbox" class="show_vendor_price" name="options[show_vendor_price]" value="1" <?php echo $this->session->admin_po_edit_vendor_price ? 'checked' : ''; ?> />
                                                         </th>
                                                         <th></th>
                                                     </tr>
@@ -1164,8 +1217,8 @@
                                                             $prod_no = $exp[0];
                                                             $color_code = $exp[1];
                                                             $vendor_price =
-                                                                isset($po_items[$item]['vendor_price'])
-                                                                ? $po_items[$item]['vendor_price']
+                                                                isset($options['vendor_price'])
+                                                                ? $options['vendor_price']
                                                                 : (@$product->vendor_price ?: 0)
                                                             ;
                                                             $temp_size_mode = 1; // default size mode
@@ -1232,9 +1285,10 @@
                                                                     : 0
                                                                 ;
                                                                 $this_size_qty += $size_qty;
+                                                                if ($s == 'XL1' OR $s == 'XL2') continue;
                                                                 ?>
 
-                                                            <div class="sizes" style="display:inline-block;">
+                                                            <div class="sizes" style="display:inline-block;" data-size_qty="<?php echo $this_size_qty; ?>">
                                                                 <?php echo $s; ?> <br />
                                                                 <select name="<?php echo $size_label; ?>" class="size-select" style="border:1px solid #<?php echo $size_qty > 0 ? '000' : 'ccc'; ?>;" data-page="create" data-prod_no="<?php echo $item; ?>" data-vendor_price="<?php echo $vendor_price; ?>">
                                                                     <?php
@@ -1272,19 +1326,16 @@
                                                         ?>
                                                         <td class="unit-vendor-price-wrapper" data-item="<?php echo $item; ?>" data-prod_no="<?php echo $prod_no; ?>" data-vendor_price="<?php echo $this->session->admin_po_edit_vendor_price ?: 0; ?>">
                                                             <div class="edit_off" style="<?php echo $this->session->admin_po_edit_vendor_price === TRUE ? 'display:none;' : ''; ?>">
+                                                                <!-- Always zero -->
                                                                 <div class="zero-unit-vendor-price <?php echo $prod_no; ?> pull-right">
-                                                                    <?php
-                                                                    $v_price = 0;
-                                                                    echo '$ '.number_format($v_price, 2);
-                                                                    ?>
+                                                                    $ 0.00
                                                                 </div>
                                                             </div>
                                                             <div class="edit_on" style="<?php echo $this->session->admin_po_edit_vendor_price === TRUE ? '' : 'display:none;'; ?>">
                                                                 <div class="clearfix">
                                                                     <div class="unit-vendor-price <?php echo $prod_no; ?> pull-right" style="height:27px;width:40px;border:1px solid #ccc;padding-top:4px;padding-right:4px;text-align:right;">
                                                                         <?php
-                                                                        $v_price = @$options['vendor_price'] ?: $vendor_price;
-                                                                        echo $v_price;
+                                                                        echo $vendor_price;
                                                                         ?>
                                                                     </div>
                                                                 </div>
@@ -1303,7 +1354,7 @@
                                                             <?php
                                                             $this_size_total =
                                                                 $this->session->admin_po_edit_vendor_price === TRUE
-                                                                ? $this_size_qty * $v_price
+                                                                ? $this_size_qty * $vendor_price
                                                                 : 0
                                                             ;
                                                             ?>
@@ -1381,17 +1432,16 @@
                                 </div>
 
                                 <div class="col-sm-12 no-item-notification <?php echo empty($po_items) ? '' : 'display-none'; ?>">
-                                    <h4 class="text-center" style="margin:85px auto 150px;"> There are no items in your Shop Bag </h4>
+                                    <h4 class="text-center" style="margin:85px auto 150px;"> There are no items in your purchase order </h4>
                                 </div>
 
                                 </form>
                                 <!-- END FORM =======================================================-->
 
-                                <div class="col-sm-12">
+                                <div class="col-sm-12 steps">
 
                                     <hr />
-
-                                    <div class="form-group form-group-badge">
+                                    <div class="form-group form-group-badge clearfix" style="margin-bottom:0px;">
                                         <label class="control-label col-md-5">
                                             <span class="badge custom-badge pull-left <?php echo @$overall_qty ? 'active' : ''; ?> step4"> 4 </span>
                                             <span class="badge-label"> Create Purchase Order </span>
@@ -1402,6 +1452,22 @@
                                             </cite>
                                         </div>
                                     </div>
+
+                                    <hr style="margin-top:0px;" />
+                                    <a href="<?php echo site_url('admin/purchase_orders/reset'); ?>" style="color:#333;">
+                                        <div class="form-group form-group-badge form-group-badge-step5 clearfix">
+                                            <label class="control-label col-md-5" style="cursor:pointer;">
+                                                <span class="badge custom-badge pull-left step5"> 5 </span>
+                                                <span class="badge-label"> Clear Purchase Order </span>
+                                            </label>
+                                            <div class="col-md-7">
+                                                <cite class="help-block font-red" style="position:relative;top:-4px;">
+                                                    Purchase Order will be reset and all items cleared.
+                                                </cite>
+                                            </div>
+                                        </div>
+                                    </a>
+
                                 </div>
 
                             </div>
@@ -1512,32 +1578,6 @@
                                         <button type="button" class="btn dark edit_vendor_prices" data-prod_no="<?php echo @$item; ?>">Apply changes</button>
                                     </div>
 
-                                </div>
-                                <!-- /.modal-content -->
-                            </div>
-                            <!-- /.modal-dialog -->
-                        </div>
-                        <!-- /.modal -->
-
-                        <!-- ITEM SELECT SIZE AND QTY -->
-                        <div class="modal fade" id="modal-size_qty" tabindex="-1" role="basic" aria-hidden="true" data-backdrop="static" data-keyboard="false">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <button type="button" class="close hide" data-dismiss="modal" aria-hidden="true"></button>
-                                        <h4 class="modal-title"> Select Item's Size and Quantity </h4>
-                                    </div>
-                                    <div class="modal-body" data-object_data='{"<?php echo $this->security->get_csrf_token_name(); ?>":"<?php echo $this->security->get_csrf_hash(); ?>"}'>
-
-                                        <div class="form modal-body-cart_basket_wrapper margin-bottom-30">
-                                            <?php // item contents go in here... ?>
-                                        </div>
-
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn dark btn-outline modal-size_qty_cancel" data-dismiss="modal">Cancel</button>
-                                        <button type="submit" class="btn dark hide"> Submit </button>
-                                    </div>
                                 </div>
                                 <!-- /.modal-content -->
                             </div>

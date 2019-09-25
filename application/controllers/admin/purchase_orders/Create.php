@@ -32,7 +32,8 @@ class Create extends Admin_Controller
 		// load pertinent library/model/helpers
 		$this->load->library('form_validation');
 		$this->load->library('users/vendor_users_list');
-			$this->load->library('users/wholesale_users_list');
+		$this->load->library('users/wholesale_users_list');
+		$this->load->library('users/wholesale_user_details');
 		$this->load->library('categories/categories_tree');
 		$this->load->library('products/product_details');
 		$this->load->library('products/size_names');
@@ -40,6 +41,8 @@ class Create extends Admin_Controller
 		$this->load->library('purchase_orders/purchase_orders_list');
 
 		// set validation rules
+		$this->form_validation->set_rules('start_date', 'Deliver Data', 'trim|required');
+		$this->form_validation->set_rules('cancel_date', 'Deliver Data', 'trim|required');
 		$this->form_validation->set_rules('delivery_date', 'Deliver Data', 'trim|required');
 
 		if ($this->form_validation->run() == FALSE)
@@ -76,7 +79,11 @@ class Create extends Admin_Controller
 			// step 1, get list for select vendor
 			$this->data['vendors'] = $this->vendor_users_list->select();
 
-			// get the designer details
+			// designer details iteration
+			// if no designer session present, company details defaults to webspace details
+			// when session is present, get designer details and use it for the company details
+			// populating both company info and ship to info
+			// this also serves as reference in getting category tree information
 			if ($this->session->admin_po_des_url_structure)
 			{
 				$this->data['designer_details'] = $this->designer_details->initialize(
@@ -112,6 +119,33 @@ class Create extends Admin_Controller
 				);
 				$this->data['row_count'] = $this->categories_tree->row_count;
 				$this->data['max_level'] = $this->categories_tree->max_category_level;
+			}
+
+			// stores list and store details iteration
+			// in the beginning, its simply get all list
+			// on refresh of existing session, check for admin_po_store_id session
+			// and admin_po_des_url_structure session
+			// stores list will now be based on reference designer session
+			// and store details populating ship to is based on store id session
+			if ($this->session->admin_po_des_url_structure)
+			{
+				$this->data['stores'] = $this->wholesale_users_list->select(
+					array(
+						'reference_designer' => $this->session->admin_po_des_url_structure
+					)
+				);
+			}
+			else
+			{
+				$this->data['stores'] = $this->wholesale_users_list->select();
+			}
+			if ($this->session->admin_po_store_id)
+			{
+				$this->data['store_details'] = $this->wholesale_user_details->initialize(
+					array(
+						'user_id' => $this->session->admin_po_store_id
+					)
+				);
 			}
 
 			// set author info for the summary view
@@ -191,7 +225,7 @@ class Create extends Admin_Controller
 			$this->data['search_string'] = FALSE;
 
 			$this->data['file'] = 'po_create';
-			$this->data['page_title'] = 'Purchase Order';
+			$this->data['page_title'] = 'Create Purchase Order';
 			$this->data['page_description'] = 'Purcahse Order Create';
 
 			// load views...
@@ -206,34 +240,33 @@ class Create extends Admin_Controller
 			/* *
 			Array
 			(
-			    [po_number] => 24591
-			    [po_date] => 2019-05-09
+			    [po_number] => 000007
+			    [po_date] => 2019-09-19
 			    [des_id] => 5
-			    [delivery_date] => 2019-05-30
-				[start_date] => 5
-				[cancel_date] => 5
-				[ship_via] => 5
-				[fob] => 5
-				[terms] => 5
+			    [options] => Array
+			        (
+			            [ref_po_no] => 98765
+			            [ref_so_no] => 123456
+			            [po_store_id] => Rey Store
+			            [po_purpose] => Stock Replenishment
+						[show_vendor_price] => 1
+						[ship_via] => UPS
+			            [fob] => China
+			            [terms] => Net 15
+			        )
+			    [start_date] => 2019-09-19
+			    [cancel_date] => 2019-09-30
+			    [delivery_date] => 2019-09-28
+			    [remarks] =>
 			)
 			// */
 
+			// capture options array
+			$options = $this->input->post('options');
+
 			// will need to insert other items as options array
-			$options = array();
 			if ($this->input->post('start_date')) $options['start_date'] = $this->input->post('start_date');
 			if ($this->input->post('cancel_date')) $options['cancel_date'] = $this->input->post('cancel_date');
-			if ($this->input->post('ship_via')) $options['ship_via'] = $this->input->post('ship_via');
-			if ($this->input->post('fob')) $options['fob'] = $this->input->post('fob');
-			if ($this->input->post('terms')) $options['terms'] = $this->input->post('terms');
-
-			foreach ($this->input->post('options') as $key => $val)
-			{
-				$options[$key] = $val;
-			}
-
-			// check for ship to details
-			// get store details if any
-			if ($this->session->admin_po_store_id) $options['po_store_id'] = $this->session->admin_po_store_id;
 
 			// initialize designer details
 			$this->designer_details->initialize(array('designer.des_id'=>$this->input->post('des_id')));
@@ -259,7 +292,7 @@ class Create extends Admin_Controller
 			$post_ary['author'] = $this->admin_user_details->admin_id; // author
 			$post_ary['c'] = '1'; // 1-admin,2-sales
 			$post_ary['status'] = '0'; // set to pending approval
-			$post_ary['options'] = json_encode($options);
+			$post_ary['options'] = json_encode(array_filter($options)); // remove empty options
 			$post_ary['remarks'] = $this->input->post('remarks');
 
 			// set items in the following format
@@ -404,6 +437,10 @@ class Create extends Admin_Controller
 				<script src="'.$assets_url.'/assets/global/plugins/fancybox/source/jquery.fancybox.pack.js" type="text/javascript"></script>
 				<script src="'.$assets_url.'/assets/global/plugins/fancybox/source/helpers/jquery.fancybox-buttons.js" type="text/javascript"></script>
 				<script src="'.$assets_url.'/assets/global/plugins/fancybox/source/helpers/jquery.fancybox-media.js" type="text/javascript"></script>
+			';
+			// jquery loading
+			$this->data['page_level_plugins'].= '
+			<script src="'.base_url().'assets/custom/jscript/jquery-loading/jquery.loading.min.js" type="text/javascript"></script>
 			';
 
 		/****************
