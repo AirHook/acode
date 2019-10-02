@@ -16,9 +16,6 @@
 		<script src="<?php echo base_url(); ?>assets/custom/js/metronic/pages/scripts/components-search_typeahead<?php echo $this->uri->segment(1) == 'admin' ? '_admin' : ''; ?>.js" type="text/javascript"></script>
         <script src="<?php echo base_url(); ?>assets/custom/jscript/jsbarcode/jsbarcode.all.min.js" type="text/javascript"></script>
         <script src="<?php echo base_url('assets/metronic'); ?>/assets/global/plugins/morris/morris.min.js" type="text/javascript"></script>
-        <!-- // handle datatable -->
-        <script src="<?php echo base_url(); ?>assets/custom/js/metronic/pages/scripts/barcode-components-script.js" type="text/javascript"></script>
-        <script src="<?php echo base_url(); ?>assets/custom/js/metronic/pages/scripts/barcode_scan-components-script.js" type="text/javascript"></script>
         <!-- END GLOBAL PLUGINS -->
         <!-- BEGIN PAGE LEVEL PLUGINS -->
         <?php echo @$page_level_plugins ?: ''; ?>

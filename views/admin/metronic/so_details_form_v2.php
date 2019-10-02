@@ -241,6 +241,7 @@
                                                                         <p style="margin:0px;">
                                                                             <span style="color:#999;">Style#: <?php echo $item; ?></span><br />
                                                                             Color: &nbsp; <?php echo $product->color_name; ?>
+																			<?php echo @$product->designer_name ? '<br /><cite class="small">'.$product->designer_name.'</cite>' : ''; ?>
 																			<?php echo @$product->category_names ? '<br /><cite class="small">('.end($product->category_names).')</cite>' : ''; ?>
                                                                         </p>
                                                                     </div>

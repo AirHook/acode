@@ -31,7 +31,7 @@ class Get_item extends Admin_Controller {
 		{
 			// nothing more to do...
 			echo '';
-			//exit;
+			exit;
 		}
 
 		// grab the post variable
@@ -132,7 +132,7 @@ class Get_item extends Admin_Controller {
 			//;
 			//$this_size_qty += $qty;
 
-			if ($s != 'XXL' && $s != 'XL1' && $s != 'XL2' && $s != '22')
+			if ($s != 'XL1' && $s != 'XL2')
 			{
 				$html.= '<div style="display:inline-block;font-size:0.6em;">size '
 					.$s

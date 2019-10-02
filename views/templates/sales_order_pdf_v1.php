@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>Sales Order PDF</title>
+	<title>Sales Order Confirmation Email</title>
 
 	<?php
 	/***********
@@ -63,10 +63,18 @@
 
 	<br>
 
-	<strong style="font-size:12px;"> SALES ORDER#<?php echo $so_number; ?> <?php echo @$so_details->rev ? '<small><b>rev</b></small>'.$so_details->rev : ''; ?> </strong><br />
+	<strong style="font-size:12px;"> SALES ORDER INVOICE#<?php echo $so_number; ?> <?php echo @$so_details->rev ? '<small><b>rev</b></small>'.$so_details->rev : ''; ?> </strong><br />
 	<small> Date: <?php echo @$so_details->so_date ?: $so_date; ?> </small>
 
 	<br><br>
+
+	<?php echo $company_name; ?> <br />
+	<?php echo $company_address1; ?><br />
+	<?php echo $company_address2 ? $company_address2.'<br />' : ''; ?>
+	<?php echo $company_city.', '.$company_state.' '.$company_zipcode; ?><br />
+	<?php echo $company_country; ?><br />
+	<?php echo $company_telephone; ?>
+
 	<br><br>
 
 	<table cellpadding="0" cellspacing="0" style="width:100%;vertical-align:top;">
@@ -87,7 +95,7 @@
 			</td>
 			<td width="50%">
 
-				<strong> SHIPPING ADDRESS </strong>
+				<strong> SHIPING ADDRESS </strong>
 
 				<br /><br />
 
@@ -105,35 +113,35 @@
 
 	<br><br>
 
-	<span style="font-size:0.8em;">Sales Person:</span> &nbsp;<?php echo @$so_details->author == '1' ? 'IN-HOUSE' : @$author->fname.' '.@$author->lname.' &nbsp;('.@$author->email.')'; ?>
+	<span style="font-size:0.8em;">Sales Person:</span> &nbsp;<?php echo $this->session->admin_loggedin ? 'IN-HOUSE' : @$author->fname.' '.@$author->lname.' &nbsp;('.@$author->email.')'; ?>
 
 	<br><br>
 
 	<table cellpadding="0" cellspacing="0" style="width:100%;">
 		<tr>
-			<td width="25%" style="font-size:0.8em;"> Ref Check Out Order# </td>
-			<td colspan="3"></td>
+			<td width="33%" style="font-size:0.8em;"> Shipping Method </td>
+			<td width="33%" style="font-size:0.8em;"> Shipping Terms </td>
+			<td width="33%" style="font-size:0.8em;"> Payment Terms </td>
 		</tr>
 		<tr>
-			<td style="border:1px solid #ccc;height:24px;text-align:center;"> <?php echo @$so_options['ref_checkout_no']; ?>
-			</td>
-			<td colspan="3"></td>
-		</tr>
-		<tr><td style="height:10px;"></td></tr>
-		<tr>
-			<td width="25%" style="font-size:0.8em;"> Ship By Date </td>
-			<td width="25%" style="font-size:0.8em;"> Shipping Method </td>
-			<td width="25%" style="font-size:0.8em;"> Shipping Terms </td>
-			<td width="25%" style="font-size:0.8em;"> Payment Terms </td>
-		</tr>
-		<tr>
-			<td style="border:1px solid #ccc;height:24px;text-align:center;"> <?php echo $so_details->delivery_date; ?>
-			</td>
 			<td style="border:1px solid #ccc;height:24px;text-align:center;"> <?php echo @$so_options['ship_via']; ?>
 			</td>
 			<td style="border:1px solid #ccc;height:24px;text-align:center;"> <?php echo @$so_options['fob']; ?>
 			</td>
 			<td style="border:1px solid #ccc;height:24px;text-align:center;"> <?php echo @$so_options['terms']; ?>
+			</td>
+		</tr>
+		<tr>
+			<td width="33%" style="font-size:0.8em;"> Purchase Order Reference </td>
+			<td width="33%" style="font-size:0.8em;"> Order Date </td>
+			<td width="33%" style="font-size:0.8em;"> Our Order </td>
+		</tr>
+		<tr>
+			<td style="border:1px solid #ccc;height:24px;text-align:center;"> <?php echo @$so_options['reference_po']; ?>
+			</td>
+			<td style="border:1px solid #ccc;height:24px;text-align:center;"> <?php echo @$so_options['reference_po_date']; ?>
+			</td>
+			<td style="border:1px solid #ccc;height:24px;text-align:center;"> <?php echo @$so_options['our_order']; ?>
 			</td>
 		</tr>
 	</table>
@@ -147,35 +155,28 @@
 	<table cellpadding="0" cellspacing="0" style="width:100%;vertical-align:top;">
 
 		<tr>
-			<th colspan="3" align="center" style="border-right:1px solid #ccc;"> Quantities </th>
-			<th colspan="6"></th>
-		</tr>
-		<tr>
-			<th style="8%" align="left"> Req'd </th>
-			<th style="8%" align="left"> Ship'd </th>
-			<th style="8%" align="left" style="border-right:1px solid #ccc;"> B.O. </th>
-			<td width="18%" style="font-weight:bold;padding-left:10px;"> Items </td>
+			<th style="8%" align="left"> Qty<br />Req'd </th>
+			<th style="8%" align="left"> Qty<br />Ship'd </th>
+			<th style="8%" align="left"> B.O. </th>
+			<td width="18%" style="font-weight:bold;"> Items </td>
 			<td width="11%" style="font-weight:bold;"> Description </td>
-			<td width="11%"></td>
+			<td width="23%"></td>
 			<td width="12%" align="right" style="font-weight:bold;"> Unit Price </td>
-			<td width="12%" align="right" style="font-weight:bold;"> Disc </td>
 			<td width="12%" align="right" style="font-weight:bold;"> Extended </td>
 		</tr>
 
-		<tr><td colspan="9" style="height:10px;border-bottom:1px solid #ccc;"> <td></tr>
-		<tr><td colspan="9" style="height:10px;"> <td></tr>
+		<tr><td colspan="8" style="height:10px;border-bottom:1px solid #ccc;"> <td></tr>
+		<tr><td colspan="8" style="height:10px;"> <td></tr>
 
 			<?php
 			if ( ! @empty($so_items))
 			{
 				$overall_qty = 0;
 				$overall_total = 0;
+				//$this_size_qty = 0;
 				$i = 1;
 				foreach ($so_items as $item => $size_qty)
 				{
-					// just a catch all error suppression
-					if ( ! $item) continue;
-
 					// get product details
 					$exp = explode('_', $item);
 					$product = $this->product_details->initialize(
@@ -185,79 +186,29 @@
 						)
 					);
 
+					// this is like a catch all error...
+					//if ( ! $product) continue;
+
 					// set image paths
-					$style_no = $item;
-					$prod_no = $exp[0];
-					$color_code = $exp[1];
-					$temp_size_mode = 1; // default size mode
+					// the new way relating records with media library
+					$style_no = $product->prod_no.'_'.$product->color_code;
+					$img_front_new = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_f3.jpg';
 
-					// price can be...
-					// onsale price (retail_sale_price or wholesale_price_clearance)
-					// regular price (retail_price or wholesale_price)
-					if (@$product->custom_order == '3')
-					{
-						$price =
-							$this->session->admin_so_user_cat == 'ws'
-							? (@$product->wholesale_price_clearance ?: 0)
-							: (@$product->retail_sale_price ?: 0)
-						;
-					}
-					else
-					{
-						$price =
-							$this->session->admin_so_user_cat == 'ws'
-							? (@$product->wholesale_price ?: 0)
-							: (@$product->retail_price ?: 0)
-						;
-					}
-
-					if ($product)
-					{
-						$img_front_new = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_f3.jpg';
-						$size_mode = $product->size_mode;
-						$color_name = $product->color_name;
-
-						// take any existing product's size mode
-						$temp_size_mode = $product->size_mode;
-					}
-					else
-					{
-						$img_front_new = $this->config->item('PROD_IMG_URL').'images/instylelnylogo_3.jpg';
-						$size_mode = $this->designer_details->webspace_options['size_mode'] ?: $temp_size_mode;
-						$color_name = $this->product_details->get_color_name($color_code);
-					}
-
-					// get size names
+					// and other items
+					$color_name = $product->color_name;
+					$size_mode = $product->size_mode;
+					$vendor_price = @$size_qty['vendor_price'] ?: $product->vendor_price;
 					$size_names = $this->size_names->get_size_names($size_mode);
+
+					$this_size_qty = 0;
 					foreach ($size_qty as $size_label => $qty)
 					{
-						$this_size_qty = $qty;
+						$this_size_qty += $qty;
 						$s = $size_names[$size_label];
 
-						// calculate stocks
-						// and check for on sale items
-						if ($product)
-						{
-							$stock_status =
-								$qty <= $product->$size_label
-								? 'instock'
-								: 'preorder'
-							;
-							$onsale =
-								$product->custom_order == '3'
-								? 'onsale'
-								: ''
-							;
-						}
-						else
-						{
-							$stock_status = 'preorder'; // item not in product list
-							$onsale = '';
-						}
-
 						if (
-							isset($size_qty[$size_label])
-							&& $s != 'XL1' && $s != 'XL2'
+							isset($so_items[$item][$size_label])
+							&& $s != 'XXL' && $s != 'XL1' && $s != 'XL2' && $s != '22'
 						)
 						{
 							?>
@@ -270,17 +221,16 @@
 			 */
 			?>
 			<td style="vertical-align:top;"><?php echo $qty; ?></td>
+			<td style="vertical-align:top;"><?php echo $qty; ?></td>
 			<td style="vertical-align:top;">0</td>
-			<td style="vertical-align:top;border-right:1px solid #ccc;"><?php echo $qty; ?></td>
 
 			<?php
 			/**********
 			 * Item Number
 			 */
 			?>
-			<td style="vertical-align:top;padding-left:10px;">
-				<?php echo $prod_no; ?><br />
-				<?php echo $color_name; ?><br />
+			<td style="vertical-align:top;">
+				<?php echo $item; ?><br />
 				<?php echo 'Size '.$s; ?>
 			</td>
 
@@ -302,7 +252,7 @@
 				<strong> <?php echo $product->prod_no; ?> </strong> <br />
 				<span style="color:#999;">Style#: <?php echo $item; ?></span><br />
 				Color: &nbsp; <?php echo $color_name; ?>
-				<?php echo @$product->category_names ? ' <cite class="small">('.end($product->category_names).')</cite>' : ''; ?>
+				<?php echo @$product->category_names ? '<br /><cite class="small">('.end($product->category_names).')</cite>' : ''; ?>
 			</td>
 
 			<?php
@@ -311,20 +261,7 @@
 			 */
 			?>
 			<td align="right">
-				$ <?php echo number_format($price, 2); ?>
-			</td>
-
-			<?php
-			/**********
-			 * Discount
-			 */
-			?>
-			<td align="right">
-				<?php
-				$disc = @$size_qty['discount'] ?: 0;
-				if ($disc == '0') echo '-';
-				else echo number_format($disc, 2);
-				?>
+				$ <?php echo number_format(@$product->wholesale_price, 2); ?>
 			</td>
 
 			<?php
@@ -334,7 +271,7 @@
 			?>
 			<td align="right">
 				<?php
-				$this_size_total = $this_size_qty * ($price - $disc);
+				$this_size_total = @$this_size_qty * @$product->wholesale_price;
 				?>
 				$ <?php echo number_format($this_size_total, 2); ?>
 			</td>
@@ -343,20 +280,19 @@
 
 							<?php
 						}
-
-						$overall_qty += $this_size_qty;
-						$overall_total += $this_size_total;
 					}
 
 					$i++;
+					$overall_qty += $this_size_qty;
+					$overall_total += $this_size_total;
 				}
 			} ?>
 
-		<tr><td colspan="9" style="height:10px;border-bottom:1px solid #ccc;"> <td></tr>
-		<tr><td colspan="9" style="height:20px;"> <td></tr>
+		<tr><td colspan="8" style="height:10px;border-bottom:1px solid #ccc;"> <td></tr>
+		<tr><td colspan="8" style="height:20px;"> <td></tr>
 
 		<tr>
-			<td colspan="6" rowspan="4" align="left">
+			<td colspan="5" rowspan="4" align="left">
 				<?php
 				if(@$so_details->remarks)
 				{

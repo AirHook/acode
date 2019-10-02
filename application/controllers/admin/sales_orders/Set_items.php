@@ -27,18 +27,6 @@ class Set_items extends MY_Controller {
 	{
 		$this->output->enable_profiler(FALSE);
 
-		if ( ! $this->input->post('prod_no'))
-		{
-			// nothing more to do...
-			echo 'false';
-		}
-
-		// grab the post variables
-		$item = $this->input->post('prod_no');
-		$size = $this->input->post('size');
-		$qty = $this->input->post('qty');
-		$page = $this->input->post('page');
-
 		// set the items array
 		$items_array =
 			$this->session->admin_so_items
@@ -46,57 +34,23 @@ class Set_items extends MY_Controller {
 			: array()
 		;
 
-		// process the item
-		if ($qty == 0)
-		{
-			unset($items_array[$item][$size]);
-		}
-		else
-		{
-			$items_array[$item][$size] = $qty;
-		}
-
-		// sort array
-		ksort($items_array[$item]);
-		ksort($items_array);
-
-		// reset session value for items array
-		if ($page == 'modify')
-		{
-			$this->session->set_userdata('admin_so_mod_items', json_encode($items_array));
-		}
-		else
-		{
-			$this->session->set_userdata('admin_so_items', json_encode($items_array));
-		}
-
 		// set the cart items
 		// load pertinent library/model/helpers
 		$this->load->library('products/product_details');
 		$this->load->library('products/size_names');
 
-		// get product details
-		$exp = explode('_', $item);
-		$this_product = $this->product_details->initialize(
-			array(
-				'tbl_product.prod_no' => $exp[0],
-				'color_code' => $exp[1]
-			)
-		);
-
-		// set image paths
-		// the new way relating records with media library
-		$style_no = $item;
-		$prod_no = $exp[0];
-		$color_code = $exp[1];
-
 		// iterate through the $items_array and generate HTML
 		$html = '';
-		$iodd = 0;
 		$overall_qty = 0;
+		$overall_total = 0;
+		$i = 1;
 		foreach ($items_array as $item => $size_qty)
 		{
+			// just a catch all error suppression
+			if ( ! $item) continue;
+
 			// get product details
+			// NOTE: some items may not be in product list
 			$exp = explode('_', $item);
 			$product = $this->product_details->initialize(
 				array(
@@ -112,11 +66,32 @@ class Set_items extends MY_Controller {
 			$color_code = $exp[1];
 			$temp_size_mode = 1; // default size mode
 
+			// price can be...
+			// onsale price (retail_sale_price or wholesale_price_clearance)
+			// regular price (retail_price or wholesale_price)
+			if (@$product->custom_order == '3')
+			{
+				$price =
+					$this->session->admin_so_user_cat == 'ws'
+					? (@$product->wholesale_price_clearance ?: 0)
+					: (@$product->retail_sale_price ?: 0)
+				;
+			}
+			else
+			{
+				$price =
+					$this->session->admin_so_user_cat == 'ws'
+					? (@$product->wholesale_price ?: 0)
+					: (@$product->retail_price ?: 0)
+				;
+			}
+
 			if ($product)
 			{
 				$image_new = $product->media_path.$style_no.'_f3.jpg';
 				$img_front_new = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_f3.jpg';
 				$img_linesheet = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_linesheet.jpg';
+				$img_large = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_f.jpg';
 				$size_mode = $product->size_mode;
 				$color_name = $product->color_name;
 
@@ -128,6 +103,7 @@ class Set_items extends MY_Controller {
 				$image_new = 'images/instylelnylogo_3.jpg';
 				$img_front_new = $this->config->item('PROD_IMG_URL').'images/instylelnylogo_3.jpg';
 				$img_linesheet = '';
+				$img_large = '';
 				$size_mode = @$this->designer_details->webspace_options['size_mode'] ?: $temp_size_mode;
 				$color_name = $this->product_details->get_color_name($color_code);
 			}
@@ -135,77 +111,154 @@ class Set_items extends MY_Controller {
 			// set some data
 			$size_names = $this->size_names->get_size_names($size_mode);
 
-			$this_size_qty = 0;
 			foreach ($size_qty as $size_label => $qty)
 			{
-				$this_size_qty += $qty;
+				if ($size_label == 'discount') continue;
+
+				$this_size_qty = $qty;
 				$s = $size_names[$size_label];
-				$odd_class = $iodd&1 ? '' : 'odd';
+
+				// calculate stocks
+				// and check for on sale items
+				if ($product)
+				{
+					$stock_status =
+						$qty <= $product->$size_label
+						? 'instock'
+						: 'preorder'
+					;
+					$onsale =
+						$product->custom_order == '3'
+						? 'onsale'
+						: ''
+					;
+				}
+				else
+				{
+					$stock_status = 'preorder'; // item not in product list
+					$onsale = '';
+				}
 
 				if (
-					isset($items_array[$item][$size_label])
-					&& $s != 'XXL' && $s != 'XL1' && $s != 'XL2' && $s != '22'
+					isset($size_qty[$size_label])
+					&& $s != 'XL1' && $s != 'XL2'
 				)
 				{
+					$html.= '<tr class="summary-item-container">';
 
-					$html.= '<div class="item-container clearfix '
-						.$odd_class
-						.'" style="padding:5px;" data-des_slug="'
-						.$product->designer_slug
-						.'" data-vendor_id="'
-						.$product->vendor_id
-						.'"><div class="pull-right"><button type="button" class="btn btn-link btn-xs summary-item-remove-btn tooltips font-grey-cascade" data-original-title="Remove" data-page="create" data-item="'
+					// Quantities
+					$html.= '<td class="text-center" style="vertical-align:top;">'
+						.$qty
+						.'<br />'
+						.'<i class="fa fa-pencil small tooltips font-grey-silver modal-edit_quantity" data-original-title="Edit Qty" data-placement="bottom" data-item="'
 						.$item
 						.'" data-size_label="'
 						.$size_label
-						.'"><i class="fa fa-close"></i></button></div><a href="'
-						.(@$img_linesheet ?: 'javascript:;')
-						.'" class="'
-						.(@$img_linesheet ? 'fancybox' : '')
+						.'"></i>'
+						.'</td>'
+						.'<td class="text-center" style="vertical-align:top;">0</td>'
+						.'<td class="text-center" style="vertical-align:top;">'.$qty.'</td>'
+					;
+
+					// Item Number
+					$html.= '<td style="vertical-align:top;">'
+						.$prod_no
+						.'<br />'
+						.$color_name
+						.'<br />Size '.$s
+						.'</td>'
+					;
+
+					// IMAGE and Descriptions
+					$html.= '<td><a href="'.($img_large ?: 'javascript:;')
+						.'" class="'.($img_large ? 'fancybox' : '')
 						.' pull-left"><img class="" src="'
 						.$img_front_new
-						.'" alt="" style="width:70px;height:auto;" onerror="$(this).attr(\'src\',\''
-						.$this->config->item('PROD_IMG_URL')
-						.'images/instylelnylogo_3.jpg\');" /></a><div class="shop-cart-item-details" style="margin-left:80px;"><h5 style="margin:0px;">'
-						.$item
-						.'</h5><h6 style="margin:0px;"><span style="color:#999;">Product#: '
+						.'" alt="" style="width:60px;height:auto;" onerror="$(this).attr(\'src\',\''.$this->config->item('PROD_IMG_URL').'images/instylelnylogo_3.jpg\');" /></a>'
+						.'<div class="shop-cart-item-details" style="margin-left:65px;"><h4 style="margin:0px;">'
 						.$prod_no
-						.'</span><br />Color: &nbsp; '
+						.'</h4><p style="margin:0px;"><span style="color:#999;">Style#:&nbsp;<?php echo $item; ?></span><br />Color: &nbsp; '
 						.$color_name
-						.'<br />'
-						.(@$product->category_names ? '<cite class="small">('.end($product->category_names).')</cite>' : '')
-						.'</h6><div class="size-and-qty-wrapper margin-top-10" style="font-size:0.8em;">'
-						.'size '
-						.$s
-						.' '
+						.(@$product->designer_name ? '<br /><cite class="small">'.$product->designer_name.'</cite>' : '')
+						.(@$product->category_names ? ' <cite class="small">('.end($product->category_names).')</cite>' : '')
+						.'</p>'
 					;
+					if ($stock_status == 'preorder') {
+						$html.= '<span class="badge badge-danger badge-roundless display-block"> Pre Order </span>';
+					}
+					if ($onsale == 'onsale') {
+						$html.= '<span class="badge bg-red-mint badge-roundless display-block"> On Sale </span>';
+					}
+					$html.= '</div></td>';
 
-					$html.= '<div style="display:inline-block;;">'
-						.'<input type="text" class="size_select" data-page="create" style="border:1px solid #ccc;width:30px;margin-left:10px;text-align:right;padding:5px" data-item="'
+					// Remove button
+					$html.= '<td class="text-right"><button type="button" class="btn btn-link btn-xs summary-item-remove tooltips" data-original-title="Remove Item" data-item="'
 						.$item
-						.'" value="'
-						.$qty
-						.'" readonly /> pcs.'
+						.'" data-prod_no="'
+						.$prod_no
+						.'" data-size_label="'
+						.$size_label
+						.'"><i class="fa fa-close"></i> <cite class="small hide">rem</cite></button>'
+						.'</td>'
 					;
-					$html.= '<input type="hidden" class="this-total-qty '.$item.' '.$prod_no.'" value="'.$this_size_qty.'" readonly />';
-					$html.= '</div>';
 
-					$html.= '</div></div></div>';
+					// Unit Price
+					$html.= '<td class="text-right unit-price-wrapper 2 '
+						.$item.' '.$prod_no
+						.'" data-item="'
+						.$item
+						.'" data-prod_no="'
+						.$prod_no
+						.'">$ '
+						.number_format($price, 2)
+						.'</td>'
+					;
+
+					// Discount
+					$disc = @$size_qty['discount'] ?: 0;
+					$html.= '<td class="text-right discount-wrapper '
+						.$item.' '.$prod_no
+						.'">'
+						.($disc == '0' ? '-' : $disc)
+						.'<br />'
+						.'<i class="fa fa-pencil small tooltips font-grey-silver modal-add_discount" data-original-title="Add Discount" data-placement="bottom" data-item="'
+						.$item
+						.'" data-size_label="'
+						.$size_label
+						.'"></i>'
+						.'</td>'
+					;
+
+					// Extended
+					$this_size_total = $this_size_qty * ($price - $disc);
+					$html.= '<td class="text-right order-subtotal '
+						.$item.' '.$prod_no
+						.'">$ '
+						.number_format($this_size_total, 2)
+						.'</td>'
+					;
+
+					// Clsoing </td>
+					$html.= '<input type="hidden" class="input-order-subtotal '
+						.$item.' '.$prod_no
+						.'" name="subtotal" value="'
+						.$this_size_total
+						.'" /></tr>'
+					;
 				}
 
-				$iodd++;
+				$overall_qty += $this_size_qty;
+				$overall_total += $this_size_total;
 			}
 
-			$overall_qty += $this_size_qty;
+			$i++;
 		}
 
-		$html.= '<input type="hidden" class="span-items_count" name="span-items_count" value="'.$iodd.'" />';
-		$html.= '<input type="hidden" class="overall-qty" name="overall-qty" value="'.$overall_qty.'" />';
+		$html.= '<input type="hidden" class="hidden-overall_qty" value="'.$overall_qty.'" />';
+		$html.= '<input type="hidden" class="hidden-overall_total" value="'.$overall_total.'" />';
 
-		if ($html) echo $html;
-		else {
-			echo '<cite style="margin:30px 15px 0;display:block;">Items should show in here as soon as selected, or, searched and then selected, or, added as new item, or, after barcode scan...</cite><span class="span-items_count hide">0</span>';
-		}
+		echo $html;
+		exit;
 	}
 
 	// ----------------------------------------------------------------------

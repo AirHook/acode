@@ -55,14 +55,10 @@ class Search_multiple extends Admin_Controller {
 			: array()
 		;
 
-		// set array for where condition of get product list
-		if ($this->session->admin_so_designer) $where_more['designer.url_structure'] = $this->session->admin_so_designer;
-		if ($this->session->admin_so_vendor_id) $where_more['tbl_product.vendor_id'] = $this->session->admin_so_vendor_id;
-
 		// consider input prod_no
 		if (is_array($prod_no))
 		{
-			$where = array_merge($prod_no, $where_more);
+			$where = $prod_no;
 		}
 		else
 		{

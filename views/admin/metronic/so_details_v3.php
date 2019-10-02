@@ -41,6 +41,10 @@
 		                                    <a class="btn dark" href="<?php echo site_url($this->uri->segment(1).'/barcodes/print/so/index/'.$so_details->sales_order_id); ?>" target="_blank">
 		                                        <i class="fa fa-print"></i> Print All Barcodes
 		                                    </a>
+											&nbsp;
+		                                    <a class="btn default po-pdf-print_" href="<?php echo site_url($this->uri->segment(1).'/sales_orders/view_packing_list/index/'.$so_details->sales_order_id); ?>" target="_blank">
+		                                        <i class="fa fa-eye"></i> View PACKING LIST for Print/Download
+		                                    </a>
 		                                    &nbsp;
 		                                    <a class="btn btn-default po-pdf-print_" href="<?php echo site_url($this->uri->segment(1).'/sales_orders/view_pdf/index/'.$so_details->sales_order_id); ?>" target="_blank">
 		                                        <i class="fa fa-eye"></i> View PDF for Print/Download
@@ -80,36 +84,43 @@
 		                         */
 		                        ?>
 		                        <div class="row">
-		                            <div class="col-md-6 pull-right">
-		                                <div class="form-group" data-site_section="<?php echo $this->uri->segment(1); ?>" data-object_data='{"sales_order_id":"<?php echo $this->sales_order_details->sales_order_id; ?>","<?php echo $this->security->get_csrf_token_name(); ?>":"<?php echo $this->security->get_csrf_hash(); ?>"}'>
-		                                    <label class="control-label col-md-3">Status</label>
-		                                    <div class="col-md-9">
-		                                        <div class="margin-bottom-10">
-		                                            <input id="option4" type="radio" name="status" value="1" class="make-switch switch-status" data-size="mini" data-on-text="<i class='icon-plus'></i>" data-off-text="&nbsp;-&nbsp;" <?php echo $this->sales_order_details->status == '1' ? 'checked' : ''; ?> />
-		                                            <label for="option4">Open/Pending</label>
-		                                        </div>
-		                                        <div class="margin-bottom-10">
-		                                            <input id="option3" type="radio" name="status" value="3" class="make-switch switch-status" data-size="mini" data-on-color="warning" data-on-text="<i class='icon-energy'></i>" data-off-text="&nbsp;-&nbsp;" <?php echo $this->sales_order_details->status == '3' ? 'checked' : ''; ?> />
-		                                            <label for="option3">Return</label>
-		                                        </div>
-		                                        <div class="margin-bottom-10">
-		                                            <input id="option2" type="radio" name="status" value="2" class="make-switch switch-status" data-size="mini" data-on-color="danger" data-on-text="<i class='icon-ban'></i>" data-off-text="&nbsp;-&nbsp;" <?php echo $this->sales_order_details->status == '2' ? 'checked' : ''; ?> />
-		                                            <label for="option2">On HOLD</label>
-		                                        </div>
-		                                        <!--
-		                                        <div class="margin-bottom-10">
-		                                            <input id="option2" type="radio" name="status" value="4" class="make-switch switch-status" data-size="mini" data-on-color="info" data-on-text="<i class='fa fa-truck'></i>" data-off-text="&nbsp;-&nbsp;" <?php echo $this->sales_order_details->status == '4' ? 'checked' : ''; ?> />
-		                                            <label for="option2">In Transit</label>
-		                                        </div>
-		                                        -->
-		                                        <div class="margin-bottom-10">
-		                                            <input id="option1" type="radio" name="status" value="5" class="make-switch switch-status" data-size="mini" data-on-color="success" data-on-text="<i class='icon-check'></i>" data-off-text="&nbsp;-&nbsp;" <?php echo $this->sales_order_details->status == '5' ? 'checked' : ''; ?> />
-		                                            <label for="option1">Complete/Delivery</label>
-		                                        </div>
-		                                        <cite class="help-block small"> Changing the SO Status will update the SO almost immediately. </cite>
-		                                    </div>
-		                                </div>
-		                            </div>
+									<div class="col-md-6 pull-right">
+			                            <div class="form-group" data-site_section="<?php echo $this->uri->segment(1); ?>" data-object_data='{"po_id":"<?php echo $this->sales_order_details->po_id; ?>","<?php echo $this->security->get_csrf_token_name(); ?>":"<?php echo $this->security->get_csrf_hash(); ?>"}'>
+			                                <label class="control-label col-md-2">Status</label>
+			                                <div class="col-md-10">
+			                                    <cite class="small" style="font-weight:100;display:block;">
+			                                        <i class="fa fa-<?php echo in_array($this->sales_order_details->status, array('0','1','2','3','4','5')) ? 'check-' : ''; ?>square-o"></i>
+			                                         &nbsp; Open/Pending
+			                                    </cite>
+			                                    <cite class="small" style="font-weight:100;display:block;">
+			                                        <i class="fa fa-<?php echo in_array($this->sales_order_details->status, array('2','3','4','5')) ? 'check-' : ''; ?>square-o"></i>
+			                                         &nbsp; Picked and Packed (Partial/Complete)
+			                                    </cite>
+			                                    <cite class="small" style="font-weight:100;display:block;">
+			                                        <i class="fa fa-<?php echo in_array($this->sales_order_details->status, array('3','4','5')) ? 'check-' : ''; ?>square-o"></i>
+			                                         &nbsp; In Transit (Partial/Complete)
+			                                    </cite>
+			                                    <cite class="small" style="font-weight:100;display:block;">
+			                                        <i class="fa fa-<?php echo in_array($this->sales_order_details->status, array('4','5')) ? 'check-' : ''; ?>square-o"></i>
+			                                         &nbsp; Delivered Partial (Shows only on partial delivery)
+			                                    </cite>
+			                                    <cite class="small" style="font-weight:100;display:block;">
+			                                        <i class="fa fa-<?php echo in_array($this->sales_order_details->status, array('5')) ? 'check-' : ''; ?>square-o"></i>
+			                                         &nbsp; Complete/Delivered
+			                                    </cite>
+			                                    <br />
+			                                    Others:
+			                                    <cite class="small" style="font-weight:100;display:block;">
+			                                        <i class="fa fa-<?php echo $this->sales_order_details->status == '6' ? 'check-' : ''; ?>square-o"></i>
+			                                         &nbsp; On Hold
+			                                    </cite>
+			                                    <cite class="small" style="font-weight:100;display:block;">
+			                                        <i class="fa fa-<?php echo $this->sales_order_details->status == '7' ? 'check-' : ''; ?>square-o"></i>
+			                                         &nbsp; Cancelled
+			                                    </cite>
+			                                </div>
+			                            </div>
+			                        </div>
 		                        </div>
 
 								<?php
@@ -119,33 +130,27 @@
 								?>
                                 <div class="row printable-content" id="print-to-pdf">
 
+									<?php
+	                                /***********
+	                                 * SO Number and Revisions
+	                                 */
+	                                ?>
                                     <div class="col-sm-12 so-number margin-bottom-10">
                                         <div class="row">
                                             <div class="col-sm-12">
                                                 <h3>
-                                                    <strong> SALES ORDER INVOICE #<?php echo $so_number; ?> </strong> <?php echo @$this->sales_order_details->rev ? '<small><b>rev</b></small><strong>'.@$this->sales_order_details->rev.'</strong>' : ''; ?> <br />
+                                                    <strong> SALES ORDER #<?php echo $so_number; ?> </strong> <?php echo @$this->sales_order_details->rev ? '<small><b>rev</b></small><strong>'.@$this->sales_order_details->rev.'</strong>' : ''; ?> <br />
                                                     <small> Date: <?php echo $so_date; ?> </small>
                                                 </h3>
                                             </div>
                                         </div>
                                     </div>
 
-									<div class="col-sm-12 po-summary-company clearfix">
-										<div class="row">
-											<div class="col-sm-12">
-												<h3> <?php echo $company_name; ?> </h3>
-
-												<p>
-													<?php echo $company_address1; ?><br />
-													<?php echo $company_address2 ? $company_address2.'<br />' : ''; ?>
-													<?php echo $company_city.', '.$company_state.' '.$company_zipcode; ?><br />
-													<?php echo $company_country; ?><br />
-													<?php echo $company_telephone; ?>
-												</p>
-											</div>
-										</div>
-									</div>
-
+									<?php
+	                                /***********
+	                                 * BILL TO / SHIP TO
+	                                 */
+	                                ?>
                                     <div class="col-sm-12 so-addresses">
                                         <div class="row">
 
@@ -182,79 +187,93 @@
                                         </div>
                                     </div>
 
+									<?php
+	                                /***********
+	                                 * Author
+	                                 */
+	                                ?>
                                     <div class="col-sm-12 so-author">
                                         <p>
-                                            Sales Person: &nbsp;<?php echo $this->sales_order_details->author == '1' ? 'IN-HOUSE' : $store_details->fname.' '.$store_details->lname.' ('.safe_mailto($store_details->email).')'; ?>
+                                            Sales Person: &nbsp;<?php echo $this->sales_order_details->author == '1' ? 'IN-HOUSE' : $author->fname.' '.$author->lname.' ('.safe_mailto($author->email).')'; ?>
                                         </p>
                                     </div>
 
-                                    <div class="col-sm-12 so-misc">
-                                        <div class="row">
-                                            <div class="col-sm-4">
+									<?php
+	                                /***********
+	                                 * SO Options 1
+	                                 */
+	                                ?>
+	                                <div class="col-sm-12 m-grid m-grid-responsive-sm so-summary-options1">
+	                                    <div class="m-grid-row">
+	                                        <div class="m-grid-col">
 
-                                                <h5> Shipping Method: </h5>
-												<div class="form-group row">
-													<div class="col-md-12">
-														<input class="form-control form-control-inline" size="16" type="text" value="<?php echo @$so_options['ship_via']; ?>" name="ship_via" readonly style="background:white;" />
-													</div>
-												</div>
+	                                            <h6> Ref Check Out Order#: </h6>
+	                                            <div class="form-group row">
+	                                                <div class="col-md-4 col-sm-12">
+	                                                    <input class="form-control form-control-inline" size="16" type="text" value="<?php echo @$so_options['ref_checkout_no']; ?>" name="options[ref_checkout_no]" />
+	                                                </div>
+	                                            </div>
 
-                                            </div>
-                                            <div class="col-sm-4">
+	                                        </div>
+	                                    </div>
+	                                </div>
 
-                                                <h5> Shipping Terms: </h5>
-												<div class="form-group row">
-													<div class="col-md-12">
-														<input class="form-control form-control-inline" size="16" type="text" value="<?php echo @$so_options['fob']; ?>" name="fob" readonly style="background:white;" />
-													</div>
-												</div>
+									<?php
+	                                /***********
+	                                 * SO Options 2
+	                                 */
+	                                ?>
+	                                <div class="col-sm-12 m-grid m-grid-responsive-sm so-summary-options2">
+	                                    <div class="m-grid-row">
+	                                        <div class="m-grid-col">
 
-                                            </div>
-                                            <div class="col-sm-4">
+	                                            <h6> Ship By Date: </h6>
+	                                            <div class="form-group row">
+	                                                <div class="col-md-12">
+	                                                    <input class="form-control form-control-inline date-picker" type="text" value="<?php echo $this->sales_order_details->delivery_date; ?>" name="delivery_date" data-date-format="yyyy-mm-dd" data-date-start-date="+0d" />
+	                                                    <span class="help-block small hide" style="font-size:0.8em;"> Click to Select date </span>
+	                                                </div>
+	                                            </div>
 
-                                                <h5> Payment Terms: </h5>
-												<div class="form-group row">
-													<div class="col-md-12">
-														<input class="form-control form-control-inline" size="16" type="text" value="<?php echo @$so_options['terms']; ?>" name="terms" readonly style="background:white;" />
-													</div>
-												</div>
+	                                        </div>
+	                                        <div class="m-grid-col">
 
-                                            </div>
-                                        </div>
-										<div class="row">
-                                            <div class="col-sm-4">
+	                                            <h6> Ship Via: </h6>
+	                                            <div class="form-group row">
+	                                                <div class="col-md-12">
+	                                                    <input class="form-control form-control-inline" size="16" type="text" value="<?php echo @$so_options['ship_via']; ?>" name="options[ship_via]" />
+	                                                </div>
+	                                            </div>
 
-                                                <h5> Purchase Order Reference: </h5>
-												<div class="form-group row">
-													<div class="col-md-12">
-														<input class="form-control form-control-inline" type="text" value="<?php echo @$so_options['reference_po']; ?>" name="reference_po" readonly style="background:white;" />
-													</div>
-												</div>
+	                                        </div>
+	                                        <div class="m-grid-col">
 
-                                            </div>
-                                            <div class="col-sm-4">
+	                                            <h6> F.O.B: </h6>
+	                                            <div class="form-group row">
+	                                                <div class="col-md-12">
+	                                                    <input class="form-control form-control-inline" size="16" type="text" value="<?php echo @$so_options['fob']; ?>" name="options[fob]" />
+	                                                </div>
+	                                            </div>
 
-                                                <h5> Order Date: </h5>
-												<div class="form-group row">
-													<div class="col-md-12">
-														<input class="form-control form-control-inline" type="text" value="<?php echo @$so_options['reference_po_date']; ?>" name="reference_po_date" readonly style="background:white;" />
-													</div>
-												</div>
+	                                        </div>
+	                                        <div class="m-grid-col">
 
-                                            </div>
-											<div class="col-sm-4">
+	                                            <h6> Terms: </h6>
+	                                            <div class="form-group row">
+	                                                <div class="col-md-12">
+	                                                    <input class="form-control form-control-inline" size="16" type="text" value="<?php echo @$so_options['terms']; ?>" name="options[terms]" />
+	                                                </div>
+	                                            </div>
 
-                                                <h5> Our Order #: </h5>
-												<div class="form-group row">
-													<div class="col-md-12">
-														<input class="form-control form-control-inline" type="text" value="<?php echo @$so_options['our_order']; ?>" name="our_order" readonly style="background:white;" />
-													</div>
-												</div>
+	                                        </div>
+	                                    </div>
+	                                </div>
 
-                                            </div>
-                                        </div>
-                                    </div>
-
+									<?php
+	                                /***********
+	                                 * Cart Basket
+	                                 */
+	                                ?>
                                     <div class="col-sm-12 so-cart cart_basket_wrapper">
 
 										<!--------------------------------->
@@ -264,15 +283,23 @@
                                             <div class="table-scrollable table-scrollable-borderless">
                                                 <table class="table table-striped table-hover table-light">
                                                     <thead>
-                                                        <tr>
-															<th style="max-width:120px;"> Qty<br />Required </th>
-															<th style="max-width:120px;"> Qty<br />Shipped </th>
-															<th style="max-width:120px;"> B.O. </th>
-                                                            <th> Items </th>
-                                                            <th> Description </th>
-                                                            <th class="text-right"> Unit<br />Price </th>
-                                                            <th class="text-right"> Extended </th>
-                                                        </tr>
+														<tr>
+	                                                        <th colspan="3" class="text-center" style="padding:unset;border-bottom:none;border-right:1px solid #F2F5F8;"> Qty </th>
+	                                                        <th colspan="6" style="border-bottom:none;"></th>
+	                                                    </tr>
+	                                                    <tr>
+	                                                        <th class="text-center" style="width:50px;vertical-align:top;color:black;"> Req'd </th>
+	                                                        <th class="text-center" style="width:50px;vertical-align:top;color:black;"> Ship'd </th>
+	                                                        <th class="text-center" style="width:50px;vertical-align:top;color:black;border-right:1px solid #F2F5F8;"> B.O. </th>
+	                                                        <th style="vertical-align:top;color:black;"> Items </th>
+	                                                        <th style="vertical-align:top;color:black;"> Desc </th>
+	                                                        <th></th> <!-- Remove button -->
+	                                                        <th style="vertical-align:top;width:80px;color:black;" class="text-right">
+	                                                            Unit Price
+	                                                        </th>
+	                                                        <th style="vertical-align:top;width:60px;color:black;" class="text-right"> Disc </th>
+	                                                        <th style="vertical-align:top;width:80px;color:black;" class="text-right"> Extended </th>
+	                                                    </tr>
                                                     </thead>
                                                     <tbody>
 
@@ -283,6 +310,9 @@
                                                             $i = 1;
                                                             foreach ($so_items as $item => $size_qty)
                                                             {
+																// just a catch all error suppression
+	                                                            if ( ! $item) continue;
+
                                                                 // get product details
                                                                 $exp = explode('_', $item);
                                                                 $product = $this->product_details->initialize(
@@ -292,28 +322,85 @@
                                                                     )
                                                                 );
 
-																// this is like a catch all error...
-																//if ( ! $product) continue;
+																// set image paths
+	                                                            $style_no = $item;
+	                                                            $prod_no = $exp[0];
+	                                                            $color_code = $exp[1];
+	                                                            $temp_size_mode = 1; // default size mode
 
-                                                                // set image paths
-                                                                // the new way relating records with media library
-                                                                $style_no = $item;
-                                                                $image_new = $product->media_path.$style_no.'_f3.jpg';
-                                                                $img_front_new = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_f3.jpg';
-                                                                $img_linesheet = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_linesheet.jpg';
+																// price can be...
+	                                                            // onsale price (retail_sale_price or wholesale_price_clearance)
+	                                                            // regular price (retail_price or wholesale_price)
+	                                                            if (@$product->custom_order == '3')
+	                                                            {
+	                                                                $price =
+	                                                                    $this->session->admin_so_user_cat == 'ws'
+	                                                                    ? (@$product->wholesale_price_clearance ?: 0)
+	                                                                    : (@$product->retail_sale_price ?: 0)
+	                                                                ;
+	                                                            }
+	                                                            else
+	                                                            {
+	                                                                $price =
+	                                                                    $this->session->admin_so_user_cat == 'ws'
+	                                                                    ? (@$product->wholesale_price ?: 0)
+	                                                                    : (@$product->retail_price ?: 0)
+	                                                                ;
+	                                                            }
+
+																if ($product)
+	                                                            {
+	                                                                $image_new = $product->media_path.$style_no.'_f3.jpg';
+	                                                                $img_front_new = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_f3.jpg';
+	                                                                $img_linesheet = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_linesheet.jpg';
+	                                                                $img_large = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_f.jpg';
+	                                                                $size_mode = $product->size_mode;
+	                                                                $color_name = $product->color_name;
+
+	                                                                // take any existing product's size mode
+	                                                                $temp_size_mode = $product->size_mode;
+	                                                            }
+	                                                            else
+	                                                            {
+	                                                                $image_new = 'images/instylelnylogo_3.jpg';
+	                                                                $img_front_new = $this->config->item('PROD_IMG_URL').'images/instylelnylogo_3.jpg';
+	                                                                $img_linesheet = '';
+	                                                                $img_large = '';
+	                                                                $size_mode = $this->designer_details->webspace_options['size_mode'] ?: $temp_size_mode;
+	                                                                $color_name = $this->product_details->get_color_name($color_code);
+	                                                            }
 
                                                                 // get size names
-                                                                $size_names = $this->size_names->get_size_names($product->size_mode);
-
-																$this_size_qty = 0;
+																$size_names = $this->size_names->get_size_names($size_mode);
 					                                			foreach ($size_qty as $size_label => $qty)
 					                                			{
-					                                				$this_size_qty += $qty;
+					                                				$this_size_qty = $qty;
 					                                				$s = $size_names[$size_label];
 
+																	// calculate stocks
+	                                                                // and check for on sale items
+	                                                                if ($product)
+	                                                                {
+	                                                                    $stock_status =
+	                                                                        $qty <= $product->$size_label
+	                                                                        ? 'instock'
+	                                                                        : 'preorder'
+	                                                                    ;
+	                                                                    $onsale =
+	                                                                        $product->custom_order == '3'
+	                                                                        ? 'onsale'
+	                                                                        : ''
+	                                                                    ;
+	                                                                }
+	                                                                else
+	                                                                {
+	                                                                    $stock_status = 'preorder'; // item not in product list
+	                                                                    $onsale = '';
+	                                                                }
+
 					                                				if (
-					                                                    isset($so_items[$item][$size_label])
-					                                                    && $s != 'XXL' && $s != 'XL1' && $s != 'XL2' && $s != '22'
+					                                                    isset($size_qty[$size_label])
+					                                                    && $s != 'XL1' && $s != 'XL2'
 					                                                )
 					                                				{
                                                                 ?>
@@ -326,8 +413,8 @@
                                                              */
                                                             ?>
 															<td style="vertical-align:top;"><?php echo $qty; ?></td>
-															<td style="vertical-align:top;"><?php echo $qty; ?></td>
 															<td style="vertical-align:top;">0</td>
+															<td style="vertical-align:top;"><?php echo $qty; ?></td>
 
 															<?php
                                                             /**********
@@ -335,7 +422,8 @@
                                                              */
                                                             ?>
 															<td style="vertical-align:top;">
-																<?php echo $item; ?><br />
+																<?php echo $prod_no; ?><br />
+	                                                            <?php echo $color_name; ?><br />
 																<?php echo 'Size '.$s; ?>
 															</td>
 
@@ -384,10 +472,24 @@
                                                                         <span style="color:#999;">Style#: <?php echo $item; ?></span><br />
                                                                         Color: &nbsp; <?php echo $product->color_name; ?>
 																		<?php echo @$product->designer_name ? '<br /><cite class="small">'.$product->designer_name.'</cite>' : ''; ?>
-																		<?php echo @$product->category_names ? '<br /><cite class="small">('.end($product->category_names).')</cite>' : ''; ?>
+																		<?php echo @$product->category_names ? ' <cite class="small">('.end($product->category_names).')</cite>' : ''; ?>
                                                                     </p>
+																	<?php if ($stock_status == 'preorder') { ?>
+	                                                                <span class="badge badge-danger badge-roundless display-block"> Pre Order </span>
+	                                                                <?php } ?>
+	                                                                <?php if ($onsale == 'onsale') { ?>
+	                                                                <span class="badge bg-red-mint badge-roundless display-block"> On Sale </span>
+	                                                                <?php } ?>
                                                                 </div>
                                                             </td>
+
+															<?php
+	                                                        /**********
+	                                                         * Blank - remove button on create page
+	                                                         */
+	                                                        ?>
+	                                                        <td class="text-right">
+	                                                        </td>
 
                                                             <?php
                                                             /**********
@@ -395,8 +497,21 @@
                                                              */
                                                             ?>
                                                             <td class="text-right" style="vertical-align:top;">
-                                                                $ <?php echo number_format(@$product->wholesale_price, 2); ?>
+                                                                $ <?php echo number_format($price, 2); ?>
                                                             </td>
+
+															<?php
+	                                                        /**********
+	                                                         * Discount
+	                                                         */
+	                                                        ?>
+	                                                        <td class="text-right discount-wrapper" style="vertical-align:top;">
+	                                                            <?php
+	                                                            $disc = @$size_qty['discount'] ?: 0;
+	                                                            if ($disc == '0') echo '-';
+	                                                            else echo number_format($disc, 2);
+	                                                            ?>
+	                                                        </td>
 
                                                             <?php
                                                             /**********
@@ -405,19 +520,20 @@
                                                             ?>
                                                             <td class="text-right" style="vertical-align:top;">
                                                                 <?php
-                                                                $this_size_total = $this_size_qty * @$product->wholesale_price;
+                                                                $this_size_total = $this_size_qty * ($price - $disc);
                                                                 ?>
-                                                                $ <?php echo $this->cart->format_number($this_size_total); ?>
+																$ <?php echo number_format($this_size_total, 2); ?>
                                                             </td>
 
                                                         </tr>
 																		<?php
 																	}
+
+																	$overall_qty += $this_size_qty;
+	                                                                $overall_total += $this_size_total;
 																}
 
                                                                 $i++;
-                                                                $overall_qty += $this_size_qty;
-                                                                $overall_total += $this_size_total;
                                                             }
                                                         } ?>
 

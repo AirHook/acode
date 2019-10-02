@@ -37,6 +37,14 @@ class Sales_order_details
 	public $so_date = ''; // alias
 
 	/**
+	 * Ship By Date (timestamp)
+	 *
+	 * @var	int
+	 */
+	public $delivery_date = '';
+	public $due_date = ''; // alias
+
+	/**
 	 * Sales User Details --> author can either be a sales or admin user so we cannot do this
 	 *
 	 * @var	int
@@ -70,6 +78,7 @@ class Sales_order_details
 	 * @var	int
 	 */
 	public $user_id = '';
+	public $user_cat = '';
 	public $store_name = '';
 	public $firstname = '';
 	public $lastname = '';
@@ -256,9 +265,14 @@ class Sales_order_details
 			$this->sales_order_date = @date('Y-m-d', $row->sales_order_date);
 			$this->amount = $row->amount;
 
+			// aliases
 			$this->so_id = $row->sales_order_id;
 			$this->so_number = $row->sales_order_number;
 			$this->so_date = @date('Y-m-d', $row->sales_order_date);
+			$this->so_amount = $row->amount;
+
+			$this->delivery_date = @date('Y-m-d', $row->due_date);
+			$this->due_date = @date('Y-m-d', $row->due_date);
 
 			/* *
 			$this->admin_sales_id = $row->admin_sales_id;
@@ -275,6 +289,8 @@ class Sales_order_details
 			$this->designer_slug = $row->url_structure;
 
 			$this->user_id = $row->user_id;
+			$this->user_cat = $row->user_cat;
+
 			$this->store_name = $row->store_name;
 			$this->firstname = $row->firstname;
 			$this->lastname = $row->lastname;
@@ -340,6 +356,10 @@ class Sales_order_details
 		$this->so_id = '';
 		$this->so_number = '';
 		$this->so_date = '';
+		$this->so_amount = '';
+
+		$this->delivery_date = '';
+		$this->due_date = '';
 
 		/* *
 		$this->admin_sales_id = '';
@@ -356,6 +376,8 @@ class Sales_order_details
 		$this->designer_slug = '';
 
 		$this->user_id = '';
+		$this->user_cat = '';
+		
 		$this->store_name = '';
 		$this->firstname = '';
 		$this->lastname = '';
