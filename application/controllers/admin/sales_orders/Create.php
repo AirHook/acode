@@ -246,7 +246,7 @@ class Create extends Admin_Controller
 			$post_ary['c'] = $this->input->post('c'); // 1-admin,2-sales
 			$post_ary['user_id'] = $this->session->admin_so_user_id ?: 0; // 0 for manual input
 			$post_ary['user_cat'] = $this->session->admin_so_user_cat ?: 0; // 0 for manual input ws/cs
-			$post_ary['status'] = '1'; // set to pending approval
+			$post_ary['status'] = '0'; // set to pending approval
 			$post_ary['options'] = json_encode(array_filter($options)); // remove empty options
 			$post_ary['remarks'] = $this->input->post('remarks');
 

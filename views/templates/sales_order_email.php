@@ -126,7 +126,7 @@
 										ATTN: <?php echo $store_details->fname ? $store_details->fname.' '.$store_details->lname : ''; ?> <?php echo $store_details->email ? '('.$store_details->email.')': ''; ?>
 
 										<br><br>
-										
+
 									</td>
 								</tr>
 							</table>
@@ -275,28 +275,47 @@
 											$size_names = $this->size_names->get_size_names($size_mode);
 											foreach ($size_qty as $size_label => $qty)
 											{
-												$this_size_qty += $qty;
+												if ($size_label == 'discount') continue;
+
+												$this_size_qty = $qty[0];
 												$s = $size_names[$size_label];
 
 												// calculate stocks
 												// and check for on sale items
 												if ($product)
 												{
-													$stock_status =
-														$qty <= $product->$size_label
-														? 'instock'
-														: 'preorder'
-													;
+													if ($product->$size_label == '0')
+													{
+														$preorder = TRUE;
+														$partial_stock = FALSE;
+													}
+													elseif ($qty[0] <= $product->$size_label)
+													{
+														$preorder = FALSE;
+														$partial_stock = FALSE;
+													}
+													elseif ($qty[0] > $product->$size_label)
+													{
+														$preorder = TRUE;
+														$partial_stock = TRUE;
+													}
+													else
+													{
+														$preorder = FALSE;
+														$partial_stock = FALSE;
+													}
 													$onsale =
 														$product->custom_order == '3'
-														? 'onsale'
-														: ''
+														? TRUE
+														: FALSE
 													;
 												}
 												else
 												{
-													$stock_status = 'preorder'; // item not in product list
-													$onsale = '';
+													// item not in product list
+													$preorder = FALSE;
+													$partial_stock = FALSE;
+													$onsale = FALSE;
 												}
 
 												if (
@@ -313,9 +332,9 @@
 									 * Quantities
 									 */
 									?>
-									<td style="vertical-align:top;"><?php echo $qty; ?></td>
-									<td style="vertical-align:top;">0</td>
-									<td style="vertical-align:top;border-right:1px solid #ccc;"><?php echo $qty; ?></td>
+									<td style="vertical-align:top;"><?php echo $qty[0]; ?></td>
+									<td style="vertical-align:top;"><?php echo $qty[1]; ?></td>
+									<td style="vertical-align:top;border-right:1px solid #ccc;"><?php echo $qty[2]; ?></td>
 
 									<?php
 									/**********
@@ -346,7 +365,18 @@
 										<strong> <?php echo $prod_no; ?> </strong> <br />
 										<span style="color:#999;">Style#: <?php echo $item; ?></span><br />
 										Color: &nbsp; <?php echo $color_name; ?>
+										<?php echo @$product->designer_name ? '<br /><cite class="small">'.$product->designer_name.'</cite>' : ''; ?>
 										<?php echo @$product->category_names ? ' <cite class="small">('.end($product->category_names).')</cite>' : ''; ?>
+										<br />
+										<?php if ($onsale) { ?>
+										<span class="badge bg-red-mint badge-roundless display-block"> On Sale </span>
+										<?php } ?>
+										<?php if ($preorder) { ?>
+										<span class="badge badge-danger badge-roundless display-block"> Pre Order </span>
+										<?php } ?>
+										<?php if ($partial_stock) { ?>
+										<span class="badge badge-warning badge-roundless display-block"> Parial Stock </span>
+										<?php } ?>
 									</td>
 
 									<?php

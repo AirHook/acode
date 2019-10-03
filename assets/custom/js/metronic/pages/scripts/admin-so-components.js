@@ -338,6 +338,7 @@ var ComponentsEditors = function () {
 
         // category tree list click action
         $('.categories-tree').on('click', '.category_list', function(){
+            $('#loading').modal('show');
             var objectData = $(this).closest('.form-body').data('object_data');
             objectData.slugs_link = $(this).data('slugs_link');
             // get category tree

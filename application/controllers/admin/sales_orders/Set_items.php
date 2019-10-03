@@ -110,7 +110,6 @@ class Set_items extends MY_Controller {
 
 			// set some data
 			$size_names = $this->size_names->get_size_names($size_mode);
-
 			foreach ($size_qty as $size_label => $qty)
 			{
 				if ($size_label == 'discount') continue;
@@ -167,6 +166,7 @@ class Set_items extends MY_Controller {
 						.$item
 						.'" data-size_label="'
 						.$size_label
+						.'">'
 					;
 
 					// Quantities

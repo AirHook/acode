@@ -57,18 +57,14 @@ class Get_thumbs extends Admin_Controller {
 			$this->load->library('categories/categories_tree');
 
 			// get last category slug
-			$cat_slugs = explode('/', $slug_segs);
-			$category_slug = end($cat_slugs);
+			$the_slugs = explode('/', $slug_segs);
+			$category_slug = end($the_slugs);
 			$category_id = $this->categories_tree->get_id($category_slug);
+			$designer_slug = reset($the_slugs);
 
+			$where_more['designer.url_structure'] = $designer_slug;
 			$where_more['tbl_product.categories LIKE'] = $category_id;
 		}
-
-		// set $where clause
-		if ($designer) $where_more['designer.url_structure'] = $designer;
-		elseif ($this->session->admin_po_des_url_structure) $where_more['designer.url_structure'] = $this->session->admin_po_des_url_structure;
-		if ($vendor_id) $where_more['tbl_product.vendor_id'] = $vendor_id;
-		elseif ($this->session->admin_po_vendor_id) $where_more['tbl_product.vendor_id'] = $this->session->admin_po_vendor_id;
 
 		// if for search
 		if ($style_ary)

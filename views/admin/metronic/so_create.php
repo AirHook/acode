@@ -129,6 +129,9 @@ Discount                    <!-- BEGIN PAGE CONTENT BODY -->
                                                 $count_designers = count($designers);
                                                 if ($designers)
                                                 {
+                                                    // set slug segs name to capture info
+                                                    $slug_segs_name = array();
+
                                                     $descnt = 1;
                                                     foreach ($designers as $designer_details)
                                                     {
@@ -158,6 +161,7 @@ Discount                    <!-- BEGIN PAGE CONTENT BODY -->
                                                             if (strpos(implode('/', $slug_segs), $designer_details->url_structure) !== FALSE)
                                                             {
                                                                 $active = 'bold';
+                                                                array_push($slug_segs_name, $designer_details->designer);
                                                             }
                                                             else $active = '';
 
@@ -231,13 +235,14 @@ Discount                    <!-- BEGIN PAGE CONTENT BODY -->
                                                                     }
                                                                 }
 
-                                                                // if there is no slug_segs
+                                                                // if slug_segs
                                                                 if ( ! empty($slug_segs))
                                                                 {
                                                                     // set active where necessary
                                                                     if (strpos(implode('/', $slug_segs), implode('/', $slugs_link)) !== FALSE)
                                                                     {
                                                                         $active = $cnt_slug_segs == $category->category_level ? 'bold active' : 'bold';
+                                                                        array_push($slug_segs_name, $category->category_name);
                                                                     }
                                                                     else $active = '';
                                                                 }
@@ -254,7 +259,7 @@ Discount                    <!-- BEGIN PAGE CONTENT BODY -->
                                                                 {
                                                                     // capture the active slugs
                                                                     //$slug_segs = @$slug_segs ?: $slugs_link;
-                                                                    $slug_segs_name = $slugs_link_name;
+                                                                    //$slug_segs_name = $slug_segs_name ?: $slugs_link_name;
                                                                     $p_slug_segs = 'data-slug_segs="'.implode('/', $slug_segs).'" ';
                                                                     $p_slug_segs_name = 'data-slug_segs_name="'.implode(' &nbsp;&raquo;&nbsp; ', $slug_segs_name).'" ';
 
@@ -1219,7 +1224,7 @@ Discount                    <!-- BEGIN PAGE CONTENT BODY -->
                                                                 {
                                                             ?>
 
-                                                    <tr class="summary-item-container">
+                                                    <tr class="summary-item-container <?php echo $item.' '.$size_label; ?>" data-item="<?php echo $item; ?>" data-size_label="<?php echo $size_label; ?>">
 
                                                         <?php
                                                         /**********
