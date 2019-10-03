@@ -55,7 +55,8 @@ class Addrem_item extends MY_Controller {
 		}
 		else
 		{
-			$items_array[$item][$size_label] = $qty;
+			//$items_array[$item][$size_label] = $qty;
+			$items_array[$item][$size_label] = array($qty,0,$qty);
 		}
 
 		// check if item still has options

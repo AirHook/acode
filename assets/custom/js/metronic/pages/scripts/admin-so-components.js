@@ -73,6 +73,9 @@ var ComponentsEditors = function () {
             get_category_tree.done(function(data){
                 // repopulate category tree
                 $('.categories-tree').html(data);
+                // set category breadbrumbs
+                var cat_crumbs = $('[name="cat_crumbs"]').val();
+                $('.form-control.cat_crumbs').html(cat_crumbs);
                 // get thumbs
                 getThumbs(objectData);
             });
@@ -85,7 +88,7 @@ var ComponentsEditors = function () {
         function getThumbs(objectData){
             var get_thumbs = $.ajax({
                 type:    "POST",
-                url:     base_url + "admin/purchase_orders/get_thumbs.html",
+                url:     base_url + "admin/sales_orders/get_thumbs.html",
                 data:    objectData
             });
             get_thumbs.done(function(data){
@@ -179,6 +182,7 @@ var ComponentsEditors = function () {
                         toastr.info('Item removed...');
                     }
                 } else {
+                    $('.step2').addClass('active');
                     $('.thumb-tile.'+objectData.prod_no).addClass('selected');
                     // user toastr notification
                     toastr.success('Item added to Sales Order...');
@@ -215,6 +219,7 @@ var ComponentsEditors = function () {
                     var orderTotal = parseFloat($('.hidden-overall_total').val());
                     $('.order-total').html('$ '+orderTotal.toFixed(2));
                 } else {
+                    $('.step2').removeClass('active');
                     $('.step3').removeClass('active');
                     // show summary section
                     $('.no-item-notification').fadeIn();
@@ -262,6 +267,8 @@ var ComponentsEditors = function () {
             // get data
             var objectData = $(this).closest('.modal-content').data('object_data');
             objectData.so_store_id = $(this).val();
+            // set input element accordingly
+            $('[name="user_id"]').val(objectData.so_store_id);
             // call function
             getStoreDetails(objectData);
         });
@@ -471,7 +478,6 @@ var ComponentsEditors = function () {
         // datepicker select
         $('[name="delivery_date"]').on('change', function(){
             var objectData = $(this).closest('.right-section').data('object_data');
-            alert(JSON.stringify(objectData));
             objectData.delivery_date = $(this).val();
             var setdd = $.ajax({
                 type:    "POST",
@@ -938,17 +944,20 @@ var ComponentsEditors = function () {
 			errorElement: 'span', //default input error message container
 			errorClass: 'help-block help-block-error', // default input error message class
 			focusInvalid: false, // do not focus the last invalid input
-			ignore: ":not(:visible),:disabled",  // validate all fields including form hidden input
+			ignore: ":disabled",  // (:not(:visible),:disabled) validate all fields including form hidden input
 
 			// set your custom error message here
-            /*
+            /* */
 			messages: {
-				'email[]': 'Please select at least 1 email.'
+				'user_id': 'Please select store or set bill to/ship to address.'
 			},
-            */
+            // */
 
 			rules: {
-				delivery_date: {
+				user_id: {
+					required: true
+				},
+                delivery_date: {
 					required: true
 				}
 			},

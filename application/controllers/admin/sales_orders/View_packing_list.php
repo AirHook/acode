@@ -28,9 +28,10 @@ class view_packing_list extends MY_Controller
 		$this->load->library('users/admin_user_details');
 		$this->load->library('users/sales_user_details');
 		$this->load->library('users/wholesale_user_details');
+		$this->load->library('users/consumer_user_details');
 		$this->load->library('barcodes/upc_barcodes');
 
-		// initialize purchase order properties and items
+		// initialize sales order properties and items
 		$data['so_details'] = $this->sales_order_details->initialize(
 			array(
 				'sales_order_id' => $id

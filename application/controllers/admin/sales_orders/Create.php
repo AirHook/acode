@@ -58,10 +58,12 @@ class Create extends Admin_Controller
 				unset($_SESSION['admin_so_slug_segs']);
 				unset($_SESSION['admin_so_dely_date']);
 				unset($_SESSION['admin_so_items']);
-				// remove po mod details
-				unset($_SESSION['admin_so_mod_so_id']);
-				unset($_SESSION['admin_so_mod_so_items']);
 			}
+
+			// remove po mod details on page reloads
+			// must always start a new session even if refreshed only
+			unset($_SESSION['admin_so_mod_so_id']);
+			unset($_SESSION['admin_so_mod_items']);
 
 			// get color list for the add product not in list
 			$this->data['colors'] = $this->color_list->select();
@@ -281,7 +283,7 @@ class Create extends Admin_Controller
 			unset($_SESSION['admin_so_items']);
 			// remove po mod details
 			unset($_SESSION['admin_so_mod_so_id']);
-			unset($_SESSION['admin_so_mod_so_items']);
+			unset($_SESSION['admin_so_mod_items']);
 
 			/***********
 			 * Send po email confirmation with PDF attachment

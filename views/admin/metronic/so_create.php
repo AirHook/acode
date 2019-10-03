@@ -254,7 +254,7 @@ Discount                    <!-- BEGIN PAGE CONTENT BODY -->
                                                                 {
                                                                     // capture the active slugs
                                                                     //$slug_segs = @$slug_segs ?: $slugs_link;
-                                                                    $slug_segs_name = @$slug_segs_name ?: $slugs_link_name;
+                                                                    $slug_segs_name = $slugs_link_name;
                                                                     $p_slug_segs = 'data-slug_segs="'.implode('/', $slug_segs).'" ';
                                                                     $p_slug_segs_name = 'data-slug_segs_name="'.implode(' &nbsp;&raquo;&nbsp; ', $slug_segs_name).'" ';
 
@@ -314,221 +314,13 @@ Discount                    <!-- BEGIN PAGE CONTENT BODY -->
                                             <?php echo implode(' &nbsp;&raquo;&nbsp; ', $slug_segs_name); ?>
                                         </div>
                                     </div>
-                                    <div class="input-group categories-tree-wrapper hide">
-                                        <div class="input-group-btn">
-                                            <button type="button" class="btn dark dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Select Category
-                                                <i class="fa fa-angle-down"></i>
-                                            </button>
-                                            <style>
-                                                .categories-tree {
-                                                    min-width: 250px;
-                                                    margin-top: 0px;
-                                                }
-                                                .categories-tree li.bold > a {
-                                                    font-weight: bold;
-                                                }
-                                                .categories-tree li > a {
-                                                    padding: 2px 16px;
-                                                }
-                                                .categories-tree li:first-child > a {
-                                                    margin-top: 15px;
-                                                }
-                                                .categories-tree li:last-child > a {
-                                                    margin-bottom: 15px;
-                                                }
-                                            </style>
-                                            <ul class="categories-tree dropdown-menu">
-
-                                                <?php
-                                                $count_designers = count($designers);
-                                                if ($designers)
-                                                {
-                                                    $descnt = 1;
-                                                    foreach ($designers as $designer_details)
-                                                    {
-                                                        // get the designer category tree
-                                        				$des_subcats = $this->categories_tree->treelist(
-                                        					array(
-                                        						'd_url_structure' => $designer_details->url_structure,
-                                        						//'vendor_id' => $this->session->admin_po_vendor_id,
-                                        						'with_products' => TRUE
-                                        					)
-                                        				);
-                                        				$row_count = $this->categories_tree->row_count;
-                                        				$max_level = $this->categories_tree->max_category_level;
-
-                                                        if (@$des_subcats)
-                                                        {
-                                                            // set or check active slug
-                                                            $slug_segs = @$slug_segs ?: array();
-                                                            $cnt_slug_segs = count($slug_segs) - 2;
-
-                                                            // generate designer slugs and name for link and front end
-                                                            $slugs_link = array($designer_details->url_structure);
-                                                            $slugs_link_name = array();
-
-                                                            // designer level
-                                                            // set active where necessary
-                                                            if (strpos(implode('/', $slug_segs), $designer_details->url_structure) !== FALSE)
-                                                            {
-                                                                $active = 'bold';
-                                                            }
-                                                            else $active = '';
-
-                                                            // get active category names
-                                                            if ($active == 'bold' OR $active == 'bold active')
-                                                            {
-                                                                array_push($slugs_link_name, $designer_details->designer);
-                                                            }
-                                                            ?>
-
-                                                <li class="<?php echo $active; ?> designer-level" data-slug="<?php echo $designer_details->url_structure; ?>" data-slugs_link="<?php echo implode('/', $slugs_link); ?>">
-                                                    <a href="javascript:;" data-slug="<?php echo $designer_details->url_structure; ?>" style="font-size:0.8em;" data-slugs_link="<?php echo implode('/', $slugs_link); ?>">
-                                                        <?php echo $designer_details->designer; ?>
-                                                    </a>
-                                                </li>
-
-                                                            <?php
-                                                            /**********
-                                                             * Cateogry tree list
-                                                             */
-                                                            $ic = 1;
-                                                            $marg = 15;
-                                                            $first_max_level = $max_level;
-                                                            $p_slug_segs = '';
-                                                            $p_slug_segs_name = '';
-                                                            foreach ($des_subcats as $category)
-                                                            {
-                                                                // set margin
-                                                                $margin = 'padding-left:'.($marg * ($category->category_level + 2)).'px;';
-
-                                                                // if first row...
-                                                                if ($ic == 1)
-                                                                {
-                                                                    // create link
-                                                                    array_push($slugs_link, $category->category_slug);
-
-                                                                    // save as previous level
-                                                                    // always starts at 0
-                                                                    $prev_level = $category->category_level;
-                                                                }
-                                                                else
-                                                                {
-                                                                    // if same category level
-                                                                    if ($category->category_level == $prev_level)
-                                                                    {
-                                                                        // create new link
-                                                                        $pop = array_pop($slugs_link); // remove previous last seg
-                                                                        array_push($slugs_link, $category->category_slug); // replace with new one
-                                                                    }
-
-                                                                    // NOTE: next greater level is always greater by only 1 level
-                                                                    if ($category->category_level == $prev_level + 1)
-                                                                    {
-                                                                        // append to previous link
-                                                                        array_push($slugs_link, $category->category_slug);
-                                                                    }
-
-                                                                    // if next category level is lower
-                                                                    if ($category->category_level < $prev_level)
-                                                                    {
-                                                                        for ($deep = $prev_level - $category->category_level; $deep >= 0; $deep--)
-                                                                        {
-                                                                            // update link
-                                                                            $pop = array_pop($slugs_link);
-                                                                        }
-
-                                                                        // append to link
-                                                                        array_push($slugs_link, $category->category_slug);
-                                                                    }
-                                                                }
-
-                                                                // if there is no slug_segs
-                                                                if ( ! empty($slug_segs))
-                                                                {
-                                                                    // set active where necessary
-                                                                    if (strpos(implode('/', $slug_segs), implode('/', $slugs_link)) !== FALSE)
-                                                                    {
-                                                                        $active = $cnt_slug_segs == $category->category_level ? 'bold active' : 'bold';
-                                                                    }
-                                                                    else $active = '';
-                                                                }
-
-                                                                // get active category names
-                                                                if ($active == 'bold' OR $active == 'bold active')
-                                                                {
-                                                                    array_push($slugs_link_name, $category->category_name);
-                                                                }
-
-                                                                // if this is last row, set slug segs
-                                                                $cat_crumbs = '';
-                                                                if ($ic == $row_count)
-                                                                {
-                                                                    // capture the active slugs
-                                                                    //$slug_segs = @$slug_segs ?: $slugs_link;
-                                                                    $slug_segs_name = @$slug_segs_name ?: $slugs_link_name;
-                                                                    $p_slug_segs = 'data-slug_segs="'.implode('/', $slug_segs).'" ';
-                                                                    $p_slug_segs_name = 'data-slug_segs_name="'.implode(' &nbsp;&raquo;&nbsp; ', $slug_segs_name).'" ';
-
-                                        							// need to show the category crumbs for use at front end
-                                        							if ($descnt == $count_designers)
-                                        							{
-                                        								$cat_crumbs = '<input type="hidden" name="cat_crumbs" value="'.implode(' &nbsp;&raquo;&nbsp; ', $slug_segs_name).'" />';
-                                        							}
-                                                                }
-
-                                                                // first row is usually the top main category...
-                                                                echo '<li class="category_list '
-                                                                    .$active
-                                                                    .'" data-category_id="'
-                                                                    .$category->category_id
-                                                                    .'" data-parent_category="'
-                                                                    .$category->parent_category.
-                                                                    '" data-category_slug="'
-                                                                    .$category->category_slug
-                                                                    .'" data-category_name="'
-                                                                    .$category->category_name
-                                                                    .'" data-category_level="'
-                                                                    .$category->category_level
-                                                                    .'" data-slug="'
-                                                                    .$category->category_slug
-                                                                    .'" data-slugs_link="'
-                                                                    .implode('/', $slugs_link)
-                                                                    .'">'
-                                                                    .'<a href="javascript:;" style="font-size:0.8em;'
-                                                                    .$margin
-                                                                    .'" data-slugs_link="'
-                                                                    .implode('/', $slugs_link)
-                                                                    .'" data-des_slug="'
-                                                                    .$designer_details->url_structure
-                                                                    .'">'
-                                                                    .$category->category_name
-                                                                    .'</a>'
-                                        							.$cat_crumbs
-                                        							.'</li>'
-                                                                ;
-
-                                                                $prev_level = $category->category_level;
-                                                                $ic++;
-                                                            }
-                                                        }
-
-                                                        $descnt++;
-                                                    }
-                                                } ?>
-
-                                            </ul>
-                                        </div>
-                                        <!-- /btn-group -->
-                                        <div class="form-control cat_crumbs" style="font-style:italic;font-size:0.8em;">
-                                            <?php echo implode(' &nbsp;&raquo;&nbsp; ', $slug_segs_name); ?>
-                                        </div>
-                                    </div>
                                     <!-- /input-group -->
 
+                                    <?php if ( ! @$products) { ?>
                                     <h3 class="blank-grid-text <?php echo $this->session->admin_so_vendor_id ? 'display-none' : ''; ?>">
                                         <em class="select-vendor">Select a category...</em>
                                     </h3>
+                                    <?php } ?>
 
                                     <?php
                                     /***********
@@ -679,6 +471,10 @@ Discount                    <!-- BEGIN PAGE CONTENT BODY -->
         											// let set the css style...
         											$styles = $dont_display_thumb;
         											$styles.= ($product->publish == '0' OR $product->publish == '3' OR $product->view_status == 'N') ? 'cursor:not-allowed;' : '';
+
+                                                    // ribbon color - assuming that other an not published or pending (danger/unpublished), the item is private (info/private)
+                                    				$ribbon_color = ($product->publish == '0' OR $product->publish == '3' OR $product->view_status == 'N') ? 'danger' : 'info';
+                                    				$tooltip = $product->publish == '3' ? 'Pending' : (($product->publish == '0' OR $product->view_status == 'N') ? 'Unpubished' : 'Private');
 
         											// due to showing of all colors in thumbs list, we now consider the color code
         											// we check if item has color_code. if it has only product number use the primary image instead
@@ -1122,6 +918,8 @@ Discount                    <!-- BEGIN PAGE CONTENT BODY -->
                                                 ATTN: <?php echo @$store_details->fname ? $store_details->fname.' '.@$store_details->lname : 'Contact Name'; ?> <?php echo @$store_details->email ? '('.safe_mailto($store_details->email).')': '(email)'; ?>
                                             </p>
 
+                                            <span id="user_id_error_container" class="help-block has-block-error has-error"></span>
+
                                         </div>
                                         <div class="col-sm-6">
 
@@ -1138,6 +936,8 @@ Discount                    <!-- BEGIN PAGE CONTENT BODY -->
                                             </p>
 
                                         </div>
+
+                                        <input type="hidden" name="user_id" value="<?php echo $this->session->admin_so_user_id; ?>" data-error-container="user_id_error_container" />
 
                                     </div>
                                 </div>
@@ -1371,28 +1171,45 @@ Discount                    <!-- BEGIN PAGE CONTENT BODY -->
                                                             {
                                                                 if ($size_label == 'discount') continue;
 
-                                                                $this_size_qty = $qty;
+                                                                $this_size_qty = $qty[0];
                                                                 $s = $size_names[$size_label];
 
-                                                                // calculate stocks
+                                                                // calculate available stocks
                                                                 // and check for on sale items
                                                                 if ($product)
                                                                 {
-                                                                    $stock_status =
-                                                                        $qty <= $product->$size_label
-                                                                        ? 'instock'
-                                                                        : 'preorder'
-                                                                    ;
+                                                                    if ($product->$size_label == '0')
+                                                                    {
+                                                                        $preorder = TRUE;
+                                                                        $partial_stock = FALSE;
+                                                                    }
+                                                                    elseif ($qty[0] <= $product->$size_label)
+                                                                    {
+                                                                        $preorder = FALSE;
+                                                                        $partial_stock = FALSE;
+                                                                    }
+                                                                    elseif ($qty[0] > $product->$size_label)
+                                                                    {
+                                                                        $preorder = TRUE;
+                                                                        $partial_stock = TRUE;
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        $preorder = FALSE;
+                                                                        $partial_stock = FALSE;
+                                                                    }
                                                                     $onsale =
                                                                         $product->custom_order == '3'
-                                                                        ? 'onsale'
-                                                                        : ''
+                                                                        ? TRUE
+                                                                        : FALSE
                                                                     ;
                                                                 }
                                                                 else
                                                                 {
-                                                                    $stock_status = 'preorder'; // item not in product list
-                                                                    $onsale = '';
+                                                                    // item not in product list
+                                                                    $preorder = FALSE;
+                                                                    $partial_stock = FALSE;
+                                                                    $onsale = FALSE;
                                                                 }
 
                                                                 if (
@@ -1410,12 +1227,12 @@ Discount                    <!-- BEGIN PAGE CONTENT BODY -->
                                                          */
                                                         ?>
                                                         <td class="text-center" style="vertical-align:top;">
-                                                            <?php echo $qty; ?>
+                                                            <?php echo $qty[0]; ?>
                                                             <br />
                                                             <i class="fa fa-pencil small tooltips font-grey-silver modal-edit_quantity" data-original-title="Edit Qty" data-placement="bottom" data-item="<?php echo $item; ?>" data-size_label="<?php echo $size_label; ?>"></i>
                                                         </td>
-                                                        <td class="text-center" style="vertical-align:top;">0</td>
-                                                        <td class="text-center" style="vertical-align:top;"><?php echo $qty; ?></td>
+                                                        <td class="text-center" style="vertical-align:top;"><?php echo $qty[1]; ?></td>
+                                                        <td class="text-center" style="vertical-align:top;"><?php echo $qty[2]; ?></td>
 
                                                         <?php
                                                         /**********
@@ -1447,11 +1264,14 @@ Discount                    <!-- BEGIN PAGE CONTENT BODY -->
                                                                     <?php echo @$product->designer_name ? '<br /><cite class="small">'.$product->designer_name.'</cite>' : ''; ?>
                                                                     <?php echo @$product->category_names ? ' <cite class="small">('.end($product->category_names).')</cite>' : ''; ?>
                                                                 </p>
-                                                                <?php if ($stock_status == 'preorder') { ?>
+                                                                <?php if ($onsale) { ?>
+                                                                <span class="badge bg-red-mint badge-roundless display-block"> On Sale </span>
+                                                                <?php } ?>
+                                                                <?php if ($preorder) { ?>
                                                                 <span class="badge badge-danger badge-roundless display-block"> Pre Order </span>
                                                                 <?php } ?>
-                                                                <?php if ($onsale == 'onsale') { ?>
-                                                                <span class="badge bg-red-mint badge-roundless display-block"> On Sale </span>
+                                                                <?php if ($partial_stock) { ?>
+                                                                <span class="badge badge-warning badge-roundless display-block"> Parial Stock </span>
                                                                 <?php } ?>
                                                             </div>
                                                         </td>

@@ -35,13 +35,19 @@ class Get_thumbs extends Admin_Controller {
 		}
 
 		// grab the post variable
-		$slug_segs = explode('/', $this->input->post('slugs_link'));
+		//$designer = 'tempoparis';
+		//$vendor_id = '53';
+		//$slug_segs = 'womens_apparel/tops/blouses';
+		$designer = $this->input->post('designer');
+		$vendor_id = $this->input->post('vendor_id');
+		$slug_segs = $this->input->post('slugs_link');
+		$style_ary = $this->input->post('style_ary');
 
 		// get the items if any
 		// set the items array
 		$items_array =
-			$this->session->admin_so_items
-			? json_decode($this->session->admin_so_items, TRUE)
+			$this->session->admin_po_items
+			? json_decode($this->session->admin_po_items, TRUE)
 			: array()
 		;
 
@@ -50,18 +56,19 @@ class Get_thumbs extends Admin_Controller {
 			// load pertinent library/model/helpers
 			$this->load->library('categories/categories_tree');
 
-			// process the active slug segments
-			// getting the last category segment for the product listing
-			// getting the first segment as designer
-			$category_slug = end($slug_segs);
+			// get last category slug
+			$cat_slugs = explode('/', $slug_segs);
+			$category_slug = end($cat_slugs);
 			$category_id = $this->categories_tree->get_id($category_slug);
-			$designer_slug = reset($slug_segs);
 
-			// set array for where condition of get product list
-			// based on above category and designer items
-			$where['designer.url_structure'] = $designer_slug;
-			$where['tbl_product.categories LIKE'] = '%'.$category_id.'%';
+			$where_more['tbl_product.categories LIKE'] = $category_id;
 		}
+
+		// set $where clause
+		if ($designer) $where_more['designer.url_structure'] = $designer;
+		elseif ($this->session->admin_po_des_url_structure) $where_more['designer.url_structure'] = $this->session->admin_po_des_url_structure;
+		if ($vendor_id) $where_more['tbl_product.vendor_id'] = $vendor_id;
+		elseif ($this->session->admin_po_vendor_id) $where_more['tbl_product.vendor_id'] = $this->session->admin_po_vendor_id;
 
 		// if for search
 		if ($style_ary)
@@ -70,7 +77,7 @@ class Get_thumbs extends Admin_Controller {
 			$style_ary = array_map('strtoupper', array_filter($style_ary));
 			$search_string = implode(', ', $style_ary);
 			// marge all where's
-			$where = array_merge($style_ary, $where);
+			$where_more = array_merge($style_ary, $where_more);
 		}
 		else $search_string = '';
 
@@ -83,7 +90,7 @@ class Get_thumbs extends Admin_Controller {
 		$params['with_stocks'] = FALSE;
 		$this->load->library('products/products_list', $params);
 		$products = $this->products_list->select(
-			$where,
+			$where_more,
 			array( // order conditions
 				'seque' => 'desc',
 				'tbl_product.prod_no' => 'desc'
@@ -158,6 +165,14 @@ class Get_thumbs extends Admin_Controller {
 					.'" class="fancybox tooltips" data-original-title="Click to zoom">'
 				;
 
+				if ($product->with_stocks == '0')
+				{
+					$html.= '<div class="ribbon ribbon-shadow ribbon-round ribbon-border-dash ribbon-vertical-right ribbon-color-danger uppercase tooltips" data-placement="bottom" data-container="body" data-original-title="Pre Order" style="position:absolute;right:-3px;width:28px;padding:1em 0;">
+						<i class="fa fa-ban"></i>
+					</div>'
+					;
+				}
+
 				$html.= '<div class="corner"></div><div class="check"> </div><div class="tile-body"><img class="img-b_ img-unveil" '
 					.(
 						$unveil
@@ -182,14 +197,14 @@ class Get_thumbs extends Admin_Controller {
 				;
 
 				$html.= '</a>';
-				$html.= '<div class="" style="color:red;font-size:1rem;">'
-					.'<input type="checkbox" class="package_items '
+				$html.= '<div class="" style="color:red;font-size:1rem;"><i class="fa fa-plus package_items '
 					.$product->prod_no.'_'.$product->color_code
-					.'" name="prod_no[]" value="'
+					.'>" style="background:#ddd;line-height:normal;padding:1px 2px;margin-right:3px;" data-item="'
 					.$product->prod_no.'_'.$product->color_code
-					.'" '
-					.$checkbox_check
-					.'/> &nbsp;<span style="text-transform:uppercase;"> Add to Order </span></div>'
+					.'"></i>
+					<span class="text-uppercase package_items" data-item="'
+					.$product->prod_no.'_'.$product->color_code
+					.'"> Add to Sales Order </span></div>'
 				;
 				$html.= '</div>';
 

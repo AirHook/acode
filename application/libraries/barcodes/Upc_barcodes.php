@@ -49,10 +49,12 @@ class Upc_barcodes
 
 	/**
 	 * Size Label - for item number last part
+	 * Size Mode - for size specifity on validation
 	 *
 	 * @var	string
 	 */
 	public $size_label = '';
+	public $size_mode = '';
 
 	/**
 	 * Prod Number - esp when item is not yet uploaded to product list
@@ -360,7 +362,7 @@ class Upc_barcodes
 		// verify and return
 		if ($check_digit == $barcode[11])
 		{
-			// set properties
+			// set some properties
 			$this->_is_custom_item_no($barcode);
 
 			return TRUE;
@@ -383,14 +385,81 @@ class Upc_barcodes
 		$q6 = $this->DB->get('upc_item_numbers');
 		$r6 = $q6->row();
 
+		// set st_id and/or size_label
 		if (isset($r6))
 		{
+			// custom item properties
 			$this->st_id = $r6->st_id;
 			$this->size_label = $r6->size_label;
 		}
 		else
 		{
+			// real product properties
 			$this->st_id = $x_st_id;
+
+			// determine size label using barcode[10] and product size mode
+			$this->CI->load->library('products/product_details');
+
+			// get product details
+			$product = $this->CI->product_details->initialize(
+				array(
+					'tbl_stock.st_id' => $x_st_id
+				)
+			);
+
+			$this->size_mode = $product->size_mode;
+
+			// get size lable
+			switch ($barcode[10])
+			{
+				//case 'size_0':  ->  size mode 1
+				//case 'size_ss':  ->  size mode 0
+				//case 'size_ssm':  ->  size mode 3
+				//case 'size_sprepack1221':  ->  size mode 2
+				//case 'size_sonesizefitsall':  ->  size mode 4
+
+				case '0':
+					if ($this->size_mode == '1') $this->size_label = 'size_0';
+					if ($this->size_mode == '0') $this->size_label = 'size_ss';
+					if ($this->size_mode == '3') $this->size_label = 'size_ssm';
+					if ($this->size_mode == '2') $this->size_label = 'size_sprepack1221';
+					if ($this->size_mode == '4') $this->size_label = 'size_sonesizefitsall';
+				break;
+				case '1':
+					if ($this->size_mode == '1') $this->size_label = 'size_2';
+					if ($this->size_mode == '0') $this->size_label = 'size_sm';
+					if ($this->size_mode == '3') $this->size_label = 'size_sml';
+				break;
+				case '2':
+					if ($this->size_mode == '1') $this->size_label = 'size_4';
+					if ($this->size_mode == '0') $this->size_label = 'size_sl';
+				break;
+				case '3':
+					if ($this->size_mode == '1') $this->size_label = 'size_6';
+					if ($this->size_mode == '0') $this->size_label = 'size_sxl';
+				break;
+				case '4':
+					if ($this->size_mode == '1') $this->size_label = 'size_8';
+					if ($this->size_mode == '0') $this->size_label = 'size_sxxl';
+				break;
+				case '5':
+					if ($this->size_mode == '1') $this->size_label = 'size_10';
+					if ($this->size_mode == '0') $this->size_label = 'size_sxl1';
+				break;
+				case '6':
+					if ($this->size_mode == '1') $this->size_label = 'size_12';
+					if ($this->size_mode == '0') $this->size_label = 'size_sxl2';
+				break;
+				case '7':
+					if ($this->size_mode == '1') $this->size_label = 'size_14';
+				break;
+				case '8':
+					if ($this->size_mode == '1') $this->size_label = 'size_16';
+				break;
+				case '9':
+					if ($this->size_mode == '1') $this->size_label = 'size_18';
+				break;
+			}
 		}
 
 		return;

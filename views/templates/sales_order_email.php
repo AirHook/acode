@@ -79,7 +79,7 @@
 										<strong> SALES ORDER #<?php echo $so_number; ?> </strong> <?php echo @$this->sales_order_details->rev ? '<small><b>rev</b></small><strong>'.@$this->sales_order_details->rev.'</strong>' : ''; ?> <br />
 										<small> Date: <?php echo $so_date; ?> </small>
 
-										<br>
+										<br><br>
 
 									</td>
 								</tr>
@@ -125,6 +125,8 @@
 										<?php echo $store_details->telephone; ?> <br />
 										ATTN: <?php echo $store_details->fname ? $store_details->fname.' '.$store_details->lname : ''; ?> <?php echo $store_details->email ? '('.$store_details->email.')': ''; ?>
 
+										<br><br>
+										
 									</td>
 								</tr>
 							</table>

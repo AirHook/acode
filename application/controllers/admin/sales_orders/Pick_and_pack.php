@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Details extends Admin_Controller {
+class Pick_and_pack extends Admin_Controller {
 
 	/**
 	 * Constructor
@@ -38,6 +38,20 @@ class Details extends Admin_Controller {
 		// generate the plugin scripts and css
 		$this->_create_plugin_scripts();
 
+		// let's ensure that there are no admin session for so create
+		if ($this->session->admin_so_items)
+		{
+			// new po mod details
+			unset($_SESSION['admin_so_mod_so_id']);
+			unset($_SESSION['admin_so_mod_items']);
+			// remove so admin so create
+			unset($_SESSION['admin_so_user_id']); // store or consumer and 0 for manual input
+			unset($_SESSION['admin_so_user_cat']); // ws, cs
+			unset($_SESSION['admin_so_slug_segs']);
+			unset($_SESSION['admin_so_dely_date']);
+			unset($_SESSION['admin_so_items']);
+		}
+
 		// load pertinent library/model/helpers
 		$this->load->library('products/size_names');
 		$this->load->library('sales_orders/sales_order_details');
@@ -53,6 +67,13 @@ class Details extends Admin_Controller {
 			array(
 				'sales_orders.sales_order_id' => $id
 			)
+		);
+
+		// set session for mod
+		$this->session->set_userdata('admin_so_mod_so_id', $id);
+		$this->session->set_userdata(
+			'admin_so_mod_items',
+			json_encode($this->sales_order_details->items)
 		);
 
 		// get the author
@@ -108,9 +129,9 @@ class Details extends Admin_Controller {
 		}
 
 		// set data variables...
-		$this->data['file'] = 'so_details_v3'; // sales_orders_details
-		$this->data['page_title'] = 'Sales Order Details';
-		$this->data['page_description'] = 'Details of the sales order from sales for wholesale user';
+		$this->data['file'] = 'so_pick_and_pack'; // sales_orders_details
+		$this->data['page_title'] = 'Sales Order Details Pick and Pack';
+		$this->data['page_description'] = 'Pick and Pack items for the Sales Orer to finally ship to customer';
 
 		// load views...
 		$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template/template', $this->data);
@@ -183,7 +204,7 @@ class Details extends Admin_Controller {
 			';
 			// handle page scripts
 			$this->data['page_level_scripts'].= '
-				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/components-sales_order_details.js" type="text/javascript"></script>
+				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/admin-so_pick_and_pack-components.js" type="text/javascript"></script>
 			';
 	}
 

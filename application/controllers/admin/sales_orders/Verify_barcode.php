@@ -36,8 +36,7 @@ class Verify_barcode extends Admin_Controller {
 		else
 		{
 			// grab the post variables
-			$designer = $this->input->post('designer');
-			$vendor_id = $this->input->post('vendor_id');
+			//$barcode = '710780167717'; // debug
 			$barcode = $this->input->post('barcode');
 
 			$this->load->library('barcodes/upc_barcodes');
@@ -59,56 +58,18 @@ class Verify_barcode extends Admin_Controller {
 
 				if ($product)
 				{
-					// if designer is empty
-					// set product designer slug
-					if ($designer == '')
-					{
-						$des = $product->designer_slug;
-					}
-					elseif ($product->designer_slug != $designer)
-					{
-						// if designer is not empty
-						// compare with product designer slug
-						// if not the same - return fail
-						$data = array(
-							'status' => 'false',
-							'error' => 'des_slug'
-						);
-						echo json_encode($data);
-						exit;
-					}
-
-					// if vendor is empty
-					// set product vendor id
-					if ($vendor_id == '')
-					{
-						$ven = $product->vendor_id;
-					}
-					elseif ($product->vendor_id != $vendor_id)
-					{
-						// if vendor is not emtpy
-						// compare with product vendor id
-						// if not the same - return fail
-						$data = array(
-							'status' => 'false',
-							'error' => 'vendor_id'
-						);
-						echo json_encode($data);
-						exit;
-					}
-
 					// eveything ok so return true with set product info
 					$data['status'] = 'true';
-					$data['item'] = $product->prod_no.' '.$product->color_code;
-					if (@$des) $data['des_slug'] = $product->designer_slug;
-					if (@$ven) $data['vendor_id'] = $product->vendor_id;
+					$data['item'] = $product->prod_no.'_'.$product->color_code;
+					$data['color_code'] = $product->color_code;
+					$data['size_label'] = $this->upc_barcodes->size_label;
 					echo json_encode($data);
 					exit;
 				}
 				else
 				{
 					// nothing more to do...
-					$data = array('status'=>'false','error'=>'no_product');
+					$data = array('status'=>'ture','error'=>'no_product');
 					echo json_encode($data);
 					exit;
 				}

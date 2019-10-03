@@ -19,55 +19,15 @@
 		                                        <i class="fa fa-reply"></i> Back to Sales Order list</a>
 		                                </div>
 		                            </div>
-		                            <hr />
-		                            <div class="portlet-title">
 
-		                                <?php if ($this->sales_order_details->status != '5')
-		                                { ?>
-
-		                                <div class="caption modify-so">
-		                                    <!--
-		                                    <a class="btn dark " href="<?php echo site_url($this->uri->segment(1).'/sales_orders/modify/index/'.$so_details->sales_order_id); ?>">
-		                                    -->
-		                                    <a class="btn dark hide" href="javascript:;">
-		                                        <i class="fa fa-pencil"></i> Modify SO
-		                                    </a>
-		                                </div>
-
-		                                    <?php
-		                                } ?>
-
-		                                <div class="actions btn-set">
-											<a class="btn default so-pick-and-pack" href="<?php echo site_url($this->uri->segment(1).'/sales_orders/pick_and_pack/index/'.$so_details->sales_order_id); ?>">
-		                                        <i class="fa fa-dropbox"></i> PICK and PACK
-		                                    </a>
-		                                    &nbsp;
-		                                    <a class="btn dark" href="<?php echo site_url($this->uri->segment(1).'/barcodes/print/so/index/'.$so_details->sales_order_id); ?>" target="_blank">
-		                                        <i class="fa fa-print"></i> Print All Barcodes
-		                                    </a>
-											&nbsp;
-		                                    <a class="btn default po-pdf-print_" href="<?php echo site_url($this->uri->segment(1).'/sales_orders/view_packing_list/index/'.$so_details->sales_order_id); ?>" target="_blank">
-		                                        <i class="fa fa-eye"></i> View PACKING LIST for Print/Download
-		                                    </a>
-		                                    &nbsp;
-		                                    <a class="btn btn-default po-pdf-print_" href="<?php echo site_url($this->uri->segment(1).'/sales_orders/view_pdf/index/'.$so_details->sales_order_id); ?>" target="_blank">
-		                                        <i class="fa fa-eye"></i> View PDF for Print/Download
-		                                    </a>
-		                                    &nbsp;
-		                                    <a class="btn dark " href="<?php echo site_url($this->uri->segment(1).'/sales_orders/send/index/'.$so_details->sales_order_id); ?>">
-		                                        <i class="fa fa-send"></i> Send SO
-		                                    </a>
-		                                </div>
-		                            </div>
 		                        </div>
 
+								<?php
+								/***********
+								 * Noification area
+								 */
+								?>
 								<div class="row">
-
-									<?php
-									/***********
-									 * Noification area
-									 */
-									?>
 									<div class="col-sm-12 clearfix">
 										<div class="alert alert-danger display-hide" data-test="test">
 											<button class="close" data-close="alert"></button> You have some form errors. Please check below. </div>
@@ -79,7 +39,6 @@
 										</div>
 										<?php } ?>
 									</div>
-
 								</div>
 
 								<?php
@@ -88,7 +47,7 @@
 		                         */
 		                        ?>
 		                        <div class="row">
-									<div class="col-md-6 pull-right">
+									<div class="col-md-6 pull-right hide">
 			                            <div class="form-group" data-site_section="<?php echo $this->uri->segment(1); ?>" data-object_data='{"po_id":"<?php echo $this->sales_order_details->po_id; ?>","<?php echo $this->security->get_csrf_token_name(); ?>":"<?php echo $this->security->get_csrf_hash(); ?>"}'>
 			                                <label class="control-label col-md-2">Status</label>
 			                                <div class="col-md-10">
@@ -97,12 +56,16 @@
 			                                         &nbsp; Open/Pending
 			                                    </cite>
 			                                    <cite class="small" style="font-weight:100;display:block;">
-			                                        <i class="fa fa-<?php echo in_array($this->sales_order_details->status, array('1','2','3','4','5')) ? 'check-' : ''; ?>square-o"></i>
+			                                        <i class="fa fa-<?php echo in_array($this->sales_order_details->status, array('2','3','4','5')) ? 'check-' : ''; ?>square-o"></i>
 			                                         &nbsp; Picked and Packed (Partial/Complete)
 			                                    </cite>
 			                                    <cite class="small" style="font-weight:100;display:block;">
-			                                        <i class="fa fa-<?php echo in_array($this->sales_order_details->status, array('2','3','4','5')) ? 'check-' : ''; ?>square-o"></i>
+			                                        <i class="fa fa-<?php echo in_array($this->sales_order_details->status, array('3','4','5')) ? 'check-' : ''; ?>square-o"></i>
 			                                         &nbsp; In Transit (Partial/Complete)
+			                                    </cite>
+			                                    <cite class="small" style="font-weight:100;display:block;">
+			                                        <i class="fa fa-<?php echo in_array($this->sales_order_details->status, array('4','5')) ? 'check-' : ''; ?>square-o"></i>
+			                                         &nbsp; Delivered Partial (Shows only on partial delivery)
 			                                    </cite>
 			                                    <cite class="small" style="font-weight:100;display:block;">
 			                                        <i class="fa fa-<?php echo in_array($this->sales_order_details->status, array('5')) ? 'check-' : ''; ?>square-o"></i>
@@ -112,14 +75,10 @@
 			                                    Others:
 			                                    <cite class="small" style="font-weight:100;display:block;">
 			                                        <i class="fa fa-<?php echo $this->sales_order_details->status == '6' ? 'check-' : ''; ?>square-o"></i>
-			                                         &nbsp; Delivered Partial (Shows only on partial delivery)
-			                                    </cite>
-												<cite class="small" style="font-weight:100;display:block;">
-			                                        <i class="fa fa-<?php echo $this->sales_order_details->status == '7' ? 'check-' : ''; ?>square-o"></i>
 			                                         &nbsp; On Hold
 			                                    </cite>
 			                                    <cite class="small" style="font-weight:100;display:block;">
-			                                        <i class="fa fa-<?php echo $this->sales_order_details->status == '8' ? 'check-' : ''; ?>square-o"></i>
+			                                        <i class="fa fa-<?php echo $this->sales_order_details->status == '7' ? 'check-' : ''; ?>square-o"></i>
 			                                         &nbsp; Cancelled
 			                                    </cite>
 			                                </div>
@@ -132,7 +91,7 @@
 								 * SO Summary Form
 								 */
 								?>
-                                <div class="row printable-content" id="print-to-pdf">
+                                <div class="row printable-content">
 
 									<?php
 	                                /***********
@@ -152,133 +111,30 @@
 
 									<?php
 	                                /***********
-	                                 * BILL TO / SHIP TO
+	                                 * Action Buttons
 	                                 */
 	                                ?>
-                                    <div class="col-sm-12 so-addresses">
-                                        <div class="row">
-
-                                            <div class="col-sm-6">
-
-                                                <p><strong> BILLING ADDRESS </strong></p>
-
-                                                <p>
-													<?php echo $store_details->store_name; ?> <br />
-													<?php echo $store_details->address1; ?> <br />
-													<?php echo $store_details->address2 ? $store_details->address2.'<br />' : ''; ?>
-													<?php echo $store_details->city.', '.$store_details->state.' '.$store_details->zipcode; ?> <br />
-													<?php echo $store_details->country; ?> <br />
-													<?php echo $store_details->telephone; ?> <br />
-                                                </p>
-
-                                            </div>
-                                            <div class="col-sm-6">
-
-                                                <p><strong> SHIPPING ADDRESS </strong></p>
-
-                                                <p>
-													<?php echo $store_details->store_name; ?> <br />
-													<?php echo $store_details->address1; ?> <br />
-													<?php echo $store_details->address2 ? $store_details->address2.'<br />' : ''; ?>
-													<?php echo $store_details->city.', '.$store_details->state.' '.$store_details->zipcode; ?> <br />
-													<?php echo $store_details->country; ?> <br />
-													<?php echo $store_details->telephone; ?> <br />
-													ATTN: <?php echo $store_details->fname ? $store_details->fname.' '.$store_details->lname : ''; ?> <?php echo $store_details->email ? '('.safe_mailto($store_details->email).')': ''; ?>
-                                                </p>
-
-                                            </div>
-
-                                        </div>
-                                    </div>
-
-									<?php
-	                                /***********
-	                                 * Author
-	                                 */
-	                                ?>
-                                    <div class="col-sm-12 so-author">
-                                        <p>
-                                            Sales Person: &nbsp;<?php echo $this->sales_order_details->author == '1' ? 'IN-HOUSE' : $author->fname.' '.$author->lname.' ('.safe_mailto($author->email).')'; ?>
-                                        </p>
-                                    </div>
-
-									<?php
-	                                /***********
-	                                 * SO Options 1
-	                                 */
-	                                ?>
-	                                <div class="col-sm-12 m-grid m-grid-responsive-sm so-summary-options1">
-	                                    <div class="m-grid-row">
-	                                        <div class="m-grid-col">
-
-	                                            <h6> Ref Check Out Order#: </h6>
-	                                            <div class="form-group row">
-	                                                <div class="col-md-4 col-sm-12">
-	                                                    <input class="form-control form-control-inline" size="16" type="text" value="<?php echo @$so_options['ref_checkout_no']; ?>" name="options[ref_checkout_no]" />
-	                                                </div>
-	                                            </div>
-
-	                                        </div>
-	                                    </div>
-	                                </div>
-
-									<?php
-	                                /***********
-	                                 * SO Options 2
-	                                 */
-	                                ?>
-	                                <div class="col-sm-12 m-grid m-grid-responsive-sm so-summary-options2">
-	                                    <div class="m-grid-row">
-	                                        <div class="m-grid-col">
-
-	                                            <h6> Ship By Date: </h6>
-	                                            <div class="form-group row">
-	                                                <div class="col-md-12">
-	                                                    <input class="form-control form-control-inline date-picker" type="text" value="<?php echo $this->sales_order_details->delivery_date; ?>" name="delivery_date" data-date-format="yyyy-mm-dd" data-date-start-date="+0d" />
-	                                                    <span class="help-block small hide" style="font-size:0.8em;"> Click to Select date </span>
-	                                                </div>
-	                                            </div>
-
-	                                        </div>
-	                                        <div class="m-grid-col">
-
-	                                            <h6> Ship Via: </h6>
-	                                            <div class="form-group row">
-	                                                <div class="col-md-12">
-	                                                    <input class="form-control form-control-inline" size="16" type="text" value="<?php echo @$so_options['ship_via']; ?>" name="options[ship_via]" />
-	                                                </div>
-	                                            </div>
-
-	                                        </div>
-	                                        <div class="m-grid-col">
-
-	                                            <h6> F.O.B: </h6>
-	                                            <div class="form-group row">
-	                                                <div class="col-md-12">
-	                                                    <input class="form-control form-control-inline" size="16" type="text" value="<?php echo @$so_options['fob']; ?>" name="options[fob]" />
-	                                                </div>
-	                                            </div>
-
-	                                        </div>
-	                                        <div class="m-grid-col">
-
-	                                            <h6> Terms: </h6>
-	                                            <div class="form-group row">
-	                                                <div class="col-md-12">
-	                                                    <input class="form-control form-control-inline" size="16" type="text" value="<?php echo @$so_options['terms']; ?>" name="options[terms]" />
-	                                                </div>
-	                                            </div>
-
-	                                        </div>
-	                                    </div>
-	                                </div>
+									<div class="col-sm-4 pick-and-pack pull-right" style="margin-top:85px;">
+										<div class="row">
+											<div class="col-sm-12 button-actions" data-object_data='{"so_id":"<?php echo $this->sales_order_details->so_id; ?>","<?php echo $this->security->get_csrf_token_name(); ?>":"<?php echo $this->security->get_csrf_hash(); ?>"}'>
+												<button class="btn dark btn-block btn-lg manual-pick">PICK AND PACK ITEMS MANUALLY<br />TO COMPLETE SALES ORDER</button>
+												<button class="btn grey-mint btn-block btn-lg scan-pick">SCAN OUT ITEMS USING BARCODE</button>
+												<div class="input-icon input-icon-lg right display-none input-upc_barcode" style="margin-top:5px;">
+		                                            <i class="fa fa-barcode font-dark tooltips" data-original-title="Cancel"></i>
+		                                            <input type="text" class="form-control input-lg" name="upc_barcode" placeholder="Scan Barcode...">
+												</div>
+												<hr style="margin:15px 0;border-color:#ccc;border-width:1px;" />
+												<button class="btn btn-block btn-lg update-so-mod">UPDATE SALES ORDER DETAILS</button>
+											</div>
+										</div>
+									</div>
 
 									<?php
 	                                /***********
 	                                 * Cart Basket
 	                                 */
 	                                ?>
-                                    <div class="col-sm-12 so-cart cart_basket_wrapper">
+                                    <div class="col-sm-8 so-cart cart_basket_wrapper">
 
 										<!--------------------------------->
 										<hr style="margin:15px 0;border-color:#ccc;border-width:1px;" />
@@ -288,21 +144,17 @@
                                                 <table class="table table-striped table-hover table-light">
                                                     <thead>
 														<tr>
-	                                                        <th colspan="3" class="text-center" style="padding:unset;border-bottom:none;border-right:1px solid #F2F5F8;"> Qty </th>
+															<th style="width:50px;border-bottom:none;"></th>
+	                                                        <th colspan="3" class="text-center" style="padding:unset;border-bottom:none;border-left:1px solid #F2F5F8;border-right:1px solid #F2F5F8;"> Qty </th>
 	                                                        <th colspan="6" style="border-bottom:none;"></th>
 	                                                    </tr>
 	                                                    <tr>
-	                                                        <th class="text-center" style="width:50px;vertical-align:top;color:black;"> Req'd </th>
+															<th></th>
+	                                                        <th class="text-center" style="width:50px;vertical-align:top;color:black;border-left:1px solid #F2F5F8;"> Req'd </th>
 	                                                        <th class="text-center" style="width:50px;vertical-align:top;color:black;"> Ship'd </th>
 	                                                        <th class="text-center" style="width:50px;vertical-align:top;color:black;border-right:1px solid #F2F5F8;"> B.O. </th>
-	                                                        <th style="vertical-align:top;color:black;"> Items </th>
-	                                                        <th style="vertical-align:top;color:black;"> Desc </th>
-	                                                        <th></th> <!-- Remove button -->
-	                                                        <th style="vertical-align:top;width:80px;color:black;" class="text-right">
-	                                                            Unit Price
-	                                                        </th>
-	                                                        <th style="vertical-align:top;width:60px;color:black;" class="text-right"> Disc </th>
-	                                                        <th style="vertical-align:top;width:80px;color:black;" class="text-right"> Extended </th>
+	                                                        <th style="vertical-align:top;color:black;"> Item/Desc </th>
+	                                                        <th style="vertical-align:top;width:60px;color:black;" class="text-right"> Availabe Stock </th>
 	                                                    </tr>
                                                     </thead>
                                                     <tbody>
@@ -426,31 +278,32 @@
 					                                				{
                                                                 ?>
 
-                                                        <tr class="summary-item-container">
+                                                        <tr class="summary-item-container <?php echo $item.' '.$size_label; ?>" data-item="<?php echo $item; ?>" data-size_label="<?php echo $size_label; ?>">
+
+															<?php
+                                                            /**********
+                                                             * Checkbox
+                                                             */
+                                                            ?>
+                                                            <td class="text-center" style="vertical-align:top;">
+																<label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
+							                                        <input type="checkbox" class="checkboxes" name="checkbox[]" value="<?php echo $so_details->so_id; ?>" />
+							                                        <span></span>
+							                                    </label>
+                                                            </td>
 
 															<?php
                                                             /**********
                                                              * Quantities
                                                              */
                                                             ?>
-															<td style="vertical-align:top;"><?php echo $qty[0]; ?></td>
-															<td style="vertical-align:top;"><?php echo @$qty[1]; ?></td>
-															<td style="vertical-align:top;"><?php echo @$qty[2]; ?></td>
-
-															<?php
-                                                            /**********
-                                                             * Item Number
-                                                             */
-                                                            ?>
-															<td style="vertical-align:top;">
-																<?php echo $prod_no; ?><br />
-	                                                            <?php echo $color_name; ?><br />
-																<?php echo 'Size '.$s; ?>
-															</td>
+															<td style="vertical-align:top;" class="reqd"><?php echo $qty[0]; ?></td>
+															<td style="vertical-align:top;" class="shipd"><?php echo @$qty[1]; ?></td>
+															<td style="vertical-align:top;" class="bo"><?php echo @$qty[2]; ?></td>
 
                                                             <?php
                                                             /**********
-															 * Description
+															 * Item/Description
                                                              * Item IMAGE and Details
                                                              * Image links to product details page
                                                              */
@@ -491,7 +344,8 @@
                                                                     </h5>
                                                                     <p style="margin:0px;">
                                                                         <span style="color:#999;">Style#: <?php echo $item; ?></span><br />
-                                                                        Color: &nbsp; <?php echo $product->color_name; ?>
+                                                                        Color: &nbsp; <?php echo $product->color_name; ?><br />
+																		<?php echo 'Size '.$s; ?>
 																		<?php echo @$product->designer_name ? '<br /><cite class="small">'.$product->designer_name.'</cite>' : ''; ?>
 																		<?php echo @$product->category_names ? ' <cite class="small">('.end($product->category_names).')</cite>' : ''; ?>
                                                                     </p>
@@ -507,54 +361,18 @@
                                                                 </div>
                                                             </td>
 
-															<?php
-	                                                        /**********
-	                                                         * Blank - remove button on create page
-	                                                         */
-	                                                        ?>
-	                                                        <td class="text-right">
-	                                                        </td>
-
                                                             <?php
                                                             /**********
-                                                             * Unit WS Price
+                                                             * Available Stock
                                                              */
                                                             ?>
-                                                            <td class="text-right" style="vertical-align:top;">
-                                                                $ <?php echo number_format($price, 2); ?>
-                                                            </td>
-
-															<?php
-	                                                        /**********
-	                                                         * Discount
-	                                                         */
-	                                                        ?>
-	                                                        <td class="text-right discount-wrapper" style="vertical-align:top;">
-	                                                            <?php
-	                                                            $disc = @$size_qty['discount'] ?: 0;
-	                                                            if ($disc == '0') echo '-';
-	                                                            else echo number_format($disc, 2);
-	                                                            ?>
-	                                                        </td>
-
-                                                            <?php
-                                                            /**********
-                                                             * Subtotal
-                                                             */
-                                                            ?>
-                                                            <td class="text-right" style="vertical-align:top;">
-                                                                <?php
-                                                                $this_size_total = $this_size_qty * ($price - $disc);
-                                                                ?>
-																$ <?php echo number_format($this_size_total, 2); ?>
+                                                            <td class="text-center stock" style="vertical-align:top;">
+                                                                <?php echo @$product->$size_label; ?>
                                                             </td>
 
                                                         </tr>
 																		<?php
 																	}
-
-																	$overall_qty += $this_size_qty;
-	                                                                $overall_total += $this_size_total;
 																}
 
                                                                 $i++;
@@ -569,105 +387,6 @@
 
 										</div>
 									</div>
-
-                                    <?php if ( ! empty($so_items))
-                                    { ?>
-
-                                    <div class="col-sm-12 status-with-items">
-                                        <div class="row">
-
-                                            <div class="col-sm-7">
-												<label class="control-label">Remarks/Instructions:
-												</label>
-												<p>
-													<?php echo $so_details->remarks; ?>
-												</p>
-                                            </div>
-
-                                            <div class="col-sm-1">
-                                                <!-- Spacer -->
-                                            </div>
-
-                                            <div class="col-sm-4">
-                                                <table class="table table-condensed cart-summary">
-                                                    <tr>
-                                                        <td> Quantity Total </td>
-                                                        <td class="overall-qty text-right">
-                                                            <?php echo $overall_qty; ?>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td> Order Total </td>
-                                                        <td class="text-right order-total">
-                                                            <?php
-                                                            echo '$ '.number_format($overall_total, 2);
-                                                            ?>
-                                                        </td>
-                                                    </tr>
-													<tr>
-                                                        <td> Tax Due: </td>
-                                                        <td class="text-right order-total">
-                                                            <?php
-															$fed_tax_id =
-																is_numeric(@$store_details->fed_tax_id)
-																? floatval(@$store_details->fed_tax_id)
-																: 0
-															;
-															$tax_due =
-																$fed_tax_id
-																? '$ '.number_format($fed_tax_id, 2)
-																: '-'
-															;
-                                                            echo $tax_due;
-                                                            ?>
-                                                        </td>
-                                                    </tr>
-													<tr style="font-weight:700;">
-                                                        <td> Grand Total </td>
-                                                        <td class="text-right order-total">
-                                                            <?php
-															$grand_total =
-																$fed_tax_id
-																? $overall_total * $fed_tax_id
-																: $overall_total
-															;
-                                                            echo '$ '.number_format($grand_total, 2);
-                                                            ?>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td colspan="2">
-                                                        </td>
-                                                    </tr>
-                                                </table>
-
-												<div class="row">
-													<div class="col-sm-12 pull-right">
-														<!-- DOC: add class "submit-po_summary_review" to execute script to send form -->
-														<button class="btn dark btn-block mt-bootbox-new submit-po_summary_review hidden-xs hidden-sm"> Submit Sales Order Invoice </button>
-														<button class="btn dark btn-block mt-bootbox-new submit-po_summary_review hidden-md hidden-lg"> Submit SO </button>
-													</div>
-												</div>
-
-                                            </div>
-
-                                        </div>
-                                    </div>
-
-                                    <div class="col-sm-12 no-item-notification" style="display:none;">
-                                        <h4 class="text-center" style="margin:85px auto 150px;"> There are no items in your Shop Bag </h4>
-                                    </div>
-
-                                        <?php
-                                    }
-                                    else
-                                    { ?>
-
-                                    <div class="col-sm-12">
-                                        <h4 class="text-center" style="margin:85px auto 150px;"> There are no items in your Shop Bag </h4>
-                                    </div>
-                                        <?php
-                                    } ?>
 
                                 </div>
 

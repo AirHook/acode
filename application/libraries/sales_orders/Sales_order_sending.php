@@ -105,75 +105,72 @@ class Sales_order_sending
 	public function send($so_id = '')
 	{
 		// load pertinent library/model/helpers
+		$this->CI->load->library('products/product_details');
 		$this->CI->load->library('products/size_names');
 		$this->CI->load->library('sales_orders/sales_order_details');
-		$this->CI->load->library('designers/designer_details');
-		$this->CI->load->library('users/vendor_user_details');
+		$this->CI->load->library('users/admin_user_details');
 		$this->CI->load->library('users/wholesale_user_details');
+		$this->CI->load->library('users/consumer_user_details');
 		$this->CI->load->library('users/sales_user_details');
-		$this->CI->load->library('products/product_details');
 
-		// initialize...
+		// initialize sales order properties and items
 		$data['so_details'] = $this->CI->sales_order_details->initialize(
 			array(
-				'sales_orders.sales_order_id' => $so_id
+				'sales_order_id' => $so_id
 			)
 		);
 
 		// get the author
-		$data['author'] = $this->CI->sales_user_details->initialize(
-			array(
-				'admin_sales_id' => $this->CI->sales_order_details->author
-			)
-		);
-
-		// get designer details
-		$data['designer_details'] = $this->CI->designer_details->initialize(
-			array(
-				'designer.des_id' => $this->CI->sales_order_details->des_id
-			)
-		);
-
-		// get vendor details
-		// vendor id is always present at this time given create step1
-		$data['vendor_details'] = $this->CI->vendor_user_details->initialize(
-			array(
-				'vendor_id' => $this->CI->sales_order_details->vendor_id
-			)
-		);
+		switch ($this->CI->sales_order_details->c)
+		{
+			case '2': //sales
+				$data['author'] = $this->CI->sales_user_details->initialize(
+					array(
+						'admin_sales_id' => $this->CI->sales_order_details->author
+					)
+				);
+			break;
+			case '1': //admin
+			default:
+				$data['author'] = $this->CI->admin_user_details->initialize(
+					array(
+						'admin_id' => ($this->CI->sales_order_details->author ?: '1')
+					)
+				);
+		}
 
 		// get store details
-		$data['store_details'] = $this->CI->wholesale_user_details->initialize(
-			array(
-				'user_id' => $this->CI->sales_order_details->user_id
-			)
-		);
+		// check for user cat to fill out bill to/ship to address
+		if ($this->CI->sales_order_details->user_cat)
+		{
+			if ($this->CI->sales_order_details->user_cat == 'ws')
+			{
+				$data['store_details'] = $this->CI->wholesale_user_details->initialize(
+					array(
+						'user_id' => $this->CI->sales_order_details->user_id
+					)
+				);
+			}
 
-		// get designer id and size names
-		$data['des_id'] = $this->CI->sales_order_details->des_id;
-		$data['size_names'] = $this->CI->size_names->get_size_names($this->CI->designer_details->webspace_options['size_mode']);
+			if ($this->CI->sales_order_details->user_cat == 'cs')
+			{
+				$data['store_details'] = $this->CI->consumer_user_details->initialize(
+					array(
+						'user_id' => $this->CI->sales_order_details->user_id
+					)
+				);
+			}
+		}
 
-		// set the items
+		// set THE items
 		$data['so_items'] = $this->CI->sales_order_details->items;
 		$data['so_date'] = $this->CI->sales_order_details->so_date;
 		$data['so_number'] = $this->CI->sales_order_details->so_number;
+		$data['so_options'] = $this->CI->sales_order_details->options;
 		for($c = strlen($data['so_number']);$c < 6;$c++)
 		{
 			$data['so_number'] = '0'.$data['so_number'];
 		}
-		$data['so_options'] = $this->CI->sales_order_details->options;
-
-		// set company information
-		$data['company_name'] = $this->CI->designer_details->company_name;
-		$data['company_address1'] = $this->CI->designer_details->address1;
-		$data['company_address2'] = $this->CI->designer_details->address2;
-		$data['company_city'] = $this->CI->designer_details->city;
-		$data['company_state'] = $this->CI->designer_details->state;
-		$data['company_zipcode'] = $this->CI->designer_details->zipcode;
-		$data['company_country'] = $this->CI->designer_details->country;
-		$data['company_telephone'] = $this->CI->designer_details->phone;
-		$data['company_contact_person'] = $this->CI->designer_details->owner;
-		$data['company_contact_email'] = $this->CI->designer_details->info_email;
 
 		$this->CI->load->library('email');
 

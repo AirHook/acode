@@ -76,7 +76,7 @@ class Get_category_tree extends MY_Controller {
 
 					// generate designer slugs and name for link and front end
 					$slugs_link = array($designer_details->url_structure);
-					$slugs_link_name = array($designer_details->designer);
+					$slugs_link_name = array();
 
 					// designer level
 					// set active where necessary
@@ -179,7 +179,7 @@ class Get_category_tree extends MY_Controller {
 						{
 							// capture the active slugs
 							//$slug_segs = @$slug_segs ?: $slugs_link;
-							$slug_segs_name = @$slug_segs_name ?: $slugs_link_name;
+							$slug_segs_name = $slugs_link_name;
 							$p_slug_segs = 'data-slug_segs="'.implode('/', $slug_segs).'" ';
 							$p_slug_segs_name = 'data-slug_segs_name="'.implode(' &nbsp;&raquo;&nbsp; ', $slug_segs_name).'" ';
 
