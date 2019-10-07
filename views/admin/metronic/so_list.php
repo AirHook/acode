@@ -192,17 +192,17 @@
                 					<?php
                 					switch ($order->status)
                 					{
-                						case '1':
+                						case '5':
                 							$label = 'success';
                 							$text = 'Complete';
                 						break;
-                						case '2':
+                						case '7':
                 							$label = 'danger';
                 							$text = 'On Hold';
                 						break;
-                						case '3':
+                						case '8':
                 							$label = 'warning';
-                							$text = 'Return';
+                							$text = 'Cancelled';
                 						break;
                 						case '4':
                 						default:
@@ -226,19 +226,19 @@
                                             <li class="divider"> </li>
                                             <li>
                                                 <a data-toggle="modal" href="#pending-<?php echo $order->sales_order_id; ?>">
-                                                    <i class="fa fa-<?php echo $order->status == '4' ? 'check': ''; ?>"></i> Pending </a>
+                                                    <i class="fa fa-<?php echo $order->status == '0' ? 'check': ''; ?>"></i> Pending </a>
                                             </li>
                                             <li>
                                                 <a data-toggle="modal" href="#return-<?php echo $order->sales_order_id; ?>">
-                                                    <i class="fa fa-<?php echo $order->status == '3' ? 'check': ''; ?>"></i> Return </a>
+                                                    <i class="fa fa-<?php echo $order->status == '8' ? 'check': ''; ?>"></i> Cancelled </a>
                                             </li>
                                             <li>
                                                 <a data-toggle="modal" href="#on_hold-<?php echo $order->sales_order_id; ?>">
-                                                    <i class="fa fa-<?php echo $order->status == '2' ? 'check': ''; ?>"></i> On Hold </a>
+                                                    <i class="fa fa-<?php echo $order->status == '7' ? 'check': ''; ?>"></i> On Hold </a>
                                             </li>
                                             <li>
                                                 <a data-toggle="modal" href="#complete-<?php echo $order->sales_order_id; ?>">
-                                                    <i class="fa fa-<?php echo $order->status == '1' ? 'check': ''; ?>"></i> Complete </a>
+                                                    <i class="fa fa-<?php echo $order->status == '5' ? 'check': ''; ?>"></i> Complete </a>
                                             </li>
                                             <li class="divider"> </li>
                                             <li>

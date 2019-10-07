@@ -427,6 +427,7 @@
                                                     $this_size_qty = 0;
                                                     foreach ($size_names as $size_label => $s)
                                                     {
+                                                        //$size_label = 'size_ss'; for example
                                                         $s_qty =
                                                             isset($size_qty[$size_label])
                                                             ? $size_qty[$size_label]
@@ -439,32 +440,23 @@
 
                                                     <div style="display:inline-block;">
                                                         <?php echo $s; ?> <br />
-                                                        <input tpye="text" class="this-size-qty" name="this-size-qty[]" style="border:1px solid #<?php echo $s_qty > 0 ? '000' : 'ccc'; ?>;font-size:12px;width:30px;padding-left:5px;background-color:white;" value="<?php echo $s_qty; ?>" readonly />
-                                                        <br />
-                                                        <a class="small text-default tooltips print-upc-size" data-original-title="Print Barcodes of this size" data-placement="bottom" href="<?php echo base_url().'admin/barcodes/print/po_item/index/'.$po_details->po_id.'/'.$item.'/'.$size_label; ?>" target="_blank" data-item="<?php echo $item; ?>" data-size="<?php echo $s; ?>">
-                                                            <i class="fa fa-print"></i>
-                                                        </a>
+                                                        <input tpye="text" class="this-size-qty" style="border:1px solid #<?php echo $s_qty > 0 ? '000' : 'ccc'; ?>;font-size:12px;width:30px;padding-left:5px;background-color:white;" value="<?php echo $s_qty; ?>" readonly />
                                                     </div>
 
                                                             <?php
                                                         }
                                                     } ?>
 
-                                                    <div style="display:inline-block;position:relative;top:-18px;">=</div>
+                                                    =
 
                                                     <div style="display:inline-block;">
                                                         Total <br />
-                                                        <input tpye="text" class="this-total-qty <?php echo $item.' '.$prod_no; ?>" style="border:1px solid #ccc;font-size:12px;width:30px;padding-left:5px;background-color:white;" value="<?php echo $this_size_qty; ?>" readonly /> <br />
-                                                        <a class="small text-default tooltips print-upc-item" data-original-title="Print All Barcodes of this item" data-placement="bottom" href="<?php echo site_url('admin/barcodes/print/po_item/index/'.$po_details->po_id.'/'.$item); ?>" target="_blank" data-item="<?php echo $item; ?>">
-                                                            <i class="fa fa-print"></i>
-                                                        </a>
+                                                        <input tpye="text" class="this-total-qty <?php echo $item.' '.$prod_no; ?>" style="border:1px solid #ccc;font-size:12px;width:30px;padding-left:5px;background-color:white;" value="<?php echo $this_size_qty; ?>" readonly />
                                                     </div>
 
-                                                    <!--
                                                     <div class="margin-top-10">
                                                         <a href="<?php echo site_url($this->uri->segment(1).'/barcodes/print/po_item/index/'.$po_details->po_id.'/'.$item); ?>" class="btn dark btn-outline btn-sm" target="_blank">Print Barcode Labels</a>
                                                     </div>
-                                                    -->
                                                 </td>
                                                 <?php
                                                 /**********
@@ -575,43 +567,3 @@
                         } ?>
 
                     </div>
-
-                    <!-- PRINT ITEM SIZE'S BARCODE OPTIONS -->
-                    <div id="modal-print-upc-size" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
-                        <div class="modal-dialog modal-sm">
-                            <div class="modal-content" data-object_data='{"<?php echo $this->security->get_csrf_token_name(); ?>":"<?php echo $this->security->get_csrf_hash(); ?>"}'>
-
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                    <h4 class="modal-title">Print UPC Barcode</h4>
-                                </div>
-                                <div class="modal-body">
-
-                                    <div class="form-body">
-                                        <div class="form-group">
-                                            <label><span class="item"></span><br />Size <span class="size"></span></label>
-                                            <div class="mt-radio-list" data-url="">
-                                                <label class="mt-radio mt-radio-outline"> This Quantity <p class="qty" style="display:inline;"></p> pcs
-                                                    <input type="radio" value="1" name="test" checked />
-                                                    <span></span>
-                                                </label>
-                                                <label class="mt-radio mt-radio-outline"> Just 1 label
-                                                    <input type="radio" value="0" name="test" />
-                                                    <span></span>
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn dark btn-outline" data-dismiss="modal" tabindex="-1">Cancel</button>
-                                    <button type="button" class="btn dark print-upc-size" data-url="">Print</button>
-                                </div>
-
-                            </div>
-                            <!-- /.modal-content -->
-                        </div>
-                        <!-- /.modal-dialog -->
-                    </div>
-                    <!-- /.modal -->

@@ -118,7 +118,7 @@
                                                     <a href="<?php echo site_url('shop/'.$designer->slug.'/'.implode('/', $li_a_link)); ?>" class="cbp-caption cbp-singlePageInline_" data-title="<?php echo $category->category_name; ?><br><?php echo $description; ?>" rel="nofollow">
                                                         <div class="cbp-caption-defaultWrap">
 															<!-- <?php echo $image; ?> -->
-                                                            <img src="<?php echo $image ? base_url().'images/subcategory_icon/thumb/'.$image : base_url().'images/subcategory_icon/thumb/default-designer-icon.jpg'; ?>" alt="<?php echo $category->category_name; ?>" alt="" />
+                                                            <img src="<?php echo $image ? $this->config->slash_item('PROD_IMG_URL').'images/subcategory_icon/thumb/'.$image : base_url().'images/subcategory_icon/thumb/default-designer-icon.jpg'; ?>" alt="<?php echo $category->category_name; ?>" alt="" />
 														</div>
                                                         <div class="cbp-caption-activeWrap">
                                                             <div class="cbp-l-caption-alignLeft">

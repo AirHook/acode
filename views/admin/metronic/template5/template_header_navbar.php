@@ -1081,7 +1081,7 @@
 
                                 <?php
                                 // available only on hub sites only for now
-                                if ($this->webspace_details->options['site_type'] == 'hub_site')
+                                if (@$this->webspace_details->options['site_type'] == 'hub_site')
                                 { ?>
                                 <li class="dropdown <?php echo in_array('production', $this->uri->segment_array()) ? 'active selected' : ''; ?>" >
                                     <a href="<?php echo site_url('admin/production'); ?>" class="text-uppercase">

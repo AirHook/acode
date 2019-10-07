@@ -1,4 +1,4 @@
-Discount                    <!-- BEGIN PAGE CONTENT BODY -->
+                    <!-- BEGIN PAGE CONTENT BODY -->
                     <div class="row">
 
                         <div class="col col-md-6 form-horizontal" role="form">

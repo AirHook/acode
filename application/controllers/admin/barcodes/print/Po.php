@@ -86,7 +86,9 @@ class Po extends Admin_Controller {
 								$barcodes[$this->upc_barcodes->generate()] = array(
 									'prod_no' => $prod_no,
 									'color_name' => $color_name,
-									'size' => $s
+									'size' => $s,
+									'qty' => $items[$item][$size_label]
+
 								);
 							}
 						}

@@ -21,8 +21,7 @@ class Po_item extends Admin_Controller {
 	 *
 	 * @return	void
 	 */
-    //public function index($st_id = NULL, $size_label = NULL)
-	public function index($po_id = '', $item = '')
+	public function index($po_id = '', $item = '', $item_size_label = '', $all = NULL)
     {
     	if (
 			$po_id
@@ -49,6 +48,7 @@ class Po_item extends Admin_Controller {
 			// get designer details
 			$this->designer_details->initialize(array('designer.des_id'=>$this->purchase_order_details->des_id));
 
+			// get the barcodes
 			if (isset($items[$item]))
 			{
 				// get product details
@@ -70,25 +70,44 @@ class Po_item extends Admin_Controller {
 				// get size names
 				$size_names = $this->size_names->get_size_names($size_mode);
 
-				$barcodes = array();
-				foreach ($size_names as $size_label => $s)
+				// if item size label is present
+				if ($item_size_label)
 				{
-					if ($s != 'XL1' && $s != 'XL2')
-					{
-						if (isset($items[$item][$size_label]))
-						{
-							$upcfg['prod_no'] = $prod_no;
-							$upcfg['st_id'] = $st_id;
-							$upcfg['size_label'] = $size_label;
-							$this->upc_barcodes->initialize($upcfg);
+					// initialize and generate barcode
+					$upcfg['prod_no'] = $prod_no;
+					$upcfg['st_id'] = $st_id;
+					$upcfg['size_label'] = $item_size_label;
+					$this->upc_barcodes->initialize($upcfg);
+					$upc_barcode = $this->upc_barcodes->generate();
 
-							// generate array to pass to view file
-							//array_push($barcodes, $this->upc_barcodes->generate());
-							$barcodes[$this->upc_barcodes->generate()] = array(
-								'prod_no' => $prod_no,
-								'color_name' => $color_name,
-								'size' => $s
-							);
+					// set params to pass to view file
+					$barcodes[$upc_barcode]['prod_no'] = $prod_no;
+					$barcodes[$upc_barcode]['color_name'] = $color_name;
+					$barcodes[$upc_barcode]['size'] = $size_names[$item_size_label];
+					$barcodes[$upc_barcode]['qty'] = $all ? $items[$item][$item_size_label] : '1';
+				}
+				else
+				{
+					$barcodes = array();
+					foreach ($size_names as $size_label => $s)
+					{
+						if ($s != 'XL1' && $s != 'XL2')
+						{
+							if (isset($items[$item][$size_label]))
+							{
+								// initialize and generate barcode
+								$upcfg['prod_no'] = $prod_no;
+								$upcfg['st_id'] = $st_id;
+								$upcfg['size_label'] = $size_label;
+								$this->upc_barcodes->initialize($upcfg);
+								$upc_barcode = $this->upc_barcodes->generate();
+
+								// set params to pass to view file
+								$barcodes[$upc_barcode]['prod_no'] = $prod_no;
+								$barcodes[$upc_barcode]['color_name'] = $color_name;
+								$barcodes[$upc_barcode]['size'] = $s;
+								$barcodes[$upc_barcode]['qty'] = $items[$item][$size_label];
+							}
 						}
 					}
 				}

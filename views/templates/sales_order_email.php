@@ -393,7 +393,7 @@
 									 * Discount
 									 */
 									?>
-									<td align="right">
+									<td align="right" style="vertical-align:top;">
 										<?php
 										$disc = @$size_qty['discount'] ?: 0;
 										if ($disc == '0') echo '-';

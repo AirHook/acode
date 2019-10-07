@@ -279,7 +279,7 @@
 												$image_new = 'images/instylelnylogo_3.jpg';
 												$img_front_new = $this->config->item('PROD_IMG_URL').'images/instylelnylogo_3.jpg';
 												$img_linesheet = '';
-												$size_mode = $company_details->webspace_options['size_mode'] ?: $temp_size_mode;
+												$size_mode = $designer_details->webspace_options['size_mode'] ?: $temp_size_mode;
 												$color_name = $this->product_details->get_color_name($color_code);
 												$vendor_price = @$size_qty['vendor_price'] ?: 0;
 											}
@@ -368,7 +368,10 @@
 									 */
 									?>
 									<td align="right" valign="top" style="vertical-align:top;">
-										$ <?php echo number_format($vendor_price, 2); ?>
+										<?php
+										$v_price = @$po_options['show_vendor_price'] == '1' ? $vendor_price : 0;
+										?>
+										$ <?php echo number_format($v_price, 2); ?>
 									</td>
 
 									<?php
@@ -378,7 +381,7 @@
 									?>
 									<td align="right" valign="top" style="vertical-align:top;">
 										<?php
-										$this_size_total = @$this_size_qty * $vendor_price;
+										$this_size_total = @$this_size_qty * $v_price;
 										?>
 										$ <?php echo number_format($this_size_total, 2); ?>
 									</td>

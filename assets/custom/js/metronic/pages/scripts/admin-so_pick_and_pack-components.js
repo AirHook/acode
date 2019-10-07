@@ -52,12 +52,13 @@ var ComponentsEditors = function () {
 			var bo = parseInt(el.children('td.bo').html());
 			var stock = parseInt(el.children('td.stock').html());
 			// calculate quantities
-			if (bo!=0) {
-				shipd++;
+			if (bo!=0 && stock!=0) {
+				stock--;
 				bo--;
-				if (stock!=0) stock--;
+				shipd++;
 			} else {
-				alert('Item has no more balance order.')
+				if (stock==0) alert('No more available stocks.');
+				if (bo==0) alert('Item has no more balance order.');
 			}
 			objectData.qty = qty;
 			objectData.shipd = shipd;
@@ -166,6 +167,7 @@ var ComponentsEditors = function () {
 			update_so.done(function(data) {
 				// redirec to so details page
 				if (data == 'success') {
+					$(window).unbind('beforeunload');
 					location.href=base_url + 'admin/sales_orders/details/index/'+objectData.so_id+'.html';
 				}else{
 					alert('Ooops... somethin went wrong.');

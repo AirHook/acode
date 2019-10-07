@@ -208,11 +208,39 @@ class Sales_order_sending
 
 		if (ENVIRONMENT !== 'development')
 		{
-			if ( ! $this->CI->email->send())
+			$sendby = @$this->CI->webspace_details->options['email_send_by'] ?: 'mailgun'; // options: mailgun, default (CI native emailer)
+
+			if ($sendby == 'mailgun')
 			{
-				$this->error .= 'Unable to send to - "'.$email.'"<br />';
-				exit;
-				return FALSE;
+				// load pertinent library/model/helpers
+				$this->CI->load->library('mailgun/mailgun');
+				$this->CI->mailgun->from = $this->CI->webspace_details->name.' <'.$data['author']->email.'>';
+				$this->CI->mailgun->to = $to;
+				$this->CI->mailgun->cc = $this->CI->webspace_details->info_email;
+				$this->CI->mailgun->bcc = $this->CI->config->item('dev1_email');
+				$this->CI->mailgun->subject = 'SO #'.$data['so_number'];
+				$this->CI->mailgun->message = $message;
+
+				$this->CI->mailgun->attachment = curl_file_create($pdf_file_path, 'application/pdf', 'pdf_so_selected.pdf');
+
+				if ( ! $this->CI->mailgun->Send())
+				{
+					$this->error .= 'Unable to send to - "'.$email.'"<br />';
+					$this->error .= $this->CI->mailgun->error_message;
+
+					return FALSE;
+				}
+
+				$this->CI->mailgun->clear();
+			}
+			else
+			{
+				if ( ! $this->CI->email->send())
+				{
+					$this->error .= 'Unable to send to - "'.$email.'"<br />';
+					exit;
+					return FALSE;
+				}
 			}
 		}
 		else

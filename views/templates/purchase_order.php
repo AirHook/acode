@@ -314,7 +314,10 @@
 									 */
 									?>
 									<td align="right">
-										$ <?php echo number_format($vendor_price, 2); ?>
+										<?php
+										$v_price = @$po_options['show_vendor_price'] == '1' ? $vendor_price : 0;
+										?>
+										$ <?php echo number_format($v_price, 2); ?>
 									</td>
 
 									<?php
@@ -324,7 +327,7 @@
 									?>
 									<td align="right">
 										<?php
-										$this_size_total = @$this_size_qty * $vendor_price;
+										$this_size_total = @$this_size_qty * $v_price;
 										?>
 										$ <?php echo number_format($this_size_total, 2); ?>
 									</td>

@@ -181,7 +181,7 @@ class Purchase_order_sending
 		}
 
 		// get designer details
-		$this->CI->designer_details->initialize(array('designer.des_id'=>$this->CI->purchase_order_details->des_id));
+		$data['designer_details'] = $this->CI->designer_details->initialize(array('designer.des_id'=>$this->CI->purchase_order_details->des_id));
 
 		// load email library class
 		// set company information

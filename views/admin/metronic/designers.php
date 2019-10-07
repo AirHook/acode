@@ -116,7 +116,8 @@
                                 </td>
                                 <td>
 									<a href="<?php echo site_url($this->config->slash_item('admin_folder').'designers/edit/index/'.$designer->des_id); ?>">
-										<?php echo $designer->designer; ?></a>
+										<?php echo $designer->designer; ?> <cite class="small">(<?php echo $designer->designer_site_domain; ?>)</cite>
+									</a>
 									<?php if ($designer->complete_info_status == '100') { ?>
 									<a href="<?php echo site_url($this->config->slash_item('admin_folder').'designers/edit/index/'.$designer->des_id); ?>" style="text-decoration:none;">
 										&nbsp; <span class="badge badge-danger tooltips" data-original-title="Has incomplete information">

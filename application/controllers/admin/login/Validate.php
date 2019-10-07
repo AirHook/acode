@@ -49,7 +49,7 @@ class Validate extends MY_Controller {
 				$this->session->unset_userdata('remember-at-admin');
 			}
 
-			// validate if admin
+			// validate user
 			if (
 				! $this->_validate_admin()
 				&& ! $this->_validate_vendor()
