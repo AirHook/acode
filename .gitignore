@@ -50,6 +50,7 @@
 # Files (General) #
 .DS_Store
 .httaccess
+.htaccess
 *.config
 *.mp3
 *.ini

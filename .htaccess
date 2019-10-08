@@ -5,7 +5,7 @@ Options +FollowSymLinks
 # security for hack on index.html files
 DirectoryIndex index.php
 
-# This allows you to redirect your entire website to any other domain put pound in front of redirect to put back to basix site
+# This allows you to redirect your entire website to any other domain
 # In case of emergencies
 # Just comment it out to reactivate site
 # Redirect 302 / http://www.domainname.com/
