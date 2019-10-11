@@ -135,8 +135,11 @@ class Submit extends Frontend_Controller
 		else
 		{
 			// let's send the email
-			// load email library
+			// load pertinent library/model/helpers
 			$this->load->library('email');
+			$this->load->library('mailgun/mailgun');
+
+			$sendby = @$this->webspace_details->options['email_send_by'] ?: 'mailgun'; // options: mailgun, default (CI native emailer)
 
 			// send to user
 			$this->email->clear();
@@ -148,7 +151,35 @@ class Submit extends Frontend_Controller
 			$this->email->subject($email_subject);
 			$this->email->message($message);
 
-			$this->email->send();
+			if ($sendby == 'mailgun')
+			{
+				$this->mailgun->from = $this->webspace_details->name.' <'.$this->webspace_details->info_email.'>';
+				$this->mailgun->to = $user_array['p_email'];
+				$this->mailgun->subject = $email_subject;
+				$this->mailgun->message = $message;
+
+				if ( ! $this->mailgun->Send())
+				{
+					// capturing error but the error message it not captured from MG class
+					// the return info is still a bug to fix
+					$error = 'Unable to MG send to - "'.$email.'"<br />';
+					$error .= '-'.$this->mailgun->error_message;
+				}
+
+				$this->mailgun->clear();
+			}
+			else
+			{
+				// email class has a security error
+				// "idn_to_ascii(): INTL_IDNA_VARIANT_2003 is deprecated"
+				// using the '@' sign to supress this
+				// must resolve pending update of CI
+				if ( ! @$this->email->send())
+				{
+					$error = 'Unable to CI send to - "'.$email.'"<br />';
+				}
+			}
+			//$this->email->send();
 
 			// send to admin
 			$this->email->clear();
@@ -162,7 +193,39 @@ class Submit extends Frontend_Controller
 			$this->email->subject($email_subject);
 			$this->email->message($message);
 
-			$this->email->send();
+			if ($sendby == 'mailgun')
+			{
+				// load pertinent library/model/helpers
+				$this->load->library('mailgun/mailgun');
+				$this->mailgun->from = $this->webspace_details->name.' <'.$this->webspace_details->info_email.'>';
+				$this->mailgun->to = $this->webspace_details->info_email;
+				$this->mailgun->cc = 'help@instylenewyork.com';
+				$this->mailgun->bcc = $this->config->item('dev1_email');
+				$this->mailgun->subject = $email_subject;
+				$this->mailgun->message = $message;
+
+				if ( ! $this->mailgun->Send())
+				{
+					// capturing error but the error message it not captured from MG class
+					// the return info is still a bug to fix
+					$error = 'Unable to MG send to - "'.$email.'"<br />';
+					$error .= '-'.$this->mailgun->error_message;
+				}
+
+				$this->mailgun->clear();
+			}
+			else
+			{
+				// email class has a security error
+				// "idn_to_ascii(): INTL_IDNA_VARIANT_2003 is deprecated"
+				// using the '@' sign to supress this
+				// must resolve pending update of CI
+				if ( ! @$this->email->send())
+				{
+					$error = 'Unable to CI send to - "'.$email.'"<br />';
+				}
+			}
+			//$this->email->send();
 		}
 
 		// mark session data as flash for one last use on the

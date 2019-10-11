@@ -128,11 +128,11 @@
 																		<?php if (@$search_result) echo '<option class="font-size-12" value="">Bast Match</option>'; ?>
 																		<option class="font-size-12" value="default" <?php echo $this->session->sort_by == 'default' ? 'selected' : ''; ?>>
 																			Default</option>
-																		<option class="font-size-12" value="featured" <?php echo $this->session->sort_by == 'featured' ? 'selected' : ''; ?> disabled data-subtext="Not yet available">
+																		<option class="font-size-12 hide" value="featured" <?php echo $this->session->sort_by == 'featured' ? 'selected' : ''; ?> disabled data-subtext="Not yet available">
 																			Featured</option>
-																		<option class="font-size-12" value="best_sellers" <?php echo $this->session->sort_by == 'best_sellers' ? 'selected' : ''; ?> disabled data-subtext="Not yet available">
+																		<option class="font-size-12 hide" value="best_sellers" <?php echo $this->session->sort_by == 'best_sellers' ? 'selected' : ''; ?> disabled data-subtext="Not yet available">
 																			Best Sellers</option>
-																		<option class="font-size-12" value="top_rated" <?php echo $this->session->sort_by == 'top_rated' ? 'selected' : ''; ?> disabled data-subtext="Not yet available">
+																		<option class="font-size-12 hide" value="top_rated" <?php echo $this->session->sort_by == 'top_rated' ? 'selected' : ''; ?> disabled data-subtext="Not yet available">
 																			Top Rated</option>
 																		<option class="font-size-12" value="newest" <?php echo $this->session->sort_by == 'newest' ? 'selected' : ''; ?>>
 																			Newest</option>
@@ -243,13 +243,6 @@
                                                                         // by default, wholesale users are not allowed to see
                                                                         // CLEARANCE or ON SALE items
                                                                         $show_item = TRUE;
-                                                                        if (
-                                                                            $this->session->userdata('user_cat') == 'wholesale'
-                                                                            && $thumb->custom_order == '3'
-                                                                        )
-                                                                        {
-                                                                            $show_item = FALSE;
-                                                                        }
 
 																		if (@$grouped_products) // -> from Shop_Controller class
 																		{

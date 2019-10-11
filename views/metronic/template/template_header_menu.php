@@ -580,18 +580,21 @@
 											}
 										} ?>
 
-                                        <!-- DOC: Apply "hide" class to hide element -->
+                                        <!-- DOC: Apply "hide" class to hide element --
                                         <li aria-haspopup="true" class="menu-dropdown classic-menu-dropdown hide">
                                             <a href="<?php echo site_url(); ?>"> Home
                                                 <span class="arrow hide"></span>
                                             </a>
                                         </li>
+                                        <!-- -->
 
-                                        <?php if ($this->webspace_details->slug != 'junnieleigh')
+                                        <?php if (
+                                            $this->webspace_details->slug != 'tempoparis'
+                                        )
                                         { ?>
 
                                         <li aria-haspopup="true" class="menu-dropdown classic-menu-dropdown">
-                                            <a class="margin-right-0 font-red" href="<?php echo $this->config->item('PROD_IMG_URL'); ?>shop/womens_apparel.html?filter=&availability=onsale"> Clearance
+                                            <a class="margin-right-0 font-red" href="<?php echo $this->config->item('PROD_IMG_URL'); ?>shop/<?php echo $this->webspace_details->options['site_type'] == 'sat_site' ? $this->webspace_details->slug.'/' : ''; ?>womens_apparel.html?filter=&availability=onsale" <?php echo $this->webspace_details->options['site_type'] == 'sat_site' ? 'target="_blank"' : ''; ?>> Clearance
                                                 <span class="arrow hide"></span>
                                             </a>
                                         </li>

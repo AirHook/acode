@@ -188,26 +188,28 @@
 													$ic++;
                                                 }
 
-                                                if ($designer->url_structure !== 'junnieleigh')
+                                                if (
+                                                    $this->webspace_details->slug !== 'tempoparis'
+                                                )
                                                 { ?>
 
                                                 <div class="cbp-item on-sale-general clearfix" style="height:345px;">
-                                                    <a href="<?php echo site_url('shop/womens_apparel'); ?>?filter=&availability=onsale" class="cbp-caption cbp-singlePageInline_" data-title="Womens Apparel<br>On Sale Items" rel="nofollow">
+                                                    <a href="<?php echo $this->config->item('PROD_IMG_URL'); ?>shop/<?php echo $this->webspace_details->options['site_type'] == 'sat_site' ? $this->webspace_details->slug.'/' : ''; ?>womens_apparel.html?filter=&availability=onsale" <?php echo $this->webspace_details->options['site_type'] == 'sat_site' ? 'target="_blank"' : ''; ?> class="cbp-caption cbp-singlePageInline_" data-title="Womens Apparel<br>On Sale Items" rel="nofollow">
                                                         <div class="cbp-caption-defaultWrap">
-                                                            <img src="<?php echo base_url().'images/subcategory_icon/thumb/special_sale_icon.jpg'; ?>" alt="" />
+                                                            <img src="<?php echo base_url().'images/subcategory_icon/thumb/sale-general.jpg'; ?>" alt="" />
 														</div>
                                                         <div class="cbp-caption-activeWrap">
                                                             <div class="cbp-l-caption-alignLeft">
                                                                 <div class="cbp-l-caption-body">
                                                                     <div class="cbp-l-caption-title"> Womens Apparel </div>
-                                                                    <div class="cbp-l-caption-desc"> Clearance </div>
+                                                                    <div class="cbp-l-caption-desc"> Items on special clerarance as low as 50% off or more </div>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </a>
-                                                    <div class="cbp-l-grid-projects-title text-center hidden-xs hidden-sm hidden-md"> Clearance </div>
+                                                    <div class="cbp-l-grid-projects-title text-center hidden-xs hidden-sm hidden-md"> Clearance Sale </div>
                                                     <div class="cbp-l-grid-projects-title text-center hidden-lg"> Womens Apparel </div>
-                                                    <div class="cbp-l-grid-projects-desc text-center hidden-lg"> Clearance </div>
+                                                    <div class="cbp-l-grid-projects-desc text-center hidden-lg"> Clearance Sale </div>
                                                 </div>
 
                                                 <?php

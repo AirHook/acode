@@ -106,6 +106,7 @@
 												</div>
 
 											</div>
+
 											<div class="row">
 
 												<div class="col-sm-5">
@@ -429,14 +430,29 @@
     																			$java4 = "closetime()";
 
     																			$link_txt = $this->product_details->color_code == $color->color_code ? 'style="text-decoration:underline;"' : '';
-    																			if ($i != 0) echo nbs().' | '.nbs();
+
+                                                                                // AND
+                                                                                // show item conditions
+                                                                                // 1. dont show variants with no stocks at all for item below $695
+                                                                                // 2. at $695 and above, consumers get to see preorder items
+                                                                                if (
+                                                                                    $this->product_details->retail_price >= 695
+                                                                                    OR (
+                                                                                        $this->product_details->retail_price < 695
+                                                                                        && $color->with_stocks != '0'
+                                                                                    )
+                                                                                )
+                                                                                {
+                                                                                    if ($i != 0) echo nbs().' | '.nbs();
     																			?>
 
 																<a href="<?php echo site_url($new_url.str_replace(' ','-',strtolower(trim($color->color_name))).'/'.str_replace('/','-',str_replace(' ','-',$this->product_details->prod_name)).'/'.$url[6]); ?>" class="pdp--color-name" onmouseover="<?php echo $java3; ?>" onmouseout="<?php echo $java4; ?>" data-with-stocks="<?php echo $color->with_stocks; ?>" <?php echo $link_txt; ?> data-publish="<?php echo $color->custom_order; ?>">
 																	<?php echo $color->color_name; ?>
 																</a>
 
-    																			<?php
+                                                                                    <?php
+                                                                                }
+
     																		/**********
     																		 * On special sale pages...
     																		 */
@@ -477,15 +493,19 @@
 														<?php
 														if ($get_color_list)
 														{
-															//foreach ($get_color_list->result() as $color)
 															foreach ($get_color_list as $color)
 															{
                                                                 // show only public variants
+                                                                // AND
+                                                                // show item conditions
+                                                                // 1. dont show variants with no stocks at all for item below $695
+                                                                // 2. at $695 and above, consumers get to see preorder items
                                                                 if (
                                                                     $color->new_color_publish != '0'
                                                                     && $color->new_color_publish != '2'
                                                                     && $color->new_color_publish != '3'
                                                                     && $color->color_publish != 'N'
+                                                                    //&& $color->with_stocks != '0' // show item condition
                                                                 )
                                                                 {
     																/**********
@@ -498,24 +518,38 @@
         																$java6 = "closetime()";
 
         																$swatch_style = $this->product_details->color_code == $color->color_code ? 'border:1px solid #333;padding:2px;' : 'padding: 3px;';
-        																echo anchor(
-        																	$new_url.str_replace(' ','-',strtolower(trim($color->color_name))).'/'.str_replace('/','-',str_replace(' ','-',$this->product_details->prod_name)).'/'.$url[6],
-        																	img(
-        																		array(
-        																			'src'=>(
-        																				$color->image_url_path
-        																				? $this->config->item('PROD_IMG_URL').$color->media_path.$color->media_name.'_c.jpg'
-        																				: $this->config->item('PROD_IMG_URL').$img_path.'product_coloricon/'.$this->product_details->prod_no.'_'.$color->color_code.'.jpg'
-        																			),
-        																			'width'=>'20',
-        																			'alt'=>$color->color_name,
-        																			'class'=>'tooltips',
-        																			'data-original-title'=>$color->color_name,
-        																			'style'=>$swatch_style
-        																		)
-        																	),
-        																	array('onmouseover'=>$java5,'onmouseout'=>$java6)
-        																).nbs(7);
+
+                                                                        // AND
+                                                                        // show item conditions
+                                                                        // 1. dont show variants with no stocks at all for item below $695
+                                                                        // 2. at $695 and above, consumers get to see preorder items
+                                                                        if (
+                                                                            $this->product_details->retail_price >= 695
+                                                                            OR (
+                                                                                $this->product_details->retail_price < 695
+                                                                                && $color->with_stocks != '0'
+                                                                            )
+                                                                        )
+                                                                        {
+            																echo anchor(
+            																	$new_url.str_replace(' ','-',strtolower(trim($color->color_name))).'/'.str_replace('/','-',str_replace(' ','-',$this->product_details->prod_name)).'/'.$url[6],
+            																	img(
+            																		array(
+            																			'src'=>(
+            																				$color->image_url_path
+            																				? $this->config->item('PROD_IMG_URL').$color->media_path.$color->media_name.'_c.jpg'
+            																				: $this->config->item('PROD_IMG_URL').$img_path.'product_coloricon/'.$this->product_details->prod_no.'_'.$color->color_code.'.jpg'
+            																			),
+            																			'width'=>'20',
+            																			'alt'=>$color->color_name,
+            																			'class'=>'tooltips',
+            																			'data-original-title'=>$color->color_name,
+            																			'style'=>$swatch_style
+            																		)
+            																	),
+            																	array('onmouseover'=>$java5,'onmouseout'=>$java6)
+            																).nbs(7);
+                                                                        }
                                                                     }
     																/**********
     																 * On special sale pages...
@@ -666,9 +700,13 @@
 																						$availability = 'availability--preorder';
 																					}
 
-																					//if ($this->uri->segment(1) !== 'special_sale' OR $check_stock[$size_stock] != 0) // does not show zero stock sizes
 																					if ($this->uri->segment(1) !== 'special_sale')
 																					{
+                                                                                        // show item conditions
+                                                                                        // 1. wholesale users gets to see everything
+                                                                                        // 2. consumer to see items that has stock
+                                                                                        // 3. at below $695, consumer will not see preorder
+                                                                                        // 3. at $695 and above, consumers get to see preorder
                                                                                         if (
                                                                                             $this->product_details->retail_price >= '695'
                                                                                             OR $availability != 'availability--preorder'

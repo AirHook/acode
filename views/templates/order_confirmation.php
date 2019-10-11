@@ -116,7 +116,7 @@
 																}
 																else
 																{
-																	echo 'ORDER SUMMARY';
+																	echo 'ORDER SUMMARY: SHOP 7TH AVENUE / IN STYLE NEW YORK<br />';
 																}
 																?>
 																</b> &nbsp; &nbsp;
@@ -169,7 +169,7 @@
                                                     <tr>
 														<td colspan="2" height="35" bgcolor="#767676" background="http://www.<?php echo $this->webspace_details->slug; ?>.com/images/newsletter/bar_bg.jpg">
 															<font color="#ffffff" style="font-family:Tahoma;font-size:12px;">
-                                                                &nbsp;<b>DESIGNERS:</b>
+                                                                &nbsp;<b>DESIGNER:</b>
                                                                 <?php echo $designers; ?>
                                                             </font>
 														</td>
