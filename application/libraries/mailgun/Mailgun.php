@@ -154,7 +154,7 @@ class Mailgun
         curl_setopt($csess, CURLOPT_USERPWD, 'api:'.$this->key);
         curl_setopt($csess, CURLOPT_POST, true);
         curl_setopt($csess, CURLOPT_POSTFIELDS, $params);
-        curl_setopt($csess, CURLOPT_HEADER, true);
+        curl_setopt($csess, CURLOPT_HEADER, false);
         curl_setopt($csess, CURLOPT_HTTPHEADER, array('Content-Type: multipart/form-data'));
         curl_setopt($csess, CURLOPT_ENCODING, 'UTF-8');
         curl_setopt($csess, CURLOPT_RETURNTRANSFER, true);

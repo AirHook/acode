@@ -51,6 +51,22 @@ class Details extends Frontend_Controller
 		// generate the plugin scripts and css
 		$this->_create_plugin_scripts();
 
+		// tempoparis is a stand alone wholesale site
+		// we need to apply same conditions for tempo items at shop7
+		// and not show tempo items in general pages
+		// only when user is logged in
+		if (
+			$this->uri->segment(3) == 'tempoparis'
+			&& $this->session->userdata('user_cat') != 'wholesale'
+		)
+		{
+			// set session
+			$this->session->set_flashdata('error', 'tempoparis_must_login');
+
+			// redirect user..
+			redirect('account', 'location');
+		}
+
 		// get product details
 		if (
 			! $this->product_details->initialize(array(

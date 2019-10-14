@@ -47,6 +47,11 @@
 												<strong>Ooops!</strong>&nbsp; You are accessing a link as a different user. Please log out and try again.
 											</div>
 											<?php } ?>
+                                            <?php if ($this->session->flashdata('error') == 'tempoparis_must_login') { ?>
+											<div class="alert alert-danger">
+												You must be logged in to access the page.
+											</div>
+											<?php } ?>
                                             <?php if ($this->session->flashdata('error') == 'click_one_error') { ?>
 											<div class="alert alert-danger">
 												The activation email link you are accessing is no longer valid.
@@ -96,13 +101,24 @@
                                                     <div class="form form-body">
 
 														<h3 class="form-section">I'm New Here</h3>
+
+                                                        <?php if ($this->webspace_details->slug !== 'tempoparis')
+                                                        { ?>
+
 														<a href="<?php echo site_url('account/register/consumer'); ?>" class="btn btn-default btn-block margin-bottom-20" style="border:3px solid black;">CREATE CONSUMER ACCOUNT</a>
+
+                                                            <?php
+                                                        } ?>
+
 														<a href="<?php echo site_url('account/register/wholesale'); ?>" class="btn btn-default btn-block" style="border:3px solid black;">CREATE WHOLESALE BUYER ACCOUNT</a>
 
 													</div>
 
 												</div>
 												<div class="col-sm-6">
+
+                                                    <?php if ($this->webspace_details->slug !== 'tempoparis')
+                                                    { ?>
 
 													<!-- BOF Form ==============================================================-->
 													<?php echo form_open(); ?>
@@ -148,6 +164,9 @@
 														<!-- /.modal-dialog -->
 													</div>
 													<!-- /.modal -->
+
+                                                        <?php
+                                                    } ?>
 
 												</div>
 											</div>

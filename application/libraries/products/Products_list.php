@@ -317,6 +317,17 @@ class Products_list
 								}
 								else $this->DB->like($key, $val);
 							}
+							// we now add the HAVING condition
+							elseif (strpos($key, 'HAVING ') !== FALSE)
+							{
+								$key = ltrim($key, 'HAVING ');
+								$this->DB->having($key, $val);
+							}
+							// custom setting to indicate that $key is a query phrase in itself
+							elseif ($key === 'condition')
+							{
+								$this->DB->where($val);
+							}
 							else
 							{
 								$this->DB->where($key, $val);
@@ -324,7 +335,7 @@ class Products_list
 
 						}
 					}
-					else // else, it's a integer key for a simple $where array of prod_no
+					else // else, it's an integer key for a simple $where array of prod_no
 					{
 						// we need an OR WHERE for sales package prod_no items
 						// or any search query for prod numbers

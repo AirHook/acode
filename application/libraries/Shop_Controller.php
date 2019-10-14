@@ -223,10 +223,40 @@ class Shop_Controller extends Frontend_Controller {
         }
         else
         {
-            $where = array(
-				'designer.url_structure' => $this->d_url_structure,
-				'tbl_product.categories LIKE' => $this->category_id // last segment of category
-			);
+            // tempoparis is a stand along wholesale site
+            // we need to apply same conditions for tempo items at shop7
+            // and not show tempo items in general pages
+            // only when user is logged in
+            if ($this->d_url_structure == '')
+            {
+                $where['designer.url_structure <>'] = 'tempoparis';
+            }
+            else $where['designer.url_structure'] = $this->d_url_structure;
+            $where['tbl_product.categories LIKE'] = $this->category_id; // last segment of category
+        }
+
+        // show item conditions
+        // 1. wholesale users gets to see everything except on sale items
+        // 2. consumer to see items that has stock only
+        // 5. consumer gets to see on sale items
+        if (
+            $this->session->userdata('user_cat') != 'wholesale'
+            OR @$_GET['availability'] != 'onsale'
+        )
+        {
+            // commenting this custom where clause for future use...
+            //$condition = "(less_discount >= 695 OR (less_discount < 695 AND (tbl_product.size_mode = '1' AND (tbl_stock.size_0 > '0' OR tbl_stock.size_2 > '0' OR tbl_stock.size_4 > '0' OR tbl_stock.size_6 > '0' OR tbl_stock.size_8 > '0' OR tbl_stock.size_10 > '0' OR tbl_stock.size_12 > '0' OR tbl_stock.size_14 > '0' OR tbl_stock.size_16 > '0' OR tbl_stock.size_18 > '0' OR tbl_stock.size_20 > '0' OR tbl_stock.size_22 > '0') OR tbl_product.size_mode = '0' AND (tbl_stock.size_ss > '0' OR tbl_stock.size_sm > '0' OR tbl_stock.size_sl > '0' OR tbl_stock.size_sxl > '0' OR tbl_stock.size_sxxl > '0' OR tbl_stock.size_sxl1 > '0' OR tbl_stock.size_sxl2 > '0'))))";
+            //$where['condition'] = $condition;
+
+            $where['HAVING with_stocks'] = '1';
+        }
+        if (
+            $this->session->userdata('user_cat') == 'wholesale'
+            && @$_GET['availability'] == 'onsale'
+        )
+        {
+            // setting condition to prod_id = '0' make query result to zero
+            $where['tbl_product.prod_id'] = '0';
         }
 
 		// get the products list and total count based on parameters

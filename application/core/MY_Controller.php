@@ -60,6 +60,7 @@ class MY_Controller extends CI_Controller
 				&& (
 					// wholesale pages
                     $this->uri->uri_string() !== 'account' &&
+                    $this->uri->uri_string() !== 'account/register/wholesale' &&
 					$this->uri->uri_string() !== 'wholesale/signin' &&
 					$this->uri->uri_string() !== 'wholesale/authenticate' &&
 					$this->uri->uri_string() !== 'wholesale/authenticated' &&

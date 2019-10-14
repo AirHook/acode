@@ -87,17 +87,31 @@ class Index extends Shop_Controller
 		if ($qry1->num_rows() > 0)
 		{
 			$this->browse_by = 'sidebar_browse_by_designer';
-			//$this->sc_url_structure = $this->uri->segment(4);
-			$this->d_url_structure = $qry1->row()->url_structure; // or $this->uri->segment(2)
+			$this->d_url_structure = $qry1->row()->url_structure;
 		}
 		else
 		{
 			$this->browse_by = 'sidebar_browse_by_category';
-			//$this->sc_url_structure = $this->uri->segment(3);
-			//$this->d_url_structure = '';
 		}
-		// on new category system, but we use the above $this->category_id more
+		// on new category system, but we use the above $this->category_id instead
 		$this->sc_url_structure = $last_category_slug;
+
+		// now that $this->d_url_structure is set... in the case of tempoparis...
+		// tempoparis is a stand alone wholesale site
+		// we need to apply same conditions for tempo items at shop7
+		// and not show tempo items in general pages
+		// only when user is logged in
+		if (
+			$this->d_url_structure == 'tempoparis'
+			&& $this->session->userdata('user_cat') != 'wholesale'
+		)
+		{
+			// set session
+			$this->session->set_flashdata('error', 'tempoparis_must_login');
+
+			// redirect user..
+			redirect('account', 'location');
+		}
 
 		// footer text for SEO purposes
 		// applicable to thumbs pages only

@@ -594,7 +594,7 @@
                                         { ?>
 
                                         <li aria-haspopup="true" class="menu-dropdown classic-menu-dropdown">
-                                            <a class="margin-right-0 font-red" href="<?php echo $this->config->item('PROD_IMG_URL'); ?>shop/<?php echo $this->webspace_details->options['site_type'] == 'sat_site' ? $this->webspace_details->slug.'/' : ''; ?>womens_apparel.html?filter=&availability=onsale" <?php echo $this->webspace_details->options['site_type'] == 'sat_site' ? 'target="_blank"' : ''; ?>> Clearance
+                                            <a class="margin-right-0 font-red" href="<?php echo ENVIRONMENT == 'development' ? base_url() : $this->config->item('PROD_IMG_URL'); ?>shop/<?php echo $this->webspace_details->options['site_type'] == 'sat_site' ? $this->webspace_details->slug.'/' : ''; ?>womens_apparel.html?filter=&availability=onsale" <?php echo $this->webspace_details->options['site_type'] == 'sat_site' ? 'target="_blank"' : ''; ?>> Clearance
                                                 <span class="arrow hide"></span>
                                             </a>
                                         </li>
