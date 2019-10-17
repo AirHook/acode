@@ -160,11 +160,15 @@
 											<!-- END MOBILE HEADER SEARCH BOX TOGGLER -->
 
 											<!-- BEGIN FAVORITES TOGGLER -->
+                                            <?php if ($this->webspace_details->options['site_type'] == 'hub_site')
+                                            { ?>
 											<li class="dropdown dropdown-extended dropdown-favorite dropdown-dark">
 												<a href="javascript:;" class="dropdown-toggle" >
 													<i class="fa fa-heart-o"></i>
 												</a>
 											</li>
+                                                <?php
+                                            } ?>
 											<!-- END FAVORITES TOGGLER -->
 
 											<!-- BEGIN SHOP CART TOGGLER -->

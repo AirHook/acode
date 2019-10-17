@@ -687,7 +687,7 @@ class Wholesale_user_details
 
 			$this->CI->email->to($this->CI->webspace_details->info_email);
 
-			//$this->email->bcc($this->CI->config->item('dev1_email')); // --> for debuggin purposes
+			$this->CI->email->bcc($this->CI->config->item('dev1_email')); // --> for debuggin purposes
 
 			$this->CI->email->subject('WHOLESALE USER IS ON LINE - '.strtoupper($this->CI->webspace_details->name));
 			$this->CI->email->message($email_message);
@@ -769,7 +769,7 @@ class Wholesale_user_details
 
 			$this->CI->email->to($this->admin_sales_email);
 
-			//$this->email->bcc($this->CI->config->item('dev1_email')); // --> for debuggin purposes
+			$this->CI->email->bcc($this->CI->config->item('dev1_email')); // --> for debuggin purposes
 
 			$this->CI->email->subject('WHOLESALE USER IS ON LINE - '.strtoupper($this->CI->webspace_details->name));
 			$this->CI->email->message($email_message);

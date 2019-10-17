@@ -96,7 +96,11 @@ class Wholesale_activation_email_sending
 		$DB->select('text');
 		$DB->where('title_code', 'wholesale_privacy_notice');
 		$q = $DB->get('pages')->row();
-		$data['privacy_policy'] = $q->text;
+		$data['privacy_policy'] = str_replace(
+			array('help@shop7thavenue.com', 'shop7thavenue.com'),
+			array($this->CI->webspace_details->info_email, $this->CI->webspace_details->site),
+			$q->text
+		);
 
 		// for each user
 		foreach ($this->users as $email)
@@ -144,7 +148,7 @@ class Wholesale_activation_email_sending
 			$data['designer_address2'] = $this->CI->wholesale_user_details->designer_address2;
 			$data['designer_phone'] = $this->CI->wholesale_user_details->designer_phone;
 
-			$message = $this->CI->load->view('templates/activation_email_v1', $data, TRUE);
+			$message = $this->CI->load->view('templates/activation_email', $data, TRUE);
 			$this->CI->email->message($message);
 
 			if (ENVIRONMENT === 'development')
@@ -177,8 +181,8 @@ class Wholesale_activation_email_sending
 
 					if ( ! $this->CI->mailgun->Send())
 					{
-						$this->error .= 'Unable to send to - "'.$email.'"<br />';
-						$this->error .= $this->CI->mailgun->error_message;
+						$this->error .= 'Unable to MG send to - "'.$email.'"<br />';
+						$this->error .= '-'.$this->CI->mailgun->error_message;
 
 						return FALSE;
 					}
@@ -189,7 +193,7 @@ class Wholesale_activation_email_sending
 				{
 					if ( ! @$this->CI->email->send())
 					{
-						$this->error .= 'Unable to send to - "'.$email.'"<br />';
+						$this->error .= 'Unable to CI send to - "'.$email.'"<br />';
 
 						return FALSE;
 					}

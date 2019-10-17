@@ -95,7 +95,7 @@
 					$('#modal_add_product').modal('show');
 				<?php } ?>
 				<?php if ($this->uri->uri_string() == $this->config->slash_item('admin_folder').'campaigns/sales_package/create') { ?>
-					$('#modal_create_sales_package').modal('show');
+					//$('#modal_create_sales_package').modal('show');
 				<?php } ?>
 				<?php if ($this->uri->uri_string() == $this->config->slash_item('admin_folder').'designers/add_') { ?>
 					$('#modal-add_designer').modal('show');

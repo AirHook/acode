@@ -247,7 +247,8 @@ class Create extends Admin_Controller
 			        (
 			            [ref_po_no] => 98765
 			            [ref_so_no] => 123456
-			            [po_store_id] => Rey Store
+			            [po_store_id] => 6854
+						[po_store_name] => Rey Store
 			            [po_purpose] => Stock Replenishment
 						[show_vendor_price] => 1
 						[ship_via] => UPS

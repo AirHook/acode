@@ -195,8 +195,6 @@ class Submit extends Frontend_Controller
 
 			if ($sendby == 'mailgun')
 			{
-				// load pertinent library/model/helpers
-				$this->load->library('mailgun/mailgun');
 				$this->mailgun->from = $this->webspace_details->name.' <'.$this->webspace_details->info_email.'>';
 				$this->mailgun->to = $this->webspace_details->info_email;
 				$this->mailgun->cc = 'help@instylenewyork.com';

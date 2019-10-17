@@ -37,7 +37,7 @@
                                     { ?>
 
                                     <!--<img src="<?php echo base_url('assets/metronic'); ?>/assets/layouts/layout/img/logo.png" alt="logo" class="logo-default" />-->
-                                    <img src="<?php echo base_url(); ?>assets/images/logo/logo-shop7thavenue-light.png" alt="logo" style="height:14px;" class="logo-light" />
+                                    <img src="<?php echo base_url(); ?>assets/images/logo/logo-<?php echo $this->webspace_details->slug; ?>-light.png" alt="logo" style="height:14px;" class="logo-light" />
 
                                         <?php
                                     } ?>

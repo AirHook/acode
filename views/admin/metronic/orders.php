@@ -121,7 +121,11 @@
 							{
 								$i = 1;
 								foreach ($orders as $order)
-								{ ?>
+								{
+									// for wholesale only site like tempoparis, show only wholesale orders
+									// for now, we use this condition to remove consuemr orders
+									if ($order->store_name)
+									{ ?>
 
                             <tr class="odd gradeX " onmouseover="$(this).find('.hidden_first_edit_link').show();" onmouseout="$(this).find('.hidden_first_edit_link').hide();">
                                 <td class="hidden-xs hidden-sm">
@@ -312,8 +316,9 @@
                                 </td>
                             </tr>
 
-									<?php
-									$i++;
+										<?php
+										$i++;
+									}
 								}
 							} ?>
 

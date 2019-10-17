@@ -246,7 +246,10 @@
 						 * IN STOCK Product Thumbs
 						 */
 						-->
-                        <?php if (@$instock_products)
+                        <?php if (
+                            @$instock_products
+                            && $this->webspace_details->slug != 'temopparis'
+                        )
                         { ?>
 						<tr>
 							<td class="" bgcolor="" style="padding-top:40px;padding-bottom:50px;">
@@ -392,7 +395,10 @@
 						 * PRE ORDER Product Thumbs
 						 */
 						-->
-                        <?php if (@$preorder_products)
+                        <?php if (
+                            @$preorder_products
+                            && $this->webspace_details->slug != 'temopparis'
+                        )
                         { ?>
 						<tr>
 							<td class="" bgcolor="" style="padding-bottom:50px;">
@@ -543,7 +549,10 @@
 						 * ON SALE Product Thumbs
 						 */
 						-->
-                        <?php if (@$onsale_products)
+                        <?php if (
+                            @$onsale_products
+                            && $this->webspace_details->slug != 'temopparis'
+                        )
                         { ?>
 						<tr>
 							<td class="" bgcolor="" style="padding-bottom:50px;">

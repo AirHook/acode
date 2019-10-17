@@ -10,6 +10,7 @@ class Validate extends MY_Controller {
 		// lets check for status of webspace and account
 		$this->load->library('users/admin_user_details');
 		$this->load->library('users/vendor_user_details');
+		$this->load->library('users/sales_user_details');
     }
 
 	// ----------------------------------------------------------------------
@@ -53,6 +54,7 @@ class Validate extends MY_Controller {
 			if (
 				! $this->_validate_admin()
 				&& ! $this->_validate_vendor()
+				&& ! $this->_validate_sales()
 			)
 			{
 				// set flash message
@@ -72,6 +74,12 @@ class Validate extends MY_Controller {
 			{
 				// send user to respective page...
 				redirect(($this->session->flashdata('access_uri') ?: 'my_account/vendors/orders'));
+			}
+
+			if ($this->_validate_sales())
+			{
+				// send user to respective page...
+				redirect(($this->session->flashdata('access_uri') ?: 'my_account/sales'));
 			}
 		}
 	}
@@ -154,6 +162,44 @@ class Validate extends MY_Controller {
 		if ( ! $this->session->userdata('vendor_login_time'))
 		{
 			$this->session->set_userdata('vendor_login_time', @time());
+		}
+
+		// let us notify admin/dev of login
+		//if (ENVIRONMENT !== 'development')
+		//$this->_notify_admin();
+
+		return TRUE;
+	}
+
+	// ----------------------------------------------------------------------
+
+	private function _validate_sales()
+	{
+		// if user it not authenticated...
+		if (
+			! $this->sales_user_details->initialize(
+				array(
+					'admin_sales_email' => $this->input->post('username'),
+					'admin_sales_password' => $this->input->post('password')
+				)
+			)
+		)
+		{
+			// invalid credentials
+			// destroy sales user session if any and reset class to initial state
+			$this->sales_user_details->unset_session();
+			$this->sales_user_details->set_initial_state();
+
+			return FALSE;
+		}
+
+		// set session data
+		$this->sales_user_details->set_session();
+
+		// set the session lapse time if it has not been set
+		if ( ! $this->session->userdata('sales_login_time'))
+		{
+			$this->session->set_userdata('sales_login_time', @time());
 		}
 
 		// let us notify admin/dev of login

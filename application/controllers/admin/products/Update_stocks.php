@@ -34,7 +34,6 @@ class Update_stocks extends Admin_Controller {
 
 		// grab post items
 		$post_ary = $this->input->post();
-		$post_ary_to_odoo = $this->input->post();
 
 		// unset items
 		unset($post_ary['designer_slug']);
@@ -45,23 +44,16 @@ class Update_stocks extends Admin_Controller {
 		$DB->where('st_id', $this->input->post('st_id'));
 		$DB->update('tbl_stock');
 
-		/***********
-		 * Update ODOO
-		 *
-		// pass data to odoo
-		if (
-			ENVIRONMENT !== 'development'
-			&& $post_ary_to_odoo['designer_slug'] === 'basixblacklabel'
-		)
-		{
-			$odoo_response = $this->odoo->post_data($post_ary_to_odoo, 'products', 'edit');
-		}
-		// */
+		// unset items
+		unset($post_ary['color_name']);
+		unset($post_ary['prod_no']);
+		unset($post_ary['prod_id']);
 
-		//echo '<pre>';
-		//print_r($post_ary_to_odoo);
-		//echo $odoo_response;
-		//die('<br />here');
+		// update stock record
+		// lets remove primary color first
+		$DB->set($post_ary);
+		$DB->where('st_id', $this->input->post('st_id'));
+		$DB->update('tbl_stock_physical');
 
 		// set flash data
 		$this->session->set_flashdata('stock_udpated', TRUE);

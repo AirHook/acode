@@ -222,6 +222,8 @@
                                                     <i class="icon-envelope"></i> Send Activation Email </a>
                                             </li>
                                             <?php } ?>
+                                            <?php if ($this->webspace_details->options['site_type'] == 'hub_site')
+                                            { ?>
                                             <li>
                                                 <?php if ($default_sales_package) { ?>
                                                 <a data-toggle="modal" href="#send_recent-<?php echo $user->user_id?>">
@@ -230,6 +232,8 @@
                                                 <?php  } ?>
                                                     <i class="icon-envelope"></i> Send Recent Items Sales Package </a>
                                             </li>
+                                                <?php
+                                            } ?>
                                             <?php if ($this->uri->segment(1) == 'sales')
                                             { ?>
                                             <li>

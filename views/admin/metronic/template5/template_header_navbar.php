@@ -16,9 +16,10 @@
                                             <a href="<?php echo site_url('admin/products'); ?>">
                                                 Products Manager </a>
                                         </li>
+
                                         <li>
-                                            <a href="<?php echo site_url('admin/campaigns/sales_package'); ?>">
-                                                Sales Manager </a>
+                                            <a href="<?php echo site_url('admin/orders'); ?>">
+                                                Orders Manager </a>
                                         </li>
                                         <li>
                                             <a href="<?php echo site_url('admin/users/wholesale'); ?>">
@@ -28,11 +29,6 @@
                                             <a href="<?php echo site_url('admin/inventory/physical'); ?>">
                                                 Inventory Manager </a>
                                         </li>
-
-                                        <?php
-                                        // available only on hub sites only for now
-                                        if ($this->webspace_details->options['site_type'] == 'hub_site')
-                                        { ?>
                                         <li>
                                             <a href="<?php echo site_url('admin/production'); ?>">
                                                 Production Manager </a>
@@ -41,8 +37,6 @@
                                             <a href="<?php echo site_url('admin/accounting'); ?>">
                                                 Accounting Manager </a>
                                         </li>
-                                            <?php
-                                        } ?>
 
                                     </ul>
                                 </li>
@@ -97,6 +91,10 @@
                                             </ul>
                                         </li>
 
+                                        <?php
+                                        // available only on hub sites only for now
+                                        if ($this->webspace_details->options['site_type'] == 'hub_site')
+                                        { ?>
                                         <li class="dropdown more-dropdown-sub <?php echo preg_match('(dcn|accounts|webspaces)', $this->uri->uri_string()) === 1 ? 'active' : ''; ?> ">
                                             <a href="javascript:;" class="text-uppercase">
                                                 Tools
@@ -125,6 +123,8 @@
                                                 <?php } ?>
                                             </ul>
                                         </li>
+                                            <?php
+                                        } ?>
 
                                         <!-- keeping this here for plausible usage
                                         <li class="hide">
@@ -253,6 +253,10 @@
                                             </ul>
                                         </li>
 
+                                        <?php
+                                        // available only on hub sites only for now
+                                        if ($this->webspace_details->options['site_type'] == 'hub_site')
+                                        { ?>
                                         <li class="dropdown more-dropdown-sub <?php echo preg_match('(dcn|accounts|webspaces)', $this->uri->uri_string()) === 1 ? 'active' : ''; ?> open">
                                             <a href="javascript:;" class="text-uppercase">
                                                 Tools
@@ -281,6 +285,8 @@
                                                 <?php } ?>
                                             </ul>
                                         </li>
+                                            <?php
+                                        } ?>
 
                                         <!-- keeping this here for plausible usage
                                         <li class="hide">
@@ -373,7 +379,7 @@
                                 <!-- DOC: use class "open" on active to show fw dropdown items -->
                                 <li class="dropdown dropdown-fw dropdown-fw-disabled hidden-xs hidden-sm <?php echo (! empty(array_intersect(array('designers','categories','products','facets'),$this->uri->segment_array()))) ? 'active open selected' : ''; ?>" >
                                     <a href="<?php echo site_url('admin/products'); ?>" class="text-uppercase">
-                                        <i class="icon-puzzle hidden-md"></i> Product Mgr
+                                        <i class="icon-puzzle hidden-md"></i> Products
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-fw">
 
@@ -469,7 +475,7 @@
                                 ?>
                                 <li class="dropdown dropdown-fw dropdown-fw-disabled hidden-md hidden-lg <?php echo (! empty(array_intersect(array('designers','categories','products','facets'),$this->uri->segment_array()))) ? 'active open selected' : ''; ?>" >
                                     <a href="javascript:;" class="text-uppercase">
-                                        <i class="icon-puzzle hidden-md"></i> Product Mgr
+                                        <i class="icon-puzzle hidden-md"></i> Products
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-fw">
 
@@ -563,11 +569,15 @@
                                 <!-- DOC: Add classes "dropdown-fw dropdown-fw-disabled" to disable dropdown but with more sub menu items -->
                                 <!-- DOC: use class "open" on active to show fw dropdown items -->
                                 <li class="dropdown dropdown-fw dropdown-fw-disabled hidden-xs hidden-sm <?php echo (! empty(array_intersect(array('campaigns','sales_orders','purchase_orders','orders'),$this->uri->segment_array()))) ? 'active open selected' : ''; ?>" >
-                                    <a href="<?php echo site_url('admin/sales_orders'); ?>" class="text-uppercase">
-                                        <i class="icon-tag hidden-md"></i> Order Manager
+                                    <a href="<?php echo site_url('admin/orders'); ?>" class="text-uppercase">
+                                        <i class="icon-tag hidden-md"></i> Orders
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-fw">
 
+                                        <?php
+                                        // available only on hub sites only for now
+                                        if ($this->webspace_details->options['site_type'] == 'hub_site')
+                                        { ?>
                                         <li class="dropdown more-dropdown-sub <?php echo strpos($this->uri->uri_string(), 'admin/campaigns') !== FALSE ? 'active selected' : ''; ?> ">
                                             <a href="<?php echo site_url('admin/campaigns/sales_package'); ?>" class="text-uppercase">
                                                 Sales Package Manager
@@ -604,6 +614,8 @@
                                                 <?php } ?>
                                             </ul>
                                         </li>
+                                            <?php
+                                        } ?>
 
                                         <?php
                                         // available only on hub sites for now
@@ -626,10 +638,6 @@
                                         </li>
                                         <?php } ?>
 
-                                        <?php
-                                        // available only on hub sites for now
-                                        if ($this->webspace_details->options['site_type'] == 'hub_site')
-                                        { ?>
                                         <li class="dropdown more-dropdown-sub <?php echo preg_match('(admin/orders)', $this->uri->uri_string()) === 1 ? 'active selected' : ''; ?> ">
                                             <a href="<?php echo site_url('admin/orders'); ?>" class="text-uppercase">
                                                 Order Logs
@@ -645,7 +653,6 @@
                                                 </li>
                                             </ul>
                                         </li>
-                                        <?php } ?>
 
                                     </ul>
                                 </li>
@@ -656,10 +663,14 @@
                                 ?>
                                 <li class="dropdown dropdown-fw dropdown-fw-disabled hidden-md hidden-lg <?php echo (! empty(array_intersect(array('campaigns','sales_orders','purchase_orders','orders'),$this->uri->segment_array()))) ? 'active open selected' : ''; ?>" >
                                     <a href="javascript:;" class="text-uppercase">
-                                        <i class="icon-tag hidden-md"></i> Order Manager
+                                        <i class="icon-tag hidden-md"></i> Orders
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-fw">
 
+                                        <?php
+                                        // available only on hub sites only for now
+                                        if ($this->webspace_details->options['site_type'] == 'hub_site')
+                                        { ?>
                                         <li class="dropdown more-dropdown-sub <?php echo strpos($this->uri->uri_string(), 'admin/campaigns') !== FALSE ? 'active selected' : ''; ?> open">
                                             <a href="javascript:;" class="text-uppercase">
                                                 Sales Package Manager
@@ -696,6 +707,8 @@
                                                 <?php } ?>
                                             </ul>
                                         </li>
+                                            <?php
+                                        } ?>
 
                                         <?php
                                         // available only on hub sites for now
@@ -718,10 +731,6 @@
                                         </li>
                                         <?php } ?>
 
-                                        <?php
-                                        // available only on hub sites for now
-                                        if ($this->webspace_details->options['site_type'] == 'hub_site')
-                                        { ?>
                                         <li class="dropdown more-dropdown-sub <?php echo preg_match('(purchase_orders|admin/orders)', $this->uri->uri_string()) === 1 ? 'active selected' : ''; ?> open">
                                             <a href="javascript:;" class="text-uppercase">
                                                 Order Logs
@@ -737,7 +746,6 @@
                                                 </li>
                                             </ul>
                                         </li>
-                                        <?php } ?>
 
                                     </ul>
                                 </li>
@@ -749,10 +757,7 @@
                                     <a href="<?php echo site_url('admin/users/wholesale'); ?>" class="text-uppercase">
                                         <i class="icon-users hidden-md"></i> Users </a>
                                     <ul class="dropdown-menu dropdown-menu-fw">
-                                        <?php
-                                        // available only on hub sites for now
-                                        if ($this->webspace_details->options['site_type'] == 'hub_site')
-                                        { ?>
+
                                         <li class="dropdown more-dropdown-sub <?php echo strpos($this->uri->uri_string(), 'admin/users/admin') !== FALSE ? 'active selected' : ''; ?> ">
                                             <a href="javascript:;" class="text-uppercase">
                                                 Admin Users Manager
@@ -768,7 +773,6 @@
                                                 </li>
                                             </ul>
                                         </li>
-                                        <?php } ?>
 
                                         <li class="dropdown more-dropdown-sub <?php echo strpos($this->uri->uri_string(), 'admin/users/sales') !== FALSE ? 'active selected' : ''; ?> ">
                                             <a href="javascript:;" class="text-uppercase">
@@ -896,7 +900,6 @@
                                                 </li>
                                             </ul>
                                         </li>
-                                        <?php } ?>
 
                                         <li class="dropdown more-dropdown-sub <?php echo strpos($this->uri->uri_string(), 'admin/users/sales') !== FALSE ? 'active selected' : ''; ?> open">
                                             <a href="javascript:;" class="text-uppercase">
@@ -951,6 +954,8 @@
                                                 <?php } ?>
                                             </ul>
                                         </li>
+                                            <?php
+                                        } ?>
 
                                         <li class="dropdown more-dropdown-sub <?php echo strpos($this->uri->uri_string(), 'admin/users/wholesale') !== FALSE ? 'active selected' : ''; ?> open">
                                             <a href="javascript:;" class="text-uppercase">
@@ -1079,20 +1084,14 @@
                                     </ul>
                                 </li>
 
-                                <?php
-                                // available only on hub sites only for now
-                                if (@$this->webspace_details->options['site_type'] == 'hub_site')
-                                { ?>
                                 <li class="dropdown <?php echo in_array('production', $this->uri->segment_array()) ? 'active selected' : ''; ?>" >
                                     <a href="<?php echo site_url('admin/production'); ?>" class="text-uppercase">
-                                        <i class="icon-wallet hidden-md"></i> Production Mgr </a>
+                                        <i class="icon-wallet hidden-md"></i> Production </a>
                                 </li>
 
                                 <li class="dropdown <?php echo in_array('accounting', $this->uri->segment_array()) ? 'active selected' : ''; ?>" >
                                     <a href="<?php echo site_url('admin/accounting'); ?>" class="text-uppercase">
-                                        <i class="icon-wallet hidden-md"></i> Accounting Mgr </a>
+                                        <i class="icon-wallet hidden-md"></i> Accounting </a>
                                 </li>
-                                    <?php
-                                } ?>
 
                             </ul>
