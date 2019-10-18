@@ -283,9 +283,9 @@
                                                                         $color_icon = $thumb->prod_no.'_'.$thumb->color_code.'.jpg';
             															// the new way relating records with media library
             															$new_pre_url = $this->config->item('PROD_IMG_URL').$thumb->media_path.$thumb->media_name;
-            															$img_front_new = $new_pre_url.'_f3.jpg';
-            															$img_back_new = $new_pre_url.'_b3.jpg';
-            															$img_side_new = $new_pre_url.'_s3.jpg';
+            															$img_front_new = $new_pre_url.'_f.jpg';
+            															$img_back_new = $new_pre_url.'_b.jpg';
+            															$img_side_new = $new_pre_url.'_s.jpg';
                                                                         $img_coloricon = $new_pre_url.'_c.jpg';
 
 																		// set the product details link
@@ -305,11 +305,13 @@
 																		if ( ! $this->agent->is_mobile())
 																		{
 																			// middle thumbs
-																			$wrapper_thumbs = 'padding-left:7px;padding-right:7px;';
+																			//$wrapper_thumbs = 'padding-left:7px;padding-right:7px;';
+                                                                            $wrapper_thumbs = 'padding-left:5px;padding-right:5px;';
 																			// left thumbs
 																			if (fmod($ipadding, 3) == 1)
 																			{
-																				$wrapper_thumbs = 'padding-right:7px;';
+																				//$wrapper_thumbs = 'padding-right:7px;';
+                                                                                $wrapper_thumbs = 'padding-right:5px;';
 																				//echo '<div class="cleafix"></div>';
 																				if ($ipadding > 1) echo '</div> <!-- class="row" -->';
 																				echo '<div class="row">';
@@ -317,11 +319,13 @@
 																			// right thumbs
 																			if (fmod($ipadding, 3) == 0)
 																			{
-																				$wrapper_thumbs = 'padding-left:7px;';
+																				//$wrapper_thumbs = 'padding-left:7px;';
+                                                                                $wrapper_thumbs = 'padding-left:5px;';
 																			}
 
 																			// overriding wrapper_thumbs for desktop view
 																			$wrapper_thumbs = '';
+                                                                            $wrapper_thumbs = 'padding-left:7px;padding-right:7px;';
 																		}
 																		else
 																		{
@@ -413,7 +417,7 @@
                                                                              * PRICE
 																			 */
 																			?>
-																			<p style="margin:8px 0px;">
+																			<p style="margin:8px 0px;font-size:0.8em;">
                                                                                 <a class="" href="<?php echo site_url($seg); ?>">
                                                                                     <span style="font-size:1.2em;">
                                                                                         <?php echo $thumb->prod_name; ?>

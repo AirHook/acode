@@ -215,6 +215,7 @@ body {
 /******
  * Responsive items
  */
+
 @media (min-width:992px) {
 	.page-header .navbar-fixed-top {
 	    padding: 0px;

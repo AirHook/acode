@@ -156,7 +156,7 @@
 													<!-- END MOBILE MAIN IMAGE AND OTHER VIEW SLIDER -->
 
 													<!-- BEGIN DESKTOP MAIN IMAGE VIEW WITH ZOOM EFFECT -->
-													<div class="product-image-cloud-zoom desktop-view hidden-xs" style="max-width:425px;float:left;position:relative;">
+													<div class="product-image-cloud-zoom desktop-view hidden-xs" style="float:left;position:relative;">
 
 														<?php
 														/**********
