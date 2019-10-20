@@ -92,12 +92,21 @@
 													} ?>
 
 													<!-- BEGIN PAGE SECTION HEADING -->
-													<?php if (@$search_result) { ?>
+													<?php if (@$search_result)
+                                                    { ?>
+
 													<h1 class="text-center" style="margin:30px auto 10px;"> SEARCH RESULTS FOR "<?php echo $search_string; ?>" </h1>
-													<?php } else { ?>
-													<h1 class="text-center hidden-xs" style="margin:10px auto 10px;"> <?php echo strtoupper($this->category_details->category_name); ?> </h1>
-													<h1 class="hidden-sm hidden-md hidden-lg" style="margin:15px auto 0px 18px;"> <?php echo strtoupper($this->category_details->category_name); ?> </h1>
-													<?php } ?>
+
+                                                        <?php
+                                                    }
+                                                    else
+                                                    { ?>
+
+													<h1 class="text-center hidden-xs hide" style="margin:10px auto 10px;"> <?php echo strtoupper($this->category_details->category_name); ?> </h1>
+													<h1 class="hidden-sm hidden-md hidden-lg hide" style="margin:15px auto 0px 18px;"> <?php echo strtoupper($this->category_details->category_name); ?> </h1>
+
+                                                        <?php
+                                                    } ?>
 													<!-- END PAGE SECTION HEADING -->
 
 													<!-- BEGIN DESKTOP PRODUCT FILTER -->

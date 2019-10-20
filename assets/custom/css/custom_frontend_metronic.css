@@ -435,7 +435,7 @@ a.pdp--color-name {
 	font-weight: bold;
 }
 .product_thumbs_sidebar .list-unstyled li > .list-unstyled {
-    margin-left: 10px;
+    margin-left: 0px;
 }
 .product_thumbs_sidebar .list-unstyled li > .list-unstyled.ul-first-level {
     margin-left: 0px;
