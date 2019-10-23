@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Suspend extends Admin_Controller {
+class Deactivate extends Admin_Controller {
 
 	/**
 	 * Constructor
@@ -16,7 +16,7 @@ class Suspend extends Admin_Controller {
 	// ----------------------------------------------------------------------
 
 	/**
-	 * Index - Suspend/Deactivate Account
+	 * Index - Activate Account
 	 *
 	 * @return	void
 	 */
@@ -31,20 +31,20 @@ class Suspend extends Admin_Controller {
 			$this->session->set_flashdata('error', 'no_id_passed');
 
 			// redirect user
-			redirect('admin/users/vendor/'.$page, 'location');
+			redirect('admin/users/consumer', 'location');
 		}
 
 		// udpate record
 		$DB = $this->load->database('instyle', TRUE);
-		$DB->set('is_active', '2');
-		$DB->where('vendor_id', $id);
-		$DB->update('vendors');
+		$DB->set('is_active', '0');
+		$DB->where('user_id', $id);
+		$DB->update('tbluser_data');
 
 		// set flash data
 		$this->session->set_flashdata('success', 'edit');
 
 		// redirect user
-		redirect('admin/users/vendor/'.$page, 'location');
+		redirect('admin/users/consumer/'.$page, 'location');
 	}
 
 	// ----------------------------------------------------------------------

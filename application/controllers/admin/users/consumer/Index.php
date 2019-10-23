@@ -12,9 +12,9 @@ class Index extends Admin_Controller {
 	{
 		parent::__construct();
     }
-	
+
 	// ----------------------------------------------------------------------
-	
+
 	/**
 	 * Index - default method
 	 *
@@ -25,20 +25,23 @@ class Index extends Admin_Controller {
 	 */
 	public function index()
 	{
+		// redirect user to default active user list
+		redirect('admin/users/consumer/active', 'location');
+
 		// generate the plugin scripts and css
 		$this->_create_plugin_scripts();
-		
+
 		// load pertinent library/model/helpers
 		$this->load->library('users/consumer_users_list');
 		$this->load->helpers('product_link');
-		
+
 		// get data
 		if ($this->input->post())
 		{
 			$this->data['users'] = $this->consumer_users_list->select(array('tbluser_data.email LIKE'=>'%'.$this->input->post('email').'%'));
 			$this->data['search'] = TRUE;
 		}
-		else 
+		else
 		{
 			$offset = $this->input->get('set') == 1 ? 0 : $this->input->get('set') * 3000;
 			if (@$this->webspace_details->options['site_type'] != 'hub_site')
@@ -46,32 +49,32 @@ class Index extends Admin_Controller {
 				$this->data['users'] = $this->consumer_users_list->select(
 					array(
 						'tbluser_data.reference_designer' => @$this->webspace_details->slug
-					), 
-					array(), 
+					),
+					array(),
 					array($offset, 3000)
 				);
 			}
 			else $this->data['users'] = $this->consumer_users_list->select(
-				array(), 
-				array(), 
+				array(),
+				array(),
 				array($offset, 3000)
 			);
 			$this->data['search'] = FALSE;
 		}
 		$this->data['count_all'] = $this->consumer_users_list->count_all;
 		$this->data['record_sets'] = $this->consumer_users_list->count_all / 3000;
-		
+
 		// set data variables...
 		$this->data['file'] = 'users_consumer';
 		$this->data['page_title'] = 'Consumer Users';
 		$this->data['page_description'] = 'List of consumer users';
-		
+
 		// load views...
 		$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template/template', $this->data);
 	}
-	
+
 	// ----------------------------------------------------------------------
-	
+
 	/**
 	 * PRIVATE - Create Plugin Scripts and CSS for the page
 	 *
@@ -80,13 +83,13 @@ class Index extends Admin_Controller {
 	private function _create_plugin_scripts()
 	{
 		$assets_url = base_url('assets/metronic');
-		
+
 		/****************
 		 * page styles plugins inserted at <head>
 		 * after global mandatory styles, before theme global styles
 		 */
 		$this->data['page_level_styles_plugins'] = '';
-		
+
 			// ladda - show loading or progress bar on buttons
 			$this->data['page_level_styles_plugins'].= '
 				<link href="'.$assets_url.'/assets/global/plugins/ladda/ladda-themeless.min.css" rel="stylesheet" type="text/css" />
@@ -102,19 +105,19 @@ class Index extends Admin_Controller {
 				<link href="'.$assets_url.'/assets/global/plugins/datatables/datatables.min.css" rel="stylesheet" type="text/css" />
 				<link href="'.$assets_url.'/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css" rel="stylesheet" type="text/css" />
 			';
-		
+
 		/****************
 		 * page style sheets inserted at <head>
 		 */
 		$this->data['page_level_styles'] = '
 		';
-		
+
 		/****************
 		 * page js plugins inserted at <bottom>
 		 * after core plugins, before global scripts
 		 */
 		$this->data['page_level_plugins'] = '';
-		
+
 			// ladda - show loading or progress bar on buttons
 			$this->data['page_level_plugins'].= '
 				<script src="'.$assets_url.'/assets/global/plugins/ladda/spin.min.js" type="text/javascript"></script>
@@ -131,13 +134,13 @@ class Index extends Admin_Controller {
 				<script src="'.$assets_url.'/assets/global/plugins/datatables/datatables.min.js" type="text/javascript"></script>
 				<script src="'.$assets_url.'/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>
 			';
-		
+
 		/****************
 		 * page scripts inserted at <bottom>
 		 * after global scripts, before theme layout scripts
 		 */
 		$this->data['page_level_scripts'] = '';
-		
+
 			// button spinners for ladda
 			$this->data['page_level_scripts'].= '
 				<script src="'.$assets_url.'/assets/pages/scripts/ui-buttons-spinners.min.js" type="text/javascript"></script>
@@ -151,7 +154,7 @@ class Index extends Admin_Controller {
 				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/table-datatables-users_consumer_list.js" type="text/javascript"></script>
 			';
 	}
-	
+
 	// ----------------------------------------------------------------------
-	
+
 }

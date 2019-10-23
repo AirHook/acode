@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Index extends Admin_Controller {
+class Inactive extends Admin_Controller {
 
 	/**
 	 * Constructor
@@ -23,38 +23,96 @@ class Index extends Admin_Controller {
 	 *
 	 * @return	void
 	 */
-	public function index()
+	public function index($p = '')
 	{
-		// redirect to active user list
-		redirect('admin/users/admin/active', 'location');
-
 		// generate the plugin scripts and css
 		$this->_create_plugin_scripts();
 
 		// load pertinent library/model/helpers
-		$this->load->library('users/admin_users_list');
+		$this->load->library('users/consumer_users_list');
+		$this->load->helpers('product_link');
+
+		// set some variables
+		$this->data['page'] = $p ?: 1;
+		$this->data['limit'] = 100;
+		$this->data['offset'] = $p == '' ? 0 : ($p * 100) - 100;
+
+		// count all records
+		$DB = $this->load->database('instyle', TRUE);
+		$DB->select('*');
+		$DB->where('is_active', '0');
+		$q1 = $DB->get('tbluser_data');
+		$this->data['count_all'] = $q1->num_rows();
 
 		// get data
-		if (@$this->webspace_details->options['site_type'] == 'hub_site')
+		if (@$this->webspace_details->options['site_type'] != 'hub_site')
 		{
-			$this->data['users'] = $this->admin_users_list->select();
-		}
-		else
-		{
-			$this->data['users'] = $this->admin_users_list->select(
+			$this->data['users'] = $this->consumer_users_list->select(
 				array(
-					'account_id' => $this->webspace_details->account_id,
-				)
+					'tbluser_data.reference_designer' => @$this->webspace_details->slug
+				),
+				array(),
+				array($this->data['offset'], $this->data['limit'])
 			);
 		}
+		else $this->data['users'] = $this->consumer_users_list->select(
+			array('tbluser_data.is_active'=>'0'),
+			array(),
+			array($this->data['offset'], $this->data['limit'])
+		);
+		$this->data['search'] = FALSE;
+		$this->data['record_sets'] = $this->data['count_all'] / $this->data['limit'];
+
+		// enable pagination
+		$this->_set_pagination($this->data['count_all'], $this->data['limit']);
 
 		// set data variables...
-		$this->data['file'] = 'users_admin';
-		$this->data['page_title'] = 'Admin Users';
-		$this->data['page_description'] = 'List of admin users';
+		$this->data['file'] = 'users_consumer';
+		$this->data['page_title'] = 'Consumer Users';
+		$this->data['page_description'] = 'List of consumer users';
 
 		// load views...
 		$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template/template', $this->data);
+	}
+
+	// ----------------------------------------------------------------------
+
+	/**
+	 * PRIVATE - Set pagination parameters
+	 *
+	 * @return	void
+	 */
+	private function _set_pagination($count_all = '', $per_page = '')
+	{
+		$this->load->library('pagination');
+
+		$config['base_url'] = base_url().'admin/users/consumer/active/index/';
+		$config['total_rows'] = $count_all;
+		$config['per_page'] = $per_page;
+		$config['num_links'] = 3;
+		$config['use_page_numbers'] = TRUE;
+		$config['full_tag_open'] = '<ul class="pagination pull-right" style="margin:0;">';
+		$config['full_tag_close'] = '</ul>';
+		$config['num_tag_open'] = '<li>';
+		$config['num_tag_close'] = '</li>';
+		$config['cur_tag_open'] = '<li class="active"><a href="javascript:;">';
+		$config['cur_tag_close'] = '</a></li>';
+		$config['first_link'] = '<i class="fa fa-angle-double-left"></i>';
+		$config['first_url'] = site_url('admin/users/consumer/active');
+		$config['first_tag_open'] = '<li>';
+		$config['first_tag_close'] = '</li>';
+		$config['last_link'] = '<i class="fa fa-angle-double-right"></i>';
+		$config['last_tag_open'] = '<li>';
+		$config['last_tag_close'] = '</li>';
+		$config['prev_link'] = '<i class="fa fa-angle-left"></i>';
+		$config['prev_tag_open'] = '<li>';
+		$config['prev_tag_close'] = '</li>';
+		$config['next_link'] = '<i class="fa fa-angle-right"></i>';
+		$config['next_tag_open'] = '<li>';
+		$config['next_tag_close'] = '</li>';
+
+		$this->pagination->initialize($config);
+
 	}
 
 	// ----------------------------------------------------------------------
@@ -135,7 +193,7 @@ class Index extends Admin_Controller {
 			';
 			// handle datatable
 			$this->data['page_level_scripts'].= '
-				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/table-datatables-users_admins_list.js" type="text/javascript"></script>
+				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/table-datatables-users_consumer_list.js" type="text/javascript"></script>
 			';
 	}
 

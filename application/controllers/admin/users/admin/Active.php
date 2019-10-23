@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Index extends Admin_Controller {
+class Active extends Admin_Controller {
 
 	/**
 	 * Constructor
@@ -25,9 +25,6 @@ class Index extends Admin_Controller {
 	 */
 	public function index()
 	{
-		// redirect to active user list
-		redirect('admin/users/admin/active', 'location');
-
 		// generate the plugin scripts and css
 		$this->_create_plugin_scripts();
 
@@ -35,18 +32,12 @@ class Index extends Admin_Controller {
 		$this->load->library('users/admin_users_list');
 
 		// get data
-		if (@$this->webspace_details->options['site_type'] == 'hub_site')
+		if (@$this->webspace_details->options['site_type'] != 'hub_site')
 		{
-			$this->data['users'] = $this->admin_users_list->select();
+			$params['account_id'] = $this->webspace_details->account_id;
 		}
-		else
-		{
-			$this->data['users'] = $this->admin_users_list->select(
-				array(
-					'account_id' => $this->webspace_details->account_id,
-				)
-			);
-		}
+		$params['is_active'] = '1';
+		$this->data['users'] = $this->admin_users_list->select($params);
 
 		// set data variables...
 		$this->data['file'] = 'users_admin';

@@ -20,7 +20,7 @@ class Activate extends Admin_Controller {
 	 *
 	 * @return	void
 	 */
-	public function index($id = '')
+	public function index($id = '', $page = '')
 	{
 		echo 'Processing...';
 
@@ -31,14 +31,8 @@ class Activate extends Admin_Controller {
 			$this->session->set_flashdata('error', 'no_id_passed');
 
 			// redirect user
-			redirect($this->config->slash_item('admin_folder').'users/wholesale');
+			redirect('admin/users/wholesale/'.$page, 'location');
 		}
-
-		// load pertinent library/model/helpers
-		$this->load->library('users/wholesale_user_details');
-
-		// get and set item details for odoo
-		$this->wholesale_user_details->initialize(array('user_id'=>$id));
 
 		// udpate record
 		$DB = $this->load->database('instyle', TRUE);
@@ -51,7 +45,7 @@ class Activate extends Admin_Controller {
 		$this->session->set_flashdata('success', 'edit');
 
 		// redirect user
-		redirect($this->config->slash_item('admin_folder').'users/wholesale');
+		redirect('admin/users/wholesale/'.$page, 'location');
 	}
 
 	// ----------------------------------------------------------------------

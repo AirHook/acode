@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Suspend extends Admin_Controller {
+class Deactivate extends Admin_Controller {
 
 	/**
 	 * Constructor
@@ -16,7 +16,7 @@ class Suspend extends Admin_Controller {
 	// ----------------------------------------------------------------------
 
 	/**
-	 * Index - Suspend/Deactivate Account
+	 * Index - Activate Account
 	 *
 	 * @return	void
 	 */
@@ -36,7 +36,7 @@ class Suspend extends Admin_Controller {
 
 		// udpate record
 		$DB = $this->load->database('instyle', TRUE);
-		$DB->set('is_active', '2');
+		$DB->set('is_active', '0');
 		$DB->where('vendor_id', $id);
 		$DB->update('vendors');
 

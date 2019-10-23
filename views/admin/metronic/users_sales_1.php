@@ -1,13 +1,19 @@
                     <!-- BEGIN FORM-->
                     <!-- FORM =======================================================================-->
-                    <?php echo form_open($this->config->slash_item('admin_folder').'users/admin/bulk_actions', array('class'=>'form-horizontal', 'id'=>'form-admin_users_bulk_actions')); ?>
+                    <?php echo form_open(
+                        $this->config->slash_item('admin_folder').'users/sales/bulk_actions',
+                        array(
+                            'class'=>'form-horizontal',
+                            'id'=>'form-sales_users_bulk_actions'
+                        )
+                    ); ?>
 
                     <?php
                     /***********
                      * Noification area
                      */
                     ?>
-                    <div class="notifications">
+                    <div>
                         <?php if ($this->session->flashdata('success') == 'add') { ?>
                         <div class="alert alert-success auto-remove">
                             <button class="close" data-close="alert"></button> New User ADDED!
@@ -33,55 +39,35 @@
                             <button class="close" data-close="alert"></button> User not found.
                         </div>
                         <?php } ?>
+                        <?php if ($this->session->flashdata('error') == 'del_super_sales_not_allowed') { ?>
+                        <div class="alert alert-danger">
+                            <button class="close" data-close="alert"></button> Deleting of super sales is not allowed. Please try again.
+                        </div>
+                        <?php } ?>
                     </div>
 
                     <div class="table-toolbar">
 
-                        <style>
-                            .nav > li > a {
-                                padding: 8px 15px;
-                                background-color: #eee;
-                                color: #555;
-                            }
-                            .nav-tabs > li > a {
-                                font-size: 12px;
-                            }
-                            .nav-tabs > li > a:hover {
-                                background-color: #333;
-                                color: #eee;
-                            }
-                        </style>
+                        <?php
+                        // available only on hub sites for now
+                        if ($this->webspace_details->options['site_type'] == 'hub_site')
+                        { ?>
 
-                        <ul class="nav nav-tabs">
-                            <li class="<?php echo $this->uri->segment(4) == 'active' ? 'active' : ''; ?>">
-                                <a href="<?php echo site_url('admin/users/admin/active'); ?>">
-                                    <?php echo $this->uri->segment(4) != 'active' ? 'Show' : ''; ?> Active User List
-                                </a>
-                            </li>
-                            <li class="<?php echo $this->uri->segment(4) == 'inactive' ? 'active' : ''; ?>">
-                                <a href="<?php echo site_url('admin/users/admin/inactive'); ?>">
-                                    <?php echo $this->uri->segment(4) != 'inactive' ? 'Show' : ''; ?> Inactive User List
-                                </a>
-                            </li>
-                            <li class="<?php echo $this->uri->segment(4) == 'suspended' ? 'active' : ''; ?>">
-                                <a href="<?php echo site_url('admin/users/admin/suspended'); ?>">
-                                    <?php echo $this->uri->segment(4) != 'suspended' ? 'Show' : ''; ?> Suspended Users
-                                </a>
-                            </li>
-                            <?php
-                            // available only on hub sites for now
-                            if ($this->webspace_details->options['site_type'] == 'hub_site')
-                            { ?>
-                            <li>
-                                <a href="<?php echo site_url('admin/users/admin/add'); ?>">
-                                    Add New User <i class="fa fa-plus"></i>
-                                </a>
-                            </li>
-                                <?php
-                            } ?>
-                        </ul>
-
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="btn-group">
+                                    <a href="<?php echo site_url($this->config->slash_item('admin_folder').'users/sales/add'); ?>" class="btn sbold blue"> Add a New User
+                                        <i class="fa fa-plus"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                            </div>
+                        </div>
                         <br />
+
+                            <?php
+                        } ?>
 
                         <div class="row">
 
@@ -96,7 +82,7 @@
                             <button class="btn green hidden-sm hidden-xs" id="apply_bulk_actions" data-toggle="modal" href="#confirm_bulk_actions" disabled> Apply </button>
 
                         </div>
-                        <button class="btn green btn-block margin-top-10 hidden-lg hidden-md" id="apply_bulk_actions" data-toggle="modal" href="#confirm_bulk_actions" disabled> Apply </button>
+                        <button class="btn green hidden-lg hidden-md" id="apply_bulk_actions" data-toggle="modal" href="#confirm_bulk_actions" disabled> Apply </button>
 
                     </div>
                     <?php
@@ -113,20 +99,21 @@
                             position: relative;
                         }
                     </style>
-                    <table class="table table-striped table-bordered table-hover table-checkable order-column" id="tbl-admin_users">
+                    <table class="table table-striped table-bordered table-hover table-checkable order-column" id="tbl-users_sales">
                         <thead>
                             <tr>
                                 <th class="hidden-xs hidden-sm"> <!-- counter --> </th>
                                 <th class="text-center">
                                     <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
-                                        <input type="checkbox" id="heading_checkbox" class="group-checkable" data-set="#tbl-admin_users .checkboxes" />
+                                        <input type="checkbox" id="heading_checkbox" class="group-checkable" data-set="#tbl-users_sales .checkboxes" />
                                         <span></span>
                                     </label>
                                 </th>
                                 <th> Username </th>
                                 <th> Email </th>
+                                <th> Designer </th>
+                                <th> Level </th>
                                 <th> Status </th>
-                                <th> Access Level </th>
                                 <th> Actions </th>
                             </tr>
                         </thead>
@@ -137,12 +124,7 @@
                             {
                                 $i = 1;
                                 foreach ($users as $user)
-                                {
-                                    $edit_link =
-                                        $this->uri->segment(1) === 'sales'
-                                        ? site_url('sales/admin/edit/index/'.$user->admin_id)
-                                        : site_url('admin/users/admin/edit/index/'.$user->admin_id)
-                                    ; ?>
+                                { ?>
 
                             <tr class="odd gradeX " onmouseover="$(this).find('.hidden_first_edit_link').show();" onmouseout="$(this).find('.hidden_first_edit_link').hide();">
                                 <td class="hidden-xs hidden-sm">
@@ -150,65 +132,67 @@
                                 </td>
                                 <td class="text-center">
                                     <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
-                                        <input type="checkbox" class="checkboxes" name="checkbox[]" value="<?php echo $user->admin_id; ?>" />
+                                        <input type="checkbox" class="checkboxes" name="checkbox[]" value="<?php echo $user->admin_sales_id; ?>" />
                                         <span></span>
                                     </label>
                                 </td>
-                                <td> <?php echo $user->admin_name; ?> </td>
+                                <td> <?php echo ucwords(strtolower($user->admin_sales_user.' '.$user->admin_sales_lname)); ?> </td>
                                 <td>
-                                    <a href="<?php echo site_url($this->config->slash_item('admin_folder').'users/admin/edit/index/'.$user->admin_id); ?>"> <?php echo $user->admin_email; ?> </a>
-                                    <?php if ($user->admin_id == '1') { ?>
-                                    <em style="color:grey;font-size:0.8em;"> - system admin</em>
+                                    <a href="<?php echo site_url($this->config->slash_item('admin_folder').'users/sales/edit/index/'.$user->admin_sales_id); ?>"> <?php echo $user->admin_sales_email; ?> </a>
+                                    <?php if ($user->admin_sales_id == '1') { ?>
+                                    <em style="color:grey;font-size:0.8em;"> (super sales)</em>
                                     <?php } ?>
-                                    <?php if ($user->admin_name == 'rsbgm') { ?>
-                                    <em style="color:grey;font-size:0.8em;"> - dev admin</em>
-                                    <?php } ?>
-                                    &nbsp; &nbsp;
-                                    <a class="hidden_first_edit_link" style="display:none;" href="<?php echo site_url($this->config->slash_item('admin_folder').'users/admin/edit/index/'.$user->admin_id); ?>"><small><cite>edit</cite></small></a>
+                                    &nbsp;
+                                    <a class="hidden_first_edit_link" style="display:none;" href="<?php echo site_url($this->config->slash_item('admin_folder').'users/sales/edit/index/'.$user->admin_sales_id); ?>"><small><cite>edit</cite></small></a>
                                 </td>
-                                <td>
-                                    <?php if ($user->is_active == '1') { ?>
-                                    <span class="label label-sm label-success"> Active </span>
-                                    <?php } ?>
-                                    <?php if ($user->is_active == '0') { ?>
-                                    <span class="label label-sm label-danger"> Inactive </span>
-                                    <?php } ?>
-                                    <?php if ($user->is_active == '2') { ?>
-                                    <span class="label label-sm label-warning"> Suspended </span>
-                                    <?php } ?>
+                                <td class="center">
+                                    <?php
+                                    foreach ($designers as $designer)
+                                    {
+                                        if (
+                                            $user->admin_sales_designer == $designer->domain_name
+                                            OR $user->admin_sales_designer == $designer->url_structure
+                                        )
+                                        {
+                                            echo $designer->designer;
+                                        }
+                                    }
+                                    ?>
                                 </td>
                                 <td class="center"> <?php echo $user->access_level; ?> </td>
+                                <td>
+                                    <span class="label label-sm label-<?php echo $user->is_active == '1' ? 'success': 'danger'; ?>"> <?php echo $user->is_active == '1' ? 'Active': 'Suspended'; ?> </span>
+                                </td>
                                 <td class="dropdown-wrap dropdown-fix">
-
-                                    <!-- Edit -->
-                                    <a href="<?php echo $edit_link; ?>" class="tooltips" data-original-title="Edit">
-                                        <i class="fa fa-pencil font-dark"></i>
-                                    </a>
-                                    <?php if ($user->is_active == '0' OR $user->is_active == '2') { ?>
-                                    <!-- Activate -->
-                                    <a data-toggle="modal" href="#activate-<?php echo $user->admin_id; ?>" class="tooltips" data-original-title="Activate">
-                                        <i class="fa fa-check font-dark"></i>
-                                    </a>
-                                    <?php } ?>
-                                    <?php if ($user->is_active == '1' OR $user->is_active == '2') { ?>
-                                    <!-- Set Inactive -->
-                                    <a data-toggle="modal" href="#set-inactive-<?php echo $user->admin_id; ?>" class="tooltips" data-original-title="Set Inactive">
-                                        <i class="fa fa-ban font-dark"></i>
-                                    </a>
-                                    <?php } ?>
-                                    <?php if ($user->is_active == '0' OR $user->is_active == '1') { ?>
-                                    <!-- Suspend -->
-                                    <a data-toggle="modal" href="#suspend-<?php echo $user->admin_id; ?>" class="tooltips" data-original-title="Suspend">
-                                        <i class="fa fa-dot-circle-o font-dark"></i>
-                                    </a>
-                                    <?php } ?>
-                                    <!-- Delete -->
-                                    <a data-toggle="modal" href="#delete-<?php echo $user->admin_id; ?>" class="tooltips" data-original-title="Delete">
-                                        <i class="fa fa-trash font-dark"></i>
-                                    </a>
-
+                                    <div class="btn-group" >
+                                        <button class="btn btn-xs red-flamingo dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false" onclick="$('.dropdown-wrap').toggleClass('dropdown-fix');" > Actions
+                                            <i class="fa fa-angle-down"></i>
+                                        </button>
+                                        <!-- DOC: Remove "pull-right" class to default to left alignment -->
+                                        <ul class="dropdown-menu pull-right">
+                                            <li>
+                                                <a href="<?php echo site_url($this->config->slash_item('admin_folder').'users/sales/edit/index/'.$user->admin_sales_id); ?>">
+                                                    <i class="icon-pencil"></i> Edit </a>
+                                            </li>
+                                            <li>
+                                                <a data-toggle="modal" href="#<?php echo $user->is_active == '1' ? 'suspend': 'activate'; ?>-<?php echo $user->admin_sales_id; ?>">
+                                                    <i class="icon-<?php echo $user->is_active == '1' ? 'ban': 'check'; ?>"></i> <?php echo $user->is_active == '1' ? 'Suspend': 'Activate'; ?> </a>
+                                            </li>
+                                            <?php if ($user->admin_sales_id !== '1') { ?>
+                                            <li>
+                                                <a data-toggle="modal" href="#delete-<?php echo $user->admin_sales_id; ?>">
+                                                    <i class="icon-trash"></i> Delete </a>
+                                            </li>
+                                            <?php } ?>
+                                            <li class="divider"> </li>
+                                            <li>
+                                                <a href="<?php echo site_url($this->config->slash_item('admin_folder').'users/sales/add'); ?>">
+                                                    <i class="fa fa-cubes"></i> Add User </a>
+                                            </li>
+                                        </ul>
+                                    </div>
                                     <!-- ITEM SUSPEND -->
-                                    <div class="modal fade bs-modal-sm" id="suspend-<?php echo $user->admin_id?>" tabindex="-1" role="dialog" aria-hidden="true">
+                                    <div class="modal fade bs-modal-sm" id="suspend-<?php echo $user->admin_sales_id?>" tabindex="-1" role="dialog" aria-hidden="true">
                                         <div class="modal-dialog modal-sm">
                                             <div class="modal-content">
                                                 <div class="modal-header">
@@ -218,29 +202,7 @@
                                                 <div class="modal-body"> Are you sure you want to SUSPEND user? </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-                                                    <a href="<?php echo site_url('admin/users/admin/suspend/index/'.$user->admin_id.'/'.$this->uri->segment(4)); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
-                                                        <span class="ladda-label">Confirm?</span>
-                                                        <span class="ladda-spinner"></span>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                            <!-- /.modal-content -->
-                                        </div>
-                                        <!-- /.modal-dialog -->
-                                    </div>
-                                    <!-- /.modal -->
-                                    <!-- ITEM SET INACTIVATE -->
-                                    <div class="modal fade bs-modal-sm" id="set-inactive-<?php echo $user->admin_id?>" tabindex="-1" role="dialog" aria-hidden="true">
-                                        <div class="modal-dialog modal-sm">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                                    <h4 class="modal-title">Update User Info</h4>
-                                                </div>
-                                                <div class="modal-body"> Set Inactive user? </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-                                                    <a href="<?php echo site_url('admin/users/admin/deactivate/index/'.$user->admin_id.'/'.$this->uri->segment(4)); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+                                                    <a href="<?php echo site_url($this->config->slash_item('admin_folder').'users/sales/suspend/index/'.$user->admin_sales_id); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
                                                         <span class="ladda-label">Confirm?</span>
                                                         <span class="ladda-spinner"></span>
                                                     </a>
@@ -252,7 +214,7 @@
                                     </div>
                                     <!-- /.modal -->
                                     <!-- ITEM ACTIVATE -->
-                                    <div class="modal fade bs-modal-sm" id="activate-<?php echo $user->admin_id?>" tabindex="-1" role="dialog" aria-hidden="true">
+                                    <div class="modal fade bs-modal-sm" id="activate-<?php echo $user->admin_sales_id?>" tabindex="-1" role="dialog" aria-hidden="true">
                                         <div class="modal-dialog modal-sm">
                                             <div class="modal-content">
                                                 <div class="modal-header">
@@ -262,7 +224,7 @@
                                                 <div class="modal-body"> ACTIVATE user? </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-                                                    <a href="<?php echo site_url('admin/users/admin/activate/index/'.$user->admin_id.'/'.$this->uri->segment(4)); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+                                                    <a href="<?php echo site_url($this->config->slash_item('admin_folder').'users/sales/activate/index/'.$user->admin_sales_id); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
                                                         <span class="ladda-label">Confirm?</span>
                                                         <span class="ladda-spinner"></span>
                                                     </a>
@@ -274,7 +236,7 @@
                                     </div>
                                     <!-- /.modal -->
                                     <!-- ITEM DELETE -->
-                                    <div class="modal fade bs-modal-sm" id="delete-<?php echo $user->admin_id?>" tabindex="-1" role="dialog" aria-hidden="true">
+                                    <div class="modal fade bs-modal-sm" id="delete-<?php echo $user->admin_sales_id?>" tabindex="-1" role="dialog" aria-hidden="true">
                                         <div class="modal-dialog modal-sm">
                                             <div class="modal-content">
                                                 <div class="modal-header">
@@ -284,7 +246,7 @@
                                                 <div class="modal-body"> DELETE user? <br /> This cannot be undone! </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-                                                    <a href="<?php echo site_url('admin/users/admin/delete/index/'.$user->admin_id.'/'.$this->uri->segment(4)); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+                                                    <a href="<?php echo site_url($this->config->slash_item('admin_folder').'users/sales/delete/index/'.$user->admin_sales_id); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
                                                         <span class="ladda-label">Confirm?</span>
                                                         <span class="ladda-spinner"></span>
                                                     </a>
@@ -301,15 +263,6 @@
                                     <?php
                                     $i++;
                                 }
-                            }
-                            else
-                            { ?>
-
-                            <tr class="odd gradeX">
-                                <td colspan="7">No recods found.</td>
-                            </tr>
-
-                            <?php
                             } ?>
 
                         </tbody>
@@ -330,7 +283,7 @@
 								<div class="modal-body"> Activate multiple items? </div>
 								<div class="modal-footer">
 									<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-									<button onclick="$('#form-admin_users_bulk_actions').submit();" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+									<button onclick="$('#form-sales_users_bulk_actions').submit();" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
 										<span class="ladda-label">Confirm?</span>
 										<span class="ladda-spinner"></span>
 									</button>
@@ -353,7 +306,7 @@
 								<div class="modal-body"> Suspend or Deactivate multiple items? </div>
 								<div class="modal-footer">
 									<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-									<button onclick="$('#form-admin_users_bulk_actions').submit();" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+									<button onclick="$('#form-sales_users_bulk_actions').submit();" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
 										<span class="ladda-label">Confirm?</span>
 										<span class="ladda-spinner"></span>
 									</button>
@@ -376,7 +329,7 @@
 								<div class="modal-body"> Delete multiple items? <br /> This cannot be undone! </div>
 								<div class="modal-footer">
 									<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-									<button onclick="$('#form-admin_users_bulk_actions').submit();" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+									<button onclick="$('#form-sales_users_bulk_actions').submit();" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
 										<span class="ladda-label">Confirm?</span>
 										<span class="ladda-spinner"></span>
 									</button>

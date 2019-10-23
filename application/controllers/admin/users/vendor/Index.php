@@ -25,6 +25,9 @@ class Index extends Admin_Controller {
 	 */
 	public function index()
 	{
+		// redirect user to default active user list
+		redirect('admin/users/vendor/active', 'location');
+
 		// generate the plugin scripts and css
 		$this->_create_plugin_scripts();
 

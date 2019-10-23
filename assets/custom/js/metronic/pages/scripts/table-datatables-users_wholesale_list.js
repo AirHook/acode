@@ -40,7 +40,9 @@ var TableDatatablesManaged = function () {
             // So when dropdowns used the scrollable div should be removed.
             //"dom": "<'row'<'col-md-6 col-sm-12'l><'col-md-6 col-sm-12'f>r>t<'row'<'col-md-5 col-sm-12'i><'col-md-7 col-sm-12'p>>",
 
-            "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
+            "deferRender": true, // improve speed for large data tables
+
+            "bStateSave": false, // save datatable state(pagination, sort, etc) in cookie.
 
             "lengthMenu": [
                 [100, 500, 1000, 2500, -1],
@@ -56,7 +58,7 @@ var TableDatatablesManaged = function () {
                 },
                 {
                     "width": "30px",
-                    "targets": [1]
+                    "targets": [0, 1]
                 },
                 {
                     "searchable": false,
