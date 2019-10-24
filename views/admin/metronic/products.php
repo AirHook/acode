@@ -37,8 +37,81 @@
 						<?php } ?>
 					</div>
 
+					<?php
+					/**********
+					 * Tabs Tooolbar
+					 */
+					?>
                     <div class="table-toolbar">
+
+						<style>
+							.nav > li > a {
+								padding: 8px 15px;
+								background-color: #eee;
+								color: #555;
+							}
+							.nav-tabs > li > a {
+								font-size: 12px;
+							}
+							.nav-tabs > li > a:hover {
+								background-color: #333;
+								color: #eee;
+							}
+						</style>
+
+						<ul class="nav nav-tabs">
+							<li class="<?php echo $this->uri->segment(3) == 'all' ? 'active' : ''; ?>">
+								<a href="<?php echo site_url('admin/products/all'); ?>">
+									All Products
+								</a>
+							</li>
+							<li class="<?php echo $this->uri->segment(3) == 'not_public' ? 'active' : ''; ?>">
+								<a href="<?php echo site_url('admin/products/not_public'); ?>">
+									Private
+								</a>
+							</li>
+							<li class="<?php echo $this->uri->segment(3) == 'unpublished' ? 'active' : ''; ?>">
+								<a href="<?php echo site_url('admin/products/unpublished'); ?>">
+									Unpublished
+								</a>
+							</li>
+							<li class="<?php echo $this->uri->segment(3) == 'instock' ? 'active' : ''; ?>">
+								<a href="<?php echo site_url('admin/products/instock'); ?>">
+									In Stock
+								</a>
+							</li>
+							<li class="<?php echo $this->uri->segment(3) == 'onorder' ? 'active' : ''; ?>">
+								<a href="<?php echo site_url('admin/products/onorder'); ?>">
+									On Order
+								</a>
+							</li>
+							<li class="<?php echo $this->uri->segment(3) == 'by_vendor' ? 'active' : ''; ?>">
+								<a href="javascript:;" class="tooltips" data-original-title="Currently under construction">
+									By Vendor
+								</a>
+							</li>
+							<?php
+							// available only on hub sites for now
+							if ($this->webspace_details->options['site_type'] == 'hub_site')
+							{ ?>
+							<li>
+								<a href="<?php echo site_url('admin/products/add'); ?>">
+									Add New Product <i class="fa fa-plus"></i>
+								</a>
+							</li>
+								<?php
+							} ?>
+						</ul>
+
+						<br />
+
+						<?php if (@$search) { ?>
+                        <h1><small><em>Search results for:</em></small> "<?php echo @$search_string; ?>"</h1>
+                        <br />
+                        <?php } ?>
+
                         <div class="row">
+
                             <div class="col-md-6">
                                 <div class="btn-group <?php echo $this->webspace_details->options['site_type'] == 'sat_site' ? 'hide' : ''; ?>">
                                     <a href="<?php echo site_url($this->config->slash_item('admin_folder').'products/add'); ?>" class="btn sbold blue"> Add New Product
@@ -46,6 +119,7 @@
                                     </a>
                                 </div>
                             </div>
+
                             <div class="col-md-6">
                                 <div class="btn-group pull-right">
 
@@ -71,16 +145,16 @@
 
                                 </div>
                             </div>
+
                         </div>
 					</div>
 
-					<?php //$this->load->view($this->config->slash_item('admin_folder').''.$this->config->slash_item('admin_template').$view_as);
-					$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').$view_as, $this->data); ?>
+					<?php $this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').$view_as, $this->data); ?>
 
 					<?php if ($view_as == 'products_list') { ?>
 
 					<!-- DOC: Remove "hide" class to enable the heading -->
-                    <div class="m-heading-1 border-blue m-bordered">
+                    <div class="m-heading-1 border-blue m-bordered hide">
                         <h3>Tips!</h3>
                         <p> <strong>Sortable</strong> - all columns is sortable either ascending or descending and it sorts out the entire record collection and not just the visible items on the apge </p>
                         <p> <strong>Searchable</strong> - Search searches on all columns and rows. It basically filters the entire record set with records that contain the search string. For example, by typing 'active' will show only records with the word active thereby filter the column 'Status' with records having active status only. And, vice versa for 'suspended'. The downside, if other columns has the string 'active', it will display it despite having 'suspended' status. However unlikely, it can still happen. Typing the full string like name or email will show records with exact string match. </p>

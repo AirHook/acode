@@ -180,6 +180,64 @@ var TableDatatablesManaged = function () {
 		});
     }
 
+	// header checkbox change function
+	// get the "data-set" attribute and look for each (look for all rows checkboxes)
+	// if header checkbos is checked, check row checkboxes and set row as active
+	$('#tbl-product_list_').find('.group-checkable').change(function () {
+		var set = jQuery(this).attr("data-set");
+		var checked = jQuery(this).is(":checked");
+		jQuery(set).each(function () {
+			if (checked) {
+				$(this).prop("checked", true);
+				$(this).parents('tr').addClass("active");
+				// add other custom javascripts here...
+				$('#bulk_actions_select').prop("disabled", false);
+				$('.apply_bulk_actions').prop("disabled", false);
+				$('#heading_checkbox').prop("checked", true);
+			} else {
+				$(this).prop("checked", false);
+				$(this).parents('tr').removeClass("active");
+				// add other custom javascripts here...
+				$('#bulk_actions_select').prop("disabled", true);
+				$('#bulk_actions_select').selectpicker("val", "");
+				$('.apply_bulk_actions').prop("disabled", true);
+				$('#heading_checkbox').prop("checked", false);
+			}
+			$('#bulk_actions_select').selectpicker("refresh");
+		});
+	});
+
+	// table row checkboxes change function
+	$('#tbl-product_list_').on('change', 'tbody tr .checkboxes', function () {
+		$(this).parents('tr').toggleClass("active");
+		// add other custom javascripts here...
+		var checked = jQuery(this).is(":checked");
+		if (checked) {
+			$('#bulk_actions_select').prop("disabled", false);
+			$('.apply_bulk_actions').prop("disabled", false);
+			$('#heading_checkbox').prop("checked", true);
+		} else {
+			if ($('.checkboxes:checked').length == 0) {
+				$('#heading_checkbox').prop("checked", false);
+				$('#bulk_actions_select').selectpicker("val", "");
+				$('#bulk_actions_select').prop("disabled", true);
+				$('.apply_bulk_actions').prop("disabled", true);
+				$('#heading_checkbox').prop("checked", false);
+			}
+		}
+		$('#bulk_actions_select').selectpicker("refresh");
+	});
+
+	// table column seque change function
+	$('.seque').change(function(){
+		var prod_id = $(this).data('prod_id');
+		var new_seque = $(this).val();
+		$.get(base_url + 'admin/products/Update_seque/index/' + prod_id + '/' + new_seque);
+		//$.get(base_url + 'admin/products/Update_seque/index/' + prod_id + '/' + new_seque, function(data, status){alert('Data: ' + data + '\nStatus: ' + status);});
+		$(this).siblings('.seque-label').html(new_seque);
+		$(this).attr('readonly', true);
+	});
+
 	// apply button scripts
 	$('.apply_bulk_actions').click(function(){
 		var x = document.getElementById("bulk_actions_select").selectedIndex;
@@ -241,6 +299,12 @@ var TableDatatablesManaged = function () {
 		$('#loading .modal-title').html('Updating...');
 		$('#loading').modal('show');
 		window.location.href=base_url + '/Websites/acode/' + "admin/products/publish/index/"+st+"/"+prod_id+".html";
+	});
+
+	// delete item button action
+	$('a.delete-item').on('click', function(){
+		var prod_id = $(this).data('prod_id');
+		$('#delete-'+prod_id).modal('show');
 	});
 
     return {

@@ -261,7 +261,12 @@ class Products_list
 	 *
 	 * @return	Object List or FALSE on failure
 	 */
-	public function select($where = array(), $order_by = array(), $limit = '', $_search = NULL)
+	public function select(
+		$where = array(),
+		$order_by = array(),
+		$limit = '',
+		$_search = NULL
+	)
 	{
 		// set $where custom conditions
 		if ( ! empty($where))

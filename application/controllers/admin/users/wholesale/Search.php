@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Inactive extends Admin_Controller {
+class Search extends Admin_Controller {
 
 	/**
 	 * Constructor
@@ -23,53 +23,42 @@ class Inactive extends Admin_Controller {
 	 *
 	 * @return	void
 	 */
-	public function index($p = '')
+	public function index()
 	{
+		if ( ! $this->input->post())
+		{
+			// nothing more to do...
+			// set flash data
+			$this->session->set_flashdata('error', 'no_id_passed');
+
+			// redirect user
+			redirect('admin/users/wholesale', 'location');
+		}
+
 		// generate the plugin scripts and css
 		$this->_create_plugin_scripts();
 
 		// load pertinent library/model/helpers
-		$this->load->library('users/consumer_users_list');
-		$this->load->helpers('product_link');
-
-		// set some variables
-		$this->data['page'] = $p ?: 1;
-		$this->data['limit'] = 100;
-		$this->data['offset'] = $p == '' ? 0 : ($p * 100) - 100;
-
-		// count all records
-		$DB = $this->load->database('instyle', TRUE);
-		$DB->select('*');
-		$DB->where('is_active', '0');
-		$q1 = $DB->get('tbluser_data');
-		$this->data['count_all'] = $q1->num_rows();
+		$this->load->library('users/wholesale_users_list');
 
 		// get data
-		if (@$this->webspace_details->options['site_type'] != 'hub_site')
-		{
-			$this->data['users'] = $this->consumer_users_list->select(
-				array(
-					'tbluser_data.reference_designer' => @$this->webspace_details->slug
-				),
-				array(),
-				array($this->data['offset'], $this->data['limit'])
-			);
-		}
-		else $this->data['users'] = $this->consumer_users_list->select(
-			array('tbluser_data.is_active'=>'0'),
+		$this->data['users'] = $this->wholesale_users_list->select(
 			array(),
-			array($this->data['offset'], $this->data['limit'])
+			array(),
+			array(),
+			"tbluser_data_wholesale.email LIKE '%".$this->input->post('search_string')."%'
+			OR tbluser_data_wholesale.store_name LIKE '%".$this->input->post('search_string')."%'
+			OR tbluser_data_wholesale.firstname LIKE '%".$this->input->post('search_string')."%'
+			OR tbluser_data_wholesale.lastname LIKE '%".$this->input->post('search_string')."%'
+			OR tbluser_data_wholesale.telephone LIKE '%".$this->input->post('search_string')."%'"
 		);
-		$this->data['search'] = FALSE;
-		$this->data['record_sets'] = $this->data['count_all'] / $this->data['limit'];
-
-		// enable pagination
-		$this->_set_pagination($this->data['count_all'], $this->data['limit']);
+		$this->data['search'] = TRUE;
+		$this->data['search_string'] = $this->input->post('search_string');
 
 		// set data variables...
-		$this->data['file'] = 'users_consumer';
-		$this->data['page_title'] = 'Consumer Users';
-		$this->data['page_description'] = 'List of consumer users';
+		$this->data['file'] = 'users_wholesale';
+		$this->data['page_title'] = 'Wholesale Users';
+		$this->data['page_description'] = 'Search wholesale users';
 
 		// load views...
 		$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template/template', $this->data);
@@ -86,7 +75,7 @@ class Inactive extends Admin_Controller {
 	{
 		$this->load->library('pagination');
 
-		$config['base_url'] = base_url().'admin/users/consumer/inactive/index/';
+		$config['base_url'] = base_url().'admin/users/consumer/active/index/';
 		$config['total_rows'] = $count_all;
 		$config['per_page'] = $per_page;
 		$config['num_links'] = 3;
@@ -98,7 +87,7 @@ class Inactive extends Admin_Controller {
 		$config['cur_tag_open'] = '<li class="active"><a href="javascript:;">';
 		$config['cur_tag_close'] = '</a></li>';
 		$config['first_link'] = '<i class="fa fa-angle-double-left"></i>';
-		$config['first_url'] = site_url('admin/users/consumer/inactive');
+		$config['first_url'] = site_url('admin/users/consumer/active');
 		$config['first_tag_open'] = '<li>';
 		$config['first_tag_close'] = '</li>';
 		$config['last_link'] = '<i class="fa fa-angle-double-right"></i>';

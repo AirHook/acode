@@ -79,7 +79,12 @@ class Wholesale_users_list
 	 *
 	 * @return	Object List or FALSE on failure
 	 */
-	public function select(array $where = array(), array $order_by = array())
+	public function select(
+		$where = array(),
+		$order_by = array(),
+		$limits = array(),
+		$custom_where = ''
+	)
 	{
 		// set custom where conditions
 		$where_clause = '';
@@ -101,6 +106,15 @@ class Wholesale_users_list
 			}
 		}
 
+		// set custom string where clauses
+		if ($custom_where !== '')
+		{
+			if ($where_clause !== '') $where_clause.= " AND ";
+			else $where_clause = "WHERE ";
+
+			$where_clause.= $custom_where;
+		}
+
 		// set custom order conditions
 		$order_clause = '';
 		if ( ! empty($order_by))
@@ -117,6 +131,13 @@ class Wholesale_users_list
 
 				$o++;
 			}
+		}
+
+		// set limits
+		$limits_cluase = '';
+		if ( ! empty($limits))
+		{
+			$limits_cluase = 'LIMIT '.$limits[0].', '.$limits[1];
 		}
 
 		/*********
@@ -159,6 +180,7 @@ class Wholesale_users_list
 				) AS ldwa on ldwa.email = tbluser_data_wholesale.email
 			".$where_clause."
 			".($order_clause ?: 'ORDER BY xdate DESC')."
+			".$limits_cluase."
 		";
 
 		// get records

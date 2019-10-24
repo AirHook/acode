@@ -49,7 +49,8 @@ class Active extends Admin_Controller {
 		{
 			$this->data['users'] = $this->consumer_users_list->select(
 				array(
-					'tbluser_data.reference_designer' => @$this->webspace_details->slug
+					'tbluser_data.reference_designer' => @$this->webspace_details->slug,
+					'tbluser_data.is_active' => '1'
 				),
 				array(),
 				array($this->data['offset'], $this->data['limit'])

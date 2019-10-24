@@ -1,36 +1,10 @@
-                    <div class="table-toolbar">
-                        <div class="row">
-
-                            <div class="col-md-6">
-
-                                <!-- BEGIN FORM-->
-                                <!-- FORM =======================================================================-->
-                                <?php echo form_open('admin/users/wholesale/search', array('class'=>'form-horizontal', 'id'=>'form-wholesale_users_search_email')); ?>
-
-                                <div class="input-group">
-                                    <input class="form-control" placeholder="Search for Email or Store Name..." name="search_string" type="text">
-                                    <span class="input-group-btn">
-                                        <button class="btn blue uppercase bold" type="submit">Search</button>
-                                    </span>
-                                </div>
-
-                                </form>
-                                <!-- End FORM =======================================================================-->
-                                <!-- END FORM-->
-
-                                <cite class="help-block small">Search entire record</cite>
-                            </div>
-
-                        </div>
-                    </div>
-
                     <!-- BEGIN FORM-->
                     <!-- FORM =======================================================================-->
                     <?php echo form_open(
                         (
                             $this->uri->segment(1) === 'sales'
                             ? 'sales/wholesale/bulk_actions'
-                            : 'admin/users/wholesale/bulk_actions'
+                            : $this->config->slash_item('admin_folder').'users/wholesale/bulk_actions'
                         ),
                         array(
                             'class'=>'form-horizontal',
@@ -144,11 +118,6 @@
 
                         <br />
 
-                        <?php if ($search) { ?>
-                        <h1><small><em>Search results for:</em></small> "<?php echo $search_string; ?>"</h1>
-                        <br />
-                        <?php } ?>
-
                         <div class="row">
 
                             <div class="col-lg-3 col-md-4">
@@ -173,23 +142,6 @@
                         <button class="btn green hidden-lg hidden-md" id="apply_bulk_actions" data-toggle="modal" href="#confirm_bulk_actions" disabled> Apply </button>
 
                     </div>
-
-                    <?php
-                    /***********
-                     * Top Pagination
-                     */
-                    ?>
-                    <?php if ( ! $search) { ?>
-                    <div class="row margin-bottom-10">
-                        <div class="col-md-12 text-justify pull-right">
-                            <span style="position:relative;top:15px;">
-                                Showing <?php echo ($limit * $page) - ($limit - 1); ?> to <?php echo $limit * $page; ?> of about <?php echo number_format($count_all); ?> records
-                            </span>
-                            <?php echo $this->pagination->create_links(); ?>
-                        </div>
-                    </div>
-                    <?php } ?>
-
                     <?php
                     /*********
                      * This style a fix to the dropdown menu inside table-responsive table-scrollable
@@ -207,13 +159,13 @@
                             min-width: 125px;
                         }
                     </style>
-                    <table class="table table-striped table-bordered table-hover order-column dt-responsive" width="100%" id="tbl-users_wholesale_">
+                    <table class="table table-striped table-bordered table-hover order-column dt-responsive" width="100%" id="tbl-users_wholesale">
                         <thead>
                             <tr>
                                 <th class="min-tablet hidden-xs hidden-sm"> <!-- counter --> </th>
                                 <th class="all text-center hidden-xs hidden-sm">
                                     <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
-                                        <input type="checkbox" id="heading_checkbox" class="group-checkable" data-set="#tbl-users_wholesale_ .checkboxes" />
+                                        <input type="checkbox" id="heading_checkbox" class="group-checkable" data-set="#tbl-users_wholesale .checkboxes" />
                                         <span></span>
                                     </label>
                                 </th>
@@ -234,13 +186,13 @@
                             <?php
                             if ($users)
                             {
-                                $i = @$page ? ($limit * $page) - ($limit - 1) : 1;
+                                $i = 1;
                                 foreach ($users as $user)
                                 {
                                     $edit_link =
                                         $this->uri->segment(1) === 'sales'
                                         ? site_url('sales/wholesale/edit/index/'.$user->user_id)
-                                        : site_url('admin/users/wholesale/edit/index/'.$user->user_id)
+                                        : site_url($this->config->slash_item('admin_folder').'users/wholesale/edit/index/'.$user->user_id)
                                     ; ?>
 
                             <tr class="odd gradeX " onmouseover="$(this).find('.hidden_first_edit_link').show();" onmouseout="$(this).find('.hidden_first_edit_link').hide();">
@@ -479,22 +431,6 @@
 
                         </tbody>
                     </table>
-
-                    <?php
-                    /***********
-                     * Bottom Pagination
-                     */
-                    ?>
-                    <?php if ( ! $search) { ?>
-                    <div class="row">
-                        <div class="col-md-12 text-justify pull-right">
-                            <span>
-                                Showing <?php echo ($limit * $page) - ($limit - 1); ?> to <?php echo $limit * $page; ?> of about <?php echo number_format($count_all); ?> records
-                            </span>
-                            <?php echo $this->pagination->create_links(); ?>
-                        </div>
-                    </div>
-                    <?php } ?>
 
                     </form>
                     <!-- End FORM =======================================================================-->

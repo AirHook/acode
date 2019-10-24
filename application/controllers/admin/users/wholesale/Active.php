@@ -23,7 +23,7 @@ class Active extends Admin_Controller {
 	 *
 	 * @return	void
 	 */
-	public function index()
+	public function index($p = '')
 	{
 		// generate the plugin scripts and css
 		$this->_create_plugin_scripts();
@@ -41,20 +41,43 @@ class Active extends Admin_Controller {
 		$this->load->library('sales_package/sales_package_details');
 		$this->data['default_sales_package'] = $this->sales_package_details->initialize(array('set_as_default'=>'1'));
 
+		// set some variables
+		$this->data['page'] = $p ?: 1;
+		$this->data['limit'] = 100;
+		$this->data['offset'] = $p == '' ? 0 : ($p * 100) - 100;
+
+		// count all records
+		$DB = $this->load->database('instyle', TRUE);
+		$DB->select('*');
+		$DB->where('is_active', '1');
+		$q1 = $DB->get('tbluser_data_wholesale');
+		$this->data['count_all'] = $q1->num_rows();
+
 		// get data
-		if (
-			(@$this->webspace_details->options['site_type'] == 'sat_site'
-			OR @$this->webspace_details->options['site_type'] == 'sal_site')
-			&& ! $this->config->item('hub_site')
-		)
+		if (@$this->webspace_details->options['site_type'] != 'hub_site')
 		{
-			$params['tbluser_data_wholesale.reference_designer'] = $this->webspace_details->slug;
+			$this->data['users'] = $this->wholesale_users_list->select(
+				array(
+					'tbluser_data_wholesale.reference_designer' => @$this->webspace_details->slug,
+					'tbluser_data_wholesale.is_active' => '1'
+				),
+				array(),
+				array($this->data['offset'], $this->data['limit'])
+			);
 		}
-		$params['tbluser_data_wholesale.is_active'] = '1';
-		$this->data['users'] = $this->wholesale_users_list->select($params);
+		else $this->data['users'] = $this->wholesale_users_list->select(
+			array('tbluser_data_wholesale.is_active'=>'1'),
+			array(),
+			array($this->data['offset'], $this->data['limit'])
+		);
+		$this->data['record_sets'] = $this->data['count_all'] / $this->data['limit'];
+
+		// enable pagination
+		$this->_set_pagination($this->data['count_all'], $this->data['limit']);
 
 		// need to show loading at start
-		$this->data['show_loading'] = TRUE;
+		$this->data['show_loading'] = FALSE;
+		$this->data['search'] = FALSE;
 
 		// set data variables...
 		$this->data['file'] = 'users_wholesale';
@@ -63,6 +86,46 @@ class Active extends Admin_Controller {
 
 		// load views...
 		$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template/template', $this->data);
+	}
+
+	// ----------------------------------------------------------------------
+
+	/**
+	 * PRIVATE - Set pagination parameters
+	 *
+	 * @return	void
+	 */
+	private function _set_pagination($count_all = '', $per_page = '')
+	{
+		$this->load->library('pagination');
+
+		$config['base_url'] = base_url().'admin/users/wholesale/active/index/';
+		$config['total_rows'] = $count_all;
+		$config['per_page'] = $per_page;
+		$config['num_links'] = 3;
+		$config['use_page_numbers'] = TRUE;
+		$config['full_tag_open'] = '<ul class="pagination pull-right" style="margin:0;">';
+		$config['full_tag_close'] = '</ul>';
+		$config['num_tag_open'] = '<li>';
+		$config['num_tag_close'] = '</li>';
+		$config['cur_tag_open'] = '<li class="active"><a href="javascript:;">';
+		$config['cur_tag_close'] = '</a></li>';
+		$config['first_link'] = '<i class="fa fa-angle-double-left"></i>';
+		$config['first_url'] = site_url('admin/users/wholesale/active');
+		$config['first_tag_open'] = '<li>';
+		$config['first_tag_close'] = '</li>';
+		$config['last_link'] = '<i class="fa fa-angle-double-right"></i>';
+		$config['last_tag_open'] = '<li>';
+		$config['last_tag_close'] = '</li>';
+		$config['prev_link'] = '<i class="fa fa-angle-left"></i>';
+		$config['prev_tag_open'] = '<li>';
+		$config['prev_tag_close'] = '</li>';
+		$config['next_link'] = '<i class="fa fa-angle-right"></i>';
+		$config['next_tag_open'] = '<li>';
+		$config['next_tag_close'] = '</li>';
+
+		$this->pagination->initialize($config);
+
 	}
 
 	// ----------------------------------------------------------------------

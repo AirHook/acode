@@ -35,6 +35,22 @@
 											</div>
 
 											<?php
+						                    /***********
+						                     * Top Pagination
+						                     */
+						                    ?>
+						                    <?php if ( ! @$search) { ?>
+						                    <div class="row margin-bottom-10">
+						                        <div class="col-md-12 text-justify pull-right">
+						                            <span style="<?php echo $count_all > 100 ? 'position:relative;top:15px;' : ''; ?>">
+						                                Showing <?php echo ($limit * $page) - ($limit - 1); ?> to <?php echo $count_all > 100 ? $limit * $page : $count_all; ?> of about <?php echo number_format($count_all); ?> records
+						                            </span>
+						                            <?php echo $this->pagination->create_links(); ?>
+						                        </div>
+						                    </div>
+						                    <?php } ?>
+
+											<?php
 											/*********
 											 * This style a fix to the dropdown menu inside table-responsive table-scrollable
 											 * datatables. Setting position to relative allows the main dropdown button to
@@ -123,14 +139,13 @@
 													top: 0;
 												}
 											</style>
-
-											<table class="table table-striped table-bordered table-hover table-checkable order-column" id="tbl-product_list" data-product_count="<?php echo @$products_count; ?>">
+											<table class="table table-striped table-bordered table-hover table-checkable order-column" id="tbl-product_list_" data-product_count="<?php echo @$products_count; ?>">
 												<thead>
 													<tr>
 														<th class="hidden-xs hidden-sm"> <!-- counter --> </th>
 														<th class="text-center">
 															<label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
-																<input type="checkbox" id="heading_checkbox" class="group-checkable" data-set="#tbl-product_list .checkboxes" />
+																<input type="checkbox" id="heading_checkbox" class="group-checkable" data-set="#tbl-product_list_ .checkboxes" />
 																<span></span>
 															</label>
 														</th>
@@ -148,7 +163,7 @@
 													<?php
 													if ($products)
 													{
-														$i = 1;
+														$i = @$page ? ($limit * $page) - ($limit - 1) : 1;
 														$unveil = FALSE;
 														foreach ($products as $product)
 														{
@@ -171,8 +186,11 @@
 															$img_back_new = $new_pre_url.'_b1.jpg';
 															$img_side_new = $new_pre_url.'_s1.jpg';
 
+															// edit link
+															$edit_link = site_url('admin/products/edit/index/'.$product->prod_id)
+
 															// after the first batch, hide the images through unveil
-															if (($i / 25) > 1) $unveil = TRUE;
+															//if (($i / 25) > 1) $unveil = TRUE;
 															?>
 
 													<tr class="odd gradeX" onmouseover="$(this).find('.hidden_first_edit_link').show();" onmouseout="$(this).find('.hidden_first_edit_link').hide();">
@@ -197,7 +215,7 @@
 															?>
 															<div class="thumb-tiles">
 																<div class="thumb-tile image bg-blue-hoki">
-																	<a href="<?php echo site_url($this->config->slash_item('admin_folder').'products/edit/index/'.$product->prod_id); ?>">
+																	<a href="<?php echo $edit_link; ?>">
 																		<div class="tile-body">
 																			<!--
 																			<img class="img-b img-unveil" <?php echo $unveil ? 'data-src="'.($product->primary_img ? $img_back_new : $img_back_pre.$image).'"' : 'src="'.($product->primary_img ? $img_back_new : $img_back_pre.$image).'"'; ?> alt="">
@@ -218,7 +236,7 @@
 															</div>
 															<div class="thumb-tiles">
 																<div class="thumb-tile image bg-blue-hoki">
-																	<a href="<?php echo site_url($this->config->slash_item('admin_folder').'products/edit/index/'.$product->prod_id); ?>">
+																	<a href="<?php echo $edit_link; ?>">
 																		<div class="tile-body">
 																			<img class="  img-unveil" <?php echo $unveil ? 'data-src="'.($product->primary_img ? $img_side_new : $img_side_pre.$image).'"' : 'src="'.($product->primary_img ? $img_side_new : $img_side_pre.$image).'"'; ?> alt="">
 																		</div>
@@ -230,7 +248,7 @@
 															</div>
 															<div class="thumb-tiles">
 																<div class="thumb-tile image bg-blue-hoki">
-																	<a href="<?php echo site_url($this->config->slash_item('admin_folder').'products/edit/index/'.$product->prod_id); ?>">
+																	<a href="<?php echo $edit_link; ?>">
 																		<div class="tile-body">
 																			<img class="  img-unveil" <?php echo $unveil ? 'data-src="'.($product->primary_img ? $img_back_new : $img_back_pre.$image).'"' : 'src="'.($product->primary_img ? $img_back_new : $img_back_pre.$image).'"'; ?> alt="">
 																		</div>
@@ -290,15 +308,35 @@
 
 														</td>
 														<td>
-															<?php echo $product->prod_no; ?> <br />
+															<a class="" href="<?php echo $edit_link; ?>">
+																<?php echo $product->prod_no; ?>
+															</a>
+															<br />
 															<small>
-																<a class="hidden_first_edit_link" style="display:none;" href="<?php echo site_url($this->config->slash_item('admin_folder').'products/edit/index/'.$product->prod_id); ?>"><cite>edit</cite></a>
+																<a class="hidden_first_edit_link display-none" href="<?php echo $edit_link; ?>"><cite>edit</cite></a>
 															</small>
 														</td>
 														<td> <?php echo $product->designer; ?> </td>
                                                         <td> <?php echo $product->vendor_code; ?> </td>
+
+														<!-- Actions -->
 														<td class="dropdown-wrap dropdown-fix"> <!-- Actions -->
-															<div class="btn-group" >
+
+															<!-- Edit -->
+						                                    <a href="<?php echo $edit_link; ?>" class="tooltips" data-original-title="Edit">
+						                                        <i class="fa fa-pencil font-dark"></i>
+						                                    </a>
+															<!-- Delete -->
+						                                    <a href="javascript:;" class="tooltips delete-item" data-original-title="Delete" data-prod_id="<?php echo $product->prod_id; ?>">
+						                                        <i class="fa fa-trash font-dark"></i>
+						                                    </a>
+
+															<?php
+															/*********
+															 * Hiding this for now
+															 *
+															?>
+															<div class="btn-group hide" >
 																<button class="btn btn-xs red-flamingo dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false" onclick="$('.dropdown-wrap').toggleClass('dropdown-fix');"> Actions
 																	<i class="fa fa-angle-down"></i>
 																</button>
@@ -323,6 +361,8 @@
 																	</li>
 																</ul>
 															</div>
+															<?php // */ ?>
+
 															<!-- UNPUBLISH -->
 															<div class="modal fade bs-modal-sm" id="unpublish-<?php echo $product->prod_id?>" tabindex="-1" role="dialog" aria-hidden="true">
 																<div class="modal-dialog modal-sm">
@@ -442,6 +482,22 @@
 
 												</tbody>
 											</table>
+
+											<?php
+						                    /***********
+						                     * Bottom Pagination
+						                     */
+						                    ?>
+						                    <?php if ( ! @$search) { ?>
+						                    <div class="row margin-bottom-10">
+						                        <div class="col-md-12 text-justify pull-right">
+						                            <span>
+						                                Showing <?php echo ($limit * $page) - ($limit - 1); ?> to <?php echo $count_all > 100 ? $limit * $page : $count_all; ?> of about <?php echo number_format($count_all); ?> records
+						                            </span>
+						                            <?php echo $this->pagination->create_links(); ?>
+						                        </div>
+						                    </div>
+						                    <?php } ?>
 
 											</form>
 											<!-- End FORM =======================================================================-->

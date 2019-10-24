@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Index extends Admin_Controller {
+class All extends Admin_Controller {
 
 	/**
 	 * Constructor
@@ -22,20 +22,38 @@ class Index extends Admin_Controller {
 	 */
 	public function index()
 	{
-		// defauls to all dresses under womens apparel
-		redirect('admin/products/all');
-
 		// generate the plugin scripts and css
 		$this->_create_plugin_scripts();
 
 		// load pertinent library/model/helpers
-		$this->load->add_package_path(APPPATH.'erp');
 		$this->load->helper('metronic/create_category_treelist');
 		$this->load->library('products/product_details');
 		$this->load->library('designers/designer_details');
 		$this->load->library('categories/categories');
 		$this->load->library('categories/categories_tree');
 		$this->load->library('designers/designers_list');
+
+		// let's grab the uri segments and process it for some item that is required
+		$this->session->set_flashdata('thumbs_uri_string', $this->uri->uri_string());
+		$uri_string = explode('/', $this->uri->uri_string());
+
+		// let's remove the first series of segments from the resulting array
+		$this->data['url_segs'] = $uri_string;
+		array_shift($this->data['url_segs']); // admin
+		array_shift($this->data['url_segs']); // products
+		array_shift($this->data['url_segs']); // index/all/private/unpublished/instock/onorder/clearance/by_vendor
+		array_shift($this->data['url_segs']); // index
+
+		// we need a real variable to process some calculations
+		$url_segs = $this->data['url_segs'];
+
+		// set category pre link
+		$this->data['pre_link'] = implode('/', array_diff($uri_string, $url_segs));
+
+		// set some variables
+		$this->data['page'] = is_numeric(end($url_segs)) ? end($url_segs) : 1;
+		$this->data['limit'] = 100;
+		$this->data['offset'] = $this->data['page'] == '' ? 0 : ($this->data['page'] * 100) - 100;
 
 		// get some data
 		$this->data['designers'] = $this->designers_list->select();
@@ -58,20 +76,11 @@ class Index extends Admin_Controller {
 		}
 		$this->data['number_of_categories'] = $this->categories_tree->row_count;
 
-		// let's grab the uri segments
-		$this->session->set_flashdata('thumbs_uri_string', $this->uri->uri_string());
-		$this->data['url_segs'] = explode('/', $this->uri->uri_string());
-
-		// let's remove the first 2 segments (admin/products) from the resulting array
-		array_shift($this->data['url_segs']); // admin
-		array_shift($this->data['url_segs']); // products
-		array_shift($this->data['url_segs']); // index
-
 		// get the last segment which will serve as the category_slug in reference for the product list
-		if (count($this->data['url_segs']) > 0)
+		if (count($url_segs) > 0)
 		{
 			// we need to check if browsing by designer/category through the first segment
-			$first_seg = $this->data['url_segs'][0];
+			$first_seg = $url_segs[0];
 			if ($this->designer_details->initialize(array('designer.url_structure'=>$first_seg)))
 			{
 				// use first segment designer_slug if present
@@ -91,14 +100,16 @@ class Index extends Admin_Controller {
 			}
 
 			// last segment as category slug
-			$this->data['active_category'] = $this->data['url_segs'][count($this->data['url_segs']) - 1];
+			$this->data['active_category'] =
+				is_numeric(end($url_segs))
+				? $this->data['url_segs'][count($this->data['url_segs']) - 2]
+				: end($url_segs)
+			;
 		}
 		else
 		{
 			// defauls to all dresses under womens apparel
-			redirect($this->config->slash_item('admin_folder').'products/index/womens_apparel');
-			//$this->data['active_designer'] = FALSE;
-			//$this->data['active_category'] = 'womens_apparel';
+			redirect('admin/products/all/index/womens_apparel');
 		}
 
 		// get respective active category ID for use on product list where condition
@@ -107,16 +118,13 @@ class Index extends Admin_Controller {
 		// set product list where condition
 		if ($this->data['active_designer'] !== FALSE)
 		{
+			$where['designer.url_structure'] = $this->data['active_designer'];
 			if ($category_id)
 			{
-				$where = array(
-					'designer.url_structure' => $this->data['active_designer'],
-					'tbl_product.categories LIKE' => $category_id // last segment of category
-				);
+				$where['tbl_product.categories LIKE'] = $category_id; // of last segment category
 			}
-			else $where = array('designer.url_structure' => $this->data['active_designer']);
 		}
-		else $where = array('tbl_product.categories LIKE' => $category_id);
+		else $where['tbl_product.categories LIKE'] = $category_id;
 
 		// get the products list and total count
 		$params['show_private'] = TRUE; // all items general public (Y) - N for private
@@ -129,18 +137,23 @@ class Index extends Admin_Controller {
 		$params['with_stocks'] = FALSE; // Show all with and without stocks
 		$params['group_products'] = TRUE; // group per product number or per variant
 		$params['special_sale'] = FALSE; // special sale items only
-		$params['pagination'] = 0; // get all in one query
+		$params['pagination'] = $this->data['page']; // get all in one query
 		$this->load->library('products/products_list', $params);
 		$this->data['products'] = $this->products_list->select(
 			$where,
 			array( // order conditions
 				'seque'=>'asc'
-			)
+			),
+			$this->data['limit']
 		);
+		$this->data['count_all'] = $this->products_list->count_all;
 		$this->data['products_count'] = $this->products_list->row_count;
 
 		// need to show loading at start
-		$this->data['show_loading'] = TRUE;
+		$this->data['show_loading'] = FALSE;
+
+		// enable pagination
+		$this->_set_pagination($this->data['count_all'], $this->data['limit']);
 
 		// set data variables...
 		$this->data['file'] = 'products';
@@ -168,6 +181,49 @@ class Index extends Admin_Controller {
 			echo '<pre>',print_r($data),'</pre>';exit();
 			$this->load->view($this->config->slash_item('admin_folder').'metronic/barcodes/print_barcode',$this->data);
 		}
+	}
+
+	// ----------------------------------------------------------------------
+
+	/**
+	 * PRIVATE - Set pagination parameters
+	 *
+	 * @return	void
+	 */
+	private function _set_pagination($count_all = '', $per_page = '')
+	{
+		$this->load->library('pagination');
+
+		$uri_string = explode('/', $this->uri->uri_string());
+		if (is_numeric(end($uri_string))) array_pop($uri_string);
+
+		$config['base_url'] = base_url().implode('/',$uri_string).'/';
+		$config['total_rows'] = $count_all;
+		$config['per_page'] = $per_page;
+		$config['num_links'] = 3;
+		$config['use_page_numbers'] = TRUE;
+		$config['full_tag_open'] = '<ul class="pagination pull-right" style="margin:0;">';
+		$config['full_tag_close'] = '</ul>';
+		$config['num_tag_open'] = '<li>';
+		$config['num_tag_close'] = '</li>';
+		$config['cur_tag_open'] = '<li class="active"><a href="javascript:;">';
+		$config['cur_tag_close'] = '</a></li>';
+		$config['first_link'] = '<i class="fa fa-angle-double-left"></i>';
+		$config['first_url'] = site_url('admin/products/all/index/womens_apparel');
+		$config['first_tag_open'] = '<li>';
+		$config['first_tag_close'] = '</li>';
+		$config['last_link'] = '<i class="fa fa-angle-double-right"></i>';
+		$config['last_tag_open'] = '<li>';
+		$config['last_tag_close'] = '</li>';
+		$config['prev_link'] = '<i class="fa fa-angle-left"></i>';
+		$config['prev_tag_open'] = '<li>';
+		$config['prev_tag_close'] = '</li>';
+		$config['next_link'] = '<i class="fa fa-angle-right"></i>';
+		$config['next_tag_open'] = '<li>';
+		$config['next_tag_close'] = '</li>';
+
+		$this->pagination->initialize($config);
+
 	}
 
 	// ----------------------------------------------------------------------

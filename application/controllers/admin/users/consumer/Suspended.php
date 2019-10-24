@@ -86,7 +86,7 @@ class Suspended extends Admin_Controller {
 	{
 		$this->load->library('pagination');
 
-		$config['base_url'] = base_url().'admin/users/consumer/active/index/';
+		$config['base_url'] = base_url().'admin/users/consumer/suspended/index/';
 		$config['total_rows'] = $count_all;
 		$config['per_page'] = $per_page;
 		$config['num_links'] = 3;
@@ -98,7 +98,7 @@ class Suspended extends Admin_Controller {
 		$config['cur_tag_open'] = '<li class="active"><a href="javascript:;">';
 		$config['cur_tag_close'] = '</a></li>';
 		$config['first_link'] = '<i class="fa fa-angle-double-left"></i>';
-		$config['first_url'] = site_url('admin/users/consumer/active');
+		$config['first_url'] = site_url('admin/users/consumer/suspended');
 		$config['first_tag_open'] = '<li>';
 		$config['first_tag_close'] = '</li>';
 		$config['last_link'] = '<i class="fa fa-angle-double-right"></i>';

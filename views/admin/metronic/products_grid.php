@@ -3,13 +3,12 @@
 									 * This style is adapted from the main style for tiles but changed
 									 * for this grid view
 									 */
+									// calc width and height (2/3 = w/h)
+									$imgw = '150';
+									$imgh = (3*$imgw)/2;
 									?>
 									<br />
 									<style>
-										.tiles .tile {
-											width: 140px !important;
-											height: 210px;
-										}
 										.thumb-tiles {
 											position: relative;
 											margin-right: -10px;
@@ -17,8 +16,8 @@
 										.thumb-tiles .thumb-tile {
 											display: block;
 											float: left;
-											height: 180px; /*210px;*/
-											width: 120px !important; /*140px */
+											width: <?php echo $imgw; ?>px !important; /*140px */
+                                            height: <?php echo $imgh; ?>px; /*210px;*/
 											cursor: pointer;
 											text-decoration: none;
 											color: #fff;
@@ -94,7 +93,23 @@
 										<!-- END PRODUCT THUMGS SIDEBAR -->
 
 										<!-- BEGIN PRODUCT THUMGS GRID -->
-										<div class="col col-md-9">
+										<div class="col col-md-10">
+
+											<?php
+						                    /***********
+						                     * Top Pagination
+						                     */
+						                    ?>
+						                    <?php if ( ! @$search) { ?>
+						                    <div class="row margin-bottom-10">
+						                        <div class="col-md-12 text-justify pull-right">
+						                            <span style="position:relative;top:15px;">
+						                                Showing <?php echo ($limit * $page) - ($limit - 1); ?> to <?php echo $limit * $page; ?> of about <?php echo number_format($count_all); ?> records
+						                            </span>
+						                            <?php echo $this->pagination->create_links(); ?>
+						                        </div>
+						                    </div>
+						                    <?php } ?>
 
 											<div class="thumb-tiles" data-row-count="<?php echo $products_count; ?>">
 
@@ -207,6 +222,22 @@
 											// a fix for the float...
 											echo '<button class="btn default btn-block btn-lg" style="visibility:hidden"> NO MORE TO LOAD... </button>';
 											?>
+
+											<?php
+						                    /***********
+						                     * Bottom Pagination
+						                     */
+						                    ?>
+						                    <?php if ( ! @$search) { ?>
+						                    <div class="row margin-bottom-10">
+						                        <div class="col-md-12 text-justify pull-right">
+						                            <span>
+						                                Showing <?php echo ($limit * $page) - ($limit - 1); ?> to <?php echo $limit * $page; ?> of about <?php echo number_format($count_all); ?> records
+						                            </span>
+						                            <?php echo $this->pagination->create_links(); ?>
+						                        </div>
+						                    </div>
+						                    <?php } ?>
 
 										</div>
 										<!-- END PRODUCT THUMGS GRID -->
