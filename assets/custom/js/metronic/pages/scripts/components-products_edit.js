@@ -502,8 +502,8 @@ var ComponentsProductEdit = function () {
 			// process data
 			if ($(this).is(":checked")) dataObject.options = {"clearance_consumer_only":"1"};
 			else dataObject.options = {"clearance_consumer_only":"0"};
-			//$('#loading .modal-title').html('Updating...');
-			//$('#loading').modal('show');
+			$('#loading .modal-title').html('Updating...');
+			$('#loading').modal('show');
             $.ajax({
 				type:    "POST",
 				url:     base_url + "admin/products/update_variant_options.html",
@@ -611,7 +611,6 @@ var ComponentsProductEdit = function () {
 					dataObject.seasons = facets.toUpperCase();
 				break;
 			}
-            alert(JSON.stringify(dataObject));
 			$.ajax({
 				type:    "POST",
 				url:     base_url + "admin/products/update_variant_options/facets.html",

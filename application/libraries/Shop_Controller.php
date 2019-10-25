@@ -305,6 +305,7 @@ class Shop_Controller extends Frontend_Controller {
 		$this->data['occassion_array'] = extract_facets($this->facets->get('events'), 'events');
 		$this->data['styles_array'] = extract_facets($this->facets->get('styles'), 'styles');
 		$this->data['materials_array'] = extract_facets($this->facets->get('materials'), 'materials');
+        $this->data['seasons_array'] = extract_facets($this->facets->get('seasons'), 'seasons');
 
 		// finally, get product items grouped as one primary image
 		$this->data['grouped_products'] = $params['group_products'];

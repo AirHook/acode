@@ -281,6 +281,14 @@ class Facets
 				$this->DB->group_by('trends');
 			break;
 
+			case 'seasons':
+				$this->DB->distinct();
+				$this->DB->select('seasons');
+				$this->DB->from('tbl_product');
+				$this->DB->join('tblseason','tblseason.season_name = tbl_product.seasons','left');
+				$this->DB->group_by('seasons');
+			break;
+
 			case 'size':
 				$this->DB->select('
 					size_mode,
@@ -483,6 +491,18 @@ class Facets
 				$faceted = TRUE;
 			}
 
+			if (isset($this->facets['season']) AND $this->facets['season'] !== 'all')
+			{
+				$url_seasons = explode(',', $this->facets['season']);
+				foreach ($url_seasons as $key => $season)
+				{
+					$facet_where .= " OR tbl_product.seasons LIKE '%".$season."%'";
+					//if ($key == 0) $this->DB->like('tbl_product.trends', $trend, 'both');
+					//else $this->DB->or_like('tbl_product.trends', $trend, 'both');
+				}
+				$faceted = TRUE;
+			}
+
 			if (isset($this->facets['availability']) AND $this->facets['availability'] !== 'all')
 			{
 				switch ($this->facets['availability'])
@@ -632,6 +652,11 @@ class Facets
 			case 'trends':
 				$table = 'tbltrend';
 				$this->DB->order_by('trend_name', 'asc');
+			break;
+
+			case 'seasons':
+				$table = 'tblseason';
+				$this->DB->order_by('season_name', 'asc');
 			break;
 		}
 

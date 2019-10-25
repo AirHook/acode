@@ -38,6 +38,12 @@
 																</li>
 																<li><span class="separator"></span></li>
 																<?php } ?>
+																<?php if ($seasons_array && count($seasons_array) > 0) { ?>
+																<li>
+																	<a href="#filter_season" data-toggle="tab"> Seasons </a>
+																</li>
+																<li><span class="separator"></span></li>
+																<?php } ?>
 																<li>
 																	<a href="#filter_availability" data-toggle="tab"> Availability </a>
 																</li>
@@ -62,6 +68,9 @@
 																		<?php endif; ?>
 																		<?php if (@$_GET['material'] AND $_GET['material'] !== 'all'): ?>
 																		<input type="hidden" name="material" value="<?php echo $_GET['material']; ?>" />
+																		<?php endif; ?>
+																		<?php if (@$_GET['season'] AND $_GET['season'] !== 'all'): ?>
+																		<input type="hidden" name="season" value="<?php echo $_GET['season']; ?>" />
 																		<?php endif; ?>
 																		<?php if (@$_GET['availability'] AND $_GET['availability'] !== 'all'): ?>
 																		<input type="hidden" name="availability" value="<?php echo $_GET['availability']; ?>" />
@@ -127,6 +136,9 @@
 																		<?php if (@$_GET['material'] AND $_GET['material'] !== 'all'): ?>
 																		<input type="hidden" name="material" value="<?php echo $_GET['material']; ?>" />
 																		<?php endif; ?>
+																		<?php if (@$_GET['season'] AND $_GET['season'] !== 'all'): ?>
+																		<input type="hidden" name="season" value="<?php echo $_GET['season']; ?>" />
+																		<?php endif; ?>
 																		<?php if (@$_GET['availability'] AND $_GET['availability'] !== 'all'): ?>
 																		<input type="hidden" name="availability" value="<?php echo $_GET['availability']; ?>" />
 																		<?php endif; ?>
@@ -190,6 +202,9 @@
 																		<?php endif; ?>
 																		<?php if (@$_GET['material'] AND $_GET['material'] !== 'all'): ?>
 																		<input type="hidden" name="material" value="<?php echo $_GET['material']; ?>" />
+																		<?php endif; ?>
+																		<?php if (@$_GET['season'] AND $_GET['season'] !== 'all'): ?>
+																		<input type="hidden" name="season" value="<?php echo $_GET['season']; ?>" />
 																		<?php endif; ?>
 																		<?php if (@$_GET['availability'] AND $_GET['availability'] !== 'all'): ?>
 																		<input type="hidden" name="availability" value="<?php echo $_GET['availability']; ?>" />
@@ -255,6 +270,9 @@
 																		<?php if (@$_GET['material'] AND $_GET['material'] !== 'all'): ?>
 																		<input type="hidden" name="material" value="<?php echo $_GET['material']; ?>" />
 																		<?php endif; ?>
+																		<?php if (@$_GET['season'] AND $_GET['season'] !== 'all'): ?>
+																		<input type="hidden" name="season" value="<?php echo $_GET['season']; ?>" />
+																		<?php endif; ?>
 																		<?php if (@$_GET['availability'] AND $_GET['availability'] !== 'all'): ?>
 																		<input type="hidden" name="availability" value="<?php echo $_GET['availability']; ?>" />
 																		<?php endif; ?>
@@ -297,6 +315,7 @@
 																		</div>
 																	</div>
 																</div>
+
 																<?php } ?>
 
 																<?php if ($materials_array && count($materials_array) > 0) { ?>
@@ -317,6 +336,9 @@
 																		<?php endif; ?>
 																		<?php if (@$_GET['style'] AND $_GET['style'] !== 'all'): ?>
 																		<input type="hidden" name="style" value="<?php echo $_GET['style']; ?>" />
+																		<?php endif; ?>
+																		<?php if (@$_GET['season'] AND $_GET['season'] !== 'all'): ?>
+																		<input type="hidden" name="season" value="<?php echo $_GET['season']; ?>" />
 																		<?php endif; ?>
 																		<?php if (@$_GET['availability'] AND $_GET['availability'] !== 'all'): ?>
 																		<input type="hidden" name="availability" value="<?php echo $_GET['availability']; ?>" />
@@ -351,6 +373,73 @@
 
 																			<label class="mt-checkbox mt-checkbox-outline col-xs-5 col-sm-2 col-md-2 col-lg-2">
 																				<input type="checkbox" class="facets" name="material[]" data-tag_name="material" value="<?php echo $material; ?>" <?php echo $material_check; ?> /> <?php echo ucfirst($material); ?>
+																				<span></span>
+																			</label>
+
+																				<?php
+																			} ?>
+
+																		</div>
+																	</div>
+																</div>
+
+																<?php } ?>
+
+																<?php if ($seasons_array && count($seasons_array) > 0) { ?>
+
+																<div class="tab-pane" id="filter_season">
+
+																	<form action="" method="GET">
+
+																		<input type="hidden" name="filter" value="" />
+																		<?php if (@$_GET['size'] AND $_GET['size'] !== 'all'): ?>
+																		<input type="hidden" name="size" value="<?php echo $_GET['size']; ?>" />
+																		<?php endif; ?>
+																		<?php if (@$_GET['color'] AND $_GET['color'] !== 'all'): ?>
+																		<input type="hidden" name="color" value="<?php echo $_GET['color']; ?>" />
+																		<?php endif; ?>
+																		<?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
+																		<input type="hidden" name="occassion" value="<?php echo $_GET['occassion']; ?>" />
+																		<?php endif; ?>
+																		<?php if (@$_GET['style'] AND $_GET['style'] !== 'all'): ?>
+																		<input type="hidden" name="style" value="<?php echo $_GET['style']; ?>" />
+																		<?php endif; ?>
+																		<?php if (@$_GET['material'] AND $_GET['material'] !== 'all'): ?>
+																		<input type="hidden" name="material" value="<?php echo $_GET['material']; ?>" />
+																		<?php endif; ?>
+																		<?php if (@$_GET['availability'] AND $_GET['availability'] !== 'all'): ?>
+																		<input type="hidden" name="availability" value="<?php echo $_GET['availability']; ?>" />
+																		<?php endif; ?>
+																		<?php if (@$_GET['price'] AND $_GET['price'] !== 'default'): ?>
+																		<input type="hidden" name="price" value="<?php echo $_GET['price']; ?>" />
+																		<?php endif; ?>
+
+																		<input type="hidden" name="season" value="<?php echo @$_GET['season'] ?: ''; ?>" />
+
+																		<p class="action clearfix">
+																			<button class="btn dark pull-right" type="submit"> Apply </button>
+																			<a class="btn btn-link pull-right" href="javascript:;" onclick="$(this).closest('.tab-pane').removeClass('active');$('.produc-thumbs-filter .produc-thumbs-filter-facets > .nav-tabs > li').removeClass('active');" style="color:black;"> Cancel </a>
+																		</p>
+
+																	</form>
+
+																	<div class="form-group clearfix" style="margin-bottom:5px;">
+																		<label class="control-label">Season:</label>
+																		<div class="mt-checkbox-inline" data-facet_type="season">
+
+																			<?php
+																			foreach($seasons_array as $season)
+																			{
+																				if (@$_GET['season'])
+																				{
+																					$seasons_at_url = explode(',', $_GET['season']);
+																					$season_check = in_array($season, $seasons_at_url) ? 'checked="checked"' : '';
+																				}
+																				else $season_check = '';
+																				?>
+
+																			<label class="mt-checkbox mt-checkbox-outline col-xs-5 col-sm-2 col-md-2 col-lg-2">
+																				<input type="checkbox" class="facets" name="season[]" data-tag_name="season" value="<?php echo $season; ?>" <?php echo $season_check; ?> /> <?php echo ucfirst($season); ?>
 																				<span></span>
 																			</label>
 
@@ -429,6 +518,7 @@
 															OR (@$_GET['occassion'] AND $_GET['occassion'] !== 'all')
 															OR (@$_GET['style'] AND $_GET['style'] !== 'all')
 															OR (@$_GET['material'] AND $_GET['material'] !== 'all')
+															OR (@$_GET['season'] AND $_GET['season'] !== 'all')
 															OR (@$_GET['price'] AND $_GET['price'] !== 'default')
 															OR (@$_GET['availability'] AND $_GET['availability'] !== 'all')
 														)
@@ -453,6 +543,9 @@
 																<?php } ?>
 																<?php if (@$_GET['material'] AND $_GET['material'] !== 'all') { ?>
 																<input type="text" class="facet-tagsinput" data-role="tagsinput" name="material" value="<?php echo $_GET['material']; ?>" />
+																<?php } ?>
+																<?php if (@$_GET['season'] AND $_GET['season'] !== 'all') { ?>
+																<input type="text" class="facet-tagsinput" data-role="tagsinput" name="season" value="<?php echo $_GET['season']; ?>" />
 																<?php } ?>
 																<?php if (@$_GET['availability'] AND $_GET['availability'] !== 'all') { ?>
 																<input type="text" class="facet-tagsinput" data-role="tagsinput" name="availability" value="<?php echo $_GET['availability']; ?>" />
