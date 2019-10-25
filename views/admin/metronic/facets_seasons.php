@@ -2,26 +2,26 @@
 
 													<div class="row">
 														<div class="col-md-12">
-															<h1>Events Facets</h1>
+															<h1>Seasons Facets</h1>
 															<hr />
-															<p>Simlpy type in a new Events/Occassion facet name and click on the button to Add New Facet. The new facet should appear in the list afterwards.</p>
+															<p>Simlpy type in a new Seasons facet name and click on the button to Add New Facet. The new facet should appear in the list afterwards.</p>
 														</div>
 													</div>
 
 													<!-- BEGIN FORM-->
 													<!-- FORM =======================================================================-->
-													<?php echo form_open($this->config->slash_item('admin_folder').'facets/add', array('class'=>'form-horizontal', 'id'=>'form-events_facets_add')); ?>
+													<?php echo form_open($this->config->slash_item('admin_folder').'facets/add', array('class'=>'form-horizontal', 'id'=>'form-seasons_facets_add')); ?>
 
-													<input type="hidden" name="table" value="tblevent" />
-													<input type="hidden" name="facet" value="events" />
+													<input type="hidden" name="table" value="tblseason" />
+													<input type="hidden" name="facet" value="seasons" />
 
 													<div class="form-body">
 														<div class="form-group">
-															<label class="col-lg-4 control-label">Event Name:
+															<label class="col-lg-4 control-label">Season Name:
 																<span class="required"> * </span>
 															</label>
 															<div class="col-lg-8">
-																<input type="text" class="form-control facet_name" data-facet="events" name="event_name" value="">
+																<input type="text" class="form-control facet_name" data-facet="seasons" name="season_name" value="">
 															</div>
 														</div>
 														<div class="form-group">
@@ -29,7 +29,7 @@
 																<span class="required"> * </span>
 															</label>
 															<div class="col-lg-8">
-																<input type="text" class="form-control facet_slug" data-facet="events" name="url_structure" value="" tabindex="-1">
+																<input type="text" class="form-control facet_slug" data-facet="seasons" name="url_structure" value="" tabindex="-1">
 															</div>
 														</div>
 													</div>
@@ -52,24 +52,24 @@
 
 													<!-- BEGIN FORM-->
 													<!-- FORM =======================================================================-->
-													<?php echo form_open($this->config->slash_item('admin_folder').'facets/bulk_actions', array('class'=>'form-horizontal', 'id'=>'form-events_facets_bulk_actions')); ?>
+													<?php echo form_open($this->config->slash_item('admin_folder').'facets/bulk_actions', array('class'=>'form-horizontal', 'id'=>'form-seasons_facets_bulk_actions')); ?>
 
-													<input type="hidden" name="table" value="tblevent" />
-													<input type="hidden" name="facet" value="events" />
+													<input type="hidden" name="table" value="tblseason" />
+													<input type="hidden" name="facet" value="seasons" />
 
 													<div class="table-toolbar">
 														<div class="row">
 
 															<div class="col-lg-3 col-md-4">
-																<select class="bs-select form-control selectpicker" id="bulk_actions_select-events" name="bulk_action" disabled>
+																<select class="bs-select form-control selectpicker" id="bulk_actions_select-seasons" name="bulk_action" disabled>
 																	<option value="" selected="selected">Bulk Actions</option>
 																	<option value="del">Permanently Delete</option>
 																</select>
 															</div>
-															<button class="btn green hidden-sm hidden-xs" id="apply_bulk_actions-events" data-toggle="modal" href="#confirm_bulk_actions-events" disabled> Apply </button>
+															<button class="btn green hidden-sm hidden-xs" id="apply_bulk_actions-seasons" data-toggle="modal" href="#confirm_bulk_actions-seasons" disabled> Apply </button>
 
 														</div>
-														<button class="btn green btn-block margin-top-10 hidden-lg hidden-md" id="apply_bulk_actions-events" data-toggle="modal" href="#confirm_bulk_actions-events" disabled> Apply </button>
+														<button class="btn green btn-block margin-top-10 hidden-lg hidden-md" id="apply_bulk_actions-events" data-toggle="modal" href="#confirm_bulk_actions-seasons" disabled> Apply </button>
 
 													</div>
 
@@ -87,17 +87,17 @@
 															position: relative;
 														}
 													</style>
-													<table class="table table-striped table-hover table-checkable order-column" id="tbl-facets_events">
+													<table class="table table-striped table-hover table-checkable order-column" id="tbl-facets_seasons">
 														<thead>
 															<tr>
 																<th class="hidden-xs hidden-sm"> <!-- counter --> </th>
 																<th class="text-center">
 																	<label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
-																		<input type="checkbox" id="heading_checkbox-events" class="group-checkable" data-set="#tbl-facets_events .checkboxes" />
+																		<input type="checkbox" id="heading_checkbox-seasons" class="group-checkable" data-set="#tbl-facets_seasons .checkboxes" />
 																		<span></span>
 																	</label>
 																</th>
-																<th> Event Facet Name </th>
+																<th> Season Facet Name </th>
 																<th> Slug </th>
 																<th> Actions </th>
 															</tr>
@@ -105,10 +105,10 @@
 														<tbody>
 
 															<?php
-															if ($events)
+															if ($seasons)
 															{
 																$i = 1;
-																foreach ($events as $event)
+																foreach ($seasons as $season)
 																{ ?>
 
 															<tr class="odd gradeX " onmouseover="$(this).find('.hidden_first_edit_link').show();" onmouseout="$(this).find('.hidden_first_edit_link').hide();">
@@ -117,19 +117,19 @@
 																</td>
 																<td class="text-center">
 																	<label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
-																		<input type="checkbox" class="checkboxes" name="checkbox[]" value="<?php echo $event->event_id; ?>" />
+																		<input type="checkbox" class="checkboxes" name="checkbox[]" value="<?php echo $season->season_id; ?>" />
 																		<span></span>
 																	</label>
 																</td>
 																<td>
-																	<a href="#edit-events-facet-<?php echo $event->event_id; ?>" data-toggle="modal">
-																	<?php echo $event->event_name; ?></a>
+																	<a href="#edit-seasons-facet-<?php echo $season->season_id; ?>" data-toggle="modal">
+																	<?php echo $season->season_name; ?></a>
 																	<!--
 																	&nbsp; &nbsp;
-																	<a class="hidden_first_edit_link" style="display:none;" href="#edit-events-facet-<?php echo $event->event_id; ?>" data-toggle="modal"><small><cite>edit</cite></small></a>-->
+																	<a class="hidden_first_edit_link" style="display:none;" href="#edit-seasons-facet-<?php echo $season->season_id; ?>" data-toggle="modal"><small><cite>edit</cite></small></a>-->
 																</td>
 																<td>
-																	<?php echo $event->url_structure; ?>
+																	<cite><?php echo $season->url_structure; ?></cite>
 																</td>
 																<td class="dropdown-wrap dropdown-fix">
 																	<div class="btn-group" >
@@ -140,18 +140,18 @@
 																		<ul class="dropdown-menu pull-right">
 																			<li>
 																				<!--
-																				<a href="#edit-events-facet-<?php echo $event->event_id; ?>" data-toggle="modal">-->
+																				<a href="#edit-seasons-facet-<?php echo $season->season_id; ?>" data-toggle="modal">-->
 																				<a href="javascript:;" class="disabled-link disable-target">
 																					<i class="icon-pencil"></i> Edit </a>
 																			</li>
 																			<li>
-																				<a data-toggle="modal" href="#delete-events-facet-<?php echo $event->event_id; ?>">
+																				<a data-toggle="modal" href="#delete-seasons-facet-<?php echo $season->season_id; ?>">
 																					<i class="icon-trash"></i> Delete </a>
 																			</li>
 																		</ul>
 																	</div>
 																	<!-- ITEM EDIT -->
-																	<div class="modal fade bs-modal-md" id="edit-events-facet-<?php echo $event->event_id?>" tabindex="-1" role="dialog" aria-hidden="true">
+																	<div class="modal fade bs-modal-md" id="edit-seasons-facet-<?php echo $season->season_id?>" tabindex="-1" role="dialog" aria-hidden="true">
 																		<div class="modal-dialog modal-md">
 																			<div class="modal-content">
 																				<div class="modal-header">
@@ -161,7 +161,7 @@
 																				<div class="modal-body"> ACTIVATE webspace? </div>
 																				<div class="modal-footer">
 																					<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-																					<a href="<?php echo site_url($this->config->slash_item('admin_folder').'facets/edit/index/'.$event->event_id); ?>" type="button" class="btn red-flamingo mt-ladda-btn ladda-button" data-style="expand-left">
+																					<a href="<?php echo site_url($this->config->slash_item('admin_folder').'facets/edit/index/'.$season->season_id); ?>" type="button" class="btn red-flamingo mt-ladda-btn ladda-button" data-style="expand-left">
 																						<span class="ladda-label">Confirm?</span>
 																						<span class="ladda-spinner"></span>
 																					</a>
@@ -173,7 +173,7 @@
 																	</div>
 																	<!-- /.modal -->
 																	<!-- ITEM DELETE -->
-																	<div class="modal fade bs-modal-sm" id="delete-events-facet-<?php echo $event->event_id?>" tabindex="-1" role="dialog" aria-hidden="true">
+																	<div class="modal fade bs-modal-sm" id="delete-seasons-facet-<?php echo $season->season_id?>" tabindex="-1" role="dialog" aria-hidden="true">
 																		<div class="modal-dialog modal-sm">
 																			<div class="modal-content">
 																				<div class="modal-header">
@@ -183,7 +183,7 @@
 																				<div class="modal-body"> DELETE item? <br /> This cannot be undone! </div>
 																				<div class="modal-footer">
 																					<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-																					<a href="<?php echo site_url($this->config->slash_item('admin_folder').'facets/delete/index/events/'.$event->event_id); ?>" type="button" class="btn red-flamingo mt-ladda-btn ladda-button" data-style="expand-left">
+																					<a href="<?php echo site_url($this->config->slash_item('admin_folder').'facets/delete/index/events/'.$season->season_id); ?>" type="button" class="btn red-flamingo mt-ladda-btn ladda-button" data-style="expand-left">
 																						<span class="ladda-label">Confirm?</span>
 																						<span class="ladda-spinner"></span>
 																					</a>
@@ -212,7 +212,7 @@
 												</div>
 
 												<!-- BULK DELETE -->
-												<div class="modal fade bs-modal-sm" id="confirm_bulk_actions-events-del" tabindex="-1" role="dialog" aria-hidden="true">
+												<div class="modal fade bs-modal-sm" id="confirm_bulk_actions-seasons-del" tabindex="-1" role="dialog" aria-hidden="true">
 													<div class="modal-dialog modal-sm">
 														<div class="modal-content">
 															<div class="modal-header">
@@ -222,7 +222,7 @@
 															<div class="modal-body"> Delete multiple items? <br /> This cannot be undone! </div>
 															<div class="modal-footer">
 																<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-																<button onclick="$('#form-events_facets_bulk_actions').submit();" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+																<button onclick="$('#form-seasons_facets_bulk_actions').submit();" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
 																	<span class="ladda-label">Confirm?</span>
 																	<span class="ladda-spinner"></span>
 																</button>

@@ -88,6 +88,8 @@
 																? $this->config->item('PROD_IMG_URL').$color->media_path.$color->media_name.'_c.jpg'
 																: $this->config->item('PROD_IMG_URL').'product_assets/WMANSAPREL/'.$this->product_details->d_folder.'/'.$this->product_details->sc_url_structure.'/product_coloricon/'.$this->product_details->prod_no.'_'.$color->color_code.'.jpg'
 															;
+															// get options if any
+															$color_options = json_decode($color->options, TRUE);
 															?>
 
 													<input type="hidden" name="st_id[]" value="<?php echo $color->st_id; ?>" />
@@ -323,10 +325,10 @@
 																				</div>
 
 																				<div class="form-group">
-																					<label class="col-lg-3 control-label"> Publish:
+																					<label class="col-lg-4 control-label"> Publish:
 																						<span class="required"> * </span>
 																					</label>
-																					<div class="col-lg-9">
+																					<div class="col-lg-8">
 																						<div class="mt-radio-inline new_color_publish <?php echo $color->new_color_publish; ?>">
 																							<label class="mt-radio mt-radio-outline">
 																								<input type="radio" name="new_color_publish[<?php echo $color->st_id; ?>]" value="1" <?php echo ($color->new_color_publish === '1' OR $color->new_color_publish === '11' OR $color->new_color_publish === '12' OR $color->new_color_publish === '2') ? 'checked': ''; ?> /> Publish
@@ -339,7 +341,7 @@
 																						</div>
 																					</div>
 																					<?php if (@$this->webspace_details->options['site_type'] == 'hub_site') { ?>
-																					<div class="col-md-8 col-md-offset-3">
+																					<div class="col-md-8 col-md-offset-4">
 																						<div class="mt-checkbox-list">
 																							<label class="mt-checkbox mt-checkbox-outline <?php echo ($color->new_color_publish === '0') ? 'mt-checkbox-disabled' : ''; ?>">
 																								<input type="checkbox" class="new_color_publish_at new_color_publish_at_hub" id="new_color_publish_at_hub-<?php echo $color->color_code; ?>" name="new_color_publish_at_hub[<?php echo $color->st_id; ?>]" value="1" <?php echo ($color->new_color_publish === '1' OR $color->new_color_publish === '11') ? 'checked': ''; ?> <?php echo ($this->product_details->publish === '0') ? 'disabled' : ''; ?> /> at this hub site
@@ -352,10 +354,10 @@
 																						</div>
 																					</div>
 																					<?php } ?>
-																					<label class="col-lg-3 control-label"> View:
+																					<label class="col-lg-4 control-label"> View:
 																						<span class="required"> * </span>
 																					</label>
-																					<div class="col-lg-9">
+																					<div class="col-lg-8">
 																						<div class="mt-radio-inline color_publish <?php echo $color->new_color_publish; ?>">
 																							<label class="mt-radio mt-radio-outline">
 																								<input type="radio" name="color_publish[<?php echo $color->st_id; ?>]" value="1" <?php echo $color->color_publish === 'Y' ? 'checked': ''; ?> /> Public
@@ -369,10 +371,10 @@
 																					</div>
 																				</div>
 																				<div class="form-group">
-																					<label class="control-label col-md-3">Date:
+																					<label class="control-label col-md-4">Date:
 																						<span class="required"> * </span>
 																					</label>
-																					<div class="col-md-8 <?php echo $color->color_code == $this->product_details->primary_img_id ? 'tooltips': ''; ?>" data-original-title="Primary Color! Change MAIN Publish Date Options to change this variant primary color publish date option.">
+																					<div class="col-md-7 <?php echo $color->color_code == $this->product_details->primary_img_id ? 'tooltips': ''; ?>" data-original-title="Primary Color! Change MAIN Publish Date Options to change this variant primary color publish date option.">
 																						<input class="form-control form-control-inline color_date date-picker" type="text" id="stock_date-<?php echo $color->color_code; ?>" name="stock_date[<?php echo $color->st_id; ?>]" value="<?php echo $color->stock_date ?: $this->product_details->create_date; ?>" <?php echo ($this->product_details->publish === '0' OR $color->color_code == $this->product_details->primary_img_id) ? 'disabled': ''; ?> data-initial_value="<?php echo $color->stock_date ?: $this->product_details->create_date; ?>" />
 																						<span class="help-block">
 																							Select/Type date <br /> format: yyyy-mm-dd <br />
@@ -381,13 +383,25 @@
 																					</div>
 																				</div>
 																				<div class="form-group">
-																					<label class="control-label col-md-3">Clearance:</label>
+																					<label class="control-label col-md-4">Clearance:</label>
 																					<div class="col-md-8">
 																						<div class="mt-checkbox-inline">
 																							<label class="mt-checkbox mt-checkbox-outline">
 																								<input type="checkbox" class="custom_order" id="custom_order-<?php echo $color->color_code; ?>" name="custom_order[<?php echo $color->st_id; ?>]" value="3" <?php echo $color->custom_order == '3' ? 'checked': ''; ?> <?php echo ($this->product_details->publish === '0') ? 'disabled': ''; ?> /> Yes
 																								<span></span>
 																								<input type="hidden" name="custom_order_old[<?php echo $color->st_id; ?>]" value="<?php echo $color->custom_order; ?>" />
+																							</label>
+																						</div>
+																					</div>
+																				</div>
+																				<div class="form-group">
+																					<label class="control-label col-md-4">Clearance Consumer Only:</label>
+																					<div class="col-md-8">
+																						<div class="mt-checkbox-inline">
+																							<label class="mt-checkbox mt-checkbox-outline">
+																								<input type="checkbox" class="clearance_consumer_only" id="clearance_consumer_only-<?php echo $color->color_code; ?>" name="clearance_consumer_only[<?php echo $color->st_id; ?>]" value="1" <?php echo @$color_options['clearance_consumer_only'] == '1' ? 'checked': ''; ?> <?php echo ($this->product_details->publish === '0') ? 'disabled': ''; ?> /> Yes
+																								<span></span>
+																								<input type="hidden" name="clearance_consumer_only_old[<?php echo $color->st_id; ?>]" value="<?php echo @$color_options['clearance_consumer_only']; ?>" />
 																							</label>
 																						</div>
 																					</div>
@@ -618,8 +632,11 @@
 																		</div>
 																	</div>
 
-																		<?php foreach ($this->product_details->get_color_sizes($color->st_id) as $size_label => $qty)
-																		{ ?>
+																		<?php
+																		if ($this->product_details->get_color_sizes($color->st_id))
+																		{
+																			foreach ($this->product_details->get_color_sizes($color->st_id) as $size_label => $qty)
+																			{ ?>
 
 																	<div class="row margin-bottom-10">
 																		<div class="col col-sm-2">
@@ -646,7 +663,8 @@
 																		</div>
 																	</div>
 
-																			<?php
+																				<?php
+																			}
 																		} ?>
 
 																</div>

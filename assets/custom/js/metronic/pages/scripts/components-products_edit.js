@@ -454,7 +454,7 @@ var ComponentsProductEdit = function () {
 			});
 		});
 
-		// Checkboxes Custom Order per variant
+		// Checkbox Custom Order per variant
 		$('.custom_order').change(function(){
 			// let get necessary information
 			var primary_color = $(this).closest('.section-options').data('primary_color');
@@ -491,6 +491,37 @@ var ComponentsProductEdit = function () {
 				}
 			});
 		});
+
+        // Checkbox Custom Order/Clearance Consumer Only per variant
+        $('.clearance_consumer_only').on('change', function(){
+            // let get necessary information
+			var primary_color = $(this).closest('.section-options').data('primary_color');
+			var color_code = $(this).closest('.section-options').data('color_code');
+			var base_url = $(this).closest('.section-options').data('base_url');
+			var dataObject = $(this).closest('.section-options').data('object_data');
+			// process data
+			if ($(this).is(":checked")) dataObject.options = {"clearance_consumer_only":"1"};
+			else dataObject.options = {"clearance_consumer_only":"0"};
+			//$('#loading .modal-title').html('Updating...');
+			//$('#loading').modal('show');
+            $.ajax({
+				type:    "POST",
+				url:     base_url + "admin/products/update_variant_options.html",
+				data:    dataObject,
+				success: function(data) {
+					//alert(data);
+					$('#loading').modal('hide');
+					//window.location.href=base_url + "admin/products/edit/index/" + prod_id;
+				},
+				// vvv---- This is the new bit
+				error:   function(jqXHR, textStatus, errorThrown) {
+					//$('#loading').modal('hide');
+					//alert("Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
+					$('#reloading').modal('show');
+					location.reload();
+				}
+			});
+        });
 
 		// color facets checkboxes
 		$('input.color_facets').on('click', function(){
@@ -576,7 +607,11 @@ var ComponentsProductEdit = function () {
 				case 'materials':
 					dataObject.materials = facets.toUpperCase();
 				break;
+                case 'seasons':
+					dataObject.seasons = facets.toUpperCase();
+				break;
 			}
+            alert(JSON.stringify(dataObject));
 			$.ajax({
 				type:    "POST",
 				url:     base_url + "admin/products/update_variant_options/facets.html",

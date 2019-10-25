@@ -50,6 +50,10 @@
                                 <a href="#tab_trends" id="tab-tab_trends" data-toggle="tab"> Trends
                                 </a>
                             </li>
+                            <li class="nav-tabs-item <?php echo $active_facet_tab == 'seasons' ? 'active' : ''; ?>" data-tab_name="seasons">
+                                <a href="#tab_seasons" id="tab-tab_seasons" data-toggle="tab"> Seasons
+                                </a>
+                            </li>
                         </ul>
                         <!-- END TABS -->
 
@@ -78,6 +82,11 @@
                             <div class="tab-pane <?php echo $active_facet_tab == 'trends' ? 'active' : ''; ?>" id="tab_trends">
 
                                 <?php $this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'facets_trends'); ?>
+
+                            </div>
+                            <div class="tab-pane <?php echo $active_facet_tab == 'seasons' ? 'active' : ''; ?>" id="tab_seasons">
+
+                                <?php $this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'facets_seasons'); ?>
 
                             </div>
                         </div>

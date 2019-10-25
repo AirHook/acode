@@ -176,6 +176,7 @@ class Product_details
 	public $trend_facets = array();
 	public $material_facets = array();
 	public $color_facets = array();
+	public $season_facets = array();
 
 	/**
 	 * Variants
@@ -312,6 +313,13 @@ class Product_details
 	public $physical_sml = 0;
 	// size mode 4
 	public $physical_sonesizefitsall = 0;
+
+	/**
+	 * Product Options
+	 *
+	 * @var	array
+	 */
+	public $options = array();
 
 
 	/**
@@ -683,9 +691,13 @@ class Product_details
 			$this->trend_facets = explode('-', $row->trends);
 			$this->material_facets = explode('-', $row->materials);
 			$this->color_facets = explode('-', $row->colors);
+			$this->season_facets = explode('-', $row->seasons);
 
 			// Variants
 			$this->colors = $row->colors;
+
+			// the options
+			$this->options = ($row->options && $row->options != '') ? json_decode($row->options , TRUE) : array();
 
 			return $this;
 		}

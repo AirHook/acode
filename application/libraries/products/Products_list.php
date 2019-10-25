@@ -621,6 +621,7 @@ class Products_list
 		$this->DB->select('tbl_product.prod_date');
 		$this->DB->select('tbl_product.categories');
 		$this->DB->select('tbl_product.seque');
+		$this->DB->select('tbl_product.options');
 		// pricing
 		$this->DB->select('tbl_product.less_discount');	// retail
 		$this->DB->select('tbl_product.catalogue_price'); // on sale
@@ -697,6 +698,7 @@ class Products_list
 		$this->DB->select('tbl_product.events');
 		$this->DB->select('tbl_product.trends');
 		$this->DB->select('tbl_product.materials');
+		$this->DB->select('tbl_product.seasons');
 		// media
 		$this->DB->select('media_library_products.media_path');
 		$this->DB->select('media_library_products.media_name');

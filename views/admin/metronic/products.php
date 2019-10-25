@@ -65,6 +65,11 @@
 									All Products
 								</a>
 							</li>
+							<li class="<?php echo $this->uri->segment(3) == 'is_public' ? 'active' : ''; ?>">
+								<a href="<?php echo site_url('admin/products/is_public'); ?>">
+									Public
+								</a>
+							</li>
 							<li class="<?php echo $this->uri->segment(3) == 'not_public' ? 'active' : ''; ?>">
 								<a href="<?php echo site_url('admin/products/not_public'); ?>">
 									Private
@@ -81,7 +86,7 @@
 								</a>
 							</li>
 							<li class="<?php echo $this->uri->segment(3) == 'onorder' ? 'active' : ''; ?>">
-								<a href="<?php echo site_url('admin/products/onorder'); ?>">
+								<a href="javascript:;" class="tooltips" data-original-title="Currently under construction">
 									On Order
 								</a>
 							</li>
@@ -90,17 +95,11 @@
 									By Vendor
 								</a>
 							</li>
-							<?php
-							// available only on hub sites for now
-							if ($this->webspace_details->options['site_type'] == 'hub_site')
-							{ ?>
 							<li>
 								<a href="<?php echo site_url('admin/products/add'); ?>">
 									Add New Product <i class="fa fa-plus"></i>
 								</a>
 							</li>
-								<?php
-							} ?>
 						</ul>
 
 						<br />

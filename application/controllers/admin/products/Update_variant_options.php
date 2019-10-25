@@ -20,6 +20,8 @@ class Update_variant_options extends Admin_Controller {
 	{
 		parent::__construct();
 
+		$this->output->enable_profiler(FALSE);
+
 		// load pertinent library/model/helpers
 		$this->load->library('products/product_details');
 		$this->load->library('odoo');
@@ -39,31 +41,19 @@ class Update_variant_options extends Admin_Controller {
 	{
 		if ($_POST)
 		{
-			// initialize certain properties
-			$this->product_details->initialize(array('tbl_product.prod_id'=>$_POST['prod_id']));
+			$post_ary = $_POST;
+
+			// check for $options posted
+			if (@$post_ary['options'])
+			{
+				$post_ary['options'] = json_encode($post_ary['options']);
+			}
 
 			// update stock record
-			$this->DB->set($_POST);
-			$this->DB->where('st_id', $_POST['st_id']);
+			$this->DB->set($post_ary);
+			$this->DB->where('st_id', $post_ary['st_id']);
 			$q = $this->DB->update('tbl_stock');
 
-			$post_ary = $_POST;
-			$post_ary['prod_id'] = $_POST['prod_id'];
-			$post_ary['designer_slug'] = $this->product_details->d_url_structure;
-
-			// update product stock to odoo
-			/* *
-			if (
-				ENVIRONMENT !== 'development'
-				&& $this->product_details->d_url_structure === 'basixblacklabel'
-			)
-			{
-				//$this->_update_stock_to_odoo($post_ary);
-				$odoo_response = $this->odoo->post_data($post_ary, 'products', 'edit');
-			}
-			// */
-
-			//echo $odoo_response;
 			echo 'Success';
 		}
 		else echo 'Uh oh...';
@@ -80,28 +70,10 @@ class Update_variant_options extends Admin_Controller {
 	{
 		if ($_POST)
 		{
-			// initialize certain properties
-			$this->product_details->initialize(array('tbl_product.prod_id'=>$_POST['prod_id']));
-
 			// update stock record
 			$this->DB->set($_POST);
 			$this->DB->where('prod_id', $_POST['prod_id']);
 			$q = $this->DB->update('tbl_product');
-
-			$post_ary = $_POST;
-			$post_ary['prod_id'] = $prod_id;
-
-			// update product stock to odoo
-			/* *
-			if (
-				ENVIRONMENT !== 'development'
-				&& $this->product_details->d_url_structure === 'basixblacklabel'
-			)
-			{
-				//$this->_update_stock_to_odoo($post_ary);
-				$this->odoo->post_data($post_ary, 'products', FALSE);
-			}
-			// */
 
 			echo 'Done';
 		}

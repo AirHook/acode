@@ -111,6 +111,7 @@ class Edit extends Admin_Controller {
 			$this->data['events'] = $this->facet_list->get('events');
 			$this->data['materials'] = $this->facet_list->get('materials');
 			$this->data['trends'] = $this->facet_list->get('trends');
+			$this->data['seasons'] = $this->facet_list->get('seasons');
 
 			$front_image =
 				$this->product_details->primary_img
