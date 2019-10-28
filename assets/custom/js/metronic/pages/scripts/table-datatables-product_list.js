@@ -298,7 +298,7 @@ var TableDatatablesManaged = function () {
 		}
 		$('#loading .modal-title').html('Updating...');
 		$('#loading').modal('show');
-		window.location.href=base_url + '/Websites/acode/' + "admin/products/publish/index/"+st+"/"+prod_id+".html";
+		window.location.href = base_url + "admin/products/publish/index/"+st+"/"+prod_id+".html";
 	});
 
 	// delete item button action
@@ -427,6 +427,12 @@ var SomeScripts = function () {
 			$(this).attr('readonly', true);
 		})
 
+		// List/Grid View buttons
+		$('.btn-listgrid').on('click', function(){
+			$('#loading').modal('show');
+			$('[name="view_as"]').val($(this).data('view_as'));
+			$('#form-product_list_view_as').submit();
+		});
     }
 
 	return {

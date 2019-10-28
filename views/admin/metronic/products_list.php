@@ -20,6 +20,22 @@
 
 											<div class="table-toolbar">
 												<div class="row">
+													<div class="col-md-6 pull-right text-right">
+						                                <div class="btn-group">
+
+															<a class="btn btn-link" style="color:black;text-decoration:none;cursor:default;" disabled>
+																View as:
+															</a>
+						                                    <button type="button" class="btn blue btn-<?php echo $view_as == 'products_list' ? 'blue' : 'outline'; ?> tooltips btn-listgrid" data-view_as="products_list" data-container="body" data-placement="top" data-original-title="List View" style="margin-right:3px;">
+						                                        <i class="glyphicon glyphicon-list"></i>
+						                                    </button>
+						                                    <button type="button" class="btn blue btn-<?php echo $view_as == 'products_grid' ? 'blue' : 'outline'; ?> tooltips btn-listgrid" data-view_as="products_grid" data-container="body" data-placement="top" data-original-title="Grid View">
+						                                        <i class="glyphicon glyphicon-th"></i>
+						                                    </button>
+
+						                                </div>
+						                            </div>
+
 													<div class="col-lg-3 col-md-4">
 														<select class="bs-select form-control selectpicker" id="bulk_actions_select" name="bulk_action" disabled>
 															<option value="" selected="selected">Bulk Actions</option>
@@ -32,6 +48,7 @@
 													<button class="btn green hidden-sm hidden-xs apply_bulk_actions" id="apply_bulk_actions" disabled data-toggle="modal" href="#confirm_bulk_actions"> Apply </button>
 												</div>
 												<button class="btn green hidden-lg hidden-md apply_bulk_actions" id="apply_bulk_actions" disabled data-toggle="modal" href="#confirm_bulk_actions"> Apply </button>
+
 											</div>
 
 											<?php

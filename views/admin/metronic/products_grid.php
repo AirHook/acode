@@ -1,3 +1,23 @@
+									<div class="table-toolbar" style="margin-bottom:0px;">
+										<div class="row">
+											<div class="col-md-6 pull-right text-right">
+												<div class="btn-group">
+
+													<a class="btn btn-link" style="color:black;text-decoration:none;cursor:default;" disabled>
+														View as:
+													</a>
+													<button type="button" class="btn blue btn-<?php echo $view_as == 'products_list' ? 'blue' : 'outline'; ?> tooltips btn-listgrid" data-view_as="products_list" data-container="body" data-placement="top" data-original-title="List View" style="margin-right:3px;">
+														<i class="glyphicon glyphicon-list"></i>
+													</button>
+													<button type="button" class="btn blue btn-<?php echo $view_as == 'products_grid' ? 'blue' : 'outline'; ?> tooltips btn-listgrid" data-view_as="products_grid" data-container="body" data-placement="top" data-original-title="Grid View">
+														<i class="glyphicon glyphicon-th"></i>
+													</button>
+
+												</div>
+											</div>
+										</div>
+									</div>
+
 									<?php
 									/*********
 									 * This style is adapted from the main style for tiles but changed
@@ -103,7 +123,7 @@
 						                    <?php if ( ! @$search) { ?>
 						                    <div class="row margin-bottom-10">
 						                        <div class="col-md-12 text-justify pull-right">
-						                            <span style="position:relative;top:15px;">
+						                            <span style="<?php echo $this->pagination->create_links() ? 'position:relative;top:15px;' : ''; ?>">
 						                                Showing <?php echo ($limit * $page) - ($limit - 1); ?> to <?php echo $limit * $page; ?> of about <?php echo number_format($count_all); ?> records
 						                            </span>
 						                            <?php echo $this->pagination->create_links(); ?>
