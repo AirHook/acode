@@ -32,7 +32,7 @@ class Order_details
 	public $order_date = '';
 	public $status = '';
 	public $remarks = ''; // 1 - return for exchange, 2 - return for store credit, 3 - return for refund, 4 - return for other reasons (comments)
-	public $comments = '';
+	//public $comments = '';
 
 	/**
 	 * Order Summary
@@ -76,6 +76,20 @@ class Order_details
 	 * @var	object
 	 */
 	public $order_items = FALSE;
+
+	/**
+	 * Options
+	 *
+	 * @var	string/array
+	 */
+	public $options = array();
+
+	/**
+	 * Webspace ID - where order is taken
+	 *
+	 * @var	string/array
+	 */
+	public $webspace_id = '';
 
 
 	/**
@@ -178,7 +192,7 @@ class Order_details
 
 			$this->status = $row->status;
 			$this->remarks = $row->remarks; // 1 - return for exchange, 2 - return for store credit, 3 - return for refund, 4 - return for other reasons (comments)
-			$this->comments = $row->comments;
+			//$this->comments = $row->comments;
 
 			$this->order_amount = $row->amount ?: $row->order_amount;
 			$this->order_qty = $row->order_qty;
@@ -199,6 +213,9 @@ class Order_details
 			$this->ship_state = $row->ship_state;
 			$this->ship_country = $row->ship_country;
 			$this->ship_zipcode = $row->ship_zipcode;
+
+			$this->options = ($row->options && $row->options != '') ? json_decode($row->options , TRUE) : array();
+			$this->webspace_id = $row->webspace_id;
 
 			// get items
 			$this->designers = $row->designers;

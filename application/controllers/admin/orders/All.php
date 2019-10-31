@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Index extends Admin_Controller {
+class All extends Admin_Controller {
 
 	/**
 	 * Constructor
@@ -25,9 +25,6 @@ class Index extends Admin_Controller {
 	 */
 	public function index()
 	{
-		// redirect users
-		redirect('admin/orders/all', 'location');
-
 		// generate the plugin scripts and css
 		$this->_create_plugin_scripts();
 
@@ -51,7 +48,7 @@ class Index extends Admin_Controller {
 		$this->data['orders'] = $this->orders_list->select(
 			$where,
 			array(), // order_by
-			'100' // limit
+			array($this->data['limit'], $this->data['offset']) // limit
 		);
 		$this->data['count_all'] = $this->orders_list->count_all;
 
@@ -64,7 +61,7 @@ class Index extends Admin_Controller {
 
 		// set data variables...
 		$this->data['file'] = 'orders';
-		$this->data['page_title'] = 'Orders';
+		$this->data['page_title'] = 'Order Logs';
 		$this->data['page_description'] = 'List of orders';
 
 		// load views...
@@ -82,7 +79,7 @@ class Index extends Admin_Controller {
 	{
 		$this->load->library('pagination');
 
-		$config['base_url'] = base_url().'admin/orders/index/';
+		$config['base_url'] = base_url().'admin/orders/all/index/';
 		$config['total_rows'] = $count_all;
 		$config['per_page'] = $per_page;
 		$config['num_links'] = 3;
@@ -94,7 +91,7 @@ class Index extends Admin_Controller {
 		$config['cur_tag_open'] = '<li class="active"><a href="javascript:;">';
 		$config['cur_tag_close'] = '</a></li>';
 		$config['first_link'] = '<i class="fa fa-angle-double-left"></i>';
-		$config['first_url'] = site_url('admin/orders');
+		$config['first_url'] = site_url('admin/orders/all');
 		$config['first_tag_open'] = '<li>';
 		$config['first_tag_close'] = '</li>';
 		$config['last_link'] = '<i class="fa fa-angle-double-right"></i>';

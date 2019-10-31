@@ -2,7 +2,7 @@
 
 /****************
  * Frontend Controller holds any general front end items
- * 
+ *
  * Shop Controller are for items used for shop thumbs pages
  *
  */
@@ -14,8 +14,8 @@ class Customer_info extends Frontend_Controller
 	 * @return	object
 	 */
 	protected $DB;
-	
-	
+
+
 	/**
 	 * Constructor
 	 *
@@ -24,13 +24,13 @@ class Customer_info extends Frontend_Controller
 	function __Construct()
 	{
 		parent::__Construct();
-		
+
 		// connect to database for use by model
 		$this->DB = $this->load->database('instyle', TRUE);
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Primary method - index
 	 *
@@ -44,7 +44,7 @@ class Customer_info extends Frontend_Controller
 			// nothing to do... return to cart basket.
 			redirect('cart', 'location');
 		}
-		
+
 		// if coming from confirm order page...
 		if ($this->session->userdata('confirm_order') == TRUE)
 		{
@@ -52,7 +52,7 @@ class Customer_info extends Frontend_Controller
 			$this->session->set_flashdata('flashRegMsg', '<div class="errorMsg">Your check out was interrupted in the process. Please review your shopping cart contents again.</div>');
 			redirect('cart', 'location');
 		}
-		
+
 		// if url is intentionally typed, let ensure that it is https
 		if ( ! isset($_SERVER['HTTPS']))
 		{
@@ -65,7 +65,7 @@ class Customer_info extends Frontend_Controller
 		$this->load->helper('state_country_helper');
 		$this->load->library('users/consumer_user_details');
 		$this->load->library('form_validation');
-		
+
 		$this->form_validation->set_rules('email', 'Email', 'trim|required|callback_validate_email');
 		$this->form_validation->set_rules('firstname', 'First Name', 'trim|required');
 		$this->form_validation->set_rules('lastname', 'Last Name', 'trim|required');
@@ -75,7 +75,7 @@ class Customer_info extends Frontend_Controller
 		$this->form_validation->set_rules('city', 'City', 'trim|required');
 		$this->form_validation->set_rules('state', 'State', 'trim|required');
 		$this->form_validation->set_rules('zip', 'Zip Code', 'trim|required');
-		
+
 		if ($this->input->post('country') == 'United States')
 		{
 			// for US only
@@ -87,15 +87,15 @@ class Customer_info extends Frontend_Controller
 			// non-US
 			$this->form_validation->set_rules('non-us-states', 'State', 'trim|required');
 		}
-		
-		
+
+
 		if ($this->form_validation->run() == FALSE) // *** ---> load form (default and on error validate)
 		{
 			//$jscript = $this->set->jquery().$this->set->autocomplete();
-			
+
 			// some data
 			$this->data['ship_methods'] = $this->shipping_methods->get_methods();
-			
+
 			// set data variables to pass to view file
 			$this->data['file'] 						= 'customer_info';
 			$this->data['left_nav_sql'] 				= @$subcats;
@@ -104,7 +104,7 @@ class Customer_info extends Frontend_Controller
 			$this->data['site_keywords']				= $this->config->item('site_keywords');
 			$this->data['site_description']				= $this->config->item('site_description');
 			$this->data['footer_text']					= $this->config->item('site_name').' Checkout Step 2';
-			
+
 			// load the view
 			$this->load->view($this->webspace_details->options['theme'].'/template', $this->data);
 		}
@@ -124,10 +124,10 @@ class Customer_info extends Frontend_Controller
 			$howhearabout		= '';
 			$receive_productupd	= $this->input->post('sendEmailUpdates');
 			$shipping_id		= $this->input->post('shipmethod');
-			
+
 			$default_password = 'instyle2011';
 			$state = $country == 'United States' ? $state_dd : $state_input;
-			
+
 			// prep user data
 			$data = array(
 				'email'					=> $email,
@@ -146,13 +146,16 @@ class Customer_info extends Frontend_Controller
 				'admin_sales_email'		=> 'help@'.$this->webspace_details->slug.'.com',
 				'reference_designer'	=> 'instylenewyork'
 			);
-			
+
 			// check if user is on record already
 			if ( ! $this->consumer_user_details->initialize(array('email'=>$email)))
 			{
 				// insert user to database
 				$this->DB->insert('tbluser_data', $data);
-				
+
+				// first time consumer
+				$this->session->set_userdata('user_c', 'guest');
+
 				// reinitialize user info
 				$this->consumer_user_details->initialize(array('email'=>$email));
 			}
@@ -161,28 +164,29 @@ class Customer_info extends Frontend_Controller
 				// update user records
 				$this->DB->where('email', $email);
 				$this->DB->update('tbluser_data', $data);
+				$this->session->set_userdata('user_c', 'cs');
 			}
-			
+
 			// set user session
 			$this->session->set_userdata('user_id', $this->consumer_user_details->user_id);
 			$this->session->set_userdata('user_cat', 'consumer');
-			
+
 			// Set session data for shipping info
 			$this->session->set_userdata('shipping_id', $shipping_id);
-			
+
 			// Enter info on tbl_login_detail
 			$this->login_details->update($this->consumer_user_details->user_id, 'consumer');
-			
+
 			// special sale prefix
 			$special_sale_prefix = $this->uri->segment(1) === 'special_sale' ? 'special_sale/' : '';
-			
+
 			// redirect user
 			redirect($special_sale_prefix.'cart/confirm_order', 'location');
 		}
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Form Validation Callback Functions
 	 *
@@ -197,9 +201,9 @@ class Customer_info extends Frontend_Controller
 		}
 		else return TRUE;
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Form Validation Callback Functions
 	 *
@@ -222,7 +226,7 @@ class Customer_info extends Frontend_Controller
 			else return TRUE;
 		}
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 }
