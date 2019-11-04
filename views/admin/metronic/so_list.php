@@ -47,18 +47,59 @@
                 	</div>
 
                     <div class="table-toolbar">
-                        <div class="row ">
-                            <div class="col-md-6">
-                                <div class="btn-group">
-                                    <a href="<?php echo $this->uri->segment(1) === 'sales' ? site_url('sales/sales_orders/create') : site_url($this->config->slash_item('admin_folder').'sales_orders/create'); ?>" class="btn sbold blue"> Create a New Sales Order
-                                        <i class="fa fa-plus"></i>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                            </div>
-                        </div>
-                		<br />
+
+
+                        						<style>
+                                                    .nav > li > a {
+                                                        padding: 8px 15px;
+                                                        background-color: #eee;
+                                                        color: #555;
+                                                    }
+                                                    .nav-tabs > li > a {
+                                                        font-size: 12px;
+                                                    }
+                                                    .nav-tabs > li > a:hover {
+                                                        background-color: #333;
+                                                        color: #eee;
+                                                    }
+                                                </style>
+
+                                                <ul class="nav nav-tabs">
+                                                    <li class="<?php echo $this->uri->uri_string() == 'admin/sales_orders' ? 'active' : ''; ?>">
+                                                        <a href="<?php echo site_url('admin/sales_orders'); ?>">
+                                                            All Sales Orders
+                                                        </a>
+                                                    </li>
+                        							<li class="<?php echo $this->uri->segment(3) == 'onorder' ? 'active' : ''; ?>">
+                        								<a href="javascript:;" class="tooltips" data-original-title="Currently under construction">
+                        									Pending SO
+                        								</a>
+                        							</li>
+                        							<li class="<?php echo $this->uri->segment(3) == 'onorder' ? 'active' : ''; ?>">
+                        								<a href="javascript:;" class="tooltips" data-original-title="Currently under construction">
+                        									Completed SO
+                        								</a>
+                        							</li>
+                                                    <?php
+                                                    // available only on hub sites for now
+                                                    if ($this->webspace_details->options['site_type'] == 'hub_site')
+                                                    { ?>
+                                                    <li>
+                                                        <a href="<?php echo site_url('admin/sales_orders/create'); ?>">
+                                                            Create New Sales Order <i class="fa fa-plus"></i>
+                                                        </a>
+                                                    </li>
+                                                        <?php
+                                                    } ?>
+                                                </ul>
+
+                                                <br />
+
+                                                <?php if (@$search) { ?>
+                                                <h1><small><em>Search results for:</em></small> "<?php echo @$search_string; ?>"</h1>
+                                                <br />
+                                                <?php } ?>
+
                         <div class="row">
 
                 			<div class="col-lg-3 col-md-4">

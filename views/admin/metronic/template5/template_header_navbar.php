@@ -643,12 +643,12 @@
                                                 Order Logs
                                             </a>
                                             <ul class="dropdown-menu">
-                                                <li class="<?php echo strpos($this->uri->uri_string(), 'admin/orders') !== FALSE ? 'active' : ''; ?>">
-                                                    <a href="<?php echo site_url('admin/orders'); ?>">
+                                                <li class="<?php echo strpos($this->uri->uri_string(), 'admin/orders/wholesale') !== FALSE ? 'active' : ''; ?>">
+                                                    <a href="<?php echo site_url('admin/orders/wholesale'); ?>">
                                                         Wholesale Order Logs </a>
                                                 </li>
-                                                <li class="<?php echo strpos($this->uri->uri_string(), 'admin/orders') !== FALSE ? 'active' : ''; ?>">
-                                                    <a href="<?php echo site_url('admin/orders'); ?>">
+                                                <li class="<?php echo strpos($this->uri->uri_string(), 'admin/orders/retail') !== FALSE ? 'active' : ''; ?>">
+                                                    <a href="<?php echo site_url('admin/orders/retail'); ?>">
                                                         Retail Order Logs </a>
                                                 </li>
                                             </ul>
