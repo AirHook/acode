@@ -103,8 +103,15 @@ body {
     margin-left: 20px;
 }
 	/******
-	 * Form Wizard Steps
+	 * General Items
 	 */
+.clear-readonly,
+.clear-readonly.form-control[readonly] {
+	background-color: #fff;
+}
+	/******
+ 	 * Form Wizard Steps
+ 	 */
 .progress-bar-success {
 	background-color: #000;
 }

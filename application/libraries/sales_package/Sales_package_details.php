@@ -100,7 +100,8 @@ class Sales_package_details
 	 *
 	 * @var	string
 	 */
-	public $date_create = '';
+	public $date_create = ''; // date string
+	public $date_create_ts = ''; // date timestamp
 
 	/**
 	 * Last Modified
@@ -193,7 +194,8 @@ class Sales_package_details
 			$this->author = $row->author;
 			$this->email_subject = $row->email_subject;
 			$this->email_message = $row->email_message;
-			$this->date_create = $row->date_create;
+			$this->date_create = date('Y-m-d', $row->date_create);
+			$this->date_create_ts = $row->date_create;
 			$this->last_modified = $row->last_modified;
 			// the items
 			$this->sales_package_items = $row->sales_package_items;

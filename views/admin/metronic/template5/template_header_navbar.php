@@ -583,12 +583,12 @@
                                                 Sales Package Manager
                                             </a>
                                             <ul class="dropdown-menu">
-                                                <li class="<?php echo $this->uri->uri_string() == 'admin/campaigns/sales_package' ? 'active' : ''; ?>">
+                                                <li class="<?php echo $this->uri->uri_string() === 'admin/campaigns/sales_package' ? 'active' : ''; ?>">
                                                     <a href="<?php echo site_url('admin/campaigns/sales_package'); ?>">
                                                         List Sales Packages </a>
                                                 </li>
-                                                <li>
-                                                    <a href="javascript:;" class=" disabled-link disable-target">
+                                                <li class="<?php echo $this->uri->uri_string() == 'admin/campaigns/sales_package/create' ? 'active' : ''; ?>">
+                                                    <a href="<?php echo site_url('admin/campaigns/sales_package/create'); ?>">
                                                         Create Sales Package </a>
                                                 </li>
                                             </ul>

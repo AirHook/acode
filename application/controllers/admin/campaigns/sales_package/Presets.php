@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Index extends Admin_Controller {
+class Presets extends Admin_Controller {
 
 	/**
 	 * Constructor
@@ -40,6 +40,7 @@ class Index extends Admin_Controller {
 			$this->data['packages'] = $this->sales_package_list->select(
 				array(
 					'tbladmin_sales.admin_sales_designer' => @$this->webspace_details->slug
+					'sales_package_id <' => '3'
 				)
 			);
 		}
@@ -47,7 +48,7 @@ class Index extends Admin_Controller {
 		{
 			$this->data['packages'] = $this->sales_package_list->select(
 				array(
-					'sales_package_id >' => '2'
+					'sales_package_id <' => '3'
 				)
 			);
 		}

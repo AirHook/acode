@@ -137,7 +137,7 @@ class Wholesale_users_list
 		$limits_cluase = '';
 		if ( ! empty($limits))
 		{
-			$limits_cluase = 'LIMIT '.$limits[0].', '.$limits[1];
+			$limits_cluase = 'LIMIT '.$limits[0].(@$limits[1] ? ', '.$limits[1] : '');
 		}
 
 		/*********

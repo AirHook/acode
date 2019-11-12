@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Create extends Admin_Controller {
+class Modify extends Admin_Controller {
 
 	/**
 	 * Constructor
@@ -29,8 +29,6 @@ class Create extends Admin_Controller {
 		$this->_create_plugin_scripts();
 
 		// load pertinent library/model/helpers
-		$this->load->library('designers/designer_details');
-		$this->load->library('users/sales_user_details');
 		$this->load->library('sales_package/sales_package_list');
 		$this->load->library('sales_package/sales_package_details');
 		$this->load->library('products/product_details');
@@ -45,21 +43,22 @@ class Create extends Admin_Controller {
 
 		if ($this->form_validation->run() == FALSE)
 		{
-			// let's ensure that there are no admin session for sa mod
-			if ($this->session->admin_sa_mod_items)
+			// let's ensure that there are no admin session for po mod
+			if ($this->session->admin_sa_items)
 			{
-				// new po admin createa ccess
+				// new po admin mod access
+				unset($_SESSION['admin_sa_mod_id']);
+				unset($_SESSION['admin_sa_mod_items']);
+				unset($_SESSION['admin_sa_mod_options']);
+				// remove po admin access
 				unset($_SESSION['admin_sa_id']);
-				unset($_SESSION['admin_sa_des_slug']);
+				//unset($_SESSION['admin_sa_des_slug']);
 				unset($_SESSION['admin_sa_slug_segs']);
 				unset($_SESSION['admin_sa_items']);
 				unset($_SESSION['admin_sa_name']); // used at view
 				unset($_SESSION['admin_sa_email_subject']); // used at view
 				unset($_SESSION['admin_sa_email_message']); // used at view
 				unset($_SESSION['admin_sa_options']);
-				// remove po mod details
-				unset($_SESSION['admin_sa_mod_items']);
-				unset($_SESSION['admin_sa_mod_options']);
 			}
 
 			// get color list
@@ -78,44 +77,26 @@ class Create extends Admin_Controller {
 			)
 			{
 				$this->data['select_designer'] = FALSE;
-				$des_slug = @$this->sales_user_details->designer ?: $this->webspace_details->slug;
+				$this->data['des_slug'] = @$this->sales_user_details->designer ?: $this->webspace_details->slug;
 				$this->data['designers'] = $this->designers_list->select(
 					array(
-						'url_structure' => $des_slug
+						'url_structure' => $this->data['des_slug']
 					)
 				);
-				$this->session->admin_sa_des_slug = $des_slug;
 			}
 			else
 			{
 				$this->data['select_designer'] = TRUE;
+				$this->data['des_slug'] = '';
 				$this->designers_list->initialize(array('with_products'=>TRUE));
 				$this->data['designers'] = $this->designers_list->select();
 			}
 
-			// get some data if a designer has been previously selected
-			if ($this->session->admin_sa_des_slug)
+			// check of last active slugs selected for category tree
+			if ($this->session->admin_sa_slug_segs)
 			{
-				// get designer details
-				$this->data['designer_details'] = $this->designer_details->initialize(
-					array(
-						'url_structure' => $this->session->admin_sa_des_slug
-					)
-				);
-				$this->data['des_id'] = $this->designer_details->des_id;
-
-				// get the designer category tree
-				$this->data['des_subcats'] = $this->categories_tree->treelist(
-					array(
-						'd_url_structure' => $this->session->admin_sa_des_slug,
-						'with_products' => TRUE
-					)
-				);
-				$this->data['row_count'] = $this->categories_tree->row_count;
-				$this->data['max_level'] = $this->categories_tree->max_category_level;
-
-				// get last category slug if slug_segs is present
-				$this->data['slug_segs'] = json_decode($this->session->admin_sa_slug_segs, TRUE);
+				// get last category slug
+				$this->data['slug_segs'] = explode('/', $this->session->admin_sa_slug_segs);
 				$category_slug = end($this->data['slug_segs']);
 				$category_id = $this->categories_tree->get_id($category_slug);
 				$designer_slug = reset($this->data['slug_segs']);
@@ -179,7 +160,7 @@ class Create extends Admin_Controller {
 			}
 
 			// need to show loading at start
-			$this->data['show_loading'] = FALSE;
+			$this->data['show_loading'] = TRUE;
 			$this->data['search_string'] = FALSE;
 
 			// set data variables...
@@ -192,6 +173,9 @@ class Create extends Admin_Controller {
 		}
 		else
 		{
+			echo '<pre>';
+			print_r($this->input->post());
+			die();
 			/***********
 			 * Process the input data
 			 */
@@ -230,37 +214,25 @@ class Create extends Admin_Controller {
 			// connect to database
 			$DB = $this->load->database('instyle', TRUE);
 
-			// grab post data and process some of them to accomodate database
+			// grab post data
 			$post_ary = $this->input->post();
-			$post_ary['options'] = json_encode($post_ary['options']);
 
 			// remove variables not needed
 			unset($post_ary['files']);
 			unset($post_ary['prod_no']);
 
-			// set sales package items
-			$post_ary['sales_package_items'] = $this->session->admin_sa_items;
+			// set items
+			$post_ary['sales_package_items'] = $this->session->admin_sa_items
 
-			// update records
 			$DB->set($post_ary);
 			$q = $DB->insert('sales_packages');
 			$insert_id = $DB->insert_id();
-
-			// unset create sessions
-			unset($_SESSION['admin_sa_id']);
-			unset($_SESSION['admin_sa_des_slug']);
-			unset($_SESSION['admin_sa_slug_segs']);
-			unset($_SESSION['admin_sa_items']);
-			unset($_SESSION['admin_sa_name']); // used at view
-			unset($_SESSION['admin_sa_email_subject']); // used at view
-			unset($_SESSION['admin_sa_email_message']); // used at view
-			unset($_SESSION['admin_sa_options']);
 
 			// set flash data
 			$this->session->set_flashdata('success', 'add');
 
 			// redirect user
-			redirect($this->config->slash_item('admin_folder').'campaigns/sales_package/send/index/'.$insert_id);
+			redirect($this->config->slash_item('admin_folder').'campaigns/sales_package/modify/index/'.$insert_id);
 		}
 	}
 
