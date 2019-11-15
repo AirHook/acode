@@ -92,6 +92,7 @@ class Orders_list
 		$where = array(),
 		$order_by = array(),
 		$limit = array(), // array('100, 100') (<limit>, <offset>)
+		$having_des_group = FALSE, // string boolean
 		$_search = NULL
 	)
 	{
@@ -136,9 +137,24 @@ class Orders_list
 			END) AS order_status
 		');
 		$this->DB->select('tbl_order_log_details.*');
+		$this->DB->select('
+			(CASE
+				WHEN
+					(SELECT COUNT(DISTINCT tbl_order_log_details.designer)
+					FROM tbl_order_log_details
+					WHERE tbl_order_log_details.order_log_id = tbl_order_log.order_log_id) = "1"
+					THEN tbl_order_log_details.designer
+				ELSE "Mixed Designers"
+			END) AS designer_group
+		');
 
 		// set joins
 		$this->DB->join('tbl_order_log_details', 'tbl_order_log_details.order_log_id = tbl_order_log.order_log_id', 'left');
+
+		if ($having_des_group)
+		{
+			$this->DB->or_having('designer_group', $having_des_group);
+		}
 
 		// group by
 		$this->DB->group_by('tbl_order_log.order_log_id');
@@ -163,7 +179,7 @@ class Orders_list
 		// get records
 		$query = $this->DB->get('tbl_order_log');
 
-		//echo $this->DB->last_query(); die('<br />DIED');
+		//echo $this->DB->last_query(); die();
 
 		// when pagination is used
 		if ($this->pagination > 0)

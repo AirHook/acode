@@ -76,6 +76,36 @@
 					<tr>
 						<td>
 
+							<!--
+							/***********
+							 * Outlook will automatically stack your tables if there isn\'t at
+							 * least 25px to spare on any given row. Allow at least 25px of
+							 * breathing room to stop Outlook from stacking your tables.
+							 */
+							-->
+							<table width="100%" border="0" cellpadding="0" cellspacing="0">
+								<tr bgcolor="">
+
+									<td width="100%" height="92" align="center" style="font-family:Tahoma;font-size:12px;color:black;vertical-align:top;">
+
+										<span style="font-size:0.8em;line-height:24px;">
+											Please Accept PO by return reply
+										</span>
+										<br />
+										<br />
+
+										<hr style="border-top:1px solid black;border-bottom:none;"/>
+
+									</td>
+
+								</tr>
+							</table>
+
+						</td>
+					</tr>
+					<tr>
+						<td>
+
 							<?php
 							/***********
 							 * PO Letter Head

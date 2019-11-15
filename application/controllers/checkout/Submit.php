@@ -128,7 +128,7 @@ class Submit extends Frontend_Controller
 			);
 			$this->session->unset_userdata($data);
 
-			echo '<a href="'.site_url('cart/order_sent/index/'.$order_log_id).'">Continue...</a>';
+			echo '<a href="'.site_url('checkout/receipt/index/'.$order_log_id).'">Continue...</a>';
 			echo '<br /><br />';
 			exit;
 		}
@@ -139,7 +139,7 @@ class Submit extends Frontend_Controller
 			$this->load->library('email');
 			$this->load->library('mailgun/mailgun');
 
-			$sendby = @$this->webspace_details->options['email_send_by'] ?: 'mailgun'; // options: mailgun, default (CI native emailer)
+			$sendby = @$this->webspace_details->options['email_send_by'] ?: 'default'; // options: mailgun, default (CI native emailer)
 
 			// send to user
 			$this->email->clear();
@@ -321,7 +321,9 @@ class Submit extends Frontend_Controller
 		// insert user and shipping data to order log
 		$log_data = array(
 			'user_id'			=> $this->session->user_id,
+			'c'					=> $this->session->user_c ?: 'guest',
 			'date_ordered'		=> @date('d, F Y - h:i',time()),
+			'order_date'		=> time(),
 			'courier'			=> $user_array['shipping_courier'],
 			'shipping_fee'		=> $user_array['shipping_fee'] ? (int)$user_array['shipping_fee'] : 0,
 			'amount'			=> $this->cart->total() + (int)$user_array['shipping_fee'],
@@ -341,7 +343,9 @@ class Submit extends Frontend_Controller
 
 			'webspace_id'		=> $this->webspace_details->id,
 
-			'agree_policy'		=> $user_array['agree_policy']
+			'agree_policy'		=> $user_array['agree_policy'],
+			'options'			=> json_encode(array('test'=>TRUE))
+
 		);
 		$this->DB->insert('tbl_order_log', $log_data);
 		$order_log_id	= $this->DB->insert_id();
@@ -370,7 +374,7 @@ class Submit extends Frontend_Controller
 				'qty'					=> $items['qty'],
 				'unit_price'			=> $items['price'],
 				'subtotal'				=> $items['subtotal'],
-				'custom_order'			=> $items['options']['custom_order']
+				'custom_order'			=> ($items['options']['custom_order'] ?: '0')
 			);
 			$this->DB->insert('tbl_order_log_details', $log_detail_data);
 			$i++;

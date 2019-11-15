@@ -441,7 +441,7 @@
                                                         <?php echo $s; ?> <br />
                                                         <input tpye="text" class="this-size-qty" name="this-size-qty[]" style="border:1px solid #<?php echo $s_qty > 0 ? '000' : 'ccc'; ?>;font-size:12px;width:30px;padding-left:5px;background-color:white;" value="<?php echo $s_qty; ?>" readonly />
                                                         <br />
-                                                        <a class="small text-default tooltips print-upc-size" data-original-title="Print Barcodes of this size" data-placement="bottom" href="<?php echo base_url().'admin/barcodes/print/po_item/index/'.$po_details->po_id.'/'.$item.'/'.$size_label; ?>" target="_blank" data-item="<?php echo $item; ?>" data-size="<?php echo $s; ?>">
+                                                        <a class="small text-default tooltips print-upc-size <?php echo $s_qty > 0 ? '' : 'invisible'; ?>" data-original-title="Print Barcodes of this size" data-placement="bottom" href="<?php echo base_url().'admin/barcodes/print/po_item/index/'.$po_details->po_id.'/'.$item.'/'.$size_label; ?>" target="_blank" data-item="<?php echo $item; ?>" data-size="<?php echo $s; ?>">
                                                             <i class="fa fa-print"></i>
                                                         </a>
                                                     </div>

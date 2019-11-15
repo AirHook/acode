@@ -41,7 +41,13 @@ class Get_category_tree extends MY_Controller {
 		$this->load->library('categories/categories_tree');
 
 		// get the designer slug
-		$des_slug = $this->session->admin_sa_des_slug ?: $this->input->post('des_slug');
+		$des_slug =
+			$this->session->admin_sa_des_slug
+			?: (
+				$this->session->admin_sa_mod_des_slug
+				?: $this->input->post('des_slug')
+			)
+		;
 
 		// get the designer and it's category tree
 		// which by this time, a designer has already been selected
@@ -53,12 +59,9 @@ class Get_category_tree extends MY_Controller {
 			)
 		);
 		// get the designer category tree
-		$des_subcats = $this->categories_tree->treelist(
-			array(
-				'd_url_structure' => $des_slug,
-				'with_products' => TRUE
-			)
-		);
+		$param1['with_products'] = TRUE;
+		if ($des_slug != 'shop7thavenue') $param1['d_url_structure'] = $des_slug;
+		$des_subcats = $this->categories_tree->treelist($param1);
 		$row_count = $this->categories_tree->row_count;
 		$max_level = $this->categories_tree->max_category_level;
 

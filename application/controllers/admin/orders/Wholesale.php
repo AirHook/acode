@@ -23,13 +23,19 @@ class Wholesale extends Admin_Controller {
 	 *
 	 * @return	void
 	 */
-	public function index()
+	public function index($param = FALSE)
 	{
 		// generate the plugin scripts and css
 		$this->_create_plugin_scripts();
 
 		// load pertinent library/model/helpers
 		$this->load->library('orders/orders_list');
+		$this->load->library('designers/designer_details');
+		$this->load->library('designers/designers_list');
+
+		// get designer list for the dropdown filter
+		$this->designers_list->initialize(array('with_products'=>TRUE));
+		$this->data['designers'] = $this->designers_list->select();
 
 		// set some variables
 		// we need a real variable to process some calculations
@@ -41,24 +47,45 @@ class Wholesale extends Admin_Controller {
 
 		// get data
 		$where['tbl_order_log.c'] = 'ws';
+		$having_des_group = FALSE;
 		if (@$this->webspace_details->options['site_type'] != 'hub_site')
 		{
 			$where['tbl_order_log.webspace_id'] = @$this->webspace_details->id;
 		}
+		elseif ($this->webspace_details->options['site_type'] == 'sat_site')
+		{
+			$having_des_group = $this->webspace_details->name;
+		}
+		else
+		{
+			if ($param && !is_numeric($param))
+			{
+				$designer_details = $this->designer_details->initialize(array('designer.url_structure'=>$param));
+				if ($designer_details)
+				{
+					$having_des_group =
+						$designer_details->url_structure == $this->webspace_details->slug
+						? 'Mixed Designers'
+						: $designer_details->designer
+					;
+					$this->data['des_slug'] = $designer_details->url_structure;
+				}
+			}
+		}
 		$this->data['orders'] = $this->orders_list->select(
 			$where,
 			array(), // order_by
-			array($this->data['limit'], $this->data['offset']) // limit
+			array($this->data['limit'], $this->data['offset']), // limit
+			$having_des_group
 		);
 		$this->data['count_all'] = $this->orders_list->count_all;
 
 		// enable pagination
-		$this->_set_pagination($this->data['count_all'], $this->data['limit']);
+		$this->_set_pagination($this->data['count_all'], $this->data['limit'], $param);
 
 		// need to show loading at start
 		$this->data['show_loading'] = FALSE;
 		$this->data['search'] = FALSE;
-
 
 		// set data variables...
 		$this->data['file'] = 'orders';
@@ -76,11 +103,11 @@ class Wholesale extends Admin_Controller {
 	 *
 	 * @return	void
 	 */
-	private function _set_pagination($count_all = '', $per_page = '')
+	private function _set_pagination($count_all = '', $per_page = '', $param)
 	{
 		$this->load->library('pagination');
 
-		$config['base_url'] = base_url().'admin/orders/wholesale/index/';
+		$config['base_url'] = base_url().'admin/orders/wholesale/index/'.($param ? $param.'/' : '');
 		$config['total_rows'] = $count_all;
 		$config['per_page'] = $per_page;
 		$config['num_links'] = 3;

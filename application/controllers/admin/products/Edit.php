@@ -291,6 +291,8 @@ class Edit extends Admin_Controller {
 		unset($post_ary['image_url_path']);
 		unset($post_ary['clearance_old']);
 		unset($post_ary['custom_order_old']);
+		unset($post_ary['clearance_consumer_only']);
+		unset($post_ary['clearance_consumer_only_old']);
 
 		return $post_ary;
 	}
@@ -367,6 +369,23 @@ class Edit extends Admin_Controller {
 				}
 			}
 
+			// variant options
+			$options = array();
+			// ----
+			// insert options here
+			// clearance for consumer only checkbox (first of all options)
+			if ( ! isset($post_ary['clearance_consumer_only'][$st_id]))
+			{
+				$options['clearance_consumer_only'] = '0';
+			}
+			else
+			{
+				$options['clearance_consumer_only'] = $post_ary['clearance_consumer_only'][$st_id];
+			}
+			// ----
+			// set options
+			$post_to_color_ary['options'] = json_encode($options);
+
 			// color_facets
 			if ( ! empty($post_ary['color_facets'][$st_id]))
 			{
@@ -390,6 +409,9 @@ class Edit extends Admin_Controller {
 			$this->DB->update('tbl_stock');
 			// */
 
+			/***********
+			 * Update ODOO									ODOO - disabled
+			 *
 			// additional items for passing data to odoo
 			$post_to_odoo = array_merge($post_to_tbl_product, $post_to_color_ary);
 			if (isset($post_to_odoo['less_discount']))
@@ -422,9 +444,6 @@ class Edit extends Admin_Controller {
 			//print_r($post_to_odoo);
 			//die();
 
-			/***********
-			 * Update ODOO									ODOO - disabled
-			 *
 			// pass data to odoo
 			if (
 				ENVIRONMENT !== 'development'

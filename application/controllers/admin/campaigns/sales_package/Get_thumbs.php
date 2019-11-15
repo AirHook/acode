@@ -68,7 +68,14 @@ class Get_thumbs extends Admin_Controller {
 			$where_more['tbl_product.categories LIKE'] = $category_id;
 		}
 
-		$where_more['designer.url_structure'] = $designer ?: $designer_slug;
+		if ($designer) $where_more['designer.url_structure'] = $designer;
+		else
+		{
+			if ($designer_slug && $designer_slug != 'shop7thavenue')
+			{
+				$where_more['designer.url_structure'] = $designer_slug;
+			}
+		}
 
 		// if for search
 		if ($style_ary)

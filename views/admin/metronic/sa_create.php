@@ -991,7 +991,7 @@
                                                             <span></span>
                                                         </label>
                                                         <label class="" style="margin-bottom:0px;">
-                                                            - Attached Linesheets
+                                                            - Attach Linesheets
                                                         </label>
                                                     </div>
                                                     <div class="mt-radio-inline">

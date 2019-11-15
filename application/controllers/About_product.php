@@ -281,7 +281,7 @@ class About_product extends Frontend_Controller {
 			$this->email->subject(strtoupper($this->webspace_details->name).' ORDER INQUIRY RESPONSE: STYLE NUMBER: '.$prod_no);
 			$this->email->message($email_message);
 
-			$sendby = @$this->webspace_details->options['email_send_by'] ?: 'mailgun'; // options: mailgun, default (CI native emailer)
+			$sendby = @$this->webspace_details->options['email_send_by'] ?: 'default'; // options: mailgun, default (CI native emailer)
 
 			if ($sendby == 'mailgun')
 			{

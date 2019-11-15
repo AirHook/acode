@@ -971,7 +971,7 @@
 
                                             <h5> SHIP TO
                                                 <span class="edit-reset-ship-to <?php echo $this->session->admin_po_vendor_id ?: 'display-none'; ?>">
-                                                    <a href="#modal-edit_ship_to" data-toggle="modal" data-modal-id="modal-edit_ship_to" class="small ship-to-popovers popovers hide" data-trigger="hover" data-placement="top" data-container="body" data-content="Click here to change 'Ship To' address. Reset to return to default." data-original-title="EDIT Ship To" style="margin-left:10px;color:red;"> edit </a> <small class="hide">/</small> <a href="javascript:;" class="reset-ship-to small"> <em>reset to defualt</em> </a>
+                                                    <a href="javascript:;" class="reset-ship-to small"> <em>reset to defualt</em> </a>
                                                 </span>
                                             </h5>
 

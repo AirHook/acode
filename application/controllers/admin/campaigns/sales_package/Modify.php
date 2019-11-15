@@ -68,70 +68,30 @@ class Modify extends Admin_Controller {
 				unset($_SESSION['admin_sa_email_message']); // used at view
 				unset($_SESSION['admin_sa_options']);
 				// remove po mod details
+				unset($_SESSION['admin_sa_mod_id']);
 				unset($_SESSION['admin_sa_mod_items']);
+				unset($_SESSION['admin_sa_mod_slug_segs']);
 				unset($_SESSION['admin_sa_mod_options']);
+				unset($_SESSION['admin_sa_mod_des_slug']);
+			}
+
+			// capture package id being modified
+			if ( ! $this->session->admin_sa_mod_id)
+			{
+				$this->session->admin_sa_mod_id = $id;
+			}
+
+			// check for different id's
+			if ($this->session->admin_sa_mod_id != $id)
+			{
+				// ooops... different id
+				// reset and reload
+				redirect('admin/campaigns/sales_package/reset/index/'.$id);
 			}
 
 			// get color list
 			// used for "add product not in list"
 			$this->data['colors'] = $this->color_list->select();
-
-			// select designer on/off
-			// and get the designers list for the category list
-			// - general admin shows all designer category tree
-			// - satellite and stand-alone sites defaults to it's designer category tree
-			// - sales users default to it's reference designer category tree
-			if (
-				$this->webspace_details->options['site_type'] == 'sat_site'
-				OR $this->webspace_details->options['site_type'] == 'sal_site'
-				OR $this->session->sales_loggedin
-			)
-			{
-				$this->data['select_designer'] = FALSE;
-				$this->data['des_slug'] = @$this->sales_user_details->designer ?: $this->webspace_details->slug;
-				$this->data['designers'] = $this->designers_list->select(
-					array(
-						'url_structure' => $this->data['des_slug']
-					)
-				);
-			}
-			else
-			{
-				$this->data['select_designer'] = TRUE;
-				$this->data['des_slug'] = '';
-				$this->designers_list->initialize(array('with_products'=>TRUE));
-				$this->data['designers'] = $this->designers_list->select();
-			}
-
-			// check of last active slugs selected for category tree
-			if ($this->session->admin_sa_slug_segs)
-			{
-				// get last category slug
-				$this->data['slug_segs'] = explode('/', $this->session->admin_sa_slug_segs);
-				$category_slug = end($this->data['slug_segs']);
-				$category_id = $this->categories_tree->get_id($category_slug);
-				$designer_slug = reset($this->data['slug_segs']);
-
-				$where_more['designer.url_structure'] = $designer_slug;
-				$where_more['tbl_product.categories LIKE'] = $category_id;
-
-				// get the products list for the thumbs grid view
-				$params['show_private'] = TRUE; // all items general public (Y) - N for private
-				$params['view_status'] = 'ALL'; // ALL items view status (Y, Y1, Y2, N)
-				$params['variant_publish'] = 'ALL'; // ALL variant level color publish (view status)
-				$params['group_products'] = FALSE; // group per product number or per variant
-				// show items even without stocks at all
-				$params['with_stocks'] = FALSE;
-				$this->load->library('products/products_list', $params);
-				$this->data['products'] = $this->products_list->select(
-					$where_more,
-					array( // order conditions
-						'seque' => 'desc',
-						'tbl_product.prod_no' => 'desc'
-					)
-				);
-				$this->data['products_count'] = $this->products_list->row_count;
-			}
 
 			// initialize sales package properties
 			$this->data['sa_details'] = $this->sales_package_details->initialize(
@@ -157,6 +117,87 @@ class Modify extends Admin_Controller {
 				$this->data['sa_options'] = json_decode($this->session->admin_sa_mod_options, TRUE);
 			}
 
+			// at modify, designer is already selected from create
+			// no more need for dropdown
+			$this->data['select_designer'] = FALSE;
+			$designer_slug =
+				@$this->data['sa_options']['des_slug']
+				?: (
+					@$this->sales_user_details->designer
+					?: $this->webspace_details->slug
+				)
+			;
+
+			// get the designer name
+			$this->data['designer_details'] = $this->designer_details->initialize(
+				array(
+					'url_structure' => $designer_slug
+				)
+			);
+			$this->data['designer'] = $this->designer_details->designer;
+			$this->session->admin_sa_mod_des_slug = $designer_slug;
+
+			// get the designer category tree
+			$param1['with_products'] = TRUE;
+			if ($designer_slug != 'shop7thavenue') $param1['d_url_structure'] = $designer_slug;
+			$this->data['des_subcats'] = $this->categories_tree->treelist($param1);
+			$this->data['row_count'] = $this->categories_tree->row_count;
+			$this->data['max_level'] = $this->categories_tree->max_category_level;
+
+			// check of last active slugs selected for category tree
+			if ($this->session->admin_sa_mod_slug_segs)
+			{
+				// get last category slug
+				$this->data['slug_segs'] = explode('/', $this->session->admin_sa_mod_slug_segs);
+				$category_slug = end($this->data['slug_segs']);
+				$category_id = $this->categories_tree->get_id($category_slug);
+				$designer_slug = reset($this->data['slug_segs']);
+				$where_more['designer.url_structure'] = $designer_slug;
+			}
+			else
+			{
+				if ($designer_slug != 'shop7thavenue')
+				{
+					foreach ($this->data['des_subcats'] as $category)
+					{
+						// let's get the first max cat level category
+						if ($category->category_level == $this->data['max_level'])
+						{
+							$category_id = $category->category_id;
+							break;
+						}
+						else continue;
+					}
+				}
+				else
+				{
+					// by default...
+					$category_id = '195';
+				}
+			}
+
+			$where_more['tbl_product.categories LIKE'] = $category_id;
+
+			// get the products list for the thumbs grid view
+			$params['show_private'] = TRUE; // all items general public (Y) - N for private
+			$params['view_status'] = 'ALL'; // all items view status (Y, Y1, Y2, N)
+			$params['view_at_hub'] = TRUE; // all items general public at hub site
+			$params['view_at_satellite'] = TRUE; // all items publis at satellite site
+			$params['variant_publish'] = 'ALL'; // all items at variant level publish (view status)
+			$params['variant_view_at_hub'] = TRUE; // variant level public at hub site
+			$params['variant_view_at_satellite'] = TRUE; // varian level public at satellite site
+			$params['with_stocks'] = FALSE; // Show all with and without stocks
+			$params['group_products'] = FALSE; // group per product number or per variant
+			$params['special_sale'] = FALSE; // special sale items only
+			$this->load->library('products/products_list', $params);
+			$this->data['products'] = $this->products_list->select(
+				$where_more,
+				array( // order conditions
+					'seque' => 'asc'
+				)
+			);
+			$this->data['products_count'] = $this->products_list->row_count;
+
 			// author
 			if ($this->sales_package_details->sales_user == '1')
 			{
@@ -180,7 +221,7 @@ class Modify extends Admin_Controller {
 			}
 
 			// need to show loading at start
-			$this->data['show_loading'] = FALSE;
+			$this->data['show_loading'] = @$this->data['products_count'] > 0 ? TRUE : FALSE;
 			$this->data['search_string'] = FALSE;
 
 			// set data variables...

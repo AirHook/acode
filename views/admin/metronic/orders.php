@@ -1,3 +1,44 @@
+					<?php if ($this->webspace_details->options['site_type'] == 'hub_site')
+					{ ?>
+
+					<div class="table-toolbar">
+
+						<div class="row">
+
+							<div class="col-lg-3 col-md-4">
+								<select class="bs-select form-control" id="filter_by_designer_select" name="des_slug" data-live-search="true" data-size="5" data-show-subtext="true">
+									<option class="option-placeholder" value="">Select Designer...</option>
+									<option value="all">All Orders</option>
+									<?php if ($this->webspace_details->options['site_type'] == 'hub_site') { ?>
+									<option value="<?php echo $this->webspace_details->slug; ?>" data-subtext="<em>Mixed Designers</em>" data-des_slug="<?php echo $this->webspace_details->slug; ?>" data-des_id="<?php echo $this->webspace_details->id; ?>" <?php echo $this->webspace_details->slug === @$des_slug ? 'selected="selected"' : ''; ?>>
+										<?php echo $this->webspace_details->name; ?>
+									</options>
+									<?php } ?>
+									<?php
+									if (@$designers)
+									{
+										foreach ($designers as $designer)
+										{ ?>
+
+									<option value="<?php echo $designer->url_structure; ?>" data-subtext="<em></em>" data-des_slug="<?php echo $designer->url_structure; ?>" data-des_id="<?php echo $designer->des_id; ?>" <?php echo $designer->url_structure === @$des_slug ? 'selected="selected"' : ''; ?>>
+										<?php echo ucwords(strtolower($designer->designer)); ?>
+									</option>
+
+											<?php
+										}
+									} ?>
+								</select>
+							</div>
+							<button class="apply_filer_by_designer btn dark hidden-sm hidden-xs" data-page_param="<?php echo $this->uri->segment(3); ?>"> Filter </button>
+
+						</div>
+						<button class="apply_filer_by_designer btn dark btn-block margin-top-10 hidden-lg hidden-md" data-page_param="<?php echo $this->uri->segment(3); ?>"> Filter </button>
+
+					</div>
+
+						<?php
+					} ?>
+
 					<!-- BEGIN FORM-->
 					<!-- FORM =======================================================================-->
 					<?php echo form_open(
@@ -117,7 +158,7 @@
                     <div class="row margin-bottom-10">
                         <div class="col-md-12 text-justify pull-right">
                             <span style="<?php echo $this->pagination->create_links() ? 'position:relative;top:15px;' : ''; ?>">
-                                Showing <?php echo ($limit * $page) - ($limit - 1); ?> to <?php echo $limit * $page; ?> of about <?php echo number_format($count_all); ?> records
+                                Showing <?php echo ($limit * $page) - ($limit - 1); ?> to <?php echo $count_all < ($limit * $page) ? $count_all : $limit * $page; ?> of about <?php echo number_format($count_all); ?> records
                             </span>
                             <?php echo $this->pagination->create_links(); ?>
                         </div>
@@ -155,6 +196,7 @@
                                 <th> Order<br />Qty </th>
                                 <th> Purchase<br />Amount </th>
                                 <th> Customer &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </th>
+								<th style="width:130px;"> Designer </th>
                                 <th style="width:100px;"> Role </th>
                                 <th style="width:130px;"> Status </th>
                                 <th style="width:80px;"> Actions </th>
@@ -172,7 +214,7 @@
 
 									// for wholesale only site like tempoparis, show only wholesale orders
 									// for now, we use this condition to remove consuemr orders
-									if ($order->store_name)
+									//if ($order->store_name)
 									//{
 									?>
 
@@ -231,7 +273,9 @@
 									?>
 								</td>
 								<!-- Roel -->
-                                <td> <small><cite><?php echo $order->store_name ? 'wholesale' : 'consumer'; ?></cite></small> </td>
+                                <td> <?php echo trim($order->designer_group); ?> </td>
+								<!-- Roel -->
+                                <td> <small><cite><?php echo $order->c == 'ws' ? 'wholesale' : 'consumer'; ?></cite></small> </td>
 								<!-- Status -->
                                 <td>
 									<?php
@@ -425,7 +469,7 @@
                     <div class="row margin-bottom-10">
                         <div class="col-md-12 text-justify pull-right">
                             <span>
-                                Showing <?php echo ($limit * $page) - ($limit - 1); ?> to <?php echo $limit * $page; ?> of about <?php echo number_format($count_all); ?> records
+                                Showing <?php echo ($limit * $page) - ($limit - 1); ?> to <?php echo $count_all < ($limit * $page) ? $count_all : $limit * $page; ?> of about <?php echo number_format($count_all); ?> records
                             </span>
                             <?php echo $this->pagination->create_links(); ?>
                         </div>

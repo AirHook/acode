@@ -162,6 +162,16 @@ class Order_details
 		$this->DB->select('GROUP_CONCAT(DISTINCT CONCAT(designer)) AS designers');
 		$this->DB->select('tbl_order_log.order_log_id AS order_id');
 		$this->DB->select('tbl_order_log_details.*');
+		$this->DB->select('
+			(CASE
+				WHEN
+					(SELECT COUNT(DISTINCT tbl_order_log_details.designer)
+					FROM tbl_order_log_details
+					WHERE tbl_order_log_details.order_log_id = tbl_order_log.order_log_id) = "1"
+					THEN tbl_order_log_details.designer
+				ELSE "Mixed Designers"
+			END) AS designer_group
+		');
 
 		// set joins
 		$this->DB->join('tbl_order_log_details', 'tbl_order_log_details.order_log_id = tbl_order_log.order_log_id', 'left');

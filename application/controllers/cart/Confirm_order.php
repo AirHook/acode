@@ -333,11 +333,11 @@ class Confirm_order extends Frontend_Controller
 		// insert user and shipping data to order log
 		$log_data = array(
 			'user_id'			=> $this->session->userdata('user_id'),
-			'c'					=> $this->session->userdata('user_c'),
+			'c'					=> $this->session->userdata('user_c') ?: 'guest',
 
 			'date_ordered'		=> @date('d, F Y - h:i',time()),
 			'order_date'		=> time(),
-			
+
 			'courier'			=> $this->session->userdata('user_cat') === 'wholesale' ? $this->session->userdata('shipping_courier') : $user_array['shipping_courier'],
 			'shipping_fee'		=> @$user_array['shipping_fee'] ? (int)$user_array['shipping_fee'] : 0,
 			'amount'			=> $this->cart->total() + (int)$user_array['shipping_fee'],
@@ -355,7 +355,8 @@ class Confirm_order extends Frontend_Controller
 			'ship_city'			=> $user_array['sh_city'],
 			'ship_zipcode'		=> $user_array['sh_zipcode'],
 
-			'agree_policy'		=> $user_array['agree_policy']
+			'agree_policy'		=> $user_array['agree_policy'],
+			'options'			=> json_encode(array('test'=>TRUE))
 		);
 		$this->DB->insert('tbl_order_log', $log_data);
 		$order_log_id	= $this->DB->insert_id();

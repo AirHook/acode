@@ -58,8 +58,11 @@ class Create extends Admin_Controller {
 				unset($_SESSION['admin_sa_email_message']); // used at view
 				unset($_SESSION['admin_sa_options']);
 				// remove po mod details
+				unset($_SESSION['admin_sa_mod_id']);
 				unset($_SESSION['admin_sa_mod_items']);
+				unset($_SESSION['admin_sa_mod_slug_segs']);
 				unset($_SESSION['admin_sa_mod_options']);
+				unset($_SESSION['admin_sa_mod_des_slug']);
 			}
 
 			// get color list
@@ -125,17 +128,20 @@ class Create extends Admin_Controller {
 
 				// get the products list for the thumbs grid view
 				$params['show_private'] = TRUE; // all items general public (Y) - N for private
-				$params['view_status'] = 'ALL'; // ALL items view status (Y, Y1, Y2, N)
-				$params['variant_publish'] = 'ALL'; // ALL variant level color publish (view status)
+				$params['view_status'] = 'ALL'; // all items view status (Y, Y1, Y2, N)
+				$params['view_at_hub'] = TRUE; // all items general public at hub site
+				$params['view_at_satellite'] = TRUE; // all items publis at satellite site
+				$params['variant_publish'] = 'ALL'; // all items at variant level publish (view status)
+				$params['variant_view_at_hub'] = TRUE; // variant level public at hub site
+				$params['variant_view_at_satellite'] = TRUE; // varian level public at satellite site
+				$params['with_stocks'] = FALSE; // Show all with and without stocks
 				$params['group_products'] = FALSE; // group per product number or per variant
-				// show items even without stocks at all
-				$params['with_stocks'] = FALSE;
+				$params['special_sale'] = FALSE; // special sale items only
 				$this->load->library('products/products_list', $params);
 				$this->data['products'] = $this->products_list->select(
 					$where_more,
 					array( // order conditions
-						'seque' => 'desc',
-						'tbl_product.prod_no' => 'desc'
+						'seque' => 'asc'
 					)
 				);
 				$this->data['products_count'] = $this->products_list->row_count;
@@ -179,7 +185,7 @@ class Create extends Admin_Controller {
 			}
 
 			// need to show loading at start
-			$this->data['show_loading'] = FALSE;
+			$this->data['show_loading'] = @$this->data['products_count'] > 0 ? TRUE : FALSE;
 			$this->data['search_string'] = FALSE;
 
 			// set data variables...
@@ -232,7 +238,10 @@ class Create extends Admin_Controller {
 
 			// grab post data and process some of them to accomodate database
 			$post_ary = $this->input->post();
+			$post_ary['options']['des_slug'] = $this->session->admin_sa_des_slug; // additional data
 			$post_ary['options'] = json_encode($post_ary['options']);
+
+			// additional items to set
 
 			// remove variables not needed
 			unset($post_ary['files']);

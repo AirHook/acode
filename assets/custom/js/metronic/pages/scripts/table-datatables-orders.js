@@ -1,5 +1,7 @@
 var TableDatatablesManaged = function () {
 
+    var base_url = $('body').data('base_url');
+
     var initTable = function () {
 
         var table = $('#tbl-orders');
@@ -163,8 +165,8 @@ var TableDatatablesManaged = function () {
         $('#bulk_actions_select').selectpicker("refresh");
     });
 
-	// apply button scripts
-	$('#apply_bulk_actions').click(function(){
+    // apply button scripts
+    $('#apply_bulk_actions').click(function(){
 		var x = document.getElementById("bulk_actions_select").selectedIndex;
 		var y = document.getElementById("bulk_actions_select").options;
 		var z = y[x].value;
@@ -176,6 +178,26 @@ var TableDatatablesManaged = function () {
 			return false;
 		}
 	});
+
+    // apply filter by designer
+	$('.apply_filer_by_designer').click(function(){
+        var page_param = $(this).data('page_param');
+		var x = document.getElementById("filter_by_designer_select").selectedIndex;
+		var y = document.getElementById("filter_by_designer_select").options;
+		var z = y[x].value;
+		if (!z) {
+			alert("Please select a designer to filter table.");
+			return false;
+		} else {
+            $('#loading').modal('show');
+            if (z=='all'){
+                window.location.href = base_url + "admin/orders/" + page_param + ".html";
+            }else{
+                window.location.href = base_url + "admin/orders/" + page_param + "/index/" + z + ".html";
+            }
+		}
+	});
+
 
     return {
 

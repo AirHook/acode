@@ -35,10 +35,11 @@ class Reset extends Admin_Controller {
 		unset($_SESSION['admin_sa_email_message']);
 		unset($_SESSION['admin_sa_options']);
 		// remove po mod details
-		unset($_SESSION['admin_sa_mod_po_id']);
+		unset($_SESSION['admin_sa_mod_id']);
 		unset($_SESSION['admin_sa_mod_items']);
+		unset($_SESSION['admin_sa_mod_slug_segs']);
 		unset($_SESSION['admin_sa_mod_options']);
-		unset($_SESSION['admin_sa_mod_edit_vendor_price']);
+		unset($_SESSION['admin_sa_mod_des_slug']);
 
 		// redirect user
 		if ($id) redirect($this->config->slash_item('admin_folder').'campaigns/sales_package/modify/index/'.$id, 'location');
