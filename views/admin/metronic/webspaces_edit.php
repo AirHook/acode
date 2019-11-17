@@ -413,7 +413,42 @@
                                 <label class="control-label col-md-3">Product Size Mode
                                 </label>
                                 <div class="col-md-4">
-                                    <select class="bs-select form-control selectpicker" id="size_mode" name="options[size_mode]">
+
+                                    <div class="mt-radio-list">
+                                        <label class="mt-radio mt-radio-outline">
+                                            <input type="radio" name="size_mode" value="1" <?php echo $this->edit_webspace_details->options['size_mode'] == '1' ? 'checked="checked"' : ''; ?> />
+                                            Mode A: 0,2,4,6,8,10,...,22
+                                            <span></span>
+                                        </label>
+                                        <label class="mt-radio mt-radio-outline">
+                                            <input type="radio" name="size_mode" value="0" <?php echo $this->edit_webspace_details->options['size_mode'] == '0' ? 'checked="checked"' : ''; ?> />
+                                            Mode B: S,M,L,XL,XXL
+                                            <span></span>
+                                        </label>
+                                        <label class="mt-radio mt-radio-outline">
+                                            <input type="radio" name="size_mode" value="2" <?php echo $this->edit_webspace_details->options['size_mode'] == '2' ? 'checked="checked"' : ''; ?> />
+                                            Mode C: Pre-packed (1S-2M-2L-1XL)
+                                            <span></span>
+                                        </label>
+                                        <label class="mt-radio mt-radio-outline">
+                                            <input type="radio" name="size_mode" value="3" <?php echo $this->edit_webspace_details->options['size_mode'] == '3' ? 'checked="checked"' : ''; ?> />
+                                            Mode D: S-M, M-L
+                                            <span></span>
+                                        </label>
+                                        <label class="mt-radio mt-radio-outline">
+                                            <input type="radio" name="size_mode" value="4" <?php echo $this->edit_webspace_details->options['size_mode'] == '4' ? 'checked="checked"' : ''; ?> />
+                                            Mode E: One Size Fits All
+                                            <span></span>
+                                        </label>
+                                        <!--
+                                        <label class="mt-radio mt-radio-outline mt-radio-disabled">
+                                            <input type="radio" disabled> Disabled
+                                            <span></span>
+                                        </label>
+                                    -->
+                                    </div>
+
+                                    <select class="bs-select form-control selectpicker hide" id="size_mode" name="options[size_mode]">
                                         <option value=""> Select... </option>
                                         <option value="1" <?php echo @$this->edit_webspace_details->options['size_mode'] == '1' ? 'selected="selected"' : ''; ?>>
                                             Mode A: 0,2,4,6,8,10,...,22</option>
@@ -422,6 +457,7 @@
                                         <option value="2" <?php echo @$this->edit_webspace_details->options['size_mode'] == '2' ? 'selected="selected"' : ''; ?>>
                                             Mode C: Pre-packed (1S-2M-2L-1XL)</option>
                                     </select>
+
                                     <cite class="help-block small">Product type of sizing</cite>
                                 </div>
                             </div>
