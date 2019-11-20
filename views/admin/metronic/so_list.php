@@ -48,57 +48,56 @@
 
                     <div class="table-toolbar">
 
+						<style>
+                            .nav > li > a {
+                                padding: 8px 15px;
+                                background-color: #eee;
+                                color: #555;
+                            }
+                            .nav-tabs > li > a {
+                                font-size: 12px;
+                            }
+                            .nav-tabs > li > a:hover {
+                                background-color: #333;
+                                color: #eee;
+                            }
+                        </style>
 
-                        						<style>
-                                                    .nav > li > a {
-                                                        padding: 8px 15px;
-                                                        background-color: #eee;
-                                                        color: #555;
-                                                    }
-                                                    .nav-tabs > li > a {
-                                                        font-size: 12px;
-                                                    }
-                                                    .nav-tabs > li > a:hover {
-                                                        background-color: #333;
-                                                        color: #eee;
-                                                    }
-                                                </style>
+                        <ul class="nav nav-tabs">
+                            <li class="<?php echo $this->uri->uri_string() == 'admin/sales_orders' ? 'active' : ''; ?>">
+                                <a href="<?php echo site_url('admin/sales_orders'); ?>">
+                                    All Sales Orders
+                                </a>
+                            </li>
+							<li class="<?php echo $this->uri->segment(3) == 'onorder' ? 'active' : ''; ?>">
+								<a href="javascript:;" class="tooltips" data-original-title="Currently under construction">
+									Pending SO
+								</a>
+							</li>
+							<li class="<?php echo $this->uri->segment(3) == 'onorder' ? 'active' : ''; ?>">
+								<a href="javascript:;" class="tooltips" data-original-title="Currently under construction">
+									Completed SO
+								</a>
+							</li>
+                            <?php
+                            // available only on hub sites for now
+                            if ($this->webspace_details->options['site_type'] == 'hub_site')
+                            { ?>
+                            <li>
+                                <a href="<?php echo site_url('admin/sales_orders/create'); ?>">
+                                    Create New Sales Order <i class="fa fa-plus"></i>
+                                </a>
+                            </li>
+                                <?php
+                            } ?>
+                        </ul>
 
-                                                <ul class="nav nav-tabs">
-                                                    <li class="<?php echo $this->uri->uri_string() == 'admin/sales_orders' ? 'active' : ''; ?>">
-                                                        <a href="<?php echo site_url('admin/sales_orders'); ?>">
-                                                            All Sales Orders
-                                                        </a>
-                                                    </li>
-                        							<li class="<?php echo $this->uri->segment(3) == 'onorder' ? 'active' : ''; ?>">
-                        								<a href="javascript:;" class="tooltips" data-original-title="Currently under construction">
-                        									Pending SO
-                        								</a>
-                        							</li>
-                        							<li class="<?php echo $this->uri->segment(3) == 'onorder' ? 'active' : ''; ?>">
-                        								<a href="javascript:;" class="tooltips" data-original-title="Currently under construction">
-                        									Completed SO
-                        								</a>
-                        							</li>
-                                                    <?php
-                                                    // available only on hub sites for now
-                                                    if ($this->webspace_details->options['site_type'] == 'hub_site')
-                                                    { ?>
-                                                    <li>
-                                                        <a href="<?php echo site_url('admin/sales_orders/create'); ?>">
-                                                            Create New Sales Order <i class="fa fa-plus"></i>
-                                                        </a>
-                                                    </li>
-                                                        <?php
-                                                    } ?>
-                                                </ul>
+                        <br />
 
-                                                <br />
-
-                                                <?php if (@$search) { ?>
-                                                <h1><small><em>Search results for:</em></small> "<?php echo @$search_string; ?>"</h1>
-                                                <br />
-                                                <?php } ?>
+                        <?php if (@$search) { ?>
+                        <h1><small><em>Search results for:</em></small> "<?php echo @$search_string; ?>"</h1>
+                        <br />
+                        <?php } ?>
 
                         <div class="row">
 
@@ -174,6 +173,7 @@
                                         <span></span>
                                     </label>
                                 </td>
+                                <!-- SO# -->
                                 <td>
                                     <a href="<?php echo $edit_link; ?>">
                                         <?php
@@ -189,9 +189,11 @@
                                         <cite>view details</cite>
                                     </a>
                                 </td>
+                                <!-- SO Date -->
                                 <td>
                 					<?php echo @date('Y-m-d', $order->sales_order_date); ?>
                 				</td>
+                                <!-- Items -->
                                 <td>
                 					<?php
                 					$items = json_decode($order->items, TRUE);
@@ -204,8 +206,11 @@
                 					if (count($items) > 1) echo ' <a href="'.$edit_link.'"><i class="fa fa-plus text-success tooltips" data-original-title="...more items"></i></a>';
                 					?>
                 				</td>
-                                <td> <?php echo $order->store_name; ?> </td>
-                                <td> <?php echo $order->designer; ?> </td>
+                                <!-- Store Name -->
+                                <td> <?php echo $order->store_name ?: $order->ws_store_name; ?> </td>
+                                <!-- Designer -->
+                                <td> <?php echo $order->designer ?: 'Mixed Designers'; ?> </td>
+                                <!-- Author -->
                                 <td>
                                     <?php
                                     // get the author
@@ -229,6 +234,7 @@
                                     ?>
                                     <?php echo @$author->fname.' '.@$author->lname; ?>
                                 </td>
+                                <!-- Status -->
                                 <td>
                 					<?php
                 					switch ($order->status)
@@ -253,6 +259,7 @@
                 					?>
                                     <span class="label label-sm label-<?php echo $label; ?>"> <?php echo $text; ?> </span>
                                 </td>
+                                <!-- Actions -->
                                 <td class="dropdown-wrap dropdown-fix">
                                     <div class="btn-group" >
                                         <button class="btn btn-xs red-flamingo dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false" onclick="$('.dropdown-wrap').toggleClass('dropdown-fix');" > Actions

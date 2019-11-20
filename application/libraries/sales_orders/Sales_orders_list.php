@@ -54,7 +54,7 @@ class Sales_orders_list
 		// connect to database
 		$this->DB = $this->CI->load->database('instyle', TRUE);
 
-		log_message('info', 'Purchase Orders List Class Loaded and Initialized');
+		log_message('info', 'Sales Orders List Class Loaded and Initialized');
 	}
 
 	// --------------------------------------------------------------------
@@ -111,7 +111,8 @@ class Sales_orders_list
 			tbluser_data_wholesale.firstname,
 			tbluser_data_wholesale.lastname,
 			tbluser_data_wholesale.email,
-			tbluser_data_wholesale.telephone
+			tbluser_data_wholesale.telephone,
+			tbluser_data_wholesale.store_name AS ws_store_name
 		');
 		$this->DB->select('
 			vendors.vendor_name,

@@ -79,7 +79,7 @@ class Sales_package_list
 	 *
 	 * @return	Object List or FALSE on failure
 	 */
-	public function select(array $where = array())
+	public function select($where = array())
 	{
 		// set $where custom conditions
 		if ( ! empty($where))
@@ -97,7 +97,9 @@ class Sales_package_list
 
 		// set select items
 		$this->DB->select('sales_packages.*');
+		$this->DB->select('sales_packages.options AS sa_options');
 		$this->DB->select('tbladmin_sales.*');
+		$this->DB->select('tbladmin_sales.options AS user_options');
 
 		// set joins
 		$this->DB->join('tbladmin_sales', 'tbladmin_sales.admin_sales_id = sales_packages.sales_user', 'left');

@@ -23,7 +23,7 @@ class Index extends Admin_Controller {
 	 *
 	 * @return	void
 	 */
-	public function index()
+	public function index($des_slug = '')
 	{
 		// generate the plugin scripts and css
 		$this->_create_plugin_scripts();
@@ -33,24 +33,33 @@ class Index extends Admin_Controller {
 		$this->load->library('sales_package/sales_package_list');
 		$this->load->library('products/product_details');
 
-		// get data
-		$this->data['designers'] = $this->designers_list->select(array('view_status'=>'Y'));
+		// get designer list for the dropdown filter
+		$this->designers_list->initialize(array('with_products'=>TRUE));
+		$this->data['designers'] = $this->designers_list->select();
+
+		// set some variables
+		// we need a real variable to process some calculations
+		$url_segs = $this->uri->segment_array();
+		$this->data['page'] = is_numeric(end($url_segs)) ? end($url_segs) : 1;
+		$this->data['limit'] = 100;
+		$this->data['offset'] = $this->data['page'] == '' ? 0 : ($this->data['page'] * 100) - 100;
+		//$this->orders_list->pagination = $this->data['page'];
+
+		// check for $des_slug
+		$this->data['des_slug'] = '';
+		if ($des_slug)
+		{
+			$where['sales_packages.options LIKE'] = '%'.$des_slug.'%';
+			$this->data['des_slug'] = $des_slug;
+		}
+
+		// get the list
+		$where['sales_package_id >'] = '2';
 		if (@$this->webspace_details->options['site_type'] != 'hub_site')
 		{
-			$this->data['packages'] = $this->sales_package_list->select(
-				array(
-					'tbladmin_sales.admin_sales_designer' => @$this->webspace_details->slug
-				)
-			);
+			$where['tbladmin_sales.admin_sales_designer'] = @$this->webspace_details->slug;
 		}
-		else
-		{
-			$this->data['packages'] = $this->sales_package_list->select(
-				array(
-					'sales_package_id >' => '2'
-				)
-			);
-		}
+		$this->data['packages'] = $this->sales_package_list->select($where);
 
 
 		// set data variables...

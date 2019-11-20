@@ -1,3 +1,39 @@
+					<?php if ($this->webspace_details->options['site_type'] == 'hub_site')
+					{ ?>
+
+					<div class="table-toolbar">
+
+						<div class="row">
+
+							<div class="col-lg-3 col-md-4">
+								<select class="bs-select form-control" id="filter_by_designer_select" name="des_slug" data-live-search="true" data-size="5" data-show-subtext="true">
+									<option class="option-placeholder" value="">Select Designer...</option>
+									<option value="all">All Sales Package</option>
+									<?php
+									if (@$designers)
+									{
+										foreach ($designers as $designer)
+										{ ?>
+
+									<option value="<?php echo $designer->url_structure; ?>" data-subtext="<em></em>" data-des_slug="<?php echo $designer->url_structure; ?>" data-des_id="<?php echo $designer->des_id; ?>" <?php echo $designer->url_structure === @$des_slug ? 'selected="selected"' : ''; ?>>
+										<?php echo ucwords(strtolower($designer->designer)); ?>
+									</option>
+
+											<?php
+										}
+									} ?>
+								</select>
+							</div>
+							<button class="apply_filer_by_designer btn dark hidden-sm hidden-xs" data-page_param="<?php echo $this->uri->segment(3); ?>"> Filter </button>
+
+						</div>
+						<button class="apply_filer_by_designer btn dark btn-block margin-top-10 hidden-lg hidden-md" data-page_param="<?php echo $this->uri->segment(3); ?>"> Filter </button>
+
+					</div>
+
+						<?php
+					} ?>
+
 					<!-- FORM =======================================================================-->
 					<?php echo form_open(
 						$this->config->slash_item('admin_folder').'campaigns/sales_package/bulk_actions',
@@ -244,6 +280,7 @@
                                 <th> Sales Package Name </th>
                                 <th> Items </th>
 								<th> Author </th>
+								<th> Designer </th>
                                 <th> Actions </th>
                             </tr>
                         </thead>
@@ -256,6 +293,8 @@
 								foreach ($packages as $package)
 								{
 									$edit_link = site_url('admin/campaigns/sales_package/modify/index/'.$package->sales_package_id);
+
+									$options = json_decode($package->sa_options, TRUE);
 									?>
 
                             <tr class="odd gradeX " onmouseover="$(this).find('.hidden_first_edit_link').show();" onmouseout="$(this).find('.hidden_first_edit_link').hide();">
@@ -406,6 +445,9 @@
 									<?php } else { ?>
                                     <?php echo ucwords($package->admin_sales_user.' '.$package->admin_sales_lname); ?> - <small class="text-info"> <cite> sales </cite></small>
 									<?php } ?>
+                                </td>
+								<td class="hidden-xs hidden-sm">
+									<?php echo @$options['des_slug'] ? $this->designers_list->get_des_name(array('designer.url_structure'=>$options['des_slug'])) : 'Mixed Designers'; ?>
                                 </td>
                                 <td class="dropdown-wrap dropdown-fix">
 

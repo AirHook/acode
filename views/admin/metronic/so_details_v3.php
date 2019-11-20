@@ -163,12 +163,12 @@
                                                 <p><strong> BILLING ADDRESS </strong></p>
 
                                                 <p>
-													<?php echo $store_details->store_name; ?> <br />
-													<?php echo $store_details->address1; ?> <br />
-													<?php echo $store_details->address2 ? $store_details->address2.'<br />' : ''; ?>
-													<?php echo $store_details->city.', '.$store_details->state.' '.$store_details->zipcode; ?> <br />
-													<?php echo $store_details->country; ?> <br />
-													<?php echo $store_details->telephone; ?> <br />
+													<?php echo @$store_details->store_name; ?> <br />
+													<?php echo @$store_details->address1; ?> <br />
+													<?php echo @$store_details->address2 ? $store_details->address2.'<br />' : ''; ?>
+													<?php echo @$store_details->city.', '.@$store_details->state.' '.@$store_details->zipcode; ?> <br />
+													<?php echo @$store_details->country; ?> <br />
+													<?php echo @$store_details->telephone; ?> <br />
                                                 </p>
 
                                             </div>
@@ -177,13 +177,13 @@
                                                 <p><strong> SHIPPING ADDRESS </strong></p>
 
                                                 <p>
-													<?php echo $store_details->store_name; ?> <br />
-													<?php echo $store_details->address1; ?> <br />
-													<?php echo $store_details->address2 ? $store_details->address2.'<br />' : ''; ?>
-													<?php echo $store_details->city.', '.$store_details->state.' '.$store_details->zipcode; ?> <br />
-													<?php echo $store_details->country; ?> <br />
-													<?php echo $store_details->telephone; ?> <br />
-													ATTN: <?php echo $store_details->fname ? $store_details->fname.' '.$store_details->lname : ''; ?> <?php echo $store_details->email ? '('.safe_mailto($store_details->email).')': ''; ?>
+													<?php echo @$store_details->store_name; ?> <br />
+													<?php echo @$store_details->address1; ?> <br />
+													<?php echo @$store_details->address2 ? $store_details->address2.'<br />' : ''; ?>
+													<?php echo @$store_details->city.', '.@$store_details->state.' '.@$store_details->zipcode; ?> <br />
+													<?php echo @$store_details->country; ?> <br />
+													<?php echo @$store_details->telephone; ?> <br />
+													ATTN: <?php echo @$store_details->fname ? $store_details->fname.' '.@$store_details->lname : ''; ?> <?php echo @$store_details->email ? '('.safe_mailto($store_details->email).')': ''; ?>
                                                 </p>
 
                                             </div>
