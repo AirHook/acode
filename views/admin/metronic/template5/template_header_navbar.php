@@ -783,14 +783,14 @@
                                                     <a href="<?php echo site_url('admin/users/sales'); ?>">
                                                         List Sales Users </a>
                                                 </li>
-                                                <?php
-                                                // available only on hub sites for now
-                                                if ($this->webspace_details->options['site_type'] == 'hub_site')
-                                                { ?>
                                                 <li class="<?php echo $this->uri->uri_string() == 'admin/users/sales/add' ? 'active' : ''; ?>">
                                                     <a href="<?php echo site_url('admin/users/sales/add'); ?>">
                                                         Add New Sales User </a>
                                                 </li>
+                                                <?php
+                                                // available only on hub sites for now
+                                                if ($this->webspace_details->options['site_type'] == 'hub_site')
+                                                { ?>
                                                 <li class="<?php echo $this->uri->uri_string() == 'admin/users/sales/csv' ? 'active' : ''; ?>">
                                                     <a href="<?php echo site_url('admin/users/sales/csv'); ?>">
                                                         CSV Manage Sales User </a>
@@ -808,14 +808,14 @@
                                                     <a href="<?php echo site_url('admin/users/vendor'); ?>">
                                                         List Vendor Users </a>
                                                 </li>
-                                                <?php
-                                                // available only on hub sites for now
-                                                if ($this->webspace_details->options['site_type'] == 'hub_site')
-                                                { ?>
                                                 <li class="<?php echo $this->uri->uri_string() == 'admin/users/vendor/add' ? 'active' : ''; ?>">
                                                     <a href="<?php echo site_url('admin/users/vendor/add'); ?>">
                                                         Add New Vendor User </a>
                                                 </li>
+                                                <?php
+                                                // available only on hub sites for now
+                                                if ($this->webspace_details->options['site_type'] == 'hub_site')
+                                                { ?>
                                                 <li class="<?php echo $this->uri->uri_string() == 'admin/users/vendor/types' ? 'active' : ''; ?>">
                                                     <a href="<?php echo site_url('admin/users/vendor/types'); ?>">
                                                         Manage Vendor Types </a>
@@ -837,15 +837,10 @@
                                                     <a href="<?php echo site_url('admin/users/wholesale'); ?>">
                                                         List Wholesale Users </a>
                                                 </li>
-                                                <?php
-                                                // available only on hub sites for now
-                                                if ($this->webspace_details->options['site_type'] == 'hub_site')
-                                                { ?>
                                                 <li class="<?php echo $this->uri->uri_string() == 'admin/users/wholesale/add' ? 'active' : ''; ?>">
                                                     <a href="<?php echo site_url('admin/users/wholesale/add'); ?>">
                                                         Add New Wholesale User </a>
                                                 </li>
-                                                <?php } ?>
                                             </ul>
                                         </li>
 

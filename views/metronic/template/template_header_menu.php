@@ -590,6 +590,7 @@
 
                                         <?php if (
                                             $this->webspace_details->slug != 'tempoparis'
+                                            && $this->session->user_cat != 'wholesale'
                                         )
                                         { ?>
 

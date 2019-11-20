@@ -61,12 +61,12 @@
 
 															<p>
 															<?php
-															echo $this->order_details->firstname.' '.$this->order_details->lastname.'<br />';
-															echo $this->order_details->ship_address1;
-															echo $this->order_details->ship_address2 ? '<br />'.$this->order_details->sh_address2.'<br />' : '<br />';
-															echo $this->order_details->ship_city.($this->order_details->ship_state != 'Other' ? ', '.$this->order_details->ship_state.' ' : ' ').$this->order_details->ship_zipcode.'<br />';
-															echo $this->order_details->ship_country.'<br />';
-															echo $this->order_details->telephone.'<br />';
+															echo @$this->order_details->firstname.' '.$this->order_details->lastname.'<br />';
+															echo @$this->order_details->ship_address1;
+															echo @$this->order_details->ship_address2 ? '<br />'.@$this->order_details->sh_address2.'<br />' : '<br />';
+															echo @$this->order_details->ship_city.(@$this->order_details->ship_state != 'Other' ? ', '.$this->order_details->ship_state.' ' : ' ').@$this->order_details->ship_zipcode.'<br />';
+															echo @$this->order_details->ship_country.'<br />';
+															echo @$this->order_details->telephone.'<br />';
 															?>
 															</p>
 

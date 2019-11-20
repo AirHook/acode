@@ -44,6 +44,10 @@ class Edit extends Admin_Controller {
 			redirect($this->config->slash_item('admin_folder').'users/wholesale');
 		}
 
+		//echo '<pre>';
+		//print_r($this->input->post());
+		//die();
+
 		// generate the plugin scripts and css
 		$this->_create_plugin_scripts();
 
@@ -71,8 +75,13 @@ class Edit extends Admin_Controller {
 		$this->form_validation->set_rules('country', 'Country', 'required');
 		$this->form_validation->set_rules('zipcode', 'Zip Code', 'trim|required');
 
-		$this->form_validation->set_rules('pword', 'Password', 'trim');
-		$this->form_validation->set_rules('passconf', 'Confirm Password', 'trim|matches[pword]');
+		// at edit page, once original pass is changed, passconf will show to confirm
+		// any changes to pword, therefore, on passconf, we have to set below rules
+		if ($this->input->post('passconf'))
+		{
+			$this->form_validation->set_rules('pword', 'Password', 'trim');
+			$this->form_validation->set_rules('passconf', 'Confirm Password', 'trim|matches[pword]');
+		}
 
 		if ($this->form_validation->run() == FALSE)
 		{

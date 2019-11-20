@@ -121,11 +121,6 @@
                                     <?php echo $this->uri->segment(3) != 'retail' ? 'Show' : ''; ?> Retail Orders
                                 </a>
                             </li>
-							<li class="<?php echo $this->uri->segment(3) == 'by_desginer' ? 'active' : ''; ?>">
-								<a href="javascript:;" class="tooltips" data-original-title="Currently under construction">
-									Filter By Designer
-								</a>
-							</li>
 							<?php } ?>
                         </ul>
 
@@ -452,7 +447,7 @@
 							else
 							{ ?>
 
-							<tr><td colspan="11">No records found.</td></tr>
+							<tr><td colspan="12">No records found.</td></tr>
 
 								<?php
 							} ?>

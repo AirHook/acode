@@ -269,4 +269,80 @@ class Designers_list
 
 	// --------------------------------------------------------------------
 
+	/**
+	 * Get the designer slug using single param
+	 *
+	 * @return	string
+	 */
+	public function get_des_slug($param = array())
+	{
+		if (empty($param))
+		{
+			// nothing more to do...
+			return FALSE;
+		}
+
+		// select items
+		$this->DB->select('url_structure');
+
+		// where
+		$this->DB->where($param);
+
+		// get record
+		$query = $this->DB->get('designer');
+
+		//echo $this->DB->last_query(); die('<br />DIED');
+
+		if ($query->num_rows() == 0)
+		{
+			// nothing more to do...
+			return FALSE;
+		}
+		else
+		{
+			$row = $query->row();
+			return $row->url_structure;
+		}
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Get the designer slug using single param
+	 *
+	 * @return	string
+	 */
+	public function get_des_name($param = array())
+	{
+		if (empty($param))
+		{
+			// nothing more to do...
+			return FALSE;
+		}
+
+		// select items
+		$this->DB->select('designer');
+
+		// where
+		$this->DB->where($param);
+
+		// get record
+		$query = $this->DB->get('designer');
+
+		//echo $this->DB->last_query(); die('<br />DIED');
+
+		if ($query->num_rows() == 0)
+		{
+			// nothing more to do...
+			return FALSE;
+		}
+		else
+		{
+			$row = $query->row();
+			return $row->designer;
+		}
+	}
+
+	// --------------------------------------------------------------------
+
 }

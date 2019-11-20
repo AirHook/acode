@@ -34,7 +34,7 @@ class Suspended extends Admin_Controller {
 		// get data
 		if (@$this->webspace_details->options['site_type'] != 'hub_site')
 		{
-			$params['account_id'] = $this->webspace_details->account_id;
+			$params['webspace_id'] = $this->webspace_details->id;
 		}
 		$params['is_active'] = '2';
 		$this->data['users'] = $this->admin_users_list->select($params);

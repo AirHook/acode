@@ -111,12 +111,22 @@
 
 											<!-- BEGIN USER SIGNIN -->
 											<!-- DOC: One for tablet and desktop view, one for mobile view -->
+                                            <?php
+                                            if ($this->session->user_loggedin)
+                                            { ?>
+                                            <li class="dropdown dropdown-user dropdown-dark hidden-xs" style="margin-left:5px;margin-right:0px;">
+												<a href="<?php echo site_url('my_account/'.$this->session->user_cat.'/dashboard'); ?>" target="_blank" class="dropdown-toggle" >
+													<span class="username"> Welcome<?php echo $this->session->user_name ? ' '.$this->session->user_name.',' : ','; ?> My Account </span>
+												</a>
+											</li>
+                                                <?php
+                                            } ?>
 											<li class="dropdown dropdown-user dropdown-dark hidden-xs" style="margin-left:5px;margin-right:12px;">
 												<?php
 												if ($this->session->user_loggedin)
 												{ ?>
-												<a href="<?php echo site_url('account/logout'); ?>" class="dropdown-toggle" >
-													<span class="username"> Welcome, Log Out </span>
+                                                <a href="<?php echo site_url('account/logout'); ?>" class="dropdown-toggle" >
+													<span class="username"> Log Out </span>
 												</a>
 													<?php
 												}
@@ -129,10 +139,32 @@
 												} ?>
 											</li>
 											<li class="dropdown dropdown-user dropdown-dark dropdown-user-mobile hidden-sm hidden-md hidden-lg" style="">
-												<a href="<?php echo site_url('account'); ?>" class="dropdown-toggle" >
+                                                <?php
+												if ($this->session->user_loggedin)
+												{ ?>
+                                                <a href="<?php echo site_url('my_account/'.$this->session->user_cat.'/dashboard'); ?>" class="dropdown-toggle" >
+                                                    <span class="username" style="font-size:0.85em;line-height:1em;text-align:center;position:relative;bottom:2px;"> My<br>Acct </span>
+                                                </a>
+                                                    <?php
+                                                }
+                                                else
+                                                { ?>
+                                                <a href="<?php echo site_url('account'); ?>" class="dropdown-toggle" >
 													<span class="username" style="font-size:0.85em;line-height:1em;text-align:center;position:relative;bottom:2px;"> Sign In<br>/Register </span>
 												</a>
+                                                    <?php
+                                                } ?>
 											</li>
+                                            <?php
+                                            if ($this->session->user_loggedin)
+                                            { ?>
+                                            <li class="dropdown dropdown-user dropdown-dark dropdown-user-mobile hidden-sm hidden-md hidden-lg" style="">
+                                                <a href="<?php echo site_url('account/logout'); ?>" class="dropdown-toggle" >
+                                                    <span class="username" style="font-size:0.85em;line-height:1em;text-align:center;position:relative;bottom:2px;"> Log<br>out </span>
+                                                </a>
+											</li>
+                                                <?php
+                                            } ?>
 											<!-- END USER SIGNIN -->
 
 											<!-- BEGIN HEADER SEARCH BOX -->

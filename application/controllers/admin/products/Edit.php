@@ -267,6 +267,7 @@ class Edit extends Admin_Controller {
 		if ($this->input->post('events')) $post_ary['events'] = strtoupper(implode('-', $this->input->post('events')));
 		if ($this->input->post('materials')) $post_ary['materials'] = strtoupper(implode('-', $this->input->post('materials')));
 		if ($this->input->post('trends')) $post_ary['trends'] = strtoupper(implode('-', $this->input->post('trends')));
+		if ($this->input->post('seasons')) $post_ary['seasons'] = strtoupper(implode('-', $this->input->post('seasons')));
 
 		// unset unnecessary variables
 		unset($post_ary['publish_at_hub']);

@@ -82,7 +82,10 @@
                             </li>
                             <?php
                             // available only on hub sites for now
-                            if ($this->webspace_details->options['site_type'] == 'hub_site')
+                            if (
+                                $this->webspace_details->options['site_type'] == 'hub_site'
+                                OR $this->webspace_details->slug == 'tempoparis'
+                            )
                             { ?>
                             <li>
                                 <a href="<?php echo site_url('admin/users/vendor/add'); ?>">

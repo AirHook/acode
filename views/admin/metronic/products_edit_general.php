@@ -121,19 +121,6 @@
 															-->
 	                                                        </div>
 
-															<select class="bs-select form-control selectpicker hide" id="size_mode" name="size_mode">
-																<option value="1" <?php echo $this->product_details->size_mode == '1' ? 'selected="selected"' : ''; ?>>
-																	Mode A: 0,2,4,6,8,10,...,22</option>
-																<option value="0" <?php echo $this->product_details->size_mode == '0' ? 'selected="selected"' : ''; ?>>
-																	Mode B: S,M,L,XL,XXL</option>
-																<option value="2" <?php echo $this->product_details->size_mode == '2' ? 'selected="selected"' : ''; ?>>
-																	Mode C: Pre-packed (1S-2M-2L-1XL)</option>
-															</select>
-															<?php if ($this->webspace_details->options['site_type'] == 'hub_site') { ?>
-															<cite class="help-block small">This is also updated at the designer's webspace option.</cite>
-															<?php } else { ?>
-															<cite class="help-block small">This is also updated at the settings option.</cite>
-															<?php } ?>
 														</div>
 													</div>
 													<div class="form-group">

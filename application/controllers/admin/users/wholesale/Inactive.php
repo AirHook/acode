@@ -67,7 +67,7 @@ class Inactive extends Admin_Controller {
 		}
 		else $this->data['users'] = $this->wholesale_users_list->select(
 			array('tbluser_data_wholesale.is_active'=>'0'),
-			array(),
+			array('create_date'=>'desc'),
 			array($this->data['offset'], $this->data['limit'])
 		);
 		$this->data['record_sets'] = $this->data['count_all'] / $this->data['limit'];

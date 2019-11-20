@@ -166,7 +166,7 @@ class Wholesale_activation_email_sending
 			}
 			else
 			{
-				$sendby = @$this->CI->webspace_details->options['email_send_by'] ?: 'mailgun'; // options: mailgun, default (CI native emailer)
+				$sendby = @$this->CI->webspace_details->options['email_send_by'] ?: 'default'; // options: mailgun, default (CI native emailer)
 
 				if ($sendby == 'mailgun')
 				{

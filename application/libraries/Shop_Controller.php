@@ -258,6 +258,11 @@ class Shop_Controller extends Frontend_Controller {
             // setting condition to prod_id = '0' make query result to zero
             $where['tbl_product.prod_id'] = '0';
         }
+        if ($this->session->userdata('user_cat') == 'wholesale')
+        {
+            // don't show clearance items
+            $where['tbl_stock.custom_order !='] = '3';
+        }
 
 		// get the products list and total count based on parameters
 		$params['wholesale'] = $this->session->userdata('user_cat') == 'wholesale' ? TRUE : FALSE;

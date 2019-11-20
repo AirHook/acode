@@ -562,6 +562,7 @@ class Wholesale_user_details
 					'user_loggedin'				=> TRUE,
 					'user_id'					=> $this->user_id,
 					'user_cat'					=> 'wholesale',
+					'user_name'					=> $this->fname,
 					'ws_last_active_time'		=> time()
 				);
 				$this->CI->session->set_userdata($sesdata);
@@ -572,6 +573,7 @@ class Wholesale_user_details
 				$_SESSION['user_loggedin'] = TRUE;
 				$_SESSION['user_id'] = $this->user_id;
 				$_SESSION['user_cat'] = 'wholesale';
+				$_SESSION['user_name'] = $this->fname;
 				$_SESSION['ws_last_active_time'] = time();
 			}
 		}
@@ -593,6 +595,7 @@ class Wholesale_user_details
 			if (isset($_SESSION['user_loggedin'])) unset($_SESSION['user_loggedin']);
 			if (isset($_SESSION['user_id'])) unset($_SESSION['user_id']);
 			if (isset($_SESSION['user_cat'])) unset($_SESSION['user_cat']);
+			if (isset($_SESSION['user_name'])) unset($_SESSION['user_name']);
 			if (isset($_SESSION['this_login_id'])) unset($_SESSION['this_login_id']);
 			if (isset($_SESSION['ws_last_active_time'])) unset($_SESSION['ws_last_active_time']);
 
