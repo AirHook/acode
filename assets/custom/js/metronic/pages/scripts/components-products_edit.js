@@ -184,18 +184,19 @@ var ComponentsProductEdit = function () {
 		// stock passing of data to modal
 		$('.modal_stocks').on('click', function() {
 			var el = $(this);
-			var id = el.data('id');
+			var st_id = el.data('st_id');
 			var color_name = el.data('color_name');
-			$('#st_id').val(id);
+			$('#st_id').val(st_id);
 			$('#color_name').val(color_name);
 			var sizeMode = el.data('size_mode');
 			var stocks = el.data('stocks');
-			var stocksArray = stocks.split(',');
 			if (sizeMode == '1') {
+                var stocksArray = stocks.split(',');
 				stocksArray.forEach(function(item, index){
 					$('#size_' + (index * 2)).val(item);
 				});
 			} else if (sizeMode == '0') {
+                var stocksArray = stocks.split(',');
 				stocksArray.forEach(function(item, index){
 					switch (index) {
 						case 0: var size = 'size_ss'; break;
@@ -203,12 +204,22 @@ var ComponentsProductEdit = function () {
 						case 2: var size = 'size_sl'; break;
 						case 3: var size = 'size_sxl'; break;
 						case 4: var size = 'size_sxxl'; break;
-						case 5: var size = 'size_ssm'; break;
-						case 6: var size = 'size_sml'; break;
-						case 7: var size = 'size_sonesizefitsall';
 					}
 					$('#' + size).val(item);
 				});
+            } else if (sizeMode == '2') {
+                $('#size_sprepack1221').val(stocks);
+            } else if (sizeMode == '3') {
+                var stocksArray = stocks.split(',');
+				stocksArray.forEach(function(item, index){
+					switch (index) {
+						case 0: var size = 'size_ssm'; break;
+						case 1: var size = 'size_sml'; break;
+					}
+					$('#' + size).val(item);
+				});
+            } else if (sizeMode == '4') {
+                $('#size_sonesizefitsall').val(stocks);
 			}
 		});
 

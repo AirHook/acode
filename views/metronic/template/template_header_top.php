@@ -115,7 +115,7 @@
                                             if ($this->session->user_loggedin)
                                             { ?>
                                             <li class="dropdown dropdown-user dropdown-dark hidden-xs" style="margin-left:5px;margin-right:0px;">
-												<a href="<?php echo site_url('my_account/'.$this->session->user_cat.'/dashboard'); ?>" target="_blank" class="dropdown-toggle" >
+												<a href="<?php echo site_url('my_account/'.$this->session->user_cat.'/dashboard'); ?>" class="dropdown-toggle" >
 													<span class="username"> Welcome<?php echo $this->session->user_name ? ' '.$this->session->user_name.',' : ','; ?> My Account </span>
 												</a>
 											</li>

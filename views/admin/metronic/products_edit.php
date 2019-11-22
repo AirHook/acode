@@ -388,75 +388,50 @@
 								</div>
 								<div class="modal-body" style="text-align:center;">
 
-										<input type="hidden" id="st_id" name="st_id" value="" />
-										<input type="hidden" id="color_name" name="color_name" value="" />
-										<input type="hidden" name="prod_no" value="<?php echo $this->product_details->prod_no; ?>" />
-										<input type="hidden" name="prod_id" value="<?php echo $this->product_details->prod_id; ?>" />
-										<input type="hidden" name="designer_slug" value="<?php echo $this->product_details->d_url_structure; ?>" />
+									<input type="hidden" id="st_id" name="st_id" value="" />
+									<input type="hidden" id="color_name" name="color_name" value="" />
+									<input type="hidden" name="prod_no" value="<?php echo $this->product_details->prod_no; ?>" />
+									<input type="hidden" name="prod_id" value="<?php echo $this->product_details->prod_id; ?>" />
+									<input type="hidden" name="designer_slug" value="<?php echo $this->product_details->d_url_structure; ?>" />
 
-										<table data-toggle="table" data-card-view="true" style="margin:0 auto;">
-											<thead>
-												<tr>
-													<?php if ($this->product_details->size_mode == '1') { ?>
-													<th colspan="12">
-														Size
-													</th>
-													<?php } ?>
-													<?php if ($this->product_details->size_mode == '0') { ?>
-													<th colspan="5">
-														Size
-													</th>
-													<?php } ?>
-												</tr>
-												<tr>
-													<?php if ($this->product_details->size_mode == '1') { ?>
-													<th> 0 </th>
-													<th> 2 </th>
-													<th> 4 </th>
-													<th> 6 </th>
-													<th> 8 </th>
-													<th> 10 </th>
-													<th> 12 </th>
-													<th> 14 </th>
-													<th> 16 </th>
-													<th> 18 </th>
-													<th> 20 </th>
-													<th> 22 </th>
-													<?php } ?>
-													<?php if ($this->product_details->size_mode == '0') { ?>
-													<th> S </th>
-													<th> M </th>
-													<th> L </th>
-													<th> XL </th>
-													<th> XXL </th>
-													<?php } ?>
-												</tr>
-											</thead>
-											<tbody>
-												<tr>
-													<?php if ($this->product_details->size_mode == '1') { ?>
-													<td> <input type="text" size="2" id="size_0" name="size_0" value="" /></td>
-													<td> <input type="text" size="2" id="size_2" name="size_2" value="" /></td>
-													<td> <input type="text" size="2" id="size_4" name="size_4" value="" /></td>
-													<td> <input type="text" size="2" id="size_6" name="size_6" value="" /></td>
-													<td> <input type="text" size="2" id="size_8" name="size_8" value="" /></td>
-													<td> <input type="text" size="2" id="size_10" name="size_10" value="" /></td>
-													<td> <input type="text" size="2" id="size_12" name="size_12" value="" /></td>
-													<td> <input type="text" size="2" id="size_14" name="size_14" value="" /></td>
-													<td> <input type="text" size="2" id="size_16" name="size_16" value="" /></td>
-													<td> <input type="text" size="2" id="size_18" name="size_18" value="" /></td>
-													<td> <input type="text" size="2" id="size_20" name="size_20" value="" /></td>
-													<td> <input type="text" size="2" id="size_22" name="size_22" value="" /></td>
-													<?php } ?>
-													<?php if ($this->product_details->size_mode == '0') { ?>
-													<td> <input type="text" size="2" id="size_ss" name="size_ss" value="" /></td>
-													<td> <input type="text" size="2" id="size_sm" name="size_sm" value="" /></td>
-													<td> <input type="text" size="2" id="size_sl" name="size_sl" value="" /></td>
-													<td> <input type="text" size="2" id="size_sxl" name="size_sxl" value="" /></td>
-													<td> <input type="text" size="2" id="size_sxxl" name="size_sxxl" value="" /></td>
-													<?php } ?>
-												</tr>
-										</table>
+									<table data-toggle="table" data-card-view="true" style="margin:0 auto;">
+
+										<thead>
+											<?php $size_cnt = count($size_names); ?>
+											<tr>
+												<th colspan="<?php echo $size_cnt; ?>">
+													Size
+												</th>
+											</tr>
+
+											<tr>
+												<?php
+												foreach ($size_names as $size_label => $s)
+												{ ?>
+
+												<th> <?php echo $s; ?> </th>
+
+													<?php
+												} ?>
+											</tr>
+										</thead>
+
+										<tbody>
+											<tr>
+
+												<?php
+												foreach ($size_names as $size_label => $s)
+												{ ?>
+
+												<td> <input type="text" size="2" id="<?php echo $size_label; ?>" name="<?php echo $size_label; ?>" value="" /> </td>
+
+													<?php
+												} ?>
+
+											</tr>
+										</tbody>
+
+									</table>
 
 								</div>
 								<div class="modal-footer">

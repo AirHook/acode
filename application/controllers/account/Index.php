@@ -121,13 +121,14 @@ class Index extends Frontend_Controller {
 				// notify admin
 				$this->wholesale_user_details->notify_admin_user_online();
 			}
-
+			
 			// redirect user to account page
 			// since account page is under construction,
 			// let's send user to reference designer categories or general womens_apparel
-			if ($this->wholesale_user_details->reference_designer)
-				redirect('shop/designers/'.$this->wholesale_user_details->reference_designer);
-			else redirect('shop/womens_apparel');
+			$ref_designer = $this->wholesale_user_details->reference_designer;
+			if ($ref_designer && $ref_designer!='shop7thavenue')
+				redirect('shop/designers/'.$ref_designer);
+			else redirect('shop/designers');
 		}
 	}
 

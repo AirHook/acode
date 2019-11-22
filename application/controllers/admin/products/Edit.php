@@ -60,6 +60,7 @@ class Edit extends Admin_Controller {
 		$this->load->library('categories/categories_tree');
 		$this->load->library('users/vendor_users_list');
 		$this->load->library('color_list');
+		$this->load->library('products/size_names');
 		$this->load->library('form_validation');
 		$this->load->library('facet_list');
 		$this->load->library('zend');
@@ -82,6 +83,14 @@ class Edit extends Admin_Controller {
 			redirect($this->config->slash_item('admin_folder').'products');
 		}
 
+		// get size names
+		// for now, the following sizes are not used anymore XL1 and XL2 (size_sxl1 and size_sxl2)
+		$size_names = $this->size_names->get_size_names($this->product_details->size_mode);
+		unset($size_names['size_sxl1']);
+		unset($size_names['size_sxl2']);
+		$this->data['size_names'] = $size_names;
+
+		// set some active parameters
 		$this->session->set_userdata('active_designer', $this->product_details->d_url_structure);
 		$this->session->set_userdata('active_category', array_slice($this->product_details->categories, -1));
 

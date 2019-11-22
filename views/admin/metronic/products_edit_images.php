@@ -439,7 +439,7 @@
 																			<span class="caption-subject uppercase"> Edit Stock </span>
 																		</div>
 
-																		<?php if ($this->product_details->size_mode == '2')
+																		<?php if ($this->product_details->size_mode == '2_')
 																		{ ?>
 
 																		<div class="actions">
@@ -449,75 +449,67 @@
 																			<?php
 																		}
 																		else
-																		{ ?>
+																		{
+																			$size_ary = array();
+																			$size_assoc_ary = array();
+																			foreach ($size_names as $size_label => $s)
+																			{
+																				array_push($size_ary, $color->$size_label);
+																				$size_assoc_ary[$size_label] = $color->$size_label;
+																			}
+																			$size_csv = implode(',',$size_ary);
+																			$size_json = json_encode($size_assoc_ary);
+																			?>
 
 																		<div class="actions">
-																			<a id="modal_stocks-<?php echo $color->st_id; ?>" data-toggle="modal" href="#update_stock" class="modal_stocks btn btn-default btn-sm" data-stocks="<?php echo $this->product_details->size_mode == '1' ? $color->size_0.','.$color->size_2.','.$color->size_4.','.$color->size_6.','.$color->size_8.','.$color->size_10.','.$color->size_12.','.$color->size_14.','.$color->size_16.','.$color->size_18.','.$color->size_20.','.$color->size_22 : $color->size_ss.','.$color->size_sm.','.$color->size_sl.','.$color->size_sxl.','.$color->size_sxxl; ?>" data-id="<?php echo $color->st_id; ?>" data-size_mode="<?php echo $this->product_details->size_mode; ?>" data-color_name="<?php echo $color->color_name; ?>">
+																			<a id="modal_stocks-<?php echo $color->st_id; ?>" data-toggle="modal" href="#update_stock" class="modal_stocks btn btn-default btn-sm" data-stocks="<?php echo $size_csv; ?>" data-size_mode="<?php echo $this->product_details->size_mode; ?>" data-color_name="<?php echo $color->color_name; ?>" data-st_id="<?php echo $color->st_id; ?>">
 																				<i class="fa fa-pencil"></i> Edit stocks... </a>
 																			<a href="#barcode-<?php echo $this->product_details->prod_no.'_'.$color->color_code; ?>" data-toggle="modal" class="btn dark btn-sm">Print Barcode Labels</a>
 																		</div>
 
-																		<table class="table table-bordered table-striped table-hover">
+																		<table class=" table-bordered table-striped table-hover">
 																			<thead>
 																				<tr>
-																					<?php if ($this->product_details->size_mode == '1') { ?>
-																					<th colspan="12">
-																						Size
-																					</th>
-																					<?php } ?>
-																					<?php if ($this->product_details->size_mode == '0') { ?>
-																					<th colspan="5">
-																						Size
-																					</th>
-																					<?php } ?>
-																				</tr>
-																				<tr>
-																					<?php if ($this->product_details->size_mode == '1') { ?>
-																					<th> 0 </th>
-																					<th> 2 </th>
-																					<th> 4 </th>
-																					<th> 6 </th>
-																					<th> 8 </th>
-																					<th> 10 </th>
-																					<th> 12 </th>
-																					<th> 14 </th>
-																					<th> 16 </th>
-																					<th> 18 </th>
-																					<th> 20 </th>
-																					<th> 22 </th>
-																					<?php } ?>
-																					<?php if ($this->product_details->size_mode == '0') { ?>
-																					<th> S </th>
-																					<th> M </th>
-																					<th> L </th>
-																					<th> XL </th>
-																					<th> XXL </th>
-																					<?php } ?>
+																					<?php $size_cnt = count($size_names); ?>
+																					<tr>
+																						<th colspan="<?php echo $size_cnt; ?>">
+																							Size
+																						</th>
+																					</tr>
+
+																					<tr>
+																						<?php
+																						foreach ($size_names as $size_label => $s)
+																						{
+																							if (
+																								$this->product_details->size_mode == '2'
+																								OR $this->product_details->size_mode == '4'
+																							)
+																							{
+																								$th_width = 'width:150px;';
+																							}
+																							else $th_width = 'width:70px;';
+																							?>
+
+																						<th style="font-weight:600;padding:8px;<?php echo $th_width; ?>"> <?php echo $s; ?> </th>
+
+																							<?php
+																						} ?>
+																					</tr>
 																				</tr>
 																			</thead>
 																			<tbody>
 																				<tr>
-																					<?php if ($this->product_details->size_mode == '1') { ?>
-																					<td style="padding:5px;text-align:center;"><small> <?php echo $color->size_0; ?> </small></td>
-																					<td style="padding:5px;text-align:center;"><small> <?php echo $color->size_2; ?> </small></td>
-																					<td style="padding:5px;text-align:center;"><small> <?php echo $color->size_4; ?> </small></td>
-																					<td style="padding:5px;text-align:center;"><small> <?php echo $color->size_6; ?> </small></td>
-																					<td style="padding:5px;text-align:center;"><small> <?php echo $color->size_8; ?> </small></td>
-																					<td style="padding:5px;text-align:center;"><small> <?php echo $color->size_10; ?> </small></td>
-																					<td style="padding:5px;text-align:center;"><small> <?php echo $color->size_12; ?> </small></td>
-																					<td style="padding:5px;text-align:center;"><small> <?php echo $color->size_14; ?> </small></td>
-																					<td style="padding:5px;text-align:center;"><small> <?php echo $color->size_16; ?> </small></td>
-																					<td style="padding:5px;text-align:center;"><small> <?php echo $color->size_18; ?> </small></td>
-																					<td style="padding:5px;text-align:center;"><small> <?php echo $color->size_20; ?> </small></td>
-																					<td style="padding:5px;text-align:center;"><small> <?php echo $color->size_22; ?> </small></td>
-																					<?php } ?>
-																					<?php if ($this->product_details->size_mode == '0') { ?>
-																					<td style="padding:5px;text-align:center;"><small> <?php echo $color->size_ss; ?> </small></td>
-																					<td style="padding:5px;text-align:center;"><small> <?php echo $color->size_sm; ?> </small></td>
-																					<td style="padding:5px;text-align:center;"><small> <?php echo $color->size_sl; ?> </small></td>
-																					<td style="padding:5px;text-align:center;"><small> <?php echo $color->size_sxl; ?> </small></td>
-																					<td style="padding:5px;text-align:center;"><small> <?php echo $color->size_sxxl; ?> </small></td>
-																					<?php } ?>
+
+																					<?php
+																					foreach ($size_names as $size_label => $s)
+																					{ ?>
+
+																					<td style="padding:5px;text-align:center;"><small> <?php echo $color->$size_label; ?> </small></td>
+
+																						<?php
+																					} ?>
+
 																				</tr>
 																		</table>
 
@@ -555,6 +547,7 @@
 																		</div>
 																	</div>
 																</div>
+
 															</div>
 														</div>
 													</div>

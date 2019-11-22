@@ -56,7 +56,8 @@ class Update_stocks extends Admin_Controller {
 		$DB->update('tbl_stock_physical');
 
 		// set flash data
-		$this->session->set_flashdata('stock_udpated', TRUE);
+		$this->session->set_flashdata('stock_updated', TRUE);
+		$this->session->set_flashdata('success', 'edit');
 
 		// redirect user
 		redirect($this->config->slash_item('admin_folder').'products/edit/index/'.$prod_id, 'location');
