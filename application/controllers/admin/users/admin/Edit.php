@@ -58,9 +58,9 @@ class Edit extends Admin_Controller {
 		$this->form_validation->set_rules('admin_email', 'Email', 'trim|required|callback_validate_email');
 		$this->form_validation->set_rules('access_level', 'Access Level', 'trim|required');
 
-		if ($this->input->post('admin_password'))
+		if ($this->input->post('change-password'))
 		{
-			$this->form_validation->set_rules('admin_password', 'Password', 'trim');
+			$this->form_validation->set_rules('admin_password', 'Password', 'trim|required');
 			$this->form_validation->set_rules('passconf', 'Confirm Password', 'trim|matches[admin_password]');
 		}
 
@@ -118,6 +118,7 @@ class Edit extends Admin_Controller {
 			if (@$post_ary['admin_password'] == '') unset($post_ary['admin_password']);
 			// unset unneeded variables
 			unset($post_ary['passconf']);
+			unset($post_ary['change-password']);
 
 			// update records
 			$this->DB->where('admin_id', $id);

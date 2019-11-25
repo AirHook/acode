@@ -81,6 +81,8 @@ class Admin_user_details
 	 * @var	string/boolean
 	 */
 	public $webspace_id = '';
+	public $webspace_slug = '';
+	public $webspace_name = '';
 
 	/**
 	 * Is Active
@@ -158,7 +160,10 @@ class Admin_user_details
 		$this->DB = $this->CI->load->database('instyle', TRUE);
 
 		// get recrods
+		$this->DB->select('tbladmin.*');
+		$this->DB->select('webspaces.webspace_slug, webspaces.webspace_name');
 		$this->DB->where($params);
+		$this->DB->join('webspaces', 'webspaces.webspace_id = tbladmin.webspace_id', 'left');
 		$query = $this->DB->get('tbladmin');
 
 		$row = $query->row();
@@ -176,6 +181,8 @@ class Admin_user_details
 			$this->status = $row->is_active;
 			$this->access_level = $row->access_level;
 			$this->webspace_id = $row->webspace_id;
+			$this->webspace_slug = $row->webspace_slug;
+			$this->webspace_name = $row->webspace_name;
 
 			return $this;
 		}
@@ -292,6 +299,8 @@ class Admin_user_details
 		$this->status = '';
 		$this->access_level = '';
 		$this->webspace_id = '';
+		$this->webspace_slug = '';
+		$this->webspace_name = '';
 	}
 
 	// --------------------------------------------------------------------

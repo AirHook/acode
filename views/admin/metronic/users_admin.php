@@ -1,3 +1,47 @@
+                    <?php if ($this->webspace_details->options['site_type'] == 'hub_site')
+                    { ?>
+
+                    <div class="table-toolbar">
+
+                        <div class="row">
+
+                            <div class="col-lg-3 col-md-4">
+                                <select class="bs-select form-control" id="filter_by_designer_select" name="des_slug" data-live-search="true" data-size="5" data-show-subtext="true">
+                                    <option class="option-placeholder" value="">Select Designer...</option>
+                                    <option value="all">All Admins</option>
+                                    <?php if ($this->webspace_details->options['site_type'] == 'hub_site') { ?>
+                                    <option value="<?php echo $this->webspace_details->slug; ?>" data-subtext="<em></em>" data-des_slug="<?php echo $this->webspace_details->slug; ?>" data-des_id="<?php echo $this->webspace_details->id; ?>" <?php echo $this->webspace_details->slug === @$des_slug ? 'selected="selected"' : ''; ?>>
+                                        <?php echo $this->webspace_details->name; ?>
+                                    </options>
+                                    <?php } ?>
+                                    <?php
+                                    if (@$designers)
+                                    {
+                                        foreach ($designers as $designer)
+                                        {
+                                            if ($this->webspace_details->slug != $designer->url_structure)
+                                            { ?>
+
+                                    <option value="<?php echo $designer->url_structure; ?>" data-subtext="<em></em>" data-des_slug="<?php echo $designer->url_structure; ?>" data-des_id="<?php echo $designer->des_id; ?>" <?php echo $designer->url_structure === @$des_slug ? 'selected="selected"' : ''; ?>>
+                                        <?php echo ucwords(strtolower($designer->designer)); ?>
+                                    </option>
+
+                                                <?php
+                                            }
+                                        }
+                                    } ?>
+                                </select>
+                            </div>
+                            <button class="apply_filer_by_designer btn dark hidden-sm hidden-xs" data-page_param="<?php echo $this->uri->segment(4); ?>"> Filter </button>
+
+                        </div>
+                        <button class="apply_filer_by_designer btn dark btn-block margin-top-10 hidden-lg hidden-md" data-page_param="<?php echo $this->uri->segment(4); ?>"> Filter </button>
+
+                    </div>
+
+                        <?php
+                    } ?>
+
                     <!-- BEGIN FORM-->
                     <!-- FORM =======================================================================-->
                     <?php echo form_open($this->config->slash_item('admin_folder').'users/admin/bulk_actions', array('class'=>'form-horizontal', 'id'=>'form-admin_users_bulk_actions')); ?>
@@ -102,6 +146,23 @@
                         <button class="btn green btn-block margin-top-10 hidden-lg hidden-md" id="apply_bulk_actions" data-toggle="modal" href="#confirm_bulk_actions" disabled> Apply </button>
 
                     </div>
+
+                    <?php
+                    /***********
+                     * Top Pagination
+                     */
+                    ?>
+                    <?php if ( ! @$search) { ?>
+                    <div class="row margin-bottom-10">
+                        <div class="col-md-12 text-justify pull-right">
+                            <span style="<?php echo $this->pagination->create_links() ? 'position:relative;top:15px;' : ''; ?>">
+                                Showing <?php echo ($limit * $page) - ($limit - 1); ?> to <?php echo $count_all < ($limit * $page) ? $count_all : $limit * $page; ?> of about <?php echo number_format($count_all); ?> records
+                            </span>
+                            <?php echo $this->pagination->create_links(); ?>
+                        </div>
+                    </div>
+                    <?php } ?>
+
                     <?php
                     /*********
                      * This style a fix to the dropdown menu inside table-responsive table-scrollable
@@ -116,21 +177,24 @@
                             position: relative;
                         }
                     </style>
-                    <table class="table table-striped table-bordered table-hover table-checkable order-column" id="tbl-admin_users">
+                    <table class="table table-striped table-bordered table-hover table-checkable order-column" id="tbl-admin_users_">
                         <thead>
                             <tr>
-                                <th class="hidden-xs hidden-sm"> <!-- counter --> </th>
-                                <th class="text-center">
+                                <th class="hidden-xs hidden-sm" style="width:30px;"> <!-- counter --> </th>
+                                <th class="text-center" style="width:30px;">
                                     <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
-                                        <input type="checkbox" id="heading_checkbox" class="group-checkable" data-set="#tbl-admin_users .checkboxes" />
+                                        <input type="checkbox" id="heading_checkbox" class="group-checkable" data-set="#tbl-admin_users_ .checkboxes" />
                                         <span></span>
                                     </label>
                                 </th>
                                 <th> Username </th>
                                 <th> Email </th>
-                                <th> Status </th>
-                                <th> Access Level </th>
-                                <th> Actions </th>
+                                <?php if ($this->webspace_details->options['site_type'] == 'hub_site') { ?>
+                                <th> Reference Designer </th>
+                                <?php } ?>
+                                <th style="width:100px;"> Status </th>
+                                <th style="width:100px;"> Access Level </th>
+                                <th style="width:100px;"> Actions </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -169,6 +233,9 @@
                                     &nbsp; &nbsp;
                                     <a class="hidden_first_edit_link" style="display:none;" href="<?php echo site_url($this->config->slash_item('admin_folder').'users/admin/edit/index/'.$user->admin_id); ?>"><small><cite>edit</cite></small></a>
                                 </td>
+                                <?php if ($this->webspace_details->options['site_type'] == 'hub_site') { ?>
+                                <td> <?php echo @$user->webspace_name; ?> </td>
+                                <?php } ?>
                                 <td>
                                     <?php if ($user->is_active == '1') { ?>
                                     <span class="label label-sm label-success"> Active </span>
@@ -309,7 +376,7 @@
                             { ?>
 
                             <tr class="odd gradeX">
-                                <td colspan="7">No recods found.</td>
+                                <td colspan="<?php echo $this->webspace_details->options['site_type'] == 'hub_site' ? '8' : '7'; ?>">No recods found.</td>
                             </tr>
 
                             <?php
@@ -317,6 +384,22 @@
 
                         </tbody>
                     </table>
+
+                    <?php
+                    /***********
+                     * Bottom Pagination
+                     */
+                    ?>
+                    <?php if ( ! $search) { ?>
+                    <div class="row margin-bottom-10">
+                        <div class="col-md-12 text-justify pull-right">
+                            <span>
+                                Showing <?php echo ($limit * $page) - ($limit - 1); ?> to <?php echo $count_all < ($limit * $page) ? $count_all : $limit * $page; ?> of about <?php echo number_format($count_all); ?> records
+                            </span>
+                            <?php echo $this->pagination->create_links(); ?>
+                        </div>
+                    </div>
+                    <?php } ?>
 
                     </form>
                     <!-- End FORM =======================================================================-->

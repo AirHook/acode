@@ -2,7 +2,7 @@ var FormValidation = function () {
 
     // basic validation
     var handleValidation1 = function() {
-        // for more info visit the official plugin documentation: 
+        // for more info visit the official plugin documentation:
 		// http://docs.jquery.com/Plugins/Validation
 
 		var form1 = $('#form-users_sales_edit');
@@ -13,22 +13,14 @@ var FormValidation = function () {
 			errorElement: 'span', //default input error message container
 			errorClass: 'help-block help-block-error', // default input error message class
 			focusInvalid: false, // do not focus the last invalid input
-			ignore: "",  // validate all fields including form hidden input
-			messages: {
-				access_level: {
-					valueNotEquals: "Please select an item"
-				},
-				admin_sales_designer: {
-					valueNotEquals: "Please select a Reference Designer"
-				}
-			},
+			ignore: ":not(:visible),:disabled",  // validate all fields including form hidden input
+
 			rules: {
 				is_active: {
 					required: true
 				},
-				admin_sales_designer: {
-					required: true,
-					valueNotEquals: ""
+                admin_sales_designer: {
+					required: true
 				},
 				admin_sales_email: {
 					required: true,
@@ -36,17 +28,13 @@ var FormValidation = function () {
 				},
 				access_level: {
 					required: true,
-					valueNotEquals: ""
-				},
-				admin_sales_password: {
-					required: true
 				},
 				passconf: {
 					equalTo: "#admin_sales_password"
 				}
 			},
 
-			invalidHandler: function (event, validator) { //display error alert on form submit              
+			invalidHandler: function (event, validator) { //display error alert on form submit
 				success1.hide();
 				error1.show();
 				App.scrollTo(error1, -200);
@@ -81,9 +69,35 @@ var FormValidation = function () {
 				//success1.show();
 				error1.hide();
 				form.submit();
-				return false;
 			}
 		});
+
+		//apply validation on select2 dropdown value change, this only needed for chosen dropdown integration.
+		$('.bs-select', form1).change(function () {
+			form1.validate().element($(this)); //revalidate the chosen dropdown value and show error or success message for the input
+		});
+
+        //show password click function
+        $('.show-password').click(function(){
+            var checked = $(this).is(':checked');
+            if (checked) {
+                $('.input-password, .input-passconf').attr('type', 'text');
+            } else {
+                $('.input-password, .input-passconf').attr('type', 'password');
+            }
+        });
+
+        //change password click function
+        $('.change-password').click(function(){
+            var checked = $(this).is(':checked');
+            if (checked) {
+                $('.hide-password').show();
+                $('.input-password, .input-passconf').removeAttr('disabled');
+            } else {
+                $('.hide-password').hide();
+                $('.input-password, .input-passconf').addAttr('disabled');
+            }
+        });
     }
 
     return {

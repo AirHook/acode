@@ -156,7 +156,7 @@
                                     $edit_link =
                                         $this->uri->segment(1) === 'sales'
                                         ? site_url('sales/admin/edit/index/'.$user->admin_sales_id)
-                                        : site_url('admin/users/admin/edit/index/'.$user->admin_sales_id)
+                                        : site_url('admin/users/sales/edit/index/'.$user->admin_sales_id)
                                     ; ?>
 
                             <tr class="odd gradeX " onmouseover="$(this).find('.hidden_first_edit_link').show();" onmouseout="$(this).find('.hidden_first_edit_link').hide();">

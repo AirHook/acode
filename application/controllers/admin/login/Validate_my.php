@@ -10,7 +10,7 @@ class Validate extends MY_Controller {
 		// lets check for status of webspace and account
 		$this->load->library('users/admin_user_details');
 		$this->load->library('users/vendor_user_details');
-		$this->load->library('users/wholesale_user_details');
+		$this->load->library('users/sales_user_details');
     }
 
 	// ----------------------------------------------------------------------
@@ -50,27 +50,36 @@ class Validate extends MY_Controller {
 				$this->session->unset_userdata('remember-at-admin');
 			}
 
+			// validate user
+			if (
+				! $this->_validate_admin()
+				&& ! $this->_validate_vendor()
+				&& ! $this->_validate_sales()
+			)
+			{
+				// set flash message
+				$this->session->set_flashdata('invalid', TRUE);
+
+				// redirect user back to login page
+				redirect($this->config->slash_item('admin_folder').'login');
+			}
+
 			if ($this->_validate_admin())
 			{
 				// send user to respective page...
 				redirect(($this->session->flashdata('access_uri') ?: $this->config->slash_item('admin_folder').'dashboard'));
 			}
-			elseif ($this->_validate_vendor())
+
+			if ($this->_validate_vendor())
 			{
 				// send user to respective page...
 				redirect(($this->session->flashdata('access_uri') ?: 'my_account/vendors/orders'));
 			}
-			elseif ($this->_validate_wholesale())
+
+			if ($this->_validate_sales())
 			{
 				// send user to respective page...
-				redirect(($this->session->flashdata('access_uri') ?: 'my_account/wholesale/orders'));
-			}
-			else
-			{
-				// set flash message
-				$this->session->set_flashdata('invalid', TRUE);
-				// redirect user back to login page
-				redirect($this->config->slash_item('admin_folder').'login');
+				redirect(($this->session->flashdata('access_uri') ?: 'my_account/sales'));
 			}
 		}
 	}
@@ -161,38 +170,38 @@ class Validate extends MY_Controller {
 
 		return TRUE;
 	}
-	
+
 	// ----------------------------------------------------------------------
 
-	private function _validate_wholesale()
+	private function _validate_sales()
 	{
-		// if user is not authenticated...
+		// if user it not authenticated...
 		if (
-			! $this->wholesale_user_details->initialize(
+			! $this->sales_user_details->initialize(
 				array(
-					'email' => $this->input->post('username'),
-					'pword' => $this->input->post('password')
+					'admin_sales_email' => $this->input->post('username'),
+					'admin_sales_password' => $this->input->post('password')
 				)
 			)
 		)
 		{
 			// invalid credentials
 			// destroy sales user session if any and reset class to initial state
-			$this->wholesale_user_details->unset_session();
-			$this->wholesale_user_details->set_initial_state();
+			$this->sales_user_details->unset_session();
+			$this->sales_user_details->set_initial_state();
 
 			return FALSE;
 		}
 
 		// set session data
-		// new feature using Admin User Details class
-		$this->wholesale_user_details->set_session();
+		$this->sales_user_details->set_session();
 
 		// set the session lapse time if it has not been set
-		if ( ! $this->session->userdata('wholesale_login_time'))
+		if ( ! $this->session->userdata('sales_login_time'))
 		{
-			$this->session->set_userdata('wholesale_login_time', @time());
+			$this->session->set_userdata('sales_login_time', @time());
 		}
+
 		// let us notify admin/dev of login
 		//if (ENVIRONMENT !== 'development')
 		//$this->_notify_admin();

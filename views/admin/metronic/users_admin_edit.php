@@ -71,8 +71,8 @@
                                 <label class="control-label col-md-3">Reference Designer
                                 </label>
                                 <div class="col-md-4">
-                                    <select class="form-control select2me" name="webspace_id">
-                                        <option value="" data-account_id="0">Select...</option>
+                                    <select class="form-control bs-select" name="webspace_id" data-live-search="true" data-size="5" data-show-subtext="true">
+                                        <option class="option-placeholder" value="0" data-account_id="0">Select...</option>
 
                                         <?php if ($designers)
                                         {
@@ -145,10 +145,10 @@
                             <hr />
                             <div class="form-group">
                                 <div class="col-md-offset-3 col-md-4">
-                                    <input type="checkbox" class="change-password" tabindex="-1" /> Change password
+                                    <input type="checkbox" class="change-password" name="change-password" value="1" tabindex="-1" /> Change password
                                 </div>
                             </div>
-                            <div class="form-group hide-password" style="display:none;">
+                            <div class="form-group hide-password display-none">
                                 <label class="control-label col-md-3">Password
                                 </label>
                                 <div class="col-md-4">
@@ -157,7 +157,7 @@
                                     <span class="help-block font-red-mint"><cite> <?php echo form_error('admin_password'); ?> </cite></span>
                                 </div>
                             </div>
-                            <div class="form-group hide-password" style="display:none;">
+                            <div class="form-group hide-password display-none">
                                 <label class="control-label col-md-3">Confirm Password
                                 </label>
                                 <div class="col-md-4">
