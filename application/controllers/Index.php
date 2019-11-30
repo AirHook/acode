@@ -144,7 +144,7 @@ class Index extends Frontend_Controller {
 
 			// hanlde home categories cubeportfolio
 			$this->data['page_level_scripts'].= '
-				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/componente-frontend-portfolio-3.js" type="text/javascript"></script>
+				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/componente-frontend-portfolio-3.js?z='.time().'" type="text/javascript"></script>
 			';
 	}
 

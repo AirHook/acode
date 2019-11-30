@@ -23,24 +23,48 @@ class Suspended extends Admin_Controller {
 	 *
 	 * @return	void
 	 */
-	public function index()
+	public function index($des_slug = '')
 	{
 		// generate the plugin scripts and css
 		$this->_create_plugin_scripts();
 
 		// load pertinent library/model/helpers
 		$this->load->library('users/vendor_users_list');
+		$this->load->library('designers/designers_list');
+
+		// get designer list for the dropdown filter
+		$this->data['designers'] = $this->designers_list->select();
+
+		// set some variables
+		// we need a real variable to process some calculations
+		$url_segs = $this->uri->segment_array();
+		$this->data['page'] = is_numeric(end($url_segs)) ? end($url_segs) : 1;
+		$this->data['limit'] = 100;
+		$this->data['offset'] = $this->data['page'] == '' ? 0 : ($this->data['page'] * 100) - 100;
+		$this->vendor_users_list->pagination = $this->data['page'];
+
+		// set active items
+		$this->data['des_slug'] = $des_slug ?: '';
 
 		// get data
 		if (@$this->webspace_details->options['site_type'] != 'hub_site')
 		{
 			$params['vendors.reference_designer'] = $this->webspace_details->slug;
 		}
+		else
+		{
+			$params['vendors.reference_designer'] = $des_slug ?: '';
+		}
 		$params['vendors.is_active'] = '2';
 		$this->data['users'] = $this->vendor_users_list->select($params);
+		$this->data['count_all'] = $this->vendor_users_list->row_count;
+
+		// enable pagination
+		$this->_set_pagination($this->data['count_all'], $this->data['limit'], $des_slug);
 
 		// need to show loading at start
 		$this->data['show_loading'] = $this->vendor_users_list->row_count > 200 ? TRUE : FALSE;
+		$this->data['search'] = FALSE;
 
 		// set data variables...
 		$this->data['file'] = 'users_vendor';
@@ -49,6 +73,48 @@ class Suspended extends Admin_Controller {
 
 		// load views...
 		$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template/template', $this->data);
+	}
+
+	// ----------------------------------------------------------------------
+
+	/**
+	 * PRIVATE - Set pagination parameters
+	 *
+	 * @return	void
+	 */
+	private function _set_pagination($count_all = '', $per_page = '', $des_slug)
+	{
+		$this->load->library('pagination');
+
+		$url = 'admin/users/vendor/suspended';
+
+		$config['base_url'] = base_url().$url.'/index/'.($des_slug ? $des_slug.'/' : '');
+		$config['total_rows'] = $count_all;
+		$config['per_page'] = $per_page;
+		$config['num_links'] = 3;
+		$config['use_page_numbers'] = TRUE;
+		$config['full_tag_open'] = '<ul class="pagination pull-right" style="margin:0;">';
+		$config['full_tag_close'] = '</ul>';
+		$config['num_tag_open'] = '<li>';
+		$config['num_tag_close'] = '</li>';
+		$config['cur_tag_open'] = '<li class="active"><a href="javascript:;">';
+		$config['cur_tag_close'] = '</a></li>';
+		$config['first_link'] = '<i class="fa fa-angle-double-left"></i>';
+		$config['first_url'] = site_url($url);
+		$config['first_tag_open'] = '<li>';
+		$config['first_tag_close'] = '</li>';
+		$config['last_link'] = '<i class="fa fa-angle-double-right"></i>';
+		$config['last_tag_open'] = '<li>';
+		$config['last_tag_close'] = '</li>';
+		$config['prev_link'] = '<i class="fa fa-angle-left"></i>';
+		$config['prev_tag_open'] = '<li>';
+		$config['prev_tag_close'] = '</li>';
+		$config['next_link'] = '<i class="fa fa-angle-right"></i>';
+		$config['next_tag_open'] = '<li>';
+		$config['next_tag_close'] = '</li>';
+
+		$this->pagination->initialize($config);
+
 	}
 
 	// ----------------------------------------------------------------------

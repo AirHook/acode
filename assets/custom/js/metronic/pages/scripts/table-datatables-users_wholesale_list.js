@@ -230,6 +230,25 @@ var TableDatatablesManaged = function () {
         }
     });
 
+    // apply filter by designer
+	$('.apply_filer_by_designer').click(function(){
+        var page_param = $(this).data('page_param');
+		var x = document.getElementById("filter_by_designer_select").selectedIndex;
+		var y = document.getElementById("filter_by_designer_select").options;
+		var z = y[x].value;
+		if (!z) {
+			alert("Please select a designer to filter table.");
+			return false;
+		} else {
+            $('#loading').modal('show');
+            if (z=='all'){
+                window.location.href = base_url + "admin/users/wholesale/" + page_param + ".html";
+            }else{
+                window.location.href = base_url + "admin/users/wholesale/" + page_param + "/index/" + z + ".html";
+            }
+		}
+	});
+
     return {
 
         //main function to initiate the module

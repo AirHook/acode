@@ -238,19 +238,26 @@
                             </div>
                             <hr />
                             <div class="form-group">
+                                <div class="col-md-offset-3 col-md-4">
+                                    <input type="checkbox" class="change-password" name="change-password" value="1" tabindex="-1" /> Change password
+                                </div>
+                            </div>
+                            <div class="form-group hide-password display-none">
                                 <label class="control-label col-md-3">Password
                                 </label>
                                 <div class="col-md-4">
-                                    <input type="password" id="pword" name="pword" class="form-control input-password" value="<?php echo $this->wholesale_user_details->password; ?>" data-original_value="<?php echo $this->wholesale_user_details->password; ?>"/>
-                                    <input type="checkbox" class="show-password" /> Show password
+                                    <input type="password" id="pword" name="pword" class="form-control input-password" disabled value="<?php echo $this->wholesale_user_details->password; ?>" />
+                                    <input type="checkbox" class="show-password" tabindex="-1" /> Show password
+                                    <cite class="help-block small font-red-mint"> <?php echo form_error('pword'); ?> </cite>
                                 </div>
                             </div>
-                            <div class="form-group hide">
+                            <div class="form-group hide-password display-none">
                                 <label class="control-label col-md-3">Confirm Password
                                 </label>
                                 <div class="col-md-4">
                                     <input type="password" name="passconf" class="form-control input-passconf" disabled />
-                                    <cite class="help-block small"> Re-type your password here if you are changing it </cite>
+                                    <cite class="help-block small"> Re-type your password here </cite>
+                                    <cite class="help-block small font-red-mint"> <?php echo form_error('passconf'); ?> </cite>
                                 </div>
                             </div>
                         </div>

@@ -1,3 +1,47 @@
+                    <?php if ($this->webspace_details->options['site_type'] == 'hub_site')
+                    { ?>
+
+                    <div class="table-toolbar">
+
+                        <div class="row">
+
+                            <div class="col-lg-3 col-md-4">
+                                <select class="bs-select form-control" id="filter_by_designer_select" name="des_slug" data-live-search="true" data-size="5" data-show-subtext="true">
+                                    <option class="option-placeholder" value="">Select Designer...</option>
+                                    <option value="all">All Designers</option>
+                                    <?php if ($this->webspace_details->options['site_type'] == 'hub_site_') { ?>
+                                    <option value="<?php echo $this->webspace_details->slug; ?>" data-subtext="<em>Mixed Designers</em>" data-des_slug="<?php echo $this->webspace_details->slug; ?>" data-des_id="<?php echo $this->webspace_details->id; ?>" <?php echo $this->webspace_details->slug === @$des_slug ? 'selected="selected"' : ''; ?>>
+                                        <?php echo $this->webspace_details->name; ?>
+                                    </options>
+                                    <?php } ?>
+                                    <?php
+                                    if (@$designers)
+                                    {
+                                        foreach ($designers as $designer)
+                                        {
+                                            if ($this->webspace_details->slug != $designer->url_structure)
+                                            { ?>
+
+                                    <option value="<?php echo $designer->url_structure; ?>" data-subtext="<em></em>" data-des_slug="<?php echo $designer->url_structure; ?>" data-des_id="<?php echo $designer->des_id; ?>" <?php echo $designer->url_structure === @$des_slug ? 'selected="selected"' : ''; ?>>
+                                        <?php echo ucwords(strtolower($designer->designer)); ?>
+                                    </option>
+
+                                                <?php
+                                            }
+                                        }
+                                    } ?>
+                                </select>
+                            </div>
+                            <button class="apply_filer_by_designer btn dark hidden-sm hidden-xs" data-page_param="<?php echo $this->uri->segment(4); ?>"> Filter </button>
+
+                        </div>
+                        <button class="apply_filer_by_designer btn dark btn-block margin-top-10 hidden-lg hidden-md" data-page_param="<?php echo $this->uri->segment(4); ?>"> Filter </button>
+
+                    </div>
+
+                        <?php
+                    } ?>
+
                     <!-- BEGIN FORM-->
                     <!-- FORM =======================================================================-->
                     <?php echo form_open(
@@ -114,6 +158,27 @@
                         <button class="btn green hidden-lg hidden-md" id="apply_bulk_actions" data-toggle="modal" href="#confirm_bulk_actions" disabled> Apply </button>
 
                     </div>
+
+                    <?php
+                    /***********
+                     * Top Pagination
+                     */
+                    ?>
+                    <?php if ( ! @$search) { ?>
+                    <div class="row margin-bottom-10">
+                        <div class="col-md-12 text-justify pull-right">
+                            <span style="<?php echo $this->pagination->create_links() ? 'position:relative;top:15px;' : ''; ?>">
+                                <?php if ($count_all == 0) { ?>
+                                Showing 0 records
+                                <?php } else { ?>
+                                Showing <?php echo ($limit * $page) - ($limit - 1); ?> to <?php echo $count_all < ($limit * $page) ? $count_all : $limit * $page; ?> of about <?php echo number_format($count_all); ?> records
+                                <?php } ?>
+                            </span>
+                            <?php echo $this->pagination->create_links(); ?>
+                        </div>
+                    </div>
+                    <?php } ?>
+
                     <?php
                     /*********
                      * This style a fix to the dropdown menu inside table-responsive table-scrollable
@@ -131,30 +196,25 @@
                             min-width: 125px;
                         }
                     </style>
-                    <table class="table table-striped table-bordered table-hover order-column dt-responsive" width="100%" id="tbl-users_vendor">
+                    <table class="table table-striped table-bordered table-hover order-column dt-responsive" width="100%" id="tbl-users_vendor_">
                         <thead>
                             <tr>
-                                <th class="min-tablet hidden-xs hidden-sm"> <!-- counter --> </th>
-                                <th class="all text-center">
+                                <th class="min-tablet hidden-xs hidden-sm" style="width:40px;"> <!-- counter --> </th>
+                                <th class="all text-center" style="width:40px;">
                                     <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
-                                        <input type="checkbox" id="heading_checkbox" class="group-checkable" data-set="#tbl-users_vendor .checkboxes" />
+                                        <input type="checkbox" id="heading_checkbox" class="group-checkable" data-set="#tbl-users_vendor_ .checkboxes" />
                                         <span></span>
                                     </label>
                                 </th>
                                 <th class="all"> Vendor Name </th>
                                 <th class="all"> Code </th>
-                                <th class="min-tablet"> Main Email </th>
+                                <th class="min-tablet"> Primary Email </th>
+                                <th class="none"> Primary Contact </th>
                                 <th class="min-tablet"> Vendor Type </th>
                                 <th class="min-tablet"> Ref Designer </th>
                                 <th class="min-tablet"> Country </th>
-                                <th class="none"> Contact1 </th>
-                                <th class="none"> Contact Email1 </th>
-                                <th class="none"> Contact2 </th>
-                                <th class="none"> Contact Email2 </th>
-                                <th class="none"> Contact3 </th>
-                                <th class="none"> Contact Email3 </th>
-                                <th> Status </th>
-                                <th class="all"> Actions </th>
+                                <th style="width:100px;"> Status </th>
+                                <th class="all" style="width:80px;"> Actions </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -182,20 +242,13 @@
                                     <a href="<?php echo $edit_link; ?>">
                                         <?php echo $user->vendor_name; ?>
                                     </a>
-                                    &nbsp;
-                                    <a href="<?php echo $edit_link; ?>" class="hidden_first_edit_link display-none small"> <cite> edit </cite> </a>
                                 </td>
                                 <td> <?php echo $user->vendor_code; ?> </td>
                                 <td> <?php echo $user->vendor_email; ?> </td>
+                                <td> <?php echo $user->contact_1; ?> </td>
                                 <td> <?php echo $user->type; ?> </td>
                                 <td> <?php echo $user->designer; ?> </td>
                                 <td> <?php echo $user->country; ?> </td>
-                                <td> <?php echo $user->contact_1; ?> </td>
-                                <td> <?php echo $user->contact_email_1; ?> </td>
-                                <td> <?php echo $user->contact_2; ?> </td>
-                                <td> <?php echo $user->contact_email_2; ?> </td>
-                                <td> <?php echo $user->contact_2; ?> </td>
-                                <td> <?php echo $user->contact_email_3; ?> </td>
                                 <td>
                                     <?php if ($user->is_active == '1') { ?>
                                     <span class="label label-sm label-success"> Active </span>
@@ -330,10 +383,37 @@
                                     <?php
                                     $i++;
                                 }
+                            }
+							else
+							{ ?>
+
+							<tr><td colspan="11" align="center">No records found.</td></tr>
+
+								<?php
                             } ?>
 
                         </tbody>
                     </table>
+
+                    <?php
+                    /***********
+                     * Bottom Pagination
+                     */
+                    ?>
+                    <?php if ( ! $search) { ?>
+                    <div class="row margin-bottom-10">
+                        <div class="col-md-12 text-justify pull-right">
+                            <span>
+                                <?php if ($count_all == 0) { ?>
+                                Showing 0 records
+                                <?php } else { ?>
+                                Showing <?php echo ($limit * $page) - ($limit - 1); ?> to <?php echo $count_all < ($limit * $page) ? $count_all : $limit * $page; ?> of about <?php echo number_format($count_all); ?> records
+                                <?php } ?>
+                            </span>
+                            <?php echo $this->pagination->create_links(); ?>
+                        </div>
+                    </div>
+                    <?php } ?>
 
                     </form>
                     <!-- End FORM =======================================================================-->

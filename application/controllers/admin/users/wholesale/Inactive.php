@@ -23,7 +23,7 @@ class Inactive extends Admin_Controller {
 	 *
 	 * @return	void
 	 */
-	public function index($p = '')
+	public function index($des_slug = '')
 	{
 		// generate the plugin scripts and css
 		$this->_create_plugin_scripts();
@@ -34,6 +34,10 @@ class Inactive extends Admin_Controller {
 		$this->load->library('users/sales_users_list');
 		$this->load->library('users/vendor_users_list');
 		$this->load->library('users/wholesale_users_list');
+		$this->load->library('designers/designers_list');
+
+		// get designer list for the dropdown filter
+		$this->data['designers'] = $this->designers_list->select();
 
 		// initialize sales package
 		// check if there is a default sales package - set_as_default as '1'
@@ -42,38 +46,65 @@ class Inactive extends Admin_Controller {
 		$this->data['default_sales_package'] = $this->sales_package_details->initialize(array('set_as_default'=>'1'));
 
 		// set some variables
-		$this->data['page'] = $p ?: 1;
+		// we need a real variable to process some calculations
+		$url_segs = $this->uri->segment_array();
+		$this->data['page'] = is_numeric(end($url_segs)) ? end($url_segs) : 1;
 		$this->data['limit'] = 100;
-		$this->data['offset'] = $p == '' ? 0 : ($p * 100) - 100;
+		$this->data['offset'] = $this->data['page'] == '' ? 0 : ($this->data['page'] * 100) - 100;
+		$this->wholesale_users_list->pagination = $this->data['page'];
+
+		// set active items
+		$this->data['des_slug'] = !is_numeric($des_slug) ? $des_slug : '';
 
 		// count all records
 		$DB = $this->load->database('instyle', TRUE);
 		$DB->select('*');
 		$DB->where('is_active', '0');
+		if ($this->data['des_slug'])
+		{
+			if ($this->data['des_slug'] == $this->webspace_details->slug)
+			{
+				$DB->where("(
+					tbluser_data_wholesale.reference_designer IS NULL
+					OR tbluser_data_wholesale.reference_designer = ''
+					OR tbluser_data_wholesale.reference_designer = 'instylenewyork'
+					OR tbluser_data_wholesale.reference_designer = '".$this->data['des_slug']."'
+				)");
+			}
+			else $DB->where('tbluser_data_wholesale.reference_designer', $this->data['des_slug']);
+		}
 		$q1 = $DB->get('tbluser_data_wholesale');
 		$this->data['count_all'] = $q1->num_rows();
 
 		// get data
+		$custom_where = ''; // handles mixed designer or no designer query
 		if (@$this->webspace_details->options['site_type'] != 'hub_site')
 		{
-			$this->data['users'] = $this->wholesale_users_list->select(
-				array(
-					'tbluser_data_wholesale.reference_designer' => @$this->webspace_details->slug,
-					'tbluser_data_wholesale.is_active' => '0'
-				),
-				array(),
-				array($this->data['offset'], $this->data['limit'])
-			);
+			$where['tbluser_data_wholesale.reference_designer'] = $this->webspace_details->slug;
 		}
-		else $this->data['users'] = $this->wholesale_users_list->select(
-			array('tbluser_data_wholesale.is_active'=>'0'),
-			array('create_date'=>'desc'),
-			array($this->data['offset'], $this->data['limit'])
+		else
+		{
+			if ($this->data['des_slug'] == $this->webspace_details->slug)
+			{
+				$custom_where = "(
+					tbluser_data_wholesale.reference_designer IS NULL
+					OR tbluser_data_wholesale.reference_designer = ''
+					OR tbluser_data_wholesale.reference_designer = 'instylenewyork'
+					OR tbluser_data_wholesale.reference_designer = '".$this->data['des_slug']."'
+				)";
+			}
+			else $where['tbluser_data_wholesale.reference_designer'] = $this->data['des_slug'] ?: '';
+		}
+		$where['tbluser_data_wholesale.is_active'] = '0';
+		$this->data['users'] = $this->wholesale_users_list->select(
+			$where,
+			array(),
+			array($this->data['offset'], $this->data['limit']),
+			$custom_where
 		);
-		$this->data['record_sets'] = $this->data['count_all'] / $this->data['limit'];
 
 		// enable pagination
-		$this->_set_pagination($this->data['count_all'], $this->data['limit']);
+		$this->_set_pagination($this->data['count_all'], $this->data['limit'], $this->data['des_slug']);
 
 		// need to show loading at start
 		$this->data['show_loading'] = FALSE;
@@ -95,11 +126,13 @@ class Inactive extends Admin_Controller {
 	 *
 	 * @return	void
 	 */
-	private function _set_pagination($count_all = '', $per_page = '')
+	private function _set_pagination($count_all = '', $per_page = '', $des_slug = '')
 	{
 		$this->load->library('pagination');
 
-		$config['base_url'] = base_url().'admin/users/wholesale/inactive/index/';
+		$url = 'admin/users/wholesale/inactive';
+
+		$config['base_url'] = base_url().$url.'/index/'.($des_slug ? $des_slug.'/' : '');
 		$config['total_rows'] = $count_all;
 		$config['per_page'] = $per_page;
 		$config['num_links'] = 3;
@@ -111,7 +144,7 @@ class Inactive extends Admin_Controller {
 		$config['cur_tag_open'] = '<li class="active"><a href="javascript:;">';
 		$config['cur_tag_close'] = '</a></li>';
 		$config['first_link'] = '<i class="fa fa-angle-double-left"></i>';
-		$config['first_url'] = site_url('admin/users/wholesale/inactive');
+		$config['first_url'] = site_url($url.($des_slug ? '/index/'.$des_slug : ''));
 		$config['first_tag_open'] = '<li>';
 		$config['first_tag_close'] = '</li>';
 		$config['last_link'] = '<i class="fa fa-angle-double-right"></i>';

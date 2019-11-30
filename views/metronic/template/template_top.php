@@ -33,7 +33,7 @@
         <!-- BEGIN GLOBAL CUSTOM STYLES -->
 		<!-- DOC: Typehead used for auto complete of search box among others -->
 		<link href="<?php echo base_url('assets/metronic'); ?>/assets/global/plugins/typeahead/typeahead.css" rel="stylesheet" type="text/css" />
-		<link href="<?php echo base_url('assets/custom'); ?>/css/custom_frontend_metronic.css" rel="stylesheet" type="text/css" />
+		<link href="<?php echo base_url('assets/custom'); ?>/css/custom_frontend_metronic.css?z=<?php echo time(); ?>" rel="stylesheet" type="text/css" />
 		<link href="<?php echo base_url('assets/custom'); ?>/css/loading-modal.css" rel="stylesheet" type="text/css" />
         <!-- END GLOBAL CUSTOM STYLES -->
         <link rel="shortcut icon" href="<?php echo base_url(); ?>favicon.ico" />

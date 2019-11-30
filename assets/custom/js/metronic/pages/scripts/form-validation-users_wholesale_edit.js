@@ -15,7 +15,7 @@ var FormValidation = function () {
 			errorElement: 'span', //default input error message container
 			errorClass: 'help-block help-block-error', // default input error message class
 			focusInvalid: false, // do not focus the last invalid input
-			ignore: ":disabled",  // validate all fields including form hidden input
+			ignore: ":not(:visible),:disabled",  // validate all fields including form hidden input
 
 			// set your custom error message here
 			//messages: {
@@ -106,7 +106,6 @@ var FormValidation = function () {
 				//success1.show();
 				error1.hide();
 				form.submit();
-				return false;
 			}
 		});
 
@@ -155,6 +154,28 @@ var FormValidation = function () {
             });
         } else {
             window.location.href=link;
+        }
+    });
+
+    //show password click function
+    $('.show-password').click(function(){
+        var checked = $(this).is(':checked');
+        if (checked) {
+            $('.input-password, .input-passconf').attr('type', 'text');
+        } else {
+            $('.input-password, .input-passconf').attr('type', 'password');
+        }
+    });
+
+    //change password click function
+    $('.change-password').click(function(){
+        var checked = $(this).is(':checked');
+        if (checked) {
+            $('.hide-password').show();
+            $('.input-password, .input-passconf').removeAttr('disabled');
+        } else {
+            $('.hide-password').hide();
+            $('.input-password, .input-passconf').addAttr('disabled');
         }
     });
 

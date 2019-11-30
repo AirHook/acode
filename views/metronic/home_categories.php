@@ -18,13 +18,19 @@
 											<?php } ?>
 										</div>
 
-										<div class="row hidden-sm hidden-md hidden-lg">
+										<div class="row hidden-sm hidden-md hidden-lg hidden-xs">
 											<div class="col-xs-12 text-center">
 												<img src="<?php echo base_url(); ?>assets/images/icons/shop7 emblem.png" style="width:100%;" />
 											</div>
 										</div>
 
                                         <div class="portfolio-content portfolio-3 margin-top-30">
+
+                                            <?php
+    										/***********
+    										 *	Portfolio Grid Nav // currently hidden
+    										 */
+    										?>
                                             <div class="clearfix">
                                                 <div id="js-filters-lightbox-gallery1" class="cbp-l-filters-dropdown cbp-l-filters-dropdown-floated hide">
                                                     <div class="cbp-l-filters-dropdownWrap border-grey-salsa">
@@ -64,6 +70,12 @@
 													-->
                                                 </div>
                                             </div>
+
+                                            <?php
+    										/***********
+    										 *	Portfolio Grid
+    										 */
+    										?>
                                             <div id="js-grid-lightbox-gallery" class="cbp">
 
 												<?php

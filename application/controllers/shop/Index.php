@@ -280,7 +280,7 @@ class Index extends Shop_Controller
 			';
 			// handle scripts
 			$this->data['page_level_scripts'].= '
-				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/components-frontend-product_thumbs-scripts.js" type="text/javascript"></script>
+				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/components-frontend-product_thumbs-scripts.js?z='.time().'" type="text/javascript"></script>
 			';
 	}
 

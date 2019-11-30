@@ -733,15 +733,47 @@ a.pdp--color-name {
 	.slick-dots li.slick-active button::before {
 		content: '\f111';
 	}
+	/*shop cart icon for mobile phones*/
+	.page-header .page-header-top .top-menu .navbar-nav > li.dropdown-extended.dropdown-inbox.mobile {
+		margin-right: -2px;
+		padding-right: 0px;
+	}
+	.page-header .page-header-top .top-menu .navbar-nav > li.dropdown-extended.dropdown-inbox.mobile > .dropdown-toggle {
+		padding-right: 0px;
+	}
+	/**/
+}
+@media (min-width:768px) {
+	.page-breadcrumb.breadcrumb.breadcrumb-thumbs {
+		margin-left: 20px;
+	}
+}
+@media (max-width:767px) {
+	.menu-toggler-2 {
+		top: 16px;
+	}
+	.page-breadcrumb.breadcrumb.breadcrumb-thumbs {
+		margin-left: 2px;
+	}
+	.thumbs-utilities.mobile {
+		margin-left: -17px;
+		margin-right: -17px;
+	}
+	.form-group.mobile-thumbs-filter {
+		margin-bottom: 5px;
+	}
 }
 @media (max-width:480px) {
+	.menu-toggler-2 {
+		top: 3px;
+	}
 	.page-header .page-header-top .top-menu {
 		clear: none;
 		top: 11px;
 		position: relative;
 	}
 	.page-header .page-header-top {
-		height: 70px;
+		height: 110px;
 	}
 	.page-header .page-header-top .page-logo .logo-default {
 		margin: 15px 0 0;

@@ -156,7 +156,11 @@
                     <div class="row margin-bottom-10">
                         <div class="col-md-12 text-justify pull-right">
                             <span style="<?php echo $this->pagination->create_links() ? 'position:relative;top:15px;' : ''; ?>">
+                                <?php if ($count_all == 0) { ?>
+                                Showing 0 records
+                                <?php } else { ?>
                                 Showing <?php echo ($limit * $page) - ($limit - 1); ?> to <?php echo $count_all < ($limit * $page) ? $count_all : $limit * $page; ?> of about <?php echo number_format($count_all); ?> records
+                                <?php } ?>
                             </span>
                             <?php echo $this->pagination->create_links(); ?>
                         </div>
@@ -394,7 +398,11 @@
                     <div class="row margin-bottom-10">
                         <div class="col-md-12 text-justify pull-right">
                             <span>
+                                <?php if ($count_all == 0) { ?>
+                                Showing 0 records
+                                <?php } else { ?>
                                 Showing <?php echo ($limit * $page) - ($limit - 1); ?> to <?php echo $count_all < ($limit * $page) ? $count_all : $limit * $page; ?> of about <?php echo number_format($count_all); ?> records
+                                <?php } ?>
                             </span>
                             <?php echo $this->pagination->create_links(); ?>
                         </div>

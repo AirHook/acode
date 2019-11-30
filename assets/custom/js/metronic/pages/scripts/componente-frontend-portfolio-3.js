@@ -20,10 +20,10 @@
             cols: 3
         }, {
             width: 480,
-            cols: 1
+            cols: 2
         }, {
             width: 320,
-            cols: 1
+            cols: 2
         }],
         defaultFilter: '*',
         animationType: 'rotateSides',
@@ -64,7 +64,7 @@
                 });
         },
     });
-	
+
 	// DESIGNER CATEGORIES
     $('#js-grid-lightbox-gallery-basixblacklabel, #js-grid-lightbox-gallery-chaarmfurs, #js-grid-lightbox-gallery-issueny, #js-grid-lightbox-gallery-tempoparis, #js-grid-lightbox-gallery-storybookknits, #js-grid-lightbox-gallery-junnieleigh, #js-grid-lightbox-gallery-sweatersweater').cubeportfolio({
         //filters: '#js-filters-lightbox-gallery1, #js-filters-lightbox-gallery2',
@@ -127,5 +127,5 @@
                 });
         },
     });
-	
+
 })(jQuery, window, document);

@@ -23,7 +23,7 @@ class Suspended extends Admin_Controller {
 	 *
 	 * @return	void
 	 */
-	public function index($p = '')
+	public function index($des_slug = '')
 	{
 		// generate the plugin scripts and css
 		$this->_create_plugin_scripts();
@@ -31,40 +31,75 @@ class Suspended extends Admin_Controller {
 		// load pertinent library/model/helpers
 		$this->load->library('users/consumer_users_list');
 		$this->load->helpers('product_link');
+		$this->load->library('designers/designers_list');
+
+		// get designer list for the dropdown filter
+		$this->data['designers'] = $this->designers_list->select();
 
 		// set some variables
-		$this->data['page'] = $p ?: 1;
+		// we need a real variable to process some calculations
+		$url_segs = $this->uri->segment_array();
+		$this->data['page'] = is_numeric(end($url_segs)) ? end($url_segs) : 1;
 		$this->data['limit'] = 100;
-		$this->data['offset'] = $p == '' ? 0 : ($p * 100) - 100;
+		$this->data['offset'] = $this->data['page'] == '' ? 0 : ($this->data['page'] * 100) - 100;
+		$this->consumer_users_list->pagination = $this->data['page'];
+
+		// set active items
+		$this->data['des_slug'] = !is_numeric($des_slug) ? $des_slug : '';
 
 		// count all records
 		$DB = $this->load->database('instyle', TRUE);
 		$DB->select('*');
 		$DB->where('is_active', '2');
+		if ($this->data['des_slug'])
+		{
+			if ($this->data['des_slug'] == $this->webspace_details->slug)
+			{
+				$DB->where("(
+					tbluser_data.reference_designer IS NULL
+					OR tbluser_data.reference_designer = ''
+					OR tbluser_data.reference_designer = 'instylenewyork'
+					OR tbluser_data.reference_designer = '".$this->data['des_slug']."'
+				)");
+			}
+			else $DB->where('tbluser_data.reference_designer', $this->data['des_slug']);
+		}
 		$q1 = $DB->get('tbluser_data');
 		$this->data['count_all'] = $q1->num_rows();
 
 		// get data
+		$custom_where = ''; // handles mixed designer or no designer query
 		if (@$this->webspace_details->options['site_type'] != 'hub_site')
 		{
-			$this->data['users'] = $this->consumer_users_list->select(
-				array(
-					'tbluser_data.reference_designer' => @$this->webspace_details->slug
-				),
-				array(),
-				array($this->data['offset'], $this->data['limit'])
-			);
+			$where['tbluser_data.reference_designer'] = $this->webspace_details->slug;
 		}
-		else $this->data['users'] = $this->consumer_users_list->select(
-			array('tbluser_data.is_active'=>'2'),
+		else
+		{
+			if ($this->data['des_slug'] == $this->webspace_details->slug)
+			{
+				$custom_where = "(
+					tbluser_data.reference_designer IS NULL
+					OR tbluser_data.reference_designer = ''
+					OR tbluser_data.reference_designer = 'instylenewyork'
+					OR tbluser_data.reference_designer = '".$this->data['des_slug']."'
+				)";
+			}
+			else $where['tbluser_data.reference_designer'] = $this->data['des_slug'] ?: '';
+		}
+		$where['tbluser_data.is_active'] = '2';
+		$this->data['users'] = $this->consumer_users_list->select(
+			$where,
 			array(),
-			array($this->data['offset'], $this->data['limit'])
+			array($this->data['offset'], $this->data['limit']),
+			$custom_where
 		);
-		$this->data['search'] = FALSE;
-		$this->data['record_sets'] = $this->data['count_all'] / $this->data['limit'];
 
 		// enable pagination
-		$this->_set_pagination($this->data['count_all'], $this->data['limit']);
+		$this->_set_pagination($this->data['count_all'], $this->data['limit'], $this->data['des_slug']);
+
+		// need to show loading at start
+		$this->data['show_loading'] = FALSE;
+		$this->data['search'] = FALSE;
 
 		// set data variables...
 		$this->data['file'] = 'users_consumer';
@@ -82,11 +117,13 @@ class Suspended extends Admin_Controller {
 	 *
 	 * @return	void
 	 */
-	private function _set_pagination($count_all = '', $per_page = '')
+	private function _set_pagination($count_all = '', $per_page = '', $des_slug = '')
 	{
 		$this->load->library('pagination');
 
-		$config['base_url'] = base_url().'admin/users/consumer/suspended/index/';
+		$url = 'admin/users/consumer/suspended';
+
+		$config['base_url'] = base_url().$url.'/index/'.($des_slug ? $des_slug.'/' : '');
 		$config['total_rows'] = $count_all;
 		$config['per_page'] = $per_page;
 		$config['num_links'] = 3;
@@ -98,7 +135,7 @@ class Suspended extends Admin_Controller {
 		$config['cur_tag_open'] = '<li class="active"><a href="javascript:;">';
 		$config['cur_tag_close'] = '</a></li>';
 		$config['first_link'] = '<i class="fa fa-angle-double-left"></i>';
-		$config['first_url'] = site_url('admin/users/consumer/suspended');
+		$config['first_url'] = site_url($url);
 		$config['first_tag_open'] = '<li>';
 		$config['first_tag_close'] = '</li>';
 		$config['last_link'] = '<i class="fa fa-angle-double-right"></i>';

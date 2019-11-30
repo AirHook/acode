@@ -24,6 +24,50 @@
                         </div>
                     </div>
 
+                    <?php if ($this->webspace_details->options['site_type'] == 'hub_site')
+                    { ?>
+
+                    <div class="table-toolbar">
+
+                        <div class="row">
+
+                            <div class="col-lg-3 col-md-4">
+                                <select class="bs-select form-control" id="filter_by_designer_select" name="des_slug" data-live-search="true" data-size="5" data-show-subtext="true">
+                                    <option class="option-placeholder" value="">Select Designer...</option>
+                                    <option value="all">All Users</option>
+                                    <?php if ($this->webspace_details->options['site_type'] == 'hub_site') { ?>
+                                    <option value="<?php echo $this->webspace_details->slug; ?>" data-subtext="<em>Mixed Designers</em>" data-des_slug="<?php echo $this->webspace_details->slug; ?>" data-des_id="<?php echo $this->webspace_details->id; ?>" <?php echo $this->webspace_details->slug === @$des_slug ? 'selected="selected"' : ''; ?>>
+                                        <?php echo $this->webspace_details->name; ?>
+                                    </options>
+                                    <?php } ?>
+                                    <?php
+                                    if (@$designers)
+                                    {
+                                        foreach ($designers as $designer)
+                                        {
+                                            if ($this->webspace_details->slug != $designer->url_structure)
+                                            { ?>
+
+                                    <option value="<?php echo $designer->url_structure; ?>" data-subtext="<em></em>" data-des_slug="<?php echo $designer->url_structure; ?>" data-des_id="<?php echo $designer->des_id; ?>" <?php echo $designer->url_structure === @$des_slug ? 'selected="selected"' : ''; ?>>
+                                        <?php echo ucwords(strtolower($designer->designer)); ?>
+                                    </option>
+
+                                                <?php
+                                            }
+                                        }
+                                    } ?>
+                                </select>
+                            </div>
+                            <button class="apply_filer_by_designer btn dark hidden-sm hidden-xs" data-page_param="<?php echo $this->uri->segment(4); ?>"> Filter </button>
+
+                        </div>
+                        <button class="apply_filer_by_designer btn dark btn-block margin-top-10 hidden-lg hidden-md" data-page_param="<?php echo $this->uri->segment(4); ?>"> Filter </button>
+
+                    </div>
+
+                        <?php
+                    } ?>
+
                     <!-- BEGIN FORM-->
                     <!-- FORM =======================================================================-->
                     <?php echo form_open(
@@ -166,11 +210,15 @@
                      * Top Pagination
                      */
                     ?>
-                    <?php if ( ! $search) { ?>
+                    <?php if ( ! @$search) { ?>
                     <div class="row margin-bottom-10">
                         <div class="col-md-12 text-justify pull-right">
-                            <span style="position:relative;top:15px;">
-                                Showing <?php echo ($limit * $page) - ($limit - 1); ?> to <?php echo $limit * $page; ?> of about <?php echo number_format($count_all); ?> records
+                            <span style="<?php echo $this->pagination->create_links() ? 'position:relative;top:15px;' : ''; ?>">
+                                <?php if ($count_all == 0) { ?>
+                                Showing 0 records
+                                <?php } else { ?>
+                                Showing <?php echo ($limit * $page) - ($limit - 1); ?> to <?php echo $count_all < ($limit * $page) ? $count_all : $limit * $page; ?> of about <?php echo number_format($count_all); ?> records
+                                <?php } ?>
                             </span>
                             <?php echo $this->pagination->create_links(); ?>
                         </div>
@@ -500,6 +548,15 @@
                                     <?php
                                     $i++;
                                 }
+                            }
+                            else
+                            { ?>
+
+                            <tr class="odd gradeX">
+                                <td colspan="12" align="center">No recods found.</td>
+                            </tr>
+
+                                <?php
                             } ?>
 
                         </tbody>
@@ -511,10 +568,14 @@
                      */
                     ?>
                     <?php if ( ! $search) { ?>
-                    <div class="row">
+                    <div class="row margin-bottom-10">
                         <div class="col-md-12 text-justify pull-right">
                             <span>
-                                Showing <?php echo ($limit * $page) - ($limit - 1); ?> to <?php echo $limit * $page; ?> of about <?php echo number_format($count_all); ?> records
+                                <?php if ($count_all == 0) { ?>
+                                Showing 0 records
+                                <?php } else { ?>
+                                Showing <?php echo ($limit * $page) - ($limit - 1); ?> to <?php echo $count_all < ($limit * $page) ? $count_all : $limit * $page; ?> of about <?php echo number_format($count_all); ?> records
+                                <?php } ?>
                             </span>
                             <?php echo $this->pagination->create_links(); ?>
                         </div>

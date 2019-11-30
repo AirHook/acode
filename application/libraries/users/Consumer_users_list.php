@@ -101,9 +101,9 @@ class Consumer_users_list
 				{
 					if ($w == 0) $where_clause.= " ".$key.($has_operand ? " '" : " = '").$val."'";
 					else $where_clause.= " AND ".$key.($has_operand ? " '" : " = '").$val."'";
-				}
 
-				$w++;
+					$w++;
+				}
 			}
 		}
 

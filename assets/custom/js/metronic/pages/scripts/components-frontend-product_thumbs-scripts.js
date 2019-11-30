@@ -1,7 +1,10 @@
 var ComponentsScripts = function() {
 
+    var base_url = $('body').data('base_url');
+    var object_data = $('.mobile-filter-sort-buttons').data('object_data');
+
     var handleScripts1 = function() {
-		
+
 		/**********
 		 * tagsinput
 		 */
@@ -29,23 +32,38 @@ var ComponentsScripts = function() {
 				$('input[name="'+tag_name+'"]').val(tagVal);
 			}
         });
-		
+
         $('input.facets[name="availability1"]').on('click', function(){
 			$('input[name="availability"]').val($(this).val());
         });
-		
+
 		// submit tags input upon clear of a filter item
 		$('input.facet-tagsinput').on('itemRemoved', function(event) {
 			// event.item: contains the item
 			$('#form_facet-tagsinput').submit();
 		});
-		
-		
+
+        // mobile thumbs filter actions
+		$('.select-mobile-thumbs-filter').on('change', function(){
+            // set this filter value
+            var val = $(this).val();
+            if (val != 'all' && val != 'default'){
+                $(this).siblings('.this-filter').val(val);
+            }else{
+                $(this).siblings('.this-filter').val('');
+            }
+            // submit closest form
+            var form = $(this).parents('form');
+            var dataString = form.serialize();
+            //alert(form.attr('action'));
+			form.submit();
+		});
+
 		// desktop - submit sort by drop down on change
 		$('.bs-select.select-sort_by').on('change', function(){
 			$('#form-select-sort_by').submit();
 		});
-		
+
 		// mobile clear filter
 		$('.mobile-clear-filter').on('click', function(){
 			var facet_type = $(this).data('facet_type');

@@ -57,7 +57,6 @@ class Edit extends Admin_Controller {
 		$this->load->library('users/sales_users_list');
 		$this->load->library('designers/designers_list');
 		$this->load->library('form_validation');
-		$this->load->library('odoo');
 
 		// set validation rules
 		$this->form_validation->set_rules('is_active', 'Status', 'trim|required');
@@ -77,7 +76,7 @@ class Edit extends Admin_Controller {
 
 		// at edit page, once original pass is changed, passconf will show to confirm
 		// any changes to pword, therefore, on passconf, we have to set below rules
-		if ($this->input->post('passconf'))
+		if ($this->input->post('change-password'))
 		{
 			$this->form_validation->set_rules('pword', 'Password', 'trim');
 			$this->form_validation->set_rules('passconf', 'Confirm Password', 'trim|matches[pword]');
@@ -142,6 +141,7 @@ class Edit extends Admin_Controller {
 			if ($post_ary['pword'] == '') unset($post_ary['pword']);
 			// unset unneeded variables
 			unset($post_ary['passconf']);
+			unset($post_ary['change-password']);
 
 			// update record
 			$this->DB->where('user_id', $id);

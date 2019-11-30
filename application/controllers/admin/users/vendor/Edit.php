@@ -82,8 +82,8 @@ class Edit extends Admin_Controller {
 
 		if ($this->input->post('change-password'))
 		{
-			$this->form_validation->set_rules('admin_sales_password', 'Password', 'trim');
-			$this->form_validation->set_rules('passconf', 'Confirm Password', 'trim|matches[admin_sales_password]');
+			$this->form_validation->set_rules('password', 'Password', 'trim');
+			$this->form_validation->set_rules('passconf', 'Confirm Password', 'trim|matches[password]');
 		}
 
 		if ($this->form_validation->run() == FALSE)

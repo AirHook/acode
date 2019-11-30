@@ -22,6 +22,8 @@ class Vendor_user_details
 	public $vendor_email = '';
 	public $vendor_code = '';
 
+	public $password = '';
+
 	public $contact_1 = '';
 	public $contact_email_1 = '';
 	public $contact_2 = '';
@@ -144,6 +146,8 @@ class Vendor_user_details
 			$this->vendor_email = $row->vendor_email;
 			$this->vendor_password = $row->password;
 			$this->vendor_code = $row->vendor_code;
+
+			$this->password = $row->password;
 
 			$this->contact_1 = $row->contact_1;
 			$this->contact_email_1 = $row->contact_email_1;
@@ -294,6 +298,8 @@ class Vendor_user_details
 		$this->vendor_id = '';
 		$this->vendor_name = '';
 		$this->vendor_email = '';
+
+		$this->password = '';
 
 		$this->contact_1 = '';
 		$this->contact_email_1 = '';
