@@ -460,13 +460,31 @@
 													}
 													?>
 
-													<?php if (@$courier && $this->session->userdata('user_cat') != 'wholesale') { ?>
+                                                    <!--
+													/***********
+													 * Courier expenses
+													 */
+													-->
+													<?php if (@$courier && $this->session->userdata('user_cat') != 'wholesale')
+                                                    {
+                                                        if ($this->session->shipmethod == '0')
+                                                        {
+                                                            $the_shipping_fee = 'AS PER DHL RATES';
+                                                        }
+                                                        else $the_shipping_fee = '$ '.number_format($shipping_fee, 2);
+                                                        ?>
 													<tr>
 														<td colspan="7" align="right"><font style="font-family:Tahoma;font-size:10px;"><?php echo $courier; ?> : </font></td>
-														<td align="right"><font style="font-family:Tahoma;font-size:10px;">$ <?php echo number_format($shipping_fee, 2); ?></font></td>
+														<td align="right"><font style="font-family:Tahoma;font-size:10px;"><?php echo $the_shipping_fee; ?></font></td>
 													</tr>
-													<?php } ?>
+                                                        <?php
+                                                    } ?>
 
+                                                    <!--
+													/***********
+													 * NY Taxes if any
+													 */
+													-->
 													<?php if (@$this->session->ny_tax) { ?>
 													<tr>
 														<td colspan="7" align="right"><font style="font-family:Tahoma;font-size:10px;">NY Sales Tax : </font></td>

@@ -101,7 +101,7 @@
 																			<div class="mt-radio-list" data-error-container="use_shipmethod_error">
 																				<label class="mt-radio mt-radio-outline ">
 																					DHL - International
-																					<input value="0" name="shipmethod" type="radio" <?php echo $this->session->shipmethod === '0' ? 'checked' : set_select('shipmethod', '0'); ?> data-amount="<?php echo '0'; ?>" data-courier="DHL International" />
+																					<input value="0" name="shipmethod" type="radio" <?php echo $this->session->shipmethod === '0' ? 'checked' : set_select('shipmethod', '0'); ?> data-amount="<?php echo '0'; ?>" data-courier="DHL International (DHL rates apply)" />
 																					<span></span>
 																				</label>
 																			</div>
