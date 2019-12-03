@@ -83,10 +83,10 @@
             cols: 3
         }, {
             width: 480,
-            cols: 1
+            cols: 2
         }, {
             width: 320,
-            cols: 1
+            cols: 2
         }],
         defaultFilter: '*',
         animationType: 'rotateSides',

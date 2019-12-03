@@ -496,7 +496,7 @@
 
 													<?php if (@$ship_country <> 'United States') { ?>
 													<tr>
-														<td colspan="7" align="right"><font style="font-family:Tahoma;font-size:9px;">( For countries other than United State, you will be contacted by customer service for shipping fees ) &nbsp; </font></td>
+														<td colspan="7" align="right"><font style="font-family:Tahoma;font-size:9px;">( For countries other than United States, you will be contacted by customer service for shipping fees ) &nbsp; </font></td>
 														<td align="center"></td>
 													</tr>
 													<?php } ?>

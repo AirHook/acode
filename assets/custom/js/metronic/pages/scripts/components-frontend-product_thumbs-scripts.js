@@ -48,14 +48,15 @@ var ComponentsScripts = function() {
             // set this filter value
             var val = $(this).val();
             if (val != 'all' && val != 'default'){
+                // set the items value to the input for submission
                 $(this).siblings('.this-filter').val(val);
             }else{
-                $(this).siblings('.this-filter').val('');
+                // remove input item so as not to show as empty uri query string
+                $(this).siblings('.this-filter').remove();
             }
             // submit closest form
             var form = $(this).parents('form');
             var dataString = form.serialize();
-            //alert(form.attr('action'));
 			form.submit();
 		});
 

@@ -237,6 +237,17 @@ a.a-black:hover {
 .thumbs-utilities .bootstrap-select.btn-group .dropdown-menu > li {
 	font-size: 12px;
 }
+.pagination-sm.thumbs-pagination-mobile > li > a,
+.pagination-sm.thumbs-pagination-mobile > li > span {
+    padding: 3px 7px;
+    margin-left: 5px;
+	color: black;
+}
+.pagination-sm.thumbs-pagination-mobile > li.active > a,
+.pagination-sm.thumbs-pagination-mobile > li.active > span {
+	color: white;
+	background-color: black;
+}
 	/******
 	 * product thumbs
 	 */
@@ -507,12 +518,12 @@ a.pdp--color-name {
 .page-wrapper .page-wrapper-middle {
     background: white; /*#eff3f8;*/
 }
-.pagination > .active > a,
-.pagination > .active > a:focus,
-.pagination > .active > a:hover,
-.pagination > .active > span,
-.pagination > .active > span:focus,
-.pagination > .active > span:hover {
+.pagination.thumbs-pagintaion-ci > .active > a,
+.pagination.thumbs-pagintaion-ci > .active > a:focus,
+.pagination.thumbs-pagintaion-ci > .active > a:hover,
+.pagination.thumbs-pagintaion-ci > .active > span,
+.pagination.thumbs-pagintaion-ci > .active > span:focus,
+.pagination.thumbs-pagintaion-ci > .active > span:hover {
     z-index: 3;
 	color: #23527c;
     background-color: transparent;
@@ -520,8 +531,8 @@ a.pdp--color-name {
     cursor: default;
 	text-decoration: underline;
 }
-.pagination > li > a,
-.pagination > li > span {
+.pagination.thumbs-pagintaion-ci > li > a,
+.pagination.thumbs-pagintaion-ci > li > span {
     text-decoration: none;
     color: black;
     background-color: #fff;
@@ -531,10 +542,10 @@ a.pdp--color-name {
 	font-size: 12px;
 	line-height: 1.5;
 }
-.pagination > li > a:focus,
-.pagination > li > a:hover,
-.pagination > li > span:focus,
-.pagination > li > span:hover {
+.pagination.thumbs-pagintaion-ci > li > a:focus,
+.pagination.thumbs-pagintaion-ci > li > a:hover,
+.pagination.thumbs-pagintaion-ci > li > span:focus,
+.pagination.thumbs-pagintaion-ci > li > span:hover {
     z-index: 2;
     color: #ccc; /*#23527c;*/
     background-color: transparent;
@@ -636,6 +647,7 @@ a.pdp--color-name {
 .page-prefooter {
     background: #fff;
     color: black;
+	padding: 10px 0;
 }
 .page-prefooter a, .page-prefooter h2 {
     color: black;
@@ -751,6 +763,11 @@ a.pdp--color-name {
 @media (max-width:767px) {
 	.menu-toggler-2 {
 		top: 16px;
+	}
+	.page-header .page-header-top .page-logo {
+		margin-right: 0px;
+		margin-left: 0px;
+		height: 50px;
 	}
 	.page-breadcrumb.breadcrumb.breadcrumb-thumbs {
 		margin-left: 2px;

@@ -51,43 +51,54 @@
 													<?php if ( ! @$search_result)
 													{ ?>
 
-													<!-- BEGIN THUMBS BREADCRUMBS -->
-													<ul class="page-breadcrumb breadcrumb breadcrumb-thumbs">
+													<!-- BEGIN DESKTOP THUMBS BREADCRUMBS AND PAGINATION -->
+                                                    <div class="m-grid produc-thumbs-filter hidden-xs clearfix" style="padding:12px 10px 15px;">
 
-														<?php
-														/**********
-														 * Process URL segments
-														 */
-														if (@$url_segs)
-														{
-															$d_link = '';
-															foreach ($url_segs as $key => $segment)
-															{
-																// get current segment's name
-																$d_name = $this->categories_tree->get_name($segment);
-																// store segment for the link
-																$d_link .= '/'.$segment;
-																$d_link = ltrim($d_link, '/');
-																// check if last segment
-																$d_last = $key == count($url_segs) - 1 ? TRUE : FALSE;
+                                                        <!-- BEGIN PAGINATION -->
+                                                        <div style="float:right;">
+                                                            <?php echo $this->products_list->count_all > $this->webspace_details->options['items_per_page'] ? $this->pagination->create_links() : ''; ?>
+                                                        </div>
+                                                        <!-- END PAGINATION -->
 
-																if ($key == 0) continue; // skips on first segment 'shop/'
-																?>
+                                                        <!-- BEGIN BREADCRUMBS -->
+    													<ul class="page-breadcrumb breadcrumb breadcrumb-thumbs" style="margin-left:0px;">
+    														<?php
+    														/**********
+    														 * Process URL segments
+    														 */
+    														if (@$url_segs)
+    														{
+    															$d_link = '';
+    															foreach ($url_segs as $key => $segment)
+    															{
+    																// get current segment's name
+    																$d_name = $this->categories_tree->get_name($segment);
+    																// store segment for the link
+    																$d_link .= '/'.$segment;
+    																$d_link = ltrim($d_link, '/');
+    																// check if last segment
+    																$d_last = $key == count($url_segs) - 1 ? TRUE : FALSE;
 
-														<li>
-															<?php echo $d_last ? '' : '<a href="'.site_url($d_link).'">'; ?>
-																<?php echo $d_last ? '' : '<strong>'; ?>
-																	<?php echo $d_name; ?>
-																<?php echo $d_last ? '' : '</strong>'; ?>
-															<?php echo $d_last ? '' : '</a>'; ?>
-															<?php echo $d_last ? '' : '<i class="fa fa-angle-right"></i>'; ?>
-														</li>
-																<?php
-															}
-														} ?>
+    																if ($key == 0) continue; // skips on first segment 'shop/'
+    																?>
 
-													</ul>
-													<!-- END THUMBS BREADCRUMBS -->
+    														<li>
+    															<?php echo $d_last ? '' : '<a href="'.site_url($d_link).'">'; ?>
+    																<?php echo $d_last ? '' : '<strong>'; ?>
+    																	<?php echo $d_name; ?>
+    																<?php echo $d_last ? '' : '</strong>'; ?>
+    															<?php echo $d_last ? '' : '</a>'; ?>
+    															<?php echo $d_last ? '' : '<i class="fa fa-angle-right"></i>'; ?>
+    														</li>
+    																<?php
+    															}
+    														} ?>
+
+    													</ul>
+                                                        <!-- END BREADCRUMBS -->
+
+                                                    </div>
+													<!-- END DESKTOP THUMBS BREADCRUMBS AND PAGINATION -->
 														<?php
 													} ?>
 
@@ -110,18 +121,357 @@
 													<!-- END PAGE SECTION HEADING -->
 
 													<!-- BEGIN DESKTOP PRODUCT FILTER -->
-													<div class="produc-thumbs-filter hidden-xs clearfix" style="padding:12px 20px 15px;">
-													<?php if ( ! @$search_result) $this->load->view('metronic/product_thumbs_filter'); ?>
+                                                    <!-- DOC: hiding this old filter system temporarity - for depracation -->
+													<div class="produc-thumbs-filter hidden-xs clearfix hide" style="padding:12px 20px 15px;">
+                                                        <?php if ( ! @$search_result) $this->load->view('metronic/product_thumbs_filter'); ?>
 													</div>
+
+                                                    <div class="m-grid produc-thumbs-filter hidden-xs clearfix" style="padding:12px 10px 15px;">
+                                                        <div class="m-grid-row">
+
+                                                                <?php
+                                                                // set dropdown background color here as universal item
+                                                                $bg_color = 'background:#2f353b;color:white;';
+
+                                                                if (@$size_array)
+                                                                { ?>
+                                                            <div class="m-grid-col m-grid-col-left" style="padding-right:7px;">
+                                                                <div class="form-group mobile-thumbs-filter">
+
+                                                                    <form action="" method="GET">
+
+                                                                        <?php if (@$_GET['color'] AND $_GET['color'] !== 'all'): ?>
+                                                                        <input type="hidden" name="color" value="<?php echo $_GET['color']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['style'] AND $_GET['style'] !== 'all'): ?>
+                                                                        <input type="hidden" name="style" value="<?php echo $_GET['style']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
+                                                                        <input type="hidden" name="occassion" value="<?php echo $_GET['occassion']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['price'] AND $_GET['price'] !== 'default'): ?>
+                                                                        <input type="hidden" name="price" value="<?php echo $_GET['price']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['availability'] AND $_GET['availability'] !== 'all'): ?>
+                                                                        <input type="hidden" name="availability" value="<?php echo $_GET['availability']; ?>" />
+                                                                        <?php endif; ?>
+
+                                                                        <input type="hidden" class="this-filter" name="size" value="<?php echo @$_GET['size']; ?>" />
+
+                                                                        <select class="form-control input-sm select-mobile-thumbs-filter" style="<?php echo @$_GET['size'] ? $bg_color : ''; ?>">
+
+                                                                            <?php if (@$_GET['size']) { ?>
+                                                                            <option value="all">All</option>
+                                                                            <?php } else { ?>
+                                                                            <option>SIZE</option>
+                                                                            <?php } ?>
+
+                                                                            <?php
+                                                                            foreach($size_array as $size)
+                                                                            {
+                                                                                if (@$_GET['size'] && $_GET['size'] == $size)
+                                                                                {
+                                                                                    $size_selected = 'selected="selected"';
+                                                                                }
+                                                                                else $size_selected = '';
+                                                                                ?>
+
+                                                                            <option value="<?php echo $size; ?>" <?php echo $size_selected; ?>><?php echo 'Size '.$size; ?></option>
+
+                                                                                <?php
+                                                                            } ?>
+
+                                                                        </select>
+
+                                                                    </form>
+
+                                                                </div>
+                                                            </div>
+                                                                    <?php
+                                                                } ?>
+
+                                                                <?php
+                                                                if (@$styles_array)
+                                                                { ?>
+                                                            <div class="m-grid-col m-grid-col-left" style="padding-right:7px;">
+                                                                <div class="form-group mobile-thumbs-filter">
+
+                                                                    <form action="" method="GET">
+
+                                                                        <?php if (@$_GET['size'] AND $_GET['size'] !== 'all'): ?>
+                                                                        <input type="hidden" name="size" value="<?php echo $_GET['size']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['color'] AND $_GET['color'] !== 'all'): ?>
+                                                                        <input type="hidden" name="color" value="<?php echo $_GET['color']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
+                                                                        <input type="hidden" name="occassion" value="<?php echo $_GET['occassion']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['price'] AND $_GET['price'] !== 'default'): ?>
+                                                                        <input type="hidden" name="price" value="<?php echo $_GET['price']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['availability'] AND $_GET['availability'] !== 'all'): ?>
+                                                                        <input type="hidden" name="availability" value="<?php echo $_GET['availability']; ?>" />
+                                                                        <?php endif; ?>
+
+                                                                        <input type="hidden" class="this-filter" name="style" value="<?php echo @$_GET['style']; ?>" />
+
+                                                                        <select class="form-control input-sm select-mobile-thumbs-filter" style="<?php echo @$_GET['style'] ? $bg_color : ''; ?>">
+
+                                                                            <?php if (@$_GET['style']) { ?>
+                                                                            <option value="all">All</option>
+                                                                            <?php } else { ?>
+                                                                            <option>STYLING</option>
+                                                                            <?php } ?>
+
+                                                                            <?php
+                                                                            foreach($styles_array as $style)
+                                                                            {
+                                                                                if (@$_GET['style'] && $_GET['style'] == $style)
+                                                                                {
+                                                                                    $style_selected = 'selected="selected"';
+                                                                                }
+                                                                                else $style_selected = '';
+                                                                                ?>
+
+                                                                            <option value="<?php echo $style; ?>" <?php echo $style_selected; ?>><?php echo ucfirst($style); ?></option>
+
+                                                                                <?php
+                                                                            } ?>
+
+                                                                        </select>
+
+                                                                    </form>
+
+                                                                </div>
+                                                            </div>
+                                                                    <?php
+                                                                } ?>
+
+                                                            <div class="m-grid-col m-grid-col-left" style="padding-right:7px;">
+                                                                <div class="form-group mobile-thumbs-filter">
+
+                                                                    <form action="" method="GET">
+
+                                                                        <?php if (@$_GET['size'] AND $_GET['size'] !== 'all'): ?>
+                                                                        <input type="hidden" name="size" value="<?php echo $_GET['size']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['color'] AND $_GET['color'] !== 'all'): ?>
+                                                                        <input type="hidden" name="color" value="<?php echo $_GET['color']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['style'] AND $_GET['style'] !== 'all'): ?>
+                                                                        <input type="hidden" name="style" value="<?php echo $_GET['style']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
+                                                                        <input type="hidden" name="occassion" value="<?php echo $_GET['occassion']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['availability'] AND $_GET['availability'] !== 'all'): ?>
+                                                                        <input type="hidden" name="availability" value="<?php echo $_GET['availability']; ?>" />
+                                                                        <?php endif; ?>
+
+                                                                        <input type="hidden" class="this-filter" name="price" value="<?php echo @$_GET['price']; ?>" />
+
+                                                                        <select class="form-control input-sm select-mobile-thumbs-filter" style="<?php echo @$_GET['price'] ? $bg_color : ''; ?>">
+
+                                                                            <?php if (@$_GET['price']) { ?>
+                                                                            <option value="all">All</option>
+                                                                            <?php } else { ?>
+                                                                            <option>PRICE</option>
+                                                                            <?php } ?>
+
+                                                                            <option value="asc" <?php echo @$_GET['price'] == 'asc' ? 'selected': '';?>>
+                                                                                Low - High
+                                                                            </option>
+                                                                            <option value="desc" <?php echo @$_GET['price'] == 'desc' ? 'selected': '';?>>
+                                                                                High - Low
+                                                                            </option>
+                                                                            <option value="default">
+                                                                                Default
+                                                                            </option>
+
+                                                                        </select>
+
+                                                                    </form>
+
+                                                                </div>
+                                                            </div>
+
+                                                                <?php
+                                                                if (@$color_array)
+                                                                { ?>
+                                                            <div class="m-grid-col m-grid-col-left" style="padding-right:7px;">
+                                                                <div class="form-group mobile-thumbs-filter">
+
+                                                                    <form action="" method="GET">
+
+                                                                        <?php if (@$_GET['size'] AND $_GET['size'] !== 'all'): ?>
+                                                                        <input type="hidden" name="size" value="<?php echo $_GET['size']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['style'] AND $_GET['style'] !== 'all'): ?>
+                                                                        <input type="hidden" name="style" value="<?php echo $_GET['style']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
+                                                                        <input type="hidden" name="occassion" value="<?php echo $_GET['occassion']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['price'] AND $_GET['price'] !== 'default'): ?>
+                                                                        <input type="hidden" name="price" value="<?php echo $_GET['price']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['availability'] AND $_GET['availability'] !== 'all'): ?>
+                                                                        <input type="hidden" name="availability" value="<?php echo $_GET['availability']; ?>" />
+                                                                        <?php endif; ?>
+
+                                                                        <input type="hidden" class="this-filter" name="color" value="<?php echo @$_GET['color']; ?>" />
+
+                                                                        <select class="form-control input-sm select-mobile-thumbs-filter" style="<?php echo @$_GET['color'] ? $bg_color : ''; ?>">
+
+                                                                            <?php if (@$_GET['color']) { ?>
+                                                                            <option value="all">All</option>
+                                                                            <?php } else { ?>
+                                                                            <option>COLOR</option>
+                                                                            <?php } ?>
+
+                                                                            <?php
+                                                                            foreach($color_array as $color)
+                                                                            {
+                                                                                if (@$_GET['color'] && $_GET['color'] == $color)
+                                                                                {
+                                                                                    $color_selected = 'selected="selected"';
+                                                                                }
+                                                                                else $color_selected = '';
+                                                                                ?>
+
+                                                                            <option value="<?php echo $color; ?>" <?php echo $color_selected; ?>><?php echo ucfirst($color); ?></option>
+
+                                                                                <?php
+                                                                            } ?>
+
+                                                                        </select>
+
+                                                                    </form>
+
+                                                                </div>
+                                                            </div>
+                                                                    <?php
+                                                                } ?>
+
+                                                                <?php
+                                                                if (@$occassion_array)
+                                                                { ?>
+                                                            <div class="m-grid-col m-grid-col-left" style="padding-right:7px;">
+                                                                <div class="form-group mobile-thumbs-filter">
+
+                                                                    <form action="" method="GET">
+
+                                                                        <?php if (@$_GET['size'] AND $_GET['size'] !== 'all'): ?>
+                                                                        <input type="hidden" name="size" value="<?php echo $_GET['size']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['color'] AND $_GET['color'] !== 'all'): ?>
+                                                                        <input type="hidden" name="color" value="<?php echo $_GET['color']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['style'] AND $_GET['style'] !== 'all'): ?>
+                                                                        <input type="hidden" name="style" value="<?php echo $_GET['style']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['price'] AND $_GET['price'] !== 'default'): ?>
+                                                                        <input type="hidden" name="price" value="<?php echo $_GET['price']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['availability'] AND $_GET['availability'] !== 'all'): ?>
+                                                                        <input type="hidden" name="availability" value="<?php echo $_GET['availability']; ?>" />
+                                                                        <?php endif; ?>
+
+                                                                        <input type="hidden" class="this-filter" name="occassion" value="<?php echo @$_GET['occassion']; ?>" />
+
+                                                                        <select class="form-control input-sm select-mobile-thumbs-filter" style="<?php echo @$_GET['occassion'] ? $bg_color : ''; ?>">
+
+                                                                            <?php if (@$_GET['occassion']) { ?>
+                                                                            <option value="all">All</option>
+                                                                            <?php } else { ?>
+                                                                            <option>OCCASSION</option>
+                                                                            <?php } ?>
+
+                                                                            <?php
+                                                                            foreach($occassion_array as $occassion)
+                                                                            {
+                                                                                if (@$_GET['occassion'] && $_GET['occassion'] == $occassion)
+                                                                                {
+                                                                                    $occassion_selected = 'selected="selected"';
+                                                                                }
+                                                                                else $occassion_selected = '';
+                                                                                ?>
+
+                                                                            <option value="<?php echo $occassion; ?>" <?php echo $occassion_selected; ?>><?php echo ucfirst($occassion); ?></option>
+
+                                                                                <?php
+                                                                            } ?>
+
+                                                                        </select>
+
+                                                                    </form>
+
+                                                                </div>
+                                                            </div>
+                                                                    <?php
+                                                                } ?>
+
+                                                            <div class="m-grid-col m-grid-col-left">
+                                                                <div class="form-group mobile-thumbs-filter">
+
+                                                                    <form action="" method="GET">
+
+                                                                        <?php if (@$_GET['size'] AND $_GET['size'] !== 'all'): ?>
+                                                                        <input type="hidden" name="size" value="<?php echo $_GET['size']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['color'] AND $_GET['color'] !== 'all'): ?>
+                                                                        <input type="hidden" name="color" value="<?php echo $_GET['color']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['style'] AND $_GET['style'] !== 'all'): ?>
+                                                                        <input type="hidden" name="style" value="<?php echo $_GET['style']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
+                                                                        <input type="hidden" name="occassion" value="<?php echo $_GET['occassion']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['price'] AND $_GET['price'] !== 'default'): ?>
+                                                                        <input type="hidden" name="price" value="<?php echo $_GET['price']; ?>" />
+                                                                        <?php endif; ?>
+
+                                                                        <input type="hidden" class="this-filter" name="availability" value="<?php echo @$_GET['availability']; ?>" />
+
+                                                                        <select class="form-control input-sm select-mobile-thumbs-filter" style="<?php echo @$_GET['availability'] ? $bg_color : ''; ?>">
+
+                                                                            <?php if (@$_GET['price']) { ?>
+                                                                            <option value="all">All</option>
+                                                                            <?php } else { ?>
+                                                                            <option>AVAILABILITY</option>
+                                                                            <?php } ?>
+
+                                                                            <option value="asc" <?php echo @$_GET['availability'] == 'instock' ? 'selected': '';?>>
+                                                                                In Stock
+                                                                            </option>
+                                                                            <option value="desc" <?php echo @$_GET['availability'] == 'preorder' ? 'selected': '';?>>
+                                                                                Pre Order
+                                                                            </option>
+                                                                            <option value="asc" <?php echo @$_GET['availability'] == 'onsale' ? 'selected': '';?>>
+                                                                                On Sale
+                                                                            </option>
+
+                                                                        </select>
+
+                                                                    </form>
+
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
 													<!-- END DESKTOP PRODUCT FILTER -->
 
 													<!-- BEGIN PRODUCT THUMBS Portlet PORTLET -->
-													<div class="portlet light">
+													<div class="portlet light" style="margin-bottom:0px;padding-bottom:0px;">
 
 														<div class="portlet-body">
 
 															<!-- BEGIN DESKTOP THUMBS PAGE TOP UTILITIES SECTION -->
-															<div class="thumbs-utilities desktop hidden-xs clearfix">
+                                                            <!-- DOC: hiding this old sort and pagination temporarity - for depracation -->
+															<div class="thumbs-utilities desktop hidden-xs clearfix hide">
 
 																<!-- BEGIN Form ==============================================================-->
 																<?php echo form_open(
@@ -194,9 +544,14 @@
 
 															<!-- BEGIN MOBILE THUMBS PAGE TOP UTILITIES FILTER/SORT SECTION -->
 															<div class="thumbs-utilities mobile hidden-sm hidden-md hidden-lg clearfix">
-																<div class="thumbs-count-all margin-bottom-10">
+
+																<div class="thumbs-count-all margin-bottom-10 text-center">
+                                                                    <?php echo $this->products_list->count_all > $this->webspace_details->options['items_per_page'] ? $this->pagination->create_links() : ''; ?>
+                                                                    <!--
 																	<?php echo number_format($this->products_list->count_all); ?> &nbsp; Items
+                                                                    -->
 																</div>
+
 																<div class="mobile-filter-sort-buttons m-grid" data-object_data='{"<?php echo $this->security->get_csrf_token_name(); ?>":"<?php echo $this->security->get_csrf_hash(); ?>"}'>
 
 																	<div class="m-grid-row">
@@ -218,15 +573,14 @@
 
                                                                                 <form action="" method="GET">
 
-                                                                                    <input type="hidden" name="filter" value="" />
                                         											<?php if (@$_GET['color'] AND $_GET['color'] !== 'all'): ?>
                                         											<input type="hidden" name="color" value="<?php echo $_GET['color']; ?>" />
                                         											<?php endif; ?>
                                                                                     <?php if (@$_GET['style'] AND $_GET['style'] !== 'all'): ?>
                                         											<input type="hidden" name="style" value="<?php echo $_GET['style']; ?>" />
                                         											<?php endif; ?>
-                                        											<?php if (@$_GET['occasion'] AND $_GET['occasion'] !== 'all'): ?>
-                                        											<input type="hidden" name="occasion" value="<?php echo $_GET['occasion']; ?>" />
+                                        											<?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
+                                        											<input type="hidden" name="occassion" value="<?php echo $_GET['occassion']; ?>" />
                                         											<?php endif; ?>
                                         											<?php if (@$_GET['price'] AND $_GET['price'] !== 'default'): ?>
                                         											<input type="hidden" name="price" value="<?php echo $_GET['price']; ?>" />
@@ -242,7 +596,7 @@
                                                                                         <?php if (@$_GET['size']) { ?>
                                                                                         <option value="all">All</option>
                                                                                         <?php } else { ?>
-                                                                                        <option>Size</option>
+                                                                                        <option>SIZE</option>
                                                                                         <?php } ?>
 
                                                                                         <?php
@@ -274,15 +628,14 @@
 
                                                                                 <form action="" method="GET">
 
-                                                                                    <input type="hidden" name="filter" value="" />
                                                                                     <?php if (@$_GET['size'] AND $_GET['size'] !== 'all'): ?>
                                         											<input type="hidden" name="size" value="<?php echo $_GET['size']; ?>" />
                                         											<?php endif; ?>
                                         											<?php if (@$_GET['color'] AND $_GET['color'] !== 'all'): ?>
                                         											<input type="hidden" name="color" value="<?php echo $_GET['color']; ?>" />
                                         											<?php endif; ?>
-                                        											<?php if (@$_GET['occasion'] AND $_GET['occasion'] !== 'all'): ?>
-                                        											<input type="hidden" name="occasion" value="<?php echo $_GET['occasion']; ?>" />
+                                        											<?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
+                                        											<input type="hidden" name="occassion" value="<?php echo $_GET['occassion']; ?>" />
                                         											<?php endif; ?>
                                         											<?php if (@$_GET['price'] AND $_GET['price'] !== 'default'): ?>
                                         											<input type="hidden" name="price" value="<?php echo $_GET['price']; ?>" />
@@ -298,7 +651,7 @@
                                                                                         <?php if (@$_GET['style']) { ?>
                                                                                         <option value="all">All</option>
                                                                                         <?php } else { ?>
-                                                                                        <option>Stylings</option>
+                                                                                        <option>STYLING</option>
                                                                                         <?php } ?>
 
                                                                                         <?php
@@ -327,7 +680,6 @@
 
                                                                                 <form action="" method="GET">
 
-                                                                                    <input type="hidden" name="filter" value="" />
                                                                                     <?php if (@$_GET['size'] AND $_GET['size'] !== 'all'): ?>
                                         											<input type="hidden" name="size" value="<?php echo $_GET['size']; ?>" />
                                         											<?php endif; ?>
@@ -337,8 +689,8 @@
                                                                                     <?php if (@$_GET['style'] AND $_GET['style'] !== 'all'): ?>
                                         											<input type="hidden" name="style" value="<?php echo $_GET['style']; ?>" />
                                         											<?php endif; ?>
-                                        											<?php if (@$_GET['occasion'] AND $_GET['occasion'] !== 'all'): ?>
-                                        											<input type="hidden" name="occasion" value="<?php echo $_GET['occasion']; ?>" />
+                                        											<?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
+                                        											<input type="hidden" name="occassion" value="<?php echo $_GET['occassion']; ?>" />
                                         											<?php endif; ?>
                                                                                     <?php if (@$_GET['availability'] AND $_GET['availability'] !== 'all'): ?>
                                         											<input type="hidden" name="availability" value="<?php echo $_GET['availability']; ?>" />
@@ -351,7 +703,7 @@
                                                                                         <?php if (@$_GET['price']) { ?>
                                                                                         <option value="all">All</option>
                                                                                         <?php } else { ?>
-                                                                                        <option>By Price</option>
+                                                                                        <option>PRICE</option>
                                                                                         <?php } ?>
 
                                                                                         <option value="asc" <?php echo @$_GET['price'] == 'asc' ? 'selected': '';?>>
@@ -386,15 +738,14 @@
 
                                                                                 <form action="" method="GET">
 
-                                                                                    <input type="hidden" name="filter" value="" />
                                                                                     <?php if (@$_GET['size'] AND $_GET['size'] !== 'all'): ?>
                                         											<input type="hidden" name="size" value="<?php echo $_GET['size']; ?>" />
                                         											<?php endif; ?>
                                                                                     <?php if (@$_GET['style'] AND $_GET['style'] !== 'all'): ?>
                                         											<input type="hidden" name="style" value="<?php echo $_GET['style']; ?>" />
                                         											<?php endif; ?>
-                                        											<?php if (@$_GET['occasion'] AND $_GET['occasion'] !== 'all'): ?>
-                                        											<input type="hidden" name="occasion" value="<?php echo $_GET['occasion']; ?>" />
+                                        											<?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
+                                        											<input type="hidden" name="occassion" value="<?php echo $_GET['occassion']; ?>" />
                                         											<?php endif; ?>
                                                                                     <?php if (@$_GET['price'] AND $_GET['price'] !== 'default'): ?>
                                         											<input type="hidden" name="price" value="<?php echo $_GET['price']; ?>" />
@@ -410,7 +761,7 @@
                                                                                         <?php if (@$_GET['color']) { ?>
                                                                                         <option value="all">All</option>
                                                                                         <?php } else { ?>
-                                                                                        <option>Color</option>
+                                                                                        <option>COLOR</option>
                                                                                         <?php } ?>
 
                                                                                         <?php
@@ -436,56 +787,104 @@
                                                                                 <?php
                                                                             } ?>
                                                                             <?php
-                                                                            if (@$occasion_array)
+                                                                            if (@$occassion_array)
                                                                             { ?>
                                                                             <div class="form-group mobile-thumbs-filter">
-                                                                                <select class="form-control input-sm select-mobile-thumbs-filter">
 
-                                                                                    <?php if (@$_GET['occasion']) { ?>
-                                                                                    <option value="all">All</option>
-                                                                                    <?php } else { ?>
-                                                                                    <option>Occasion</option>
-                                                                                    <?php } ?>
+                                                                                <form action="" method="GET">
 
-                                                                                    <?php
-                                													foreach($occasion_array as $occasion)
-                                													{
-                                														if (@$_GET['occasion'] && $_GET['occasion'] == $occasion)
-                                														{
-                                															$occasion_selected = 'selected="selected"';
-                                														}
-                                														else $occasion_selected = '';
-                                														?>
+                                                                                    <?php if (@$_GET['size'] AND $_GET['size'] !== 'all'): ?>
+                                        											<input type="hidden" name="size" value="<?php echo $_GET['size']; ?>" />
+                                        											<?php endif; ?>
+                                        											<?php if (@$_GET['color'] AND $_GET['color'] !== 'all'): ?>
+                                        											<input type="hidden" name="color" value="<?php echo $_GET['color']; ?>" />
+                                        											<?php endif; ?>
+                                                                                    <?php if (@$_GET['style'] AND $_GET['style'] !== 'all'): ?>
+                                        											<input type="hidden" name="style" value="<?php echo $_GET['style']; ?>" />
+                                        											<?php endif; ?>
+                                        											<?php if (@$_GET['price'] AND $_GET['price'] !== 'default'): ?>
+                                        											<input type="hidden" name="price" value="<?php echo $_GET['price']; ?>" />
+                                        											<?php endif; ?>
+                                                                                    <?php if (@$_GET['availability'] AND $_GET['availability'] !== 'all'): ?>
+                                        											<input type="hidden" name="availability" value="<?php echo $_GET['availability']; ?>" />
+                                        											<?php endif; ?>
 
-                                                                                    <option value="<?php echo $occasion; ?>" <?php echo $occasion_selected; ?>><?php echo ucfirst($occasion); ?></option>
+                                                                                    <input type="hidden" class="this-filter" name="occassion" value="<?php echo @$_GET['occassion']; ?>" />
+
+                                                                                    <select class="form-control input-sm select-mobile-thumbs-filter" style="<?php echo @$_GET['occassion'] ? $bg_color : ''; ?>">
+
+                                                                                        <?php if (@$_GET['occassion']) { ?>
+                                                                                        <option value="all">All</option>
+                                                                                        <?php } else { ?>
+                                                                                        <option>OCCASSION</option>
+                                                                                        <?php } ?>
 
                                                                                         <?php
-                                    												} ?>
+                                    													foreach($occassion_array as $occassion)
+                                    													{
+                                    														if (@$_GET['occassion'] && $_GET['occassion'] == $occassion)
+                                    														{
+                                    															$occassion_selected = 'selected="selected"';
+                                    														}
+                                    														else $occassion_selected = '';
+                                    														?>
 
-                                                                                </select>
+                                                                                        <option value="<?php echo $occassion; ?>" <?php echo $occassion_selected; ?>><?php echo ucfirst($occassion); ?></option>
+
+                                                                                            <?php
+                                        												} ?>
+
+                                                                                    </select>
+
+                                                                                </form>
+
                                                                             </div>
                                                                                 <?php
                                                                             } ?>
-                                                                                <div class="form-group mobile-thumbs-filter">
-                                                                                <select class="form-control input-sm select-mobile-thumbs-filter">
+                                                                            <div class="form-group mobile-thumbs-filter">
 
-                                                                                    <?php if (@$_GET['price']) { ?>
-                                                                                    <option value="all">All</option>
-                                                                                    <?php } else { ?>
-                                                                                    <option>Availbility</option>
-                                                                                    <?php } ?>
+                                                                                <form action="" method="GET">
 
-                                                                                    <option value="asc" <?php echo @$_GET['availability'] == 'instock' ? 'selected': '';?>>
-                        																In Stock
-                        															</option>
-                        															<option value="desc" <?php echo @$_GET['availability'] == 'preorder' ? 'selected': '';?>>
-                        																Pre Order
-                        															</option>
-                                                                                    <option value="asc" <?php echo @$_GET['availability'] == 'onsale' ? 'selected': '';?>>
-                        																On Sale
-                        															</option>
+                                                                                    <?php if (@$_GET['size'] AND $_GET['size'] !== 'all'): ?>
+                                        											<input type="hidden" name="size" value="<?php echo $_GET['size']; ?>" />
+                                        											<?php endif; ?>
+                                        											<?php if (@$_GET['color'] AND $_GET['color'] !== 'all'): ?>
+                                        											<input type="hidden" name="color" value="<?php echo $_GET['color']; ?>" />
+                                        											<?php endif; ?>
+                                                                                    <?php if (@$_GET['style'] AND $_GET['style'] !== 'all'): ?>
+                                        											<input type="hidden" name="style" value="<?php echo $_GET['style']; ?>" />
+                                        											<?php endif; ?>
+                                                                                    <?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
+                                        											<input type="hidden" name="occassion" value="<?php echo $_GET['occassion']; ?>" />
+                                        											<?php endif; ?>
+                                        											<?php if (@$_GET['price'] AND $_GET['price'] !== 'default'): ?>
+                                        											<input type="hidden" name="price" value="<?php echo $_GET['price']; ?>" />
+                                        											<?php endif; ?>
 
-                                                                                </select>
+                                                                                    <input type="hidden" class="this-filter" name="availability" value="<?php echo @$_GET['availability']; ?>" />
+
+                                                                                    <select class="form-control input-sm select-mobile-thumbs-filter" style="<?php echo @$_GET['availability'] ? $bg_color : ''; ?>">
+
+                                                                                        <?php if (@$_GET['price']) { ?>
+                                                                                        <option value="all">All</option>
+                                                                                        <?php } else { ?>
+                                                                                        <option>AVAILABILITY</option>
+                                                                                        <?php } ?>
+
+                                                                                        <option value="asc" <?php echo @$_GET['availability'] == 'instock' ? 'selected': '';?>>
+                            																In Stock
+                            															</option>
+                            															<option value="desc" <?php echo @$_GET['availability'] == 'preorder' ? 'selected': '';?>>
+                            																Pre Order
+                            															</option>
+                                                                                        <option value="asc" <?php echo @$_GET['availability'] == 'onsale' ? 'selected': '';?>>
+                            																On Sale
+                            															</option>
+
+                                                                                    </select>
+
+                                                                                </form>
+
                                                                             </div>
 
 																		</div>
@@ -853,7 +1252,7 @@
 															<!-- END THUMBS WRAPPER CONTAINER -->
 
 															<!-- BEGIN DESKTOP THUMBS PAGE BOTTOM UTILITIES SECTION -->
-															<div class="thumbs-utilities desktop thumbs-utilities-info margin-top-30 hidden-xs clearfix">
+															<div class="thumbs-utilities desktop thumbs-utilities-info margin-top-30 hidden-xs clearfix hide">
 
 																<div class="tools">
 																	<ul class="list-inline thumbs-utilities-info" style="display:inline-block;">
@@ -892,6 +1291,354 @@
 
 															<!-- BEGIN MOBILE THUMBS PAGE BOTTOM UTILITIES PAGINATION/NEXT SECTION -->
 															<div class="thumbs-utilities margin-top-30 hidden-sm hidden-md hidden-lg clearfix">
+
+																<div class="mobile-filter-sort-buttons m-grid" data-object_data='{"<?php echo $this->security->get_csrf_token_name(); ?>":"<?php echo $this->security->get_csrf_hash(); ?>"}'>
+
+																	<div class="m-grid-row">
+																		<div class="m-grid-col m-grid-col-left m-grid-col-xs-6" style="padding-right:7px;">
+
+																			<div class="form-group hide">
+																				<a href="#modal-mobile-filter" class="btn dark btn-block" data-toggle="modal" style="border:3px solid black;">
+																					FILTER <?php echo $this->filter_items_count ? '('.$this->filter_items_count.')' : ''; ?>
+																				</a>
+																			</div>
+
+                                                                            <?php
+                                                                            // set dropdown background color here as universal item
+                                                                            $bg_color = 'background:#2f353b;color:white;';
+
+                                                                            if (@$size_array)
+                                                                            { ?>
+                                                                            <div class="form-group mobile-thumbs-filter">
+
+                                                                                <form action="" method="GET">
+
+                                        											<?php if (@$_GET['color'] AND $_GET['color'] !== 'all'): ?>
+                                        											<input type="hidden" name="color" value="<?php echo $_GET['color']; ?>" />
+                                        											<?php endif; ?>
+                                                                                    <?php if (@$_GET['style'] AND $_GET['style'] !== 'all'): ?>
+                                        											<input type="hidden" name="style" value="<?php echo $_GET['style']; ?>" />
+                                        											<?php endif; ?>
+                                        											<?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
+                                        											<input type="hidden" name="occassion" value="<?php echo $_GET['occassion']; ?>" />
+                                        											<?php endif; ?>
+                                        											<?php if (@$_GET['price'] AND $_GET['price'] !== 'default'): ?>
+                                        											<input type="hidden" name="price" value="<?php echo $_GET['price']; ?>" />
+                                        											<?php endif; ?>
+                                                                                    <?php if (@$_GET['availability'] AND $_GET['availability'] !== 'all'): ?>
+                                        											<input type="hidden" name="availability" value="<?php echo $_GET['availability']; ?>" />
+                                        											<?php endif; ?>
+
+                                                                                    <input type="hidden" class="this-filter" name="size" value="<?php echo @$_GET['size']; ?>" />
+
+                                                                                    <select class="form-control input-sm select-mobile-thumbs-filter" style="<?php echo @$_GET['size'] ? $bg_color : ''; ?>">
+
+                                                                                        <?php if (@$_GET['size']) { ?>
+                                                                                        <option value="all">All</option>
+                                                                                        <?php } else { ?>
+                                                                                        <option>SIZE</option>
+                                                                                        <?php } ?>
+
+                                                                                        <?php
+                                    													foreach($size_array as $size)
+                                    													{
+                                    														if (@$_GET['size'] && $_GET['size'] == $size)
+                                    														{
+                                    															$size_selected = 'selected="selected"';
+                                    														}
+                                    														else $size_selected = '';
+                                    														?>
+
+                                                                                        <option value="<?php echo $size; ?>" <?php echo $size_selected; ?>><?php echo 'Size '.$size; ?></option>
+
+                                                                                            <?php
+                                        												} ?>
+
+                                                                                    </select>
+
+                                                                                </form>
+
+                                                                            </div>
+                                                                                <?php
+                                                                            } ?>
+                                                                            <?php
+                                                                            if (@$styles_array)
+                                                                            { ?>
+                                                                            <div class="form-group mobile-thumbs-filter">
+
+                                                                                <form action="" method="GET">
+
+                                                                                    <?php if (@$_GET['size'] AND $_GET['size'] !== 'all'): ?>
+                                        											<input type="hidden" name="size" value="<?php echo $_GET['size']; ?>" />
+                                        											<?php endif; ?>
+                                        											<?php if (@$_GET['color'] AND $_GET['color'] !== 'all'): ?>
+                                        											<input type="hidden" name="color" value="<?php echo $_GET['color']; ?>" />
+                                        											<?php endif; ?>
+                                        											<?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
+                                        											<input type="hidden" name="occassion" value="<?php echo $_GET['occassion']; ?>" />
+                                        											<?php endif; ?>
+                                        											<?php if (@$_GET['price'] AND $_GET['price'] !== 'default'): ?>
+                                        											<input type="hidden" name="price" value="<?php echo $_GET['price']; ?>" />
+                                        											<?php endif; ?>
+                                                                                    <?php if (@$_GET['availability'] AND $_GET['availability'] !== 'all'): ?>
+                                        											<input type="hidden" name="availability" value="<?php echo $_GET['availability']; ?>" />
+                                        											<?php endif; ?>
+
+                                                                                    <input type="hidden" class="this-filter" name="style" value="<?php echo @$_GET['style']; ?>" />
+
+                                                                                    <select class="form-control input-sm select-mobile-thumbs-filter" style="<?php echo @$_GET['style'] ? $bg_color : ''; ?>">
+
+                                                                                        <?php if (@$_GET['style']) { ?>
+                                                                                        <option value="all">All</option>
+                                                                                        <?php } else { ?>
+                                                                                        <option>STYLING</option>
+                                                                                        <?php } ?>
+
+                                                                                        <?php
+                                    													foreach($styles_array as $style)
+                                    													{
+                                                                                            if (@$_GET['style'] && $_GET['style'] == $style)
+                                    														{
+                                    															$style_selected = 'selected="selected"';
+                                    														}
+                                    														else $style_selected = '';
+                                    														?>
+
+                                                                                        <option value="<?php echo $style; ?>" <?php echo $style_selected; ?>><?php echo ucfirst($style); ?></option>
+
+                                                                                            <?php
+                                        												} ?>
+
+                                                                                    </select>
+
+                                                                                </form>
+
+                                                                            </div>
+                                                                                <?php
+                                                                            } ?>
+                                                                            <div class="form-group mobile-thumbs-filter">
+
+                                                                                <form action="" method="GET">
+
+                                                                                    <?php if (@$_GET['size'] AND $_GET['size'] !== 'all'): ?>
+                                        											<input type="hidden" name="size" value="<?php echo $_GET['size']; ?>" />
+                                        											<?php endif; ?>
+                                        											<?php if (@$_GET['color'] AND $_GET['color'] !== 'all'): ?>
+                                        											<input type="hidden" name="color" value="<?php echo $_GET['color']; ?>" />
+                                        											<?php endif; ?>
+                                                                                    <?php if (@$_GET['style'] AND $_GET['style'] !== 'all'): ?>
+                                        											<input type="hidden" name="style" value="<?php echo $_GET['style']; ?>" />
+                                        											<?php endif; ?>
+                                        											<?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
+                                        											<input type="hidden" name="occassion" value="<?php echo $_GET['occassion']; ?>" />
+                                        											<?php endif; ?>
+                                                                                    <?php if (@$_GET['availability'] AND $_GET['availability'] !== 'all'): ?>
+                                        											<input type="hidden" name="availability" value="<?php echo $_GET['availability']; ?>" />
+                                        											<?php endif; ?>
+
+                                                                                    <input type="hidden" class="this-filter" name="price" value="<?php echo @$_GET['price']; ?>" />
+
+                                                                                    <select class="form-control input-sm select-mobile-thumbs-filter" style="<?php echo @$_GET['price'] ? $bg_color : ''; ?>">
+
+                                                                                        <?php if (@$_GET['price']) { ?>
+                                                                                        <option value="all">All</option>
+                                                                                        <?php } else { ?>
+                                                                                        <option>PRICE</option>
+                                                                                        <?php } ?>
+
+                                                                                        <option value="asc" <?php echo @$_GET['price'] == 'asc' ? 'selected': '';?>>
+                            																Low - High
+                            															</option>
+                            															<option value="desc" <?php echo @$_GET['price'] == 'desc' ? 'selected': '';?>>
+                            																High - Low
+                            															</option>
+                            															<option value="default">
+                            																Default
+                            															</option>
+
+                                                                                    </select>
+
+                                                                                </form>
+
+                                                                            </div>
+
+																		</div>
+																		<div class="m-grid-col m-grid-col-right m-grid-col-xs-6" style="padding-left:7px;">
+
+																			<div class="form-group hide">
+																				<a href="#modal-mobile-sort" class="btn btn-default btn-block" data-toggle="modal" style="border:3px solid black;">
+																					SORT <?php echo ($this->session->sort_by && $this->session->sort_by !== 'default') ? '(1)' : ''; ?>
+																				</a>
+																			</div>
+
+                                                                            <?php
+                                                                            if (@$color_array)
+                                                                            { ?>
+                                                                            <div class="form-group mobile-thumbs-filter">
+
+                                                                                <form action="" method="GET">
+
+                                                                                    <?php if (@$_GET['size'] AND $_GET['size'] !== 'all'): ?>
+                                        											<input type="hidden" name="size" value="<?php echo $_GET['size']; ?>" />
+                                        											<?php endif; ?>
+                                                                                    <?php if (@$_GET['style'] AND $_GET['style'] !== 'all'): ?>
+                                        											<input type="hidden" name="style" value="<?php echo $_GET['style']; ?>" />
+                                        											<?php endif; ?>
+                                        											<?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
+                                        											<input type="hidden" name="occassion" value="<?php echo $_GET['occassion']; ?>" />
+                                        											<?php endif; ?>
+                                                                                    <?php if (@$_GET['price'] AND $_GET['price'] !== 'default'): ?>
+                                        											<input type="hidden" name="price" value="<?php echo $_GET['price']; ?>" />
+                                        											<?php endif; ?>
+                                                                                    <?php if (@$_GET['availability'] AND $_GET['availability'] !== 'all'): ?>
+                                        											<input type="hidden" name="availability" value="<?php echo $_GET['availability']; ?>" />
+                                        											<?php endif; ?>
+
+                                                                                    <input type="hidden" class="this-filter" name="color" value="<?php echo @$_GET['color']; ?>" />
+
+                                                                                    <select class="form-control input-sm select-mobile-thumbs-filter" style="<?php echo @$_GET['color'] ? $bg_color : ''; ?>">
+
+                                                                                        <?php if (@$_GET['color']) { ?>
+                                                                                        <option value="all">All</option>
+                                                                                        <?php } else { ?>
+                                                                                        <option>COLOR</option>
+                                                                                        <?php } ?>
+
+                                                                                        <?php
+                                    													foreach($color_array as $color)
+                                    													{
+                                    														if (@$_GET['color'] && $_GET['color'] == $color)
+                                    														{
+                                    															$color_selected = 'selected="selected"';
+                                    														}
+                                    														else $color_selected = '';
+                                    														?>
+
+                                                                                        <option value="<?php echo $color; ?>" <?php echo $color_selected; ?>><?php echo ucfirst($color); ?></option>
+
+                                                                                            <?php
+                                        												} ?>
+
+                                                                                    </select>
+
+                                                                                </form>
+
+                                                                            </div>
+                                                                                <?php
+                                                                            } ?>
+                                                                            <?php
+                                                                            if (@$occassion_array)
+                                                                            { ?>
+                                                                            <div class="form-group mobile-thumbs-filter">
+
+                                                                                <form action="" method="GET">
+
+                                                                                    <?php if (@$_GET['size'] AND $_GET['size'] !== 'all'): ?>
+                                        											<input type="hidden" name="size" value="<?php echo $_GET['size']; ?>" />
+                                        											<?php endif; ?>
+                                        											<?php if (@$_GET['color'] AND $_GET['color'] !== 'all'): ?>
+                                        											<input type="hidden" name="color" value="<?php echo $_GET['color']; ?>" />
+                                        											<?php endif; ?>
+                                                                                    <?php if (@$_GET['style'] AND $_GET['style'] !== 'all'): ?>
+                                        											<input type="hidden" name="style" value="<?php echo $_GET['style']; ?>" />
+                                        											<?php endif; ?>
+                                        											<?php if (@$_GET['price'] AND $_GET['price'] !== 'default'): ?>
+                                        											<input type="hidden" name="price" value="<?php echo $_GET['price']; ?>" />
+                                        											<?php endif; ?>
+                                                                                    <?php if (@$_GET['availability'] AND $_GET['availability'] !== 'all'): ?>
+                                        											<input type="hidden" name="availability" value="<?php echo $_GET['availability']; ?>" />
+                                        											<?php endif; ?>
+
+                                                                                    <input type="hidden" class="this-filter" name="occassion" value="<?php echo @$_GET['occassion']; ?>" />
+
+                                                                                    <select class="form-control input-sm select-mobile-thumbs-filter" style="<?php echo @$_GET['occassion'] ? $bg_color : ''; ?>">
+
+                                                                                        <?php if (@$_GET['occassion']) { ?>
+                                                                                        <option value="all">All</option>
+                                                                                        <?php } else { ?>
+                                                                                        <option>OCCASSION</option>
+                                                                                        <?php } ?>
+
+                                                                                        <?php
+                                    													foreach($occassion_array as $occassion)
+                                    													{
+                                    														if (@$_GET['occassion'] && $_GET['occassion'] == $occassion)
+                                    														{
+                                    															$occassion_selected = 'selected="selected"';
+                                    														}
+                                    														else $occassion_selected = '';
+                                    														?>
+
+                                                                                        <option value="<?php echo $occassion; ?>" <?php echo $occassion_selected; ?>><?php echo ucfirst($occassion); ?></option>
+
+                                                                                            <?php
+                                        												} ?>
+
+                                                                                    </select>
+
+                                                                                </form>
+
+                                                                            </div>
+                                                                                <?php
+                                                                            } ?>
+                                                                            <div class="form-group mobile-thumbs-filter">
+
+                                                                                <form action="" method="GET">
+
+                                                                                    <?php if (@$_GET['size'] AND $_GET['size'] !== 'all'): ?>
+                                        											<input type="hidden" name="size" value="<?php echo $_GET['size']; ?>" />
+                                        											<?php endif; ?>
+                                        											<?php if (@$_GET['color'] AND $_GET['color'] !== 'all'): ?>
+                                        											<input type="hidden" name="color" value="<?php echo $_GET['color']; ?>" />
+                                        											<?php endif; ?>
+                                                                                    <?php if (@$_GET['style'] AND $_GET['style'] !== 'all'): ?>
+                                        											<input type="hidden" name="style" value="<?php echo $_GET['style']; ?>" />
+                                        											<?php endif; ?>
+                                                                                    <?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
+                                        											<input type="hidden" name="occassion" value="<?php echo $_GET['occassion']; ?>" />
+                                        											<?php endif; ?>
+                                        											<?php if (@$_GET['price'] AND $_GET['price'] !== 'default'): ?>
+                                        											<input type="hidden" name="price" value="<?php echo $_GET['price']; ?>" />
+                                        											<?php endif; ?>
+
+                                                                                    <input type="hidden" class="this-filter" name="availability" value="<?php echo @$_GET['availability']; ?>" />
+
+                                                                                    <select class="form-control input-sm select-mobile-thumbs-filter" style="<?php echo @$_GET['availability'] ? $bg_color : ''; ?>">
+
+                                                                                        <?php if (@$_GET['price']) { ?>
+                                                                                        <option value="all">All</option>
+                                                                                        <?php } else { ?>
+                                                                                        <option>AVAILABILITY</option>
+                                                                                        <?php } ?>
+
+                                                                                        <option value="asc" <?php echo @$_GET['availability'] == 'instock' ? 'selected': '';?>>
+                            																In Stock
+                            															</option>
+                            															<option value="desc" <?php echo @$_GET['availability'] == 'preorder' ? 'selected': '';?>>
+                            																Pre Order
+                            															</option>
+                                                                                        <option value="asc" <?php echo @$_GET['availability'] == 'onsale' ? 'selected': '';?>>
+                            																On Sale
+                            															</option>
+
+                                                                                    </select>
+
+                                                                                </form>
+
+                                                                            </div>
+
+																		</div>
+																	</div>
+																</div>
+
+                                                                <div class="thumbs-count-all margin-bottom-10 text-center">
+                                                                    <?php echo $this->products_list->count_all > $this->webspace_details->options['items_per_page'] ? $this->pagination->create_links() : ''; ?>
+                                                                    <!--
+																	<?php echo number_format($this->products_list->count_all); ?> &nbsp; Items
+                                                                    -->
+																</div>
+
+                                                                <!-- HIDING this old pagination temporarily - for depracation
 																<?php echo $this->num ?: 1; ?> &nbsp; of &nbsp; <?php echo ceil($this->products_list->count_all / 99); ?> &nbsp;
 																<?php
 																if (ceil($this->products_list->count_all / 99) > 1)
@@ -906,6 +1653,7 @@
 																	}
 																}
 																?>
+                                                                -->
 															</div>
                                                             <!-- END MOBILE THUMBS PAGE BOTTOM UTILITIES PAGINATION/NEXT SECTION -->
 
@@ -913,6 +1661,362 @@
 
 													</div>
 													<!-- END PRODUCT THUMBS Portlet PORTLET -->
+
+                                                    <!-- BEGIN DESKTOP PRODUCT FILTER -->
+                                                    <div class="m-grid produc-thumbs-filter hidden-xs clearfix" style="padding:15px 10px 5px;">
+                                                        <div class="m-grid-row">
+
+                                                                <?php
+                                                                // set dropdown background color here as universal item
+                                                                $bg_color = 'background:#2f353b;color:white;';
+
+                                                                if (@$size_array)
+                                                                { ?>
+                                                            <div class="m-grid-col m-grid-col-left" style="padding-right:7px;">
+                                                                <div class="form-group mobile-thumbs-filter">
+
+                                                                    <form action="" method="GET">
+
+                                                                        <?php if (@$_GET['color'] AND $_GET['color'] !== 'all'): ?>
+                                                                        <input type="hidden" name="color" value="<?php echo $_GET['color']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['style'] AND $_GET['style'] !== 'all'): ?>
+                                                                        <input type="hidden" name="style" value="<?php echo $_GET['style']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
+                                                                        <input type="hidden" name="occassion" value="<?php echo $_GET['occassion']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['price'] AND $_GET['price'] !== 'default'): ?>
+                                                                        <input type="hidden" name="price" value="<?php echo $_GET['price']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['availability'] AND $_GET['availability'] !== 'all'): ?>
+                                                                        <input type="hidden" name="availability" value="<?php echo $_GET['availability']; ?>" />
+                                                                        <?php endif; ?>
+
+                                                                        <input type="hidden" class="this-filter" name="size" value="<?php echo @$_GET['size']; ?>" />
+
+                                                                        <select class="form-control input-sm select-mobile-thumbs-filter" style="<?php echo @$_GET['size'] ? $bg_color : ''; ?>">
+
+                                                                            <?php if (@$_GET['size']) { ?>
+                                                                            <option value="all">All</option>
+                                                                            <?php } else { ?>
+                                                                            <option>SIZE</option>
+                                                                            <?php } ?>
+
+                                                                            <?php
+                                                                            foreach($size_array as $size)
+                                                                            {
+                                                                                if (@$_GET['size'] && $_GET['size'] == $size)
+                                                                                {
+                                                                                    $size_selected = 'selected="selected"';
+                                                                                }
+                                                                                else $size_selected = '';
+                                                                                ?>
+
+                                                                            <option value="<?php echo $size; ?>" <?php echo $size_selected; ?>><?php echo 'Size '.$size; ?></option>
+
+                                                                                <?php
+                                                                            } ?>
+
+                                                                        </select>
+
+                                                                    </form>
+
+                                                                </div>
+                                                            </div>
+                                                                    <?php
+                                                                } ?>
+
+                                                                <?php
+                                                                if (@$styles_array)
+                                                                { ?>
+                                                            <div class="m-grid-col m-grid-col-left" style="padding-right:7px;">
+                                                                <div class="form-group mobile-thumbs-filter">
+
+                                                                    <form action="" method="GET">
+
+                                                                        <?php if (@$_GET['size'] AND $_GET['size'] !== 'all'): ?>
+                                                                        <input type="hidden" name="size" value="<?php echo $_GET['size']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['color'] AND $_GET['color'] !== 'all'): ?>
+                                                                        <input type="hidden" name="color" value="<?php echo $_GET['color']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
+                                                                        <input type="hidden" name="occassion" value="<?php echo $_GET['occassion']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['price'] AND $_GET['price'] !== 'default'): ?>
+                                                                        <input type="hidden" name="price" value="<?php echo $_GET['price']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['availability'] AND $_GET['availability'] !== 'all'): ?>
+                                                                        <input type="hidden" name="availability" value="<?php echo $_GET['availability']; ?>" />
+                                                                        <?php endif; ?>
+
+                                                                        <input type="hidden" class="this-filter" name="style" value="<?php echo @$_GET['style']; ?>" />
+
+                                                                        <select class="form-control input-sm select-mobile-thumbs-filter" style="<?php echo @$_GET['style'] ? $bg_color : ''; ?>">
+
+                                                                            <?php if (@$_GET['style']) { ?>
+                                                                            <option value="all">All</option>
+                                                                            <?php } else { ?>
+                                                                            <option>STYLING</option>
+                                                                            <?php } ?>
+
+                                                                            <?php
+                                                                            foreach($styles_array as $style)
+                                                                            {
+                                                                                if (@$_GET['style'] && $_GET['style'] == $style)
+                                                                                {
+                                                                                    $style_selected = 'selected="selected"';
+                                                                                }
+                                                                                else $style_selected = '';
+                                                                                ?>
+
+                                                                            <option value="<?php echo $style; ?>" <?php echo $style_selected; ?>><?php echo ucfirst($style); ?></option>
+
+                                                                                <?php
+                                                                            } ?>
+
+                                                                        </select>
+
+                                                                    </form>
+
+                                                                </div>
+                                                            </div>
+                                                                    <?php
+                                                                } ?>
+
+                                                            <div class="m-grid-col m-grid-col-left" style="padding-right:7px;">
+                                                                <div class="form-group mobile-thumbs-filter">
+
+                                                                    <form action="" method="GET">
+
+                                                                        <?php if (@$_GET['size'] AND $_GET['size'] !== 'all'): ?>
+                                                                        <input type="hidden" name="size" value="<?php echo $_GET['size']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['color'] AND $_GET['color'] !== 'all'): ?>
+                                                                        <input type="hidden" name="color" value="<?php echo $_GET['color']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['style'] AND $_GET['style'] !== 'all'): ?>
+                                                                        <input type="hidden" name="style" value="<?php echo $_GET['style']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
+                                                                        <input type="hidden" name="occassion" value="<?php echo $_GET['occassion']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['availability'] AND $_GET['availability'] !== 'all'): ?>
+                                                                        <input type="hidden" name="availability" value="<?php echo $_GET['availability']; ?>" />
+                                                                        <?php endif; ?>
+
+                                                                        <input type="hidden" class="this-filter" name="price" value="<?php echo @$_GET['price']; ?>" />
+
+                                                                        <select class="form-control input-sm select-mobile-thumbs-filter" style="<?php echo @$_GET['price'] ? $bg_color : ''; ?>">
+
+                                                                            <?php if (@$_GET['price']) { ?>
+                                                                            <option value="all">All</option>
+                                                                            <?php } else { ?>
+                                                                            <option>PRICE</option>
+                                                                            <?php } ?>
+
+                                                                            <option value="asc" <?php echo @$_GET['price'] == 'asc' ? 'selected': '';?>>
+                                                                                Low - High
+                                                                            </option>
+                                                                            <option value="desc" <?php echo @$_GET['price'] == 'desc' ? 'selected': '';?>>
+                                                                                High - Low
+                                                                            </option>
+                                                                            <option value="default">
+                                                                                Default
+                                                                            </option>
+
+                                                                        </select>
+
+                                                                    </form>
+
+                                                                </div>
+                                                            </div>
+
+                                                                <?php
+                                                                if (@$color_array)
+                                                                { ?>
+                                                            <div class="m-grid-col m-grid-col-left" style="padding-right:7px;">
+                                                                <div class="form-group mobile-thumbs-filter">
+
+                                                                    <form action="" method="GET">
+
+                                                                        <?php if (@$_GET['size'] AND $_GET['size'] !== 'all'): ?>
+                                                                        <input type="hidden" name="size" value="<?php echo $_GET['size']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['style'] AND $_GET['style'] !== 'all'): ?>
+                                                                        <input type="hidden" name="style" value="<?php echo $_GET['style']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
+                                                                        <input type="hidden" name="occassion" value="<?php echo $_GET['occassion']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['price'] AND $_GET['price'] !== 'default'): ?>
+                                                                        <input type="hidden" name="price" value="<?php echo $_GET['price']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['availability'] AND $_GET['availability'] !== 'all'): ?>
+                                                                        <input type="hidden" name="availability" value="<?php echo $_GET['availability']; ?>" />
+                                                                        <?php endif; ?>
+
+                                                                        <input type="hidden" class="this-filter" name="color" value="<?php echo @$_GET['color']; ?>" />
+
+                                                                        <select class="form-control input-sm select-mobile-thumbs-filter" style="<?php echo @$_GET['color'] ? $bg_color : ''; ?>">
+
+                                                                            <?php if (@$_GET['color']) { ?>
+                                                                            <option value="all">All</option>
+                                                                            <?php } else { ?>
+                                                                            <option>COLOR</option>
+                                                                            <?php } ?>
+
+                                                                            <?php
+                                                                            foreach($color_array as $color)
+                                                                            {
+                                                                                if (@$_GET['color'] && $_GET['color'] == $color)
+                                                                                {
+                                                                                    $color_selected = 'selected="selected"';
+                                                                                }
+                                                                                else $color_selected = '';
+                                                                                ?>
+
+                                                                            <option value="<?php echo $color; ?>" <?php echo $color_selected; ?>><?php echo ucfirst($color); ?></option>
+
+                                                                                <?php
+                                                                            } ?>
+
+                                                                        </select>
+
+                                                                    </form>
+
+                                                                </div>
+                                                            </div>
+                                                                    <?php
+                                                                } ?>
+
+                                                                <?php
+                                                                if (@$occassion_array)
+                                                                { ?>
+                                                            <div class="m-grid-col m-grid-col-left" style="padding-right:7px;">
+                                                                <div class="form-group mobile-thumbs-filter">
+
+                                                                    <form action="" method="GET">
+
+                                                                        <?php if (@$_GET['size'] AND $_GET['size'] !== 'all'): ?>
+                                                                        <input type="hidden" name="size" value="<?php echo $_GET['size']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['color'] AND $_GET['color'] !== 'all'): ?>
+                                                                        <input type="hidden" name="color" value="<?php echo $_GET['color']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['style'] AND $_GET['style'] !== 'all'): ?>
+                                                                        <input type="hidden" name="style" value="<?php echo $_GET['style']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['price'] AND $_GET['price'] !== 'default'): ?>
+                                                                        <input type="hidden" name="price" value="<?php echo $_GET['price']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['availability'] AND $_GET['availability'] !== 'all'): ?>
+                                                                        <input type="hidden" name="availability" value="<?php echo $_GET['availability']; ?>" />
+                                                                        <?php endif; ?>
+
+                                                                        <input type="hidden" class="this-filter" name="occassion" value="<?php echo @$_GET['occassion']; ?>" />
+
+                                                                        <select class="form-control input-sm select-mobile-thumbs-filter" style="<?php echo @$_GET['occassion'] ? $bg_color : ''; ?>">
+
+                                                                            <?php if (@$_GET['occassion']) { ?>
+                                                                            <option value="all">All</option>
+                                                                            <?php } else { ?>
+                                                                            <option>OCCASSION</option>
+                                                                            <?php } ?>
+
+                                                                            <?php
+                                                                            foreach($occassion_array as $occassion)
+                                                                            {
+                                                                                if (@$_GET['occassion'] && $_GET['occassion'] == $occassion)
+                                                                                {
+                                                                                    $occassion_selected = 'selected="selected"';
+                                                                                }
+                                                                                else $occassion_selected = '';
+                                                                                ?>
+
+                                                                            <option value="<?php echo $occassion; ?>" <?php echo $occassion_selected; ?>><?php echo ucfirst($occassion); ?></option>
+
+                                                                                <?php
+                                                                            } ?>
+
+                                                                        </select>
+
+                                                                    </form>
+
+                                                                </div>
+                                                            </div>
+                                                                    <?php
+                                                                } ?>
+
+                                                            <div class="m-grid-col m-grid-col-left">
+                                                                <div class="form-group mobile-thumbs-filter">
+
+                                                                    <form action="" method="GET">
+
+                                                                        <?php if (@$_GET['size'] AND $_GET['size'] !== 'all'): ?>
+                                                                        <input type="hidden" name="size" value="<?php echo $_GET['size']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['color'] AND $_GET['color'] !== 'all'): ?>
+                                                                        <input type="hidden" name="color" value="<?php echo $_GET['color']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['style'] AND $_GET['style'] !== 'all'): ?>
+                                                                        <input type="hidden" name="style" value="<?php echo $_GET['style']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
+                                                                        <input type="hidden" name="occassion" value="<?php echo $_GET['occassion']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['price'] AND $_GET['price'] !== 'default'): ?>
+                                                                        <input type="hidden" name="price" value="<?php echo $_GET['price']; ?>" />
+                                                                        <?php endif; ?>
+
+                                                                        <input type="hidden" class="this-filter" name="availability" value="<?php echo @$_GET['availability']; ?>" />
+
+                                                                        <select class="form-control input-sm select-mobile-thumbs-filter" style="<?php echo @$_GET['availability'] ? $bg_color : ''; ?>">
+
+                                                                            <?php if (@$_GET['price']) { ?>
+                                                                            <option value="all">All</option>
+                                                                            <?php } else { ?>
+                                                                            <option>AVAILABILITY</option>
+                                                                            <?php } ?>
+
+                                                                            <option value="asc" <?php echo @$_GET['availability'] == 'instock' ? 'selected': '';?>>
+                                                                                In Stock
+                                                                            </option>
+                                                                            <option value="desc" <?php echo @$_GET['availability'] == 'preorder' ? 'selected': '';?>>
+                                                                                Pre Order
+                                                                            </option>
+                                                                            <option value="asc" <?php echo @$_GET['availability'] == 'onsale' ? 'selected': '';?>>
+                                                                                On Sale
+                                                                            </option>
+
+                                                                        </select>
+
+                                                                    </form>
+
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+													<!-- END DESKTOP PRODUCT FILTER -->
+
+                                                    <?php if ( ! @$search_result)
+													{ ?>
+
+													<!-- BEGIN DESKTOP THUMBS BOTTOM PAGINATION -->
+                                                    <div class="m-grid produc-thumbs-filter hidden-xs clearfix" style="padding:5px 10px 10px;">
+
+                                                        <!-- BEGIN PAGINTAION -->
+                                                        <div style="float:right;">
+                                                            <?php echo $this->products_list->count_all > $this->webspace_details->options['items_per_page'] ? $this->pagination->create_links() : ''; ?>
+                                                        </div>
+                                                        <!-- END PAGINTAION -->
+
+                                                    </div>
+													<!-- END DESKTOP THUMBS BOTTOM PAGINATION -->
+														<?php
+													} ?>
 
 												</div>
 												<!-- END THUMBS BODY -->

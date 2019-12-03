@@ -98,6 +98,10 @@ class Shop_Controller extends Frontend_Controller {
 
 	/**
 	 * Check Facet Query String Method
+     *
+     * Checks for Facet Query String and Pagination if any
+     * If pagination is present, set $num for product list query
+     * If query string is present, set for product list query as well
 	 *
 	 * @return	object
 	 */
@@ -135,14 +139,18 @@ class Shop_Controller extends Frontend_Controller {
 			}
 			else
 			{
-				// new group, new page
+				// new facet group, new page
 				// let's clear out any pagination from the uri in cases where
 				// referring uri is from a page other than 1
 				$count_segments = count($this->uri->segment_array());
 				if (is_numeric($this->uri->segment($count_segments)))
 				{
+                    // grab the uri segments
+                    $segments_array = $this->uri->segment_array();
+                    // remove the numeric segment
+                    array_pop($segments_array);
 					// redirect user to change the url
-					redirect(site_url($this->uri->uri_string()).'?'.http_build_query($_GET));
+					redirect(site_url(implode('/', $segments_array)).'?'.http_build_query($_GET));
 				}
 				else $this->num = 1;
 			}
@@ -152,19 +160,19 @@ class Shop_Controller extends Frontend_Controller {
 		}
 		else
 		{
-			// check for pagination from url
-			// we are alwasy starting at page 1
-			// Default to the last segment number if one hasn't been defined.
-			$count_segments = count($this->uri->segment_array());
-			if (is_numeric($this->uri->segment($count_segments)))
-			{
-				$this->num = $this->uri->segment($count_segments);
-			}
-			else $this->num = 1;
-
 			// let's unset session 'faceting'
 			$this->session->unset_userdata('faceting');
 		}
+
+        // check for pagination from url
+        // we are alwasy starting at page 1
+        // Default to the last segment number if one hasn't been defined.
+        $count_segments = count($this->uri->segment_array());
+        if (is_numeric($this->uri->segment($count_segments)))
+        {
+            $this->num = $this->uri->segment($count_segments);
+        }
+        else $this->num = 1;
 
 		return $this;
 	}
@@ -392,6 +400,32 @@ class Shop_Controller extends Frontend_Controller {
 		$config['reuse_query_string'] 		= TRUE;
 		$config['use_global_url_suffix'] 	= TRUE;
 
+        /**********
+         * New pagination (used for mobile and desktop)
+         */
+        $config['full_tag_open'] = '<ul class="pagination pagination-sm thumbs-pagination-mobile" style="margin:0;">';
+		$config['full_tag_close'] = '</ul>';
+		$config['num_tag_open'] = '<li>';
+		$config['num_tag_close'] = '</li>';
+		$config['cur_tag_open'] = '<li class="active"><a href="javascript:;">';
+		$config['cur_tag_close'] = '</a></li>';
+		$config['first_link'] = '<i class="fa fa-angle-double-left"></i>';
+		$config['first_url'] = site_url(implode('/', $uri_segments));
+		$config['first_tag_open'] = '<li>';
+		$config['first_tag_close'] = '</li>';
+		$config['last_link'] = '<i class="fa fa-angle-double-right"></i>';
+		$config['last_tag_open'] = '<li>';
+		$config['last_tag_close'] = '</li>';
+		$config['prev_link'] = '<i class="fa fa-angle-left"></i>';
+		$config['prev_tag_open'] = '<li>';
+		$config['prev_tag_close'] = '</li>';
+		$config['next_link'] = '<i class="fa fa-angle-right"></i>';
+		$config['next_tag_open'] = '<li>';
+		$config['next_tag_close'] = '</li>';
+
+        /**********
+         * Old pagination
+         *
 		$config['full_tag_open'] 			= '<ul class="list-inline thumbs-pagintaion-ci" style="display:inline-block;">';
 		$config['full_tag_close'] 			= '</ul>';
 
@@ -414,6 +448,7 @@ class Shop_Controller extends Frontend_Controller {
 		$config['next_link'] 				= '&gt;';
 		$config['next_tag_open'] 			= '<li>';
 		$config['next_tag_close']			= '</li>';
+        // */
 
 		$this->pagination->initialize($config);
 	}

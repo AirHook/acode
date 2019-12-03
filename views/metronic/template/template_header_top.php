@@ -133,7 +133,7 @@
 												else
 												{ ?>
 												<a href="<?php echo site_url('account'); ?>" class="dropdown-toggle" >
-													<span class="username"> Sign In / Retailer Login </span>
+													<span class="username"> LogIn / Retailer Login </span>
 												</a>
 													<?php
 												} ?>
@@ -150,7 +150,7 @@
                                                 else
                                                 { ?>
                                                 <a href="<?php echo site_url('account'); ?>" class="dropdown-toggle" >
-													<span class="username" style="font-size:0.85em;line-height:1em;text-align:center;position:relative;bottom:2px;"> Sign In<br>/Register </span>
+													<span class="username" style="font-size:0.85em;line-height:1em;text-align:center;position:relative;bottom:2px;"> Login<br>/Register </span>
 												</a>
                                                     <?php
                                                 } ?>
@@ -391,7 +391,7 @@
                                         <input type="hidden" name="search" value="TRUE" />
                                         <a href="javascript:;" class="search-toggler hide" style="color:#2f353b;"><i class="fa fa-close" style="float:right;position:relative;top:10px;"></i></a>
                                         <div class="input-group" style="width:100%;">
-                                            <input type="text" id="search_by_style" class="form-control" placeholder="Search By Style" name="style_no" style="text-transform:uppercase;">
+                                            <input type="text" id="search_by_style" class="form-control" placeholder="Search By Style Number" name="style_no" style="text-transform:uppercase;">
                                             <span class="input-group-btn hidden-sm hidden-md hidden-lg">
                                                 <a href="javascript:;" class="btn dark submit" style="background:#2f353b;">
                                                     <i class="icon-magnifier"></i>

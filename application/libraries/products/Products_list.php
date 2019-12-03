@@ -467,13 +467,13 @@ class Products_list
 				{
 					if (in_array($size, $size_mode_1))
 					{
-						$facet_where .= " OR tbl_stock.size_".$size." != '0'";
+						$facet_where .= " AND tbl_stock.size_".$size." != '0'";
 						//if ($key == 0) $this->DB->where('tbl_stock.size_'.$size.' !=', '0');
 						//else $this->DB->or_where('tbl_stock.size_'.$size.' !=', '0');
 					}
 					if (in_array($size, $size_mode_w_s))
 					{
-						$facet_where .= " OR tbl_stock.size_s".$size." != '0'";
+						$facet_where .= " AND tbl_stock.size_s".$size." != '0'";
 						//if ($key == 0) $this->DB->where('tbl_stock.size_s'.$size.' !=', '0');
 						//else $this->DB->or_where('tbl_stock.size_s'.$size.' !=', '0');
 					}
@@ -486,7 +486,7 @@ class Products_list
 				$url_colors = explode(',', $this->facets['color']);
 				foreach ($url_colors as $key => $color)
 				{
-					$facet_where .= " OR (tbl_stock.color_facets LIKE '%".$color."%' OR tbl_stock.color_name LIKE '%".$color."%')";
+					$facet_where .= " AND (tbl_stock.color_facets LIKE '%".$color."%' OR tbl_stock.color_name LIKE '%".$color."%')";
 					//$color_facet_filter = "(tbl_stock.color_facets LIKE '%".$color."%' OR tbl_stock.color_name LIKE '%".$color."%')";
 					//if ($key == 0) $this->DB->where($color_facet_filter);
 					//else $this->DB->or_where($color_facet_filter);
@@ -499,7 +499,7 @@ class Products_list
 				$url_occassions = explode(',', $this->facets['occassion']);
 				foreach ($url_occassions as $key => $occassion)
 				{
-					$facet_where .= " OR tbl_product.events LIKE '%".$occassion."%'";
+					$facet_where .= " AND tbl_product.events LIKE '%".$occassion."%'";
 					//if ($key == 0) $this->DB->like('tbl_product.events', $occassion, 'both');
 					//else $this->DB->or_like('tbl_product.events', $occassion, 'both');
 				}
@@ -511,7 +511,7 @@ class Products_list
 				$url_styles = explode(',', $this->facets['style']);
 				foreach ($url_styles as $key => $style)
 				{
-					$facet_where .= " OR tbl_product.styles LIKE '%".$style."%'";
+					$facet_where .= " AND tbl_product.styles LIKE '%".$style."%'";
 					//if ($key == 0) $this->DB->like('tbl_product.styles', $style, 'both');
 					//else $this->DB->or_like('tbl_product.styles', $style, 'both');
 				}
@@ -523,7 +523,7 @@ class Products_list
 				$url_materials = explode(',', $this->facets['material']);
 				foreach ($url_materials as $key => $material)
 				{
-					$facet_where .= " OR tbl_product.materials LIKE '%".$material."%'";
+					$facet_where .= " AND tbl_product.materials LIKE '%".$material."%'";
 					//if ($key == 0) $this->DB->like('tbl_product.materials', $material, 'both');
 					//else $this->DB->or_like('tbl_product.materials', $material, 'both');
 				}
@@ -535,7 +535,7 @@ class Products_list
 				$url_trends = explode(',', $this->facets['trend']);
 				foreach ($url_trends as $key => $trend)
 				{
-					$facet_where .= " OR tbl_product.trends LIKE '%".$trend."%'";
+					$facet_where .= " AND tbl_product.trends LIKE '%".$trend."%'";
 					//if ($key == 0) $this->DB->like('tbl_product.trends', $trend, 'both');
 					//else $this->DB->or_like('tbl_product.trends', $trend, 'both');
 				}
@@ -547,16 +547,16 @@ class Products_list
 				switch ($this->facets['availability'])
 				{
 					case 'onsale':
-						$facet_where .= " OR tbl_stock.custom_order = '3'";
+						$facet_where .= " AND tbl_stock.custom_order = '3'";
 						//$this->DB->where('tbl_stock.custom_order', '3');
 					break;
 
 					case 'preorder':
-						$facet_where .= " OR (tbl_product.size_mode = '1' AND (tbl_stock.size_0 = '0' AND tbl_stock.size_2 = '0' AND tbl_stock.size_4 = '0' AND tbl_stock.size_6 = '0' AND tbl_stock.size_8 = '0' AND tbl_stock.size_10 = '0' AND tbl_stock.size_12 = '0' AND tbl_stock.size_14 = '0' AND tbl_stock.size_16 = '0' AND tbl_stock.size_18 = '0' AND tbl_stock.size_20 = '0' AND tbl_stock.size_22 = '0') OR tbl_product.size_mode = '0' AND (tbl_stock.size_ss = '0' AND tbl_stock.size_sm = '0' AND tbl_stock.size_sl = '0' AND tbl_stock.size_sxl = '0' AND tbl_stock.size_sxxl = '0' AND tbl_stock.size_sxl1 = '0' AND tbl_stock.size_sxl2 = '0') OR tbl_product.size_mode = '2' AND (tbl_stock.size_sprepack1221 = '0') OR tbl_product.size_mode = '3' AND (tbl_stock.size_ssm = '0' AND tbl_stock.size_sml = '0') OR tbl_product.size_mode = '4' AND (tbl_stock.size_sonesizefitsall = '0'))";
+						$facet_where .= " AND (tbl_product.size_mode = '1' AND (tbl_stock.size_0 = '0' AND tbl_stock.size_2 = '0' AND tbl_stock.size_4 = '0' AND tbl_stock.size_6 = '0' AND tbl_stock.size_8 = '0' AND tbl_stock.size_10 = '0' AND tbl_stock.size_12 = '0' AND tbl_stock.size_14 = '0' AND tbl_stock.size_16 = '0' AND tbl_stock.size_18 = '0' AND tbl_stock.size_20 = '0' AND tbl_stock.size_22 = '0') OR tbl_product.size_mode = '0' AND (tbl_stock.size_ss = '0' AND tbl_stock.size_sm = '0' AND tbl_stock.size_sl = '0' AND tbl_stock.size_sxl = '0' AND tbl_stock.size_sxxl = '0' AND tbl_stock.size_sxl1 = '0' AND tbl_stock.size_sxl2 = '0') OR tbl_product.size_mode = '2' AND (tbl_stock.size_sprepack1221 = '0') OR tbl_product.size_mode = '3' AND (tbl_stock.size_ssm = '0' AND tbl_stock.size_sml = '0') OR tbl_product.size_mode = '4' AND (tbl_stock.size_sonesizefitsall = '0'))";
 					break;
 
 					case 'instock':
-						$facet_where .= " OR (tbl_product.size_mode = '1' AND (tbl_stock.size_0 > '0' OR tbl_stock.size_2 > '0' OR tbl_stock.size_4 > '0' OR tbl_stock.size_6 > '0' OR tbl_stock.size_8 > '0' OR tbl_stock.size_10 > '0' OR tbl_stock.size_12 > '0' OR tbl_stock.size_14 > '0' OR tbl_stock.size_16 > '0' OR tbl_stock.size_18 > '0' OR tbl_stock.size_20 > '0' OR tbl_stock.size_22 > '0') OR tbl_product.size_mode = '0' AND (tbl_stock.size_ss > '0' OR tbl_stock.size_sm > '0' OR tbl_stock.size_sl > '0' OR tbl_stock.size_sxl > '0' OR tbl_stock.size_sxxl > '0' OR tbl_stock.size_sxl1 > '0' OR tbl_stock.size_sxl2 > '0') OR tbl_product.size_mode = '2' AND (tbl_stock.size_sprepack1221 > '0') OR tbl_product.size_mode = '3' AND (tbl_stock.size_ssm > '0' AND tbl_stock.size_sml > '0') OR tbl_product.size_mode = '4' AND (tbl_stock.size_sonesizefitsall > '0'))";
+						$facet_where .= " AND (tbl_product.size_mode = '1' AND (tbl_stock.size_0 > '0' OR tbl_stock.size_2 > '0' OR tbl_stock.size_4 > '0' OR tbl_stock.size_6 > '0' OR tbl_stock.size_8 > '0' OR tbl_stock.size_10 > '0' OR tbl_stock.size_12 > '0' OR tbl_stock.size_14 > '0' OR tbl_stock.size_16 > '0' OR tbl_stock.size_18 > '0' OR tbl_stock.size_20 > '0' OR tbl_stock.size_22 > '0') OR tbl_product.size_mode = '0' AND (tbl_stock.size_ss > '0' OR tbl_stock.size_sm > '0' OR tbl_stock.size_sl > '0' OR tbl_stock.size_sxl > '0' OR tbl_stock.size_sxxl > '0' OR tbl_stock.size_sxl1 > '0' OR tbl_stock.size_sxl2 > '0') OR tbl_product.size_mode = '2' AND (tbl_stock.size_sprepack1221 > '0') OR tbl_product.size_mode = '3' AND (tbl_stock.size_ssm > '0' AND tbl_stock.size_sml > '0') OR tbl_product.size_mode = '4' AND (tbl_stock.size_sonesizefitsall > '0'))";
 					break;
 				}
 			}
@@ -564,7 +564,7 @@ class Products_list
 			// at this point, we need to close the where clause
 			if ($facet_where)
 			{
-				$facet_where = ltrim($facet_where, ' OR ');
+				$facet_where = ltrim($facet_where, ' AND ');
 				$facet_where = '('.$facet_where.')';
 				$this->DB->where($facet_where);
 			}
