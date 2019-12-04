@@ -51,7 +51,7 @@
 													<p>
 														Your order was successfully placed on <?php echo $this->order_details->order_date; ?>.<br />
                                                         * NOTE: Your order was received and will be researched for availability on product.<br />
-                                                        Shop 7th Avenue / In Style New York 230 West 38th Street New York, NY 10018<br />
+                                                        <?php echo $this->webspace_details->name ?: 'Shop 7th Avenue / In Style New York'; ?> <?php echo $this->webspace_details->address1.($this->webspace_details->address2 ? ' '.$this->webspace_details->address1 : ' ').$this->webspace_details->city.', '.$this->webspace_details->state.' '.$this->webspace_details->zipcode; ?><br />
                                                         EMAIL <?php echo safe_mailto($this->webspace_details->info_email); ?><br />
                                                         Purchaser agrees to abide by the company <a href="<?php echo site_url('return_policy'); ?>" target="_blank">Return Policy</a>.
 													</p>

@@ -634,7 +634,7 @@
                                                                                             <strong>SIZES:</strong>
                                                                                         </div>
                                                                                         <div class="col-xs-8">
-                                                                                            QUANITY:
+                                                                                            QUANTITY:
                                                                                         </div>
                                                                                     </div>
                                                                                 ';

@@ -158,7 +158,7 @@
 
                                                                         <input type="hidden" class="this-filter" name="size" value="<?php echo @$_GET['size']; ?>" />
 
-                                                                        <select class="form-control input-sm select-mobile-thumbs-filter" style="<?php echo @$_GET['size'] ? $bg_color : ''; ?>">
+                                                                        <select class="form-control bs-select input-sm select-mobile-thumbs-filter" style="<?php echo @$_GET['size'] ? $bg_color : ''; ?>">
 
                                                                             <?php if (@$_GET['size']) { ?>
                                                                             <option value="all">All</option>
@@ -216,7 +216,7 @@
 
                                                                         <input type="hidden" class="this-filter" name="style" value="<?php echo @$_GET['style']; ?>" />
 
-                                                                        <select class="form-control input-sm select-mobile-thumbs-filter" style="<?php echo @$_GET['style'] ? $bg_color : ''; ?>">
+                                                                        <select class="form-control bs-select input-sm select-mobile-thumbs-filter" style="<?php echo @$_GET['style'] ? $bg_color : ''; ?>">
 
                                                                             <?php if (@$_GET['style']) { ?>
                                                                             <option value="all">All</option>
@@ -271,7 +271,7 @@
 
                                                                         <input type="hidden" class="this-filter" name="price" value="<?php echo @$_GET['price']; ?>" />
 
-                                                                        <select class="form-control input-sm select-mobile-thumbs-filter" style="<?php echo @$_GET['price'] ? $bg_color : ''; ?>">
+                                                                        <select class="form-control bs-select input-sm select-mobile-thumbs-filter" style="<?php echo @$_GET['price'] ? $bg_color : ''; ?>">
 
                                                                             <?php if (@$_GET['price']) { ?>
                                                                             <option value="all">All</option>
@@ -322,7 +322,7 @@
 
                                                                         <input type="hidden" class="this-filter" name="color" value="<?php echo @$_GET['color']; ?>" />
 
-                                                                        <select class="form-control input-sm select-mobile-thumbs-filter" style="<?php echo @$_GET['color'] ? $bg_color : ''; ?>">
+                                                                        <select class="form-control bs-select input-sm select-mobile-thumbs-filter" style="<?php echo @$_GET['color'] ? $bg_color : ''; ?>">
 
                                                                             <?php if (@$_GET['color']) { ?>
                                                                             <option value="all">All</option>
@@ -380,7 +380,7 @@
 
                                                                         <input type="hidden" class="this-filter" name="occassion" value="<?php echo @$_GET['occassion']; ?>" />
 
-                                                                        <select class="form-control input-sm select-mobile-thumbs-filter" style="<?php echo @$_GET['occassion'] ? $bg_color : ''; ?>">
+                                                                        <select class="form-control bs-select input-sm select-mobile-thumbs-filter" style="<?php echo @$_GET['occassion'] ? $bg_color : ''; ?>">
 
                                                                             <?php if (@$_GET['occassion']) { ?>
                                                                             <option value="all">All</option>
@@ -435,7 +435,7 @@
 
                                                                         <input type="hidden" class="this-filter" name="availability" value="<?php echo @$_GET['availability']; ?>" />
 
-                                                                        <select class="form-control input-sm select-mobile-thumbs-filter" style="<?php echo @$_GET['availability'] ? $bg_color : ''; ?>">
+                                                                        <select class="form-control bs-select input-sm select-mobile-thumbs-filter" style="<?php echo @$_GET['availability'] ? $bg_color : ''; ?>">
 
                                                                             <?php if (@$_GET['price']) { ?>
                                                                             <option value="all">All</option>
@@ -1252,6 +1252,7 @@
 															<!-- END THUMBS WRAPPER CONTAINER -->
 
 															<!-- BEGIN DESKTOP THUMBS PAGE BOTTOM UTILITIES SECTION -->
+                                                            <!-- DOC: hiding this old sort and pagination temporarity - for depracation -->
 															<div class="thumbs-utilities desktop thumbs-utilities-info margin-top-30 hidden-xs clearfix hide">
 
 																<div class="tools">
@@ -1695,7 +1696,7 @@
 
                                                                         <input type="hidden" class="this-filter" name="size" value="<?php echo @$_GET['size']; ?>" />
 
-                                                                        <select class="form-control input-sm select-mobile-thumbs-filter" style="<?php echo @$_GET['size'] ? $bg_color : ''; ?>">
+                                                                        <select class="form-control bs-select input-sm select-mobile-thumbs-filter" style="<?php echo @$_GET['size'] ? $bg_color : ''; ?>">
 
                                                                             <?php if (@$_GET['size']) { ?>
                                                                             <option value="all">All</option>
@@ -1753,7 +1754,7 @@
 
                                                                         <input type="hidden" class="this-filter" name="style" value="<?php echo @$_GET['style']; ?>" />
 
-                                                                        <select class="form-control input-sm select-mobile-thumbs-filter" style="<?php echo @$_GET['style'] ? $bg_color : ''; ?>">
+                                                                        <select class="form-control bs-select input-sm select-mobile-thumbs-filter" style="<?php echo @$_GET['style'] ? $bg_color : ''; ?>">
 
                                                                             <?php if (@$_GET['style']) { ?>
                                                                             <option value="all">All</option>
@@ -1808,7 +1809,7 @@
 
                                                                         <input type="hidden" class="this-filter" name="price" value="<?php echo @$_GET['price']; ?>" />
 
-                                                                        <select class="form-control input-sm select-mobile-thumbs-filter" style="<?php echo @$_GET['price'] ? $bg_color : ''; ?>">
+                                                                        <select class="form-control bs-select input-sm select-mobile-thumbs-filter" style="<?php echo @$_GET['price'] ? $bg_color : ''; ?>">
 
                                                                             <?php if (@$_GET['price']) { ?>
                                                                             <option value="all">All</option>
@@ -1859,7 +1860,7 @@
 
                                                                         <input type="hidden" class="this-filter" name="color" value="<?php echo @$_GET['color']; ?>" />
 
-                                                                        <select class="form-control input-sm select-mobile-thumbs-filter" style="<?php echo @$_GET['color'] ? $bg_color : ''; ?>">
+                                                                        <select class="form-control bs-select input-sm select-mobile-thumbs-filter" style="<?php echo @$_GET['color'] ? $bg_color : ''; ?>">
 
                                                                             <?php if (@$_GET['color']) { ?>
                                                                             <option value="all">All</option>
@@ -1917,7 +1918,7 @@
 
                                                                         <input type="hidden" class="this-filter" name="occassion" value="<?php echo @$_GET['occassion']; ?>" />
 
-                                                                        <select class="form-control input-sm select-mobile-thumbs-filter" style="<?php echo @$_GET['occassion'] ? $bg_color : ''; ?>">
+                                                                        <select class="form-control bs-select input-sm select-mobile-thumbs-filter" style="<?php echo @$_GET['occassion'] ? $bg_color : ''; ?>">
 
                                                                             <?php if (@$_GET['occassion']) { ?>
                                                                             <option value="all">All</option>
@@ -1972,7 +1973,7 @@
 
                                                                         <input type="hidden" class="this-filter" name="availability" value="<?php echo @$_GET['availability']; ?>" />
 
-                                                                        <select class="form-control input-sm select-mobile-thumbs-filter" style="<?php echo @$_GET['availability'] ? $bg_color : ''; ?>">
+                                                                        <select class="form-control bs-select input-sm select-mobile-thumbs-filter" style="<?php echo @$_GET['availability'] ? $bg_color : ''; ?>">
 
                                                                             <?php if (@$_GET['price']) { ?>
                                                                             <option value="all">All</option>

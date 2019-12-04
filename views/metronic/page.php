@@ -1,29 +1,29 @@
                                     <!-- BEGIN PAGE CONTENT INNER -->
                                     <div class="page-content-inner">
-									
-										<?php if ($page == '') 
+
+										<?php if ($page == '')
 										{ ?>
-										
+
 										<h3><?php echo strtoupper($page_title); ?></h3>
 										<div class="page-text-body">
-											<?php echo @$page_text; ?>
+											<?php echo str_replace('Instylenewyork.com', ucwords($this->webspace_details->site), @$page_text); ?>
 										</div>
-										
-										<?php 
-										} 
-										elseif ($page == 'events') 
+
+										<?php
+										}
+										elseif ($page == 'events')
 										{ ?>
-										
+
 											<h3><?php echo strtoupper($page_title); ?></h3>
 											<p>
 												<?php echo $this->webspace_details->name; ?> is present in many global trade shows and fashion venues. See schedule below.
 											</p>
 											<hr />
-											
+
 											<?php if ($view_events): ?>
 
 												<table cellpadding="0" cellspacing="0" border="0">
-													
+
 													<?php foreach ($view_events as $event): ?>
 
 													<tr>
@@ -31,24 +31,24 @@
 															<?php echo nl2br(strip_tags($event->n_text)); ?><br />
 														</td>
 													</tr>
-														
+
 													<?php endforeach; ?>
-														
+
 												</table>
-											
+
 											<?php else: ?>
 
 												<p style="text-transform:uppercase;font-size:1.15em;margin:50px 0;">
 													There are currently no scheduled events for <?php echo $this->webspace_details->name; ?>.
 												</p>
-												
+
 											<?php endif; ?>
 
-										<?php 
-										} 
-										elseif ($page == 'press') 
+										<?php
+										}
+										elseif ($page == 'press')
 										{ ?>
-										
+
 											<h3><?php echo strtoupper($page_title); ?></h3>
 											<p>
 												<div align="left" style="font-size:14px;">CLICK ANY COVER TO VIEW ARTICLE</div>
@@ -57,12 +57,12 @@
 													For press inquiries, please email <a href="mailto:<?php echo $this->webspace_details->info_email; ?>"><?php echo $this->webspace_details->info_email; ?></a>.
 												</div>
 											</p>
-											
+
 											<div class="row">
-											
+
 											<?php
 											if ($presses):
-											
+
 												foreach ($presses as $rows): ?>
 
 													<div class="col col-xs-6 col-sm-3">
@@ -74,26 +74,26 @@
 														</a>
 														<p><?php echo $rows->title; ?></p>
 													</div>
-												
+
 												<?php endforeach; ?>
-												
+
 											<?php endif; ?>
-											
+
 											</div>
 
-										<?php 
-										} 
-										elseif ($page == 'how_to_oder') 
+										<?php
+										}
+										elseif ($page == 'how_to_oder')
 										{
 											$this->load->view($this->webspace_details->options['theme'].'/'.$page);
 											//$this->load->view($this->config->slash_item('template').$page);
-										} 
-										else 
+										}
+										else
 										{
 											//$this->load->view($this->webspace_details->options['theme'].'/'.$page);
 											//$this->load->view($this->config->slash_item('template').$page);
 											$this->load->view('metronic/'.$page);
 										} ?>
-										
+
                                     </div>
                                     <!-- END PAGE CONTENT INNER -->

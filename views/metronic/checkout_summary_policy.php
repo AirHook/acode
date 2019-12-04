@@ -20,15 +20,16 @@
                                             			$page_details = $this->get_pages->page_details('return_policy');
                                             		}
                                                     ?>
+
                                             		<div class="modal fade bs-modal-lg" id="modal-return_policy" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
                                             			<div class="modal-dialog modal-lg loading-fade">
                                             				<div class="modal-content">
                                             					<div class="modal-header">
                                             						<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                            						<h4 class="modal-title"><?php echo strtoupper($page_details->title); ?></h4>
+                                            						<h4 class="modal-title"><?php echo strtoupper($this->webspace_details->name.' '.$page_details->title); ?></h4>
                                             					</div>
                                             					<div class="modal-body">
-                                            						<p class="modal-body-text"><?php echo @$page_details->text; ?></p>
+                                            						<p class="modal-body-text"><?php echo str_replace('Instylenewyork.com', ucwords($this->webspace_details->site), @$page_details->text); ?></p>
                                             					</div>
                                                                 <div class="modal-footer">
                                             						<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
