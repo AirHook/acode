@@ -598,7 +598,7 @@ class Product_details
 			// new ways
 			$this->categories = ($row->categories && $row->categories != '') ? json_decode($row->categories, TRUE) : array();
 			$this->category_names = $this->_get_names($this->categories);
-			$this->category_slugs = $this->_get_names($this->categories);
+			$this->category_slugs = $this->_get_slugs($this->categories);
 			// old ways
 			$this->cat_id = $row->cat_id;
 			$this->category_name = $row->category_name;
@@ -975,7 +975,7 @@ class Product_details
 
 			if (isset($row))
 			{
-				array_push($array, $row->category_name);
+				array_push($array, $row->category_slug);
 			}
 		}
 
