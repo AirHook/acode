@@ -51,8 +51,8 @@
 													<p>
 														Your order was successfully placed on <?php echo $this->order_details->order_date; ?>.<br />
                                                         * NOTE: Your order was received and will be researched for availability on product.<br />
-                                                        Instyle New York 230 West 38th Street New York, NY 10018<br />
-                                                        EMAIL <?php echo safe_mailto('help@instylenewyork.com'); ?><br />
+                                                        Shop 7th Avenue / In Style New York 230 West 38th Street New York, NY 10018<br />
+                                                        EMAIL <?php echo safe_mailto($this->webspace_details->info_email); ?><br />
                                                         Purchaser agrees to abide by the company <a href="<?php echo site_url('return_policy'); ?>" target="_blank">Return Policy</a>.
 													</p>
 												</div>

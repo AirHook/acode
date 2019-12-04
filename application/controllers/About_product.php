@@ -199,7 +199,7 @@ class About_product extends Frontend_Controller {
 							<p>Dress Size: '.$dress_size.'</p>
 							<p>Name: '.$name.'</p>
 							<p>Email Address: '.$email.'</p>
-							<p>Send me special offers on future on-sale items: '.($opt_type == '1' ? 'YES' : 'NO').'</p>
+							<p>Send me offers on clearance items: '.($opt_type == '1' ? 'YES' : 'NO').'</p>
 							<p>I am a: '.$u_type.'</p>
 							<p>Message or Comments: '.$message.'</p>
 						</td>

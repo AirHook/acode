@@ -277,12 +277,12 @@
 														<div class="col-sm-6 pull-right">
 															<?php if ($this->session->user_loggedin)
 															{ ?>
-															<a href="<?php echo site_url('checkout/delivery'); ?>" class="btn dark btn-block" type="button"> Checkout </a>
+															<a href="<?php echo site_url('checkout/delivery'); ?>" class="btn dark btn-block" type="button"> Proceed to Checkout </a>
 																<?php
 															}
 															else
 															{ ?>
-															<a href="<?php echo site_url('checkout'); ?>" class="btn dark btn-block" type="button"> Checkout </a>
+															<a href="<?php echo site_url('checkout'); ?>" class="btn dark btn-block" type="button"> Proceed to Checkout </a>
 																<?php
 															} ?>
 														</div>

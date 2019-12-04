@@ -7,13 +7,13 @@
 				<img src="<?php echo base_url(); ?>assets/images/logo/logo-<?php echo $this->webspace_details->slug; ?>.png" />
 			</div>
 			<div class="col col-md-6 hidden-sm hidden-xs text-right" style="padding-top:7px;">
-				<h5 style="color:white;">COMPLETE FORM TO SEE PRICE AND AVAILABILITY</h5>
+				<h5 style="color:white;">COMPLETE BELOW FORM TO SEE PRICE AND AVAILABILITY</h5>
 			</div>
 			<div class="col hidden-lg hidden-md col-sm-12 text-center">
 				<img src="<?php echo base_url(); ?>assets/images/logo/logo-<?php echo $this->webspace_details->slug; ?>.png" style="max-width:100%;" />
 			</div>
 			<div class="col hidden-lg hidden-md col-md-6 col-sm-12 text-center">
-				<h6 style="color:white;font-size:0.8em;">COMPLETE FORM TO SEE PRICE AND AVAILABILITY</h6>
+				<h6 style="color:white;font-size:0.8em;">COMPLETE BELOW FORM TO SEE PRICE AND AVAILABILITY</h6>
 			</div>
 		</div>
 
@@ -74,28 +74,28 @@
 			<div class="row">
 				<div class="col-sm-8">
 					<div class="form-group">
-						<label>NAME<span class="required"> * </span>
+						<label class="hide">NAME<span class="required"> * </span>
 						</label>
-						<input type="text" class="form-control" name="name" value="" />
+						<input type="text" class="form-control" name="name" value="" placeholder="NAME *" style="height:auto;" />
 					</div>
 				</div>
 				<div class="col-sm-4">
 					<div class="form-group">
-						<label>DRESS SIZE<span class="required"> * </span>
+						<label class="hide">DRESS SIZE<span class="required"> * </span>
 						</label>
-						<input type="text" class="form-control" name="dress_size" value="" />
+						<input type="text" class="form-control" name="dress_size" value="" placeholder="DRESS SIZE" style="height:auto;" />
 					</div>
 				</div>
 			</div>
 			<div class="form-group">
-				<label>EMAIL<span class="required"> * </span>
+				<label class="hide">EMAIL<span class="required"> * </span>
 				</label>
-				<input type="email" class="form-control" name="email" value="" />
+				<input type="email" class="form-control" name="email" value="" placeholder="EMAIL *" style="height:auto;" />
 			</div>
 			<div class="form-horizontal" role="form" style="color:red;">
 				<div class="form-group">
-                    <label class="col-xs-6 control-label" style="text-align:left;">Send me special offers on future<br class="hidden-xs" />on-sale items *</label>
-                    <div class="col-xs-6">
+                    <label class="col-xs-7 control-label" style="text-align:left;text-transform:uppercase;">Send me special offers on future clearance items *</label>
+                    <div class="col-xs-5">
                         <div class="mt-radio-inline">
                             <label class="mt-radio mt-radio-outline">
                                 <input type="radio" name="opt_type" value="1" checked /> Yes
@@ -112,11 +112,11 @@
 			<div role="form" style="color:red;">
 				<div class="form-group">
                     <div class="mt-radio-list">
-                        <label class="mt-radio mt-radio-outline"> I AM A STORE *<br />You will be taken to fill out wholesale form for verification
+                        <label class="mt-radio mt-radio-outline" style="text-transform:uppercase;"> I AM A STORE * You will be taken to fill out wholesale form for verification
                             <input type="radio" name="u_type" value="Store" />
                             <span></span>
                         </label>
-                        <label class="mt-radio mt-radio-outline"> I AM A CONSUMER *<br >You will be taken to shop7thavenue.com our shop site
+                        <label class="mt-radio mt-radio-outline" style="text-transform:uppercase;"> I AM A CONSUMER * You will be taken to shop7thavenue.com our shop site
                             <input type="radio" name="u_type" value="Consumer" />
                             <span></span>
                         </label>
@@ -128,7 +128,7 @@
                 <textarea class="form-control" rows="3" name="message"></textarea>
             </div>
 			<br />
-			<button type="submit" class="btn dark btn-block" name="send" value="Send">SEND</button>
+			<button type="submit" class="btn dark btn-block" name="send" value="Send">SEND PRODUCT INQUIRY</button>
 
 			</form>
 			<!--eof form=========================================================================-->

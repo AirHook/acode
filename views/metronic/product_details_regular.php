@@ -645,13 +645,22 @@
 																| Size
 																*/
 																?>
+                                                                <?php
+                                                                if (
+                                                                    $this->webspace_details->slug != 'basixblacklabel'
+                                                                )
+                                                                { ?>
 																<span class="prdname product-form__label" style="margin-top:5px;"><strong>AVAILABLE SIZES:</strong> Please select a size</span>
 
 																<input type="hidden" id="size" name="size" value="" />
 
 																<style>
+                                                                    .product-form__list-item a:hover {
+                                                                        background-color: #ccc;
+                                                                    }
 																</style>
 
+                                                                <!-- Size boxes -->
 																<div class="product-form__sizes  display-dependency clearfix" style="margin-bottom:5px;">
 																	<ul class="list-unstyled list-inline product-form__list" style="margin-bottom:0px;">
 
@@ -770,6 +779,13 @@
 																	<input type="hidden" id="custom_order-<?php echo $this->product_details->color_code; ?>" name="custom_order" value="0" />
 
 																</div>
+                                                                    <?php
+                                                                }
+                                                                else
+                                                                { ?>
+                                                                <span class="prdname product-form__label" style="margin-top:5px;"><strong>SIZE AVAILABILITY :</strong> <a href="#how-to-oder" class="how-to-oder" data-toggle="modal">CLICK TO SEE AVAILABLE SIZES</a>
+                                                                    <?php
+                                                                } ?>
 
 																<?php
 																/*
@@ -963,7 +979,7 @@
 												<div class="modal fade bs-modal-lg" id="how-to-oder" tabindex="-1" role="dialog" aria-hidden="true">
 													<div class="modal-dialog modal-lg">
 														<div class="modal-content">
-															<div class="modal-header">
+															<div class="modal-header hide">
 																<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
 																<h4 class="modal-title">Order Inquiry Form</h4>
 															</div>
