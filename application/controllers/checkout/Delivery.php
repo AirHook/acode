@@ -97,6 +97,7 @@ class Delivery extends Frontend_Controller
 					$newdata = array(
 						'ny_tax' 				=> $this->data['ny_tax'],
 						'same_shipping_address'	=> '1',
+						'store_name'			=> $this->wholesale_user_details->store_name,
 						'b_email' 				=> $this->wholesale_user_details->email,
 						'b_firstname'			=> $this->wholesale_user_details->fname,
 						'b_lastname'			=> $this->wholesale_user_details->lname,

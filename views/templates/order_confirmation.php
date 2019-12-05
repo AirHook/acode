@@ -181,16 +181,9 @@
 															&nbsp;<b>SHIPPING DETAILS</b></font>
 														</td>
 													</tr>
-													<tr>
-														<td width="200">&nbsp;<font style="font-family:Tahoma;font-size:10px;"><b>Name :</b></font></td>
-														<td width="422">
-															<font style="font-family:Tahoma;font-size:10px;">
-																<?php echo @$firstname ? @$firstname.' '.@$lastname : '<cite>User name</cite>'; ?>
-															</font>
-														</td>
-													</tr>
-													<?php
-													if ($this->session->userdata('user_cat') === 'wholesale')
+
+                                                    <?php
+													if ($this->session->user_cat === 'wholesale')
 													{
 														?>
 													<tr>
@@ -204,6 +197,14 @@
 														<?php
 													}
 													?>
+													<tr>
+														<td width="200">&nbsp;<font style="font-family:Tahoma;font-size:10px;"><b>Name :</b></font></td>
+														<td width="422">
+															<font style="font-family:Tahoma;font-size:10px;">
+																<?php echo @$firstname ? @$firstname.' '.@$lastname : '<cite>User name</cite>'; ?>
+															</font>
+														</td>
+													</tr>
 													<tr>
 														<td>&nbsp;<font style="font-family:Tahoma;font-size:10px;"><b>Address :</b></font></td>
 														<td>

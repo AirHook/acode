@@ -245,11 +245,13 @@ class Shop_Controller extends Frontend_Controller {
 
         // show item conditions
         // 1. wholesale users gets to see everything except on sale items
+        //      a. This is true for Basix
+        //      b. Not ture for Tempo
         // 2. consumer to see items that has stock only
-        // 5. consumer gets to see on sale items
+        // 3. consumer gets to see on sale items
         if (
             $this->session->userdata('user_cat') != 'wholesale'
-            OR @$_GET['availability'] != 'onsale'
+            && @$_GET['availability'] != 'onsale'
         )
         {
             // commenting this custom where clause for future use...
@@ -258,18 +260,23 @@ class Shop_Controller extends Frontend_Controller {
 
             $where['HAVING with_stocks'] = '1';
         }
-        if (
+        else if (
             $this->session->userdata('user_cat') == 'wholesale'
             && @$_GET['availability'] == 'onsale'
         )
         {
             // setting condition to prod_id = '0' make query result to zero
-            $where['tbl_product.prod_id'] = '0';
+            //$where['tbl_product.prod_id'] = '0';
+
+            // can only show non-basix items
+            $where['designer.url_structure !='] = 'basixblacklabel';
         }
-        if ($this->session->userdata('user_cat') == 'wholesale')
+        else if ($this->session->userdata('user_cat') == 'wholesale')
         {
             // don't show clearance items
-            $where['tbl_stock.custom_order !='] = '3';
+            //$where['tbl_stock.custom_order !='] = '3';
+            $condition = "(tbl_stock.custom_order != '3' OR (tbl_stock.custom_order = '3' AND designer.url_structure != 'basixblacklabel'))";
+            $where['condition'] = $condition;
         }
 
 		// get the products list and total count based on parameters

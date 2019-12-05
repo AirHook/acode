@@ -55,6 +55,7 @@ class Submit extends Frontend_Controller
 		$this->consumer_user_details->initialize(array('user_id'=>$this->session->user_id));
 
 		// log order
+		if ($this->session->user_cat == 'wholesale') $user_array['store_name'] 	= $this->session->store_name;
 		$user_array['agree_policy'] 	= NULL;
 		$user_array['p_first_name'] 	= $this->session->sh_firstname;
 		$user_array['p_last_name'] 		= $this->session->sh_lastname;
@@ -185,8 +186,11 @@ class Submit extends Frontend_Controller
 			$this->email->clear();
 
 			$this->email->from($this->webspace_details->info_email, $this->webspace_details->name);
-			$this->email->bcc($this->config->item('dev1_email'));
 			$this->email->reply_to($user_array['p_email']);
+
+			// copies
+			$shop7 = $this->webspace_details->info_email == 'help@shop7thavenue.com' ? '' : ', help@shop7thavenue.com';
+			$this->email->bcc($this->config->item('dev1_email').$shop7);
 
 			$this->email->to($this->webspace_details->info_email);
 
@@ -231,6 +235,7 @@ class Submit extends Frontend_Controller
 		$markdata = array(
 			'ny_tax',
 			'same_shipping_address',
+			'store_name',
 			'b_email',
 			'b_firstname',
 			'b_lastname',
@@ -321,18 +326,19 @@ class Submit extends Frontend_Controller
 		// insert user and shipping data to order log
 		$log_data = array(
 			'user_id'			=> $this->session->user_id,
-			'c'					=> $this->session->user_c ?: 'guest',
+			'c'					=> @$user_array['store_name'] ? 'ws' : 'guest',
 			'date_ordered'		=> @date('d, F Y - h:i',time()),
 			'order_date'		=> time(),
+
 			'courier'			=> $user_array['shipping_courier'],
 			'shipping_fee'		=> $user_array['shipping_fee'] ? (int)$user_array['shipping_fee'] : 0,
 			'amount'			=> $this->cart->total() + (int)$user_array['shipping_fee'],
 
+			'store_name'		=> (@$user_array['store_name'] ?: ''),
 			'firstname'			=> $user_array['p_first_name'],
 			'lastname'			=> $user_array['p_last_name'],
 			'email'				=> $user_array['p_email'],
 			'telephone'			=> $user_array['p_telephone'],
-			'store_name'		=> $user_array['p_store_name'],
 
 			'ship_address1'		=> $user_array['sh_address1'],
 			'ship_address2'		=> $user_array['sh_address2'],
