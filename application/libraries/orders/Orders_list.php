@@ -103,7 +103,13 @@ class Orders_list
 			{
 				if ($val !== '')
 				{
-					$this->DB->where($key, $val);
+					// OR is usually for a simple OR conditioin
+					if (strpos($key, 'OR ') !== FALSE)
+					{
+						$key = ltrim($key, 'OR ');
+						$this->DB->or_where($key, $val);
+					}
+					else $this->DB->where($key, $val);
 				}
 			}
 		}

@@ -24,7 +24,7 @@
 
 								<h4>Options</h4>
 
-								<input type="hidden" class="filter-options-field" name="page" value="<?php echo $page; ?>" />
+								<input type="hidden" class="filter-options-field" name="page" value="<?php echo @$page; ?>" />
 
 								<div class="form-group">
                                     <label>Filter List</label>
@@ -124,7 +124,7 @@
 
 								<div class="form-group">
                                     <label>Search Order# or Customer/Store Name</label>
-                                    <input type="text" class="form-control" name="search_string" placeholder="Search..." />
+                                    <input type="text" class="form-control" name="search_string" placeholder="Enter keywords..." />
 								</div>
 
 								<button class="btn dark btn-block uppercase bold" type="submit">Search</button>
@@ -137,38 +137,6 @@
 							</div>
 
 							<div class="m-grid-col m-grid-col-md-10">
-
-								<div class="table-toolbar hide">
-			                        <div class="row">
-
-			                            <div class="col-md-6">
-
-			                                <!-- BEGIN FORM-->
-			                                <!-- FORM =======================================================================-->
-			                                <?php echo form_open(
-												'admin/orders/search',
-												array(
-													'class'=>'form-horizontal',
-													'id'=>'form-orders_search'
-												)
-											); ?>
-
-			                                <div class="input-group">
-			                                    <input class="form-control" placeholder="Search Order# or Customer/Store Name..." name="search_string" type="text">
-			                                    <span class="input-group-btn">
-			                                        <button class="btn blue uppercase bold" type="submit">Search</button>
-			                                    </span>
-			                                </div>
-
-			                                </form>
-			                                <!-- End FORM =======================================================================-->
-			                                <!-- END FORM-->
-
-			                                <cite class="help-block small">Searches entire record</cite>
-			                            </div>
-
-			                        </div>
-			                    </div>
 
 								<?php if ($this->webspace_details->options['site_type'] == 'hub_site')
 								{ ?>
