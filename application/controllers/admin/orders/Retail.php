@@ -23,7 +23,8 @@ class Retail extends Admin_Controller {
 	 *
 	 * @return	void
 	 */
-	public function index($param = FALSE)
+	//public function index($param = FALSE)
+	public function index($des_slug = '', $status = '')
 	{
 		// generate the plugin scripts and css
 		$this->_create_plugin_scripts();
@@ -58,9 +59,9 @@ class Retail extends Admin_Controller {
 		}
 		else
 		{
-			if ($param && !is_numeric($param))
+			if ($des_slug && !is_numeric($des_slug))
 			{
-				$designer_details = $this->designer_details->initialize(array('designer.url_structure'=>$param));
+				$designer_details = $this->designer_details->initialize(array('designer.url_structure'=>$des_slug));
 				if ($designer_details)
 				{
 					$having_des_group =
@@ -72,6 +73,28 @@ class Retail extends Admin_Controller {
 				}
 			}
 		}
+		if ($status && !is_numeric($status))
+		{
+			switch ($status)
+			{
+				case 'complete':
+					$where['status'] = '1';
+				break;
+				case 'pending':
+					$where['status'] = '0';
+				break;
+				case 'onhold':
+					$where['status'] = '2';
+				break;
+				case 'cancelled':
+					$where['status'] = '3';
+				break;
+				case 'returned':
+					$where['status'] = '4';
+				break;
+			}
+			$this->data['status'] = $status;
+		}
 		$this->data['orders'] = $this->orders_list->select(
 			$where,
 			array(), // order_by
@@ -81,7 +104,7 @@ class Retail extends Admin_Controller {
 		$this->data['count_all'] = $this->orders_list->count_all;
 
 		// enable pagination
-		$this->_set_pagination($this->data['count_all'], $this->data['limit'], $param);
+		$this->_set_pagination($this->data['count_all'], $this->data['limit'], $des_slug);
 
 		// need to show loading at start
 		$this->data['show_loading'] = FALSE;

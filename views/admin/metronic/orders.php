@@ -310,9 +310,11 @@
 												<option value="" selected="selected">Bulk Actions</option>
 												<option class="hide" value="ho">Set as On Hold</option>
 												<option class="" value="ca">Cancel Orders</option>
-												<option value="co">Set as Complete</option>
-												<option value="re">Set as Returned</option>
-												<option class="hide" value="del">Permanently Delete</option>
+												<option class="" value="co">Set as Complete</option>
+												<option class="" value="re">Set as Returned</option>
+												<?php if ($this->webspace_details->options['site_type'] == 'hub_site') { ?>
+												<option class="" value="del">Permanently Delete</option>
+												<?php } ?>
 											</select>
 										</div>
 										<button class="btn green hidden-sm hidden-xs" id="apply_bulk_actions" data-toggle="modal" href="#confirm_bulk_actions" disabled> Apply </button>
@@ -355,21 +357,22 @@
 			                    <table class="table table-striped table-bordered table-hover table-checkable order-column" id="tbl-orders_" data-orders_count="<?php echo $this->orders_list->row_count; ?>">
 			                        <thead>
 			                            <tr>
-			                                <th class="hidden-xs hidden-sm" style="width:30px"> <!-- counter --> </th>
+			                                <th class="hidden-xs hidden-sm" style="width:30px;"> <!-- counter --> </th>
 			                                <th class="text-center" style="width:30px">
 			                                    <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
 			                                        <input type="checkbox" id="heading_checkbox" class="group-checkable" data-set="#tbl-orders_ .checkboxes" />
 			                                        <span></span>
 			                                    </label>
 			                                </th>
-			                                <th style="width:80px;"> Order # </th>
+			                                <th style="width:100px;"> Order # </th>
 			                                <th style="width:90px;"> Order Date </th>
 			                                <th> Items </th>
 			                                <th style="width:50px;"> Order<br />Qty </th>
 			                                <th style="width:90px;"> Purchase<br />Amount </th>
 			                                <th> Customer &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </th>
 											<th style="width:130px;"> Designer </th>
-			                                <th style="width:70px;"> Role </th>
+			                                <th style="width:43px;"> Role </th>
+											<th style="width:80px;"> Ref SO# </th>
 			                                <th style="width:90px;"> Status </th>
 			                                <th style="width:70px;"> Actions </th>
 			                            </tr>
@@ -405,7 +408,7 @@
 											<!-- Order# -->
 			                                <td>
 												<a href="<?php echo $edit_link; ?>">
-													<?php echo $order->order_id; ?>
+													<?php echo $order->order_id.'-'.strtoupper(substr(($order->designer_group == 'Mixed Designers' ? 'Shop 7th Avenue' : $order->designer_group),0,3)); ?>
 												</a>
 											</td>
 											<!-- Date -->
@@ -442,10 +445,12 @@
 												else echo ucwords(strtolower($order->firstname.' '.$order->lastname));
 												?>
 											</td>
-											<!-- Roel -->
+											<!-- Designer Group -->
 			                                <td> <?php echo trim($order->designer_group); ?> </td>
-											<!-- Roel -->
-			                                <td> <small><cite><?php echo $order->c == 'ws' ? 'wholesale' : 'consumer'; ?></cite></small> </td>
+											<!-- Role -->
+			                                <td> <small><cite><?php echo $order->c == 'guest' ? 'cs' : $order->c; ?></cite></small> </td>
+											<!-- Ref SO# -->
+			                                <td> <?php echo @$order->sales_order_number; ?> </td>
 											<!-- Status -->
 			                                <td>
 												<?php
@@ -506,40 +511,12 @@
 			                                        <i class="fa fa-undo font-dark"></i>
 			                                    </a>
 												<?php } ?>
+												<?php if ($this->webspace_details->options['site_type'] == 'hub_site') { ?>
 			                                    <!-- Delete -->
-			                                    <a data-toggle="modal" href="#delete-<?php echo $order->order_id; ?>" class="tooltips hide" data-original-title="Delete">
+			                                    <a data-toggle="modal" href="#delete-<?php echo $order->order_id; ?>" class="tooltips" data-original-title="Delete">
 			                                        <i class="fa fa-trash font-dark"></i>
 			                                    </a>
-
-			                                    <div class="btn-group hide" >
-			                                        <button class="btn btn-xs red-flamingo dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false" onclick="$('.dropdown-wrap').toggleClass('dropdown-fix');" > Actions
-			                                            <i class="fa fa-angle-down"></i>
-			                                        </button>
-													<!-- DOC: Remove "pull-right" class to default to left alignment -->
-			                                        <ul class="dropdown-menu pull-right">
-			                                            <li>
-			                                                <a data-toggle="modal" href="#pending-<?php echo $order->order_id; ?>">
-			                                                    <i class="fa fa-<?php echo $order->status == '0' ? 'check': 'ellipsis-h'; ?>"></i> Pending </a>
-			                                            </li>
-			                                            <li>
-			                                                <a data-toggle="modal" href="#on_hold-<?php echo $order->order_id; ?>">
-			                                                    <i class="fa fa-<?php echo $order->status == '2' ? 'check': 'ellipsis-h'; ?>"></i> On Hold </a>
-			                                            </li>
-			                                            <li>
-			                                                <a data-toggle="modal" href="#complete-<?php echo $order->order_id; ?>">
-			                                                    <i class="fa fa-<?php echo $order->status == '1' ? 'check': 'ellipsis-h'; ?>"></i> Complete </a>
-			                                            </li>
-			                                            <li class="divider"> </li>
-			                                            <li>
-			                                                <a href="<?php echo site_url($this->config->slash_item('admin_folder').'orders/edit/index/'.$order->order_id); ?>">
-			                                                    <i class="icon-pencil"></i> Edit </a>
-			                                            </li>
-			                                            <li>
-			                                                <a data-toggle="modal" href="#delete-<?php echo $order->order_id; ?>">
-			                                                    <i class="icon-trash"></i> Delete </a>
-			                                            </li>
-			                                        </ul>
-			                                    </div>
+												<?php } ?>
 
 												<!-- PENDING -->
 												<div class="modal fade bs-modal-sm" id="pending-<?php echo $order->order_id?>" tabindex="-1" role="dialog" aria-hidden="true">

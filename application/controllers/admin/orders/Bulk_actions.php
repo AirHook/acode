@@ -55,20 +55,27 @@ class Bulk_actions extends Admin_Controller {
 			break;
 		}
 
-		// iterate through the selected checkboxes and where clause
-		foreach ($this->input->post('checkbox') as $key => $id)
-		{
-			if ($key === 0) $DB->where('order_log_id', $id);
-			else $DB->or_where('order_log_id', $id);
-		}
-
 		// update or delete items from database
 		if ($this->input->post('bulk_action') === 'del')
 		{
+			// iterate through the selected checkboxes and where clause
+			foreach ($this->input->post('checkbox') as $key => $id)
+			{
+				if ($key === 0) $DB->where('order_log_id', $id);
+				else $DB->or_where('order_log_id', $id);
+			}
+
+			// delete main order log
 			$DB->delete('tbl_order_log');
 
+			// iterate through the selected checkboxes and where clause
+			foreach ($this->input->post('checkbox') as $key => $id)
+			{
+				if ($key === 0) $DB->where('order_log_id', $id);
+				else $DB->or_where('order_log_id', $id);
+			}
+
 			// we need to delete the transaction records as well
-			$DB->where('order_log_id', $id);
 			$DB->delete('tbl_order_log_details');
 
 			// set flash data
@@ -76,6 +83,14 @@ class Bulk_actions extends Admin_Controller {
 		}
 		else
 		{
+			// iterate through the selected checkboxes and where clause
+			foreach ($this->input->post('checkbox') as $key => $id)
+			{
+				if ($key === 0) $DB->where('order_log_id', $id);
+				else $DB->or_where('order_log_id', $id);
+			}
+
+			// update main order log
 			$DB->update('tbl_order_log');
 
 			// set flash data
