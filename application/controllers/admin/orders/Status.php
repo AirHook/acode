@@ -12,9 +12,9 @@ class Status extends Admin_Controller {
 	{
 		parent::__construct();
     }
-	
+
 	// ----------------------------------------------------------------------
-	
+
 	/**
 	 * Index - default method
 	 *
@@ -30,14 +30,14 @@ class Status extends Admin_Controller {
 			// nothing more to do...
 			// set flash data
 			$this->session->set_flashdata('error', 'no_id_passed');
-			
+
 			// redirect user
 			redirect($this->config->slash_item('admin_folder').'orders');
 		}
-		
+
 		// connect to database
 		$DB = $this->load->database('instyle', TRUE);
-		
+
 		switch ($status)
 		{
 			case 'pending':
@@ -46,23 +46,28 @@ class Status extends Admin_Controller {
 			case 'on_hold':
 				$DB->set('status', '2');
 			break;
+			case 'cancel':
+				$DB->set('status', '3');
+			break;
+			case 'return':
+				$DB->set('status', '4');
+			break;
 			case 'complete':
 				$DB->set('status', '1');
 			break;
 		}
-		
+
 		$DB->set('remarks', '0');
-		$DB->set('comments', '');
 		$DB->where('order_log_id', $id);
 		$DB->update('tbl_order_log');
-		
+
 		// set flash data
 		$this->session->set_flashdata('success', 'edit');
-		
+
 		// redirect user
-		redirect($this->config->slash_item('admin_folder').'orders/details/index/'.$id, 'location');
+		redirect($this->config->slash_item('admin_folder').'orders', 'location');
 	}
-	
+
 	// ----------------------------------------------------------------------
-	
+
 }

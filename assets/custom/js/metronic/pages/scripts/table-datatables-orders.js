@@ -180,6 +180,7 @@ var TableDatatablesManaged = function () {
 	});
 
     // apply filter by designer
+    // version 1 where filter is top of page
 	$('.apply_filer_by_designer').click(function(){
         var page_param = $(this).data('page_param');
 		var x = document.getElementById("filter_by_designer_select").selectedIndex;
@@ -196,6 +197,30 @@ var TableDatatablesManaged = function () {
                 window.location.href = base_url + "admin/orders/" + page_param + "/index/" + z + ".html";
             }
 		}
+	});
+    // version 2 using sidebar filter
+    $('.filter-options-field').change(function(){
+        // get filter values
+        var url;
+        var page_param = $('[name="page_param"]').val();
+        var status = $('[name="status"]:checked').val();
+        var des_slug = $('[name="des_slug"]').val();
+        // process values
+        // page_param will alwasy have a value
+        // therefore, let's initially set the url as
+        var pre_url = base_url + "admin/orders/" + page_param;
+        // first, check for status
+        if (status) {
+            if (!des_slug) des_slug = 'all';
+            url = pre_url + "/index/" + des_slug + "/" + status + ".html";
+        } else if (!des_slug || des_slug=='all') {
+            url = pre_url + ".html"
+        } else {
+            url = pre_url + "/index/" + des_slug + ".html"
+        }
+        // redirect page
+        $('#loading').modal('show');
+        window.location.href = url;
 	});
 
 

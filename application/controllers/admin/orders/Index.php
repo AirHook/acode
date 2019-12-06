@@ -23,7 +23,7 @@ class Index extends Admin_Controller {
 	 *
 	 * @return	void
 	 */
-	public function index()
+	public function index($page_param = 'all', $des_slug = 'all', $status = '', $sort = '')
 	{
 		// redirect users
 		redirect('admin/orders/all', 'location');
