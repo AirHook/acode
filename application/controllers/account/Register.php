@@ -156,7 +156,7 @@ class Register extends Frontend_Controller {
 					<br /><br />
 					Details are as follows:
 					<table border="0" cellspacing="0" cellpadding="5">
-		<tr><td>Email:</td><td>'.$this->input->post('email').'</td></tr>
+						<tr><td>Email:</td><td>'.$this->input->post('email').'</td></tr>
 						<tr><td>Password:</td><td>'.($this->input->post('user_type') == 'wholesale' ? $this->input->post('pword') : $this->input->post('password')).'</td></tr>
 						'.($this->input->post('user_type') == 'wholesale' ? '<tr><td>Store Name:</td><td>'.$this->input->post('store_name').'</td></tr>' : '').'
 						<tr><td>First & Lat Names:</td><td>'.$this->input->post('firstname').' '.$this->input->post('lastname').'</td></tr>
@@ -224,11 +224,11 @@ class Register extends Frontend_Controller {
 		$this->form_validation->set_rules('passconf', 'Confirm Password', 'trim|required|matches[password]');
 		$this->form_validation->set_rules('zip_postcode', 'Zip Code', 'trim|required');
 		$this->form_validation->set_rules('state_province', 'State', 'trim|required');
-		$this->form_validation->set_rules('firstname', 'First Name', 'trim|required');
-		$this->form_validation->set_rules('lastname', 'Last Name', 'trim|required');
+		$this->form_validation->set_rules('firstname', 'First Name', 'trim|required|callback_filter_string');
+		$this->form_validation->set_rules('lastname', 'Last Name', 'trim|required|callback_filter_string');
 		$this->form_validation->set_rules('email', 'Email', 'trim|required|callback_validate_email');
 		$this->form_validation->set_rules('address1', 'Address 1', 'trim|required');
-		$this->form_validation->set_rules('city', 'City', 'trim|required');
+		$this->form_validation->set_rules('city', 'City', 'trim|required|callback_filter_string');
 		$this->form_validation->set_rules('country', 'Country', 'trim|required');
 		$this->form_validation->set_rules('telephone', 'Telephone', 'trim|required');
 
@@ -328,8 +328,8 @@ class Register extends Frontend_Controller {
 		$this->form_validation->set_rules('confpassword', 'Confirm Password', 'trim|required|matches[pword]');
 		$this->form_validation->set_rules('zipcode', 'Zip Code', 'trim|required');
 		$this->form_validation->set_rules('state', 'State', 'trim|required');
-		$this->form_validation->set_rules('firstname', 'First Name', 'trim|required');
-		$this->form_validation->set_rules('lastname', 'Last Name', 'trim|required');
+		$this->form_validation->set_rules('firstname', 'First Name', 'trim|required|callback_filter_string');
+		$this->form_validation->set_rules('lastname', 'Last Name', 'trim|required|callback_filter_string');
 		$this->form_validation->set_rules('email', 'Email', 'trim|required|callback_validate_email');
 		$this->form_validation->set_rules('address1', 'Address 1', 'trim|required');
 		$this->form_validation->set_rules('city', 'City', 'trim|required');
@@ -474,7 +474,40 @@ class Register extends Frontend_Controller {
 	// --------------------------------------------------------------------
 
 	/**
-	 * Form Validation Callback Functions
+	 * Form Validation Callback Functions - Filter Names
+	 *
+	 * @return	boolean
+	 */
+	function filter_string($str)
+	{
+		//$regex = "^[A-Za-z]+((\s)?((\'|\-)?([A-Za-z])+))*$^";
+		//$valid_name = preg_match("/^[A-Z]'?[-a-zA-Z]( [a-zA-Z])*$/", trimg($str));
+		//$valid_name = preg_match("/\A[A-Z]'?[a-z]+\Z/", trim($str));
+		$valid_name = preg_match("/^((([A-Za-z][a-z ']+[,.]?[ ]?|[a-z]+['-]?)+)|(([A-Z][A-Z ']+)+))$/", trim($str));
+
+		if ($str == '')
+		{
+			$this->form_validation->set_message('filter_names', 'Must not be empty');
+			return FALSE;
+		}
+		else
+		{
+			if ($valid_name)
+			{
+				return TRUE;
+			}
+			else
+			{
+				$this->form_validation->set_message('filter_names', 'Something must be wrong. Please try again.');
+				return FALSE;
+			}
+		}
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Form Validation Callback Functions - Validate Email
 	 *
 	 * @return	boolean
 	 */

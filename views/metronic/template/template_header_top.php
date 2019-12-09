@@ -133,7 +133,7 @@
 												else
 												{ ?>
 												<a href="<?php echo site_url('account'); ?>" class="dropdown-toggle" >
-													<span class="username"> LogIn / Retailer Login </span>
+													<span class="username"> LogIn / Register </span>
 												</a>
 													<?php
 												} ?>
@@ -143,14 +143,14 @@
 												if ($this->session->user_loggedin)
 												{ ?>
                                                 <a href="<?php echo site_url('my_account/'.$this->session->user_cat.'/dashboard'); ?>" class="dropdown-toggle" >
-                                                    <span class="username" style="font-size:0.85em;line-height:1em;text-align:center;position:relative;bottom:2px;"> My<br>Acct </span>
+                                                    <span class="username" style="font-size:0.85em;line-height:1em;text-align:center;position:relative;bottom:2px;"> My Acct </span>
                                                 </a>
                                                     <?php
                                                 }
                                                 else
                                                 { ?>
                                                 <a href="<?php echo site_url('account'); ?>" class="dropdown-toggle" >
-													<span class="username" style="font-size:0.85em;line-height:1em;text-align:center;position:relative;bottom:2px;"> Login<br>/Register </span>
+													<span class="username" style="font-size:0.85em;line-height:1em;text-align:center;position:relative;top:6px;"> Login / Register </span>
 												</a>
                                                     <?php
                                                 } ?>
@@ -198,10 +198,16 @@
 											</li>
 											<!-- END MOBILE HEADER SEARCH BOX TOGGLER -->
 
+                                            <?php
+    										/***********
+    										 *	FAVORITES icon
+                                             *  Hidding this temporarily
+    										 */
+    										?>
 											<!-- BEGIN FAVORITES TOGGLER -->
                                             <?php if ($this->webspace_details->options['site_type'] == 'hub_site')
                                             { ?>
-											<li class="dropdown dropdown-extended dropdown-favorite dropdown-dark">
+											<li class="dropdown dropdown-extended dropdown-favorite dropdown-dark hide">
 												<a href="javascript:;" class="dropdown-toggle" >
 													<i class="fa fa-heart-o"></i>
 												</a>
