@@ -44,19 +44,22 @@ var ComponentsScripts = function() {
 		});
 
         // mobile thumbs filter actions
-		$('.select-mobile-thumbs-filter').on('change', function(){
+		$('#size-filter-desktop-top, #style-filter-desktop-top, #price-filter-desktop-top, #color-filter-desktop-top, #occassion-filter-desktop-top, #availability-filter-desktop-top, #size-filter-desktop-bottom, #style-filter-desktop-bottom, #price-filter-desktop-bottom, #color-filter-desktop-bottom, #occassion-filter-desktop-bottom, #availability-filter-desktop-bottom, #size-filter-mobile-top, #style-filter-mobile-top, #price-filter-mobile-top, #color-filter-mobile-top, #occassion-filter-mobile-top, #availability-filter-mobile-top, #size-filter-mobile-bottom, #style-filter-mobile-bottom, #price-filter-mobile-bottom, #color-filter-mobile-bottom, #occassion-filter-mobile-bottom, #availability-filter-mobile-bottom').change(function(){
+            // set parent element
+            var form = $(this).parents('form');
+            var desc = form.data('desc');
             // set this filter value
             var val = $(this).val();
             if (val != 'all' && val != 'default'){
                 // set the items value to the input for submission
-                $(this).siblings('.this-filter').val(val);
+                form.children('.this-filter').val(val);
             }else{
                 // remove input item so as not to show as empty uri query string
-                $(this).siblings('.this-filter').remove();
+                form.children('.this-filter').remove();
             }
             // submit closest form
-            var form = $(this).parents('form');
             var dataString = form.serialize();
+            //alert(dataString);
 			form.submit();
 		});
 

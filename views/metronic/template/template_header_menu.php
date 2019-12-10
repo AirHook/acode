@@ -16,12 +16,13 @@
 										 * Main menu item that drops down list of designers and it's major subcats
                                          * Doesn't not show on satellite sites
 										 */
-										if ($this->webspace_details->options['site_type'] == 'hub_site')
+										if ($this->webspace_details->options['site_type'] == 'hub_site_')
 										{ ?>
 
 										<!-- DOC: Apply "mega-menu-dropdown" class to utilize mega menu drop down -->
 										<!-- DOC: Apply "classic-menu-dropdown" class for the classic list type menu drop down -->
-										<li aria-haspopup="true" class="menu-dropdown mega-menu-dropdown mega-menu-full  ">
+                                        <!-- DOC: Acc class "mega-menu-full" after "mega-menu-dropdown" to make drop down full width -->
+										<li aria-haspopup="true" class="menu-dropdown mega-menu-dropdown  hide">
 
 											<!-- Desktop Item -->
                                             <a class="hidden-xs" href="<?php echo site_url('shop/designers'); ?>">
@@ -33,12 +34,12 @@
 												Designers
                                                 <span class="arrow"></span>
                                             </a>
-                                            <ul class="dropdown-menu" style="min-width: ">
+                                            <ul class="dropdown-menu" style="min-width: 800px;">
 												<li>
                                                     <div class="mega-menu-content">
                                                         <div class="row">
 
-															<div class="col-md-8">
+															<div class="col-md-12">
 																<ul class="list-unstyled hide">
 																	<li>
 																		<a href="<?php echo site_url('shop/designers'); ?>" class="nav-link  ">
@@ -146,7 +147,7 @@
 
 															</div>
 
-															<div class="col-md-4 hidden-xs" style="text-align:right;position:relative;min-height:300px;">
+															<div class="col-md-4 hidden-xs hide" style="text-align:right;position:relative;min-height:300px;">
 
 																<img class="hover-icon" src="<?php echo base_url(); ?>assets/images/uploads/2018/09/bridal-basix-black-label.jpg" style="position:absolute;top:0px;right:15px;display:block;" />
 
@@ -179,7 +180,9 @@
 										 * Main menu item that drops down list of categories from the top tier category 'Womens Apparel'
 										 */
 										?>
-                                        <li aria-haspopup="true" class="menu-dropdown mega-menu-dropdown mega-menu-full <?php echo (in_array('womens_apparel', $this->uri->segment_array()) OR in_array('all', $this->uri->segment_array())) ? 'active' : ''; ?> ">
+                                        <?php if ($this->webspace_details->options['site_type'] == 'hub_site_') { ?>
+                                        <!-- DOC: Acc class "mega-menu-full" after "mega-menu-dropdown" to make drop down full width -->
+                                        <li aria-haspopup="true" class="menu-dropdown mega-menu-dropdown hide  <?php echo (in_array('womens_apparel', $this->uri->segment_array()) OR in_array('all', $this->uri->segment_array())) ? 'active' : ''; ?> ">
 											<!-- Desktop Item -->
                                             <a class="hidden-xs" href="<?php echo site_url('shop/womens_apparel'); ?>"> Womens Apparel
                                                 <span class="arrow"></span>
@@ -193,7 +196,7 @@
                                                     <div class="mega-menu-content">
                                                         <div class="row">
 
-															<div class="col-md-8">
+															<div class="col-md-12">
 
 																<!-- DOC: apply class "hide" to hide arrow from mobile menu -->
 																<?php
@@ -280,7 +283,7 @@
 																		// get icon image and save as associative array
 																		// check if general or designer specific icon is required
 																		// for re-use on second category tree loop (level 1 category menu items)
-																		$icon[$main_category->category_slug] = $this->categories_tree->get_icon(
+																		@$icon[$main_category->category_slug] = $this->categories_tree->get_icon(
 																			$main_category->category_id,
 																			(
 																				$this->webspace_details->options['site_type'] == 'hub_site'
@@ -290,8 +293,8 @@
 																		);
 																		// save the icon images in the array
 																		$gen_cat_array_icons[$main_category->category_slug] =
-																			$icon[$main_category->category_slug]
-																			? '/images/subcategory_icon/thumb/'.$icon[$main_category->category_slug]
+																			@$icon[$main_category->category_slug]
+																			? '/images/subcategory_icon/thumb/'.@$icon[$main_category->category_slug]
 																			: 'assets/images/icons/default-subcat-icon.jpg'
 																		;
 																		// then make the html element for the level 1 category...
@@ -326,7 +329,7 @@
 																					;
 																					// get icon image and save as associative array
 																					// check if general or designer specific icon is required
-																					$icon[$subcat->category_slug] = $this->categories_tree->get_icon(
+																					@$icon[$subcat->category_slug] = $this->categories_tree->get_icon(
 																						$subcat->category_id,
 																						(
 																							$this->webspace_details->options['site_type'] == 'hub_site'
@@ -336,8 +339,8 @@
 																					);
 																					// save the icon images in the array
 																					$gen_cat_array_icons[$subcat->category_slug] =
-																						$icon[$subcat->category_slug]
-																						? '/images/subcategory_icon/thumb/'.$icon[$subcat->category_slug]
+																						@$icon[$subcat->category_slug]
+																						? '/images/subcategory_icon/thumb/'.@$icon[$subcat->category_slug]
 																						: 'assets/images/icons/default-subcat-icon.jpg'
 																					;
 
@@ -378,7 +381,7 @@
 
 															</div>
 															<!-- Icon Images -->
-															<div class="col-md-4 hidden-xs" style="text-align:right;position:relative;min-height:300px;">
+															<div class="col-md-4 hidden-xs hide" style="text-align:right;position:relative;min-height:300px;">
 
 																<?php
 																$womens_apparel_gen_icon = $this->categories_tree->get_icon(
@@ -421,6 +424,7 @@
                                                 </li>
                                             </ul>
                                         </li>
+                                        <?php } ?>
 
 										<?php
 										if ($main_categories)
@@ -456,19 +460,21 @@
                                             <a class="hidden-sm hidden-md hidden-lg" href="javascript:;"> <?php echo $main_category->category_name; ?>
                                                 <span class="arrow"></span>
                                             </a>
-											<!-- DROPDOWN Item -->
-                                            <ul class="dropdown-menu" style="min-width: 650px;<?php echo $cnt > $more_than_half ? 'right:0;' : '';?>">
+											<!-- DROPDOWN Item --
+                                            <ul class="dropdown-menu" style="min-width: 250px;<?php echo $cnt > $more_than_half ? 'right:0;' : '';?>">
+                                            -->
+                                            <ul class="dropdown-menu" style="min-width: 250px;">
 												<li>
                                                     <div class="mega-menu-content">
                                                         <div class="row">
-															<div class="col-md-5">
+															<div class="col-md-12">
 																<ul class="mega-menu-submenu">
 
 																	<?php
 																	// set the 1st level category icon on array
 																	$array_icons[$main_category->category_slug][$main_category->category_slug] =
-																		$icon[$main_category->category_slug]
-																		? '/images/subcategory_icon/thumb/'.$icon[$main_category->category_slug]
+																		@$icon[$main_category->category_slug]
+																		? '/images/subcategory_icon/thumb/'.@$icon[$main_category->category_slug]
 																		: 'assets/images/icons/default-subcat-icon.jpg'
 																	;
 																	?>
@@ -502,8 +508,8 @@
 																				;
 																				// get the previously saved icon images and set on the array
 																				$array_icons[$main_category->category_slug][$subcat->category_slug] =
-																					$icon[$subcat->category_slug]
-																					? '/images/subcategory_icon/thumb/'.$icon[$subcat->category_slug]
+																					@$icon[$subcat->category_slug]
+																					? '/images/subcategory_icon/thumb/'.@$icon[$subcat->category_slug]
 																					: 'assets/images/icons/default-subcat-icon.jpg'
 																				;
 
@@ -538,13 +544,13 @@
 																</ul>
 															</div>
 															<!-- Icon Images -->
-															<div class="col-md-7 hidden-xs" style="text-align:right;position:relative;min-height:300px;">
+															<div class="col-md-7 hidden-xs hide" style="text-align:right;position:relative;min-height:300px;">
 
 																<?php
-																if ($icon[$main_category->category_slug] != '')
+																if (@$icon[$main_category->category_slug] != '')
 																{ ?>
 
-																<img class="<?php echo $main_category->category_slug; ?>-hover-icon <?php echo $main_category->category_slug; ?>" src="<?php echo $this->config->slash_item('PROD_IMG_URL'); ?>images/subcategory_icon/thumb/<?php echo $icon[$main_category->category_slug]; ?>" style="position:absolute;top:0px;right:15px;" />
+																<img class="<?php echo $main_category->category_slug; ?>-hover-icon <?php echo $main_category->category_slug; ?>" src="<?php echo $this->config->slash_item('PROD_IMG_URL'); ?>images/subcategory_icon/thumb/<?php echo @$icon[$main_category->category_slug]; ?>" style="position:absolute;top:0px;right:15px;" />
 																	<?php
 																}
 																else

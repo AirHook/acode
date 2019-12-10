@@ -498,7 +498,7 @@
 																				<span></span>
 																			</label>
 																			<label class="mt-checkbox mt-checkbox-outline col-xs-5 col-sm-2 col-md-2 col-lg-2">
-																				<input type="radio" class="facets" name="availability1" value="onsale" <?php echo @$_GET['availability'] == 'onsale' ? 'checked="checked"' : ''; ?> /> On Sale
+																				<input type="radio" class="facets" name="availability1" value="onsale" <?php echo @$_GET['availability'] == 'onsale' ? 'checked="checked"' : ''; ?> /> Clearance
 																				<span></span>
 																			</label>
 																			<label class="mt-checkbox mt-checkbox-outline col-xs-5 col-sm-2 col-md-2 col-lg-2">
