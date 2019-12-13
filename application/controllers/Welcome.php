@@ -12,7 +12,7 @@ class Welcome extends MY_Controller {
 	{
 		parent::__construct();
 	}
-	
+
 	/**
 	 * Index Page for this controller.
 	 *
@@ -30,9 +30,9 @@ class Welcome extends MY_Controller {
 	 */
 	public function index()
 	{
-		$this->load->view('welcome_message');
+		//$this->load->view('welcome_message');
 		//$this->load->view($this->webspace_details->options['theme'].'/template', $this->data);
-		//$this->load->view('metronic/blank_page');
+		$this->load->view('admin/metronic/template4/template');
 		//$this->load->view('metronic/template/blank_page');
 		//$this->load->view('metronic/template/fluid_page');
 	}

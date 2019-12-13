@@ -230,7 +230,7 @@ class Modify extends Admin_Controller {
 			$this->data['page_description'] = 'Modify Sales Packages';
 
 			// load views...
-			$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template5/template', $this->data);
+			$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template/template', $this->data);
 		}
 		else
 		{
