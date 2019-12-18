@@ -93,7 +93,8 @@
 				foreach ($json_arys as $json)
 				{
 					$temp_ary = json_decode($json, TRUE);
-					$logindata = array_merge_recursive($logindata, $temp_ary);
+					//$logindata = array_merge_recursive($logindata, $temp_ary);
+					$logindata = is_array($temp_ary) ? array_merge_recursive($logindata, $temp_ary) : array_merge_recursive($logindata);
 				}
 				?>
 
@@ -125,7 +126,7 @@
 				Product Clicks:
 
 					<?php
-					if ( ! empty($logindata['product_clicks']))
+					if ( ! empty(@$logindata['product_clicks']))
 					{
 						foreach ($logindata['product_clicks'] as $key => $val)
 						{

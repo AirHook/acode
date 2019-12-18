@@ -104,6 +104,11 @@
 									Add New Product <i class="fa fa-plus"></i>
 								</a>
 							</li>
+							<li>
+								<a href="<?php echo site_url('admin/products/add/multiple_upload_images'); ?>">
+									Add Multiple Products via Images <i class="fa fa-plus"></i>
+								</a>
+							</li>
 							<?php } ?>
 						</ul>
 

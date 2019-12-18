@@ -879,6 +879,7 @@ class Product_details
 		$this->DB->where('prod_no', $this->prod_no);
 		$this->DB->join('tblcolor', 'tblcolor.color_name = tbl_stock.color_name', 'left');
 		$this->DB->join('media_library_products', 'media_library_products.media_id = tbl_stock.image_url_path', 'left');
+		$this->DB->group_by('color_name');
 		$this->DB->order_by('primary_color', 'desc');
 		$query = $this->DB->get('tbl_stock');
 
