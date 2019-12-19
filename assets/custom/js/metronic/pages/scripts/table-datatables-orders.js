@@ -1,6 +1,7 @@
 var TableDatatablesManaged = function () {
 
     var base_url = $('body').data('base_url');
+    var objectData = $('.page-file-wrapper').data('object_data');
 
     var initTable = function () {
 
@@ -203,8 +204,8 @@ var TableDatatablesManaged = function () {
         // get filter values
         var url;
         var page_param = $('[name="page_param"]').val();
-        var status = $('[name="status"]:checked').val();
         var des_slug = $('[name="des_slug"]').val();
+        var status = $('[name="status"]:checked').val();
         // process values
         // page_param will alwasy have a value
         // therefore, let's initially set the url as
@@ -223,6 +224,30 @@ var TableDatatablesManaged = function () {
         window.location.href = url;
 	});
 
+    // resend order email confirmation
+    $('.btn-resend_email_confirmation').on('click', function(){
+        // show loading modal
+        $('#loading .modal-title').html('Sending...');
+        $('#loading').modal('show');
+        // get data
+        objectData.user_id = $(this).data('user_id');
+        objectData.order_id = $(this).data('order_id');
+        objectData.user_cat = $(this).data('user_cat');
+        var send = $.ajax({
+            type:    "POST",
+            url:     base_url + "admin/orders/send_order_email_confirmation.html",
+            data:    objectData
+        });
+        send.done(function(data) {
+            location.reload();
+        });
+        send.fail(function(jqXHR, textStatus, errorThrown) {
+            $('#loading').modal('hide');
+            alert("Get Store Details Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
+            //$('#reloading').modal('show');
+            //location.reload();
+        });
+    });
 
     return {
 

@@ -44,6 +44,7 @@ class Status extends Admin_Controller {
 				$DB->set('status', '0');
 			break;
 			case 'on_hold':
+			case 'onhold':
 				$DB->set('status', '2');
 			break;
 			case 'cancel':

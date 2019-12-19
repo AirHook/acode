@@ -29,10 +29,13 @@ class Order_details
 	 *
 	 * @var	string/array
 	 */
-	public $order_date = '';
+	public $order_date = ''; // old date recording system as string
 	public $status = '';
 	public $remarks = ''; // 1 - return for exchange, 2 - return for store credit, 3 - return for refund, 4 - return for other reasons (comments)
 	//public $comments = '';
+
+	public $date_ordered = ''; // new date recording system as timestamp
+	public $date_timestamp = ''; // alias as timestamp
 
 	/**
 	 * Order Summary
@@ -50,6 +53,7 @@ class Order_details
 	 * @var	string/array
 	 */
 	public $designers = '';
+	public $designer_group = '';
 	public $agree_policy = '';
 
 	/**
@@ -57,6 +61,7 @@ class Order_details
 	 *
 	 * @var	string/array
 	 */
+	public $c = '';
 	public $user_id = '';
 	public $email = '';
 	public $firstname = '';
@@ -200,6 +205,9 @@ class Order_details
 			$date = @strtotime($date);
 			$this->order_date = @date('M d, Y H:i A', $date);;
 
+			$this->date_ordered = date('Y-m-d', $row->order_date);
+			$this->date_timestamp = $row->order_date;
+
 			$this->status = $row->status;
 			$this->remarks = $row->remarks; // 1 - return for exchange, 2 - return for store credit, 3 - return for refund, 4 - return for other reasons (comments)
 			//$this->comments = $row->comments;
@@ -211,6 +219,7 @@ class Order_details
 
 			$this->agree_policy = $row->agree_policy; // for consumers
 
+			$this->c = $row->c;
 			$this->user_id = $row->user_id;
 			$this->email = $row->email;
 			$this->firstname = $row->firstname;
@@ -228,7 +237,8 @@ class Order_details
 			$this->webspace_id = $row->webspace_id;
 
 			// get items
-			$this->designers = $row->designers;
+			$this->designers = $row->designer_group;
+			$this->designer_group = $row->designer_group;
 			$qry2 = $this->DB->get_where('tbl_order_log_details', array('order_log_id'=>$row->order_id));
 			$this->order_items = $qry2->result();
 

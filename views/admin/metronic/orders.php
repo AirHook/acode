@@ -1,4 +1,4 @@
-					<div class="m-grid">
+					<div class="m-grid page-file-wrapper" data-object_data='{"<?php echo $this->security->get_csrf_token_name(); ?>":"<?php echo $this->security->get_csrf_hash(); ?>"}'>
 						<div class="m-grid-row">
 
 							<style>
@@ -24,17 +24,21 @@
 
 								<h4>Options</h4>
 
-								<input type="hidden" class="filter-options-field" name="page" value="<?php echo @$page; ?>" />
+								<input type="hidden" name="page" value="<?php echo @$page; ?>" />
 
 								<div class="form-group">
                                     <label>Filter List</label>
                                     <select class="bs-select form-control filter-options-field" name="page_param">
                                         <option value="all" <?php echo strpos($this->uri->uri_string(), 'admin/orders/all') !== FALSE ? 'selected="selected"' : ''; ?>>
 											All Orders</option>
+										<?php if (@$this->webspace_details->slug != 'tempoparis')
+										{ ?>
                                         <option value="wholesale" <?php echo strpos($this->uri->uri_string(), 'admin/orders/wholesale') !== FALSE ? 'selected="selected"' : ''; ?>>
 											Wholesale Orders</option>
                                         <option value="retail" <?php echo strpos($this->uri->uri_string(), 'admin/orders/retail') !== FALSE ? 'selected="selected"' : ''; ?>>
 											Retail Orders</option>
+											<?php
+										} ?>
                                     </select>
                                 </div>
 
@@ -86,12 +90,12 @@
 										} ?>
 									</label>
                                     <div class="mt-radio-list" style="padding:0px;">
-										<label class="mt-radio mt-radio-outline"> Complete
-                                            <input type="radio" class="filter-options-field" value="complete" name="status" <?php echo @$status == 'complete' ? 'checked="checked"' : ''; ?> />
+										<label class="mt-radio mt-radio-outline"> Pending
+                                            <input type="radio" class="filter-options-field" value="pending" name="status" <?php echo @$status == 'pending' ? 'checked="checked"' : ''; ?> />
                                             <span></span>
                                         </label>
-                                        <label class="mt-radio mt-radio-outline"> Pending
-                                            <input type="radio" class="filter-options-field" value="pending" name="status" <?php echo @$status == 'pending' ? 'checked="checked"' : ''; ?> />
+										<label class="mt-radio mt-radio-outline"> Complete
+                                            <input type="radio" class="filter-options-field" value="complete" name="status" <?php echo @$status == 'complete' ? 'checked="checked"' : ''; ?> />
                                             <span></span>
                                         </label>
                                         <label class="mt-radio mt-radio-outline"> Cancelled
