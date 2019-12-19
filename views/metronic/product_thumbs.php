@@ -437,19 +437,19 @@
 
                                                                         <select class="form-control bs-select input-sm select-mobile-thumbs-filter" style="<?php echo @$_GET['availability'] ? $bg_color : ''; ?>" id="availability-filter-desktop-top" <?php echo @$_GET['availability'] ? 'data-style="btn dark"' : ''; ?>>
 
-                                                                            <?php if (@$_GET['price']) { ?>
+                                                                            <?php if (@$_GET['availability']) { ?>
                                                                             <option value="all">All</option>
                                                                             <?php } else { ?>
                                                                             <option>AVAILABILITY</option>
                                                                             <?php } ?>
 
-                                                                            <option value="asc" <?php echo @$_GET['availability'] == 'instock' ? 'selected': '';?>>
+                                                                            <option value="instock" <?php echo @$_GET['availability'] == 'instock' ? 'selected': '';?>>
                                                                                 In Stock
                                                                             </option>
-                                                                            <option value="desc" <?php echo @$_GET['availability'] == 'preorder' ? 'selected': '';?>>
+                                                                            <option value="preorder" <?php echo @$_GET['availability'] == 'preorder' ? 'selected': '';?>>
                                                                                 Pre Order
                                                                             </option>
-                                                                            <option value="asc" <?php echo @$_GET['availability'] == 'onsale' ? 'selected': '';?>>
+                                                                            <option value="onsale" <?php echo @$_GET['availability'] == 'onsale' ? 'selected': '';?>>
                                                                                 Clearance
                                                                             </option>
 
@@ -865,19 +865,19 @@
 
                                                                                     <select class="form-control input-sm select-mobile-thumbs-filter" style="<?php echo @$_GET['availability'] ? $bg_color : ''; ?>" id="availability-filter-mobile-top">
 
-                                                                                        <?php if (@$_GET['price']) { ?>
+                                                                                        <?php if (@$_GET['availability']) { ?>
                                                                                         <option value="all">All</option>
                                                                                         <?php } else { ?>
                                                                                         <option>AVAILABILITY</option>
                                                                                         <?php } ?>
 
-                                                                                        <option value="asc" <?php echo @$_GET['availability'] == 'instock' ? 'selected': '';?>>
+                                                                                        <option value="instock" <?php echo @$_GET['availability'] == 'instock' ? 'selected': '';?>>
                             																In Stock
                             															</option>
-                            															<option value="desc" <?php echo @$_GET['availability'] == 'preorder' ? 'selected': '';?>>
+                            															<option value="preorder" <?php echo @$_GET['availability'] == 'preorder' ? 'selected': '';?>>
                             																Pre Order
                             															</option>
-                                                                                        <option value="asc" <?php echo @$_GET['availability'] == 'onsale' ? 'selected': '';?>>
+                                                                                        <option value="onsale" <?php echo @$_GET['availability'] == 'onsale' ? 'selected': '';?>>
                             																Clearance
                             															</option>
 
@@ -1606,19 +1606,19 @@
 
                                                                                     <select class="form-control input-sm select-mobile-thumbs-filter" style="<?php echo @$_GET['availability'] ? $bg_color : ''; ?>" id="availability-filter-mobile-bottom">
 
-                                                                                        <?php if (@$_GET['price']) { ?>
+                                                                                        <?php if (@$_GET['availability']) { ?>
                                                                                         <option value="all">All</option>
                                                                                         <?php } else { ?>
                                                                                         <option>AVAILABILITY</option>
                                                                                         <?php } ?>
 
-                                                                                        <option value="asc" <?php echo @$_GET['availability'] == 'instock' ? 'selected': '';?>>
+                                                                                        <option value="instock" <?php echo @$_GET['availability'] == 'instock' ? 'selected': '';?>>
                             																In Stock
                             															</option>
-                            															<option value="desc" <?php echo @$_GET['availability'] == 'preorder' ? 'selected': '';?>>
+                            															<option value="preorder" <?php echo @$_GET['availability'] == 'preorder' ? 'selected': '';?>>
                             																Pre Order
                             															</option>
-                                                                                        <option value="asc" <?php echo @$_GET['availability'] == 'onsale' ? 'selected': '';?>>
+                                                                                        <option value="onsale" <?php echo @$_GET['availability'] == 'onsale' ? 'selected': '';?>>
                             																Clearance
                             															</option>
 
@@ -1975,19 +1975,19 @@
 
                                                                         <select class="form-control bs-select input-sm select-mobile-thumbs-filter" style="<?php echo @$_GET['availability'] ? $bg_color : ''; ?>" id="availability-filter-desktop-bottom" <?php echo @$_GET['availability'] ? 'data-style="btn dark"' : ''; ?>>
 
-                                                                            <?php if (@$_GET['price']) { ?>
+                                                                            <?php if (@$_GET['availability']) { ?>
                                                                             <option value="all">All</option>
                                                                             <?php } else { ?>
                                                                             <option>AVAILABILITY</option>
                                                                             <?php } ?>
 
-                                                                            <option value="asc" <?php echo @$_GET['availability'] == 'instock' ? 'selected': '';?>>
+                                                                            <option value="instock" <?php echo @$_GET['availability'] == 'instock' ? 'selected': '';?>>
                                                                                 In Stock
                                                                             </option>
-                                                                            <option value="desc" <?php echo @$_GET['availability'] == 'preorder' ? 'selected': '';?>>
+                                                                            <option value="preorder" <?php echo @$_GET['availability'] == 'preorder' ? 'selected': '';?>>
                                                                                 Pre Order
                                                                             </option>
-                                                                            <option value="asc" <?php echo @$_GET['availability'] == 'onsale' ? 'selected': '';?>>
+                                                                            <option value="onsale" <?php echo @$_GET['availability'] == 'onsale' ? 'selected': '';?>>
                                                                                 Clearance
                                                                             </option>
 
