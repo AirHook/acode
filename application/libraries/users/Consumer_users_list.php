@@ -136,9 +136,11 @@ class Consumer_users_list
 
 		// set limits
 		$limits_cluase = '';
+		$cal_found_rows = '';
 		if ( ! empty($limits))
 		{
 			$limits_cluase = 'LIMIT '.$limits[0].', '.$limits[1];
+			$cal_found_rows = 'SQL_CALC_FOUND_ROWS';
 		}
 
 		/*********
@@ -148,7 +150,7 @@ class Consumer_users_list
 		 */
 		$query_string = "
 			SELECT
-				tbluser_data.*,
+				".$cal_found_rows." tbluser_data.*,
 
 				designer.designer,
 
@@ -186,6 +188,13 @@ class Consumer_users_list
 		$query = $this->DB->query($query_string);
 
 		//echo '<pre>'; echo $this->DB->last_query(); die('<br />DIED');
+
+		if ($cal_found_rows)
+		{
+			// get total count without limits...
+			$q = $this->DB->query('SELECT FOUND_ROWS()')->row_array();
+			$this->count_all = $q['FOUND_ROWS()'];
+		}
 
 		if ($query->num_rows() == 0)
 		{

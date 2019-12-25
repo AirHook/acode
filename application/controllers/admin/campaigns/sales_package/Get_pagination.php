@@ -39,7 +39,7 @@ class Get_pagination extends Admin_Controller {
 		$end_cur = $this->input->post('end_cur');
 
 		// get lowest and highest 5 tabs from current
-		$num_links = 4;
+		$num_links = 2;
 		$lowest_cur = $cur > $num_links ? $cur - $num_links : 1;
 		$highest_cur = $cur < ($end_cur - $num_links) ? $cur + $num_links : $end_cur;
 
@@ -47,13 +47,12 @@ class Get_pagination extends Admin_Controller {
 		$prev_cur = $cur - 1;
 		$next_cur = $cur + 1;
 
-		$html = '<li>&nbsp; &nbsp;</li>';
-
+		$html = '';
 		if ($cur == 2)
 		{
 			$html.= '
-				<li>
-					<a href="#cur_users_1" data-toggle="tab" data-cur="1">
+				<li class="prev-page">
+					<a href="javascript:;" data-cur_page="1">
 						<i class="fa fa-angle-left"></i>
 					</a>
 				</li>
@@ -63,13 +62,13 @@ class Get_pagination extends Admin_Controller {
 		if ($cur >= 3)
 		{
 			$html.= '
-				<li>
-					<a href="#cur_users_1" data-toggle="tab" data-cur="1">
+				<li class="frist-page">
+					<a href="javascript:;" data-cur_page="1">
 						<i class="fa fa-angle-double-left"></i>
 					</a>
 				</li>
-				<li>
-					<a href="#cur_users_'.$prev_cur.'" data-toggle="tab" data-cur="'.$prev_cur.'">
+				<li class="prev-page">
+					<a href="javascript:;" data-cur_page="'.$prev_cur.'">
 						<i class="fa fa-angle-left"></i>
 					</a>
 				</li>
@@ -79,10 +78,11 @@ class Get_pagination extends Admin_Controller {
 		for ($c = $lowest_cur;$c <= $highest_cur;$c++)
 		{
 			$active = $c == $cur ? 'active' : '';
+			$page_one = $c == 1 ? 'page-one' : '';
 
 			$html.= '
-				<li class="'.$active.'">
-					<a href="#cur_users_'.$c.'" data-toggle="tab" data-cur="'.$c.'"> '.(($lowest_cur > 1 && $lowest_cur == $c) ? '... ' : '').$c.(($highest_cur < $end_cur && $highest_cur == $c) ? ' ...' : '').' </a>
+				<li class="page-number '.$page_one.' '.$active.'">
+					<a href="javascript:;" data-cur_page="'.$c.'"> '.(($lowest_cur > 1 && $lowest_cur == $c) ? '... ' : '').$c.(($highest_cur < $end_cur && $highest_cur == $c) ? ' ...' : '').' </a>
 				</li>
 			';
 		}
@@ -90,13 +90,13 @@ class Get_pagination extends Admin_Controller {
 		if ($cur <= ($end_cur - 2))
 		{
 			$html.= '
-				<li>
-					<a href="#cur_users_'.$next_cur.'" data-toggle="tab" data-cur="'.$next_cur.'">
+				<li class="next-page">
+					<a href="javascript:;" data-cur_page="'.$next_cur.'">
 						<i class="fa fa-angle-right"></i>
 					</a>
 				</li>
-				<li>
-					<a href="#cur_users_'.$end_cur.'" data-toggle="tab" data-cur="'.$end_cur.'">
+				<li class="last-page">
+					<a href="javascript:;" data-cur_page="'.$end_cur.'">
 						<i class="fa fa-angle-double-right"></i>
 					</a>
 				</li>
@@ -106,15 +106,13 @@ class Get_pagination extends Admin_Controller {
 		if ($cur == ($end_cur - 1))
 		{
 			$html.= '
-				<li>
-					<a href="#cur_users_'.$next_cur.'" data-toggle="tab" data-cur="'.$next_cur.'">
+				<li class="next-page">
+					<a href="javascript:;" data-cur_page="'.$next_cur.'">
 						<i class="fa fa-angle-right"></i>
 					</a>
 				</li>
 			';
 		}
-
-		$html.= '<li>&nbsp; &nbsp;</li>';
 
 		echo $html;
 		exit;

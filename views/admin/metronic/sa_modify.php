@@ -66,20 +66,20 @@
 								 */
 								?>
                                 <div class="form-group form-group-badge select-designer-dropdown">
-                                    <label class="control-label col-md-4">
+                                    <label class="control-label col-md-5">
                                         <span class="badge custom-badge pull-left step-select-designer step1 active"> 1 </span>
                                         <span class="badge-label"> Designer / Webspace </span>
                                     </label>
-                                    <div class="col-md-8">
+                                    <div class="col-md-7">
                                         <input type="text" name="reference_designer" data-required="1" class="form-control input-sa_info clear-readonly" value="<?php echo @$designer; ?>" readonly />
                                     </div>
                                 </div>
                                 <div class="form-group form-group-badge select-vendor-dropdown">
-                                    <label class="control-label col-md-4">
+                                    <label class="control-label col-md-5">
                                         <span class="badge custom-badge pull-left step-select_items step2 active"> 2 </span>
                                         <span class="badge-label"> Select / Search Products </span>
                                     </label>
-                                    <div class="col-md-8">
+                                    <div class="col-md-7">
                                         <cite class="help-block font-red" style="padding-top:3px;">
                                             Select From Options below
                                         </cite>
@@ -338,7 +338,7 @@
 
                                         </div>
                                         <!-- /btn-group -->
-                                        <div class="form-control cat_crumbs" style="font-style:italic;">
+                                        <div class="form-control cat_crumbs" style="font-style:italic;font-size:0.8em;">
                                             <?php echo @$slug_segs ? implode(' &nbsp;&raquo;&nbsp; ', @$slug_segs_name) : ''; ?>
                                         </div>
                                     </div>

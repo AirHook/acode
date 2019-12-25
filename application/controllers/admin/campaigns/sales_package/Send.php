@@ -65,6 +65,7 @@ class Send extends Admin_Controller {
 			$this->data['author'] = 'admin'; // admin/system
 			$this->data['author_email'] = $this->webspace_details->info_email;
 			$this->data['author_id'] = $this->session->admin_id;
+			$this->data['sales_user'] = '';
 		}
 		else
 		{
@@ -78,36 +79,39 @@ class Send extends Admin_Controller {
 			$this->data['author'] = $this->data['author_name'];
 			$this->data['author_email'] = $this->sales_user_details->email;
 			$this->data['author_id'] = $this->sales_user_details->admin_sales_id;
+			$this->data['sales_user'] = $this->sales_user_details->email;
+
+			// add where clause for logged in sales user
+			$where['tbluser_data_wholesale.admin_sales_email'] = $this->sales_user_details->email;
 		}
 
 		// get data
-		if (@$user_id)
+		// limits and per page
+		$per_page = 20;
+		$limit = $per_page > 0 ? array($per_page) : array();
+		// where clauses
+		$where['tbluser_data_wholesale.is_active'] = '1';
+		if ($this->session->admin_sales_loggedin)
 		{
-			$this->data['users'] = $this->wholesale_users_list->select(
-				array( // where
-					'tbluser_data_wholesale.user_id' => $user_id
-				),
-				array( // order by
-					'tbluser_data_wholesale.store_name' => 'asc'
-				)
-			);
-			$this->data['user_id'] = $user_id;
+			$where['tbluser_data_wholesale.admin_sales_email'] = $this->sales_user_details->email;
 		}
-		else
-		{
-			$this->data['users'] = $this->wholesale_users_list->select(
-				array( // where
-					'tbluser_data_wholesale.is_active' => '1'
-				),
-				array( // order by
-					'tbluser_data_wholesale.store_name' => 'asc'
-				)
-			);
-			$this->data['user_id'] = '';
-		}
-		$this->data['total_users'] = $this->wholesale_users_list->row_count;
-		$this->data['users_per_page'] = 20;
-		$this->data['end_cur_users'] = floor($this->data['total_users'] / $this->data['users_per_page']) + 1;
+		$this->data['users'] = $this->wholesale_users_list->select(
+			$where, // where
+			array( // order by
+				'tbluser_data_wholesale.store_name' => 'asc'
+			),
+			$limit
+		);
+		//$this->data['user_id'] = '';
+		$this->data['users_per_page'] = $per_page;
+		$this->data['total_users'] = $this->wholesale_users_list->count_all;
+		$this->data['number_of_pages'] =
+			$per_page > 0
+			? ceil($this->data['total_users'] / $this->data['users_per_page'])
+			: $this->data['total_users']
+		;
+		// by default
+		$this->data['page'] = '1';
 
 		// need to show loading at start
 		$this->data['show_loading'] = FALSE;
@@ -119,7 +123,7 @@ class Send extends Admin_Controller {
 		$this->data['page_description'] = 'Send Sales Packages To Users';
 
 		// load views...
-		$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template5/template', $this->data);
+		$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template/template', $this->data);
 	}
 
 	// ----------------------------------------------------------------------
@@ -131,10 +135,6 @@ class Send extends Admin_Controller {
 	 */
 	public function sa($id = '')
 	{
-		//echo '<pre>';
-		//print_r($this->input->post());
-		//die();
-
 		// input post data
 		/* *
 		Array
@@ -144,11 +144,7 @@ class Send extends Admin_Controller {
 		    [reference_designer] =>
 		    [admin_sales_email] =>
 		    [admin_sales_id] =>
-		    [email] => Array
-		        (
-		            [0] => rsbgm@rcpixel.com
-		        )
-
+		    [email] => // new user input field
 		    [firstname] =>
 		    [lastname] =>
 		    [store_name] =>
@@ -160,6 +156,8 @@ class Send extends Admin_Controller {
 		    [state] =>
 		    [country] =>
 		    [zipcode] =>
+			[emails] => // current user set to email (up to ten and comma separated)
+			[search_string] => // used for searching users from current list
 		)
 		// */
 		if ( ! $this->input->post())
@@ -207,7 +205,12 @@ class Send extends Admin_Controller {
 			$this->DB->insert('tbluser_data_wholesale', $post_user);
 			$users = array($this->input->post('email'));
 		}
-		else $users = $this->input->post('email');
+		//else $users = $this->input->post('email');
+		else
+		{
+			// latest current user email processing
+			$users = explode(',', $this->input->post('emails'));
+		}
 
 		// send the sales package
 		$this->load->library('sales_package/sales_package_sending');
@@ -228,8 +231,11 @@ class Send extends Admin_Controller {
 			redirect('admin/campaigns/sales_package/send/index/'.$id, 'location');
 		}
 
+		// set flash data
+		$this->session->set_flashdata('success', 'sa_email_sent');
+
 		// set data variables...
-		$this->data['file'] = 'sa_send_success';
+		$this->data['file'] = 'sa_send';
 		$this->data['page_title'] = 'Sales Package Sending';
 		$this->data['page_description'] = 'Send Sales Packages To Users';
 

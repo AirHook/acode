@@ -1,22 +1,126 @@
 								<div class="send_to_current_user display-none">
 
+									<div class="form-body selected-users-list-wrapper display-none">
+										<span class="caption">Send to the following <cite>(maximum of 10 users per sending)</cite>:</span>
+										<input type="hidden" name="emails" value="" />
+										<div class="mt-checkbox-list selected-users-list">
+											<!-- DOC: example child element --
+											<label class="mt-checkbox mt-checkbox-outline" style="font-size:0.9em;">
+												Rey Store -
+												Rey Millares <cite class="small">(rsbgm@rcpixel.com)</cite>
+												<input type="checkbox" class="send_to_current_user selected-list" name="email[]" value="rsbgm@rcpixel.com" checked />
+												<span></span>
+											</label>
+											-->
+										</div>
+	                                    <button type="button" class="btn-send-sales-package btn dark btn-sm <?php echo $sa_details->sales_package_id ? 'mt-bootbox-existing' : 'mt-bootbox-new'; ?> margin-bottom-10">
+	                                        Send <?php echo @$linesheet_sending_only ? 'Linesheet' : 'Package'; ?>
+	                                    </button>
+									</div>
+
 									<div class="form-body">
 
-										<h4> <cite>CURRENT USERS:</cite> </h4>
+										<h5> <cite>MY CURRENT ACTIVE USERS:</cite> <span class="font-red-flamingo"> * </span></h5>
 
-										<div class="form-group">
-											<label class="tooltips" data-original-title="Under Construcction">
-												<input type="checkbox" class="send_to_current_user send_to_all" name="send_to_all" value="Y" disabled /> Send to all
-											</label>
+										<?php if ($total_users > $users_per_page) { ?>
+										<div class="row">
+				                            <div class="col-md-9 margin-bottom-5">
+
+				                                <!-- BEGIN FORM-->
+				                                <!-- FORM =======================================================================-->
+				                                <?php //echo form_open('admin/users/wholesale/search', array('class'=>'form-horizontal', 'id'=>'form-wholesale_users_search_email')); ?>
+
+				                                <div class="input-group">
+				                                    <input class="form-control select-user-search" placeholder="Search for Email or Store Name..." name="search_string" type="text" data-per_page="<?php echo $users_per_page; ?>" data-total_users="<?php echo $total_users; ?>" />
+				                                    <span class="input-group-btn">
+				                                        <button class="btn-search-current-user btn dark uppercase bold" type="button">Search</button>
+				                                    </span>
+													<span class="input-group-btn">
+				                                        <button class="btn-reset-search-current-user btn default uppercase bold tooltips" data-original-title="Reset list" type="button" data-end_cur="<?php echo $number_of_pages; ?>"><i class="fa fa-refresh"></i></button>
+				                                    </span>
+				                                </div>
+
+				                                <!--</form>
+				                                <!-- End FORM =======================================================================-->
+				                                <!-- END FORM-->
+
+				                            </div>
+				                        </div>
+										<?php } ?>
+
+										<style>
+											.sa-send.toolbar .caption.showing {
+												position: relative;
+												bottom: <?php echo $total_users > $users_per_page ? '-12px' : '0px'; ?>;
+											}
+											.sa-send.toolbar .pagination {
+												margin: 0px;
+												font-size: 0.8em;
+											}
+											.sa-send.toolbar .pagination > li > a,
+											.sa-send.toolbar .pagination > .active > a {
+												padding: 6px 7px;
+											}
+										</style>
+
+										<div class="sa-send current-users toolbar clearfix " style="margin:10px 0px 5px;">
+
+											<span class="caption search display-none">
+												Search result for: "<span class="search_string"></span>"
+											</span>
+
+											<span class="caption showing">
+												Showing <span class="pagination-caption-showing"><?php echo ($page * $users_per_page) - ($users_per_page - 1); ?></span> to <span class="pagination-caption-per-page"><?php echo $total_users > $users_per_page ? $users_per_page : $total_users; ?></span> of <span class="pagination-caption-total_users"><?php echo $total_users; ?></span>
+											</span>
+
+											<ul class="pagination pagination-xs pull-right" data-per_page="<?php echo $users_per_page; ?>" data-total_users="<?php echo $total_users; ?>" data-end_cur="<?php echo $number_of_pages; ?>">
+
+												<?php if ($total_users > $users_per_page)
+												{
+													// show only a max of 5 pagination links
+													$in = $number_of_pages < 6 ? $number_of_pages : 6;
+													?>
+
+												<li class="first-page hide">
+													<a href="javascript:;" data-cur_page="1">
+														<i class="fa fa-angle-double-left"></i>
+													</a>
+												</li>
+
+												<li class="prev-page hide">
+													<a href="javascript:;" data-cur_page="">
+														<i class="fa fa-angle-left"></i>
+													</a>
+												</li>
+
+													<?php
+													for($i=1;$i<$in;$i++)
+													{ ?>
+												<li class="page-number <?php echo $i == 1 ? 'page-one active' : ''; ?>">
+													<a href="javascript:;" data-cur_page="<?php echo $i; ?>"> <?php echo $i; ?> </a>
+												</li>
+														<?php
+													} ?>
+
+												<li class="next-page <?php echo $number_of_pages > 1 ? '' : 'display-none'; ?>">
+													<a href="javascript:;" data-cur_page="2">
+														<i class="fa fa-angle-right"></i>
+													</a>
+												</li>
+
+												<li class="last-page <?php echo $number_of_pages > $in ? '' : 'display-none'; ?>">
+													<a href="javascript:;" data-cur_page="<?php echo $number_of_pages; ?>">
+														<i class="fa fa-angle-double-right"></i>
+													</a>
+												</li>
+													<?php
+												} ?>
+
+											</ul>
+
 										</div>
 
-										<div class="notice-send-to-all alert alert-danger display-none">
-	                                        <button class="close" data-close="alert"></button> "Send to all" will be done in the background during which you may continue browsing.  </div>
-
 										<div class="form-group">
-
-											<label>My Users:<span class="required"> * </span>
-											</label>
 
 											<?php
 			                                /***********
@@ -24,18 +128,20 @@
 			                                 */
 			                                ?>
 											<div class="form-control height-auto">
-												<div class="scroller" style="height:800px;" data-always-visible="1">
+
+												<div class="">
 
 													<div id="email_array_error"> </div>
-													<div class="mt-checkbox-list">
+
+													<div class="mt-checkbox-list select-users-list">
 
 														<?php foreach ($users as $user)
 														{ ?>
 
-                                                        <label class="mt-checkbox mt-checkbox-outline">
-															<?php echo ucwords($user->store_name); ?> <br />
+                                                        <label class="mt-checkbox mt-checkbox-outline" style="font-size:0.8em;">
+															<?php echo ucwords($user->store_name); ?> -
 															<?php echo ucwords(strtolower($user->firstname.' '.$user->lastname)).' <cite class="small">('.$user->email.')</cite> '; ?>
-                                                            <input type="checkbox" class="send_to_current_user list" name="email[]" value="<?php echo $user->email; ?>" data-error-container="email_array_error" />
+                                                            <input type="checkbox" class="send_to_current_user list" name="" value="<?php echo $user->email; ?>" data-error-container="email_array_error" data-store_name="<?php echo $user->store_name; ?>" data-firstname="<?php echo $user->firstname; ?>" data-lastname="<?php echo $user->lastname; ?>" />
                                                             <span></span>
                                                         </label>
 
@@ -47,91 +153,15 @@
 												</div>
 											</div>
 
-											<?php
-			                                /***********
-			                                 * Pagination Style
-			                                 *
-			                                ?>
-											<div>
-												<ul class="sa-send pagination pagination-sm nav nav-tabs" data-total_users="<?php echo $total_users; ?>" data-end_cur="<?php echo $end_cur_users; ?>">
-												    <li>
-														&nbsp; &nbsp;
-												    </li>
-												    <li class="active">
-												        <a href="#cur_users_1" data-toggle="tab" data-cur="1"> 1 </a>
-												    </li>
-													<li>
-												        <a href="#cur_users_2" data-toggle="tab" data-cur="2"> 2 </a>
-												    </li>
-													<li>
-												        <a href="#cur_users_3" data-toggle="tab" data-cur="3"> 3 </a>
-												    </li>
-													<li>
-														<a href="#cur_users_4" data-toggle="tab" data-cur="4"> 4 </a>
-												    </li>
-													<li>
-														<a href="#cur_users_5" data-toggle="tab" data-cur="5"> 5 </a>
-												    </li>
-													<li>
-														<a href="#cur_users_6" data-toggle="tab" data-cur="6"> 6 </a>
-												    </li>
-												    <li>
-												        <a href="#cur_users_2" data-toggle="tab" data-cur="2">
-												            <i class="fa fa-angle-right"></i>
-												        </a>
-												    </li>
-													<li>
-												        <a href="#cur_users_<?php echo $end_cur_users; ?>" data-toggle="tab" data-cur="<?php echo $end_cur_users; ?>">
-												            <i class="fa fa-angle-double-right"></i>
-												        </a>
-												    </li>
-													<li>
-														&nbsp; &nbsp;
-												    </li>
-												</ul>
-											</div>
-											<div class="tab-content">
-
-												<?php
-												$i = 1; // user counter
-												$cur = 1; // tab pane counter
-												$per_page = $users_per_page;
-												foreach ($users as $user)
-												{
-													if ($i == 1)
-													{
-														echo '<div id="cur_users_'.$cur.'" class="form-control height-auto tab-pane active in"><div class="mt-checkbox-list">';
-														$cur++;
-													}
-
-													if (($i % $per_page) == 1 && $i != 1)
-													{
-														echo '</div></div>';
-														echo '<div id="cur_users_'.$cur.'" class="form-control height-auto tab-pane"><div class="mt-checkbox-list">';
-														$cur++;
-													}
-													?>
-
-														<label class="mt-checkbox mt-checkbox-outline">
-															<?php echo $user->store_name ? ucwords($user->store_name) : '-'; ?> <br />
-															<?php echo ucwords(strtolower($user->firstname.' '.$user->lastname)).' <cite class="small">('.$user->email.')</cite> '; ?>
-															<input type="checkbox" class="send_to_current_user list" name="email[]" value="<?php echo $user->user_id; ?>" data-error-container="email_array_error" />
-															<span></span>
-														</label>
-
-													<?php
-													$i++;
-												} ?>
-
-													</div>
-												</div>
-
-											</div>
-											<?php // /* */ ?>
-
 										</div>
 
 										<hr />
+
+										<div class="btn-set btn-set-send-sales-package display-none">
+		                                    <button type="button" class="btn-send-sales-package btn dark btn-lg btn-block <?php echo $sa_details->sales_package_id ? 'mt-bootbox-existing' : 'mt-bootbox-new'; ?>">
+		                                        Send <?php echo @$linesheet_sending_only ? 'Linesheet' : 'Package'; ?>
+		                                    </button>
+		                                </div>
 
 									</div>
 

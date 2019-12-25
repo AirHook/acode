@@ -66,11 +66,11 @@
 								 */
 								?>
                                 <div class="form-group form-group-badge select-designer-dropdown">
-                                    <label class="control-label col-md-4">
+                                    <label class="control-label col-md-5">
                                         <span class="badge custom-badge pull-left step-select-designer step1 active"> 1 </span>
                                         <span class="badge-label"> Select Designer </span>
                                     </label>
-                                    <div class="col-md-8">
+                                    <div class="col-md-7">
                                         <select class="bs-select form-control" name="des_slug" data-live-search="true" data-size="5" data-show-subtext="true">
                                             <option class="option-placeholder" value="">Select Designer...</option>
                                             <?php
@@ -91,11 +91,11 @@
                                     </div>
                                 </div>
                                 <div class="form-group form-group-badge select-preset-dropdown">
-                                    <label class="control-label col-md-4">
+                                    <label class="control-label col-md-5">
                                         <span class="badge custom-badge pull-left step-load-presets step2 <?php echo $this->session->admin_sa_des_slug ? 'active' : ''; ?>"> 2 </span>
                                         <span class="badge-label"> Load Presets (optional) </span>
                                     </label>
-                                    <div class="col-md-8 preset-dropdown-wrapper <?php echo $this->session->admin_sa_des_slug ? '' : 'tooltips'; ?>" data-original-title="Please select a designer first">
+                                    <div class="col-md-7 preset-dropdown-wrapper <?php echo $this->session->admin_sa_des_slug ? '' : 'tooltips'; ?>" data-original-title="Please select a designer first">
                                         <select class="bs-select form-control" name="preset" data-live-search="true" data-size="5" data-show-subtext="true" <?php echo $this->session->admin_sa_des_slug ? '' : 'disabled'; ?>>
                                             <option class="option-placeholder" value="">Select Preset Sales Package...</option>
                                             <option value="preorder"> Pre Order Package </option>
@@ -106,11 +106,11 @@
                                     </div>
                                 </div>
 								<div class="form-group form-group-badge">
-                                    <label class="control-label col-md-4">
+                                    <label class="control-label col-md-5">
                                         <span class="badge custom-badge pull-left step-select_items step3 <?php echo $this->session->admin_sa_des_slug ? 'active' : ''; ?>"> 3 </span>
                                         <span class="badge-label"> Select / Search Products </span>
                                     </label>
-                                    <div class="col-md-8">
+                                    <div class="col-md-7">
                                         <cite class="help-block font-red" style="padding-top:3px;">
                                             Select From Options below
                                         </cite>

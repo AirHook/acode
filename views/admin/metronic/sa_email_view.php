@@ -48,8 +48,13 @@
 	/***********
 	 * The IMAGES PARENT container
 	 */
+
+	// Set condition for the table width
+	// Table width is set to 758px to accomodate max viewing width for emails
+	// Condition is set for when the template is viewed on a browser via
+	// admin view of sales package for sending to users
 	?>
-	<table cellspacing="0" cellpadding="0" border="0" style="width:758px;">
+	<table cellspacing="0" cellpadding="0" border="0" style="<?php echo @$file == 'sa_send' ? '' : 'width:758px;'; ?>">
 		<tbody>
 			<tr height="10">
 				<td>&nbsp;</td>
@@ -62,7 +67,7 @@
 					 * The IMAGES CHILD container
 					 */
 					?>
-					<table cellspacing="0" cellpadding="0" border="0" style="margin-top:10px;width:758px;">
+					<table cellspacing="0" cellpadding="0" border="0" style="margin-top:10px;<?php echo @$file == 'sa_send' ? '' : 'width:758px;'; ?>">
 						<tbody>
 							<tr>
 								<?php
@@ -127,17 +132,17 @@
 									}
 									?>
 
-								<td style="vertical-align:top;width:154px">
+								<td style="vertical-align:top;<?php echo @$file == 'sa_send' ? 'width:20%;padding-right:10px;' : 'width:154px;'; ?>">
 									<a href="<?php echo $access_link; ?>" style="text-decoration:none;margin:0;padding:0;color:inherit;display:inline-block;">
-										<div id="spthumbdiv_<?php echo $item; ?>" class="fadehover" style="width:140px;height:210px;">
-											<img src="<?php echo $product->primary_img ? $img_front_new : $img_front_pre.$image; ?>" alt="<?php echo $product->prod_no; ?>" title="<?php echo $product->prod_no; ?>" border="0" width="140" style="width:140px;">
+										<div id="spthumbdiv_<?php echo $item; ?>" class="fadehover" style="<?php echo @$file == 'sa_send' ? '' : 'width:140px;height:210px;'; ?>">
+											<img src="<?php echo $product->primary_img ? $img_front_new : $img_front_pre.$image; ?>" alt="<?php echo $product->prod_no; ?>" title="<?php echo $product->prod_no; ?>" border="0" style="<?php echo @$file == 'sa_send' ? 'width:100%;' : 'width:140px;'; ?>">
 										</div>
 									</a>
 									<div style="margin:3px 0 0;">
 										<img src="<?php echo ($product->primary_img ? $img_coloricon : $color_icon_pre.$color_icon); ?>" width="10" height="10">
 									</div>
 
-									<div style="width:140px;">
+									<div style="<?php echo @$file == 'sa_send' ? '' : 'width:140px;'; ?>">
 										<span style="font-size:10px;"><?php echo $product->prod_no; ?></span>
 										<?php if (@$sa_options['w_prices'] == 'Y') { ?>
 										<br />

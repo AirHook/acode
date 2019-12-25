@@ -24,6 +24,11 @@
                                         <button class="close" data-close="alert"></button> Sales Package successfully saved.
                                     </div>
                                     <?php } ?>
+                                    <?php if ($this->session->flashdata('success') == 'sa_email_sent') { ?>
+                                    <div class="alert alert-success ">
+                                        <button class="close" data-close="alert"></button> Sales Package Email successfully sent!.
+                                    </div>
+                                    <?php } ?>
                                 </div>
 
                                 <!-- BEGIN FORM =======================================================-->
@@ -57,16 +62,14 @@
                                                 <input type="text" name="email_subject" class="form-control input-sa_info clear-readonly" value="<?php echo $sa_details->email_subject; ?>" readonly />
                                             </div>
                                         </div>
-                                        <br />
-                                        <h4>Email Details</h4>
-                                        <hr />
-
                                     </div>
 
                                 </div>
 
                                 <div class="col-sm-12">
 
+                                    <h4>Email Details</h4>
+                                    <hr />
                                     <?php $this->load->view('admin/metronic/sa_email_view'); ?>
 
                                 </div>
@@ -132,16 +135,16 @@
                                     </div>
                                     <div class="form-group">
                                         <div class="col-md-12">
-                                            <a href="javascript:;" class="btn dark btn-md select-send-options send-to-current-user col-md-4">
-                                                Send to Existing User(s)
+                                            <a href="javascript:;" class="btn dark btn-md select-send-options send-to-current-user col-md-4" style="font-size:0.9em;">
+                                                Send To Existing User(s)
                                             </a>
-                                            <a href="javascript:;" class="btn dark btn-md select-send-options send-to-new-user col-md-4">
-                                                Send to New Wholesale User
+                                            <a href="javascript:;" class="btn dark btn-md select-send-options send-to-new-user col-md-4" style="font-size:0.9em;">
+                                                Send To New Wholesale User
                                             </a>
                                             <!--
                                             <a href="<?php echo site_url('admin/campaigns/sales_package/modify/index/'.$sa_details->sales_package_id); ?>" class="btn dark btn-md select-send-options thumbs-grid-view col-md-4" style="">
                                             -->
-                                            <a href="javascript:;" class="btn dark btn-md select-send-options thumbs-grid-view col-md-4 tooltips" data-original-title="Under Construction" style="">
+                                            <a href="<?php echo site_url('admin/campaigns/sales_package/modify/index/'.$sa_details->sales_package_id); ?>" class="btn dark btn-md select-send-options thumbs-grid-view col-md-4" style="font-size:0.9em;">
                                                 Modify Sales Package
                                             </a>
                                         </div>
@@ -159,7 +162,7 @@
                              * Existing Users or Add New User
                              */
                             ?>
-                            <div class="">
+                            <div class="form-select-users-wrapper">
 
                                 <!-- BEGIN FORM-->
                                 <!-- FORM =======================================================================-->
@@ -172,6 +175,7 @@
 
                                 <input type="hidden" name="sales_package_id" value="<?php echo $sa_details->sales_package_id; ?>" />
                                 <input type="hidden" name="send_to" value="" />
+                                <input type="hidden" name="sales_user" value="<?php echo $sales_user; ?>" />
 
                                 <?php
                                 /***********
@@ -200,12 +204,6 @@
                                 <?php $this->load->view('admin/metronic/sa_send_to_current_user'); ?>
 
                                 <h3 class="notice-select-action"><cite>Select action...</cite></h3>
-
-                                <div class="btn-set btn-set-send-sales-package display-none">
-                                    <button type="submit" class="btn dark btn-lg btn-block <?php echo $sa_details->sales_package_id ? 'mt-bootbox-existing' : 'mt-bootbox-new'; ?>">
-                                        Send <?php echo @$linesheet_sending_only ? 'Linesheet' : 'Package'; ?>
-                                    </button>
-                                </div>
 
                                 <?php echo form_close(); ?>
                                 <!-- End FORM ===================================================================-->

@@ -75,7 +75,7 @@ var ComponentsEditors = function () {
                 // past HTML string
                 $('#summernote_1').summernote('pasteHTML', data.email_message);
                 // set new items to cart basket
-                setItems();
+                setItems(objectData);
             });
             load_preset.fail(function(jqXHR, textStatus, errorThrown) {
                 //$('#loading').modal('hide');
@@ -121,6 +121,8 @@ var ComponentsEditors = function () {
                 $('.select-product-options').css('background-color', '#2f353b');
                 $('.select-product-options.thumbs-grid-view').css('background-color', '#696969');
                 $('#loading').modal('hide');
+                // stop jquery loading on thumbs section
+                $('.thumbs-grid').loading('stop');
             });
             get_thumbs.fail(function(jqXHR, textStatus, errorThrown) {
                 $('#loading').modal('hide');
@@ -138,7 +140,7 @@ var ComponentsEditors = function () {
                 // nothing to do...
             });
             set_info.fail(function(jqXHR, textStatus, errorThrown) {
-                alert("Set Info Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
+                //alert("Set Info Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
             });
         };
 
@@ -220,6 +222,7 @@ var ComponentsEditors = function () {
                 $('.cart_basket_wrapper .cart_basket .thumb-tiles.sales-package').fadeIn();
                 // stop jquery loading
                 $('.thumb-tiles.sales-package').loading('stop');
+                $('.step4').addClass('active');
             });
             set_size_qty.fail(function(jqXHR, textStatus, errorThrown) {
                 alert("Set Items Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
@@ -242,6 +245,8 @@ var ComponentsEditors = function () {
             // activate step 2, step 3, and highlight 'Select From Thumbs'
             $('.step2, .step3').addClass('active');
             $('.select-product-options.thumbs-grid-view').css('background-color', '#696969');
+            // call jquery loading on thumbs section
+            $('.thumbs-grid').loading();
             // enable and update category tree
             getCategoryTree(objectData);
         });

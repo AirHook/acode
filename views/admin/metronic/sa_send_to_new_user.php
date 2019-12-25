@@ -85,6 +85,13 @@
 										</div>
 
 										<hr />
+
+										<div class="btn-set btn-set-send-sales-package display-none">
+		                                    <button type="button" class="btn-send-sales-package btn dark btn-lg btn-block <?php echo $sa_details->sales_package_id ? 'mt-bootbox-existing' : 'mt-bootbox-new'; ?>">
+		                                        Send <?php echo @$linesheet_sending_only ? 'Linesheet' : 'Package'; ?>
+		                                    </button>
+		                                </div>
+
 									</div>
 
 								</div>

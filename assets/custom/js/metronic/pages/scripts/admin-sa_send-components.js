@@ -47,6 +47,7 @@ var ComponentsEditors = function () {
             $('.send_to_current_user').show();
             $('.notice-select-action').hide();
             $('.btn-set-send-sales-package').show();
+            $('#form-send_sales_package').trigger("reset");
         });
 
         // select action option buttons function
@@ -58,43 +59,10 @@ var ComponentsEditors = function () {
             $('.send_to_new_user').fadeIn();
             $('.notice-select-action').hide();
             $('.btn-set-send-sales-package').show();
+            $('.selected-users-list').html('');
+            $('.selected-users-list-wrapper').hide();
+            $('#form-send_sales_package').trigger("reset");
         });
-
-        // current user sent to all checkbox
-        $('.send_to_all').on('change', function(){
-            var checked = $(this).prop('checked');
-            if (checked) {
-                $('.notice-send-to-all').fadeIn();
-            } else {
-                $('.notice-send-to-all').hide();
-            }
-        });
-
-        // pagination actions
-        $('.sa-send.pagination').on('click', 'li > a', function(){
-            var objectData = object_data;
-            objectData.cur = $(this).data('cur');
-            objectData.end_cur = $(this).closest('ul').data('end_cur');
-            getPagination(objectData);
-        });
-
-        function getPagination(objectData){
-            var get_pagination = $.ajax({
-                type:    "POST",
-                url:     base_url + "admin/campaigns/sales_package/get_pagination.html",
-                data:    objectData
-            });
-            get_pagination.done(function(data){
-                $('.sa-send.pagination').hide();
-                $('.sa-send.pagination').html('');
-                $('.sa-send.pagination').html(data);
-                $('.sa-send.pagination').fadeIn();
-            });
-            get_pagination.fail(function(jqXHR, textStatus, errorThrown) {
-                //$('#loading').modal('hide');
-                alert("Get Pagination Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
-            });
-        };
 
 
 
@@ -325,6 +293,227 @@ var ComponentsEditors = function () {
 
     }
 
+    var handleCurrentUsers = function () {
+
+        // on select users from checkbox list
+        $('.select-users-list').on('change', '.send_to_current_user.list', function(){
+            var html = '';
+            var email = $(this).val();
+            var store_name = $(this).data('store_name');
+            var firstname = $(this).data('firstname');
+            var lastname = $(this).data('lastname');
+            var checked = $(this).is(':checked');
+            if (checked){
+                // show wrapper of list
+                if ($('[name="email[]"]:checked').length == 0) $('.selected-users-list-wrapper').show();
+                // check if number of selected users is more than 10 already
+                if ($('[name="email[]"]:checked').length > 9){
+                    alert('You already have 10 selected users.')
+                    $(this).prop('checked', false);
+                }else{
+                    // add to selected list
+                    html = '<label class="mt-checkbox mt-checkbox-outline" style="font-size:0.9em;">'+store_name+' - '+firstname+' '+lastname+' <cite class="small">('+email+')</cite><input type="checkbox" class="send_to_current_user selected-list" name="email[]" value="'+email+'" checked /><span></span></label>';
+                    $('.selected-users-list').append(html);
+                }
+            }else{
+                var selEl = $('input.selected-list[value="'+email+'"]');
+                if (selEl) selEl.parents('label').remove();
+                // hide wrapper of list
+                if ($('[name="email[]"]:checked').length == 0) $('.selected-users-list-wrapper').hide();
+            }
+        });
+
+        // remove user from selected list
+        $('.selected-users-list').on('change', '.send_to_current_user.selected-list', function(){
+            var email = $(this).val();
+            $(this).parents('label').remove();
+            $('input.send_to_current_user.list[value="'+email+'"]').prop('checked', false);
+        });
+
+        // search current user
+        $('.btn-search-current-user').on('click', function(){
+            // call jquery loading on options section
+            $('.select-users-list').loading();
+            // process data
+            var per_page = $('input.select-user-search[name="search_string"]').data('per_page');
+            var search_string = $('input.select-user-search[name="search_string"]').val();
+            var sales_user = $('[name="sales_user"]').val();
+            if (search_string != '') {
+                objectData = object_data;
+                objectData.per_page = per_page;
+                objectData.search_string = search_string;
+                if (sales_user) objectData.admin_sales_email = sales_user;
+                var search_current_users = $.ajax({
+                    type:    "POST",
+                    url:     base_url + "admin/campaigns/sales_package/search_current_user.html",
+                    data:    objectData
+                });
+                search_current_users.done(function(data){
+                    if (data != 'error'){
+                        // hide caption showing and pagination
+                        $('.sa-send.current-users.toolbar > .caption.showing').hide();
+                        $('.sa-send.current-users.toolbar > .pagination').hide();
+                        // show caption search
+                        $('.sa-send.current-users.toolbar > .caption.search > .search_string').html(search_string);
+                        $('.sa-send.current-users.toolbar > .caption.search').show();
+                        // update user list
+                        $('.select-users-list').html('');
+                        $('.select-users-list').html(data);
+                    }
+                });
+                search_current_users.fail(function(jqXHR, textStatus, errorThrown) {
+                    $('#loading').modal('hide');
+                    alert("Search Current User Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
+                    //$('#reloading').modal('show');
+                    //location.reload();
+                });
+            } else {
+                alert('Please type keywords to search.');
+            }
+            // stop jquery loading
+            $('.select-users-list').loading('stop');
+        })
+
+        // reset search button
+        $('.btn-reset-search-current-user').on('click', function(){
+            // call jquery loading on options section
+            $('.select-users-list').loading();
+            // process
+            var per_page = $('input.select-user-search[name="search_string"]').data('per_page');
+            var total_users = $('input.select-user-search[name="search_string"]').data('total_users');
+            objectDataReset = object_data;
+            objectDataReset.reset = per_page;
+            objectDataReset.cur = '1';
+            objectDataReset.end_cur = $(this).data('end_cur');
+            var reset_search = $.ajax({
+                type:    "POST",
+                url:     base_url + "admin/campaigns/sales_package/reset_search_current_user.html",
+                data:    objectDataReset
+            });
+            reset_search.done(function(data){
+                if (data != 'error'){
+                    // show pagination caption
+                    $('.sa-send.current-users.toolbar > .caption.showing > .pagination-caption-showing').html('1');
+                    $('.sa-send.current-users.toolbar > .caption.showing > .pagination-caption-per-page').html(per_page);
+                    $('.sa-send.current-users.toolbar > .caption.showing > .pagination-caption-total_users').html(total_users);
+                    $('.sa-send.current-users.toolbar > .caption.showing').show();
+                    // hide caption search
+                    $('.sa-send.current-users.toolbar > .caption.search > .search_string').html('');
+                    $('.sa-send.current-users.toolbar > .caption.search').hide();
+                    // update user list
+                    $('.select-users-list').html('');
+                    $('.select-users-list').html(data);
+                    // get actions
+                    getPagination(objectDataReset);
+                }
+            });
+            reset_search.fail(function(jqXHR, textStatus, errorThrown) {
+                $('#loading').modal('hide');
+                alert("Reset Search Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
+                //$('#reloading').modal('show');
+                //location.reload();
+            });
+            // stop jquery loading
+            $('.select-users-list').loading('stop');
+        });
+
+        // pagination actions
+        $('.sa-send > .pagination').on('click', 'li > a', function(){
+            // call jquery loading on options section
+            $('.select-users-list').loading();
+            // gether and process data
+            var showCount, showCountOf, offset;
+            var per_page = $(this).parents('ul').data('per_page');
+            var total_users = $(this).parents('ul').data('total_users');
+            var page = $(this).data('cur_page');
+            var limit = per_page;
+            var objectDataPage = object_data;
+            objectDataPage.cur = $(this).data('cur_page');
+            objectDataPage.end_cur = $(this).closest('ul').data('end_cur');
+            objectDataPage.limit = limit;
+            // update pagination caption info
+            if (page == '1') {
+                showCount = 1;
+                offset = '0';
+            } else {
+                showCount = (parseInt(page) - 1) * parseInt(per_page) + 1;
+                offset = (parseInt(page) - 1) * parseInt(per_page);
+            }
+            var showCountOf = parseInt(page) * parseInt(per_page);
+            objectDataPage.offset = offset;
+            $('.sa-send.current-users.toolbar > .caption.showing > .pagination-caption-showing').html(showCount);
+            $('.sa-send.current-users.toolbar > .caption.showing > .pagination-caption-per-page').html(showCountOf);
+            $('.sa-send.current-users.toolbar > .caption.showing > .pagination-caption-total_users').html(total_users);
+            $('.sa-send.current-users.toolbar > .caption.showing').show();
+            // get actions
+            getPagination(objectDataPage);
+            getPageList(objectDataPage);
+        });
+
+        function getPagination(objectDataPage){
+            var get_pagination = $.ajax({
+                type:    "POST",
+                url:     base_url + "admin/campaigns/sales_package/get_pagination.html",
+                data:    objectDataPage
+            });
+            get_pagination.done(function(data){
+                $('.sa-send > .pagination').hide();
+                $('.sa-send > .pagination').html('');
+                $('.sa-send > .pagination').html(data);
+                $('.sa-send > .pagination').fadeIn();
+            });
+            get_pagination.fail(function(jqXHR, textStatus, errorThrown) {
+                //$('#loading').modal('hide');
+                alert("Get Pagination Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
+            });
+        };
+
+        function getPageList(objectDataPage){
+            var get_pagination = $.ajax({
+                type:    "POST",
+                url:     base_url + "admin/campaigns/sales_package/page_current_user.html",
+                data:    objectDataPage
+            });
+            get_pagination.done(function(data){
+                if (data != 'error'){
+                    // update user list
+                    $('.select-users-list').html('');
+                    $('.select-users-list').html(data);
+                }
+                // stop jquery loading
+                $('.select-users-list').loading('stop');
+                // get checked emails if any
+                $('[name="email[]"]:checked').each(function(){
+                    var val = $(this).val();
+                    $('.send_to_current_user.list[value="'+val+'"]').prop('checked', true);
+                });
+            });
+            get_pagination.fail(function(jqXHR, textStatus, errorThrown) {
+                //$('#loading').modal('hide');
+                alert("Get Pagination List Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
+            });
+        };
+
+        // submit form action
+        $('.btn-send-sales-package').on('click', function(){
+            var form = $('#form-send_sales_package');
+            if ($('[name="email[]"]:checked').length > 0){
+                var val = $('[name="emails"]').val();
+                var cnt = 1;
+                var new_val;
+                $('[name="email[]"]:checked').each(function(){
+                    if (cnt > 1) val = val+','+$(this).val();
+                    else val = val+$(this).val();
+                    cnt++;
+                });
+                $('[name="emails"]').val(val);
+                form.submit();
+            }else{
+                alert('Select user from list');
+            }
+        });
+    }
+
     var handleValidation1 = function() {
         // for more info visit the official plugin documentation:
 		// http://docs.jquery.com/Plugins/Validation
@@ -431,6 +620,7 @@ var ComponentsEditors = function () {
             handleDatePickers();
             handleValidation1();
             handleScripts();
+            handleCurrentUsers();
         }
     };
 
