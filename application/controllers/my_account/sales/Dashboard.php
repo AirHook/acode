@@ -1,8 +1,8 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Index extends Vendor_user_Controller {
-
+class Dashboard extends Sales_user_Controller {
+	
 	/**
 	 * Constructor
 	 *
@@ -13,35 +13,27 @@ class Index extends Vendor_user_Controller {
 		parent::__construct();
     }
 
-	// ----------------------------------------------------------------------
+	// ----------------------------Redirect to Salesuser Orders Page------------------------------------------
 
-	/**
-	 * Index - default method
-	 *
-	 * Primary method to call when no other methods are found in url segment
-	 * This method simply lists all sales pacakges
-	 *
-	 * @return	void
-	 */
 	public function index()
 	{
 		// generate the plugin scripts and css
 		$this->_create_plugin_scripts();
 
 		// load pertinent library/model/helpers
-		$this->load->library('purchase_orders/purchase_orders_list');
+		$this->load->library('sales_orders/sales_orders_list');
 
 		// get data
-		$this->data['orders'] = $this->purchase_orders_list->select(
+		$this->data['orders'] = $this->sales_orders_list->select(
 			array(
-				'purchase_orders.vendor_id' => $this->session->vendor_id
+				'sales_orders.admin_sales_id' => $this->session->admin_sales_id
 			)
 		);
 		// set data variables...
-		$this->data['role'] = 'vendors'; //userrole will be used for IF statements in template files
-		$this->data['file'] = '../../my_account/po_list'; // purchase_orders
-		$this->data['page_title'] = 'Purchase Orders';
-		$this->data['page_description'] = 'List of Purchase Orders';
+		$this->data['role'] = 'sales'; //userrole will be used for IF statements in template files
+		$this->data['file'] = 'dashboard'; // sales orders
+		$this->data['page_title'] = 'Dashboard';
+		$this->data['page_description'] = 'Sales User Dashboard';
 
 		// load views...
 		$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template_my_account/template', $this->data);
@@ -56,8 +48,7 @@ class Index extends Vendor_user_Controller {
 	 */
 	private function _create_plugin_scripts()
 	{
-		$assets_url = base_url('assets/metronic');
-
+		$assets_url = base_url('/assets/metronic');
 		/****************
 		 * page styles plugins inserted at <head>
 		 * after global mandatory styles, before theme global styles
@@ -130,5 +121,4 @@ class Index extends Vendor_user_Controller {
 	}
 
 	// ----------------------------------------------------------------------
-
 }

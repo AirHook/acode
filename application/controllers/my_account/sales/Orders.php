@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Index extends Vendor_user_Controller {
+class Orders extends Sales_user_Controller {
 
 	/**
 	 * Constructor
@@ -29,19 +29,19 @@ class Index extends Vendor_user_Controller {
 		$this->_create_plugin_scripts();
 
 		// load pertinent library/model/helpers
-		$this->load->library('purchase_orders/purchase_orders_list');
+		$this->load->library('sales_orders/sales_orders_list');
 
 		// get data
-		$this->data['orders'] = $this->purchase_orders_list->select(
+		$this->data['orders'] = $this->sales_orders_list->select(
 			array(
-				'purchase_orders.vendor_id' => $this->session->vendor_id
+				'sales_orders.admin_sales_id' => $this->session->admin_sales_id
 			)
 		);
 		// set data variables...
-		$this->data['role'] = 'vendors'; //userrole will be used for IF statements in template files
-		$this->data['file'] = '../../my_account/po_list'; // purchase_orders
-		$this->data['page_title'] = 'Purchase Orders';
-		$this->data['page_description'] = 'List of Purchase Orders';
+		$this->data['role'] = 'sales'; //userrole will be used for IF statements in template files
+		$this->data['file'] = 'sales_orders'; // sales orders
+		$this->data['page_title'] = 'My Sales Orders';
+		$this->data['page_description'] = 'List of Sales Orders';
 
 		// load views...
 		$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template_my_account/template', $this->data);

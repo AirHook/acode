@@ -1,15 +1,20 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Dashboard extends Vendor_Controller {
+class Dashboard extends Vendor_user_Controller {
 
 	public function __construct()
 	{
 		parent::__construct();
     }
 
-	// ----------------------------------------------------------------------
+	// ----------------------------Redirect to Vendor Orders Page------------------------------------------
 
+	public function index_()
+	{
+		redirect('/my_account/vendors/orders');
+	}
+	// ----------------------------------------------------------------------
 	public function index()
 	{
 		// generate the plugin scripts and css
@@ -24,12 +29,13 @@ class Dashboard extends Vendor_Controller {
 		$this->data['purchase_orders_length'] = $this->purchase_orders_list->select();
 		// echo '<pre>',print_r($this->data['orders']),'</pre>';exit();
 
+		$this->data['role'] = 'vendors'; //userrole will be used for IF statements in template files
 		$this->data['file'] = 'dashboard';
 		$this->data['page_title'] = 'Dashboard';
 		$this->data['page_description'] = 'A summary of recent activities';
 
 		// load views...
-		$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template_vendor/template', $this->data);
+		$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template_my_account/template', $this->data);
 	}
 
 	// ----------------------------------------------------------------------

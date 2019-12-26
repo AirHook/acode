@@ -480,7 +480,6 @@ class Register extends Frontend_Controller {
 	 */
 	function filter_string($str)
 	{
-		// test your expression via https://regex101.com/
 		//$regex = "^[A-Za-z]+((\s)?((\'|\-)?([A-Za-z])+))*$^";
 		//$valid_name = preg_match("/^[A-Z]'?[-a-zA-Z]( [a-zA-Z])*$/", trimg($str));
 		//$valid_name = preg_match("/\A[A-Z]'?[a-z]+\Z/", trim($str));

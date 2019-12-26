@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Index extends Vendor_user_Controller {
+class Listorders extends Sales_user_Controller {
 
 	/**
 	 * Constructor
@@ -29,19 +29,128 @@ class Index extends Vendor_user_Controller {
 		$this->_create_plugin_scripts();
 
 		// load pertinent library/model/helpers
-		$this->load->library('purchase_orders/purchase_orders_list');
+		$this->load->library('sales_orders/sales_orders_list');
+		$this->load->library('users/sales_user_details');
+		$this->load->library('users/admin_user_details');
 
 		// get data
-		$this->data['orders'] = $this->purchase_orders_list->select(
+		if (@$this->webspace_details->options['site_type'] != 'hub_site')
+		{
+			$this->data['orders'] = $this->sales_orders_list->select(
+				array(
+					'sales_orders.admin_sales_id' => $this->session->userdata('admin_sales_id'),
+					'designer.url_structure' => $this->webspace_details->slug
+				)
+			);
+		}
+		else
+		{
+			$this->data['orders'] = $this->sales_orders_list->select(
+				array(
+					'sales_orders.admin_sales_id' => $this->session->userdata('admin_sales_id')
+				)
+			);
+		}
+
+		// set data variables...
+		$this->data['file'] = '../../my_account/so_list'; // sales_orders
+		$this->data['role'] = 'sales'; // sales_orders
+		$this->data['page_title'] = 'Sales Orders';
+		$this->data['page_description'] = 'List of Sales Orders of items for stores and consumers';
+		// load views...
+		$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template_my_account/template', $this->data);
+	}
+
+	public function details($id = '')
+	{
+		if ( ! $id)
+		{
+			// nothing more to do...
+			// set flash data
+			$this->session->set_flashdata('error', 'no_id_passed');
+
+			// redirect user
+			redirect('/my_account/sales/listorders');
+		}
+
+		// generate the plugin scripts and css
+		$this->_create_plugin_scripts();
+
+		// load pertinent library/model/helpers
+		$this->load->library('products/size_names');
+		$this->load->library('sales_orders/sales_order_details');
+		$this->load->library('users/vendor_user_details');
+		$this->load->library('users/wholesale_user_details');
+		$this->load->library('users/consumer_user_details');
+		$this->load->library('users/sales_user_details');
+		$this->load->library('products/product_details');
+		$this->load->library('barcodes/upc_barcodes');
+		$this->load->library('users/admin_user_details');
+
+		// initialize... and get so details
+		$this->data['so_details'] = $this->sales_order_details->initialize(
 			array(
-				'purchase_orders.vendor_id' => $this->session->vendor_id
+				'sales_orders.sales_order_id' => $id
 			)
 		);
+
+		// get the author
+		switch ($this->sales_order_details->c)
+		{
+			case '2': //sales
+				$this->data['author'] = $this->sales_user_details->initialize(
+					array(
+						'admin_sales_id' => $this->sales_order_details->author
+					)
+				);
+			break;
+			case '1': //admin
+			default:
+				$this->data['author'] = $this->admin_user_details->initialize(
+					array(
+						'admin_id' => ($this->sales_order_details->author ?: '1')
+					)
+				);
+		}
+
+		// get store details
+		// check for user cat to fill out bill to/ship to address
+		if ($this->sales_order_details->user_cat)
+		{
+			if ($this->sales_order_details->user_cat == 'ws')
+			{
+				$this->data['store_details'] = $this->wholesale_user_details->initialize(
+					array(
+						'user_id' => $this->sales_order_details->user_id
+					)
+				);
+			}
+
+			if ($this->sales_order_details->user_cat == 'cs')
+			{
+				$this->data['store_details'] = $this->consumer_user_details->initialize(
+					array(
+						'user_id' => $this->sales_order_details->user_id
+					)
+				);
+			}
+		}
+
+		// set THE items
+		$this->data['so_items'] = $this->sales_order_details->items;
+		$this->data['so_date'] = $this->sales_order_details->so_date;
+		$this->data['so_number'] = $this->sales_order_details->so_number;
+		$this->data['so_options'] = $this->sales_order_details->options;
+		for($c = strlen($this->data['so_number']);$c < 6;$c++)
+		{
+			$this->data['so_number'] = '0'.$this->data['so_number'];
+		}
+
 		// set data variables...
-		$this->data['role'] = 'vendors'; //userrole will be used for IF statements in template files
-		$this->data['file'] = '../../my_account/po_list'; // purchase_orders
-		$this->data['page_title'] = 'Purchase Orders';
-		$this->data['page_description'] = 'List of Purchase Orders';
+		$this->data['role'] = 'sales'; // sales_orders_details
+		$this->data['file'] = '../../my_account/so_details_v3'; // sales_orders_details
+		$this->data['page_title'] = 'Sales Order Details';
+		$this->data['page_description'] = 'Details of the sales order from sales for wholesale user';
 
 		// load views...
 		$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template_my_account/template', $this->data);
@@ -125,7 +234,7 @@ class Index extends Vendor_user_Controller {
 			';
 			// handle datatable
 			$this->data['page_level_scripts'].= '
-				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/table-datatables-purchase_orders.js" type="text/javascript"></script>
+				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/table-datatables-sales_orders.js" type="text/javascript"></script>
 			';
 	}
 

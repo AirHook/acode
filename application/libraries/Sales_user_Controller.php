@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Sales_user_Controller extends Admin_Controller {
+class Sales_user_Controller extends MY_Controller {
 
 	/**
 	 * Core Controller for Admin
@@ -27,7 +27,7 @@ class Sales_user_Controller extends Admin_Controller {
 			$this->session->set_flashdata('login_info', 'You must be logged in to access page.');
 
 			// redirect to login page
-			redirect($this->config->slash_item('admin_folder').'login');
+			redirect('account');
 		}
 
 		/*****
@@ -39,15 +39,14 @@ class Sales_user_Controller extends Admin_Controller {
 				! $this->session->userdata('admin_sales_login_time')
 				OR (($this->session->userdata('admin_sales_login_time') + $this->config->item('sess_expiration')) < time())
 			)
-			&& (
-				$this->uri->uri_string() !== $this->config->slash_item('admin_folder').'login'
-				&& $this->uri->uri_string() !== $this->config->slash_item('admin_folder').'forget_password'
-				&& $this->uri->uri_string() !== $this->config->slash_item('admin_folder').'register_admin'
-				&& $this->uri->uri_string() !== $this->config->slash_item('admin_folder').'logout'
-			)
+			// && (
+				// $this->uri->uri_string() !== $this->config->slash_item('admin_folder').'login'
+				// && $this->uri->uri_string() !== $this->config->slash_item('admin_folder').'forget_password'
+				// && $this->uri->uri_string() !== $this->config->slash_item('admin_folder').'register_admin'
+				// && $this->uri->uri_string() !== $this->config->slash_item('admin_folder').'logout'
+			// )
 		)
 		{
-			// --> access not allowed when not logged in
 			// destroy admin user session if any
 			$this->sales_user_details->unset_session();
 			$this->sales_user_details->set_initial_state();
@@ -59,7 +58,7 @@ class Sales_user_Controller extends Admin_Controller {
 			$this->session->set_flashdata('login_info', 'Please login again.');
 
 			// send user back to login page
-			redirect($this->config->slash_item('admin_folder').'login');
+			redirect('/account');
 		}
 
 		/*****
@@ -70,7 +69,5 @@ class Sales_user_Controller extends Admin_Controller {
 			'admin_sales_id' => $this->session->admin_sales_id
 		));
     }
-
 	// --------------------------------------------------------------------
-
 }

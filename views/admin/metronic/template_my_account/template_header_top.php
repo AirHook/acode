@@ -80,12 +80,11 @@
                                     </a>
                                     <ul class="dropdown-menu-v2" role="menu">
                                         <li>
-                                            <a href="javascript:;" class="disabled-link disable-target">
+                                            <a href="/my_account/<?php echo $role; ?>/profile">
                                                 <i class="icon-user"></i> My Profile
-                                                <span class="badge badge-danger">1</span>
                                             </a>
                                         </li>
-                                        <li>
+                                        <!--li>
                                             <a href="javascript:;" class="disabled-link disable-target">
                                                 <i class="icon-calendar"></i> My Calendar </a>
                                         </li>
@@ -105,7 +104,7 @@
                                         <li>
                                             <a href="javascript:;" class="disabled-link disable-target">
                                                 <i class="icon-lock"></i> Lock Screen </a>
-                                        </li>
+                                        </li-->
                                         <li>
                                             <a href="<?php echo site_url('my_account/'.$role.'/logout'); ?>">
                                                 <i class="icon-key"></i> Log Out </a>

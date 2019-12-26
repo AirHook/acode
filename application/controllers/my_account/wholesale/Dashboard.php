@@ -7,10 +7,15 @@ class Dashboard extends Wholesale_user_Controller {
 	{
 		parent::__construct();
     }
-
-	// ----------------------------------------------------------------------
+	// ----------------------------Redirect to Wholesaler Orders Page------------------------------------------
 
 	public function index()
+	{
+		redirect('/my_account/wholesale/orders');
+	}
+	// ----------------------------------------------------------------------
+
+	public function index_()
 	{
 		// generate the plugin scripts and css
 		$this->_create_plugin_scripts();
@@ -25,12 +30,12 @@ class Dashboard extends Wholesale_user_Controller {
 		// echo '<pre>',print_r($this->data['orders']),'</pre>';exit();
 
 		$this->data['role'] = 'wholesale'; //userrole will be used for IF statements in template files
-		$this->data['file'] = 'dashboard';
+		$this->data['file'] = '../my_account/dashboard';
 		$this->data['page_title'] = 'Dashboard';
 		$this->data['page_description'] = 'A summary of recent activities';
 
 		// load views...
-		$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template_my_account/template', $this->data);
+		$this->load->view('metronic/template/template', $this->data);
 	}
 
 	// ----------------------------------------------------------------------

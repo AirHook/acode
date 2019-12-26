@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Index extends Vendor_user_Controller {
+class Listorders extends Vendor_user_Controller {
 
 	/**
 	 * Constructor
@@ -32,16 +32,29 @@ class Index extends Vendor_user_Controller {
 		$this->load->library('purchase_orders/purchase_orders_list');
 
 		// get data
-		$this->data['orders'] = $this->purchase_orders_list->select(
-			array(
-				'purchase_orders.vendor_id' => $this->session->vendor_id
-			)
-		);
+		if (@$this->webspace_details->options['site_type'] != 'hub_site')
+		{
+			$this->data['orders'] = $this->purchase_orders_list->select(
+				array(
+					'designer.url_structure' => $this->webspace_details->slug,
+					'purchase_orders.vendor_id' => $this->session->userdata('vendor_id')
+				)
+			);
+		}
+		else
+		{
+			$this->data['orders'] = $this->purchase_orders_list->select(
+				array(
+					'purchase_orders.vendor_id' => $this->session->userdata('vendor_id')
+				)
+			);
+		}
+
 		// set data variables...
-		$this->data['role'] = 'vendors'; //userrole will be used for IF statements in template files
+		$this->data['role'] = 'vendors';
 		$this->data['file'] = '../../my_account/po_list'; // purchase_orders
 		$this->data['page_title'] = 'Purchase Orders';
-		$this->data['page_description'] = 'List of Purchase Orders';
+		$this->data['page_description'] = 'List of Purchase Orders of items for order from vendors of designers for their wholesale users';
 
 		// load views...
 		$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template_my_account/template', $this->data);

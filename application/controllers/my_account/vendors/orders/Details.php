@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Details extends Vendor_Controller {
+class Details extends Vendor_user_Controller {
 
 	/**
 	 * Constructor
@@ -126,12 +126,13 @@ class Details extends Vendor_Controller {
 		$this->data['show_loading'] = FALSE;
 
 		// set data variables...
-		$this->data['file'] = 'po_details'; // purchase_orders_details
-		$this->data['page_title'] = 'Purchase Order Details';
+		$this->data['role'] = 'vendors'; //userrole will be used for IF statements in template files
+		$this->data['file'] = '../../my_account/po_details'; // purchase_orders_details
+		$this->data['page_title'] = 'Order Details';
 		$this->data['page_description'] = 'Details of the purchase order to vendor';
 
 		// load views...
-		$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template/template', $this->data);
+		$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template_my_account/template', $this->data);
 	}
 
 	// ----------------------------------------------------------------------

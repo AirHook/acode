@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Orders extends Wholesale_user_Controller {
+class Orders extends Consumer_user_Controller {
 
 	/**
 	 * Constructor
@@ -40,7 +40,7 @@ class Orders extends Wholesale_user_Controller {
 		$this->orders_list->pagination = $this->data['page'];
 
 		// get data
-		$where['tbl_order_log.c'] = 'ws';
+		$where['tbl_order_log.c !='] = 'ws';
 		$where['tbl_order_log.user_id'] = $this->session->userdata['user_id'];
 		if (@$this->webspace_details->options['site_type'] != 'hub_site')
 		{
@@ -61,11 +61,10 @@ class Orders extends Wholesale_user_Controller {
 		$this->data['search'] = FALSE;
 
 		// set data variables...
-		$this->data['role'] = 'wholesale'; //userrole will be used for IF statements in template files
-		$this->data['file'] = '../my_account/orders'; // purchase_orders
-		$this->data['page_title'] = 'Wholesale Orders';
-		$this->data['page_description'] = 'List of Wholesale Orders';
-
+		$this->data['role'] = 'consumer'; //userrole will be used for IF statements in template files
+		$this->data['file'] = '../my_account/orders'; // retail orders
+		$this->data['page_title'] = 'Consumer Orders';
+		$this->data['page_description'] = 'List of Consumer Orders';
 		// load views...
 		$this->load->view('metronic/template/template', $this->data);
 	}
@@ -97,7 +96,7 @@ class Orders extends Wholesale_user_Controller {
 		$this->orders_list->pagination = $this->data['page'];
 
 		// get data
-		$where['tbl_order_log.c'] = 'ws'; //wholesale orders only
+		$where['tbl_order_log.c !='] = 'ws'; //consumer orders only
 		$where['tbl_order_log.user_id'] = $this->session->userdata['user_id'];
 		$where['tbl_order_log.status'] = 0; //completed status
 		if (@$this->webspace_details->options['site_type'] != 'hub_site')
@@ -119,10 +118,10 @@ class Orders extends Wholesale_user_Controller {
 		$this->data['search'] = FALSE;
 
 		// set data variables...
-		$this->data['role'] = 'wholesale'; //userrole will be used for IF statements in template files
-		$this->data['file'] = '../my_account/orders'; // purchase_orders
-		$this->data['page_title'] = 'Wholesale Orders';
-		$this->data['page_description'] = 'List of Wholesale Orders';
+		$this->data['role'] = 'consumer'; //userrole will be used for IF statements in template files
+		$this->data['file'] = '../my_account/orders'; // retail orders
+		$this->data['page_title'] = 'Consumer Orders';
+		$this->data['page_description'] = 'List of Consumer Orders';
 
 		// load views...
 		$this->load->view('metronic/template/template', $this->data);
@@ -153,9 +152,9 @@ class Orders extends Wholesale_user_Controller {
 		$this->data['limit'] = 100;
 		$this->data['offset'] = $this->data['page'] == '' ? 0 : ($this->data['page'] * 100) - 100;
 		$this->orders_list->pagination = $this->data['page'];
-
+		
 		// get data
-		$where['tbl_order_log.c'] = 'ws'; //wholesale orders only
+		$where['tbl_order_log.c !='] = 'ws'; //consumer orders only
 		$where['tbl_order_log.user_id'] = $this->session->userdata['user_id'];
 		$where['tbl_order_log.status'] = 1; //completed status
 		if (@$this->webspace_details->options['site_type'] != 'hub_site')
@@ -177,10 +176,10 @@ class Orders extends Wholesale_user_Controller {
 		$this->data['search'] = FALSE;
 
 		// set data variables...
-		$this->data['role'] = 'wholesale'; //userrole will be used for IF statements in template files
-		$this->data['file'] = '../my_account/orders'; // purchase_orders
-		$this->data['page_title'] = 'Wholesale Orders';
-		$this->data['page_description'] = 'List of Wholesale Orders';
+		$this->data['role'] = 'consumer'; //userrole will be used for IF statements in template files
+		$this->data['file'] = '../my_account/orders'; // retail orders
+		$this->data['page_title'] = 'Consumer Orders';
+		$this->data['page_description'] = 'List of Consumer Orders';
 
 		// load views...
 		$this->load->view('metronic/template/template', $this->data);
@@ -213,7 +212,7 @@ class Orders extends Wholesale_user_Controller {
 		$this->orders_list->pagination = $this->data['page'];
 
 		// get data
-		$where['tbl_order_log.c'] = 'ws'; //wholesale orders only
+		$where['tbl_order_log.c !='] = 'ws'; //consumer orders only
 		$where['tbl_order_log.user_id'] = $this->session->userdata['user_id'];
 		$where['tbl_order_log.status'] = 2; //on hold status
 		if (@$this->webspace_details->options['site_type'] != 'hub_site')
@@ -235,10 +234,10 @@ class Orders extends Wholesale_user_Controller {
 		$this->data['search'] = FALSE;
 
 		// set data variables...
-		$this->data['role'] = 'wholesale'; //userrole will be used for IF statements in template files
-		$this->data['file'] = '../my_account/orders'; // purchase_orders
-		$this->data['page_title'] = 'Wholesale Orders';
-		$this->data['page_description'] = 'List of Wholesale Orders';
+		$this->data['role'] = 'consumer'; //userrole will be used for IF statements in template files
+		$this->data['file'] = '../my_account/orders'; // retail orders
+		$this->data['page_title'] = 'Consumer Orders';
+		$this->data['page_description'] = 'List of Consumer Orders';
 
 		// load views...
 		$this->load->view('metronic/template/template', $this->data);
@@ -248,7 +247,7 @@ class Orders extends Wholesale_user_Controller {
 	/**
 	 * Details - order details
 	 *
-	 * Wholesale Order Details
+	 * Consumer Order Details
 	 *
 	 * @return	void
 	 */
@@ -261,7 +260,7 @@ class Orders extends Wholesale_user_Controller {
 			$this->session->set_flashdata('error', 'no_id_passed');
 			
 			// redirect user
-			redirect($this->config->slash_item('admin_folder').'orders');
+			redirect('/my_account/consumer/orders');
 		}
 		
 		// generate the plugin scripts and css
@@ -275,7 +274,7 @@ class Orders extends Wholesale_user_Controller {
 		$this->order_details->initialize(array('tbl_order_log.order_log_id'=>$id));
 		
 		// set data variables...
-		$this->data['role'] = 'wholesale'; //userrole will be used for IF statements in template files
+		$this->data['role'] = 'consumer'; //userrole will be used for IF statements in template files
 		$this->data['file'] = '../my_account/orders_details';
 		$this->data['page_title'] = 'Order Details';
 		$this->data['page_description'] = 'Details of the order transaction';
@@ -295,7 +294,7 @@ class Orders extends Wholesale_user_Controller {
 	{
 		$this->load->library('pagination');
 
-		$config['base_url'] = base_url().'my_account/wholesale/orders/';
+		$config['base_url'] = base_url().'my_account/consumer/orders/';
 		$config['total_rows'] = $count_all;
 		$config['per_page'] = $per_page;
 		$config['num_links'] = 3;
@@ -307,7 +306,7 @@ class Orders extends Wholesale_user_Controller {
 		$config['cur_tag_open'] = '<li class="active"><a href="javascript:;">';
 		$config['cur_tag_close'] = '</a></li>';
 		$config['first_link'] = '<i class="fa fa-angle-double-left"></i>';
-		$config['first_url'] = site_url('my_account/wholesale/orders');
+		$config['first_url'] = site_url('my_account/consumer/orders');
 		$config['first_tag_open'] = '<li>';
 		$config['first_tag_close'] = '</li>';
 		$config['last_link'] = '<i class="fa fa-angle-double-right"></i>';
@@ -402,7 +401,7 @@ class Orders extends Wholesale_user_Controller {
 			';
 			// handle datatable
 			$this->data['page_level_scripts'].= '
-				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/table-datatables-purchase_orders.js" type="text/javascript"></script>
+				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/table-datatables-retail orders.js" type="text/javascript"></script>
 			';
 	}
 

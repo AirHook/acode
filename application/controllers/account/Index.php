@@ -28,6 +28,9 @@ class Index extends Frontend_Controller {
 		// load pertinent library/model/helpers
 		$this->load->library('users/wholesale_user_details');
 		$this->load->library('users/consumer_user_details');
+		$this->load->library('users/vendor_user_details');
+		$this->load->library('users/sales_user_details');
+
 		$this->load->library('form_validation');
 
 		// set validation rules
@@ -40,7 +43,6 @@ class Index extends Frontend_Controller {
 			$this->data['file'] = 'account_signin';
 			$this->data['page_title'] = $this->webspace_details->name;
 			$this->data['page_description'] = $this->webspace_details->site_description;
-
 			// load views...
 			//$this->load->view($this->webspace_details->options['theme'].'/template', $this->data);
 			$this->load->view('metronic/template/template', $this->data);
@@ -60,6 +62,14 @@ class Index extends Frontend_Controller {
 						'email' => $this->input->post('email'),
 						'password' => $this->input->post('password'),
 						'reference_designer' => $this->webspace_details->slug
+					))
+					&& ! $this->sales_user_details->initialize(array(
+						'admin_sales_email' => $this->input->post('email'),
+						'admin_sales_password' => $this->input->post('password')
+					))
+					&& ! $this->vendor_user_details->initialize(array(
+						'vendor_email' => $this->input->post('email'),
+						'password' => $this->input->post('password')
 					))
 				)
 				{
@@ -81,6 +91,14 @@ class Index extends Frontend_Controller {
 						'email' => $this->input->post('email'),
 						'password' => $this->input->post('password')
 					))
+					&& ! $this->sales_user_details->initialize(array(
+						'admin_sales_email' => $this->input->post('email'),
+						'admin_sales_password' => $this->input->post('password')
+					))
+					&& ! $this->vendor_user_details->initialize(array(
+						'vendor_email' => $this->input->post('email'),
+						'password' => $this->input->post('password')
+					))
 				)
 				{
 					// set flash notice
@@ -90,12 +108,13 @@ class Index extends Frontend_Controller {
 					redirect('account');
 				}
 			}
-
 			// if user is inactive or suspended...
 			if (
 				$this->wholesale_user_details->status === '2'
 				OR $this->wholesale_user_details->status === '0'
 				OR $this->consumer_user_details->status === '0'
+				OR $this->sales_user_details->status === '0'
+				OR $this->vendor_user_details->status === '0'
 			)
 			{
 				// set flash notice
@@ -106,8 +125,13 @@ class Index extends Frontend_Controller {
 			}
 
 			// let us set sessions
+			// var_dump($this->vendor_user_details->vendor_id);
+			// var_dump($this->vendor_user_details->vendor_id);
+			// exit;
 			$this->wholesale_user_details->set_session();
 			$this->consumer_user_details->set_session();
+			$this->sales_user_details->set_session();
+			$this->vendor_user_details->set_session();
 
 			// record login details and notify people
 			if ($this->session->user_cat == 'wholesale')
@@ -122,6 +146,15 @@ class Index extends Frontend_Controller {
 				$this->wholesale_user_details->notify_admin_user_online();
 			}
 			
+			//redirect to sales user dashboard
+			if($this->session->admin_sales_loggedin == 1 && $this->session->admin_sales_id) {
+				redirect('my_account/sales/dashboard');
+			}
+			
+			//redirect to vendor user dashboard
+			if($this->session->vendor_loggedin == 1 && $this->session->vendor_id) {
+				redirect('my_account/vendors/dashboard');
+			}
 			// redirect user to account page
 			// since account page is under construction,
 			// let's send user to reference designer categories or general womens_apparel
@@ -184,7 +217,6 @@ class Index extends Frontend_Controller {
 				<link href="'.$assets_url.'/assets/global/plugins/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
 				<link href="'.$assets_url.'/assets/global/plugins/select2/css/select2-bootstrap.min.css" rel="stylesheet" type="text/css" />
 			';
-
 		/****************
 		 * page style sheets inserted at <head>
 		 */
@@ -212,7 +244,5 @@ class Index extends Frontend_Controller {
 				<script src="'.base_url().'/assets/custom/js/metronic/pages/scripts/components-select2.js" type="text/javascript"></script>
 			';
 	}
-
 	// ----------------------------------------------------------------------
-
 }

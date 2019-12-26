@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Vendor_user_Controller extends MY_Controller {
+class Consumer_user_Controller extends Frontend_Controller {
 
 	/**
 	 * Core Controller for Admin
@@ -11,14 +11,16 @@ class Vendor_user_Controller extends MY_Controller {
 		parent::__construct();
 
 		// load pertinent libraries/models/helpers
-		$this->load->library('users/vendor_user_details');
+		$this->load->library('users/consumer_user_details');
 		//$this->load->library('designers/designer_details');
-
 		/*****
 		 * ...is there a session for admin already?
 		 * check for admin_loggedin session
 		 */
-		if ( ! $this->session->userdata('vendor_loggedin'))
+		if(
+			! $this->session->userdata('user_loggedin')
+			OR $this->session->userdata('user_cat') != 'consumer'
+		)
 		{
 			// let us remember the page being accessed other than index
 			$this->session->set_flashdata('access_uri', $this->uri->uri_string());
@@ -35,8 +37,8 @@ class Vendor_user_Controller extends MY_Controller {
 		 * or, you may use the $config['sess_expiration'] from config.php file
 		 */
 		if ((
-				! $this->session->userdata('vendor_login_time')
-				OR (($this->session->userdata('vendor_login_time') + $this->config->item('sess_expiration')) < time())
+				! $this->session->userdata('cs_last_active_time')
+				OR (($this->session->userdata('cs_last_active_time') + $this->config->item('sess_expiration')) < time())
 			)
 			// && (
 				// $this->uri->uri_string() !== $this->config->slash_item('admin_folder').'login'
@@ -48,8 +50,8 @@ class Vendor_user_Controller extends MY_Controller {
 		{
 			// --> access not allowed when not logged in
 			// destroy admin user session if any
-			$this->vendor_user_details->unset_session();
-			$this->vendor_user_details->set_initial_state();
+			$this->consumer_user_details->unset_session();
+			$this->consumer_user_details->set_initial_state();
 
 			// let us remember the page being accessed other than index
 			$this->session->set_flashdata('access_uri', $this->uri->uri_string());
@@ -65,9 +67,11 @@ class Vendor_user_Controller extends MY_Controller {
 		 * ...now, since login session already exists, initialize class admin user details again
 		 */
 		// initialize class admin user details
-		$this->vendor_user_details->initialize(array(
-			'vendor_id' => $this->session->vendor_id
+		$this->consumer_user_details->initialize(array(
+			'user_id' => $this->session->user_id
 		));
     }
+
 	// --------------------------------------------------------------------
+
 }

@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Wholesale_user_Controller extends MY_Controller {
+class Wholesale_user_Controller extends Frontend_Controller {
 
 	/**
 	 * Core Controller for Admin
@@ -39,15 +39,15 @@ class Wholesale_user_Controller extends MY_Controller {
 		 * or, you may use the $config['sess_expiration'] from config.php file
 		 */
 		if ((
-				! $this->session->userdata('wholesale_login_time')
-				OR (($this->session->userdata('wholesale_login_time') + $this->config->item('sess_expiration')) < time())
+				! $this->session->userdata('ws_last_active_time')
+				OR (($this->session->userdata('ws_last_active_time') + $this->config->item('sess_expiration')) < time())
 			)
-			&& (
-				$this->uri->uri_string() !== $this->config->slash_item('admin_folder').'login'
-				&& $this->uri->uri_string() !== $this->config->slash_item('admin_folder').'forget_password'
-				&& $this->uri->uri_string() !== $this->config->slash_item('admin_folder').'register_admin'
-				&& $this->uri->uri_string() !== $this->config->slash_item('admin_folder').'logout'
-			)
+			// && (
+				// $this->uri->uri_string() !== $this->config->slash_item('admin_folder').'login'
+				// && $this->uri->uri_string() !== $this->config->slash_item('admin_folder').'forget_password'
+				// && $this->uri->uri_string() !== $this->config->slash_item('admin_folder').'register_admin'
+				// && $this->uri->uri_string() !== $this->config->slash_item('admin_folder').'logout'
+			// )
 		)
 		{
 			// --> access not allowed when not logged in
