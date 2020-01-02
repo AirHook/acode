@@ -21,6 +21,7 @@
         <!-- BEGIN THEME GLOBAL STYLES -->
         <link href="<?php echo base_url('assets/metronic'); ?>/assets/global/css/components.min.css" rel="stylesheet" id="style_components" type="text/css" />
         <link href="<?php echo base_url('assets/metronic'); ?>/assets/global/css/plugins.min.css" rel="stylesheet" type="text/css" />
+        <link href="<?php echo base_url(); ?>/assets/custom/jscript/unslider/unslider.css" rel="stylesheet" type="text/css" />
         <!-- END THEME GLOBAL STYLES -->
         <!-- BEGIN PAGE LEVEL STYLES -->
 		<?php echo @$page_level_styles ?: ''; ?>

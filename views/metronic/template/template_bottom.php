@@ -22,6 +22,7 @@
         <!-- END PAGE LEVEL PLUGINS -->
         <!-- BEGIN THEME GLOBAL SCRIPTS -->
         <script src="<?php echo base_url('assets/metronic'); ?>/assets/global/scripts/app.min.js" type="text/javascript"></script>
+        <script src="<?php echo base_url(); ?>/assets/custom/jscript/unslider/unslider-min.js" type="text/javascript"></script>
         <!-- END THEME GLOBAL SCRIPTS -->
         <!-- BEGIN PAGE LEVEL SCRIPTS -->
 		<?php echo @$page_level_scripts ?: ''; ?>
@@ -62,6 +63,15 @@
 						el.slideDown(200);
 					}
 				});
+                // run logo slider
+                //$('.logo_slider').unslider();
+                var sliderOne = $(".logo_slider").unslider({
+					animation: "fade",
+					autoplay: true,
+					nav: false,
+					arrows: false
+				});
+				$(".logo_slider").fadeIn(1000);
             });
 			<?php
 			/*********
