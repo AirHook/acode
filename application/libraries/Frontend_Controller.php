@@ -144,6 +144,10 @@ class Frontend_Controller extends MY_Controller {
 		if (
 			$this->session->user_loggedin
 			&& $this->session->user_cat == 'wholesale'
+			&& (
+				$this->webspace_details->options['site_type'] == 'hub_site'
+				OR $this->webspace_details->slug == 'tempoparis' // sal_site exemption
+			)
 		)
 		{
 			if ( ! $this->wholesale_user_details->initialize(array('user_id'=>$this->session->user_id)))

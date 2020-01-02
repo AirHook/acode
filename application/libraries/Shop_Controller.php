@@ -391,11 +391,24 @@ class Shop_Controller extends Frontend_Controller {
 		// Prep pagination for the page along with the set style
 		$this->load->library('pagination');
 
+        // remove page segment and capture uri string
 		$uri_segments = explode('/', $this->uri->uri_string());
-		if (is_numeric($uri_segments[count($uri_segments) - 1]))
+        if (is_numeric(end($uri_segments))) array_pop($uri_segments);
+
+        // set get strings if nay
+        if (@$_GET)
 		{
-			array_pop($uri_segments);
-		}
+			// remove empty $_GET array elements
+			$_GET = array_filter($_GET, function($value) { return $value !== ''; });
+
+			foreach ($_GET as $key => $val)
+			{
+				$this->filter_items_count += count(explode(',', $_GET[$key]));
+			}
+
+			$get = '?'.http_build_query($_GET);
+        }
+        else $get = '';
 
 		$config['base_url'] 				= base_url(implode('/', $uri_segments)).'/';
 
@@ -417,7 +430,7 @@ class Shop_Controller extends Frontend_Controller {
 		$config['cur_tag_open'] = '<li class="active"><a href="javascript:;">';
 		$config['cur_tag_close'] = '</a></li>';
 		$config['first_link'] = '<i class="fa fa-angle-double-left"></i>';
-		$config['first_url'] = site_url(implode('/', $uri_segments));
+		$config['first_url'] = site_url(implode('/', $uri_segments)).$get;
 		$config['first_tag_open'] = '<li>';
 		$config['first_tag_close'] = '</li>';
 		$config['last_link'] = '<i class="fa fa-angle-double-right"></i>';

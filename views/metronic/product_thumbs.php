@@ -56,7 +56,8 @@
 
                                                         <!-- BEGIN PAGINATION -->
                                                         <div style="float:right;">
-                                                            <?php echo $this->products_list->count_all > $this->webspace_details->options['items_per_page'] ? $this->pagination->create_links() : ''; ?>
+                                                            <?php $pagination = $this->pagination->create_links(); ?>
+                                                            <?php echo $pagination; ?>
                                                         </div>
                                                         <!-- END PAGINATION -->
 
@@ -2008,11 +2009,11 @@
 													<!-- BEGIN DESKTOP THUMBS BOTTOM PAGINATION -->
                                                     <div class="m-grid produc-thumbs-filter hidden-xs clearfix" style="padding:5px 10px 10px;">
 
-                                                        <!-- BEGIN PAGINTAION -->
+                                                        <!-- BEGIN PAGINATION -->
                                                         <div style="float:right;">
-                                                            <?php echo $this->products_list->count_all > $this->webspace_details->options['items_per_page'] ? $this->pagination->create_links() : ''; ?>
+                                                            <?php echo $pagination; ?>
                                                         </div>
-                                                        <!-- END PAGINTAION -->
+                                                        <!-- END PAGINATION -->
 
                                                     </div>
 													<!-- END DESKTOP THUMBS BOTTOM PAGINATION -->
