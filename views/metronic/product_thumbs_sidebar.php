@@ -49,9 +49,14 @@
 																	// first row is usually the top main category...
 																	echo '<li class="category_list '
 																		.$active
-																		.'"><a class="'
+																		.'">'
+																		.'<a href="javascript:;" class="category-list-heading-'
 																		.$by_categories_collapse
-																		.' collapse-marker" href="" data-original-title="Collapse/Expand" title="" style="position:relative;top:5px;"></a><a href="javascript:;"> <strong>SHOP BY CATEGORIES</strong> </a>';
+																		.'"> <strong>SHOP BY CATEGORIES</strong> </a>'
+																		.'<a class="'
+																		.$by_categories_collapse
+																		.' collapse-marker" href="" data-original-title="Collapse/Expand" title="" style="position:relative;top:5px;"></a>'
+																	;
 
 																	// save as previous level
 																	$prev_level = $category->category_level;
@@ -202,7 +207,7 @@
 														<ul class="list-unstyled nested-nav" style="margin-right:30px;" data-row_count="">
 															<li class="category_list 1" data-category_id="1" data-parent_category="1" data-category_slug="womens_apparel" data-category_name="Womens Apparel" data-category_level="0" active="">
 																<a class="<?php echo $by_designers_collapse; ?> collapse-marker" href="" data-original-title="Collapse/Expand" title="" style="position:relative;top:5px;"></a>
-																<a href="javascript::">
+																<a href="javascript::" class="category-list-heading-<?php echo $by_designers_collapse; ?>">
 																	<strong>SHOP BY DESIGNERS</strong>
 																</a>
 

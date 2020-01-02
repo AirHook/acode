@@ -50,16 +50,30 @@
 				);
 				// product thumbs unveil trigger
 				$('.browse_thumbs .primary-img, .browse_thumbs .alt-image').unveil(1500);
-				// next sidebar nav expand/collapse click function
-				$('body').on('click', '.nested-nav > li > .collapse, .nested-nav > li > .expand', function(e) {
+				// thumbs sidebar nav expand/collapse click function
+				$('body').on('click', '.nested-nav > li > .collapse, .nested-nav > li > .expand, .nested-nav > li > .category-list-heading-collapse, .nested-nav > li > .category-list-heading-expand', function(e) {
 					e.preventDefault();
 					// find children list
 					var el = $(this).closest("li").children("ul");
-					if ($(this).hasClass("collapse")) {
-						$(this).removeClass("collapse").addClass("expand");
+					if ($(this).hasClass("collapse")||$(this).hasClass("category-list-heading-collapse")) {
+						if($(this).hasClass("collapse")){
+                            $(this).removeClass("collapse").addClass("expand");
+                            $(this).siblings('a').removeClass("category-list-heading-collapse").addClass("category-list-heading-expand");
+                        }
+                        if($(this).hasClass("category-list-heading-collapse")){
+                            $(this).removeClass("category-list-heading-collapse").addClass("category-list-heading-expand");
+                            $(this).siblings('a').removeClass("collapse").addClass("expand");
+                        }
 						el.slideUp(200);
 					} else {
-						$(this).removeClass("expand").addClass("collapse");
+						if($(this).hasClass("expand")){
+                            $(this).removeClass("expand").addClass("collapse");
+                            $(this).siblings('a').removeClass("category-list-heading-expand").addClass("category-list-heading-collapse");
+                        }
+                        if($(this).hasClass("category-list-heading-expand")){
+                            $(this).removeClass("category-list-heading-expand").addClass("category-list-heading-collapse");
+                            $(this).siblings('a').removeClass("expand").addClass("collapse");
+                        }
 						el.slideDown(200);
 					}
 				});
