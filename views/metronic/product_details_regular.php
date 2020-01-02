@@ -33,7 +33,7 @@
 													{ ?>
 
 													<!-- BEGIN THUMBS BREADCRUMBS -->
-													<ul class="page-breadcrumb breadcrumb breadcrumb-thumbs margin-bottom-10" style="padding-right:20px;display:inline-block;">
+													<ul class="page-breadcrumb breadcrumb breadcrumb-thumbs margin-bottom-10" style="padding-right:20px;display:inline-block;margin-left:0px;">
 
 														<?php
 														/**********
@@ -57,9 +57,9 @@
 
 														<li>
 															<a href="<?php echo site_url($d_link); ?>">
-																<?php echo $d_last ? '' : '<strong>'; ?>
+																<strong>
 																	<?php echo $d_name; ?>
-																<?php echo $d_last ? '' : '</strong>'; ?>
+																</strong>
 															</a>
 															<?php echo $d_last ? '' : '<i class="fa fa-angle-right"></i>'; ?>
 														</li>

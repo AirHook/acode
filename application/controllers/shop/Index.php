@@ -63,7 +63,7 @@ class Index extends Shop_Controller
 
 		// get the url segments to get the category ID of the last segment
 		$this->session->set_flashdata('thumbs_uri_string', $this->uri->uri_string());
-		$this->data['url_segs'] = explode('/', $this->uri->uri_string());
+		$this->data['url_segs'] = $this->uri->segment_array();
 		// get the last category slug
 		if (is_numeric($this->data['url_segs'][count($this->data['url_segs']) - 1]))
 		{
@@ -95,6 +95,9 @@ class Index extends Shop_Controller
 		}
 		// on new category system, but we use the above $this->category_id instead
 		$this->sc_url_structure = $last_category_slug;
+
+		// let's save the $this->browse_by in to tempdata session for use on details page
+		$this->session->set_flashdata('browse_by', $this->browse_by);
 
 		// now that $this->d_url_structure is set... in the case of tempoparis...
 		// tempoparis is a stand alone wholesale site

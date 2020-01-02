@@ -96,6 +96,14 @@ class Details extends Frontend_Controller
 			// this current product record (deduct one from count as indeces start at 0)
 			$this_row = $prev_qry->row($prod_list_seq[0] - 1);
 
+			// we need to check if user came from a browse by category or browse by designer thumbs page
+			// to capture the designer slug for breadcrumbs purposes
+			if ($this->session->flashdata('browse_by') == 'sidebar_browse_by_designer')
+			{
+				$this->data['url_segs'][0] = array($this_row->designer, $this_row->d_url_structure);
+				$this->session->keep_flashdata('browse_by');
+			}
+
 			// get the categories for breadcrumbs purposes
 			$tempcategories = ($this_row->categories && $this_row->categories != '') ? json_decode($this_row->categories, TRUE) : array();
 			$temp2categories = $this->categories_tree->treelist(

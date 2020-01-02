@@ -72,15 +72,23 @@
     															$d_link = '';
     															foreach ($url_segs as $key => $segment)
     															{
-    																// get current segment's name
-    																$d_name = $this->categories_tree->get_name($segment);
+                                                                    // get current segment's name
+                                                                    if (@$this->browse_by == 'sidebar_browse_by_designer' && $key == 2)
+                                                                    {
+                                                                        $d_name = $this->designers_list->get_des_name(array('url_structure'=>$segment));
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        $d_name = $this->categories_tree->get_name($segment);
+                                                                    }
+
     																// store segment for the link
     																$d_link .= '/'.$segment;
     																$d_link = ltrim($d_link, '/');
     																// check if last segment
-    																$d_last = $key == count($url_segs) - 1 ? TRUE : FALSE;
+    																$d_last = $key == count($url_segs) ? TRUE : FALSE;
 
-    																if ($key == 0) continue; // skips on first segment 'shop/'
+    																if ($key == 1) continue; // skips on first segment 'shop/'
     																?>
 
     														<li>
