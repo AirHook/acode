@@ -240,7 +240,11 @@ class Shop_Controller extends Frontend_Controller {
                 $where['designer.url_structure <>'] = 'tempoparis';
             }
             else $where['designer.url_structure'] = $this->d_url_structure;
-            $where['tbl_product.categories LIKE'] = $this->category_id; // last segment of category
+
+            if ($this->category_id)
+            {
+                $where['tbl_product.categories LIKE'] = $this->category_id; // last segment of category
+            }
         }
 
         // show item conditions

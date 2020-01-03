@@ -65,16 +65,22 @@ class Index extends Shop_Controller
 		$this->session->set_flashdata('thumbs_uri_string', $this->uri->uri_string());
 		$this->data['url_segs'] = $this->uri->segment_array();
 		// get the last category slug
-		if (is_numeric($this->data['url_segs'][count($this->data['url_segs']) - 1]))
+		if (is_numeric(end($this->data['url_segs'])))
 		{
 			$last_category_slug = $this->data['url_segs'][count($this->data['url_segs']) - 2];
 			// remove the numeric segment
 			array_pop($this->data['url_segs']);
 		}
-		else $last_category_slug = $this->data['url_segs'][count($this->data['url_segs']) - 1];
+		else $last_category_slug = end($this->data['url_segs']);
 		// get active category details
 		$this->category_id = $this->categories_tree->get_id($last_category_slug);
 		$this->data['category_details'] = $this->category_details->initialize(array('category_id' => $this->category_id));
+
+		if ($this->data['category_details'])
+		{
+			// on new category system, but we use the above $this->category_id instead
+			$this->sc_url_structure = $last_category_slug;
+		}
 
 		// other than shop/all, shop/categoreis, and shop/designers
 		// shop/index is the main routing controller for both the
@@ -93,8 +99,6 @@ class Index extends Shop_Controller
 		{
 			$this->browse_by = 'sidebar_browse_by_category';
 		}
-		// on new category system, but we use the above $this->category_id instead
-		$this->sc_url_structure = $last_category_slug;
 
 		// let's save the $this->browse_by in to tempdata session for use on details page
 		$this->session->set_flashdata('browse_by', $this->browse_by);
