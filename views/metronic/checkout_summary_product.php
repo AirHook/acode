@@ -54,7 +54,7 @@
 																						<?php if (@$items['options']['custom_order'] == '3')
 																						{ ?>
 																						<br />
-																						<cite style="color:red;">On Special Sale</cite>
+																						<cite style="color:red;">On Clearance</cite>
 																							<?php
 																						} ?>
 																					</small>

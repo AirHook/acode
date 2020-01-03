@@ -445,7 +445,7 @@
 														<td align="center"><font style="font-family:Tahoma;font-size:10px;"><?php echo $items->prod_name; ?></font></td>
 														<td align="center"><font style="font-family:Tahoma;font-size:10px;"><?php echo $items->prod_no; ?></font></td>
 														<td align="center"><font style="font-family:Tahoma;font-size:10px;"><?php echo $items->size; ?></font></td>
-														<td align="center"><font style="font-family:Tahoma;font-size:10px;"><?php echo $items->color.($items->custom_order == '3' ? '<br /><em style="color:red;">On Special Sale</em>' : ''); ?></font></td>
+														<td align="center"><font style="font-family:Tahoma;font-size:10px;"><?php echo $items->color.($items->custom_order == '3' ? '<br /><em style="color:red;">On Clearance</em>' : ''); ?></font></td>
 														<td align="center"><font style="font-family:Tahoma;font-size:10px;"><?php echo $items->qty; ?></font></td>
 														<td align="center"><font style="font-family:Tahoma;font-size:10px;">$ <?php echo $items->unit_price; ?></font></td>
 														<td align="center"><font style="font-family:Tahoma;font-size:10px;">$ <?php echo $items->qty * $items->unit_price; ?></font></td>

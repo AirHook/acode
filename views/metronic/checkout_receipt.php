@@ -141,7 +141,7 @@
 																			<?php if (@$items->custom_order == '3')
 																			{ ?>
 																			<br />
-																			<span style="color:red;">On Special Sale</span>
+																			<span style="color:red;">On Clearance</span>
 																				<?php
 																			} ?>
 																		</td>
