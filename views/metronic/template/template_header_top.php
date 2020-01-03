@@ -41,27 +41,7 @@
 									<div class="page-logo">
 										<a href="<?php echo site_url(); ?>">
 											<?php
-                                            if (@$this->browse_by == 'sidebar_browse_by_category')
-                                            { ?>
-
-                                            <div class="logo_slider display-none" style="height:75px;">
-                								<ul style="list-style:none;">
-                                                    <?php foreach ($designers as $designer)
-                                                    {
-                                                        if ($designer->with_products)
-                                                        { ?>
-                                                        <li style="float:left;">
-                                                            <img src="<?php echo $this->config->item('PROD_IMG_URL').$designer->logo; ?>" alt="logo" class="logo-default" />
-                    									</li>
-                                                            <?php
-                                                        }
-                                                    } ?>
-                								</ul>
-                							</div>
-
-                                                <?php
-                                            }
-                                            else
+                                            if (@$this->browse_by == 'sidebar_browse_by_designer')
                                             {
                                                 // get respective logo for desinger pages
     											if (
@@ -115,6 +95,26 @@
     											<img src="<?php echo base_url(); ?>assets/images/logo/logo-<?php echo $this->webspace_details->slug; ?>.png" alt="logo" class="logo-default" data-info="<?php echo $des_logo; ?>" data-information="hello" />
     												<?php
                                                 }
+                                            }
+                                            else
+                                            { ?>
+
+                                            <div class="logo_slider display-none" style="height:75px;">
+                								<ul style="list-style:none;">
+                                                    <?php foreach ($designers as $designer)
+                                                    {
+                                                        if ($designer->with_products)
+                                                        { ?>
+                                                        <li style="float:left;">
+                                                            <img src="<?php echo $this->config->item('PROD_IMG_URL').$designer->logo; ?>" alt="logo" class="logo-default" />
+                    									</li>
+                                                            <?php
+                                                        }
+                                                    } ?>
+                								</ul>
+                							</div>
+
+                                                <?php
                                             }
                                             ?>
 										</a>

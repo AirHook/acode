@@ -77,15 +77,6 @@
 						el.slideDown(200);
 					}
 				});
-                // run logo slider
-                //$('.logo_slider').unslider();
-                var sliderOne = $(".logo_slider").unslider({
-					animation: "fade",
-					autoplay: true,
-					nav: false,
-					arrows: false
-				});
-				$(".logo_slider").fadeIn(1000);
             });
 			<?php
 			/*********
@@ -120,6 +111,14 @@
 				});
 			}, 11000);
 			$(window).on('load',function(){
+                // run logo slider
+                var sliderOne = $(".logo_slider").unslider({
+					animation: "fade",
+					autoplay: true,
+					nav: false,
+					arrows: false
+				});
+				$(".logo_slider").fadeIn(1000);
 				<?php
 				/*********
 				 * Launch different modals on page load
