@@ -380,7 +380,8 @@ class Submit extends Frontend_Controller
 				'qty'					=> $items['qty'],
 				'unit_price'			=> $items['price'],
 				'subtotal'				=> $items['subtotal'],
-				'custom_order'			=> ($items['options']['custom_order'] ?: '0')
+				'custom_order'			=> ($items['options']['custom_order'] ?: '0'),
+				'options'				=> json_encode(array('product_details_link'=>$items['options']['current_url']))
 			);
 			$this->DB->insert('tbl_order_log_details', $log_detail_data);
 			$i++;

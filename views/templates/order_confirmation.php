@@ -434,13 +434,20 @@
 													<?php
 													//foreach($this->cart->contents() as $items)
                                                     foreach ($this->order_details->order_items as $items)
-													{ ?>
+													{
+                                                        if ($items->options)
+                                                        {
+                                                            $options = json_decode($items->options, TRUE);
+                                                            $product_details_link = @$options['product_details_link'];
+                                                        }
+                                                        else $product_details_link = 'javascript:;';
+                                                        ?>
 
 													<tr>
 														<td align="center">
-															<font style="font-family:Tahoma;font-size:10px;">
+                                                            <a href="<?php echo $product_details_link; ?>">
                                                                 <img src="<?php echo $this->config->item('PROD_IMG_URL').$items->image; ?>" width="60" height="90" border="0">
-															</font>
+                                                            </a>
 														</td>
 														<td align="center"><font style="font-family:Tahoma;font-size:10px;"><?php echo $items->prod_name; ?></font></td>
 														<td align="center"><font style="font-family:Tahoma;font-size:10px;"><?php echo $items->prod_no; ?></font></td>
