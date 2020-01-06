@@ -598,6 +598,7 @@ class Wholesale_user_details
 			if (isset($_SESSION['user_name'])) unset($_SESSION['user_name']);
 			if (isset($_SESSION['this_login_id'])) unset($_SESSION['this_login_id']);
 			if (isset($_SESSION['ws_last_active_time'])) unset($_SESSION['ws_last_active_time']);
+			if (isset($_SESSION['ws_login_time'])) unset($_SESSION['ws_login_time']);
 
 			// sales packages are for wholesale users only
 			// ensure that sales package session are unset during logout

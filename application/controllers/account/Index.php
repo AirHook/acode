@@ -30,7 +30,6 @@ class Index extends Frontend_Controller {
 		$this->load->library('users/consumer_user_details');
 		$this->load->library('users/vendor_user_details');
 		$this->load->library('users/sales_user_details');
-
 		$this->load->library('form_validation');
 
 		// set validation rules
@@ -65,11 +64,13 @@ class Index extends Frontend_Controller {
 					))
 					&& ! $this->sales_user_details->initialize(array(
 						'admin_sales_email' => $this->input->post('email'),
-						'admin_sales_password' => $this->input->post('password')
+						'admin_sales_password' => $this->input->post('password'),
+						'admin_sales_designer' => $this->webspace_details->slug
 					))
 					&& ! $this->vendor_user_details->initialize(array(
 						'vendor_email' => $this->input->post('email'),
-						'password' => $this->input->post('password')
+						'password' => $this->input->post('password'),
+						'reference_designer' => $this->webspace_details->slug
 					))
 				)
 				{
@@ -108,6 +109,7 @@ class Index extends Frontend_Controller {
 					redirect('account');
 				}
 			}
+
 			// if user is inactive or suspended...
 			if (
 				$this->wholesale_user_details->status === '2'
@@ -125,15 +127,61 @@ class Index extends Frontend_Controller {
 			}
 
 			// let us set sessions
-			// var_dump($this->vendor_user_details->vendor_id);
-			// var_dump($this->vendor_user_details->vendor_id);
-			// exit;
-			$this->wholesale_user_details->set_session();
-			$this->consumer_user_details->set_session();
-			$this->sales_user_details->set_session();
-			$this->vendor_user_details->set_session();
+			// and set the session lapse time if it has not been set
+			if ($this->wholesale_user_details->user_id)
+			{
+				$this->wholesale_user_details->set_session();
 
-			// record login details and notify people
+				if ( ! $this->session->userdata('ws_login_time'))
+				{
+					$this->session->set_userdata('ws_login_time', @time());
+				}
+			}
+			else $this->wholesale_user_details->unset_session();
+			if ($this->consumer_user_details->user_id)
+			{
+				$this->consumer_user_details->set_session();
+
+				if ( ! $this->session->userdata('cs_login_time'))
+				{
+					$this->session->set_userdata('cs_login_time', @time());
+				}
+			}
+			else $this->consumer_user_details->unset_session();
+			if ($this->sales_user_details->admin_sales_id)
+			{
+				$this->sales_user_details->set_session();
+
+				if ( ! $this->session->userdata('admin_sales_login_time'))
+				{
+					$this->session->set_userdata('admin_sales_login_time', @time());
+				}
+			}
+			else $this->sales_user_details->unset_session();
+			if ($this->vendor_user_details->vendor_id)
+			{
+				$this->vendor_user_details->set_session();
+
+				if ( ! $this->session->userdata('vendor_login_time'))
+				{
+					$this->session->set_userdata('vendor_login_time', @time());
+				}
+			}
+			else $this->vendor_user_details->unset_session();
+
+			// redirect to sales user dashboard
+			if ($this->session->admin_sales_loggedin)
+			{
+				redirect('my_account/sales/dashboard', 'location');
+			}
+
+			// redirect to vendor user dashboard
+			if ($this->session->vendor_loggedin)
+			{
+				redirect('my_account/vendors/dashboard');
+			}
+
+			// record login details of wholesale user and notify people
 			if ($this->session->user_cat == 'wholesale')
 			{
 				// record login which starts the login session
@@ -144,24 +192,43 @@ class Index extends Frontend_Controller {
 
 				// notify admin
 				$this->wholesale_user_details->notify_admin_user_online();
+
+				// send user to hub if not already at hub
+				if (
+					$this->webspace_details->options['site_type'] == 'hub_site'
+					OR $this->webspace_details->slug == 'tempoparis'
+				)
+				{
+					// send user to respective page...
+					// send wholesale user to reference designer categories or general womens_apparel
+					$ref_designer = $this->wholesale_user_details->reference_designer;
+					if ($ref_designer && $ref_designer != 'shop7thavenue')
+					{
+						redirect('shop/designers/'.$ref_designer, 'location');
+					}
+					else redirect('shop/designers', 'location');
+				}
+				else
+				{
+					redirect('https://www.'.$this->webspace_details->parent_site().'/my_account/wholesale/authenticate/index/'.$this->session->user_id, 'location');
+				}
 			}
-			
-			//redirect to sales user dashboard
-			if($this->session->admin_sales_loggedin == 1 && $this->session->admin_sales_id) {
-				redirect('my_account/sales/dashboard');
+
+			// default process assumes user is a consumer
+			if ($this->webspace_details->slug != 'tempoparis')
+			{
+				// let's send user to reference designer categories or general womens_apparel
+				$ref_designer = $this->consumer_user_details->reference_designer;
+				if ($ref_designer && $ref_designer!='shop7thavenue')
+					redirect('shop/designers/'.$ref_designer);
+				else redirect('shop/designers');
 			}
-			
-			//redirect to vendor user dashboard
-			if($this->session->vendor_loggedin == 1 && $this->session->vendor_id) {
-				redirect('my_account/vendors/dashboard');
-			}
-			// redirect user to account page
-			// since account page is under construction,
-			// let's send user to reference designer categories or general womens_apparel
-			$ref_designer = $this->wholesale_user_details->reference_designer;
-			if ($ref_designer && $ref_designer!='shop7thavenue')
-				redirect('shop/designers/'.$ref_designer);
-			else redirect('shop/designers');
+
+			// set flash notice
+			$this->session->set_flashdata('error', 'no_id_passed');
+
+			// rediect back to sign in page
+			redirect('account', 'location');
 		}
 	}
 

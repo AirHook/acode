@@ -159,7 +159,7 @@ class Wholesale_activation_email_sending
 				echo $message;
 				echo '<br />';
 				echo '<br />';
-				echo '<a href="'.($this->CI->uri->segment(1) === 'sales' ? site_url('sales/wholesale') : site_url($this->CI->config->slash_item('admin_folder').'users/wholesale')).'">continue...</a>';
+				echo '<a href="'.($this->CI->uri->segment(2) === 'sales' ? site_url('my_account/sales/users/wholesale') : site_url('admin/users/wholesale')).'">continue...</a>';
 				echo '<br />';
 				echo '<br />';
 				die();

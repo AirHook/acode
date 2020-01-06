@@ -223,7 +223,7 @@ class Sales_package_sending
 						if ($this->CI->data['sales_theme'] == 'roden2') echo '<a href="'.site_url('sales/view/index/'.$this->sales_package_id).'">continue...</a>';
 						if ($this->CI->data['sales_theme'] == 'default') echo '<a href="'.site_url('sales/sent').'">continue...</a>';
 					}
-					else echo '<a href="'.($this->CI->uri->segment(1) === 'sales' ? site_url('sales/wholesale') : site_url($this->CI->config->slash_item('admin_folder').'users/wholesale')).'">continue...</a>';
+					else echo '<a href="'.($this->CI->uri->segment(2) === 'sales' ? site_url('my_account/sales/users/wholesale') : site_url($this->CI->config->slash_item('admin_folder').'users/wholesale')).'">continue...</a>';
 					echo '<br />';
 					echo '<br />';
 					die();

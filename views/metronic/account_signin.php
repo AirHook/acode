@@ -17,6 +17,11 @@
 												You have been logged out from the system for being idle for some number of days. Please login again.
 											</div>
 											<?php } ?>
+                                            <?php if ($this->session->flashdata('error') == 'session_lapsed') { ?>
+											<div class="alert alert-warning">
+												You have been logged out from the system. Please login again.
+											</div>
+											<?php } ?>
 											<?php if ($this->session->flashdata('error') == 'invalid_credentials') { ?>
 											<div class="alert alert-danger">
 												<strong>Error!</strong>&nbsp; Invalid Credentials. Please try again.

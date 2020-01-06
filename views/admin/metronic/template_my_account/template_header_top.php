@@ -52,7 +52,7 @@
                             <!-- BEGIN SEARCH -->
                             <!-- FORM =======================================================================-->
                             <?php echo form_open(
-                                $this->config->slash_item('admin_folder').'search',
+                                'admin/search',
                                 array(
                                     'method'=>'POST',
                                     //'id'=>'form-admin_tobbar_search',

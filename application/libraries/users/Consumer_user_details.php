@@ -396,7 +396,8 @@ class Consumer_user_details
 					'user_id'					=> '',
 					'user_cat'					=> '',
 					'user_name'					=> '',
-					'cs_last_active_time'		=> ''
+					'cs_last_active_time'		=> '',
+					'cs_login_time'				=> ''
 				);
 				$this->CI->session->unset_userdata($sesdata);
 			}
@@ -408,7 +409,8 @@ class Consumer_user_details
 					'user_id',
 					'user_cat',
 					'user_name',
-					'cs_last_active_time'
+					'cs_last_active_time',
+					'cs_login_time'
 				);
 				$this->CI->session->unset_userdata($sesdata);
 			}
@@ -419,6 +421,7 @@ class Consumer_user_details
 			if (isset($_SESSION['user_cat'])) unset($_SESSION['user_cat']);
 			if (isset($_SESSION['user_name'])) unset($_SESSION['user_name']);
 			if (isset($_SESSION['cs_last_active_time'])) unset($_SESSION['cs_last_active_time']);
+			if (isset($_SESSION['cs_login_time'])) unset($_SESSION['cs_login_time']);
 		}
 	}
 

@@ -566,6 +566,34 @@ class Webspace_details
 	// --------------------------------------------------------------------
 
 	/**
+	 * Get Parent Site domain
+	 *
+	 * Based on options['parent_site'] that holds the webspace id
+	 * Only if webspace is a sat_site or sal_site
+	 *
+	 * @return	string/boolean
+	 */
+	public function parent_site()
+	{
+		if (isset($this->options['parent_site']) && ! empty($this->options['parent_site']))
+		{
+			$this->DB->select('domain_name');
+			$this->DB->where('webspace_id', $this->options['parent_site']);
+			$query3 = $this->DB->get('webspaces');
+
+			if ($query3->num_rows() > 0)
+			{
+				$row3 = $query3->row();
+				return $row3->domain_name;
+			}
+		}
+
+		return FALSE;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
 	 * Universally SET Webspace only session
 	 *
 	 * @return	void

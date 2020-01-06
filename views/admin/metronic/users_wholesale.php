@@ -1,4 +1,4 @@
-                    <div class="table-toolbar">
+                    <div class="table-toolbar <?php echo @$role == 'sales' ? 'hide' : ''; ?>">
                         <div class="row">
 
                             <div class="col-md-6">
@@ -24,7 +24,10 @@
                         </div>
                     </div>
 
-                    <?php if ($this->webspace_details->options['site_type'] == 'hub_site')
+                    <?php if (
+                        $this->webspace_details->options['site_type'] == 'hub_site'
+                        && @$role != 'sales'
+                    )
                     { ?>
 
                     <div class="table-toolbar">
@@ -72,8 +75,8 @@
                     <!-- FORM =======================================================================-->
                     <?php echo form_open(
                         (
-                            $this->uri->segment(1) === 'sales'
-                            ? 'sales/wholesale/bulk_actions'
+                            @$role === 'sales'
+                            ? 'my_account/sales/users/wholesale/bulk_actions'
                             : 'admin/users/wholesale/bulk_actions'
                         ),
                         array(
@@ -159,26 +162,30 @@
 
                         <ul class="nav nav-tabs">
                             <li class="<?php echo $this->uri->segment(4) == 'active' ? 'active' : ''; ?>">
-                                <a href="<?php echo site_url('admin/users/wholesale/active'); ?>">
+                                <a href="<?php echo site_url((@$role == 'sales' ? 'my_account/sales' : 'admin').'/users/wholesale/active'); ?>">
                                     <?php echo $this->uri->segment(4) != 'active' ? 'Show' : ''; ?> Active User List
                                 </a>
                             </li>
                             <li class="<?php echo $this->uri->segment(4) == 'inactive' ? 'active' : ''; ?>">
-                                <a href="<?php echo site_url('admin/users/wholesale/inactive'); ?>">
+                                <a href="<?php echo site_url((@$role == 'sales' ? 'my_account/sales' : 'admin').'/users/wholesale/inactive'); ?>">
                                     <?php echo $this->uri->segment(4) != 'inactive' ? 'Show' : ''; ?> Inactive User List
                                 </a>
                             </li>
                             <li class="<?php echo $this->uri->segment(4) == 'suspended' ? 'active' : ''; ?>">
-                                <a href="<?php echo site_url('admin/users/wholesale/suspended'); ?>">
+                                <a href="<?php echo site_url((@$role == 'sales' ? 'my_account/sales' : 'admin').'/users/wholesale/suspended'); ?>">
                                     <?php echo $this->uri->segment(4) != 'suspended' ? 'Show' : ''; ?> Suspended Users
                                 </a>
                             </li>
                             <?php
-                            // available only on hub sites for now
-                            if ($this->webspace_details->options['site_type'] == 'hub_site')
+                            // available only on hub sites
+                            // as well as when sales user is logged in via my_account
+                            if (
+                                $this->webspace_details->options['site_type'] == 'hub_site'
+                                OR @$role == 'sales'
+                            )
                             { ?>
                             <li>
-                                <a href="<?php echo site_url('admin/users/wholesale/add'); ?>">
+                                <a href="<?php echo site_url((@$role == 'sales' ? 'my_account/sales' : 'admin').'/users/wholesale/add'); ?>">
                                     Add New User <i class="fa fa-plus"></i>
                                 </a>
                             </li>
@@ -286,8 +293,8 @@
                                 foreach ($users as $user)
                                 {
                                     $edit_link =
-                                        $this->uri->segment(1) === 'sales'
-                                        ? site_url('sales/wholesale/edit/index/'.$user->user_id)
+                                        @$role === 'sales'
+                                        ? site_url('my_account/sales/users/wholesale/edit/index/'.$user->user_id)
                                         : site_url('admin/users/wholesale/edit/index/'.$user->user_id)
                                     ; ?>
 
@@ -397,7 +404,7 @@
                                         <i class="fa fa-trash font-dark"></i>
                                     </a>
                                     <!-- Send Activation Email -->
-                                    <a href="<?php echo $this->uri->segment(1) === 'sales' ? site_url('sales/wholesale/send_activation_email/index/'.$user->user_id) : site_url($this->config->slash_item('admin_folder').'users/wholesale/send_activation_email/index/'.$user->user_id); ?>" onclick="$('#loading .modal-title').html('Sending activation email...');$('#loading').modal('show');" class="tooltips" data-original-title="Send Activation Email" <?php echo $i < 3 ? 'data-placement="bottom"' : '';?>>
+                                    <a href="<?php echo @$role === 'sales' ? site_url('my_account/sales/users/wholesale/send_activation_email/index/'.$user->user_id) : site_url('admin/users/wholesale/send_activation_email/index/'.$user->user_id); ?>" onclick="$('#loading .modal-title').html('Sending activation email...');$('#loading').modal('show');" class="tooltips" data-original-title="Send Activation Email" <?php echo $i < 3 ? 'data-placement="bottom"' : '';?>>
                                         <i class="fa fa-envelope-o font-dark"></i>
                                     </a>
                                     <!-- Send Recent Items Sales Packaget -->
@@ -416,7 +423,7 @@
                                                 <div class="modal-body"> You are about to send to user recent 30 items from designer:<br /><br /><?php echo $user->designer; ?> </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn dark btn-outline" data-dismiss="modal">Cancel</button>
-                                                    <a href="<?php echo site_url('admin/users/wholesale/send_package/index/'.$user->user_id.'/'.$this->uri->segment(4)); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+                                                    <a href="<?php echo @$role === 'sales' ? site_url('my_account/sales/users/wholesale/send_package/index/'.$user->user_id.'/'.$this->uri->segment(5)) : site_url('admin/users/wholesale/send_package/index/'.$user->user_id.'/'.$this->uri->segment(4)); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
                                                         <span class="ladda-label">Continue...</span>
                                                         <span class="ladda-spinner"></span>
                                                     </a>
@@ -438,7 +445,7 @@
                                                 <div class="modal-body"> Are you sure you want to SUSPEND user? </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-                                                    <a href="<?php echo site_url('admin/users/wholesale/suspend/index/'.$user->user_id.'/'.$this->uri->segment(4)); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+                                                    <a href="<?php echo @$role === 'sales' ? site_url('my_account/sales/users/wholesale/suspend/index/'.$user->user_id.'/'.$this->uri->segment(5)) : site_url('admin/users/wholesale/suspend/index/'.$user->user_id.'/'.$this->uri->segment(4)); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
                                                         <span class="ladda-label">Confirm?</span>
                                                         <span class="ladda-spinner"></span>
                                                     </a>
@@ -460,7 +467,7 @@
                                                 <div class="modal-body"> Are you sure you want to SET INACTIVE user? </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-                                                    <a href="<?php echo site_url('admin/users/wholesale/deactivate/index/'.$user->user_id.'/'.$this->uri->segment(4)); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+                                                    <a href="<?php echo @$role === 'sales' ? site_url('my_account/sales/users/wholesale/deactivate/index/'.$user->user_id.'/'.$this->uri->segment(5)) : site_url('admin/users/wholesale/deactivate/index/'.$user->user_id.'/'.$this->uri->segment(4)); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
                                                         <span class="ladda-label">Confirm?</span>
                                                         <span class="ladda-spinner"></span>
                                                     </a>
@@ -482,7 +489,7 @@
                                                 <div class="modal-body"> ACTIVATE user? </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-                                                    <a href="<?php echo site_url('admin/users/wholesale/activate/index/'.$user->user_id.'/'.$this->uri->segment(4)); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+                                                    <a href="<?php echo @$role === 'sales' ? site_url('my_account/sales/users/wholesale/activate/index/'.$user->user_id.'/'.$this->uri->segment(5)) : site_url('admin/users/wholesale/activate/index/'.$user->user_id.'/'.$this->uri->segment(4)); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
                                                         <span class="ladda-label">Confirm?</span>
                                                         <span class="ladda-spinner"></span>
                                                     </a>
@@ -504,7 +511,7 @@
                                                 <div class="modal-body"> DELETE user? <br /> This cannot be undone! </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-                                                    <a href="<?php echo site_url('admin/users/wholesale/delete/index/'.$user->user_id.'/'.$this->uri->segment(4)); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+                                                    <a href="<?php echo @$role === 'sales' ? site_url('my_account/sales/users/wholesale/delete/index/'.$user->user_id.'/'.$this->uri->segment(5)) : site_url('admin/users/wholesale/delete/index/'.$user->user_id.'/'.$this->uri->segment(4)); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
                                                         <span class="ladda-label">Confirm?</span>
                                                         <span class="ladda-spinner"></span>
                                                     </a>
@@ -626,7 +633,7 @@
 					</div>
 					<!-- /.modal -->
 
-					<!-- NO DEFAUL SALES PACKAGE -->
+					<!-- NO DEFAULT SALES PACKAGE -->
 					<div class="modal fade bs-modal-sm" id="no_default_sales_package" tabindex="-1" role="dialog" aria-hidden="true">
 						<div class="modal-dialog modal-sm">
 							<div class="modal-content">

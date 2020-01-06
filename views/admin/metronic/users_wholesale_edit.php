@@ -2,8 +2,8 @@
                     <!-- FORM =======================================================================-->
                     <?php echo form_open(
                         (
-                            $this->uri->segment(1) === 'sales'
-                            ? 'sales/wholesale/edit/index/'.$this->wholesale_user_details->user_id
+                            @$role === 'sales'
+                            ? 'my_account/sales/users/wholesale/edit/index/'.$this->wholesale_user_details->user_id
                             : $this->config->slash_item('admin_folder').'users/wholesale/edit/index/'.$this->wholesale_user_details->user_id
                         ),
                         array(
@@ -16,14 +16,14 @@
                             <div class="row">
                                 <div class="col-md-3 text-right">
                                     <div class="btn-group">
-                                        <a href="<?php echo site_url($this->config->slash_item('admin_folder').'users/wholesale/add'); ?>" class="btn sbold blue"> Add a New User
+                                        <a href="<?php echo @$role == 'sales' ? site_url('my_account/sales/users/wholesale/add') : site_url('admin/users/wholesale/add'); ?>" class="btn sbold blue"> Add a New User
                                             <i class="fa fa-plus"></i>
                                         </a>
                                     </div>
                                 </div>
                                 <div class="col-md-9">
                                     <button type="submit" class="btn red-flamingo">Update</button>
-                                    <a href="<?php echo $this->uri->segment(1) === 'sales' ? site_url('sales/wholesale') : site_url($this->config->slash_item('admin_folder').'users/wholesale'); ?>" type="button" class="btn default tooltips" data-placement="top" data-original-title="Back to list">Cancel/Back to list</a>
+                                    <a href="<?php echo @$role === 'sales' ? site_url('my_account/sales/users/wholesale') : site_url('admin/users/wholesale'); ?>" type="button" class="btn default tooltips" data-placement="top" data-original-title="Back to list">Cancel/Back to list</a>
                                     <button type="reset" class="btn grey-salsa btn-outline tooltips hide" onclick="$('input, select').closest('.form-group').removeClass('has-error');$('.alert-danger, .help-block-error').hide();$('#form-users_wholesale_edit').reset();" data-placement="top" data-original-title="Reset form">Reset</button>
                                 </div>
                             </div>
@@ -267,14 +267,14 @@
                             <div class="row">
                                 <div class="col-md-3 text-right">
                                     <div class="btn-group">
-                                        <a href="<?php echo site_url($this->config->slash_item('admin_folder').'users/wholesale/add'); ?>" class="btn sbold blue" tabindex="-98"> Add a New User
+                                        <a href="<?php echo @$role == 'sales' ? site_url('my_account/sales/users/wholesale/add') : site_url('admin/users/wholesale/add'); ?>" class="btn sbold blue" tabindex="-98"> Add a New User
                                             <i class="fa fa-plus"></i>
                                         </a>
                                     </div>
                                 </div>
                                 <div class="col-md-9">
                                     <button type="submit" class="btn red-flamingo">Update</button>
-                                    <a href="<?php echo $this->uri->segment(1) === 'sales' ? site_url('sales/wholesale') : site_url($this->config->slash_item('admin_folder').'users/wholesale'); ?>" type="button" class="btn default tooltips" data-placement="top" data-original-title="Back to list">Cancel/Back to list</a>
+                                    <a href="<?php echo @$role === 'sales' ? site_url('my_account/sales/users/wholesale') : site_url('admin/users/wholesale'); ?>" type="button" class="btn default tooltips" data-placement="top" data-original-title="Back to list">Cancel/Back to list</a>
                                     <button type="reset" class="btn grey-salsa btn-outline tooltips hide" onclick="$('input, select').closest('.form-group').removeClass('has-error');$('.alert-danger, .help-block-error').hide();$('#form-users_wholesale_edit').reset();" data-placement="top" data-original-title="Reset form">Reset</button>
                                 </div>
                                 <div class="col-md-offset-3 col-md-9">
@@ -298,7 +298,7 @@
                                 <div class="modal-body"> Permanently DELETE item? <br /> This cannot be undone! </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-                                    <a href="<?php echo site_url($this->config->slash_item('admin_folder').'users/wholesale/delete/index/'.$this->wholesale_user_details->user_id); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+                                    <a href="<?php echo @$role == 'sales' ? site_url('my_account/sales/users/wholesale/delete/index/'.$this->wholesale_user_details->user_id) : site_url('admin/users/wholesale/delete/index/'.$this->wholesale_user_details->user_id); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
                                         <span class="ladda-label">Confirm?</span>
                                         <span class="ladda-spinner"></span>
                                     </a>

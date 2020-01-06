@@ -20,9 +20,9 @@ class Logout extends MY_Controller {
 		$this->sales_user_details->set_initial_state();
 
 		// set flash message
-		$this->session->set_flashdata('logout_success', 'Successfully logged out.');
+		$this->session->set_flashdata('success', 'logout_successful');
 
 		// redirect user back to login page
-		redirect('admin/login');
+		redirect('account', 'location');
 	}
 }

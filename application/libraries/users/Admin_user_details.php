@@ -230,12 +230,14 @@ class Admin_user_details
 		// this is legacy method and redundancy method
 		$sesdata = array(
 			'admin_loggedin'			=> TRUE,
+			'user_cat'					=> 'admin',
 			'admin_id'					=> $this->admin_id
 		);
 		$this->CI->session->set_userdata($sesdata);
 
 		// forward compatibility
 		$_SESSION['admin_loggedin'] = TRUE;
+		$_SESSION['user_cat'] = 'admin';
 		$_SESSION['admin_id'] = $this->admin_id;
 	}
 
@@ -253,6 +255,7 @@ class Admin_user_details
 			// this is here for backwards compatibility
 			$sesdata = array(
 				'admin_loggedin'			=> FALSE,
+				'user_cat'					=> '',
 				'admin_id'					=> '',
 				'admin_login_time'			=> ''		// related to session_lapse property
 			);
@@ -263,6 +266,7 @@ class Admin_user_details
 			// this is legacy method and redundancy method
 			$sesdata = array(
 				'admin_loggedin',
+				'user_cat',
 				'admin_id',
 				'admin_login_time'
 			);
@@ -272,6 +276,7 @@ class Admin_user_details
 		// for redundancy purposes...
 		// and forward compatibility
 		if (isset($_SESSION['admin_loggedin'])) unset($_SESSION['admin_loggedin']);
+		if (isset($_SESSION['user_cat'])) unset($_SESSION['user_cat']);
 		if (isset($_SESSION['admin_id'])) unset($_SESSION['admin_id']);
 		if (isset($_SESSION['admin_login_time'])) unset($_SESSION['admin_login_time']);
 	}

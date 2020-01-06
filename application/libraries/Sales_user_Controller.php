@@ -11,8 +11,8 @@ class Sales_user_Controller extends MY_Controller {
 		parent::__construct();
 
 		// load pertinent libraries/models/helpers
+		$this->load->library('designers/designer_details');
 		$this->load->library('users/sales_user_details');
-		//$this->load->library('designers/designer_details');
 
 		/*****
 		 * ...is there a session for admin already?
@@ -24,7 +24,7 @@ class Sales_user_Controller extends MY_Controller {
 			$this->session->set_flashdata('access_uri', $this->uri->uri_string());
 
 			// set flash message
-			$this->session->set_flashdata('login_info', 'You must be logged in to access page.');
+			$this->session->set_flashdata('error', 'session_lapsed');
 
 			// redirect to login page
 			redirect('account');
@@ -58,7 +58,7 @@ class Sales_user_Controller extends MY_Controller {
 			$this->session->set_flashdata('login_info', 'Please login again.');
 
 			// send user back to login page
-			redirect('/account');
+			redirect('account');
 		}
 
 		/*****
