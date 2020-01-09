@@ -109,7 +109,8 @@ class Not_public extends Admin_Controller {
 		else
 		{
 			// defauls to all dresses under womens apparel
-			redirect('admin/products/not_public/index/womens_apparel');
+			//redirect('admin/products/not_public/index/womens_apparel');
+			redirect('admin/products/not_public/index/basixblacklabel/womens_apparel');
 		}
 
 		// get respective active category ID for use on product list where condition

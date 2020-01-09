@@ -67,7 +67,10 @@ class Index extends Shop_Controller
 		// get the last category slug
 		if (is_numeric(end($this->data['url_segs'])))
 		{
-			$last_category_slug = $this->data['url_segs'][count($this->data['url_segs']) - 2];
+			// NOTE: $this->uri->segment_array() set the indeces of the segment as per
+			// $this->uri->segment(index) where 1 is the start as oppose to a regular
+			// array which indeces start at 0
+			$last_category_slug = $this->data['url_segs'][count($this->data['url_segs']) - 1];
 			// remove the numeric segment
 			array_pop($this->data['url_segs']);
 		}

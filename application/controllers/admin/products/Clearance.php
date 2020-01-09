@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Instock extends Admin_Controller {
+class Clearance extends Admin_Controller {
 
 	/**
 	 * Constructor
@@ -109,8 +109,8 @@ class Instock extends Admin_Controller {
 		else
 		{
 			// defauls to all dresses under womens apparel
-			//redirect('admin/products/instock/index/womens_apparel');
-			redirect('admin/products/instock/index/basixblacklabel/womens_apparel');
+			//redirect('admin/products/clearance/index/womens_apparel');
+			redirect('admin/products/clearance/index/basixblacklabel/womens_apparel');
 		}
 
 		// get respective active category ID for use on product list where condition
@@ -127,6 +127,8 @@ class Instock extends Admin_Controller {
 		}
 		else $where['tbl_product.categories LIKE'] = $category_id;
 
+		$where['tbl_product.clearance'] = '3';
+
 		// get the products list and total count
 		$params['show_private'] = TRUE; // all items general public (Y) - N for private
 		$params['view_status'] = 'ALL'; // all items view status (Y, Y1, Y2, N)
@@ -135,9 +137,9 @@ class Instock extends Admin_Controller {
 		$params['variant_publish'] = 'ALL'; // all items at variant level publish (view status)
 		$params['variant_view_at_hub'] = TRUE; // variant level public at hub site
 		$params['variant_view_at_satellite'] = TRUE; // varian level public at satellite site
-		$params['with_stocks'] = TRUE; // FALSE - Show all with and without stocks
+		$params['with_stocks'] = FALSE; // Show all with and without stocks
 		$params['group_products'] = TRUE; // group per product number or per variant
-		$params['special_sale'] = FALSE; // special sale items only
+		$params['special_sale'] = TRUE; // special sale items only
 		$params['pagination'] = $this->data['page']; // get all in one query
 		$this->load->library('products/products_list', $params);
 		$this->data['products'] = $this->products_list->select(

@@ -1,4 +1,4 @@
-									<div class="table-toolbar" style="margin-bottom:0px;">
+									<div class="table-toolbar <?php echo @$role == 'sales' ? 'hide' : ''; ?>" style="margin-bottom:20px;">
 										<div class="row">
 											<div class="col-md-6 pull-right text-right">
 												<div class="btn-group">
@@ -27,7 +27,6 @@
 									$imgw = '150';
 									$imgh = (3*$imgw)/2;
 									?>
-									<br />
 									<style>
 										.thumb-tiles {
 											position: relative;

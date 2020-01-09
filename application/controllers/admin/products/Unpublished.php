@@ -109,7 +109,8 @@ class Unpublished extends Admin_Controller {
 		else
 		{
 			// defauls to all dresses under womens apparel
-			redirect('admin/products/unpublished/index/womens_apparel');
+			//redirect('admin/products/unpublished/index/womens_apparel');
+			redirect('admin/products/unpublished/index/basixblacklabel/womens_apparel');
 		}
 
 		// get respective active category ID for use on product list where condition

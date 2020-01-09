@@ -26,7 +26,7 @@
 												if ($this->webspace_details->options['site_type'] == 'hub_site')
 												{ ?>
 
-												<div class="panel panel-default">
+												<div class="panel panel-default <?php echo @$role == 'sales' ? 'hide' : ''; ?>">
 													<div class="panel-heading">
 														<h4 class="panel-title">
 															<!-- DOC: Apply class "collapsed" to initially hide panel -->
@@ -305,7 +305,7 @@
 													<?php
 												} ?>
 
-												<div class="panel panel-default">
+												<div class="panel panel-default ">
 													<div class="panel-heading">
 														<h4 class="panel-title">
 															<!-- DOC: Apply class "collapsed" to initially hide panel -->

@@ -161,7 +161,7 @@ class Validate extends MY_Controller {
 
 		return TRUE;
 	}
-	
+
 	// ----------------------------------------------------------------------
 
 	private function _validate_wholesale()
