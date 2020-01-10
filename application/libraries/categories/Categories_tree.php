@@ -913,6 +913,34 @@ class Categories_tree
 		return array_keys($arr) !== range(0, count($arr) - 1);
 	}
 
+	// ----------------------------------------------------------------------
+
+	/**
+	 * Get Primary Category Slug
+	 *
+	 * @param	$des_slug -> string
+	 * @access	public
+	 * @return	string/boolean FALSE
+	 */
+	public function get_primary_category($des_slug = '')
+	{
+		if ( ! $des_slug)
+		{
+			// nothign more to do...
+			return FALSE;
+		}
+
+		switch ($des_slug)
+		{
+			case 'tempoparis':
+				return 'daywear_dresses';
+			break;
+			case 'basixblacklabel':
+			default:
+				return 'evening_dresses';
+		}
+	}
+
 	// --------------------------------------------------------------------
 
 	public function get_general_icon($id = '', $slug = 'general')

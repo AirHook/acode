@@ -2,9 +2,9 @@
                     <!-- FORM =======================================================================-->
                     <?php echo form_open(
                         (
-                            $this->uri->segment(1) === 'sales'
-                            ? 'sales/wholesale/add'
-                            : $this->config->slash_item('admin_folder').'users/wholesale/add'
+                            @$role === 'sales'
+                            ? 'my_account/sales/users/wholesale/add'
+                            : 'admin/users/wholesale/add'
                         ),
                         array(
                             'class'=>'form-horizontal',
@@ -16,7 +16,7 @@
                             <div class="row">
                                 <div class="col-md-offset-3 col-md-9">
                                     <button type="submit" class="btn red-flamingo">Submit</button>
-                                    <a href="<?php echo $this->uri->segment(1) === 'sales' ? site_url('sales/wholesale') : site_url($this->config->slash_item('admin_folder').'users/wholesale'); ?>" type="button" class="btn default tooltips" data-placement="top" data-original-title="Back to list">Cancel/Back to list</a>
+                                    <a href="<?php echo @$role === 'sales' ? site_url('my_account/sales/users/wholesale') : site_url($this->config->slash_item('admin_folder').'users/wholesale'); ?>" type="button" class="btn default tooltips" data-placement="top" data-original-title="Back to list">Cancel/Back to list</a>
                                     <button type="reset" class="btn grey-salsa btn-outline tooltips" onclick="$('input, select').closest('.form-group').removeClass('has-error');$('.alert-danger, .help-block-error').hide();$('#form-users_wholesale_add').reset();" data-placement="top" data-original-title="Reset form">Reset</button>
                                 </div>
                             </div>
@@ -264,7 +264,7 @@
                             <div class="row">
                                 <div class="col-md-offset-3 col-md-9">
                                     <button type="submit" class="btn red-flamingo">Submit</button>
-                                    <a href="<?php echo $this->uri->segment(1) === 'sales' ? site_url('sales/wholesale') : site_url($this->config->slash_item('admin_folder').'users/wholesale'); ?>" type="button" class="btn default tooltips" data-placement="top" data-original-title="Back to list">Cancel/Back to list</a>
+                                    <a href="<?php echo @$role === 'sales' ? site_url('my_account/sales/users/wholesale') : site_url($this->config->slash_item('admin_folder').'users/wholesale'); ?>" type="button" class="btn default tooltips" data-placement="top" data-original-title="Back to list">Cancel/Back to list</a>
                                     <button type="reset" class="btn grey-salsa btn-outline tooltips" onclick="$('input, select').closest('.form-group').removeClass('has-error');$('.alert-danger, .help-block-error').hide();$('#form-users_wholesale_add').reset();" data-placement="top" data-original-title="Reset form">Reset</button>
                                 </div>
                             </div>

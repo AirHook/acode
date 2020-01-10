@@ -10,10 +10,10 @@ if ($role=='sales')
 			</h3>
 		</li>
 
-		<li class="heading hide">
+		<li class="heading">
 			<h3 class="uppercase">Products</h3>
 		</li>
-		<li class="nav-item <?php echo $this->uri->segment(3) == 'products' ? 'active' : ''; ?> hide">
+		<li class="nav-item <?php echo $this->uri->segment(3) == 'products' ? 'active' : ''; ?> ">
 			<a href="<?php echo site_url('my_account/sales/products'); ?>" class="nav-link ">
 				<span class="title uppercase">All Products</span>
 				<span class="arrow <?php echo $this->uri->segment(2) == 'products' ? 'open' : ''; ?>"></span>
@@ -62,7 +62,7 @@ if ($role=='sales')
 		</li>
 
 		<li class="heading">
-			<h3 class="uppercase">Sales Order</h3>
+			<h3 class="uppercase">Sales Orders</h3>
 		</li>
 		<li class="nav-item with-heading <?php echo $this->uri->uri_string() == 'my_account/sales/sales_orders' ? 'active' : ''; ?>">
 			<a href="<?php echo site_url('my_account/sales/sales_orders'); ?>" class="nav-link  ">
@@ -72,6 +72,20 @@ if ($role=='sales')
 		<li class="nav-item with-heading <?php echo $this->uri->uri_string() == 'my_account/sales/sales_orders/create' ? 'active' : ''; ?>">
 			<a href="<?php echo site_url('my_account/sales/sales_orders/create'); ?>" class="nav-link  ">
 				<span class="title">Create New Sales Order</span>
+			</a>
+		</li>
+
+		<li class="heading">
+			<h3 class="uppercase">Purchase Orders</h3>
+		</li>
+		<li class="nav-item with-heading <?php echo $this->uri->uri_string() == 'my_account/sales/sales_orders' ? 'active' : ''; ?>">
+			<a href="javascript:;" class="nav-link  ">
+				<span class="title">My Purchase Orders</span>
+			</a>
+		</li>
+		<li class="nav-item with-heading <?php echo $this->uri->uri_string() == 'my_account/sales/sales_orders/create' ? 'active' : ''; ?>">
+			<a href="javascript:;" class="nav-link  ">
+				<span class="title">Create New Purchase Order</span>
 			</a>
 		</li>
 

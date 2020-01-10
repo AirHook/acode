@@ -26,9 +26,14 @@
                                         <span class="title">Public</span>
                                     </a>
                                 </li>
-                                <li class="nav-item  <?php echo $this->uri->segment(3) == 'not_publicj' ? 'active open' : ''; ?>">
+                                <li class="nav-item  <?php echo $this->uri->segment(3) == 'not_public' ? 'active open' : ''; ?>">
                                     <a href="<?php echo site_url('admin/products/not_public'); ?>" class="nav-link  ">
                                         <span class="title">Private</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item  <?php echo $this->uri->segment(3) == 'clearance' ? 'active open' : ''; ?>">
+                                    <a href="<?php echo site_url('admin/products/clearance'); ?>" class="nav-link  ">
+                                        <span class="title">Clearance</span>
                                     </a>
                                 </li>
                                 <li class="nav-item  <?php echo $this->uri->segment(3) == 'unpublished' ? 'active open' : ''; ?>">

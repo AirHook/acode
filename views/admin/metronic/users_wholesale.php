@@ -161,17 +161,17 @@
                         </style>
 
                         <ul class="nav nav-tabs">
-                            <li class="<?php echo $this->uri->segment(4) == 'active' ? 'active' : ''; ?>">
+                            <li class="<?php echo ($this->uri->segment(4) == 'active' OR $this->uri->segment(5) == 'active') ? 'active' : ''; ?>">
                                 <a href="<?php echo site_url((@$role == 'sales' ? 'my_account/sales' : 'admin').'/users/wholesale/active'); ?>">
                                     <?php echo $this->uri->segment(4) != 'active' ? 'Show' : ''; ?> Active User List
                                 </a>
                             </li>
-                            <li class="<?php echo $this->uri->segment(4) == 'inactive' ? 'active' : ''; ?>">
+                            <li class="<?php echo ($this->uri->segment(4) == 'inactive' OR $this->uri->segment(5) == 'inactive') ? 'active' : ''; ?>">
                                 <a href="<?php echo site_url((@$role == 'sales' ? 'my_account/sales' : 'admin').'/users/wholesale/inactive'); ?>">
                                     <?php echo $this->uri->segment(4) != 'inactive' ? 'Show' : ''; ?> Inactive User List
                                 </a>
                             </li>
-                            <li class="<?php echo $this->uri->segment(4) == 'suspended' ? 'active' : ''; ?>">
+                            <li class="<?php echo ($this->uri->segment(4) == 'suspended' OR $this->uri->segment(5) == 'suspended') ? 'active' : ''; ?>">
                                 <a href="<?php echo site_url((@$role == 'sales' ? 'my_account/sales' : 'admin').'/users/wholesale/suspended'); ?>">
                                     <?php echo $this->uri->segment(4) != 'suspended' ? 'Show' : ''; ?> Suspended Users
                                 </a>

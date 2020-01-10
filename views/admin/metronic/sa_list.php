@@ -1,4 +1,15 @@
-					<?php if ($this->webspace_details->options['site_type'] == 'hub_site')
+					<?php
+					// let's set the role for sales user my account
+					$pre_link =
+						@$role == 'sales'
+						? 'my_account/sales'
+						: 'admin/campaigns'
+					;
+
+					if (
+						$this->webspace_details->options['site_type'] == 'hub_site'
+						&& @$role != 'sales'
+					)
 					{ ?>
 
 					<div class="table-toolbar">
@@ -36,7 +47,7 @@
 
 					<!-- FORM =======================================================================-->
 					<?php echo form_open(
-						$this->config->slash_item('admin_folder').'campaigns/sales_package/bulk_actions',
+						$pre_link.'/sales_package/bulk_actions',
 						array(
 							'class'=>'form-horizontal',
 							'id'=>'form-sales_package_list_bulk_action'
@@ -94,22 +105,25 @@
                         </style>
 
                         <ul class="nav nav-tabs">
-                            <li class="<?php echo $this->uri->uri_string() == 'admin/campaigns/sales_package' ? 'active' : ''; ?>">
-                                <a href="<?php echo site_url('admin/campaigns/sales_package'); ?>">
+                            <li class="<?php echo $this->uri->uri_string() == $pre_link.'/sales_package' ? 'active' : ''; ?>">
+                                <a href="<?php echo site_url($pre_link.'/sales_package'); ?>">
                                     Sales Packages
                                 </a>
                             </li>
-							<li class="<?php echo $this->uri->segment(3) == 'onorder' ? 'active' : ''; ?>">
+							<li class="">
 								<a href="javascript:;" class="tooltips" data-original-title="Currently under construction">
 									Preset Sales Packages
 								</a>
 							</li>
                             <?php
                             // available only on hub sites for now
-                            if ($this->webspace_details->options['site_type'] == 'hub_site')
+                            if (
+								$this->webspace_details->options['site_type'] == 'hub_site'
+								OR @$role == 'sales'
+							)
                             { ?>
                             <li>
-                                <a href="<?php echo site_url('admin/campaigns/sales_package/create'); ?>">
+                                <a href="<?php echo site_url($pre_link.'/sales_package/create'); ?>">
                                     Create New Sales Package <i class="fa fa-plus"></i>
                                 </a>
                             </li>
@@ -292,7 +306,7 @@
 								$i = 1;
 								foreach ($packages as $package)
 								{
-									$edit_link = site_url('admin/campaigns/sales_package/modify/index/'.$package->sales_package_id);
+									$edit_link = site_url($pre_link.'/sales_package/modify/index/'.$package->sales_package_id);
 
 									$options = json_decode($package->sa_options, TRUE);
 									?>
@@ -456,7 +470,7 @@
                                         <i class="fa fa-pencil font-dark"></i>
                                     </a>
 									<!-- Send Sales Packaget -->
-									<a href="<?php echo site_url('admin/campaigns/sales_package/send/index/'.$package->sales_package_id); ?>" class="tooltips" data-original-title="Send Sales Package">
+									<a href="<?php echo site_url($pre_link.'/sales_package/send/index/'.$package->sales_package_id); ?>" class="tooltips" data-original-title="Send Sales Package">
                                         <i class="fa fa-envelope-o font-dark"></i>
                                     </a>
 									<!-- Delete -->
@@ -474,18 +488,18 @@
 												<?php if ($package->sales_package_id == '2') { ?>
                                                 <a href="#modal-select_designer_for_designer_recent_sales_package" data-toggle="modal">
 												<?php } else { ?>
-                                                <a href="<?php echo site_url($this->config->slash_item('admin_folder').'campaigns/sales_package/edit/step1/'.$package->sales_package_id); ?>">
+                                                <a href="<?php echo site_url($pre_link.'/sales_package/edit/step1/'.$package->sales_package_id); ?>">
 												<?php } ?>
                                                     <i class="icon-pencil"></i> View/Modify </a>
                                             </li>
 											<?php if ($package->sales_package_items != '') { ?>
                                             <li>
-                                                <a href="<?php echo site_url($this->config->slash_item('admin_folder').'campaigns/sales_package/send/index/'.$package->sales_package_id); ?>">
+                                                <a href="<?php echo site_url($pre_link.'/sales_package/send/index/'.$package->sales_package_id); ?>">
                                                     <i class="icon-paper-plane"></i> Send </a>
                                             </li>
 												<?php if ($package->set_as_default !== '1' && $package->sales_package_id !== '2') { ?>
                                             <li class="hide">
-                                                <a href="<?php echo site_url($this->config->slash_item('admin_folder').'campaigns/sales_package/set_as_default/index/'.$package->sales_package_id); ?>">
+                                                <a href="<?php echo site_url($pre_link.'/sales_package/set_as_default/index/'.$package->sales_package_id); ?>">
                                                     <i class="icon-shield"></i> Set As Default </a>
                                             </li>
 												<?php } ?>
@@ -523,7 +537,7 @@
 												<div class="modal-body"> DELETE item? <br /> This cannot be undone! </div>
 												<div class="modal-footer">
 													<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-													<a href="<?php echo site_url($this->config->slash_item('admin_folder').'campaigns/sales_package/delete/index/'.$package->sales_package_id); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+													<a href="<?php echo site_url($pre_link.'/sales_package/delete/index/'.$package->sales_package_id); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
 														<span class="ladda-label">Confirm?</span>
 														<span class="ladda-spinner"></span>
 													</a>

@@ -47,6 +47,10 @@ class Clearance extends Admin_Controller {
 		// we need a real variable to process some calculations
 		$url_segs = $this->data['url_segs'];
 
+		// check for and grab flashdata then set new flashdata
+		$prev_url_segs = $this->session->flashdata('prev_url_segs') ? '/'.$this->session->flashdata('prev_url_segs') : '';
+		$this->session->set_flashdata('prev_url_segs', implode('/', $url_segs));
+
 		// set category pre link
 		$this->data['pre_link'] = implode('/', array_diff($uri_string, $url_segs));
 
@@ -63,7 +67,11 @@ class Clearance extends Admin_Controller {
 		// for categories, we check conditions of site type
 		if ($this->webspace_details->options['site_type'] == 'hub_site')
 		{
-			$this->data['categories'] = $this->categories_tree->treelist(array('with_products' => TRUE));
+			$this->data['categories'] = $this->categories_tree->treelist(
+				array(
+					'with_products' => TRUE
+				)
+			);
 		}
 		else
 		{
@@ -87,6 +95,7 @@ class Clearance extends Admin_Controller {
 				$this->data['active_designer'] = $this->designer_details->slug;
 				// and set sessiong accordingly
 				$this->session->set_userdata('active_designer', $this->designer_details->slug);
+				unset($_SESSION['browse_by_category']);
 			}
 			else
 			{
@@ -97,6 +106,7 @@ class Clearance extends Admin_Controller {
 					: $this->webspace_details->slug
 				;
 				unset($_SESSION['active_designer']);
+				$this->session->set_userdata('browse_by_category', TRUE);
 			}
 
 			// last segment as category slug
@@ -105,15 +115,32 @@ class Clearance extends Admin_Controller {
 				? $this->data['url_segs'][count($this->data['url_segs']) - 2]
 				: end($url_segs)
 			;
+			$this->session->set_userdata('active_category', $this->data['active_category']);
 		}
 		else
 		{
 			// defauls to all dresses under womens apparel
-			if ($this->webspace_details->options['site_type'] == 'hub_site')
+			if (
+				$this->webspace_details->options['site_type'] == 'hub_site'
+				&& ! $this->session->browse_by_category
+			)
 			{
-				redirect('admin/products/clearance/index/basixblacklabel/womens_apparel');
+				$redirect_url =
+					$prev_url_segs
+					? 'admin/products/clearance/index'.$prev_url_segs
+					: 'admin/products/clearance/index/basixblacklabel/womens_apparel'
+				;
 			}
-			else redirect('admin/products/clearance/index/womens_apparel');
+			else
+			{
+				$redirect_url =
+					$prev_url_segs
+					? 'admin/products/clearance/index'.$prev_url_segs
+					: 'admin/products/clearance/index/womens_apparel'
+				;
+			}
+
+			redirect($redirect_url);
 		}
 
 		// get respective active category ID for use on product list where condition

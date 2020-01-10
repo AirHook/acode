@@ -41,21 +41,25 @@ class All extends Admin_Controller {
 		$this->data['url_segs'] = $uri_string;
 		array_shift($this->data['url_segs']); // admin
 		array_shift($this->data['url_segs']); // products
-		array_shift($this->data['url_segs']); // index/all/private/unpublished/instock/onorder/clearance/by_vendor
+		array_shift($this->data['url_segs']); // all/private/unpublished/instock/onorder/clearance/by_vendor
 		array_shift($this->data['url_segs']); // index
 
 		// we need a real variable to process some calculations
 		$url_segs = $this->data['url_segs'];
 
-		// set category pre link
+		// check for and grab flashdata then set new flashdata
+		$prev_url_segs = $this->session->flashdata('prev_url_segs') ? '/'.$this->session->flashdata('prev_url_segs') : '';
+		$this->session->set_flashdata('prev_url_segs', implode('/', $url_segs));
+
+		// set pre link used on sidebar category tree
 		$this->data['pre_link'] = implode('/', array_diff($uri_string, $url_segs));
 
-		// set some variables
+		// set some variables for pagination purposes
 		$this->data['page'] = is_numeric(end($url_segs)) ? end($url_segs) : 1;
 		$this->data['limit'] = 100;
 		$this->data['offset'] = $this->data['page'] == '' ? 0 : ($this->data['page'] * 100) - 100;
 
-		// get some data
+		// get some default items
 		$this->data['designers'] = $this->designers_list->select();
 		$this->data['view_as'] = $this->session->userdata('view_as') ?: 'products_list'; // products_grid, products_list
 		$this->data['order_by'] = $this->session->userdata('order_by') ?: 'prod_date';
@@ -63,7 +67,11 @@ class All extends Admin_Controller {
 		// for categories, we check conditions of site type
 		if ($this->webspace_details->options['site_type'] == 'hub_site')
 		{
-			$this->data['categories'] = $this->categories_tree->treelist(array('with_products' => TRUE));
+			$this->data['categories'] = $this->categories_tree->treelist(
+				array(
+					'with_products' => TRUE
+				)
+			);
 		}
 		else
 		{
@@ -87,6 +95,7 @@ class All extends Admin_Controller {
 				$this->data['active_designer'] = $this->designer_details->slug;
 				// and set sessiong accordingly
 				$this->session->set_userdata('active_designer', $this->designer_details->slug);
+				unset($_SESSION['browse_by_category']);
 			}
 			else
 			{
@@ -97,6 +106,7 @@ class All extends Admin_Controller {
 					: $this->webspace_details->slug
 				;
 				unset($_SESSION['active_designer']);
+				$this->session->set_userdata('browse_by_category', TRUE);
 			}
 
 			// last segment as category slug
@@ -105,15 +115,32 @@ class All extends Admin_Controller {
 				? $this->data['url_segs'][count($this->data['url_segs']) - 2]
 				: end($url_segs)
 			;
+			$this->session->set_userdata('active_category', $this->data['active_category']);
 		}
 		else
 		{
 			// defauls to all dresses under womens apparel
-			if ($this->webspace_details->options['site_type'] == 'hub_site')
+			if (
+				$this->webspace_details->options['site_type'] == 'hub_site'
+				&& ! $this->session->browse_by_category
+			)
 			{
-				redirect('admin/products/all/index/basixblacklabel/womens_apparel');
+				$redirect_url =
+					$prev_url_segs
+					? 'admin/products/all/index'.$prev_url_segs
+					: 'admin/products/all/index/basixblacklabel/womens_apparel'
+				;
 			}
-			else redirect('admin/products/all/index/womens_apparel');
+			else
+			{
+				$redirect_url =
+					$prev_url_segs
+					? 'admin/products/all/index'.$prev_url_segs
+					: 'admin/products/all/index/womens_apparel'
+				;
+			}
+
+			redirect($redirect_url);
 		}
 
 		// get respective active category ID for use on product list where condition
