@@ -1,7 +1,7 @@
                 	<!-- BEGIN FORM-->
                 	<!-- FORM =======================================================================-->
                 	<?php echo form_open(
-                        $this->uri->segment(1).'/sales_orders/bulk_actions',
+                        'my_account/sales/sales_orders/bulk_actions',
                 		array(
                 			'class'=>'form-horizontal',
                 			'id'=>'form-sales_orders_bulk_actions'
@@ -64,8 +64,8 @@
                         </style>
 
                         <ul class="nav nav-tabs">
-                            <li class="<?php echo $this->uri->uri_string() == 'admin/sales_orders' ? 'active' : ''; ?>">
-                                <a href="<?php echo site_url('admin/sales_orders'); ?>">
+                            <li class="<?php echo $this->uri->uri_string() == 'my_account/sales/sales_orders' ? 'active' : ''; ?>">
+                                <a href="<?php echo site_url('my_account/sales/sales_orders'); ?>">
                                     All Sales Orders
                                 </a>
                             </li>
@@ -81,10 +81,13 @@
 							</li>
                             <?php
                             // available only on hub sites for now
-                            if ($this->webspace_details->options['site_type'] == 'hub_site')
+                            if (
+                                $this->webspace_details->options['site_type'] == 'hub_site'
+                                OR $role == 'sales'
+                            )
                             { ?>
                             <li>
-                                <a href="<?php echo site_url('admin/sales_orders/create'); ?>">
+                                <a href="<?php echo site_url('my_account/sales/sales_orders/create'); ?>">
                                     Create New Sales Order <i class="fa fa-plus"></i>
                                 </a>
                             </li>

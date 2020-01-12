@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Modify extends Admin_Controller {
+class Create extends Sales_user_Controller {
 
 	/**
 	 * Constructor
@@ -29,6 +29,8 @@ class Modify extends Admin_Controller {
 		$this->_create_plugin_scripts();
 
 		// load pertinent library/model/helpers
+		$this->load->library('designers/designer_details');
+		//$this->load->library('users/sales_user_details');
 		$this->load->library('sales_package/sales_package_list');
 		$this->load->library('sales_package/sales_package_details');
 		$this->load->library('products/product_details');
@@ -43,22 +45,28 @@ class Modify extends Admin_Controller {
 
 		if ($this->form_validation->run() == FALSE)
 		{
-			// let's ensure that there are no admin session for po mod
-			if ($this->session->admin_sa_items)
+			// let's ensure that there are no admin session for sa mod
+			if (
+				$this->session->sa_mod_items
+				OR $this->session->sa_mod_des_slug
+				OR $this->session->sa_mod_slug_segs
+			)
 			{
-				// new po admin mod access
-				unset($_SESSION['admin_sa_mod_id']);
-				unset($_SESSION['admin_sa_mod_items']);
-				unset($_SESSION['admin_sa_mod_options']);
-				// remove po admin access
-				unset($_SESSION['admin_sa_id']);
-				//unset($_SESSION['admin_sa_des_slug']);
-				unset($_SESSION['admin_sa_slug_segs']);
-				unset($_SESSION['admin_sa_items']);
-				unset($_SESSION['admin_sa_name']); // used at view
-				unset($_SESSION['admin_sa_email_subject']); // used at view
-				unset($_SESSION['admin_sa_email_message']); // used at view
-				unset($_SESSION['admin_sa_options']);
+				// new po admin createa ccess
+				unset($_SESSION['sa_id']);
+				unset($_SESSION['sa_des_slug']);
+				unset($_SESSION['sa_slug_segs']);
+				unset($_SESSION['sa_items']);
+				unset($_SESSION['sa_name']); // used at view
+				unset($_SESSION['sa_email_subject']); // used at view
+				unset($_SESSION['sa_email_message']); // used at view
+				unset($_SESSION['sa_options']);
+				// remove po mod details
+				unset($_SESSION['sa_mod_id']);
+				unset($_SESSION['sa_mod_items']);
+				unset($_SESSION['sa_mod_slug_segs']);
+				unset($_SESSION['sa_mod_options']);
+				unset($_SESSION['sa_mod_des_slug']);
 			}
 
 			// get color list
@@ -73,50 +81,76 @@ class Modify extends Admin_Controller {
 			if (
 				$this->webspace_details->options['site_type'] == 'sat_site'
 				OR $this->webspace_details->options['site_type'] == 'sal_site'
-				OR $this->session->sales_loggedin
+				OR $this->session->admin_sales_loggedin
 			)
 			{
 				$this->data['select_designer'] = FALSE;
-				$this->data['des_slug'] = @$this->sales_user_details->designer ?: $this->webspace_details->slug;
-				$this->data['designers'] = $this->designers_list->select(
-					array(
-						'url_structure' => $this->data['des_slug']
-					)
-				);
+				$des_slug = @$this->sales_user_details->designer ?: $this->webspace_details->slug;
+				$this->session->sa_des_slug = $des_slug;
 			}
 			else
 			{
 				$this->data['select_designer'] = TRUE;
-				$this->data['des_slug'] = '';
-				$this->designers_list->initialize(array('with_products'=>TRUE));
-				$this->data['designers'] = $this->designers_list->select();
 			}
+			$this->designers_list->initialize(
+				array(
+					'with_products'=>TRUE
+				)
+			);
+			$this->data['designers'] = $this->designers_list->select(
+				array(
+					'url_structure' => $this->sales_user_details->designer // used by my_account sales
+				)
+			);
 
-			// check of last active slugs selected for category tree
-			if ($this->session->admin_sa_slug_segs)
+			// get some data if a designer has been previously selected
+			if ($this->session->sa_des_slug)
 			{
-				// get last category slug
-				$this->data['slug_segs'] = explode('/', $this->session->admin_sa_slug_segs);
-				$category_slug = end($this->data['slug_segs']);
+				// get designer details
+				$this->data['designer_details'] = $this->designer_details->initialize(
+					array(
+						'url_structure' => $this->session->sa_des_slug
+					)
+				);
+				$this->data['des_id'] = $this->designer_details->des_id;
+
+				// get the designer category tree
+				$this->data['des_subcats'] = $this->categories_tree->treelist(
+					array(
+						'd_url_structure' => $this->session->sa_des_slug,
+						'with_products' => TRUE
+					)
+				);
+				$this->data['row_count'] = $this->categories_tree->row_count;
+				$this->data['max_level'] = $this->categories_tree->max_category_level;
+
+				// get last category slug if slug_segs is present for page reloads
+				// get category slug for sales user page on first page load because
+				// sales user has a default designer already...
+				$this->data['slug_segs'] = json_decode($this->session->sa_slug_segs, TRUE);
+				$category_slug = @end($this->data['slug_segs']) ?: $this->categories_tree->get_primary_category($this->sales_user_details->designer);
 				$category_id = $this->categories_tree->get_id($category_slug);
-				$designer_slug = reset($this->data['slug_segs']);
+				$designer_slug = @reset($this->data['slug_segs']) ?: $this->sales_user_details->designer;
 
 				$where_more['designer.url_structure'] = $designer_slug;
 				$where_more['tbl_product.categories LIKE'] = $category_id;
 
 				// get the products list for the thumbs grid view
 				$params['show_private'] = TRUE; // all items general public (Y) - N for private
-				$params['view_status'] = 'ALL'; // ALL items view status (Y, Y1, Y2, N)
-				$params['variant_publish'] = 'ALL'; // ALL variant level color publish (view status)
+				$params['view_status'] = 'ALL'; // all items view status (Y, Y1, Y2, N)
+				$params['view_at_hub'] = TRUE; // all items general public at hub site
+				$params['view_at_satellite'] = TRUE; // all items publis at satellite site
+				$params['variant_publish'] = 'ALL'; // all items at variant level publish (view status)
+				$params['variant_view_at_hub'] = TRUE; // variant level public at hub site
+				$params['variant_view_at_satellite'] = TRUE; // varian level public at satellite site
+				$params['with_stocks'] = FALSE; // Show all with and without stocks
 				$params['group_products'] = FALSE; // group per product number or per variant
-				// show items even without stocks at all
-				$params['with_stocks'] = FALSE;
+				$params['special_sale'] = FALSE; // special sale items only
 				$this->load->library('products/products_list', $params);
 				$this->data['products'] = $this->products_list->select(
 					$where_more,
 					array( // order conditions
-						'seque' => 'desc',
-						'tbl_product.prod_no' => 'desc'
+						'seque' => 'asc'
 					)
 				);
 				$this->data['products_count'] = $this->products_list->row_count;
@@ -126,14 +160,14 @@ class Modify extends Admin_Controller {
 			 * Check for items in session
 			 */
 			$this->data['sa_items'] =
-				$this->session->admin_sa_items
-				? json_decode($this->session->admin_sa_items, TRUE)
+				$this->session->sa_items
+				? json_decode($this->session->sa_items, TRUE)
 				: array()
 			;
 			$this->data['sa_items_count'] = count($this->data['sa_items']);
 			$this->data['sa_options'] =
-				$this->session->admin_sa_options
-				? json_decode($this->session->admin_sa_options, TRUE)
+				$this->session->sa_options
+				? json_decode($this->session->sa_options, TRUE)
 				: array()
 			;
 
@@ -160,22 +194,20 @@ class Modify extends Admin_Controller {
 			}
 
 			// need to show loading at start
-			$this->data['show_loading'] = TRUE;
+			$this->data['show_loading'] = @$this->data['products_count'] > 0 ? TRUE : FALSE;
 			$this->data['search_string'] = FALSE;
 
 			// set data variables...
+			$this->data['role'] = 'sales';
 			$this->data['file'] = 'sa_create';
 			$this->data['page_title'] = 'Sales Package';
 			$this->data['page_description'] = 'Create Sales Packages';
 
 			// load views...
-			$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template5/template', $this->data);
+			$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template_my_account/template', $this->data);
 		}
 		else
 		{
-			echo '<pre>';
-			print_r($this->input->post());
-			die();
 			/***********
 			 * Process the input data
 			 */
@@ -214,25 +246,40 @@ class Modify extends Admin_Controller {
 			// connect to database
 			$DB = $this->load->database('instyle', TRUE);
 
-			// grab post data
+			// grab post data and process some of them to accomodate database
 			$post_ary = $this->input->post();
+			$post_ary['options']['des_slug'] = $this->session->sa_des_slug; // additional data
+			$post_ary['options'] = json_encode($post_ary['options']);
+
+			// additional items to set
 
 			// remove variables not needed
 			unset($post_ary['files']);
 			unset($post_ary['prod_no']);
 
-			// set items
-			$post_ary['sales_package_items'] = $this->session->admin_sa_items
+			// set sales package items
+			$post_ary['sales_package_items'] = $this->session->sa_items;
 
+			// update records
 			$DB->set($post_ary);
 			$q = $DB->insert('sales_packages');
 			$insert_id = $DB->insert_id();
+
+			// unset create sessions
+			unset($_SESSION['sa_id']);
+			unset($_SESSION['sa_des_slug']);
+			unset($_SESSION['sa_slug_segs']);
+			unset($_SESSION['sa_items']);
+			unset($_SESSION['sa_name']); // used at view
+			unset($_SESSION['sa_email_subject']); // used at view
+			unset($_SESSION['sa_email_message']); // used at view
+			unset($_SESSION['sa_options']);
 
 			// set flash data
 			$this->session->set_flashdata('success', 'add');
 
 			// redirect user
-			redirect($this->config->slash_item('admin_folder').'campaigns/sales_package/modify/index/'.$insert_id);
+			redirect('my_account/sales/sales_package/send/index/'.$insert_id);
 		}
 	}
 
@@ -348,7 +395,7 @@ class Modify extends Admin_Controller {
 			';
 			// handle form validation, datepickers, and scripts
 			$this->data['page_level_scripts'].= '
-				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/admin-sa-components.js" type="text/javascript"></script>
+				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/sales-sa-components.js" type="text/javascript"></script>
 			';
 	}
 

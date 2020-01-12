@@ -11,7 +11,7 @@
     </head>
     <!-- END HEAD -->
 
-    <body class="page-container-bg-solid page-header-fixed page-sidebar-closed-hide-logo">
+    <body class="page-container-bg-solid page-header-fixed page-sidebar-closed-hide-logo" data-base_url="<?php echo base_url(); ?>">
         <!-- BEGIN HEADER -->
         <div class="page-header navbar navbar-fixed-top">
             <!-- BEGIN HEADER INNER -->

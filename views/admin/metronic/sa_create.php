@@ -72,14 +72,16 @@
                                     </label>
                                     <div class="col-md-7">
                                         <select class="bs-select form-control" name="des_slug" data-live-search="true" data-size="5" data-show-subtext="true">
+                                            <?php if ($select_designer) { ?>
                                             <option class="option-placeholder" value="">Select Designer...</option>
+                                            <?php } ?>
                                             <?php
                                             if (@$designers)
                                             {
                                                 foreach ($designers as $designer)
                                                 { ?>
 
-                                            <option value="<?php echo $designer->url_structure; ?>" data-subtext="<em><?php echo $designer->domain_name; ?></em>" data-des_slug="<?php echo $designer->url_structure; ?>" data-des_id="<?php echo $designer->des_id; ?>" <?php echo $designer->url_structure === $this->session->admin_sa_des_slug ? 'selected="selected"' : ''; ?>>
+                                            <option value="<?php echo $designer->url_structure; ?>" data-subtext="<em><?php echo $designer->domain_name; ?></em>" data-des_slug="<?php echo $designer->url_structure; ?>" data-des_id="<?php echo $designer->des_id; ?>" <?php echo ($designer->url_structure === $this->session->admin_sa_des_slug OR $designer->url_structure === $this->session->sa_des_slug) ? 'selected="selected"' : ''; ?>>
                                                 <?php echo ucwords(strtolower($designer->designer)); ?>
                                             </option>
 
@@ -87,27 +89,27 @@
                                                 }
                                             } ?>
                                         </select>
-                                        <input type="hidden" name="des_slug" value="<?php echo $this->session->admin_sa_des_slug; ?>" />
+                                        <input type="hidden" name="des_slug" value="<?php echo $this->session->sa_des_slug ?: $this->session->admin_sa_des_slug; ?>" />
                                     </div>
                                 </div>
                                 <div class="form-group form-group-badge select-preset-dropdown">
                                     <label class="control-label col-md-5">
-                                        <span class="badge custom-badge pull-left step-load-presets step2 <?php echo $this->session->admin_sa_des_slug ? 'active' : ''; ?>"> 2 </span>
+                                        <span class="badge custom-badge pull-left step-load-presets step2 <?php echo ($this->session->admin_sa_des_slug OR $this->session->sa_des_slug) ? 'active' : ''; ?>"> 2 </span>
                                         <span class="badge-label"> Load Presets (optional) </span>
                                     </label>
-                                    <div class="col-md-7 preset-dropdown-wrapper <?php echo $this->session->admin_sa_des_slug ? '' : 'tooltips'; ?>" data-original-title="Please select a designer first">
-                                        <select class="bs-select form-control" name="preset" data-live-search="true" data-size="5" data-show-subtext="true" <?php echo $this->session->admin_sa_des_slug ? '' : 'disabled'; ?>>
+                                    <div class="col-md-7 preset-dropdown-wrapper <?php echo ($this->session->admin_sa_des_slug OR $this->session->sa_des_slug) ? '' : 'tooltips'; ?>" data-original-title="Please select a designer first">
+                                        <select class="bs-select form-control" name="preset" data-live-search="true" data-size="5" data-show-subtext="true" <?php echo ($this->session->admin_sa_des_slug OR $this->session->sa_des_slug) ? '' : 'disabled'; ?>>
                                             <option class="option-placeholder" value="">Select Preset Sales Package...</option>
                                             <option value="preorder"> Pre Order Package </option>
                                             <option value="instock"> In-Stock Package </option>
-                                            <option value="onsale"> OFF Price Package </option>
+                                            <option value="onsale" class="<?php echo ($this->session->admin_sa_des_slug == 'tempoparis' OR $this->session->sa_des_slug == 'tempoparis') ? 'hide' : ''; ?>"> OFF Price Package </option>
                                             <option value="bestseller" class="hide"> Best Sellers Package </option>
                                         </select>
                                     </div>
                                 </div>
 								<div class="form-group form-group-badge">
                                     <label class="control-label col-md-5">
-                                        <span class="badge custom-badge pull-left step-select_items step3 <?php echo $this->session->admin_sa_des_slug ? 'active' : ''; ?>"> 3 </span>
+                                        <span class="badge custom-badge pull-left step-select_items step3 <?php echo ($this->session->admin_sa_des_slug OR $this->session->sa_des_slug) ? 'active' : ''; ?>"> 3 </span>
                                         <span class="badge-label"> Select / Search Products </span>
                                     </label>
                                     <div class="col-md-7">
@@ -118,7 +120,7 @@
                                 </div>
                                 <div class="form-group">
                                     <div class="col-md-12">
-                                        <a href="javascript:;" class="btn dark btn-md select-product-options thumbs-grid-view col-md-4" style="<?php echo $this->session->admin_sa_des_slug ? 'background-color:#696969;' : ''; ?>">
+                                        <a href="javascript:;" class="btn dark btn-md select-product-options thumbs-grid-view col-md-4" style="<?php echo ($this->session->admin_sa_des_slug OR $this->session->sa_des_slug) ? 'background-color:#696969;' : ''; ?>">
                                             Select From Thumbnails
                                         </a>
                                         <a href="javascript:;" class="btn dark btn-md select-product-options search-multiple-form col-md-4">
@@ -644,18 +646,22 @@
 
                                         	<!--bof form==========================================================================-->
                                         	<?php echo form_open(
-                                        		'admin/campaigns/sales_package/search_multiple',
+                                        		(@$role == 'sales' ? 'my_account/sales' : 'admin/campaigns').'/sales_package/search_multiple',
                                         		array(
                                         			'class' => 'sa-multi-search-form', // need this for the styling
-                                                    'id' => 'po-multi-search-form'
+                                                    'id' => 'sa-multi-search-form'
                                         		)
                                         	); ?>
 
                                                 <style>
                                                     .multi-search-form-control.search_by_style {
-                                                        width: 190px;
+                                                        width: 99%;
+                                                        height: 30px;
+                                                        border: 1px solid #ccc;
                                                     }
                                                 </style>
+
+                                                <input type="hidden" name="page" value="create" />
 
                                         		<div class="m-grid m-grid-responsive-sm">
                                                     <div class="m-grid-row">
@@ -903,7 +909,7 @@
 
                                 <!-- BEGIN FORM =======================================================-->
                                 <?php echo form_open(
-                                    'admin/campaigns/sales_package/create',
+                                    (@$role == 'sales' ? 'my_account/sales' : 'admin/campaigns').'/sales_package/create',
                                     array(
                                         'class' => 'form-horizontal',
                                         'id' => 'form-sa_create_summary_review'
@@ -926,7 +932,7 @@
                                                 <span class="required"> * </span>
                                             </label>
                                             <div class="col-md-9">
-                                                <input type="text" name="sales_package_name" data-required="1" class="form-control input-sa_info" value="<?php echo $this->session->admin_sa_name; ?>" placeholder="Sales Package Name" />
+                                                <input type="text" name="sales_package_name" data-required="1" class="form-control input-sa_info" value="<?php echo $this->session->sa_name ?: $this->session->admin_sa_name; ?>" placeholder="Sales Package Name" />
                                                 <cite class="help-block small"> A a user friendly name to identify this package as reference. </cite>
                                             </div>
                                         </div>
@@ -936,7 +942,7 @@
                                                 <span class="required"> * </span>
                                             </label>
                                             <div class="col-md-9">
-                                                <input type="text" name="email_subject" data-required="1" class="form-control input-sa_info" value="<?php echo @$this->session->admin_sa_email_subject; ?>" placeholder="Email Subject" />
+                                                <input type="text" name="email_subject" data-required="1" class="form-control input-sa_info" value="<?php echo @$this->session->sa_email_subject ?: @$this->session->admin_sa_email_subject; ?>" placeholder="Email Subject" />
                                                 <cite class="help-block small"> Used as the subject for the email. </cite>
                                             </div>
                                         </div>
@@ -944,7 +950,7 @@
                                             <label class="col-md-3 control-label">Message
                                             </label>
                                             <div class="col-md-9">
-                                                <textarea name="email_message" class="form-control summernote input-sa_info" id="summernote_1" data-error-container="email_message_error"><?php echo $this->session->admin_sa_email_message ?: 'Here are designs that are now available. Review them for your store.'; ?></textarea>
+                                                <textarea name="email_message" class="form-control summernote input-sa_info" id="summernote_1" data-error-container="email_message_error"><?php echo $this->session->sa_email_message ?: $this->session->admin_sa_email_message ?: 'Here are designs that are now available. Review them for your store.'; ?></textarea>
                                                 <cite class="help-block small"> A short message to the users. HTML tags are accepted. </cite>
                                                 <div id="email_message_error"> </div>
                                             </div>
@@ -1060,7 +1066,7 @@
                                     </div>
 
                                     <hr style="margin-top:0px;" />
-                                    <a href="<?php echo site_url('admin/campaigns/sales_package/reset'); ?>" style="color:#333;">
+                                    <a href="<?php echo site_url((@$role == 'sales' ? 'my_account/sales' : 'admin/campaigns').'/sales_package/reset'); ?>" style="color:#333;">
                                         <div class="form-group form-group-badge form-group-badge-step6 clearfix">
                                             <label class="control-label col-md-5" style="cursor:pointer;">
                                                 <span class="badge custom-badge pull-left step6 step-reset"> 6 </span>
@@ -1093,6 +1099,7 @@
                                     <form id="form-add_unlisted_style_no" class="form-horizontal" action="" method="POST" accept-charset="utf-8" data-object_data='{"<?php echo $this->security->get_csrf_token_name(); ?>":"<?php echo $this->security->get_csrf_hash(); ?>"}'>
 
                                     <input type="hidden" name="action" value="add_item" />
+                                    <input type="hidden" name="page" value="create" />
 
                                     <div class="modal-body">
 

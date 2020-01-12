@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Modify extends Admin_Controller {
+class Modify extends Sales_user_Controller {
 
 	/**
 	 * Constructor
@@ -32,7 +32,7 @@ class Modify extends Admin_Controller {
 			$this->session->set_flashdata('error', 'no_id_passed');
 
 			// redirect user
-			redirect($this->config->slash_item('admin_folder').'campaigns/sales_package');
+			redirect('my_account/sales/sales_package');
 		}
 
 		// generate the plugin scripts and css
@@ -55,38 +55,42 @@ class Modify extends Admin_Controller {
 
 		if ($this->form_validation->run() == FALSE)
 		{
-			// let's ensure that there are no admin session for sa create
-			if ($this->session->admin_sa_items)
+			// let's ensure that there are no sessions for sa create
+			if (
+				$this->session->sa_items
+				OR $this->session->sa_des_slug
+				OR $this->session->sa_slug_segs
+			)
 			{
 				// new po admin createa ccess
-				unset($_SESSION['admin_sa_id']);
-				unset($_SESSION['admin_sa_des_slug']);
-				unset($_SESSION['admin_sa_slug_segs']);
-				unset($_SESSION['admin_sa_items']);
-				unset($_SESSION['admin_sa_name']); // used at view
-				unset($_SESSION['admin_sa_email_subject']); // used at view
-				unset($_SESSION['admin_sa_email_message']); // used at view
-				unset($_SESSION['admin_sa_options']);
+				unset($_SESSION['sa_id']);
+				unset($_SESSION['sa_des_slug']);
+				unset($_SESSION['sa_slug_segs']);
+				unset($_SESSION['sa_items']);
+				unset($_SESSION['sa_name']); // used at view
+				unset($_SESSION['sa_email_subject']); // used at view
+				unset($_SESSION['sa_email_message']); // used at view
+				unset($_SESSION['sa_options']);
 				// remove po mod details
-				unset($_SESSION['admin_sa_mod_id']);
-				unset($_SESSION['admin_sa_mod_items']);
-				unset($_SESSION['admin_sa_mod_slug_segs']);
-				unset($_SESSION['admin_sa_mod_options']);
-				unset($_SESSION['admin_sa_mod_des_slug']);
+				unset($_SESSION['sa_mod_id']);
+				unset($_SESSION['sa_mod_items']);
+				unset($_SESSION['sa_mod_slug_segs']);
+				unset($_SESSION['sa_mod_options']);
+				unset($_SESSION['sa_mod_des_slug']);
 			}
 
 			// capture package id being modified
-			if ( ! $this->session->admin_sa_mod_id)
+			if ( ! $this->session->sa_mod_id)
 			{
-				$this->session->admin_sa_mod_id = $id;
+				$this->session->sa_mod_id = $id;
 			}
 
 			// check for different id's
-			if ($this->session->admin_sa_mod_id != $id)
+			if ($this->session->sa_mod_id != $id)
 			{
 				// ooops... different id
 				// reset and reload
-				redirect('admin/campaigns/sales_package/reset/index/'.$id);
+				redirect('my_account/sales/sales_package/reset/index/'.$id);
 			}
 
 			// get color list
@@ -101,20 +105,20 @@ class Modify extends Admin_Controller {
 			);
 
 			// disect some information from sales package
-			if ( ! $this->session->admin_sa_mod_items)
+			if ( ! $this->session->sa_mod_items)
 			{
-				$this->session->admin_sa_mod_items = json_encode($this->sales_package_details->items);
+				$this->session->sa_mod_items = json_encode($this->sales_package_details->items);
 			}
-			$this->data['sa_items'] = json_decode($this->session->admin_sa_mod_items, TRUE);
+			$this->data['sa_items'] = json_decode($this->session->sa_mod_items, TRUE);
 			$this->data['sa_items_count'] = count($this->data['sa_items']);
-			if ( ! $this->session->admin_sa_mod_options)
+			if ( ! $this->session->sa_mod_options)
 			{
-				$this->session->admin_sa_mod_options = json_encode($this->sales_package_details->options);
+				$this->session->sa_mod_options = json_encode($this->sales_package_details->options);
 				$this->data['sa_options'] = $this->sales_package_details->options;
 			}
 			else
 			{
-				$this->data['sa_options'] = json_decode($this->session->admin_sa_mod_options, TRUE);
+				$this->data['sa_options'] = json_decode($this->session->sa_mod_options, TRUE);
 			}
 
 			// at modify, designer is already selected from create
@@ -141,7 +145,7 @@ class Modify extends Admin_Controller {
 				)
 			);
 			$this->data['designer'] = $this->designer_details->designer;
-			$this->session->admin_sa_mod_des_slug = $designer_slug;
+			$this->session->sa_mod_des_slug = $designer_slug;
 
 			// get the designer category tree
 			$param1['with_products'] = TRUE;
@@ -151,10 +155,10 @@ class Modify extends Admin_Controller {
 			$this->data['max_level'] = $this->categories_tree->max_category_level;
 
 			// check of last active slugs selected for category tree
-			if ($this->session->admin_sa_mod_slug_segs)
+			if ($this->session->sa_mod_slug_segs)
 			{
 				// get last category slug
-				$this->data['slug_segs'] = explode('/', $this->session->admin_sa_mod_slug_segs);
+				$this->data['slug_segs'] = explode('/', $this->session->sa_mod_slug_segs);
 				$category_slug = end($this->data['slug_segs']);
 				$category_id = $this->categories_tree->get_id($category_slug);
 				$designer_slug = reset($this->data['slug_segs']);
@@ -231,12 +235,13 @@ class Modify extends Admin_Controller {
 			$this->data['search_string'] = FALSE;
 
 			// set data variables...
+			$this->data['role'] = 'sales';
 			$this->data['file'] = 'sa_modify';
 			$this->data['page_title'] = 'Sales Package Edit';
 			$this->data['page_description'] = 'Modify Sales Packages';
 
 			// load views...
-			$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template/template', $this->data);
+			$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template_my_account/template', $this->data);
 		}
 		else
 		{
@@ -278,7 +283,7 @@ class Modify extends Admin_Controller {
 
 			// grab post data and process some of them to accomodate database
 			$post_ary = $this->input->post();
-			$post_ary['options']['des_slug'] = $this->session->admin_sa_mod_des_slug; // additional data
+			$post_ary['options']['des_slug'] = $this->session->sa_mod_des_slug; // additional data
 			$post_ary['options'] = json_encode($post_ary['options']);
 
 			// remove variables not needed
@@ -286,7 +291,7 @@ class Modify extends Admin_Controller {
 			unset($post_ary['prod_no']);
 
 			// set sales package items
-			$post_ary['sales_package_items'] = $this->session->admin_sa_mod_items;
+			$post_ary['sales_package_items'] = $this->session->sa_mod_items;
 
 			// update records
 			$DB->set($post_ary);
@@ -294,14 +299,14 @@ class Modify extends Admin_Controller {
 			$q = $DB->update('sales_packages');
 
 			// unset create sessions
-			unset($_SESSION['admin_sa_mod_items']);
-			unset($_SESSION['admin_sa_mod_options']);
+			unset($_SESSION['sa_mod_items']);
+			unset($_SESSION['sa_mod_options']);
 
 			// set flash data
 			$this->session->set_flashdata('success', 'edit');
 
 			// redirect user
-			redirect($this->config->slash_item('admin_folder').'campaigns/sales_package/send/index/'.$id);
+			redirect('my_account/sales/sales_package/send/index/'.$id);
 		}
 	}
 
@@ -417,7 +422,7 @@ class Modify extends Admin_Controller {
 			';
 			// handle form validation, datepickers, and scripts
 			$this->data['page_level_scripts'].= '
-				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/admin-sa-components.js" type="text/javascript"></script>
+				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/sales-sa-components.js" type="text/javascript"></script>
 			';
 	}
 

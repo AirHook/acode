@@ -16,6 +16,11 @@
 	<?php if ($sa_details->email_message)
 	{
 		echo $sa_details->email_message;
+		echo '<br>';
+		if ($sa_options['w_images'] === 'Y' OR $sa_options['linesheets_only'] == 'Y') { ?>
+		<br />
+		See attached linesheets...	<br />
+		<?php }
 	}
 	else
 	{ ?>
@@ -32,6 +37,9 @@
 	?>
 
 	<br><br>
+
+	<?php if ($sa_options['linesheets_only'] == 'N')
+	{ ?>
 
 	<?php
 	/***********
@@ -80,50 +88,45 @@
 								foreach($sa_items as $item)
 								{
 									// get product details
-									$product = $this->product_details->initialize(array('tbl_product.prod_no'=>$item));
-
-									if ( ! $product)
-									{
-										$exp = explode('_', $item);
-										$product = $this->product_details->initialize(
-											array(
-												'tbl_product.prod_no' => $exp[0],
-												'color_code' => $exp[1]
-											)
-										);
-
-									}
-
-									$price = @$sa_options['e_prices'][$item] ?: $product->wholesale_price;
+									$exp = explode('_', $item);
+									$product = $this->product_details->initialize(
+										array(
+											'tbl_product.prod_no' => $exp[0],
+											'color_code' => $exp[1]
+										)
+									);
 
 									// set image paths
-									// old folder structure system (for depracation)
-									$pre_url =
-										$this->config->item('PROD_IMG_URL')
-										.'product_assets/WMANSAPREL/'
-										.$product->d_url_structure.'/'
-										.$product->sc_url_structure
-									;
-									$img_front_pre = $pre_url.'/product_front/thumbs/';
-									$img_back_pre = $pre_url.'/product_back/thumbs/';
-									$img_side_pre = $pre_url.'/product_side/thumbs/';
-									$color_icon_pre = $pre_url.'/product_coloricon//';
-									// the image filename
-									// the old ways dependent on category and folder structure
-									$image = $product->prod_no.'_'.$product->color_code.'_3.jpg';
-									// the color icon
-									$color_icon = $product->prod_no.'_'.$product->color_code.'.jpg';
-
 									// the new way relating records with media library
-									$new_pre_url =
-										$this->config->item('PROD_IMG_URL')
-										.$product->media_path
-										.$product->prod_no.'_'.$product->color_code
-									;
-									$img_front_new = $new_pre_url.'_f3.jpg';
-									$img_back_new = $new_pre_url.'_b3.jpg';
-									$img_side_new = $new_pre_url.'_s3.jpg';
-									$img_coloricon = $new_pre_url.'_c.jpg';
+									$style_no = $item;
+									$prod_no = $exp[0];
+									$color_code = $exp[1];
+
+									// the image filename
+									if ($product)
+									{
+										$image = $product->media_path.$style_no.'_f3.jpg';
+										$img_front_new = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_f3.jpg';
+										$img_back_new = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_b3.jpg';
+										$img_large = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_f.jpg';
+										$img_coloricon = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_c.jpg';
+										$color_name = $product->color_name;
+
+										// set price
+										$price = @$sa_options['e_prices'][$item] ?: $product->wholesale_price;
+									}
+									else
+									{
+										$image = 'images/instylelnylogo_3.jpg';
+										$img_front_new = $this->config->item('PROD_IMG_URL').'images/instylelnylogo_3.jpg';
+										$img_back_new = $this->config->item('PROD_IMG_URL').'images/instylelnylogo_3.jpg';
+										$img_large = $this->config->item('PROD_IMG_URL').'images/instylelnylogo_3.jpg';
+										$img_coloricon = $this->config->item('PROD_IMG_URL').'images/instylelnylogo_3.jpg';
+										$color_name = $this->product_details->get_color_name($color_code);
+
+										// set price
+										$price = @$sa_options['e_prices'][$item] ?: 0;
+									}
 
 									if ($icol == 6)
 									{
@@ -135,15 +138,15 @@
 								<td style="vertical-align:top;<?php echo @$file == 'sa_send' ? 'width:20%;padding-right:10px;' : 'width:154px;'; ?>">
 									<a href="<?php echo $access_link; ?>" style="text-decoration:none;margin:0;padding:0;color:inherit;display:inline-block;">
 										<div id="spthumbdiv_<?php echo $item; ?>" class="fadehover" style="<?php echo @$file == 'sa_send' ? '' : 'width:140px;height:210px;'; ?>">
-											<img src="<?php echo $product->primary_img ? $img_front_new : $img_front_pre.$image; ?>" alt="<?php echo $product->prod_no; ?>" title="<?php echo $product->prod_no; ?>" border="0" style="<?php echo @$file == 'sa_send' ? 'width:100%;' : 'width:140px;'; ?>">
+											<img src="<?php echo $img_front_new; ?>" alt="<?php echo $prod_no; ?>" title="<?php echo $prod_no; ?>" border="0" style="<?php echo @$file == 'sa_send' ? 'width:100%;' : 'width:140px;'; ?>">
 										</div>
 									</a>
 									<div style="margin:3px 0 0;">
-										<img src="<?php echo ($product->primary_img ? $img_coloricon : $color_icon_pre.$color_icon); ?>" width="10" height="10">
+										<img src="<?php echo $img_coloricon; ?>" width="10" height="10">
 									</div>
 
 									<div style="<?php echo @$file == 'sa_send' ? '' : 'width:140px;'; ?>">
-										<span style="font-size:10px;"><?php echo $product->prod_no; ?></span>
+										<span style="font-size:10px;"><?php echo $prod_no; ?></span>
 										<?php if (@$sa_options['w_prices'] == 'Y') { ?>
 										<br />
 										<span style="font-size:10px;">
@@ -191,6 +194,9 @@
 			</tr>
 		</tbody>
 	</table>
+
+		<?php
+	} ?>
 
 	<br><br>
 	<?php echo $author_name; ?> <br>

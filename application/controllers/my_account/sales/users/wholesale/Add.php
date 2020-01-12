@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Add extends Admin_Controller {
+class Add extends Sales_user_Controller {
 
 	/**
 	 * Constructor
@@ -54,32 +54,25 @@ class Add extends Admin_Controller {
 		if ($this->form_validation->run() == FALSE)
 		{
 			// some pertinent data
-			if (@$this->webspace_details->options['site_type'] != 'hub_site')
-			{
-				$this->data['designers'] = $this->designers_list->select(
-					array(
-						'designer.url_structure' => @$this->webspace_details->slug
-					)
-				);
-				$this->data['sales'] = $this->sales_users_list->select(
-					array(
-						'tbladmin_sales.admin_sales_designer' => @$this->webspace_details->slug
-					)
-				);
-			}
-			else
-			{
-				$this->data['designers'] = $this->designers_list->select();
-				$this->data['sales'] = $this->sales_users_list->select();
-			}
+			$this->data['designers'] = $this->designers_list->select(
+				array(
+					'designer.url_structure' => $this->sales_user_details->designer
+				)
+			);
+			$this->data['sales'] = $this->sales_users_list->select(
+				array(
+					'tbladmin_sales.admin_sales_designer' => $this->sales_user_details->designer
+				)
+			);
 
 			// set data variables...
+			$this->data['role'] = 'sales';
 			$this->data['file'] = 'users_wholesale_add';
 			$this->data['page_title'] = 'Wholesale User Add';
 			$this->data['page_description'] = 'Add new wholesale user';
 
 			// load views...
-			$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template/template', $this->data);
+			$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template_my_account/template', $this->data);
 		}
 		else
 		{
@@ -120,7 +113,7 @@ class Add extends Admin_Controller {
 					$this->session->set_flashdata('error_message', $this->wholesale_activation_email_sending->error);
 
 					// redirect user
-					redirect($this->config->slash_item('admin_folder').'users/wholesale/edit/index/'.$insert_id);
+					redirect('my_account/sales/users/wholesale/edit/index/'.$insert_id);
 				}
 
 			}
@@ -128,7 +121,7 @@ class Add extends Admin_Controller {
 			// set flash data
 			$this->session->set_flashdata('success', 'add');
 
-			redirect($this->config->slash_item('admin_folder').'users/wholesale/edit/index/'.$insert_id);
+			redirect('my_account/sales/users/wholesale/edit/index/'.$insert_id);
 		}
 	}
 

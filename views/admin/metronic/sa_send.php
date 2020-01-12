@@ -33,7 +33,7 @@
 
                                 <!-- BEGIN FORM =======================================================-->
                                 <?php echo form_open(
-                                    'admin/campaigns/sales_package/send',
+                                    (@$role == 'sales' ? 'my_account/sales' : 'admin/campaigns').'/sales_package/send',
                                     array(
                                         'class' => 'form-horizontal'
                                     )
@@ -142,9 +142,9 @@
                                                 Send To New Wholesale User
                                             </a>
                                             <!--
-                                            <a href="<?php echo site_url('admin/campaigns/sales_package/modify/index/'.$sa_details->sales_package_id); ?>" class="btn dark btn-md select-send-options thumbs-grid-view col-md-4" style="">
+                                            <a href="<?php echo site_url((@$role == 'sales' ? 'my_account/sales' : 'admin/campaigns').'/sales_package/modify/index/'.$sa_details->sales_package_id); ?>" class="btn dark btn-md select-send-options thumbs-grid-view col-md-4" style="">
                                             -->
-                                            <a href="<?php echo site_url('admin/campaigns/sales_package/modify/index/'.$sa_details->sales_package_id); ?>" class="btn dark btn-md select-send-options thumbs-grid-view col-md-4" style="font-size:0.9em;">
+                                            <a href="<?php echo site_url((@$role == 'sales' ? 'my_account/sales' : 'admin/campaigns').'/sales_package/modify/index/'.$sa_details->sales_package_id); ?>" class="btn dark btn-md select-send-options thumbs-grid-view col-md-4" style="font-size:0.9em;">
                                                 Modify Sales Package
                                             </a>
                                         </div>
@@ -167,7 +167,7 @@
                                 <!-- BEGIN FORM-->
                                 <!-- FORM =======================================================================-->
                                 <?php echo form_open(
-                                    'admin/campaigns/sales_package/send/sa/'.$sa_details->sales_package_id,
+                                    (@$role == 'sales' ? 'my_account/sales' : 'admin/campaigns').'/sales_package/send/sa/'.$sa_details->sales_package_id,
                                     array(
                                         'id' => 'form-send_sales_package'
                                     )

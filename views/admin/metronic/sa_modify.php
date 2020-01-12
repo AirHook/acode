@@ -87,7 +87,7 @@
                                 </div>
                                 <div class="form-group">
                                     <div class="col-md-12">
-                                        <a href="javascript:;" class="btn dark btn-md select-product-options thumbs-grid-view col-md-4" style="<?php echo $this->session->admin_sa_des_slug ? 'background-color:#696969;' : ''; ?>">
+                                        <a href="javascript:;" class="btn dark btn-md select-product-options thumbs-grid-view col-md-4" style="<?php echo $this->session->sa_des_slug ? 'background-color:#696969;' : ''; ?>">
                                             Select From Thumbnails
                                         </a>
                                         <a href="javascript:;" class="btn dark btn-md select-product-options search-multiple-form col-md-4">
@@ -161,7 +161,7 @@
                                                     ?>
 
                                                 <li class="<?php echo $active; ?> designer-level" data-slug="<?php echo $designer_details->url_structure; ?>">
-                                                    <a href="javascript:;" data-des_slug="<?php echo $designer_details->url_structure; ?>" style="font-size:0.8em;" data-slugs_link="<?php echo implode('/', $slugs_link); ?>">
+                                                    <a href="javascript:;" data-des_slug="<?php echo $designer_details->url_structure; ?>" style="font-size:0.8em;" data-slugs_link="<?php echo implode('/', $slugs_link); ?>" data-page="modify">
                                                         <?php echo $designer_details->designer; ?>
                                                     </a>
                                                 </li>
@@ -313,7 +313,7 @@
                                                             .$margin
                                                             .'" data-slugs_link="'
                                                             .implode('/', $slugs_link)
-                                                            .'" data-des_slug="'
+                                                            .'" data-page="modify" data-des_slug="'
                                                             .$designer_details->url_structure
                                                             .'">'
                                                             .$category->category_name
@@ -549,7 +549,7 @@
         									else
         									{
         										if (@$search_string) $txt1 = 'SEARCH DID NOT YIELD PRODUCT RESULTS...';
-        										else $txt1 = 'NO PRODUCTS TO LOAD...'.$this->session->admin_po_slug_segs;
+        										else $txt1 = 'NO PRODUCTS TO LOAD...'.$this->session->po_slug_segs;
         										echo '<button class="btn default btn-block btn-lg hide"> '.$txt1.' </button>';
         									} ?>
 
@@ -607,18 +607,22 @@
 
                                         	<!--bof form==========================================================================-->
                                         	<?php echo form_open(
-                                        		'admin/campaigns/sales_package/search_multiple',
+                                        		(@$role == 'sales' ? 'my_account/sales' : 'admin/campaigns').'/sales_package/search_multiple',
                                         		array(
                                         			'class' => 'sa-multi-search-form', // need this for the styling
-                                                    'id' => 'po-multi-search-form'
+                                                    'id' => 'sa-multi-search-form'
                                         		)
                                         	); ?>
 
                                                 <style>
                                                     .multi-search-form-control.search_by_style {
-                                                        width: 190px;
+                                                        width: 99%;
+                                                        height: 30px;
+                                                        border: 1px solid #ccc;
                                                     }
                                                 </style>
+
+                                                <input type="hidden" name="page" value="create" />
 
                                         		<div class="m-grid m-grid-responsive-sm">
                                                     <div class="m-grid-row">
@@ -866,7 +870,7 @@
 
                                 <!-- BEGIN FORM =======================================================-->
                                 <?php echo form_open(
-                                    'admin/campaigns/sales_package/modify/index/'.$sa_details->sales_package_id,
+                                    (@$role == 'sales' ? 'my_account/sales' : 'admin/campaigns').'/sales_package/modify/index/'.$sa_details->sales_package_id,
                                     array(
                                         'class' => 'form-horizontal',
                                         'id' => 'form-sa_mod_summary_review'
@@ -918,11 +922,11 @@
                                                 <div class="mt-radio-list">
                                                     <div class="mt-radio-inline">
                                                         <label class="mt-radio mt-radio-outline" style="margin-bottom:0px;">
-                                                            <input class="radio-options" type="radio" name="options[w_prices]" value="Y" autocomplete="off" <?php echo @$sa_options['w_prices'] == 'Y' ? 'checked="checked"' : ''; ?>> Yes
+                                                            <input class="radio-options" type="radio" name="options[w_prices]" value="Y" data-option="w_prices" <?php echo @$sa_options['w_prices'] == 'Y' ? 'checked="checked"' : ''; ?>> Yes
                                                             <span></span>
                                                         </label>
                                                         <label class="mt-radio mt-radio-outline" style="margin-bottom:0px;">
-                                                            <input class="radio-options" type="radio" name="options[w_prices]" value="N" autocomplete="off" <?php echo @$sa_options['w_prices'] == 'Y' ? '' : 'checked="checked"'; ?>> No
+                                                            <input class="radio-options" type="radio" name="options[w_prices]" value="N" data-option="w_prices" <?php echo @$sa_options['w_prices'] == 'Y' ? '' : 'checked="checked"'; ?>> No
                                                             <span></span>
                                                         </label>
                                                         <label class="" style="margin-bottom:0px;">
@@ -931,11 +935,11 @@
                                                     </div>
                                                     <div class="mt-radio-inline">
                                                         <label class="mt-radio mt-radio-outline" style="margin-bottom:0px;">
-                                                            <input class="radio-options" type="radio" name="options[w_images]" value="Y" autocomplete="off" <?php echo @$sa_options['w_images'] == 'Y' ? 'checked="checked"' : ''; ?>> Yes
+                                                            <input class="radio-options" type="radio" name="options[w_images]" value="Y" data-option="w_images" <?php echo @$sa_options['w_images'] == 'Y' ? 'checked="checked"' : ''; ?>> Yes
                                                             <span></span>
                                                         </label>
                                                         <label class="mt-radio mt-radio-outline" style="margin-bottom:0px;">
-                                                            <input class="radio-options" type="radio" name="options[w_images]" value="N" autocomplete="off" <?php echo @$sa_options['w_images'] == 'Y' ? '' : 'checked="checked"'; ?>> No
+                                                            <input class="radio-options" type="radio" name="options[w_images]" value="N" data-option="w_images" <?php echo @$sa_options['w_images'] == 'Y' ? '' : 'checked="checked"'; ?>> No
                                                             <span></span>
                                                         </label>
                                                         <label class="" style="margin-bottom:0px;">
@@ -944,11 +948,11 @@
                                                     </div>
                                                     <div class="mt-radio-inline">
                                                         <label class="mt-radio mt-radio-outline" style="margin-bottom:0px;">
-                                                            <input class="radio-options" type="radio" name="options[linesheets_only]" value="Y" autocomplete="off" <?php echo @$sa_options['linesheets_only'] == 'Y' ? 'checked="checked"' : ''; ?>> Yes
+                                                            <input class="radio-options" type="radio" name="options[linesheets_only]" value="Y" data-option="linesheets_only" <?php echo @$sa_options['linesheets_only'] == 'Y' ? 'checked="checked"' : ''; ?>> Yes
                                                             <span></span>
                                                         </label>
                                                         <label class="mt-radio mt-radio-outline" style="margin-bottom:0px;">
-                                                            <input class="radio-options" type="radio" name="options[linesheets_only]" value="N" autocomplete="off" <?php echo @$sa_options['linesheets_only'] == 'Y' ? '' : 'checked="checked"'; ?>> No
+                                                            <input class="radio-options" type="radio" name="options[linesheets_only]" value="N" data-option="linesheets_only" <?php echo @$sa_options['linesheets_only'] == 'Y' ? '' : 'checked="checked"'; ?>> No
                                                             <span></span>
                                                         </label>
                                                         <label class="" style="margin-bottom:0px;">
@@ -980,7 +984,7 @@
                                 <div class="col-sm-12 cart_basket_wrapper" style="margin-bottom:70px;">
                                     <div class="cart_basket">
 
-                                        <?php $this->load->view('admin/metronic/sa_create_items'); ?>
+                                        <?php $this->load->view('admin/metronic/sa_modify_items'); ?>
 
                                     </div>
                                 </div>
@@ -1008,7 +1012,7 @@
                                     </div>
 
                                     <hr style="margin-top:0px;" />
-                                    <a href="<?php echo site_url('admin/campaigns/sales_package/reset/index/'.$sa_details->sales_package_id); ?>" style="color:#333;">
+                                    <a href="<?php echo site_url((@$role == 'sales' ? 'my_account/sales' : 'admin/campaigns').'/sales_package/reset/index/'.$sa_details->sales_package_id); ?>" style="color:#333;">
                                         <div class="form-group form-group-badge form-group-badge-step4 clearfix">
                                             <label class="control-label col-md-5" style="cursor:pointer;">
                                                 <span class="badge custom-badge pull-left step5 step-reset"> 5 </span>
@@ -1118,7 +1122,7 @@
                                             <label class="control-label col-md-5">New Price
                                             </label>
                                             <div class="col-md-4">
-                                                <input type="text" name="item_price" data-required="1" class="form-control input-sm modal-input-item-price" value="" size="2" data-prod_no="" data-item="" data-page="create" />
+                                                <input type="text" name="item_price" data-required="1" class="form-control input-sm modal-input-item-price" value="" size="2" data-prod_no="" data-item="" data-page="modify" />
                                             </div>
                                         </div>
 

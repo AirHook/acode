@@ -160,7 +160,7 @@
 									$display_prices = @$sa_options['w_prices'] == 'N' ? 'display-none' : '';
 									?>
 
-							<div class="thumb-tile package image bg-blue-hoki <?php echo $style_no; ?> selected" data-sku="<?php echo $style_no; ?>" data-prod_no="<?php echo $prod_no; ?>" data-prod_id="<?php echo @$product->prod_id; ?>">
+							<div class="thumb-tile package image bg-blue-hoki <?php echo $this->product_details->prod_no.'_'.$product->primary_img_id; ?> selected" data-sku="<?php echo $product->prod_no.'_'.$product->primary_img_id; ?>" data-prod_no="<?php echo $product->prod_no; ?>" data-prod_id="<?php echo $product->prod_id; ?>">
 
 								<a href="javascript:;">
 
@@ -170,18 +170,18 @@
 									</div>
 									<div class="tile-object">
 										<div class="name hide">
-											<?php echo $prod_no; ?> <br />
-											<?php echo $color_name; ?>
+											<?php echo $product->prod_no; ?> <br />
+											<?php echo $product->color_name; ?>
 										</div>
 									</div>
 
 								</a>
 
 								<div class="" style="color:black;line-height:1.2em;">
-									<input type="checkbox" class="package_items tooltips" data-original-title="Remove item" name="prod_no[]" data-page="create" value="<?php echo $style_no; ?>" style="float:right;margin-top:0px;" checked />
-									<?php echo $prod_no; ?> <br />
-									<?php echo $color_name; ?> <br />
-									<div class="item_prices <?php echo $style_no; ?> <?php echo $display_prices; ?>">
+									<input type="checkbox" class="package_items tooltips" data-original-title="Remove item" name="prod_no[]" data-page="modify" value="<?php echo $product->prod_no.'_'.$product->color_code; ?>" style="float:right;margin-top:0px;" checked />
+									<?php echo $product->prod_no; ?> <br />
+									<?php echo $product->color_name; ?> <br />
+									<div class="item_prices <?php echo $product->prod_no.'_'.$product->color_code; ?> <?php echo $display_prices; ?>">
 										<span class="e_prices" data-price="<?php echo $price; ?>"><?php echo '$ '.number_format($price, 2); ?></span>
 										<button type="button" data-item="<?php echo $item; ?>" class="btn btn-link btn-xs btn-edit_item_price tooltips" data-original-title="Edit Price" style="position:relative;top:-2px;"><i class="fa fa-pencil small"></i></button>
 									</div>
