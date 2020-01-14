@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Details extends Admin_Controller {
+class Index extends Sales_user_Controller {
 
 	/**
 	 * Constructor
@@ -18,109 +18,44 @@ class Details extends Admin_Controller {
 	/**
 	 * Index - default method
 	 *
-	 * Purchase Order Details
+	 * Primary method to call when no other methods are found in url segment
+	 * This method simply lists all sales pacakges
 	 *
 	 * @return	void
 	 */
-	public function index($po_id = '')
+	public function index()
 	{
-		if ( ! $po_id)
-		{
-			// nothing more to do...
-			// set flash data
-			$this->session->set_flashdata('error', 'no_id_passed');
-
-			// redirect user
-			redirect('admin/purchase_orders');
-		}
+		// rediect to all po
+		redirect('my_account/sales/purchase_orders/all', 'location');
 
 		// generate the plugin scripts and css
 		$this->_create_plugin_scripts();
 
 		// load pertinent library/model/helpers
-		$this->load->library('designers/designer_details');
-		$this->load->library('products/size_names');
-		$this->load->library('products/product_details');
-		$this->load->library('purchase_orders/purchase_order_details');
-		$this->load->library('users/wholesale_user_details');
-		$this->load->library('users/sales_user_details');
-		$this->load->library('users/vendor_user_details');
-		$this->load->library('barcodes/upc_barcodes');
+		$this->load->library('purchase_orders/purchase_orders_list');
 
-		// initialize purchase order properties and items
-		$this->data['po_details'] = $this->purchase_order_details->initialize(
-			array(
-				'po_id' => $po_id
-			)
-		);
-
-		// get po items and other array stuff
-		$this->data['po_number'] = $this->purchase_order_details->po_number;
-		$this->data['po_items'] = $this->purchase_order_details->items;
-		$this->data['po_options'] = $this->purchase_order_details->options;
-
-		// get vendor details
-		$this->data['vendor_details'] = $this->vendor_user_details->initialize(
-			array(
-				'vendor_id' => $this->purchase_order_details->vendor_id
-			)
-		);
-
-		// get ship to details
-		if (isset($this->data['po_options']['po_store_id']))
+		// get data
+		if (@$this->webspace_details->options['site_type'] != 'hub_site')
 		{
-			$this->data['store_details'] = $this->wholesale_user_details->initialize(
+			$this->data['orders'] = $this->purchase_orders_list->select(
 				array(
-					'user_id' => $this->data['po_options']['po_store_id']
+					'designer.url_structure' => $this->webspace_details->slug
 				)
 			);
 		}
-		else $this->data['store_details'] = $this->wholesale_user_details->deinitialize();
-
-		// get PO author
-		switch ($this->purchase_order_details->c)
+		else
 		{
-			case '2': //sales
-				$this->data['author'] = $this->sales_user_details->initialize(
-					array(
-						'admin_sales_id' => $this->purchase_order_details->author
-					)
-				);
-			break;
-			case '1': //admin
-			default:
-				$this->data['author'] = $this->admin_user_details->initialize(
-					array(
-						'admin_id' => ($this->purchase_order_details->author ?: '1')
-					)
-				);
+			$this->data['orders'] = $this->purchase_orders_list->select();
 		}
 
-		// get size names using des_id as reference
-		$this->designer_details->initialize(array('designer.des_id'=>$this->purchase_order_details->des_id));
-
-		// set company information
-		$this->data['company_name'] = $this->designer_details->company_name;
-		$this->data['company_address1'] = $this->designer_details->address1;
-		$this->data['company_address2'] = $this->designer_details->address2;
-		$this->data['company_city'] = $this->designer_details->city;
-		$this->data['company_state'] = $this->designer_details->state;
-		$this->data['company_zipcode'] = $this->designer_details->zipcode;
-		$this->data['company_country'] = $this->designer_details->country;
-		$this->data['company_telephone'] = $this->designer_details->phone;
-		$this->data['company_contact_person'] = $this->designer_details->owner;
-		$this->data['company_contact_email'] = $this->designer_details->info_email;
-
-		// need to show loading at start
-		$this->data['show_loading'] = FALSE;
-
 		// set data variables...
-		$this->data['file'] = 'po_details'; // purchase_orders_details
-		$this->data['page_title'] = 'Purchase Order Details';
-		$this->data['page_description'] = 'Details of the purchase order to vendor';
+		$this->data['role'] = 'sales';
+		$this->data['file'] = 'po_list'; // purchase_orders
+		$this->data['page_title'] = 'Purchase Orders';
+		$this->data['page_description'] = 'List of Purchase Orders of items for order from vendors of designers for their wholesale users';
 
 		// load views...
-		$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template/template', $this->data);
+		$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template_my_account/template', $this->data);
 	}
 
 	// ----------------------------------------------------------------------
@@ -184,10 +119,6 @@ class Details extends Admin_Controller {
 				<script src="'.$assets_url.'/assets/global/plugins/datatables/datatables.min.js" type="text/javascript"></script>
 				<script src="'.$assets_url.'/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>
 			';
-			// bootbox
-			$this->data['page_level_plugins'].= '
-				<script src="'.$assets_url.'/assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
-			';
 
 		/****************
 		 * page scripts inserted at <bottom>
@@ -203,9 +134,9 @@ class Details extends Admin_Controller {
 			$this->data['page_level_scripts'].= '
 				<script src="'.$assets_url.'/assets/pages/scripts/components-bootstrap-select.min.js" type="text/javascript"></script>
 			';
-			// handle page scripts
+			// handle datatable
 			$this->data['page_level_scripts'].= '
-				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/components-purchase_order_details.js" type="text/javascript"></script>
+				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/table-datatables-purchase_orders.js" type="text/javascript"></script>
 			';
 	}
 

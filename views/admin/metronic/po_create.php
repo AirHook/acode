@@ -1,4 +1,8 @@
                     <!-- BEGIN PAGE CONTENT BODY -->
+                    <?php
+                    $url_pre = @$role == 'sales' ? 'my_account/sales' : 'admin';
+                    ?>
+
                     <div class="row">
 
                         <div class="col col-md-6 form-horizontal" role="form">
@@ -71,17 +75,17 @@
                                         <span class="badge-label"> Select Vendor </span>
                                     </label>
                                     <div class="col-md-8">
-                                        <select class="bs-select form-control" name="vendor_id" data-live-search="true" data-size="5" data-show-subtext="true" data-vendor_id="<?php echo $this->session->admin_po_vendor_id; ?>">
-                                            <?php if ( ! $this->session->admin_po_vendor_id) { ?>
+                                        <select class="bs-select form-control" name="vendor_id" data-live-search="true" data-size="5" data-show-subtext="true" data-vendor_id="<?php echo @$role == 'sales' ? $this->session->po_vendor_id : $this->session->admin_po_vendor_id; ?>">
                                             <option class="option-placeholder" value="">Select Vendor...</option>
-                                            <?php } ?>
                                             <?php
                                             if (@$vendors)
                                             {
                                                 foreach ($vendors as $vendor)
-                                                { ?>
+                                                {
+                                                    $at_vendors_dd_vendor_id = @$role == 'sales' ? $this->session->po_vendor_id : $this->session->admin_po_vendor_id;
+                                                    ?>
 
-                                            <option value="<?php echo $vendor->vendor_id; ?>" data-subtext="<em><?php echo $vendor->designer; ?></em>" data-des_slug="<?php echo $vendor->url_structure; ?>" data-des_id="<?php echo $vendor->des_id; ?>" <?php echo $vendor->vendor_id === $this->session->admin_po_vendor_id ? 'selected="selected"' : ''; ?>>
+                                            <option value="<?php echo $vendor->vendor_id; ?>" data-subtext="<em><?php echo $vendor->designer; ?></em>" data-des_slug="<?php echo $vendor->url_structure; ?>" data-des_id="<?php echo $vendor->des_id; ?>" <?php echo $vendor->vendor_id === $at_vendors_dd_vendor_id ? 'selected="selected"' : ''; ?>>
                                                 <?php echo ucwords(strtolower($vendor->vendor_name)).' ('.$vendor->vendor_code.')'; ?>
                                             </option>
 
@@ -89,13 +93,13 @@
                                                 }
                                             } ?>
                                         </select>
-                                        <input type="hidden" name="des_slug" value="<?php echo $this->session->admin_po_des_url_structure; ?>" />
-                                        <input type="hidden" name="cur_vendor_id" value="<?php echo $this->session->admin_po_vendor_id; ?>" />
+                                        <input type="hidden" name="des_slug" value="<?php echo @$role == 'sales' ? $this->session->po_des_url_structure : $this->session->admin_po_des_url_structure; ?>" />
+                                        <input type="hidden" name="cur_vendor_id" value="<?php echo @$role == 'sales' ? $this->session->po_vendor_id : $this->session->admin_po_vendor_id; ?>" />
                                     </div>
                                 </div>
 								<div class="form-group form-group-badge">
                                     <label class="control-label col-md-4">
-                                        <span class="badge custom-badge pull-left step2 <?php echo $this->session->admin_po_vendor_id ? 'active' : ''; ?>"> 2 </span>
+                                        <span class="badge custom-badge pull-left step2 <?php echo ($this->session->po_vendor_id OR $this->session->admin_po_vendor_id) ? 'active' : ''; ?>"> 2 </span>
                                         <span class="badge-label"> Select / Search Products </span>
                                     </label>
                                     <div class="col-md-8">
@@ -106,7 +110,7 @@
                                 </div>
                                 <div class="form-group">
                                     <div class="col-md-12">
-                                        <a href="javascript:;" class="btn dark btn-md select-product-options thumbs-grid-view col-md-4" style="<?php echo $this->session->admin_po_vendor_id ? 'background-color:#696969;' : ''; ?>">
+                                        <a href="javascript:;" class="btn dark btn-md select-product-options thumbs-grid-view col-md-4" style="<?php echo ($this->session->po_vendor_id OR $this->session->admin_po_vendor_id) ? 'background-color:#696969;' : ''; ?>">
                                             Select From Thumbnails
                                         </a>
                                         <a href="javascript:;" class="btn dark btn-md select-product-options search-multiple-form col-md-4">
@@ -351,7 +355,7 @@
                                     </div>
                                     <!-- /input-group -->
 
-                                    <h3 class="blank-grid-text <?php echo $this->session->admin_po_vendor_id ? 'display-none' : ''; ?>">
+                                    <h3 class="blank-grid-text <?php echo ($this->session->po_vendor_id OR $this->session->admin_po_vendor_id) ? 'display-none' : ''; ?>">
                                         <em class="select-vendor">Select a vendor...</em>
                                     </h3>
 
@@ -359,6 +363,9 @@
                                     /***********
                                      * Thumbs
                                      */
+                                    // calc width and height (2/3 = w/h)
+                                    $imgw = '160';
+                                    $imgh = (3*$imgw)/2;
                                     ?>
                                     <style>
                                         .thumb-tiles {
@@ -368,11 +375,6 @@
                                         .thumb-tiles .thumb-tile {
                                             display: block;
                                             float: left;
-                                            <?php
-                                            // calc width and height (2/3 = w/h)
-                                            $imgw = '160';
-                                            $imgh = (3*$imgw)/2;
-                                            ?>
                                             width: <?php echo $imgw; ?>px !important; /*140px */
                                             height: <?php echo $imgh; ?>px; /*210px;*/
                                             cursor: pointer;
@@ -471,7 +473,7 @@
         								<div class="thumb-tiles">
 
         									<?php
-        									if ($products)
+        									if (@$products)
         									{
         										$dont_display_thumb = '';
         										$batch = '';
@@ -558,7 +560,7 @@
         									else
         									{
         										if ($search_string) $txt1 = 'SEARCH DID NOT YIELD PRODUCT RESULTS...';
-        										else $txt1 = 'NO PRODUCTS TO LOAD...'.$this->session->admin_po_slug_segs;
+        										else $txt1 = 'NO PRODUCTS TO LOAD...';
         										echo '<button class="btn default btn-block btn-lg"> '.$txt1.' </button>';
         									} ?>
 
@@ -616,7 +618,7 @@
 
                                         	<!--bof form==========================================================================-->
                                         	<?php echo form_open(
-                                        		'admin/purcahse_orders/search_multiple',
+                                        		$url_pre.'/purcahse_orders/search_multiple',
                                         		array(
                                         			'class' => 'sa-multi-search-form', // need this for the styling
                                                     'id' => 'po-multi-search-form'
@@ -625,7 +627,9 @@
 
                                                 <style>
                                                     .multi-search-form-control.search_by_style {
-                                                        width: 190px;
+                                                        width: 99%;
+                                                        height: 30px;
+                                                        border: 1px solid #ccc;
                                                     }
                                                 </style>
 
@@ -848,7 +852,7 @@
                                         </div>
                                     </div>
 
-                                    <h3 class="col-md-12 blank-grid-text <?php echo $this->session->admin_po_vendor_id ? 'display-none' : ''; ?>">
+                                    <h3 class="col-md-12 blank-grid-text <?php echo ($this->session->po_vendor_id OR $this->session->admin_po_vendor_id) ? 'display-none' : ''; ?>">
                                         <em class="select-vendor">Select a vendor...</em>
                                     </h3>
 
@@ -919,7 +923,7 @@
 
                                 <!-- BEGIN FORM =======================================================-->
                                 <?php echo form_open(
-                                    'admin/purchase_orders/create',
+                                    $url_pre.'/purchase_orders/create',
                                     array(
                                         'class' => 'form-horizontal',
                                         'id' => 'form-po_create_summary_review'
@@ -934,7 +938,7 @@
                                     <div class="row">
                                         <div class="col-sm-12">
                                             <h3>
-                                                PURCHASE ORDER #<?php echo @$this->session->po_number ?: @$po_number; ?> <br />
+                                                PURCHASE ORDER #<?php echo @$po_number; ?> <br />
                                                 <small> Date: <?php echo date('Y-m-d', time()); ?> </small>
                                             </h3>
                                             <div class="row">
@@ -970,7 +974,7 @@
                                         <div class="col-sm-6">
 
                                             <h5> SHIP TO
-                                                <span class="edit-reset-ship-to <?php echo $this->session->admin_po_vendor_id ?: 'display-none'; ?>">
+                                                <span class="edit-reset-ship-to <?php echo ($this->session->po_vendor_id OR $this->session->admin_po_vendor_id) ?: 'display-none'; ?>">
                                                     <a href="javascript:;" class="reset-ship-to small"> <em>reset to defualt</em> </a>
                                                 </span>
                                             </h5>
@@ -1034,9 +1038,11 @@
                                                         if (@$stores)
                                                         {
                                                             foreach ($stores as $store)
-                                                            { ?>
+                                                            {
+                                                                $at_stores_dd_store_id = @$role == 'sales' ? $this->session->po_store_id : $this->session->admin_po_store_id;
+                                                                ?>
 
-                                                        <option value="<?php echo $store->user_id; ?>" data-subtext="<em><?php echo $store->email; ?></em>" data-des_slug="<?php echo $store->reference_designer; ?>" <?php echo set_select('user_id', $store->user_id, ($store->user_id === $this->session->admin_po_store_id)); ?>>
+                                                        <option value="<?php echo $store->user_id; ?>" data-subtext="<em><?php echo $store->email; ?></em>" data-des_slug="<?php echo $store->reference_designer; ?>" <?php echo set_select('user_id', $store->user_id, ($store->user_id === $at_stores_dd_store_id)); ?>>
                                                             <?php echo ucwords(strtolower($store->store_name)); ?>
                                                         </option>
 
@@ -1044,7 +1050,7 @@
                                                             }
                                                         } ?>
                                                     </select>
-                                                    <input class="form-control form-control-inline" size="16" type="hidden" value="<?php echo $this->session->admin_po_store_id; ?>" name="po_store_id" readonly />
+                                                    <input class="form-control form-control-inline" size="16" type="hidden" value="<?php echo $at_stores_dd_store_id; ?>" name="po_store_id" readonly />
                                                 </div>
                                             </div>
 
@@ -1189,7 +1195,7 @@
                                                         <th colspan="1"></th>
                                                         <th colspan="3" class="text-right">
                                                             <cite class="small" style="font-weight:100;">show/edit unit price</cite>
-                                                            <input type="checkbox" class="show_vendor_price" name="options[show_vendor_price]" value="1" <?php echo $this->session->admin_po_edit_vendor_price ? 'checked' : ''; ?> />
+                                                            <input type="checkbox" class="show_vendor_price" name="options[show_vendor_price]" value="1" <?php echo ((@$role == 'sales' && $this->session->po_edit_vendor_price) OR $this->session->admin_po_edit_vendor_price) ? 'checked' : ''; ?> />
                                                         </th>
                                                         <th></th>
                                                     </tr>
@@ -1254,7 +1260,7 @@
                                                          * Image links to product details page
                                                          */
                                                         ?>
-                                                        <td>
+                                                        <td style="vertical-align:top;">
                                                             <a href="<?php echo $img_linesheet ?: 'javascript:;'; ?>" class="<?php echo $img_linesheet ? 'fancybox' : ''; ?> pull-left">
                                                                 <img class="" src="<?php echo $img_front_new; ?>" alt="" style="width:60px;height:auto;" onerror="$(this).attr('src','<?php echo $this->config->item('PROD_IMG_URL'); ?>images/instylelnylogo_3.jpg');" />
                                                             </a>
@@ -1273,7 +1279,7 @@
                                                          * Size and Qty
                                                          */
                                                         ?>
-                                                        <td class="size-and-qty-wrapper">
+                                                        <td class="size-and-qty-wrapper" style="vertical-align:top;">
 
                                                             <?php
                                                             $this_size_qty = 0;
@@ -1314,7 +1320,7 @@
                                                          * Remove button
                                                          */
                                                         ?>
-                                                        <td class="text-right">
+                                                        <td class="text-right" style="vertical-align:top;">
                                                             <button type="button" class="btn btn-link btn-xs summary-item-checkbox tooltips" data-original-title="Remove Item" data-prod_no="<?php echo $item; ?>" onmouseover="$(this).css('text-decoration','none');">
                                                                 <i class="fa fa-close"></i> <cite class="small">rem</cite>
                                                             </button>
@@ -1323,26 +1329,66 @@
                                                         /**********
                                                          * Unit Vendor Price
                                                          */
+                                                        $at_items_vendor_price = ((@$role == 'sales' && $this->session->po_edit_vendor_price) OR $this->session->admin_po_edit_vendor_price) ? TRUE : FALSE;
                                                         ?>
-                                                        <td class="unit-vendor-price-wrapper" data-item="<?php echo $item; ?>" data-prod_no="<?php echo $prod_no; ?>" data-vendor_price="<?php echo $this->session->admin_po_edit_vendor_price ?: 0; ?>">
-                                                            <div class="edit_off" style="<?php echo $this->session->admin_po_edit_vendor_price === TRUE ? 'display:none;' : ''; ?>">
+                                                        <td class="unit-vendor-price-wrapper" style="vertical-align:top;padding-top:13px;" data-item="<?php echo $item; ?>" data-prod_no="<?php echo $prod_no; ?>" data-vendor_price="<?php echo $vendor_price; ?>">
+                                                            <div class="edit_off" style="<?php echo $at_items_vendor_price === TRUE ? 'display:none;' : ''; ?>">
                                                                 <!-- Always zero -->
                                                                 <div class="zero-unit-vendor-price <?php echo $prod_no; ?> pull-right">
-                                                                    $ 0.00
+                                                                    0
                                                                 </div>
                                                             </div>
-                                                            <div class="edit_on" style="<?php echo $this->session->admin_po_edit_vendor_price === TRUE ? '' : 'display:none;'; ?>">
+                                                            <div class="edit_on" style="<?php echo $at_items_vendor_price === TRUE ? '' : 'display:none;'; ?>">
                                                                 <div class="clearfix">
-                                                                    <div class="unit-vendor-price <?php echo $prod_no; ?> pull-right" style="height:27px;width:40px;border:1px solid #ccc;padding-top:4px;padding-right:4px;text-align:right;">
-                                                                        <?php
-                                                                        echo $vendor_price;
-                                                                        ?>
+                                                                    <div class="unit-vendor-price <?php echo $prod_no; ?> <?php echo $item; ?> pull-right" style="height:27px;width:40px;border:1px solid #ccc;padding-top:4px;padding-right:4px;text-align:right;">
+                                                                        <?php echo $vendor_price; ?>
                                                                     </div>
                                                                 </div>
                                                                 <div class="text-right">
+                                                                    <button data-toggle="modal" href="#modal-edit_vendor_price-<?php echo $item; ?>" type="button" class="btn btn-link btn-xs col_btn_edit_vendor_price" style="padding-right:0;margin-right:0;" data-item="<?php echo $item; ?>" data-prod_no="<?php echo $prod_no; ?>" data-value="<?php echo $vendor_price; ?>"><i class="fa fa-pencil"></i> Change</button>
+                                                                    <!--
                                                                     <button type="button" data-prod_no="<?php echo $item; ?>" class="btn btn-link btn-xs btn-edit_vendor_price" style="padding-right:0;margin-right:0;"><i class="fa fa-pencil"></i> Edit</button>
+                                                                    -->
                                                                 </div>
                                                             </div>
+
+                                                            <!-- EDIT VENDOR PRICE -->
+                                                            <div id="modal-edit_vendor_price-<?php echo $item; ?>" class="modal fade bs-modal-sm in" tabindex="-1" role="dialog" aria-hidden="true">
+                                                                <div class="modal-dialog modal-sm">
+                                                                    <div class="modal-content">
+
+                                                                        <div class="modal-header">
+                                                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                                                            <h4 class="modal-title">Edit Vendor Price</h4>
+                                                                        </div>
+                                                                        <div class="modal-body">
+
+                                                                            <span class="the-item"><?php echo $item; ?></span>
+
+                                                                            <div class="form-group clearfix">
+                                                                                <label class="control-label col-md-4">New Price
+                                                                                </label>
+                                                                                <div class="col-md-4">
+                                                                                    <input type="text" id="vendor_price-<?php echo $item; ?>" name="vendor_price-<?php echo $item; ?>" class="form-control input-sm modal-input-vendor-price <?php echo $prod_no; ?>" value="<?php echo $vendor_price; ?>" data-prod_no="<?php echo $prod_no; ?>" data-item="<?php echo $item; ?>" data-page="create" />
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="alert alert-danger">
+                                                                                <button class="close hide" data-close="alert"></button> NOTE: This does not change the price of other variants of the same product item. Please consider to change them altogether.
+                                                                            </div>
+
+                                                                        </div>
+                                                                        <div class="modal-footer">
+                                                                            <button type="button" class="btn dark btn-outline" data-dismiss="modal" tabindex="-1">Cancel</button>
+                                                                            <button type="button" class="btn dark edit_vendor_prices" dismiss="modal" data-item="<?php echo $item; ?>" data-prod_no="<?php echo $item; ?>">Apply changes</button>
+                                                                        </div>
+
+                                                                    </div>
+                                                                    <!-- /.modal-content -->
+                                                                </div>
+                                                                <!-- /.modal-dialog -->
+                                                            </div>
+                                                            <!-- /.modal -->
 
                                                         </td>
                                                         <?php
@@ -1350,10 +1396,10 @@
                                                          * Subtotal
                                                          */
                                                         ?>
-                                                        <td class="text-right order-subtotal <?php echo $item.' '.$prod_no; ?>">
+                                                        <td class="text-right order-subtotal <?php echo $item.' '.$prod_no; ?>" style="vertical-align:top;padding-top:13px;">
                                                             <?php
                                                             $this_size_total =
-                                                                $this->session->admin_po_edit_vendor_price === TRUE
+                                                                $at_items_vendor_price === TRUE
                                                                 ? $this_size_qty * $vendor_price
                                                                 : 0
                                                             ;
@@ -1454,7 +1500,7 @@
                                     </div>
 
                                     <hr style="margin-top:0px;" />
-                                    <a href="<?php echo site_url('admin/purchase_orders/reset'); ?>" style="color:#333;">
+                                    <a href="<?php echo site_url($url_pre.'/purchase_orders/reset'); ?>" style="color:#333;">
                                         <div class="form-group form-group-badge form-group-badge-step5 clearfix">
                                             <label class="control-label col-md-5" style="cursor:pointer;">
                                                 <span class="badge custom-badge pull-left step5"> 5 </span>
@@ -1548,7 +1594,7 @@
                         <!-- /.modal -->
 
                         <!-- EDIT VENDOR PRICE -->
-                        <div id="modal-edit_vendor_price" class="modal fade bs-modal-sm in" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div id="modal-edit_vendor_price__" class="modal fade bs-modal-sm in" tabindex="-1" role="dialog" aria-hidden="true">
                             <div class="modal-dialog modal-sm">
                                 <div class="modal-content" data-object_data='{"<?php echo $this->security->get_csrf_token_name(); ?>":"<?php echo $this->security->get_csrf_hash(); ?>"}'>
 
@@ -1558,7 +1604,7 @@
                                     </div>
                                     <div class="modal-body">
 
-                                        <span class="evp-modal-item"><?php echo $item; ?></span>
+                                        <span class="evp-modal-item"></span>
 
                                         <div class="form-group clearfix">
                                             <label class="control-label col-md-5">New Price
@@ -1575,7 +1621,7 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn dark btn-outline" data-dismiss="modal" tabindex="-1">Cancel</button>
-                                        <button type="button" class="btn dark edit_vendor_prices" data-prod_no="<?php echo @$item; ?>">Apply changes</button>
+                                        <button type="button" class="btn dark edit_vendor_prices" data-prod_no=">">Apply changes</button>
                                     </div>
 
                                 </div>

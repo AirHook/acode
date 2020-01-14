@@ -78,13 +78,13 @@ if ($role=='sales')
 		<li class="heading">
 			<h3 class="uppercase">Purchase Orders</h3>
 		</li>
-		<li class="nav-item with-heading <?php echo $this->uri->uri_string() == 'my_account/sales/sales_orders' ? 'active' : ''; ?>">
-			<a href="javascript:;" class="nav-link  ">
+		<li class="nav-item with-heading <?php echo $this->uri->uri_string() == 'my_account/sales/purchase_orders' ? 'active' : ''; ?>">
+			<a href="<?php echo site_url('my_account/sales/purchase_orders'); ?>" class="nav-link  ">
 				<span class="title">My Purchase Orders</span>
 			</a>
 		</li>
-		<li class="nav-item with-heading <?php echo $this->uri->uri_string() == 'my_account/sales/sales_orders/create' ? 'active' : ''; ?>">
-			<a href="javascript:;" class="nav-link  ">
+		<li class="nav-item with-heading <?php echo $this->uri->uri_string() == 'my_account/sales/purchase_orders/create' ? 'active' : ''; ?>">
+			<a href="<?php echo site_url('my_account/sales/purchase_orders/create'); ?>" class="nav-link  ">
 				<span class="title">Create New Purchase Order</span>
 			</a>
 		</li>

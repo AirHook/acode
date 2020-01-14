@@ -69,7 +69,7 @@ var ComponentsEditors = function () {
         function getStoreDetails(objectData){
             var get_store_details = $.ajax({
                 type:    "POST",
-                url:     base_url + "admin/purchase_orders/get_store_details.html",
+                url:     base_url + "my_account/sales/purchase_orders/get_store_details.html",
                 data:    objectData,
                 dataType: 'json'
             });
@@ -102,7 +102,7 @@ var ComponentsEditors = function () {
         function getDesignerDetails(objectData){
             var get_designer_details = $.ajax({
                 type:    "POST",
-                url:     base_url + "admin/purchase_orders/get_designer_details.html",
+                url:     base_url + "my_account/sales/purchase_orders/get_designer_details.html",
                 data:    objectData,
                 dataType: 'json'
             });
@@ -137,7 +137,7 @@ var ComponentsEditors = function () {
         function getStoresList(objectData){
             var get_stores_list = $.ajax({
                 type:    "POST",
-                url:     base_url + "admin/purchase_orders/get_stores_list.html",
+                url:     base_url + "my_account/sales/purchase_orders/get_stores_list.html",
                 data:    objectData
             });
             get_stores_list.done(function(data) {
@@ -160,7 +160,7 @@ var ComponentsEditors = function () {
         function getVendorDetails(objectData){
             var get_vendor_details = $.ajax({
                 type:    "POST",
-                url:     base_url + "admin/purchase_orders/get_vendor_details.html",
+                url:     base_url + "my_account/sales/purchase_orders/get_vendor_details.html",
                 data:    objectData
             });
             get_vendor_details.done(function(data) {
@@ -182,7 +182,7 @@ var ComponentsEditors = function () {
         function getCategoryTree(objectData){
             var get_category_tree = $.ajax({
                 type:    "POST",
-                url:     base_url + "admin/purchase_orders/get_category_tree.html",
+                url:     base_url + "my_account/sales/purchase_orders/get_category_tree.html",
                 data:    objectData
             });
             get_category_tree.done(function(data) {
@@ -218,7 +218,7 @@ var ComponentsEditors = function () {
         function getThumbs(objectData){
             var get_thumbs = $.ajax({
                 type:    "POST",
-                url:     base_url + "admin/purchase_orders/get_thumbs.html",
+                url:     base_url + "my_account/sales/purchase_orders/get_thumbs.html",
                 data:    objectData
             });
             get_thumbs.done(function(data){
@@ -242,7 +242,7 @@ var ComponentsEditors = function () {
         function addRem(objectData){
             var addrem = $.ajax({
                 type:    "POST",
-                url:     base_url + "admin/purchase_orders/addrem.html",
+                url:     base_url + "my_account/sales/purchase_orders/addrem.html",
                 data:    objectData
             });
             addrem.done(function(data) {
@@ -273,7 +273,7 @@ var ComponentsEditors = function () {
         function setItems(objectData){
             var set_items = $.ajax({
                 type:    "GET",
-                url:     base_url + "admin/purchase_orders/set_items.html"
+                url:     base_url + "my_account/sales/purchase_orders/set_items.html"
                 //data:    objectData
             });
             set_items.done(function(data){
@@ -304,7 +304,7 @@ var ComponentsEditors = function () {
         function setSizeQty(objectData){
             var set_size_qty = $.ajax({
                 type:    "POST",
-                url:     base_url + "admin/purchase_orders/set_size_qty.html",
+                url:     base_url + "my_account/sales/purchase_orders/set_size_qty.html",
                 data:    objectData,
                 dataType: 'json'
             });
@@ -355,9 +355,9 @@ var ComponentsEditors = function () {
                     var po_store_id = $('[name="po_store_id"]').val();
                     if (po_store_id) {
                         // url to reset po_store_id session
-                        var getUrl = base_url + "admin/purchase_orders/edit_store_id_session/index/0.html";
+                        var getUrl = base_url + "my_account/sales/purchase_orders/edit_store_id_session/index/0.html";
                         $.get(getUrl, function(){
-                            $.get(base_url + "admin/purchase_orders/clear_items.html", function(){
+                            $.get(base_url + "my_account/sales/purchase_orders/clear_items.html", function(){
                                 $('.items_count').html('0');
                                 $('.cart_basket_wrapper table tbody').html('');
                                 $('.status-with-items').hide();
@@ -368,7 +368,7 @@ var ComponentsEditors = function () {
                             });
                         });
                     } else {
-                        $.get(base_url + "admin/purchase_orders/clear_items.html", function(){
+                        $.get(base_url + "my_account/sales/purchase_orders/clear_items.html", function(){
                             $('.items_count').html('0');
                             $('.cart_basket_wrapper table tbody').html('');
                             $('.status-with-items').hide();
@@ -575,9 +575,9 @@ var ComponentsEditors = function () {
             $('.edit_on, .edit_off').toggle();
             var checked = $(this).is(":checked");
             if (checked) {
-                var getUrl = base_url + "admin/purchase_orders/edit_vendor_price_session/index/1.html";
+                var getUrl = base_url + "my_account/sales/purchase_orders/edit_vendor_price_session/index/1.html";
             } else {
-                var getUrl = base_url + "admin/purchase_orders/edit_vendor_price_session/index/0.html";
+                var getUrl = base_url + "my_account/sales/purchase_orders/edit_vendor_price_session/index/0.html";
             }
             $.get(getUrl, function(){
                 // update each variant's subtotal
@@ -626,7 +626,7 @@ var ComponentsEditors = function () {
             objectData.page = page;
             $.ajax({
                 type:    "POST",
-                url:     base_url + "admin/purchase_orders/edit_vendor_price.html",
+                url:     base_url + "my_account/sales/purchase_orders/edit_vendor_price.html",
                 data:    objectData,
                 success: function(data) {
                     $('.edit_on').show();
@@ -642,7 +642,7 @@ var ComponentsEditors = function () {
                 }
             });
             // close modal
-             $(".modal-backdrop").remove();
+            $(".modal-backdrop").remove();
         });
 
         // multiple search submit action
@@ -690,10 +690,10 @@ var ComponentsEditors = function () {
                 $('[name="po_store_id"]').val(objectData.po_store_id);
                 $('[name="po_store_id"]').prop('readonly', true);
                 // set get url to set po_store_id session
-                var getUrl = base_url + "admin/purchase_orders/edit_store_id_session/index/" + objectData.po_store_id + ".html";
+                var getUrl = base_url + "my_account/sales/purchase_orders/edit_store_id_session/index/" + objectData.po_store_id + ".html";
             } else {
                 // url to reset po_store_id session
-                var getUrl = base_url + "admin/purchase_orders/edit_store_id_session/index/0.html";
+                var getUrl = base_url + "my_account/sales/purchase_orders/edit_store_id_session/index/0.html";
             }
             $.get(getUrl, function(){
                 // get store details

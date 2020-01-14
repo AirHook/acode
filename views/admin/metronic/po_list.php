@@ -1,18 +1,63 @@
+					<?php if (
+						$this->webspace_details->options['site_type'] == 'hub_site'
+						&& @$role != 'sales'
+					)
+					{ ?>
+
+					<div class="table-toolbar">
+
+						<div class="row">
+
+							<div class="col-lg-3 col-md-4">
+								<select class="bs-select form-control" id="filter_by_designer_select" name="des_slug" data-live-search="true" data-size="5" data-show-subtext="true">
+									<option class="option-placeholder" value="">Select Designer...</option>
+									<option value="all">All Designers</option>
+									<?php if ($this->webspace_details->options['site_type'] == 'hub_site') { ?>
+									<option value="<?php echo $this->webspace_details->slug; ?>" data-subtext="<em>Mixed Designers</em>" data-des_slug="<?php echo $this->webspace_details->slug; ?>" data-des_id="<?php echo $this->webspace_details->id; ?>" <?php echo $this->webspace_details->slug === @$des_slug ? 'selected="selected"' : ''; ?>>
+										<?php echo $this->webspace_details->name; ?>
+									</options>
+									<?php } ?>
+									<?php
+									if (@$designers)
+									{
+										foreach ($designers as $designer)
+										{
+											if ($this->webspace_details->slug != $designer->url_structure)
+											{ ?>
+
+									<option value="<?php echo $designer->url_structure; ?>" data-subtext="<em></em>" data-des_slug="<?php echo $designer->url_structure; ?>" data-des_id="<?php echo $designer->des_id; ?>" <?php echo $designer->url_structure === @$des_slug ? 'selected="selected"' : ''; ?>>
+										<?php echo ucwords(strtolower($designer->designer)); ?>
+									</option>
+
+												<?php
+											}
+										}
+									} ?>
+								</select>
+							</div>
+							<button class="apply_filer_by_designer btn dark hidden-sm hidden-xs" data-page_param="<?php echo $this->uri->segment(3); ?>"> Filter </button>
+
+						</div>
+						<button class="apply_filer_by_designer btn dark btn-block margin-top-10 hidden-lg hidden-md" data-page_param="<?php echo $this->uri->segment(3); ?>"> Filter </button>
+
+					</div>
+
+						<?php
+					} ?>
+
 					<!-- BEGIN FORM-->
 					<!-- FORM =======================================================================-->
-					<?php echo form_open(
-                        (
-                            $this->uri->segment(1) === 'sales'
-                            ? 'sales/purchase_orders/bulk_actions'
-                            : $this->config->slash_item('admin_folder').'purchase_orders/bulk_actions'
-                        ),
+					<?php
+					$url_pre = @$role == 'sales' ? 'my_account/sales' : 'admin';
+
+					echo form_open(
+						$url_pre.'/purchase_orders/bulk_actions',
 						array(
 							'class'=>'form-horizontal',
 							'id'=>'form-purchase_orders_bulk_actions'
 						)
-					); ?>
+					);
 
-					<?php
 					/*********
 					 * Notification area
 					 */
@@ -63,8 +108,8 @@
                         </style>
 
                         <ul class="nav nav-tabs">
-                            <li class="<?php echo $this->uri->uri_string() == 'admin/purchase_orders' ? 'active' : ''; ?>">
-                                <a href="<?php echo site_url('admin/purchase_orders'); ?>">
+							<li class="<?php echo strpos( $this->uri->uri_string(), 'purchase_orders/all') === FALSE ? '' : 'active'; ?>">
+                                <a href="<?php echo site_url('admin/purchase_orders/all'); ?>">
                                     All Purchase Orders
                                 </a>
                             </li>
@@ -83,7 +128,7 @@
                             if ($this->webspace_details->options['site_type'] == 'hub_site')
                             { ?>
                             <li>
-                                <a href="<?php echo site_url('admin/purchase_orders/create'); ?>">
+                                <a href="<?php echo site_url($url_pre.'/purchase_orders/create'); ?>">
                                     Add New Purchase Order <i class="fa fa-plus"></i>
                                 </a>
                             </li>
@@ -102,13 +147,15 @@
 
 							<div class="col-lg-3 col-md-4">
 								<select class="bs-select form-control" id="bulk_actions_select" name="bulk_action" disabled>
-									<option value="" selected="selected">Bulk Actions</option>
+									<option value="">Bulk Actions</option>
 									<!--<option value="pe">Set as Pending</option>-->
-									<option value="it">Set as In-Transit</option>
-									<option value="co">Set as Complete</option>
+									<option value="co">Set selected PO's as Complete</option>
+									<option value="ca">Calcal Selected PO's</option>
+									<!--
 									<option value="ho">Set as On Hold</option>
-									<option value="ca">Set as Cancelled</option>
+									<option value="it">Set as In-Transit</option>
 									<option value="del">Permanently Delete</option>
+									-->
 								</select>
 							</div>
 							<button class="btn green hidden-sm hidden-xs" id="apply_bulk_actions" data-toggle="modal" href="#confirm_bulk_actions" disabled> Apply </button>
@@ -117,6 +164,27 @@
 						<button class="btn green btn-block margin-top-10 hidden-lg hidden-md" id="apply_bulk_actions" data-toggle="modal" href="#confirm_bulk_actions" disabled> Apply </button>
 
                     </div>
+
+					<?php
+                    /***********
+                     * Top Pagination
+                     */
+                    ?>
+                    <?php if ( ! @$search) { ?>
+                    <div class="row margin-bottom-10">
+                        <div class="col-md-12 text-justify pull-right">
+                            <span style="<?php echo $this->pagination->create_links() ? 'position:relative;top:15px;' : ''; ?>">
+                                <?php if ($count_all == 0) { ?>
+                                Showing 0 records
+                                <?php } else { ?>
+                                Showing <?php echo ($limit * $page) - ($limit - 1); ?> to <?php echo $count_all < ($limit * $page) ? $count_all : $limit * $page; ?> of about <?php echo number_format($count_all); ?> records
+                                <?php } ?>
+                            </span>
+                            <?php echo $this->pagination->create_links(); ?>
+                        </div>
+                    </div>
+                    <?php } ?>
+
 					<?php
 					/*********
 					 * This style a fix to the dropdown menu inside table-responsive table-scrollable
@@ -148,7 +216,7 @@
                                 <th> Designer </th>
                                 <th> Vendor </th>
                                 <th style="width:100px;"> Status </th>
-                                <th style="width:100px;"> Actions </th>
+                                <th style="width:80px;"> Actions </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -159,9 +227,7 @@
 								$i = 1;
 								foreach ($orders as $order)
 								{
-									if ($this->uri->segment(1) === 'sales') $edit_link = site_url('sales/purchase_orders/details/index/'.$order->po_id);
-									else if ($this->uri->segment(1) === 'my_account') $edit_link = site_url($this->uri->uri_string().'/details/index/'.$order->po_id);
-									else $edit_link = site_url($this->config->slash_item('admin_folder').'purchase_orders/details/index/'.$order->po_id);
+									$edit_link = site_url($url_pre.'/purchase_orders/details/index/'.$order->po_id);
                                     ?>
 
                             <tr class="odd gradeX " onmouseover="$(this).find('.hidden_first_edit_link').show();" onmouseout="$(this).find('.hidden_first_edit_link').hide();">
@@ -245,7 +311,17 @@
                                     <span class="label label-sm label-<?php echo $label; ?>"> <?php echo $text; ?> </span>
                                 </td>
                                 <td class="dropdown-wrap dropdown-fix">
-                                    <div class="btn-group" >
+
+									<!-- Close PO -->
+                                    <a data-toggle="modal" href="#complete-<?php echo $order->po_id; ?>" class="tooltips" data-original-title="Close PO">
+                                        <i class="fa fa-close"></i>
+                                    </a>
+									<!-- Cancel PO -->
+                                    <a data-toggle="modal" href="#cancel-<?php echo $order->po_id; ?>" class="tooltips" data-original-title="Cancel PO">
+                                        <i class="fa fa-ban"></i>
+                                    </a>
+
+                                    <div class="btn-group hide" >
                                         <button class="btn btn-xs red-flamingo dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false" onclick="$('.dropdown-wrap').toggleClass('dropdown-fix');" > Actions
                                             <i class="fa fa-angle-down"></i>
                                         </button>
@@ -270,7 +346,7 @@
                                                     <i class="fa fa-<?php echo $order->status == '6' ? 'check': 'ellipsis-h'; ?>"></i> On Hold </a>
                                             </li>
 											<li>
-                                                <a data-toggle="modal" href="#on_hold-<?php echo $order->po_id; ?>">
+                                                <a data-toggle="modal" href="#cancel-<?php echo $order->po_id; ?>">
                                                     <i class="fa fa-<?php echo $order->status == '7' ? 'check': 'ellipsis-h'; ?>"></i> Cancel </a>
                                             </li>
 												<?php
@@ -293,7 +369,7 @@
 												<div class="modal-body"> Set order as PENDING? </div>
 												<div class="modal-footer">
 													<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-													<a href="<?php echo $this->uri->segment(1) === 'sales' ? site_url('sales/purchase_orders/status/update/'.$order->po_id.'/0') : site_url($this->config->slash_item('admin_folder').'purchase_orders/status/update/'.$order->po_id.'/0'); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+													<a href="<?php echo $url_pre.'/purchase_orders/status/update/'.$order->po_id.'/0'; ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
 														<span class="ladda-label">Confirm?</span>
 														<span class="ladda-spinner"></span>
 													</a>
@@ -315,7 +391,7 @@
 												<div class="modal-body"> Set order as IN-TRANSIT? </div>
 												<div class="modal-footer">
 													<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-													<a href="<?php echo $this->uri->segment(1) === 'sales' ? site_url('sales/purchase_orders/status/update/'.$order->po_id.'/4') : site_url($this->config->slash_item('admin_folder').'purchase_orders/status/update/'.$order->po_id.'/4'); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+													<a href="<?php echo $url_pre.'/purchase_orders/status/update/'.$order->po_id.'/4'; ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
 														<span class="ladda-label">Confirm?</span>
 														<span class="ladda-spinner"></span>
 													</a>
@@ -337,7 +413,7 @@
 												<div class="modal-body"> Set order as COMPLETE? </div>
 												<div class="modal-footer">
 													<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-													<a href="<?php echo $this->uri->segment(1) === 'sales' ? site_url('sales/purchase_orders/status/update/'.$order->po_id.'/5') : site_url($this->config->slash_item('admin_folder').'purchase_orders/status/update/'.$order->po_id.'/5'); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+													<a href="<?php echo $url_pre.'/purchase_orders/status/update/'.$order->po_id.'/5'; ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
 														<span class="ladda-label">Confirm?</span>
 														<span class="ladda-spinner"></span>
 													</a>
@@ -359,7 +435,7 @@
 												<div class="modal-body"> Set order as ON HOLD? </div>
 												<div class="modal-footer">
 													<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-													<a href="<?php echo $this->uri->segment(1) === 'sales' ? site_url('sales/purchase_orders/status/update/'.$order->po_id.'/6') : site_url($this->config->slash_item('admin_folder').'purchase_orders/status/update/'.$order->po_id.'/6'); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+													<a href="<?php echo $url_pre.'/purchase_orders/status/update/'.$order->po_id.'/6'; ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
 														<span class="ladda-label">Confirm?</span>
 														<span class="ladda-spinner"></span>
 													</a>
@@ -371,7 +447,7 @@
 									</div>
 									<!-- /.modal -->
 									<!-- CANCELLED -->
-									<div class="modal fade bs-modal-sm" id="on_hold-<?php echo $order->po_id?>" tabindex="-1" role="dialog" aria-hidden="true">
+									<div class="modal fade bs-modal-sm" id="cancel-<?php echo $order->po_id?>" tabindex="-1" role="dialog" aria-hidden="true">
 										<div class="modal-dialog modal-sm">
 											<div class="modal-content">
 												<div class="modal-header">
@@ -381,7 +457,7 @@
 												<div class="modal-body"> Set order as CANCELLED? </div>
 												<div class="modal-footer">
 													<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-													<a href="<?php echo $this->uri->segment(1) === 'sales' ? site_url('sales/purchase_orders/status/update/'.$order->po_id.'/7') : site_url($this->config->slash_item('admin_folder').'purchase_orders/status/update/'.$order->po_id.'/7'); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+													<a href="<?php echo $url_pre.'/purchase_orders/status/update/'.$order->po_id.'/7'; ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
 														<span class="ladda-label">Confirm?</span>
 														<span class="ladda-spinner"></span>
 													</a>
@@ -403,7 +479,7 @@
 												<div class="modal-body"> Deleting PO's is not an option at the moment. Please contact your administrator if it is necessary to delete a certain PO. </div>
 												<div class="modal-footer">
 													<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-													<a href="<?php echo $this->uri->segment(1) === 'sales' ? site_url('sales/purchase_orders/delete/index/'.$order->po_id) : site_url($this->config->slash_item('admin_folder').'purchase_orders/delete/index/'.$order->po_id); ?>" type="button" class="btn green mt-ladda-btn ladda-button hide" data-style="expand-left">
+													<a href="<?php echo $url_pre.'/purchase_orders/delete/index/'.$order->po_id; ?>" type="button" class="btn green mt-ladda-btn ladda-button hide" data-style="expand-left">
 														<span class="ladda-label">Confirm?</span>
 														<span class="ladda-spinner"></span>
 													</a>

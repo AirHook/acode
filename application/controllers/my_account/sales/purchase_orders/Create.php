@@ -6,7 +6,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * Create PO Class
  *
  */
-class Create extends Admin_Controller
+class Create extends Sales_user_Controller
 {
 	/**
 	 * Constructor
@@ -53,21 +53,21 @@ class Create extends Admin_Controller
 			$this->data['colors'] = $this->color_list->select();
 
 			// let's ensure that there are no admin session for po mod
-			if ($this->session->admin_po_mod_items)
+			if ($this->session->po_mod_items)
 			{
 				// new po admin access
-				unset($_SESSION['admin_po_vendor_id']);
-				unset($_SESSION['admin_po_des_url_structure']);
-				unset($_SESSION['admin_po_items']);
-				unset($_SESSION['admin_po_size_qty']);
-				unset($_SESSION['admin_po_store_id']);
-				unset($_SESSION['admin_po_edit_vendor_price']);
-				unset($_SESSION['admin_po_slug_segs']);
+				unset($_SESSION['po_vendor_id']);
+				unset($_SESSION['po_des_url_structure']);
+				unset($_SESSION['po_items']);
+				unset($_SESSION['po_size_qty']);
+				unset($_SESSION['po_store_id']);
+				unset($_SESSION['po_edit_vendor_price']);
+				unset($_SESSION['po_slug_segs']);
 				// remove po mod details
-				unset($_SESSION['admin_po_mod_po_id']);
-				unset($_SESSION['admin_po_mod_items']);
-				unset($_SESSION['admin_po_mod_size_qty']);
-				unset($_SESSION['admin_po_mod_edit_vendor_price']);
+				unset($_SESSION['po_mod_po_id']);
+				unset($_SESSION['po_mod_items']);
+				unset($_SESSION['po_mod_size_qty']);
+				unset($_SESSION['po_mod_edit_vendor_price']);
 			}
 
 			// generate new po number
@@ -81,7 +81,7 @@ class Create extends Admin_Controller
 			if (
 				($this->webspace_details->options['site_type'] == 'sat_site'
 				OR $this->webspace_details->options['site_type'] == 'sal_site')
-				&& $this->session->admin_sales_loggedin
+				OR $this->session->admin_sales_loggedin
 			)
 			{
 				$this->data['des_slug'] = @$this->sales_user_details->designer ?: $this->webspace_details->slug;
@@ -101,11 +101,11 @@ class Create extends Admin_Controller
 			// when session is present, get designer details and use it for the company details
 			// populating both company info and ship to info
 			// this also serves as reference in getting category tree information
-			if ($this->session->admin_po_des_url_structure)
+			if ($this->session->po_des_url_structure)
 			{
 				$this->data['designer_details'] = $this->designer_details->initialize(
 					array(
-						'url_structure' => $this->session->admin_po_des_url_structure
+						'url_structure' => $this->session->po_des_url_structure
 					)
 				);
 				$this->data['des_id'] = $this->designer_details->des_id;
@@ -123,17 +123,17 @@ class Create extends Admin_Controller
 			$this->data['company_contact_person'] = $this->designer_details->owner ?: $this->webspace_details->owner;
 			$this->data['company_contact_email'] = $this->designer_details->info_email ?: $this->webspace_details->info_email;
 
-			// category tree data
+			// category tree data which aids in getting initial thumbs where necessary
 			if (
-				$this->session->admin_po_des_url_structure
-				&& $this->session->admin_po_vendor_id
+				$this->session->po_des_url_structure
+				&& $this->session->po_vendor_id
 			)
 			{
 				// get the designer category tree
 				$this->data['des_subcats'] = $this->categories_tree->treelist(
 					array(
 						'd_url_structure' => $this->data['designer_details']->url_structure,
-						'vendor_id' => $this->session->admin_po_vendor_id,
+						'vendor_id' => $this->session->po_vendor_id,
 						'with_products' => TRUE
 					)
 				);
@@ -143,15 +143,15 @@ class Create extends Admin_Controller
 
 			// stores list and store details iteration
 			// in the beginning, its simply get all list
-			// on refresh of existing session, check for admin_po_store_id session
-			// and admin_po_des_url_structure session
+			// on refresh of existing session, check for po_store_id session
+			// and po_des_url_structure session
 			// stores list will now be based on reference designer session
 			// and store details populating ship to is based on store id session
-			if ($this->session->admin_po_des_url_structure)
+			if ($this->session->po_des_url_structure)
 			{
 				$this->data['stores'] = $this->wholesale_users_list->select(
 					array(
-						'reference_designer' => $this->session->admin_po_des_url_structure
+						'reference_designer' => $this->session->po_des_url_structure
 					)
 				);
 			}
@@ -159,26 +159,26 @@ class Create extends Admin_Controller
 			{
 				$this->data['stores'] = $this->wholesale_users_list->select();
 			}
-			if ($this->session->admin_po_store_id)
+			if ($this->session->po_store_id)
 			{
 				$this->data['store_details'] = $this->wholesale_user_details->initialize(
 					array(
-						'user_id' => $this->session->admin_po_store_id
+						'user_id' => $this->session->po_store_id
 					)
 				);
 			}
 
 			// set author info for the summary view
-			$this->data['author_name'] = $this->admin_user_details->fname.' '.$this->admin_user_details->lname;
-			$this->data['author_email'] = $this->admin_user_details->email;
+			$this->data['author_name'] = $this->sales_user_details->fname.' '.$this->sales_user_details->lname;
+			$this->data['author_email'] = $this->sales_user_details->email;
 
 			/*****
 			 * Check for items in session
 			 */
 			// check for po items
 			$this->data['po_items'] =
-				$this->session->admin_po_items
-				? json_decode($this->session->admin_po_items, TRUE)
+				$this->session->po_items
+				? json_decode($this->session->po_items, TRUE)
 				: array()
 			;
 			$items_count = 0;
@@ -194,8 +194,8 @@ class Create extends Admin_Controller
 
 			// set slugs segments if any
 			$this->data['slug_segs'] =
-				$this->session->admin_po_slug_segs
-				? json_decode($this->session->admin_po_slug_segs, TRUE)
+				$this->session->po_slug_segs
+				? json_decode($this->session->po_slug_segs, TRUE)
 				: array()
 			;
 
@@ -208,8 +208,8 @@ class Create extends Admin_Controller
 				&& ! $this->session->admin_sales_loggedin
 			)
 			{
-				if ($this->session->admin_po_des_url_structure) $where['designer.url_structure'] = $this->session->admin_po_des_url_structure;
-				if ($this->session->admin_po_vendor_id) $where['tbl_product.vendor_id'] = $this->session->admin_po_vendor_id;
+				if ($this->session->po_des_url_structure) $where['designer.url_structure'] = $this->session->po_des_url_structure;
+				if ($this->session->po_vendor_id) $where['tbl_product.vendor_id'] = $this->session->po_vendor_id;
 				if (@$this->data['des_subcats']) $where['tbl_product.categories LIKE'] = '%'.$category_id.'%';
 			}
 			else
@@ -217,7 +217,7 @@ class Create extends Admin_Controller
 				$where = array(
 					'designer.url_structure' => $this->data['des_slug'],
 					'tbl_product.categories LIKE' => '%'.$category_id.'%',
-					'tbl_product.vendor_id' => $this->session->admin_po_vendor_id
+					'tbl_product.vendor_id' => $this->session->po_vendor_id
 				);
 			}
 
@@ -245,12 +245,13 @@ class Create extends Admin_Controller
 			$this->data['show_loading'] = TRUE;
 			$this->data['search_string'] = FALSE;
 
+			$this->data['role'] = 'sales';
 			$this->data['file'] = 'po_create';
 			$this->data['page_title'] = 'Create Purchase Order';
 			$this->data['page_description'] = 'Purcahse Order Create';
 
 			// load views...
-			$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template/template', $this->data);
+			$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template_my_account/template', $this->data);
 		}
 		else
 		{
@@ -307,12 +308,12 @@ class Create extends Admin_Controller
 			$post_ary['po_number'] = $po_number;
 			$post_ary['rev'] = '0'; // this is create so set to default 0
 			$post_ary['des_id'] = $this->input->post('des_id');
-			$post_ary['vendor_id'] = $this->session->admin_po_vendor_id;
+			$post_ary['vendor_id'] = $this->session->po_vendor_id;
 			$post_ary['user_id'] = 0;
 			$post_ary['po_date'] = strtotime($this->input->post('po_date'));
 			$post_ary['delivery_date'] = strtotime($this->input->post('delivery_date'));
-			$post_ary['author'] = $this->admin_user_details->admin_id; // author
-			$post_ary['c'] = '1'; // 1-admin,2-sales
+			$post_ary['author'] = $this->sales_user_details->admin_sales_id; // author
+			$post_ary['c'] = '2'; // 1-admin,2-sales
 			$post_ary['status'] = '0'; // set to pending approval
 			$post_ary['options'] = json_encode(array_filter($options)); // remove empty options
 			$post_ary['remarks'] = $this->input->post('remarks');
@@ -332,7 +333,7 @@ class Create extends Admin_Controller
 			// */
 
 			// set po items
-			$post_ary['items'] = $this->session->admin_po_items;
+			$post_ary['items'] = $this->session->po_items;
 
 			/***********
 			 * Save it to the database
@@ -344,24 +345,24 @@ class Create extends Admin_Controller
 
 			// once done, we now remove session items
 			// new po admin access
-			unset($_SESSION['admin_po_vendor_id']);
-			unset($_SESSION['admin_po_des_url_structure']);
-			unset($_SESSION['admin_po_items']);
-			unset($_SESSION['admin_po_size_qty']);
-			unset($_SESSION['admin_po_store_id']);
-			unset($_SESSION['admin_po_edit_vendor_price']);
-			unset($_SESSION['admin_po_slug_segs']);
+			unset($_SESSION['po_vendor_id']);
+			unset($_SESSION['po_des_url_structure']);
+			unset($_SESSION['po_items']);
+			unset($_SESSION['po_size_qty']);
+			unset($_SESSION['po_store_id']);
+			unset($_SESSION['po_edit_vendor_price']);
+			unset($_SESSION['po_slug_segs']);
 			// remove po mod details
-			unset($_SESSION['admin_po_mod_po_id']);
-			unset($_SESSION['admin_po_mod_items']);
-			unset($_SESSION['admin_po_mod_size_qty']);
-			unset($_SESSION['admin_po_mod_edit_vendor_price']);
+			unset($_SESSION['po_mod_po_id']);
+			unset($_SESSION['po_mod_items']);
+			unset($_SESSION['po_mod_size_qty']);
+			unset($_SESSION['po_mod_edit_vendor_price']);
 
 			/***********
 			 * Send po email confirmation with PDF attachment
 			 */
 			$this->load->library('purchase_orders/purchase_order_sending');
-	 		$this->purchase_order_sending->send($this_po_id, 'admin');
+	 		$this->purchase_order_sending->send($this_po_id, 'admin', 'sales');
 
 			// set flash data
 			$this->session->set_flashdata('success', 'add');
@@ -488,7 +489,7 @@ class Create extends Admin_Controller
 			';
 			// handle form validation, datepickers, and scripts
 			$this->data['page_level_scripts'].= '
-				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/admin-po-components.js" type="text/javascript"></script>
+				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/sales-po-components.js" type="text/javascript"></script>
 			';
 	}
 

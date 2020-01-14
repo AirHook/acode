@@ -4,7 +4,7 @@ var TableDatatablesManaged = function () {
 
     var initTable = function () {
 
-        var table = $('#tbl-orders');
+        var table = $('#tbl-orders_');
 
         // begin wholesale users table
         table.dataTable({
@@ -120,6 +120,51 @@ var TableDatatablesManaged = function () {
         });
     }
 
+    // header checkbox change function
+    // get the "data-set" attribute and look for each (look for all rows checkboxes)
+    // if header checkbos is checked, check row checkboxes and set row as active
+    $('#tbl-orders').find('.group-checkable').change(function () {
+        var set = jQuery(this).attr("data-set");
+        var checked = jQuery(this).is(":checked");
+        jQuery(set).each(function () {
+            if (checked) {
+                $(this).prop("checked", true);
+                $(this).parents('tr').addClass("active");
+                // add other custom javascripts here...
+                $('#bulk_actions_select').prop("disabled", false);
+                $('#apply_bulk_actions').prop("disabled", false);
+            } else {
+                $(this).prop("checked", false);
+                $(this).parents('tr').removeClass("active");
+                // add other custom javascripts here...
+                $('#bulk_actions_select').prop("disabled", true);
+                $('#bulk_actions_select').selectpicker("val", "");
+                $('#apply_bulk_actions').prop("disabled", true);
+            }
+            $('#bulk_actions_select').selectpicker("refresh");
+        });
+    });
+
+    // table row checkboxes change function
+    $('#tbl-orders').on('change', 'tbody tr .checkboxes', function () {
+        $(this).parents('tr').toggleClass("active");
+        // add other custom javascripts here...
+        var checked = jQuery(this).is(":checked");
+        if (checked) {
+            $('#bulk_actions_select').prop("disabled", false);
+            $('#apply_bulk_actions').prop("disabled", false);
+            $('#heading_checkbox').prop("checked", true);
+        } else {
+            if ($('.checkboxes:checked').length == 0) {
+                $('#heading_checkbox').prop("checked", false);
+                $('#bulk_actions_select').selectpicker("val", "");
+                $('#bulk_actions_select').prop("disabled", true);
+                $('#apply_bulk_actions').prop("disabled", true);
+            }
+        }
+        $('#bulk_actions_select').selectpicker("refresh");
+    });
+
 	// apply button scripts
 	$('#apply_bulk_actions').click(function(){
 		var x = document.getElementById("bulk_actions_select").selectedIndex;
@@ -177,6 +222,25 @@ var TableDatatablesManaged = function () {
             window.location.href=link;
         }
     });
+
+    // apply filter by designer
+	$('.apply_filer_by_designer').click(function(){
+        var page_param = $(this).data('page_param');
+		var x = document.getElementById("filter_by_designer_select").selectedIndex;
+		var y = document.getElementById("filter_by_designer_select").options;
+		var z = y[x].value;
+		if (!z) {
+			alert("Please select a designer to filter table.");
+			return false;
+		} else {
+            $('#loading').modal('show');
+            if (z=='all'){
+                window.location.href = base_url + "admin/purchase_orders/" + page_param + ".html";
+            }else{
+                window.location.href = base_url + "admin/purchase_orders/" + page_param + "/index/" + z + ".html";
+            }
+		}
+	});
 
     return {
 

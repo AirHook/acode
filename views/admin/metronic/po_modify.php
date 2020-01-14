@@ -1,3 +1,6 @@
+                                    <?php
+                                    $url_pre = @$role == 'sales' ? 'my_account/sales' : 'admin';
+                                    ?>
                                     <!-- BEGIN PAGE CONTENT INNER -->
                                     <div class="page-content-inner">
 
@@ -37,7 +40,7 @@
 
                                                 <!-- BEGIN FORM =======================================================-->
                                                 <?php echo form_open(
-                                                    $this->uri->segment(1).'/purchase_orders/modify/index/'.$this->purchase_order_details->po_id,
+                                                    $url_pre.'/purchase_orders/modify/index/'.$this->purchase_order_details->po_id,
                                                     array(
                                                         'class' => 'form-horizontal',
                                                         'id' => 'form-po_modify'
@@ -311,7 +314,7 @@
 																	{
                                                                         $overall_qty = 0;
                                                                         $overall_total = 0;
-																		$i = 1;
+																		//$i = 1;
 																		foreach ($po_items as $item => $options)
 																		{
                                                                             // get product details
@@ -365,7 +368,7 @@
 																		 * Image links to product details page
 																		 */
 																		?>
-																		<td>
+																		<td style="vertical-align:top;">
                                                                             <a href="<?php echo $img_linesheet ?: 'javascript:;'; ?>" class="<?php echo $img_linesheet ? 'fancybox' : ''; ?> pull-left">
                                                                                 <img class="" src="<?php echo $img_front_new; ?>" alt="" style="width:60px;height:auto;" onerror="$(this).attr('src','<?php echo $this->config->item('PROD_IMG_URL').'images/instylelnylogo_3.jpg'; ?>');" />
                                                                             </a>
@@ -385,7 +388,7 @@
 																		 * Size and Qty
 																		 */
 																		?>
-																		<td class="size-and-qty-wrapper">
+																		<td class="size-and-qty-wrapper" style="vertical-align:top;">
 
                                                                             <?php
                                                                             $this_size_qty = 0;
@@ -397,7 +400,9 @@
                                                                                     : 0
                                                                                 ;
                                                                                 $this_size_qty += $size_qty;
-                                                                                ?>
+
+                                                                                if ($s != 'XL1' && $s != 'XL2')
+                                                                                { ?>
 
                                                                             <div style="display:inline-block;">
                                                                                 <?php echo $s; ?> <br />
@@ -410,7 +415,8 @@
                                                                                 </select>
                                                                             </div>
 
-                                                                                <?php
+                                                                                    <?php
+                                                                                }
                                                                             } ?>
 
                                                                             =
@@ -427,82 +433,79 @@
 																		/**********
 																		 * Unit Vendor Price
 																		 */
+                                                                        $at_items_vendor_price = ((@$role == 'sales' && $this->session->po_mod_edit_vendor_price) OR $this->session->admin_po_mod_edit_vendor_price) ? TRUE : FALSE;
 																		?>
-                                                                        <td class="unit-vendor-price-wrapper" data-item="<?php echo $item; ?>" data-prod_no="<?php echo $prod_no; ?>" data-vendor_price="<?php echo $this->session->admin_po_edit_vendor_price ?: 0; ?>">
-                                                                            <div class="edit_off" style="<?php echo @$po_options['show_vendor_price'] ? 'display:none;' : ''; ?>">
+                                                                        <td class="unit-vendor-price-wrapper" style="vertical-align:top;padding-top:13px;" data-item="<?php echo $item; ?>" data-prod_no="<?php echo $prod_no; ?>" data-vendor_price="<?php echo $vendor_price; ?>">
+                                                                            <div class="edit_off" style="<?php echo $at_items_vendor_price ? 'display:none;' : ''; ?>">
+                                                                                <!-- Always zero -->
                                                                                 <div class="zero-unit-vendor-price <?php echo $prod_no; ?> pull-right">
-                                                                                    <?php
-                                                                                    $v_price = 0;
-                                                                                    echo '$ '.number_format($v_price, 2);
-                                                                                    ?>
+                                                                                    0
                                                                                 </div>
                                                                             </div>
-                                                                            <div class="edit_on" style="<?php echo @$po_options['show_vendor_price'] ? '' : 'display:none;'; ?>">
+                                                                            <div class="edit_on" style="<?php echo $at_items_vendor_price ? '' : 'display:none;'; ?>">
                                                                                 <div class="clearfix">
-                                                                                    <div class="unit-vendor-price <?php echo $prod_no; ?> pull-right" style="height:27px;width:40px;border:1px solid #ccc;padding-top:4px;padding-right:4px;text-align:right;">
-                                                                                        <?php
-                                                                                        $v_price = $vendor_price;
-                                                                                        echo $v_price;
-                                                                                        ?>
+                                                                                    <div class="unit-vendor-price <?php echo $prod_no; ?> <?php echo $item; ?> pull-right" style="height:27px;width:40px;border:1px solid #ccc;padding-top:4px;padding-right:4px;text-align:right;">
+                                                                                        <?php echo $vendor_price; ?>
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="text-right">
-                                                                                    <button data-toggle="modal" href="#modal-edit_vendor_price-<?php echo $item; ?>" type="button" class="btn btn-link btn-xs" style="padding-right:0;margin-right:0;"><i class="fa fa-pencil"></i> Edit</button>
+                                                                                    <button data-toggle="modal" href="#modal-edit_vendor_price-<?php echo $item; ?>" type="button" class="btn btn-link btn-xs col_btn_edit_vendor_price" style="padding-right:0;margin-right:0;" data-item="<?php echo $item; ?>" data-prod_no="<?php echo $prod_no; ?>" data-value="<?php echo $vendor_price; ?>"><i class="fa fa-pencil"></i> Change</button>
                                                                                     <!--
                                                                                     <button type="button" data-prod_no="<?php echo $item; ?>" class="btn btn-link btn-xs btn-edit_vendor_price" style="padding-right:0;margin-right:0;"><i class="fa fa-pencil"></i> Edit</button>
                                                                                     -->
                                                                                 </div>
+                                                                            </div>
 
-                                                                                <!-- EDIT VENDOR PRICE -->
-                                                                                <div id="modal-edit_vendor_price-<?php echo $item; ?>" class="modal fade bs-modal-sm in" id="small" tabindex="-1" role="dialog" aria-hidden="true">
-                                                                                    <div class="modal-dialog modal-sm">
-                                                                                        <div class="modal-content">
+                                                                            <!-- EDIT VENDOR PRICE -->
+                                                                            <div id="modal-edit_vendor_price-<?php echo $item; ?>" class="modal fade bs-modal-sm in" tabindex="-1" role="dialog" aria-hidden="true">
+                                                                                <div class="modal-dialog modal-sm">
+                                                                                    <div class="modal-content">
 
-                                                                                            <div class="modal-header">
-                                                                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                                                                                <h4 class="modal-title">Edit Vendor Price</h4>
-                                                                                            </div>
-                                                                                            <div class="modal-body">
+                                                                                        <div class="modal-header">
+                                                                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                                                                            <h4 class="modal-title">Edit Vendor Price</h4>
+                                                                                        </div>
+                                                                                        <div class="modal-body">
 
-                                                                                                <?php echo $item; ?>
+                                                                                            <span class="the-item"><?php echo $item; ?></span>
 
-                                                                                                <div class="form-group clearfix">
-                                                                                                    <label class="control-label col-md-4">New Price
-                                                                                                    </label>
-                                                                                                    <div class="col-md-4">
-                                                                                                        <input type="text" name="vendor_price-<?php echo $item; ?>" data-required="1" class="form-control input-sm modal-input-vendor-price <?php echo $prod_no; ?>" value="<?php echo number_format($v_price); ?>" size="2" data-prod_no="<?php echo $item; ?>" data-item="<?php echo $prod_no; ?>" data-page="modify" />
-                                                                                                    </div>
+                                                                                            <div class="form-group clearfix">
+                                                                                                <label class="control-label col-md-4">New Price
+                                                                                                </label>
+                                                                                                <div class="col-md-4">
+                                                                                                    <input type="text" id="vendor_price-<?php echo $item; ?>" name="vendor_price-<?php echo $item; ?>" class="form-control input-sm modal-input-vendor-price <?php echo $prod_no; ?>" value="<?php echo $vendor_price; ?>" data-prod_no="<?php echo $prod_no; ?>" data-item="<?php echo $item; ?>" data-page="modify" />
                                                                                                 </div>
-
-                                                                                                <div class="alert alert-danger">
-                                            														<button class="close hide" data-close="alert"></button> NOTE: this changes the price of all variants of this product item
-                                            													</div>
-
                                                                                             </div>
-                                                                                            <div class="modal-footer">
-                                                                                                <button type="button" class="btn dark btn-outline" data-dismiss="modal" tabindex="-1">Cancel</button>
-                                                                                                <button type="button" class="btn dark edit_vendor_prices" data-prod_no="<?php echo $item; ?>">Apply changes</button>
+
+                                                                                            <div class="alert alert-danger">
+                                                                                                <button class="close hide" data-close="alert"></button> NOTE: This does not change the price of other variants of the same product item. Please consider to change them altogether.
                                                                                             </div>
 
                                                                                         </div>
-                                                                                        <!-- /.modal-content -->
+                                                                                        <div class="modal-footer">
+                                                                                            <button type="button" class="btn dark btn-outline" data-dismiss="modal" tabindex="-1">Cancel</button>
+                                                                                            <button type="button" class="btn dark edit_vendor_prices" data-item="<?php echo $item; ?>" data-prod_no="<?php echo $item; ?>">Apply changes</button>
+                                                                                        </div>
+
                                                                                     </div>
-                                                                                    <!-- /.modal-dialog -->
+                                                                                    <!-- /.modal-content -->
                                                                                 </div>
-                                                                                <!-- /.modal -->
+                                                                                <!-- /.modal-dialog -->
                                                                             </div>
+                                                                            <!-- /.modal -->
 
                                                                         </td>
+
                                                                         <?php
 																		/**********
 																		 * Subtotal
 																		 */
 																		?>
-																		<td class="text-right order-subtotal <?php echo $item.' '.$prod_no; ?>">
+																		<td class="text-right order-subtotal <?php echo $item.' '.$prod_no; ?>" style="vertical-align:top;padding-top:13px;">
                                                                             <?php
                                                                             $this_size_total =
-                                                                                @$po_options['show_vendor_price']
-                                                                                ? $this_size_qty * $v_price
+                                                                                $at_items_vendor_price
+                                                                                ? $this_size_qty * $vendor_price
                                                                                 : 0
                                                                             ;
                                                                             ?>
@@ -601,7 +604,6 @@
                                                 <!-- END FORM =======================================================-->
 
 											</div>
-
 
                                     		<!-- EDIT SHIP TO -->
                                     		<div class="modal fade" id="modal-edit_ship_to" tabindex="-1" role="basic" aria-hidden="true">

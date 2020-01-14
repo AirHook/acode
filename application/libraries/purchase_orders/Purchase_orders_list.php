@@ -16,6 +16,14 @@ if ( ! defined('BASEPATH')) exit('ERROR: 404 Not Found');
 class Purchase_orders_list
 {
 	/**
+	 * Records count returned without the limit
+	 * SQL FOUND_ROWS() or simply the general count
+	 *
+	 * @var	integer
+	 */
+	public $count_all = 0;
+
+	/**
 	 * Current num_row count of object
 	 * With or without limits
 	 *
@@ -24,12 +32,19 @@ class Purchase_orders_list
 	public $row_count = 0;
 
 	/**
+	 * Last DB query string
+	 *
+	 * @var	boolean/string
+	 */
+	public $last_query = FALSE;
+
+
+	/**
 	 * This Class database object holder
 	 *
 	 * @var	object
 	 */
 	protected $DB = '';
-
 
 	/**
 	 * CI Singleton
@@ -81,9 +96,13 @@ class Purchase_orders_list
 		}
 
 		// check for limits
+		// and get total rows count
 		if ($limit != '')
 		{
 			$this->DB->limit($limit);
+
+			// we use SQL_CALC_FOUND_ROWS to calculate for entire record set
+			$this->DB->select('SQL_CALC_FOUND_ROWS purchase_orders.po_id', FALSE);
 		}
 
 		// set select items
@@ -106,7 +125,22 @@ class Purchase_orders_list
 
 		//echo $this->DB->last_query(); die('<br />DIED');
 
+		// save last query string (with out the LIMIT portion)
+		$this->last_query =
+			strpos($this->DB->last_query(), 'LIMIT')
+			? substr($this->DB->last_query(), 0, strpos($this->DB->last_query(), 'LIMIT'))
+			: $this->DB->last_query()
+		;
+
 		if ( ! $query) return FALSE;
+
+		// get overall total row count
+		if ($limit != '')
+		{
+			// get total count without limits...
+			$q = $this->DB->query('SELECT FOUND_ROWS()')->row_array();
+			$this->count_all = $q['FOUND_ROWS()'];
+		}
 
 		if ($query->num_rows() == 0)
 		{
@@ -116,6 +150,7 @@ class Purchase_orders_list
 		else
 		{
 			$this->row_count = $query->num_rows();
+			if ($limit == '') $this->count_all = $query->num_rows();
 
 			// return the object
 			return $query->result();

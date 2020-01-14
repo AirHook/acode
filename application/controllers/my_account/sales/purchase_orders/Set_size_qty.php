@@ -44,16 +44,16 @@ class Set_size_qty extends MY_Controller {
 		$qty = $this->input->post('qty');
 		$page = $this->input->post('page');
 
-		$admin_po_items =
+		$the_po_items =
 			$page == 'modify'
-			? $this->session->admin_po_mod_items
-			: $this->session->admin_po_items
+			? $this->session->po_mod_items
+			: $this->session->po_items
 		;
 
 		// set the items array
 		$items_array =
-			$admin_po_items
-			? json_decode($admin_po_items, TRUE)
+			$the_po_items
+			? json_decode($the_po_items, TRUE)
 			: array()
 		;
 
@@ -74,11 +74,11 @@ class Set_size_qty extends MY_Controller {
 		// reset session value for items array
 		if ($page == 'modify')
 		{
-			$this->session->set_userdata('admin_po_mod_items', json_encode($items_array));
+			$this->session->set_userdata('po_mod_items', json_encode($items_array));
 		}
 		else
 		{
-			$this->session->set_userdata('admin_po_items', json_encode($items_array));
+			$this->session->set_userdata('po_items', json_encode($items_array));
 		}
 
 		// if item still exists, sum it

@@ -1,3 +1,6 @@
+                    <?php
+                    $url_pre = @$role == 'sales' ? 'my_account/sales' : 'admin';
+                    ?>
                     <div class="row">
 
                         <?php
@@ -33,9 +36,9 @@
                                 <div class="caption font-dark">
                                 </div>
                                 <div class="actions btn-set">
-                                    <a class="btn btn-secondary-outline" href="<?php echo $this->uri->segment(1) === 'sales' ? site_url('sales/purchase_orders') : site_url($this->config->slash_item('admin_folder').'purchase_orders'); ?>">
+                                    <a class="btn btn-secondary-outline" href="<?php echo site_url($url_pre.'/purchase_orders'); ?>">
                                         <i class="fa fa-reply"></i> Back to PO list</a>
-                                    <a class="btn blue" href="<?php echo $this->uri->segment(1) === 'sales' ? site_url('sales/purchase_orders/create') : site_url($this->config->slash_item('admin_folder').'purchase_orders/create'); ?>">
+                                    <a class="btn blue" href="<?php echo site_url($url_pre.'/purchase_orders/create'); ?>">
                                         <i class="fa fa-plus"></i> Create New PO </a>
                                 </div>
                             </div>
@@ -48,7 +51,7 @@
                                 { ?>
 
                                 <div class="caption">
-                                    <a class="btn dark " href="<?php echo site_url($this->uri->segment(1).'/purchase_orders/modify/index/'.$po_details->po_id); ?>">
+                                    <a class="btn dark " href="<?php echo site_url($url_pre.'/purchase_orders/modify/index/'.$po_details->po_id); ?>">
                                         <i class="fa fa-pencil"></i> Modify PO
                                     </a>
                                 </div>
@@ -57,15 +60,15 @@
                                 } ?>
 
                                 <div class="actions btn-set">
-                                    <a class="btn dark" href="<?php echo site_url($this->uri->segment(1).'/barcodes/print/po/index/'.$po_details->po_id); ?>" target="_blank">
+                                    <a class="btn dark" href="<?php echo site_url($url_pre.'/barcodes/print/po/index/'.$po_details->po_id); ?>" target="_blank">
                                         <i class="fa fa-print"></i> Print All Barcodes
                                     </a>
                                     &nbsp;
-                                    <a class="btn btn-default po-pdf-print_" href="<?php echo site_url($this->uri->segment(1).'/purchase_orders/view_pdf/index/'.$po_details->po_id); ?>" target="_blank">
+                                    <a class="btn btn-default po-pdf-print_" href="<?php echo site_url($url_pre.'/purchase_orders/view_pdf/index/'.$po_details->po_id); ?>" target="_blank">
                                         <i class="fa fa-eye"></i> View PDF for Print/Download
                                     </a>
                                     &nbsp;
-                                    <a class="btn dark " href="<?php echo site_url($this->uri->segment(1).'/purchase_orders/send/index/'.$po_details->po_id); ?>">
+                                    <a class="btn dark " href="<?php echo site_url($url_pre.'/purchase_orders/send/index/'.$po_details->po_id); ?>">
                                         <i class="fa fa-send"></i> Send PO Again
                                     </a>
                                 </div>
@@ -173,13 +176,13 @@
                                     <p><strong> SHIP TO </strong></p>
 
                                     <p>
-                                        <?php echo $store_details->store_name ?: $company_name; ?> <br />
-                                        <?php echo $store_details->address1 ?: $company_address1; ?> <br />
-                                        <?php echo $store_details->address2 ? $store_details->address2.'<br />' : $company_address2 ? $company_address2.'<br />' : ''; ?>
-                                        <?php echo $store_details->city ?: $company_city; ?>, <?php echo $store_details->state ?: $company_state; ?> <?php echo $store_details->zipcode ?: $company_zipcode; ?> <br />
-                                        <?php echo $store_details->country ?: $company_country; ?> <br />
-                                        <?php echo $store_details->telephone ?: $company_telephone; ?> <br />
-                                        ATTN: <?php echo $store_details->fname ? $store_details->fname.' '.$store_details->lname : $company_contact_person; ?> <?php echo $store_details->email ? '('.safe_mailto($store_details->email).')' : '('.safe_mailto($company_contact_email).')'; ?>
+                                        <?php echo @$store_details->store_name ?: $company_name; ?> <br />
+                                        <?php echo @$store_details->address1 ?: $company_address1; ?> <br />
+                                        <?php echo @$store_details->address2 ? $store_details->address2.'<br />' : $company_address2 ? $company_address2.'<br />' : ''; ?>
+                                        <?php echo @$store_details->city ?: $company_city; ?>, <?php echo @$store_details->state ?: $company_state; ?> <?php echo @$store_details->zipcode ?: $company_zipcode; ?> <br />
+                                        <?php echo @$store_details->country ?: $company_country; ?> <br />
+                                        <?php echo @$store_details->telephone ?: $company_telephone; ?> <br />
+                                        ATTN: <?php echo @$store_details->fname ? $store_details->fname.' '.@$store_details->lname : $company_contact_person; ?> <?php echo @$store_details->email ? '('.safe_mailto($store_details->email).')' : '('.safe_mailto($company_contact_email).')'; ?>
                                     </p>
 
                                 </div>
@@ -441,7 +444,7 @@
                                                         <?php echo $s; ?> <br />
                                                         <input tpye="text" class="this-size-qty" name="this-size-qty[]" style="border:1px solid #<?php echo $s_qty > 0 ? '000' : 'ccc'; ?>;font-size:12px;width:30px;padding-left:5px;background-color:white;" value="<?php echo $s_qty; ?>" readonly />
                                                         <br />
-                                                        <a class="small text-default tooltips print-upc-size <?php echo $s_qty > 0 ? '' : 'invisible'; ?>" data-original-title="Print Barcodes of this size" data-placement="bottom" href="<?php echo base_url().'admin/barcodes/print/po_item/index/'.$po_details->po_id.'/'.$item.'/'.$size_label; ?>" target="_blank" data-item="<?php echo $item; ?>" data-size="<?php echo $s; ?>">
+                                                        <a class="small text-default tooltips print-upc-size <?php echo $s_qty > 0 ? '' : 'invisible'; ?>" data-original-title="Print Barcodes of this size" data-placement="bottom" href="<?php echo site_url($url_pre.'/barcodes/print/po_item/index/'.$po_details->po_id.'/'.$item.'/'.$size_label); ?>" target="_blank" data-item="<?php echo $item; ?>" data-size="<?php echo $s; ?>">
                                                             <i class="fa fa-print"></i>
                                                         </a>
                                                     </div>
@@ -455,14 +458,14 @@
                                                     <div style="display:inline-block;">
                                                         Total <br />
                                                         <input tpye="text" class="this-total-qty <?php echo $item.' '.$prod_no; ?>" style="border:1px solid #ccc;font-size:12px;width:30px;padding-left:5px;background-color:white;" value="<?php echo $this_size_qty; ?>" readonly /> <br />
-                                                        <a class="small text-default tooltips print-upc-item" data-original-title="Print All Barcodes of this item" data-placement="bottom" href="<?php echo site_url('admin/barcodes/print/po_item/index/'.$po_details->po_id.'/'.$item); ?>" target="_blank" data-item="<?php echo $item; ?>">
+                                                        <a class="small text-default tooltips print-upc-item" data-original-title="Print All Barcodes of this item" data-placement="bottom" href="<?php echo site_url($url_pre.'/barcodes/print/po_item/index/'.$po_details->po_id.'/'.$item); ?>" target="_blank" data-item="<?php echo $item; ?>">
                                                             <i class="fa fa-print"></i>
                                                         </a>
                                                     </div>
 
                                                     <!--
                                                     <div class="margin-top-10">
-                                                        <a href="<?php echo site_url($this->uri->segment(1).'/barcodes/print/po_item/index/'.$po_details->po_id.'/'.$item); ?>" class="btn dark btn-outline btn-sm" target="_blank">Print Barcode Labels</a>
+                                                        <a href="<?php echo site_url($url_pre.'/barcodes/print/po_item/index/'.$po_details->po_id.'/'.$item); ?>" class="btn dark btn-outline btn-sm" target="_blank">Print Barcode Labels</a>
                                                     </div>
                                                     -->
                                                 </td>

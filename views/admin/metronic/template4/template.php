@@ -11,7 +11,7 @@
     </head>
     <!-- END HEAD -->
 
-    <body class="page-container-bg-solid page-header-fixed page-sidebar-closed-hide-logo" data-base_url="<?php echo base_url(); ?>">
+    <body class="page-container-bg-solid page-header-fixed page-sidebar-closed-hide-logo" data-base_url="<?php echo base_url(); ?>" data-object_data='{"<?php echo $this->security->get_csrf_token_name(); ?>":"<?php echo $this->security->get_csrf_hash(); ?>"}'>
         <!-- BEGIN HEADER -->
         <div class="page-header navbar navbar-fixed-top">
             <!-- BEGIN HEADER INNER -->

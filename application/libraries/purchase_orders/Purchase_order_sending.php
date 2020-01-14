@@ -118,7 +118,7 @@ class Purchase_order_sending
 	 *
 	 * @return	boolean
 	 */
-	public function send($po_id = '', $send_to = '')
+	public function send($po_id = '', $send_to = '', $role = '')
 	{
 		// load pertinent library/model/helpers
 		$this->CI->load->library('designers/designer_details');
@@ -131,6 +131,9 @@ class Purchase_order_sending
 		$this->CI->load->library('users/sales_user_details');
 		$this->CI->load->library('users/admin_user_details');
 		$this->CI->load->library('designers/designer_details');
+
+		// check for role
+		$data['role'] = $role;
 
 		// initialize purchase order properties and items
 		$data['po_details'] = $this->CI->purchase_order_details->initialize(
@@ -253,7 +256,7 @@ class Purchase_order_sending
 
 		if (ENVIRONMENT !== 'development')
 		{
-			$sendby = @$this->CI->webspace_details->options['email_send_by'] ?: 'mailgun'; // options: mailgun, default (CI native emailer)
+			$sendby = @$this->CI->webspace_details->options['email_send_by'] ?: 'default'; // options: mailgun, default (CI native emailer)
 
 			if ($sendby == 'mailgun')
 			{
@@ -297,7 +300,7 @@ class Purchase_order_sending
 		$this->CI->email->clear(TRUE);
 
 		// set flashdata
-		$this->CI->session->set_flashdata('success', 'pacakge_sent');
+		$this->CI->session->set_flashdata('success', 'po_sent');
 
 		return TRUE;
 	}

@@ -81,7 +81,7 @@
 									<td width="100%" height="92" align="center" style="font-family:Tahoma;font-size:12px;color:black;vertical-align:top;">
 
 										<span style="font-size:0.8em;line-height:24px;">
-											Click <a href="<?php echo site_url('admin/purchase_orders/approve/index/'.$po_details->po_id); ?>" style="color:black;">here</a> to APPROVE PO
+											Click <a href="<?php echo site_url((@$role == 'sales' ? 'my_account/sales' : 'admin').'/purchase_orders/approve/index/'.$po_details->po_id); ?>" style="color:black;">here</a> to APPROVE PO
 										</span>
 										<br />
 										<br />

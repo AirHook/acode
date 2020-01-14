@@ -716,9 +716,13 @@
                                                                                         // 2. consumer to see items that has stock
                                                                                         // 3. at below $695, consumer will not see preorder
                                                                                         // 3. at $695 and above, consumers get to see preorder
+                                                                                        //
+                                                                                        // override:
+                                                                                        // only items in stock will use sale/clearance price
+                                                                                        // all pre orders must use retail price
                                                                                         if (
-                                                                                            $this->product_details->retail_price >= '695'
-                                                                                            OR $availability != 'availability--preorder'
+                                                                                            $availability != 'availability--preorder'
+                                                                                            //OR $this->product_details->retail_price >= '695'
                                                                                         )
                                                                                         {
 																		?>

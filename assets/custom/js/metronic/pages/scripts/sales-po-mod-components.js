@@ -27,7 +27,7 @@ var ComponentsEditors = function () {
         function setSizeQty(objectData){
             var set_size_qty = $.ajax({
                 type:    "POST",
-                url:     base_url + "admin/purchase_orders/set_size_qty.html",
+                url:     base_url + "my_account/sales/purchase_orders/set_size_qty.html",
                 data:    objectData,
                 dataType: 'json'
             });
@@ -46,7 +46,7 @@ var ComponentsEditors = function () {
         function setItems(objectData){
             var set_items = $.ajax({
                 type:    "POST",
-                url:     base_url + "admin/purchase_orders/set_items.html",
+                url:     base_url + "my_account/sales/purchase_orders/set_items.html",
                 data:    objectData
             });
             set_items.done(function(data){
@@ -88,7 +88,7 @@ var ComponentsEditors = function () {
             objectData.action = 'rem_item';
             $.ajax({
                 type:    "POST",
-                url:     base_url + "admin/purchase_orders/addrem.html",
+                url:     base_url + "my_account/sales/purchase_orders/addrem.html",
                 data:    objectData,
                 success: function(data) {
                     $('#loading').modal('hide');
@@ -122,7 +122,7 @@ var ComponentsEditors = function () {
                         // remove bootbox class
                         $('.step.step4, .sidebar-send-po-btn').removeClass('mt-bootbox-new');
                     }
-                    //window.location.href=base_url + "admin/products/edit/index/" + prod_id;
+                    //window.location.href=base_url + "my_account/sales/products/edit/index/" + prod_id;
                 },
                 // vvv---- This is the new bit
                 error:   function(jqXHR, textStatus, errorThrown) {
@@ -164,9 +164,9 @@ var ComponentsEditors = function () {
             $('.edit_on, .edit_off').toggle();
             var checked = $(this).is(":checked");
             if (checked) {
-                var getUrl = base_url + "admin/purchase_orders/edit_vendor_price_session/index/1/modify.html";
+                var getUrl = base_url + "my_account/sales/purchase_orders/edit_vendor_price_session/index/1/modify.html";
             } else {
-                var getUrl = base_url + "admin/purchase_orders/edit_vendor_price_session/index/0/modify.html";
+                var getUrl = base_url + "my_account/sales/purchase_orders/edit_vendor_price_session/index/0/modify.html";
             }
             $.get(getUrl, function(){
                 // update each variant's subtotal
@@ -209,7 +209,7 @@ var ComponentsEditors = function () {
             // perfom ajax
             $.ajax({
                 type:    "POST",
-                url:     base_url + "admin/purchase_orders/edit_vendor_price.html",
+                url:     base_url + "my_account/sales/purchase_orders/edit_vendor_price.html",
                 data:    objectData,
                 success: function(data) {
                     // update modal input vendor price and other related variant
@@ -230,7 +230,7 @@ var ComponentsEditors = function () {
                         orderTotal += parseFloat($(this).val());
                     });
                     $('.order-total').html('$ '+orderTotal.toFixed(2));
-                    //window.location.href=base_url + "admin/products/edit/index/" + prod_id;
+                    //window.location.href=base_url + "my_account/sales/products/edit/index/" + prod_id;
                     // call jquery loading
                     $('.cart_basket table').loading('stop');
                 },

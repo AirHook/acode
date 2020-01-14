@@ -44,8 +44,8 @@ class Set_items extends MY_Controller {
 
 		$the_po_items =
 			$page == 'modify'
-			? $this->session->admin_po_mod_items
-			: $this->session->admin_po_items
+			? $this->session->po_mod_items
+			: $this->session->po_items
 		;
 
 		// get the items array
@@ -216,8 +216,8 @@ class Set_items extends MY_Controller {
 					)
 					OR (
 						$page == 'modify'
-						? $this->session->admin_po_mod_edit_vendor_price
-						: $this->session->admin_po_edit_vendor_price
+						? $this->session->po_mod_edit_vendor_price
+						: $this->session->po_edit_vendor_price
 					)
 				)
 				? TRUE

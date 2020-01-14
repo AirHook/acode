@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Details extends Admin_Controller {
+class Details extends Sales_user_Controller {
 
 	/**
 	 * Constructor
@@ -31,7 +31,7 @@ class Details extends Admin_Controller {
 			$this->session->set_flashdata('error', 'no_id_passed');
 
 			// redirect user
-			redirect('admin/purchase_orders');
+			redirect('my_account/sales/purchase_orders', 'location');
 		}
 
 		// generate the plugin scripts and css
@@ -115,12 +115,13 @@ class Details extends Admin_Controller {
 		$this->data['show_loading'] = FALSE;
 
 		// set data variables...
+		$this->data['role'] = 'sales';
 		$this->data['file'] = 'po_details'; // purchase_orders_details
 		$this->data['page_title'] = 'Purchase Order Details';
 		$this->data['page_description'] = 'Details of the purchase order to vendor';
 
 		// load views...
-		$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template/template', $this->data);
+		$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template_my_account/template', $this->data);
 	}
 
 	// ----------------------------------------------------------------------

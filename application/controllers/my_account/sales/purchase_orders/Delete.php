@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Delete extends Admin_Controller {
+class Delete extends Sales_user_Controller {
 
 	/**
 	 * Constructor
@@ -31,7 +31,7 @@ class Delete extends Admin_Controller {
 			$this->session->set_flashdata('error', 'no_id_passed');
 
 			// redirect user
-			redirect($this->config->slash_item('admin_folder').'orders');
+			redirect('my_account/sales/purchase_orders', 'location');
 		}
 
 		// connect to database
@@ -45,7 +45,7 @@ class Delete extends Admin_Controller {
 		$this->session->set_flashdata('success', 'delete');
 
 		// redirect user
-		redirect($this->config->slash_item('admin_folder').'orders');
+		redirect('my_account/sales/purchase_orders', 'location');
 	}
 
 	// ----------------------------------------------------------------------

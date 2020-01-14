@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Modify extends Admin_Controller {
+class Modify extends Sales_user_Controller {
 
 	/**
 	 * DB Object
@@ -50,21 +50,21 @@ class Modify extends Admin_Controller {
 		}
 
 		// let's ensure that there are no admin session for po create
-		if ($this->session->admin_po_items)
+		if ($this->session->po_items)
 		{
 			// new po admin access
-			unset($_SESSION['admin_po_vendor_id']);
-			unset($_SESSION['admin_po_des_url_structure']);
-			unset($_SESSION['admin_po_items']);
-			unset($_SESSION['admin_po_size_qty']);
-			unset($_SESSION['admin_po_store_id']);
-			unset($_SESSION['admin_po_edit_vendor_price']);
-			unset($_SESSION['admin_po_slug_segs']);
+			unset($_SESSION['po_vendor_id']);
+			unset($_SESSION['po_des_url_structure']);
+			unset($_SESSION['po_items']);
+			unset($_SESSION['po_size_qty']);
+			unset($_SESSION['po_store_id']);
+			unset($_SESSION['po_edit_vendor_price']);
+			unset($_SESSION['po_slug_segs']);
 			// remove po mod details
-			unset($_SESSION['admin_po_mod_po_id']);
-			unset($_SESSION['admin_po_mod_items']);
-			unset($_SESSION['admin_po_mod_size_qty']);
-			unset($_SESSION['admin_po_mod_edit_vendor_price']);
+			unset($_SESSION['po_mod_po_id']);
+			unset($_SESSION['po_mod_items']);
+			unset($_SESSION['po_mod_size_qty']);
+			unset($_SESSION['po_mod_edit_vendor_price']);
 		}
 
 		// generate the plugin scripts and css
@@ -103,8 +103,8 @@ class Modify extends Admin_Controller {
 
 		if ($this->form_validation->run() == FALSE)
 		{
-			// for check purposes, set admin_po_mod_po_id session
-			$this->session->set_userdata('admin_po_mod_po_id', $this->purchase_order_details->po_id);
+			// for check purposes, set po_mod_po_id session
+			$this->session->set_userdata('po_mod_po_id', $this->purchase_order_details->po_id);
 
 			// check for show vendor price
 			if (
@@ -112,7 +112,7 @@ class Modify extends Admin_Controller {
 				&& $this->purchase_order_details->options['show_vendor_price']
 			)
 			{
-				$this->session->set_userdata('admin_po_mod_edit_vendor_price', $this->purchase_order_details->options['show_vendor_price']);
+				$this->session->set_userdata('po_mod_edit_vendor_price', $this->purchase_order_details->options['show_vendor_price']);
 			}
 
 			// get vendor details
@@ -186,8 +186,8 @@ class Modify extends Admin_Controller {
 
 			// get the po items and count
 			$this->data['po_items'] = $this->purchase_order_details->items;
-			$this->session->set_userdata('admin_po_mod_items', json_encode($this->data['po_items']));
-			$this->session->set_userdata('admin_po_mod_size_qty', json_encode($this->data['po_items']));
+			$this->session->set_userdata('po_mod_items', json_encode($this->data['po_items']));
+			$this->session->set_userdata('po_mod_size_qty', json_encode($this->data['po_items']));
 			$po_items_count = 0;
 			foreach ($this->data['po_items'] as $key => $val)
 			{
@@ -212,11 +212,12 @@ class Modify extends Admin_Controller {
 			$this->data['show_loading'] = FALSE;
 
 			// set data variables...
+			$this->data['role'] = 'sales';
 			$this->data['file'] = 'po_modify'; //'purchase_orders';
 			$this->data['page_title'] = 'Purchase Order Modify';
 			$this->data['page_description'] = 'Modify Certain Items In Purchase Order';
 
-			$this->load->view('admin/'.($this->config->slash_item('admin_template') ?: 'metronic/').'template/template', $this->data);
+			$this->load->view('admin/'.($this->config->slash_item('admin_template') ?: 'metronic/').'template_my_account/template', $this->data);
 			//$this->load->view($this->data['sales_theme'].'/sales/template/template', $this->data);
 		}
 		else
@@ -304,7 +305,7 @@ class Modify extends Admin_Controller {
 			// */
 
 			// set po items
-			$post_ary['items'] = $this->session->admin_po_mod_items;
+			$post_ary['items'] = $this->session->po_mod_items;
 
 			// set revision #
 			$post_ary['rev'] = $this->purchase_order_details->rev + 1;
@@ -317,22 +318,22 @@ class Modify extends Admin_Controller {
 			$this->DB->update('purchase_orders', $post_ary);
 
 			// once done, we now remove session items
-			unset($_SESSION['admin_po_mod_po_id']);
-			unset($_SESSION['admin_po_mod_items']);
-			unset($_SESSION['admin_po_mod_size_qty']);
-			unset($_SESSION['admin_po_mod_edit_vendor_price']);
+			unset($_SESSION['po_mod_po_id']);
+			unset($_SESSION['po_mod_items']);
+			unset($_SESSION['po_mod_size_qty']);
+			unset($_SESSION['po_mod_edit_vendor_price']);
 
 			/***********
 			 * Send po email confirmation with PDF attachment
 			 */
 			$this->load->library('purchase_orders/purchase_order_sending');
-	 		$this->purchase_order_sending->send($po_id);
+	 		$this->purchase_order_sending->send($po_id, 'admin', 'sales');
 
 			// set flash data
 			$this->session->set_flashdata('success', 'edit');
 
 			// redirect user
-			redirect('admin/purchase_orders/details/index/'.$po_id, 'location');
+			redirect('my_account/sales/purchase_orders/details/index/'.$po_id, 'location');
 		}
 	}
 
@@ -469,7 +470,7 @@ class Modify extends Admin_Controller {
 			// handle summernote wysiwyg
 			// and click scripts
 			$this->data['page_level_scripts'].= '
-				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/admin-po-mod-components.js" type="text/javascript"></script>
+				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/sales-po-mod-components.js" type="text/javascript"></script>
 			';
 			// handle multiSelect
 			$this->data['page_level_scripts'].= '
