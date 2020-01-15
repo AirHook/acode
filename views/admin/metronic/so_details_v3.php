@@ -1,4 +1,7 @@
 					<!-- BEGIN PAGE CONTENT INNER -->
+					<?php
+					$url_pre = @$role == 'sales' ? 'my_account/sales' : 'admin';
+					?>
 					<div class="row">
 						<div class="col-sm-12 page-content-inner">
 
@@ -13,9 +16,9 @@
 
 		                            <div class="portlet-title">
 		                                <div class="actions btn-set pull-left">
-											<a class="btn blue" href="<?php echo $this->uri->segment(1) === 'sales' ? site_url('sales/sales_orders/create') : site_url($this->config->slash_item('admin_folder').'sales_orders/create'); ?>">
+											<a class="btn blue" href="<?php echo site_url($url_pre.'/sales_orders/create'); ?>">
 		                                        <i class="fa fa-plus"></i> Create New Sales Order </a>
-		                                    <a class="btn btn-secondary-outline" href="<?php echo $this->uri->segment(1) === 'sales' ? site_url('sales/sales_orders') : site_url($this->config->slash_item('admin_folder').'sales_orders'); ?>">
+		                                    <a class="btn btn-secondary-outline" href="<?php echo site_url($url_pre.'/sales_orders'); ?>">
 		                                        <i class="fa fa-reply"></i> Back to Sales Order list</a>
 		                                </div>
 		                            </div>
@@ -27,7 +30,7 @@
 
 		                                <div class="caption modify-so">
 		                                    <!--
-		                                    <a class="btn dark " href="<?php echo site_url($this->uri->segment(1).'/sales_orders/modify/index/'.$so_details->sales_order_id); ?>">
+		                                    <a class="btn dark " href="<?php echo site_url($url_pre.'/sales_orders/modify/index/'.$so_details->sales_order_id); ?>">
 		                                    -->
 		                                    <a class="btn dark hide" href="javascript:;">
 		                                        <i class="fa fa-pencil"></i> Modify SO
@@ -38,23 +41,23 @@
 		                                } ?>
 
 		                                <div class="actions btn-set">
-											<a class="btn default so-pick-and-pack" href="<?php echo site_url($this->uri->segment(1).'/sales_orders/pick_and_pack/index/'.$so_details->sales_order_id); ?>">
+											<a class="btn default so-pick-and-pack" href="<?php echo site_url($url_pre.'/sales_orders/pick_and_pack/index/'.$so_details->sales_order_id); ?>">
 		                                        <i class="fa fa-dropbox"></i> PICK and PACK
 		                                    </a>
 		                                    &nbsp;
-		                                    <a class="btn dark" href="<?php echo site_url($this->uri->segment(1).'/barcodes/print/so/index/'.$so_details->sales_order_id); ?>" target="_blank">
+		                                    <a class="btn dark" href="<?php echo site_url('admin/barcodes/print/so/index/'.$so_details->sales_order_id); ?>" target="_blank">
 		                                        <i class="fa fa-print"></i> Print All Barcodes
 		                                    </a>
 											&nbsp;
-		                                    <a class="btn default po-pdf-print_" href="<?php echo site_url($this->uri->segment(1).'/sales_orders/view_packing_list/index/'.$so_details->sales_order_id); ?>" target="_blank">
+		                                    <a class="btn default po-pdf-print_" href="<?php echo site_url($url_pre.'/sales_orders/view_packing_list/index/'.$so_details->sales_order_id); ?>" target="_blank">
 		                                        <i class="fa fa-eye"></i> View PACKING LIST for Print/Download
 		                                    </a>
 		                                    &nbsp;
-		                                    <a class="btn btn-default po-pdf-print_" href="<?php echo site_url($this->uri->segment(1).'/sales_orders/view_pdf/index/'.$so_details->sales_order_id); ?>" target="_blank">
+		                                    <a class="btn btn-default po-pdf-print_" href="<?php echo site_url($url_pre.'/sales_orders/view_pdf/index/'.$so_details->sales_order_id); ?>" target="_blank">
 		                                        <i class="fa fa-eye"></i> View PDF for Print/Download
 		                                    </a>
 		                                    &nbsp;
-		                                    <a class="btn dark " href="<?php echo site_url($this->uri->segment(1).'/sales_orders/send/index/'.$so_details->sales_order_id); ?>">
+		                                    <a class="btn dark " href="<?php echo site_url($url_pre.'/sales_orders/send/index/'.$so_details->sales_order_id); ?>">
 		                                        <i class="fa fa-send"></i> Send SO
 		                                    </a>
 		                                </div>
@@ -75,7 +78,12 @@
 											<button class="close" data-close="alert"></button> Your form validation is successful! </div>
 										<?php if ($this->session->flashdata('success') == 'add') { ?>
 										<div class="alert alert-success ">
-											<button class="close" data-close="alert"></button> Purchase Order successfully sent
+											<button class="close" data-close="alert"></button> Purchase Order successfully created!
+										</div>
+										<?php } ?>
+										<?php if ($this->session->flashdata('success') == 'sent') { ?>
+										<div class="alert alert-success ">
+											<button class="close" data-close="alert"></button> Purchase Order successfully sent via email!
 										</div>
 										<?php } ?>
 									</div>
@@ -330,7 +338,10 @@
 	                                                            $style_no = $item;
 	                                                            $prod_no = $exp[0];
 	                                                            $color_code = $exp[1];
-	                                                            $temp_size_mode = 1; // default size mode
+
+                                                                // take designer details size mode
+																// '1' for default size mode
+                                                                $temp_size_mode = @$designer_details->webspace_options['size_mode'] ?: '1';
 
 																// price can be...
 	                                                            // onsale price (retail_sale_price or wholesale_price_clearance)
@@ -360,9 +371,6 @@
 	                                                                $img_large = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_f.jpg';
 	                                                                $size_mode = $product->size_mode;
 	                                                                $color_name = $product->color_name;
-
-	                                                                // take any existing product's size mode
-	                                                                $temp_size_mode = $product->size_mode;
 	                                                            }
 	                                                            else
 	                                                            {
@@ -457,13 +465,13 @@
                                                             ?>
                                                             <td style="vertical-align:top;">
                                                                 <a href="<?php echo $img_linesheet; ?>" class="fancybox pull-left">
-                                                                    <img class="" src="<?php echo ($product->primary_img ? $img_front_new : $img_front_pre.$image); ?>" alt="" style="width:60px;height:auto;">
+                                                                    <img class="" src="<?php echo $img_front_new; ?>" alt="" style="width:60px;height:auto;">
                                                                 </a>
-                                                                <div class="shop-cart-item-details" style="margin-left:80px;" data-st_id="<?php echo $product->st_id; ?>">
+                                                                <div class="shop-cart-item-details" style="margin-left:80px;" data-st_id="<?php echo @$product->st_id; ?>">
 																	<?php
 																	if (@$product->st_id)
 																	{
-																		$upcfg['st_id'] = $product->prod_no;
+																		$upcfg['prod_no'] = $product->prod_no;
 																		$upcfg['st_id'] = $product->st_id;
 																		$upcfg['size_label'] = $size_label;
 																		$this->upc_barcodes->initialize($upcfg);
@@ -487,11 +495,11 @@
 																		<?php
 																	} ?>
                                                                     <h5 style="margin:0px;">
-                                                                        <?php echo $product->prod_no; ?>
+                                                                        <?php echo $prod_no; ?>
                                                                     </h5>
                                                                     <p style="margin:0px;">
                                                                         <span style="color:#999;">Style#: <?php echo $item; ?></span><br />
-                                                                        Color: &nbsp; <?php echo $product->color_name; ?>
+                                                                        Color: &nbsp; <?php echo $color_name; ?>
 																		<?php echo @$product->designer_name ? '<br /><cite class="small">'.$product->designer_name.'</cite>' : ''; ?>
 																		<?php echo @$product->category_names ? ' <cite class="small">('.end($product->category_names).')</cite>' : ''; ?>
                                                                     </p>

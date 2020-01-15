@@ -1,6 +1,7 @@
 var ComponentsEditors = function () {
 
     var base_url = $('body').data('base_url');
+    var object_data = $('body').data('object_data');
 
     var handleSummernote = function () {
         $('#summernote_1').summernote({
@@ -74,7 +75,8 @@ var ComponentsEditors = function () {
                 // repopulate category tree
                 $('.categories-tree').html(data);
                 // set category breadbrumbs
-                var cat_crumbs = $('[name="cat_crumbs"]').val();
+                //var cat_crumbs = $('[name="cat_crumbs"]').val();
+                var cat_crumbs = $('.categories-tree li:last-child').data('slug_segs_name');
                 $('.form-control.cat_crumbs').html(cat_crumbs);
                 // get thumbs
                 getThumbs(objectData);
@@ -100,6 +102,8 @@ var ComponentsEditors = function () {
                 $('.select-product-options').css('background-color', '#2f353b');
                 $('.select-product-options.thumbs-grid-view').css('background-color', '#696969');
                 $('#loading').modal('hide');
+                // call jquery loading on thumbs section
+                $('.thumbs-grid').loading('stop');
             });
             get_thumbs.fail(function(jqXHR, textStatus, errorThrown) {
                 $('#loading').modal('hide');
@@ -235,25 +239,63 @@ var ComponentsEditors = function () {
 
         // ===========
 
+        // category tree list click action
+        $('.categories-tree').on('click', '.category_list', function(){
+            $('#loading').modal('show');
+            var objectData = object_data;
+            objectData.slugs_link = $(this).children('a').data('slugs_link');
+            // get category tree
+            getCategoryTree(objectData);
+        });
+
+        // select designer options
+        $('[name="des_slug"]').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
+            var des_id = $(this).data('des_id');
+            var objectData = object_data;
+            objectData.des_slug = $(this).val();
+            delete objectData.slugs_link;
+            // set admin_so_des_slug session variable
+            $.get(base_url + "admin/sales_orders/set_des_slug_session/index/" + objectData.des_slug + ".html");
+            // set input element des_id
+            $('#des_id').val(des_id);
+            // enable load preset dropdown
+            $('.preset-dropdown-wrapper.tooltips').attr('data-original-title', '');
+            $('[name="preset"]').removeAttr('disabled');
+            $('[name="preset"]').selectpicker('refresh');
+            // activate step 2, step 3, and highlight 'Select From Thumbs'
+            $('.step2, .step3').addClass('active');
+            $('.select-product-options.thumbs-grid-view').css('background-color', '#696969');
+            // turn off tooltips on options bar
+            $('.select-product-options').tooltip('disable');
+            // call jquery loading on thumbs section
+            $('.thumbs-grid').loading();
+            // enable and update category tree
+            getCategoryTree(objectData);
+        });
+
         // select product option buttons function
         $('.select-product-options').on('click', function(){
-            $('.select-product-options').css('background-color', '#2f353b');
-            $(this).css('background-color', '#696969');
-            if ($('.step1').hasClass('active')) {
-                if ($(this).hasClass('thumbs-grid-view')){
-                    $('.search-multiple-items-wrapper').hide();
-                    $('.thumbs-grid').fadeIn();
-                }
-                if ($(this).hasClass('search-multiple-form')){
-                    $('.thumbs-grid').hide();
-                    $('.search-multiple-items-wrapper').fadeIn();
-                    // reset input values to empty
-                    $('[name="style_ary[]"]').val('');
-                }
-                if ($(this).hasClass('add-unlisted-style-no')){
-                    $('#modal-unlisted_style_no').modal('show');
+            if ($('.step2').hasClass('active')) {
+                $(this).tooltip('hide');
+                $('.select-product-options').css('background-color', '#2f353b');
+                $(this).css('background-color', '#696969');
+                if ($('.step1').hasClass('active')) {
+                    if ($(this).hasClass('thumbs-grid-view')){
+                        $('.search-multiple-items-wrapper').hide();
+                        $('.thumbs-grid').fadeIn();
+                    }
+                    if ($(this).hasClass('search-multiple-form')){
+                        $('.thumbs-grid').hide();
+                        $('.search-multiple-items-wrapper').fadeIn();
+                        // reset input values to empty
+                        $('[name="style_ary[]"]').val('');
+                    }
+                    if ($(this).hasClass('add-unlisted-style-no')){
+                        $('#modal-unlisted_style_no').modal('show');
+                    }
                 }
             }
+            else $(this).tooltip('show');
         });
 
         // select store modal actions
@@ -336,17 +378,8 @@ var ComponentsEditors = function () {
             editQuantity(objectData);
         });
 
-        // category tree list click action
-        $('.categories-tree').on('click', '.category_list', function(){
-            $('#loading').modal('show');
-            var objectData = $(this).closest('.form-body').data('object_data');
-            objectData.slugs_link = $(this).data('slugs_link');
-            // get category tree
-            getCategoryTree(objectData);
-        });
-
         // multiple search submit action
-        $('#so-multi-search-form_').on('submit', function(e){
+        $('#so-multi-search-form').on('submit', function(e){
             $('#loading').modal('show');
             var this_form = $(this);
             // prevent the form from submitting
@@ -389,6 +422,55 @@ var ComponentsEditors = function () {
                 //location.reload();
             });
         });
+
+        // add items NOT in the list functions
+        $('#form-add_unlisted_style_no').on('submit', function(e){
+            // prevent the form from submitting
+            e.preventDefault();
+            // grab the form data
+            var objectData = $(this).data('object_data');
+            var prodNo = $(this).find('[name="prod_no"]').val();
+            if (!prodNo){
+                var error = '<cite class="help-block help-block-error">This item is required</cite>';
+                $('[name="prod_no"]').after(error);
+                $('[name="prod_no"]').closest('.form-group').addClass('has-error'); // set error class to the control group
+            }
+            var color_code = $(this).find('[name="color_code"]').val();
+            if (!color_code){
+                var error = '<cite class="help-block help-block-error">This item is required</cite>';
+                $('[name="color_code"]').after(error);
+                $('[name="color_code"]').closest('.form-group').addClass('has-error'); // set error class to the control group
+            }
+            if (!prodNo || !color_code) return false;
+            objectData.prod_no = prodNo+'_'+color_code;
+            objectData.action = 'add_item';
+            // add/rem item...
+            // which gets and sets items array as well
+            getItem(objectData);
+            // close modal
+            $('#modal-unlisted_style_no').modal('hide');
+            /*
+            $('.item-added').fadeTo(100, 1).show();
+            setTimeout(function() {
+				$(".item-added").fadeTo(1000, 0).slideUp(300, function(){
+					$(this).hide();
+				});
+			}, 500);
+            */
+            $('.step3').addClass('active');
+        });
+        $('#form-add_unlisted_style_no').on('focus', '[name="prod_no"]', function(){
+            $('[name="prod_no"]').closest('.form-group').removeClass('has-error'); // set error class to the control group
+        });
+        $('#form-add_unlisted_style_no').on('changed.bs.select', '[name="color_code"]', function(){
+            $('[name="color_code"]').closest('.form-group').removeClass('has-error'); // set error class to the control group
+        });
+        $('#modal-unlisted_style_no').on('hidden.bs.modal', function(){
+            // reset input text element value
+            $('[name="prod_no"]').val('');
+            // reset selectpicker value
+            $('[name="color_code"]').selectpicker('val', '');
+        })
 
         // ===========
 

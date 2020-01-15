@@ -28,16 +28,16 @@ class Reset extends Admin_Controller {
 		// reset sessions
 		unset($_SESSION['admin_so_user_id']); // store or consumer and 0 for manual input
 		unset($_SESSION['admin_so_user_cat']); // ws, cs
+		unset($_SESSION['admin_so_des_slug']);
 		unset($_SESSION['admin_so_slug_segs']);
 		unset($_SESSION['admin_so_dely_date']);
 		unset($_SESSION['admin_so_items']);
 		// remove po mod details
 		unset($_SESSION['admin_so_mod_so_id']);
-		unset($_SESSION['admin_so_mod_so_items']);
 		unset($_SESSION['admin_so_mod_items']);
 
 		// redirect user
-		redirect($this->config->slash_item('admin_folder').'sales_orders/create', 'location');
+		redirect('admin/sales_orders/create', 'location');
 	}
 
 	// ----------------------------------------------------------------------

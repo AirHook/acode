@@ -108,7 +108,7 @@
                         </style>
 
                         <ul class="nav nav-tabs">
-							<li class="<?php echo strpos( $this->uri->uri_string(), 'purchase_orders/all') === FALSE ? '' : 'active'; ?>">
+							<li class="<?php echo strpos($this->uri->uri_string(), 'purchase_orders/all') === FALSE ? '' : 'active'; ?>">
                                 <a href="<?php echo site_url('admin/purchase_orders/all'); ?>">
                                     All Purchase Orders
                                 </a>
@@ -321,43 +321,6 @@
                                         <i class="fa fa-ban"></i>
                                     </a>
 
-                                    <div class="btn-group hide" >
-                                        <button class="btn btn-xs red-flamingo dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false" onclick="$('.dropdown-wrap').toggleClass('dropdown-fix');" > Actions
-                                            <i class="fa fa-angle-down"></i>
-                                        </button>
-										<!-- DOC: Remove "pull-right" class to default to left alignment -->
-                                        <ul class="dropdown-menu pull-right">
-											<?php if ($order->status != '5')
-											{ ?>
-                                            <li>
-                                                <a data-toggle="modal" href="#pending-<?php echo $order->po_id; ?>">
-                                                    <i class="fa fa-<?php echo in_array($order->status, array('0','1','2','3','4')) ? 'check': 'ellipsis-h'; ?>"></i> Pending </a>
-                                            </li>
-                                            <li>
-                                                <a data-toggle="modal" href="#on_hold-<?php echo $order->po_id; ?>">
-                                                    <i class="fa fa-<?php echo $order->status == '4' ? 'check': 'ellipsis-h'; ?>"></i> In Transit </a>
-                                            </li>
-                                            <li>
-                                                <a data-toggle="modal" href="#complete-<?php echo $order->po_id; ?>">
-                                                    <i class="fa fa-<?php echo $order->status == '5' ? 'check': 'ellipsis-h'; ?>"></i> Complete </a>
-                                            </li>
-											<li>
-                                                <a data-toggle="modal" href="#on_hold-<?php echo $order->po_id; ?>">
-                                                    <i class="fa fa-<?php echo $order->status == '6' ? 'check': 'ellipsis-h'; ?>"></i> On Hold </a>
-                                            </li>
-											<li>
-                                                <a data-toggle="modal" href="#cancel-<?php echo $order->po_id; ?>">
-                                                    <i class="fa fa-<?php echo $order->status == '7' ? 'check': 'ellipsis-h'; ?>"></i> Cancel </a>
-                                            </li>
-												<?php
-											} ?>
-                                            <li class="divider"> </li>
-                                            <li>
-                                                <a href="<?php echo $edit_link; ?>">
-                                                    <i class="icon-pencil"></i> View Details </a>
-                                            </li>
-                                        </ul>
-                                    </div>
 									<!-- PENDING -->
 									<div class="modal fade bs-modal-sm" id="pending-<?php echo $order->po_id?>" tabindex="-1" role="dialog" aria-hidden="true">
 										<div class="modal-dialog modal-sm">
@@ -500,6 +463,26 @@
 
                         </tbody>
                     </table>
+
+					<?php
+                    /***********
+                     * Bottom Pagination
+                     */
+                    ?>
+                    <?php if ( ! $search) { ?>
+                    <div class="row margin-bottom-10">
+                        <div class="col-md-12 text-justify pull-right">
+                            <span>
+                                <?php if ($count_all == 0) { ?>
+                                Showing 0 records
+                                <?php } else { ?>
+                                Showing <?php echo ($limit * $page) - ($limit - 1); ?> to <?php echo $count_all < ($limit * $page) ? $count_all : $limit * $page; ?> of about <?php echo number_format($count_all); ?> records
+                                <?php } ?>
+                            </span>
+                            <?php echo $this->pagination->create_links(); ?>
+                        </div>
+                    </div>
+                    <?php } ?>
 
 					</form>
 					<!-- End FORM =======================================================================-->

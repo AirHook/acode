@@ -181,14 +181,16 @@ class Create extends Admin_Controller
 				? json_decode($this->session->admin_po_items, TRUE)
 				: array()
 			;
+			// let's count how many items on per size lable basis
 			$items_count = 0;
 			foreach ($this->data['po_items'] as $key => $val)
 			{
 				if (is_array($val))
 				{
+					// count all sizes of the item
 					$items_count += array_sum($val);
 				}
-				else $items_count += 1;
+				else $items_count += 1; // count the item as one
 			}
 			$this->data['items_count'] = count($this->data['po_items']);
 

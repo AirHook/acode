@@ -272,7 +272,7 @@
 							<img src="<?php echo $img_front_new; ?>" width="60" style="float:left;" />
 						</td>
 						<td style="vertical-align:top;">
-							<strong> <?php echo $product->prod_no; ?> </strong> <br />
+							<strong> <?php echo $prod_no; ?> </strong> <br />
 							<span style="color:#999;">Style#: <?php echo $item; ?></span><br />
 							Color: &nbsp; <?php echo $color_name; ?>
 							<?php echo @$product->designer_name ? '<br /><cite class="small">'.$product->designer_name.'</cite>' : ''; ?>

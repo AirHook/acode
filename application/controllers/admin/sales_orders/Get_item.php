@@ -60,6 +60,8 @@ class Get_item extends Admin_Controller {
 					'color_code' => $exp[1]
 				)
 			);
+			$prod_no = $exp[0];
+			$color_code = $exp[1];
 		}
 		elseif ($st_id)
 		{
@@ -69,12 +71,12 @@ class Get_item extends Admin_Controller {
 				)
 			);
 			$item = $product->prod_no.'_'.$product->color_code;
+			$prod_no = $product->prod_no;
+			$color_code = $product->color_code;
 		}
 
 		// set dome data
 		$style_no = $item;
-		$prod_no = $product->prod_no;
-		$color_code = $product->color_code;
 		$temp_size_mode = 1; // default size mode
 
 		if ($product)

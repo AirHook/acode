@@ -1,7 +1,57 @@
+                    <?php
+                    $url_pre = @$role == 'sales' ? 'my_account/sales' : 'admin';
+
+                    if (
+						$this->webspace_details->options['site_type'] == 'hub_site'
+						&& @$role != 'sales'
+					)
+					{ ?>
+
+					<div class="table-toolbar">
+
+						<div class="row">
+
+							<div class="col-lg-3 col-md-4">
+								<select class="bs-select form-control" id="filter_by_designer_select" name="des_slug" data-live-search="true" data-size="5" data-show-subtext="true">
+									<option class="option-placeholder" value="">Select Designer...</option>
+									<option value="all">All Designers</option>
+									<?php if ($this->webspace_details->options['site_type'] == 'hub_site') { ?>
+									<option value="<?php echo $this->webspace_details->slug; ?>" data-subtext="<em>Mixed Designers</em>" data-des_slug="<?php echo $this->webspace_details->slug; ?>" data-des_id="<?php echo $this->webspace_details->id; ?>" <?php echo $this->webspace_details->slug === @$des_slug ? 'selected="selected"' : ''; ?>>
+										<?php echo $this->webspace_details->name; ?>
+									</options>
+									<?php } ?>
+									<?php
+									if (@$designers)
+									{
+										foreach ($designers as $designer)
+										{
+											if ($this->webspace_details->slug != $designer->url_structure)
+											{ ?>
+
+									<option value="<?php echo $designer->url_structure; ?>" data-subtext="<em></em>" data-des_slug="<?php echo $designer->url_structure; ?>" data-des_id="<?php echo $designer->des_id; ?>" <?php echo $designer->url_structure === @$des_slug ? 'selected="selected"' : ''; ?>>
+										<?php echo ucwords(strtolower($designer->designer)); ?>
+									</option>
+
+												<?php
+											}
+										}
+									} ?>
+								</select>
+							</div>
+							<button class="apply_filer_by_designer btn dark hidden-sm hidden-xs" data-page_param="<?php echo $this->uri->segment(3); ?>"> Filter </button>
+
+						</div>
+						<button class="apply_filer_by_designer btn dark btn-block margin-top-10 hidden-lg hidden-md" data-page_param="<?php echo $this->uri->segment(3); ?>"> Filter </button>
+
+					</div>
+
+						<?php
+					} ?>
+
                 	<!-- BEGIN FORM-->
                 	<!-- FORM =======================================================================-->
                 	<?php echo form_open(
-                        'my_account/sales/sales_orders/bulk_actions',
+                        $url_pre.'/sales_orders/bulk_actions',
                 		array(
                 			'class'=>'form-horizontal',
                 			'id'=>'form-sales_orders_bulk_actions'
@@ -64,17 +114,17 @@
                         </style>
 
                         <ul class="nav nav-tabs">
-                            <li class="<?php echo $this->uri->uri_string() == 'my_account/sales/sales_orders' ? 'active' : ''; ?>">
-                                <a href="<?php echo site_url('my_account/sales/sales_orders'); ?>">
+                            <li class="<?php echo strpos($this->uri->uri_string(), 'sales_orders/all') === FALSE ? '' : 'active'; ?>">
+                                <a href="<?php echo site_url($url_pre.'/sales_orders'); ?>">
                                     All Sales Orders
                                 </a>
                             </li>
-							<li class="<?php echo $this->uri->segment(3) == 'onorder' ? 'active' : ''; ?>">
+                            <li class="<?php echo strpos($this->uri->uri_string(), 'sales_orders/pending') === FALSE ? '' : 'active'; ?>">
 								<a href="javascript:;" class="tooltips" data-original-title="Currently under construction">
 									Pending SO
 								</a>
 							</li>
-							<li class="<?php echo $this->uri->segment(3) == 'onorder' ? 'active' : ''; ?>">
+                            <li class="<?php echo strpos($this->uri->uri_string(), 'sales_orders/completed') === FALSE ? '' : 'active'; ?>">
 								<a href="javascript:;" class="tooltips" data-original-title="Currently under construction">
 									Completed SO
 								</a>
@@ -87,7 +137,7 @@
                             )
                             { ?>
                             <li>
-                                <a href="<?php echo site_url('my_account/sales/sales_orders/create'); ?>">
+                                <a href="<?php echo site_url($url_pre.'/sales_orders/create'); ?>">
                                     Create New Sales Order <i class="fa fa-plus"></i>
                                 </a>
                             </li>
@@ -106,12 +156,15 @@
 
                 			<div class="col-lg-3 col-md-4">
                 				<select class="bs-select form-control" id="bulk_actions_select" name="bulk_action" disabled>
-                					<option value="" selected="selected">Bulk Actions</option>
+                					<option value="">Bulk Actions</option>
+                                    <option value="co">Close or Set SO as Complete</option>
+                                    <option value="ca">Cancel Sales Order</option>
+                                    <!--
                 					<option value="pe">Set as Pending</option>
                 					<option value="re">Set as Return</option>
                 					<option value="ho">Set as On Hold</option>
-                					<option value="co">Set as Complete</option>
                 					<option value="del">Permanently Delete</option>
+                                    -->
                 				</select>
                 			</div>
                 			<button class="btn green hidden-sm hidden-xs" id="apply_bulk_actions" data-toggle="modal" href="#confirm_bulk_actions" disabled> Apply </button>
@@ -120,6 +173,27 @@
                 		<button class="btn green hidden-lg hidden-md" id="apply_bulk_actions" data-toggle="modal" href="#confirm_bulk_actions" disabled> Apply </button>
 
                     </div>
+
+                    <?php
+                    /***********
+                     * Top Pagination
+                     */
+                    ?>
+                    <?php if ( ! @$search) { ?>
+                    <div class="row margin-bottom-10">
+                        <div class="col-md-12 text-justify pull-right">
+                            <span style="<?php echo $this->pagination->create_links() ? 'position:relative;top:15px;' : ''; ?>">
+                                <?php if ($count_all == 0) { ?>
+                                Showing 0 records
+                                <?php } else { ?>
+                                Showing <?php echo ($limit * $page) - ($limit - 1); ?> to <?php echo $count_all < ($limit * $page) ? $count_all : $limit * $page; ?> of about <?php echo number_format($count_all); ?> records
+                                <?php } ?>
+                            </span>
+                            <?php echo $this->pagination->create_links(); ?>
+                        </div>
+                    </div>
+                    <?php } ?>
+
                 	<?php
                 	/*********
                 	 * This style a fix to the dropdown menu inside table-responsive table-scrollable
@@ -134,13 +208,13 @@
                 			position: relative;
                 		}
                 	</style>
-                    <table class="table table-striped table-bordered table-hover table-checkable order-column" id="tbl-orders" data-orders_count="<?php echo $this->sales_orders_list->row_count; ?>">
+                    <table class="table table-striped table-bordered table-hover table-checkable order-column" id="tbl-sales_orders" data-orders_count="<?php echo $this->sales_orders_list->row_count; ?>">
                         <thead>
                             <tr>
                                 <th class="hidden-xs hidden-sm" style="width:30px"> <!-- counter --> </th>
                                 <th class="text-center" style="width:30px">
                                     <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
-                                        <input type="checkbox" id="heading_checkbox" class="group-checkable" data-set="#tbl-orders .checkboxes" />
+                                        <input type="checkbox" id="heading_checkbox" class="group-checkable" data-set="#tbl-sales_orders .checkboxes" />
                                         <span></span>
                                     </label>
                                 </th>
@@ -151,7 +225,7 @@
                                 <th> Designer </th>
                                 <th> Author </th>
                                 <th style="width:100px;"> Status </th> <!-- // 1-pending,2-hold,3-return,4-intransit,5-complete -->
-                                <th style="width:100px;"> Actions </th>
+                                <th style="width:80px;"> Actions </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -162,9 +236,8 @@
                 				$i = 1;
                 				foreach ($orders as $order)
                 				{
-                                    $edit_link =
-                                        site_url($this->uri->segment(1).'/sales_orders/details/index/'.$order->sales_order_id)
-                                    ; ?>
+                                    $edit_link = site_url($url_pre.'/sales_orders/details/index/'.$order->sales_order_id);
+                                    ?>
 
                             <tr class="odd gradeX " onmouseover="$(this).find('.hidden_first_edit_link').show();" onmouseout="$(this).find('.hidden_first_edit_link').hide();">
                                 <td class="hidden-xs hidden-sm">
@@ -264,52 +337,28 @@
                                 </td>
                                 <!-- Actions -->
                                 <td class="dropdown-wrap dropdown-fix">
-                                    <div class="btn-group" >
-                                        <button class="btn btn-xs red-flamingo dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false" onclick="$('.dropdown-wrap').toggleClass('dropdown-fix');" > Actions
-                                            <i class="fa fa-angle-down"></i>
-                                        </button>
-                						<!-- DOC: Remove "pull-right" class to default to left alignment -->
-                                        <ul class="dropdown-menu pull-right">
-                                            <li>
-                                                <a href="javascript:;">
-                                                    <i class=""></i> <cite>Click to Change Status</cite>  </a>
-                							</li>
-                                            <li class="divider"> </li>
-                                            <li>
-                                                <a data-toggle="modal" href="#pending-<?php echo $order->sales_order_id; ?>">
-                                                    <i class="fa fa-<?php echo $order->status == '0' ? 'check': ''; ?>"></i> Pending </a>
-                                            </li>
-                                            <li>
-                                                <a data-toggle="modal" href="#return-<?php echo $order->sales_order_id; ?>">
-                                                    <i class="fa fa-<?php echo $order->status == '8' ? 'check': ''; ?>"></i> Cancelled </a>
-                                            </li>
-                                            <li>
-                                                <a data-toggle="modal" href="#on_hold-<?php echo $order->sales_order_id; ?>">
-                                                    <i class="fa fa-<?php echo $order->status == '7' ? 'check': ''; ?>"></i> On Hold </a>
-                                            </li>
-                                            <li>
-                                                <a data-toggle="modal" href="#complete-<?php echo $order->sales_order_id; ?>">
-                                                    <i class="fa fa-<?php echo $order->status == '5' ? 'check': ''; ?>"></i> Complete </a>
-                                            </li>
-                                            <li class="divider"> </li>
-                                            <li>
-                                                <a href="<?php echo $edit_link; ?>">
-                                                    <i class="icon-pencil"></i> View Details </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                					<!-- PENDING -->
-                					<div class="modal fade bs-modal-sm" id="pending-<?php echo $order->sales_order_id?>" tabindex="-1" role="dialog" aria-hidden="true">
+
+                                    <!-- Close SO -->
+                                    <a data-toggle="modal" href="#complete-<?php echo $order->sales_order_id; ?>" class="tooltips" data-original-title="Close SO">
+                                        <i class="fa fa-close"></i>
+                                    </a>
+									<!-- Cancel SO -->
+                                    <a data-toggle="modal" href="#cancel-<?php echo $order->sales_order_id; ?>" class="tooltips" data-original-title="Cancel SO">
+                                        <i class="fa fa-ban"></i>
+                                    </a>
+
+                					<!-- CANCEL -->
+                					<div class="modal fade bs-modal-sm" id="cancel-<?php echo $order->sales_order_id?>" tabindex="-1" role="dialog" aria-hidden="true">
                 						<div class="modal-dialog modal-sm">
                 							<div class="modal-content">
                 								<div class="modal-header">
                 									<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
                 									<h4 class="modal-title">Update Order Info</h4>
                 								</div>
-                								<div class="modal-body"> Set order as PENDING? </div>
+                								<div class="modal-body"> Cancel Sales Order? </div>
                 								<div class="modal-footer">
                 									<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-                									<a href="<?php echo $this->uri->segment(1) === 'sales' ? site_url('sales/sales_orders/status/update/'.$order->sales_order_id.'/4') : site_url($this->config->slash_item('admin_folder').'sales_orders/status/update/'.$order->sales_order_id.'/4'); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+                									<a href="<?php echo site_url($url_pre.'/sales_orders/status/update/'.$order->sales_order_id.'/8'); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
                 										<span class="ladda-label">Confirm?</span>
                 										<span class="ladda-spinner"></span>
                 									</a>
@@ -320,7 +369,29 @@
                 						<!-- /.modal-dialog -->
                 					</div>
                 					<!-- /.modal -->
-                					<!-- PENDING -->
+                                    <!-- PENDING -->
+                					<div class="modal fade bs-modal-sm" id="pending-<?php echo $order->sales_order_id?>" tabindex="-1" role="dialog" aria-hidden="true">
+                						<div class="modal-dialog modal-sm">
+                							<div class="modal-content">
+                								<div class="modal-header">
+                									<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                									<h4 class="modal-title">Update Order Info</h4>
+                								</div>
+                								<div class="modal-body"> Set order as PENDING? </div>
+                								<div class="modal-footer">
+                									<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
+                									<a href="<?php echo site_url($url_pre.'/sales_orders/status/update/'.$order->sales_order_id.'/4'); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+                										<span class="ladda-label">Confirm?</span>
+                										<span class="ladda-spinner"></span>
+                									</a>
+                								</div>
+                							</div>
+                							<!-- /.modal-content -->
+                						</div>
+                						<!-- /.modal-dialog -->
+                					</div>
+                					<!-- /.modal -->
+                					<!-- RETURN -->
                 					<div class="modal fade bs-modal-sm" id="return-<?php echo $order->sales_order_id?>" tabindex="-1" role="dialog" aria-hidden="true">
                 						<div class="modal-dialog modal-sm">
                 							<div class="modal-content">
@@ -331,7 +402,7 @@
                 								<div class="modal-body"> Set order as RETURN? </div>
                 								<div class="modal-footer">
                 									<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-                									<a href="<?php echo $this->uri->segment(1) === 'sales' ? site_url('sales/sales_orders/status/update/'.$order->sales_order_id.'/3') : site_url($this->config->slash_item('admin_folder').'sales_orders/status/update/'.$order->sales_order_id.'/3'); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+                									<a href="<?php echo site_url($url_pre.'/sales_orders/status/update/'.$order->sales_order_id.'/3'); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
                 										<span class="ladda-label">Confirm?</span>
                 										<span class="ladda-spinner"></span>
                 									</a>
@@ -353,7 +424,7 @@
                 								<div class="modal-body"> Set order as ON HOLD? </div>
                 								<div class="modal-footer">
                 									<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-                									<a href="<?php echo $this->uri->segment(1) === 'sales' ? site_url('sales/sales_orders/status/update/'.$order->sales_order_id.'/2') : site_url($this->config->slash_item('admin_folder').'sales_orders/status/update/'.$order->sales_order_id.'/2'); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+                									<a href="<?php echo site_url($url_pre.'/sales_orders/status/update/'.$order->sales_order_id.'/2'); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
                 										<span class="ladda-label">Confirm?</span>
                 										<span class="ladda-spinner"></span>
                 									</a>
@@ -375,7 +446,7 @@
                 								<div class="modal-body"> Set order as COMPLETE? </div>
                 								<div class="modal-footer">
                 									<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-                									<a href="<?php echo $this->uri->segment(1) === 'sales' ? site_url('sales/sales_orders/status/update/'.$order->sales_order_id.'/1') : site_url($this->config->slash_item('admin_folder').'sales_orders/status/update/'.$order->sales_order_id.'/1'); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+                									<a href="<?php echo site_url($url_pre.'/sales_orders/status/update/'.$order->sales_order_id.'/1'); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
                 										<span class="ladda-label">Confirm?</span>
                 										<span class="ladda-spinner"></span>
                 									</a>
@@ -397,7 +468,7 @@
                 								<div class="modal-body"> Deleting Sales Orders is not an option at the moment. Please contact your administrator if it is necessary to delete a certain PO. </div>
                 								<div class="modal-footer">
                 									<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-                									<a href="<?php echo $this->uri->segment(1) === 'sales' ? site_url('sales/sales_orders/delete/index/'.$order->sales_order_id) : site_url($this->config->slash_item('admin_folder').'sales_orders/delete/index/'.$order->sales_order_id); ?>" type="button" class="btn green mt-ladda-btn ladda-button hide" data-style="expand-left">
+                									<a href="<?php echo site_url($url_pre.'/sales_orders/delete/index/'.$order->sales_order_id); ?>" type="button" class="btn green mt-ladda-btn ladda-button hide" data-style="expand-left">
                 										<span class="ladda-label">Confirm?</span>
                 										<span class="ladda-spinner"></span>
                 									</a>
@@ -418,6 +489,26 @@
 
                         </tbody>
                     </table>
+
+                    <?php
+                    /***********
+                     * Bottom Pagination
+                     */
+                    ?>
+                    <?php if ( ! $search) { ?>
+                    <div class="row margin-bottom-10">
+                        <div class="col-md-12 text-justify pull-right">
+                            <span>
+                                <?php if ($count_all == 0) { ?>
+                                Showing 0 records
+                                <?php } else { ?>
+                                Showing <?php echo ($limit * $page) - ($limit - 1); ?> to <?php echo $count_all < ($limit * $page) ? $count_all : $limit * $page; ?> of about <?php echo number_format($count_all); ?> records
+                                <?php } ?>
+                            </span>
+                            <?php echo $this->pagination->create_links(); ?>
+                        </div>
+                    </div>
+                    <?php } ?>
 
                 	</form>
                 	<!-- End FORM =======================================================================-->

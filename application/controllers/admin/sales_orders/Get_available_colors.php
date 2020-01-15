@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Get_available_colors extends Admin_Controller {
+class Get_available_colors extends Sales_user_Controller {
 
 	/**
 	 * Constructor

@@ -18,10 +18,10 @@ class Dashboard extends Admin_Controller {
 		$this->load->library('purchase_orders/purchase_orders_list');
 		$this->load->library('sales_orders/sales_orders_list');
 
-		$this->data['purchase_orders'] = $this->purchase_orders_list->select(array(), '10');
-		$this->data['sale_orders'] = $this->sales_orders_list->select(array(), '10');
-		$this->data['sale_orders_length'] = $this->sales_orders_list->select();
-		$this->data['purchase_orders_length'] = $this->purchase_orders_list->select();
+		//$this->data['purchase_orders'] = $this->purchase_orders_list->select(array(), '10');
+		//$this->data['sale_orders'] = $this->sales_orders_list->select(array(), '10');
+		//$this->data['sale_orders_length'] = $this->sales_orders_list->select();
+		//$this->data['purchase_orders_length'] = $this->purchase_orders_list->select();
 		// echo '<pre>',print_r($this->data['orders']),'</pre>';exit();
 
 		$this->data['file'] = 'dashboard';

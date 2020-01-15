@@ -39,6 +39,7 @@ class Create extends Admin_Controller
 		$this->load->library('users/wholesale_users_list');
 		$this->load->library('users/wholesale_user_details');
 		$this->load->library('users/consumer_user_details');
+		$this->load->library('users/sales_user_details');
 		$this->load->library('categories/categories_tree');
 		$this->load->library('products/product_details');
 		$this->load->library('products/size_names');
@@ -50,11 +51,12 @@ class Create extends Admin_Controller
 		if ($this->form_validation->run() == FALSE)
 		{
 			// let's ensure that there are no admin session for so mod
-			if ($this->session->admin_so_mod_size_qty)
+			if ($this->session->admin_so_mod_items)
 			{
 				// new po admin access
 				unset($_SESSION['admin_so_user_id']); // store or consumer and 0 for manual input
 				unset($_SESSION['admin_so_user_cat']); // ws, cs
+				unset($_SESSION['admin_so_des_slug']);
 				unset($_SESSION['admin_so_slug_segs']);
 				unset($_SESSION['admin_so_dely_date']);
 				unset($_SESSION['admin_so_items']);
@@ -72,6 +74,108 @@ class Create extends Admin_Controller
 			// NOTE: consider sales resource login
 			$this->data['users'] = $this->wholesale_users_list->select();
 
+			// select designer on/off
+			// and get the designers list for the category list
+			// - general admin shows all designer category tree
+			// - satellite and stand-alone sites defaults to it's designer category tree
+			// - sales users default to it's reference designer category tree
+			if (
+				$this->webspace_details->options['site_type'] == 'sat_site'
+				OR $this->webspace_details->options['site_type'] == 'sal_site'
+				OR $this->session->sales_loggedin
+			)
+			{
+				$this->data['select_designer'] = FALSE;
+				$this->data['des_slug'] = @$this->sales_user_details->designer ?: $this->webspace_details->slug;
+				$this->data['designers'] = $this->designers_list->select(
+					array(
+						'url_structure' => $this->data['des_slug']
+					)
+				);
+				$this->session->admin_so_des_slug = $this->data['des_slug'];
+			}
+			else
+			{
+				$this->data['select_designer'] = TRUE;
+				$this->designers_list->initialize(array('with_products'=>TRUE));
+				$this->data['designers'] = $this->designers_list->select();
+			}
+
+			// get some data if a designer has been previously selected
+			if ($this->session->admin_so_des_slug)
+			{
+				// get designer details
+				$this->data['designer_details'] = $this->designer_details->initialize(
+					array(
+						'url_structure' => $this->session->admin_so_des_slug
+					)
+				);
+				$this->data['des_id'] = $this->designer_details->des_id;
+
+				// get the designer category tree
+				$this->data['des_subcats'] = $this->categories_tree->treelist(
+					array(
+						'd_url_structure' => $this->session->admin_so_des_slug,
+						'with_products' => TRUE
+					)
+				);
+				$this->data['row_count'] = $this->categories_tree->row_count;
+				$this->data['max_level'] = $this->categories_tree->max_category_level;
+				$this->data['primary_subcat'] = $this->categories_tree->get_primary_subcat($this->session->admin_so_des_slug);
+
+				// get last category slug if slug_segs is present
+				if ($this->session->admin_so_slug_segs)
+				{
+					$this->data['slug_segs'] = json_decode($this->session->admin_so_slug_segs, TRUE);
+					$category_slug = end($this->data['slug_segs']);
+					$category_id = $this->categories_tree->get_id($category_slug);
+					$where_more['tbl_product.categories LIKE'] = $category_id;
+				}
+				else
+				{
+					$category_slug = $this->data['primary_subcat'];
+					$category_id = $this->categories_tree->get_id($category_slug);
+					$where_more['tbl_product.categories LIKE'] = $category_id;
+				}
+
+				// there will always be one des_slug to maintain one designer SO system
+				$where_more['designer.url_structure'] = $this->session->admin_so_des_slug;
+
+				// get the products list for the thumbs grid view
+				$params['show_private'] = TRUE; // all items general public (Y) - N for private
+				$params['view_status'] = 'ALL'; // all items view status (Y, Y1, Y2, N)
+				$params['view_at_hub'] = TRUE; // all items general public at hub site
+				$params['view_at_satellite'] = TRUE; // all items publis at satellite site
+				$params['variant_publish'] = 'ALL'; // all items at variant level publish (view status)
+				$params['variant_view_at_hub'] = TRUE; // variant level public at hub site
+				$params['variant_view_at_satellite'] = TRUE; // varian level public at satellite site
+				$params['with_stocks'] = FALSE; // Show all with and without stocks
+				$params['group_products'] = FALSE; // group per product number or per variant
+				$params['special_sale'] = FALSE; // special sale items only
+				$this->load->library('products/products_list', $params);
+				$this->data['products'] = $this->products_list->select(
+					$where_more,
+					array( // order conditions
+						'seque' => 'asc',
+						'tbl_product.prod_no' => 'desc'
+					)
+				);
+				$this->data['products_count'] = $this->products_list->row_count;
+			}
+
+			// with posibly designer details set, set company information as well
+			// otherise, defaults to websapce details
+			$this->data['company_name'] = $this->designer_details->company_name ?: $this->webspace_details->name;
+			$this->data['company_address1'] = $this->designer_details->address1 ?: $this->webspace_details->address1;
+			$this->data['company_address2'] = $this->designer_details->address2 ?: $this->webspace_details->address2;
+			$this->data['company_city'] = $this->designer_details->city ?: $this->webspace_details->city;
+			$this->data['company_state'] = $this->designer_details->state ?: $this->webspace_details->state;
+			$this->data['company_zipcode'] = $this->designer_details->zipcode ?: $this->webspace_details->zipcode;
+			$this->data['company_country'] = $this->designer_details->country ?: $this->webspace_details->country;
+			$this->data['company_telephone'] = $this->designer_details->phone ?: $this->webspace_details->phone;
+			$this->data['company_contact_person'] = $this->designer_details->owner ?: $this->webspace_details->owner;
+			$this->data['company_contact_email'] = $this->designer_details->info_email ?: $this->webspace_details->info_email;
+
 			// check for user id session to fill out bill to/ship to address
 			if ($this->session->admin_so_user_id)
 			{
@@ -83,65 +187,13 @@ class Create extends Admin_Controller
 						)
 					);
 				}
-
-				if ($this->session->admin_so_user_cat == 'cs')
+				else // defaults to 'cs' or guest
 				{
 					$this->data['store_details'] = $this->consumer_user_details->initialize(
 						array(
 							'user_id' => $this->session->admin_so_user_id
 						)
 					);
-				}
-			}
-
-			// admin - either all designers or per designer admin
-			// get designer/s for the category tree
-			// NOTE: consider sales resource login
-			$this->data['designers'] =
-				$this->webspace_details->options['site_type'] == 'hub_site'
-				? $this->designers_list->select()
-				: $this->designers_list->select(
-					array(
-						'des_id' => $this->webspace_details->des_id
-					)
-				)
-			;
-
-			// get slug segments to show correct thumbs collection
-			if ($this->session->admin_so_slug_segs)
-			{
-				$this->data['slug_segs'] = explode('/', $this->session->admin_so_slug_segs);
-
-				// process the active slug segments
-				// getting the last category segment for the product listing
-				// getting the first segment as designer
-				$category_slug = end($this->data['slug_segs']);
-				$category_id = $this->categories_tree->get_id($category_slug);
-				$designer_slug = reset($this->data['slug_segs']);
-
-				// set array for where condition of get product list
-				// based on above category and designer items
-				$where['designer.url_structure'] = $designer_slug;
-				$where['tbl_product.categories LIKE'] = '%'.$category_id.'%';
-
-				if (@$where)
-				{
-					// get the products list
-					$params['show_private'] = TRUE; // all items general public (Y) - N for private
-					$params['view_status'] = 'ALL'; // ALL items view status (Y, Y1, Y2, N)
-					$params['variant_publish'] = 'ALL'; // ALL variant level color publish (view status)
-					$params['group_products'] = FALSE; // group per product number or per variant
-					// show items even without stocks at all
-					$params['with_stocks'] = FALSE;
-					$this->load->library('products/products_list', $params);
-					$this->data['products'] = $this->products_list->select(
-						$where,
-						array( // order conditions
-							'seque' => 'desc',
-							'tbl_product.prod_no' => 'desc'
-						)
-					);
-					$this->data['products_count'] = $this->products_list->row_count;
 				}
 			}
 
@@ -174,17 +226,27 @@ class Create extends Admin_Controller
 			}
 			$this->data['items_count'] = $items_count;
 
-			// set company information
-			$this->data['company_name'] = $this->designer_details->company_name ?: $this->webspace_details->name;
-			$this->data['company_address1'] = $this->designer_details->address1 ?: $this->webspace_details->address1;
-			$this->data['company_address2'] = $this->designer_details->address2 ?: $this->webspace_details->address2;
-			$this->data['company_city'] = $this->designer_details->city ?: $this->webspace_details->city;
-			$this->data['company_state'] = $this->designer_details->state ?: $this->webspace_details->state;
-			$this->data['company_zipcode'] = $this->designer_details->zipcode ?: $this->webspace_details->zipcode;
-			$this->data['company_country'] = $this->designer_details->country ?: $this->webspace_details->country;
-			$this->data['company_telephone'] = $this->designer_details->phone ?: $this->webspace_details->phone;
-			$this->data['company_contact_person'] = $this->designer_details->owner ?: $this->webspace_details->owner;
-			$this->data['company_contact_email'] = $this->designer_details->info_email ?: $this->webspace_details->info_email;
+			// set author to 1 for Inhouse or set logged in admin sales user
+			if ($this->session->admin_sales_loggedin)
+			{
+				$this->sales_user_details->initialize(
+					array(
+						'admin_sales_id' => $this->session->admin_sales_id
+					)
+				);
+
+				$this->data['author_name'] = $this->sales_user_details->fname.' '.$this->sales_user_details->lname;
+				$this->data['author'] = $this->data['author_name'];
+				$this->data['author_email'] = $this->sales_user_details->email;
+				$this->data['author_id'] = $this->sales_user_details->admin_sales_id;
+			}
+			else
+			{
+				$this->data['author_name'] = 'In-House';
+				$this->data['author'] = 'admin'; // admin/system
+				$this->data['author_email'] = $this->webspace_details->info_email;
+				$this->data['author_id'] = $this->session->admin_id;
+			}
 
 			// need to show loading at start
 			$this->data['show_loading'] = TRUE;
@@ -206,22 +268,23 @@ class Create extends Admin_Controller
 			/*
 			Array
 			(
-			    [so_number] => 000003
-			    [so_date] => 2019-10-01
-				[author] => 000003
-				[c] => 000003
+			    [so_number] => 000004
+			    [so_date] => 2020-01-14
 			    [options] => Array
 			        (
-			            [ref_so_no] => 123456
-			            [ref_checkout_no] => 987654
-			            [ship_via] => UPS
-			            [fob] => China
-			            [terms] => Net 15
+			            [ref_so_no] =>
+			            [ref_checkout_no] => 1234567
+			            [ship_via] =>
+			            [fob] =>
+			            [terms] =>
 			        )
 
-			    [delivery_date] => 2019-10-15
-			    [subtotal] => 196
-			    [remarks] => Remarks
+			    [user_id] => 6854
+			    [author] => 1
+			    [c] => 1
+			    [delivery_date] => 2020-01-31
+			    [subtotal] => 0
+			    [remarks] =>
 			    [files] =>
 			)
 			*/
@@ -244,6 +307,7 @@ class Create extends Admin_Controller
 			$post_ary['due_date'] = strtotime($this->input->post('delivery_date'));
 			$post_ary['author'] = $this->input->post('author'); // author
 			$post_ary['c'] = $this->input->post('c'); // 1-admin,2-sales
+			$post_ary['des_id'] = $this->input->post('des_id');
 			$post_ary['user_id'] = $this->session->admin_so_user_id ?: 0; // 0 for manual input
 			$post_ary['user_cat'] = $this->session->admin_so_user_cat ?: 0; // 0 for manual input ws/cs
 			$post_ary['status'] = '0'; // set to pending approval
@@ -278,6 +342,7 @@ class Create extends Admin_Controller
 			// new so admin access
 			unset($_SESSION['admin_so_user_id']); // store or consumer and 0 for manual input
 			unset($_SESSION['admin_so_user_cat']); // ws, cs
+			unset($_SESSION['admin_so_des_slug']);
 			unset($_SESSION['admin_so_slug_segs']);
 			unset($_SESSION['admin_so_dely_date']);
 			unset($_SESSION['admin_so_items']);

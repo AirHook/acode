@@ -29,6 +29,7 @@ class view_packing_list extends MY_Controller
 		$this->load->library('users/sales_user_details');
 		$this->load->library('users/wholesale_user_details');
 		$this->load->library('users/consumer_user_details');
+		$this->load->library('designers/designer_details');
 		$this->load->library('barcodes/upc_barcodes');
 
 		// initialize sales order properties and items
@@ -79,6 +80,14 @@ class view_packing_list extends MY_Controller
 				);
 			}
 		}
+
+		// we need to get designer details general size mode for those
+		// items added that is not on product list
+		$this->data['designer_details'] = $this->designer_details->initialize(
+			array(
+				'des_id' => $this->sales_order_details->des_id
+			)
+		);
 
 		// set THE items
 		$data['so_items'] = $this->sales_order_details->items;

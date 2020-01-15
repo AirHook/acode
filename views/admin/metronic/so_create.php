@@ -1,6 +1,9 @@
                     <!-- BEGIN PAGE CONTENT BODY -->
-                    <div class="row">
+                    <?php
+                    $url_pre = @$role == 'sales' ? 'my_account/sales' : 'admin';
+                    ?>
 
+                    <div class="row">
                         <div class="col col-md-6 form-horizontal" role="form">
 
 							<div class="form-body" data-object_data='{"<?php echo $this->security->get_csrf_token_name(); ?>":"<?php echo $this->security->get_csrf_hash(); ?>"}'>
@@ -54,9 +57,34 @@
 								 * Dropdown and Options
 								 */
 								?>
+                                <div class="form-group form-group-badge select-designer-dropdown">
+                                    <label class="control-label col-md-5">
+                                        <span class="badge custom-badge pull-left step-select-designer step1 active"> 1 </span>
+                                        <span class="badge-label"> Select Designer </span>
+                                    </label>
+                                    <div class="col-md-7">
+                                        <select class="bs-select form-control" name="des_slug" data-live-search="true" data-size="5" data-show-subtext="true">
+                                            <option class="option-placeholder" value="">Select Designer...</option>
+                                            <?php
+                                            if (@$designers)
+                                            {
+                                                foreach ($designers as $designer)
+                                                { ?>
+
+                                            <option value="<?php echo $designer->url_structure; ?>" data-subtext="<em><?php echo $designer->domain_name; ?></em>" data-des_slug="<?php echo $designer->url_structure; ?>" data-des_id="<?php echo $designer->des_id; ?>" <?php echo ($designer->url_structure == $this->session->admin_so_des_slug OR $designer->url_structure == $this->session->sa_des_slug OR $designer->url_structure == @$des_slug) ? 'selected="selected"' : ''; ?>>
+                                                <?php echo ucwords(strtolower($designer->designer)); ?>
+                                            </option>
+
+                                                    <?php
+                                                }
+                                            } ?>
+                                        </select>
+                                        <input type="hidden" id="des_id" name="des_id" value="<?php echo @$des_id; ?>" />
+                                    </div>
+                                </div>
 								<div class="form-group form-group-badge">
                                     <label class="control-label col-md-4">
-                                        <span class="badge custom-badge pull-left step1 active"> 1 </span>
+                                        <span class="badge custom-badge pull-left step2 <?php echo (@$role == 'sales' ? $this->session->so_des_slug : $this->session->admin_so_des_slug) ? 'active' : ''; ?>"> 2 </span>
                                         <span class="badge-label"> Select / Search Products </span>
                                     </label>
                                     <div class="col-md-8">
@@ -67,13 +95,13 @@
                                 </div>
                                 <div class="form-group">
                                     <div class="col-md-12">
-                                        <a href="javascript:;" class="btn dark btn-md select-product-options thumbs-grid-view col-md-4" style="background-color:#696969;">
+                                        <a href="javascript:;" class="btn dark btn-md select-product-options thumbs-grid-view col-md-4" style="<?php echo (@$role == 'sales' ? $this->session->so_des_slug : $this->session->admin_so_des_slug) ? 'background-color:#696969;' : ''; ?>" data-original-title="Select a designer first">
                                             Select From Thumbnails
                                         </a>
-                                        <a href="javascript:;" class="btn dark btn-md select-product-options search-multiple-form col-md-4">
+                                        <a href="javascript:;" class="btn dark btn-md select-product-options search-multiple-form col-md-4" data-original-title="Select a designer first">
                                             Multi Style Search
                                         </a>
-                                        <a href="javascript:;" data-toggle="modal" data-modal-id="modal-unlisted_style_no" class="btn dark btn-md select-product-options add-unlisted-style-no col-md-4">
+                                        <a href="javascript:;" data-toggle="modal" data-modal-id="modal-unlisted_style_no" class="btn dark btn-md select-product-options add-unlisted-style-no col-md-4" data-original-title="Select a designer first">
                                             Add New Product
                                         </a>
                                     </div>
@@ -94,10 +122,10 @@
                                      * Select Category
                                      */
                                     ?>
-                                    <div class="input-group categories-tree-wrapper ">
+                                    <div class="input-group categories-tree-wrapper">
                                         <div class="input-group-btn">
-                                            <button type="button" class="btn dark dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Select Category
-                                                <i class="fa fa-angle-down"></i>
+                                            <button type="button" class="btn dark dropdown-toggle select-category-button" data-toggle="dropdown" aria-expanded="false">
+                                                Select Category <i class="fa fa-angle-down"></i>
                                             </button>
                                             <style>
                                                 .categories-tree {
@@ -123,129 +151,130 @@
                                                     text-decoration: underline;
                                                 }
                                             </style>
-                                            <div class="categories-tree dropdown-menu">
+
+                                            <ul class="categories-tree dropdown-menu">
 
                                                 <?php
-                                                $count_designers = count($designers);
-                                                if ($designers)
+                                                if (@$des_subcats)
                                                 {
-                                                    // set slug segs name to capture info
-                                                    $slug_segs_name = array();
+                                                    // set or check active slug
+                                            		$slug_segs = @$slug_segs ?: array();
+                                            		$cnt_slug_segs = count($slug_segs) - 1;
 
-                                                    $descnt = 1;
-                                                    foreach ($designers as $designer_details)
+                                            		// designer top level list is always active
+                                            		// ergo, set as first slugs_link
+                                            		$slugs_link = array($designer_details->url_structure);
+                                                    $slugs_link_name = array($designer_details->designer);
+                                                    $active = 'bold';
+                                                    ?>
+
+                                                <li class="<?php echo $active; ?> designer-level" data-slug="<?php echo $designer_details->url_structure; ?>">
+                                                    <a href="javascript:;" data-des_slug="<?php echo $designer_details->url_structure; ?>" style="font-size:0.8em;" data-slugs_link="<?php echo implode('/', $slugs_link); ?>">
+                                                        <?php echo $designer_details->designer; ?>
+                                                    </a>
+                                                </li>
+
+                                                    <?php
+                                                    /**********
+                                                     * Cateogry tree list
+                                                     */
+                                                    $ic = 1;
+                                                    $marg = 15;
+                                                    $first_max_level = $max_level;
+                                                    $p_slug_segs = '';
+                                                    $p_slug_segs_name = '';
+                                                    $last = '';
+                                                    foreach ($des_subcats as $category)
                                                     {
-                                                        // get the designer category tree
-                                        				$des_subcats = $this->categories_tree->treelist(
-                                        					array(
-                                        						'd_url_structure' => $designer_details->url_structure,
-                                        						//'vendor_id' => $this->session->admin_po_vendor_id,
-                                        						'with_products' => TRUE
-                                        					)
-                                        				);
-                                        				$row_count = $this->categories_tree->row_count;
-                                        				$max_level = $this->categories_tree->max_category_level;
+                                                        // set margin
+                                                        $margin = 'padding-left:'.($marg * ($category->category_level + 2)).'px;';
 
-                                                        if (@$des_subcats)
-                                                        {
-                                                            // set or check active slug
-                                                            $slug_segs = @$slug_segs ?: array();
-                                                            $cnt_slug_segs = count($slug_segs) - 2;
-
-                                                            // generate designer slugs and name for link and front end
-                                                            $slugs_link = array($designer_details->url_structure);
-                                                            $slugs_link_name = array();
-
-                                                            // designer level
-                                                            // set active where necessary
-                                                            if (strpos(implode('/', $slug_segs), $designer_details->url_structure) !== FALSE)
-                                                            {
-                                                                $active = 'bold';
-                                                                array_push($slug_segs_name, $designer_details->designer);
-                                                            }
+                                                        // if there is no slug_segs
+                                            			if ( ! $slug_segs OR empty($slug_segs))
+                                            			{
+                                                            if ($first_max_level > $max_level) $active = '';
+                                            				else
+                                            				{
+                                            					if ($category->category_level < $first_max_level) $active = 'bold';
+                                            					if ($category->category_level == $first_max_level)
+                                            					{
+                                            						$active = 'bold active';
+                                            						$first_max_level++;
+                                            					}
+                                            				}
+                                            			}
+                                            			else
+                                            			{
+                                            				// set active where necessary
+                                            				if (in_array($category->category_slug, $slug_segs))
+                                            				{
+                                            					$active = $cnt_slug_segs == $category->category_level ? 'bold active' : 'bold';
+                                            				}
                                                             else $active = '';
+                                            			}
+
+                                                        // if first row...
+                                                        if ($ic == 1)
+                                                        {
+                                                            // create link
+                                                            array_push($slugs_link, $category->category_slug);
 
                                                             // get active category names
                                                             if ($active == 'bold' OR $active == 'bold active')
                                                             {
-                                                                array_push($slugs_link_name, $designer_details->designer);
+                                                                array_push($slugs_link_name, $category->category_name);
                                                             }
-                                                            ?>
 
-                                                <div style="display:inline-block;vertical-align:top;">
-                                                    <ul class="designer-categories-tree list-unstyled">
-                                                        <li class="<?php echo $active; ?> designer-level" data-slug="<?php echo $designer_details->url_structure; ?>" data-slugs_link="<?php echo implode('/', $slugs_link); ?>">
-                                                            <a href="javascript:;" data-slug="<?php echo $designer_details->url_structure; ?>" style="font-size:0.8em;" data-slugs_link="<?php echo implode('/', $slugs_link); ?>">
-                                                                <?php echo $designer_details->designer; ?>
-                                                            </a>
-                                                        </li>
-
-                                                            <?php
-                                                            /**********
-                                                             * Cateogry tree list
-                                                             */
-                                                            $ic = 1;
-                                                            $marg = 15;
-                                                            $first_max_level = $max_level;
-                                                            $p_slug_segs = '';
-                                                            $p_slug_segs_name = '';
-                                                            foreach ($des_subcats as $category)
+                                                            // save as previous level
+                                                            // always starts at 0
+                                                            $prev_level = $category->category_level;
+                                                        }
+                                                        else
+                                                        {
+                                                            // if same category level
+                                                            if ($category->category_level == $prev_level)
                                                             {
-                                                                // set margin
-                                                                $margin = 'padding-left:'.($marg * ($category->category_level + 2)).'px;';
+                                                                // capture the active slugs before next same level iteration
+                                                                $slug_segs = @$slug_segs ?: $slugs_link;
 
-                                                                // if first row...
-                                                                if ($ic == 1)
+                                                                // create new link
+                                                                $pop = array_pop($slugs_link); // remove previous last seg
+                                                                array_push($slugs_link, $category->category_slug); // replace with new one
+
+                                                                // get active category names
+                                                                if ($active == 'bold' OR $active == 'bold active')
                                                                 {
-                                                                    // create link
-                                                                    array_push($slugs_link, $category->category_slug);
-
-                                                                    // save as previous level
-                                                                    // always starts at 0
-                                                                    $prev_level = $category->category_level;
+                                                                    array_push($slugs_link_name, $category->category_name);
                                                                 }
-                                                                else
+                                                            }
+
+                                                            // NOTE: next greater level is always greater by only 1 level
+                                                            if ($category->category_level == $prev_level + 1)
+                                                            {
+                                                                // append to previous link
+                                                                array_push($slugs_link, $category->category_slug);
+
+                                                                // get active category names
+                                                                if ($active == 'bold' OR $active == 'bold active')
                                                                 {
-                                                                    // if same category level
-                                                                    if ($category->category_level == $prev_level)
-                                                                    {
-                                                                        // create new link
-                                                                        $pop = array_pop($slugs_link); // remove previous last seg
-                                                                        array_push($slugs_link, $category->category_slug); // replace with new one
-                                                                    }
+                                                                    array_push($slugs_link_name, $category->category_name);
+                                                                }
+                                                            }
 
-                                                                    // NOTE: next greater level is always greater by only 1 level
-                                                                    if ($category->category_level == $prev_level + 1)
-                                                                    {
-                                                                        // append to previous link
-                                                                        array_push($slugs_link, $category->category_slug);
-                                                                    }
+                                                            // if next category level is lower
+                                                            if ($category->category_level < $prev_level)
+                                                            {
+                                                                // capture the active slugs before next level iteration
+                                                                $slug_segs = @$slug_segs ?: $slugs_link;
 
-                                                                    // if next category level is lower
-                                                                    if ($category->category_level < $prev_level)
-                                                                    {
-                                                                        for ($deep = $prev_level - $category->category_level; $deep >= 0; $deep--)
-                                                                        {
-                                                                            // update link
-                                                                            $pop = array_pop($slugs_link);
-                                                                        }
-
-                                                                        // append to link
-                                                                        array_push($slugs_link, $category->category_slug);
-                                                                    }
+                                                                for ($deep = $prev_level - $category->category_level; $deep >= 0; $deep--)
+                                                                {
+                                                                    // update link
+                                                                    $pop = array_pop($slugs_link);
                                                                 }
 
-                                                                // if slug_segs
-                                                                if ( ! empty($slug_segs))
-                                                                {
-                                                                    // set active where necessary
-                                                                    if (strpos(implode('/', $slug_segs), implode('/', $slugs_link)) !== FALSE)
-                                                                    {
-                                                                        $active = $cnt_slug_segs == $category->category_level ? 'bold active' : 'bold';
-                                                                        array_push($slug_segs_name, $category->category_name);
-                                                                    }
-                                                                    else $active = '';
-                                                                }
+                                                                // append to link
+                                                                array_push($slugs_link, $category->category_slug);
 
                                                                 // get active category names
                                                                 if ($active == 'bold' OR $active == 'bold active')
@@ -253,77 +282,79 @@
                                                                     array_push($slugs_link_name, $category->category_name);
                                                                 }
 
-                                                                // if this is last row, set slug segs
-                                                                $cat_crumbs = '';
-                                                                if ($ic == $row_count)
-                                                                {
-                                                                    // capture the active slugs
-                                                                    //$slug_segs = @$slug_segs ?: $slugs_link;
-                                                                    //$slug_segs_name = $slug_segs_name ?: $slugs_link_name;
-                                                                    $p_slug_segs = 'data-slug_segs="'.implode('/', $slug_segs).'" ';
-                                                                    $p_slug_segs_name = 'data-slug_segs_name="'.implode(' &nbsp;&raquo;&nbsp; ', $slug_segs_name).'" ';
-
-                                        							// need to show the category crumbs for use at front end
-                                        							if ($descnt == $count_designers)
-                                        							{
-                                        								$cat_crumbs = '<input type="hidden" name="cat_crumbs" value="'.implode(' &nbsp;&raquo;&nbsp; ', $slug_segs_name).'" />';
-                                        							}
-                                                                }
-
-                                                                // first row is usually the top main category...
-                                                                echo '<li class="category_list '
-                                                                    .$active
-                                                                    .'" data-category_id="'
-                                                                    .$category->category_id
-                                                                    .'" data-parent_category="'
-                                                                    .$category->parent_category.
-                                                                    '" data-category_slug="'
-                                                                    .$category->category_slug
-                                                                    .'" data-category_name="'
-                                                                    .$category->category_name
-                                                                    .'" data-category_level="'
-                                                                    .$category->category_level
-                                                                    .'" data-slug="'
-                                                                    .$category->category_slug
-                                                                    .'" data-slugs_link="'
-                                                                    .implode('/', $slugs_link)
-                                                                    .'">'
-                                                                    .'<a href="javascript:;" style="font-size:0.8em;'
-                                                                    .$margin
-                                                                    .'" data-slugs_link="'
-                                                                    .implode('/', $slugs_link)
-                                                                    .'" data-des_slug="'
-                                                                    .$designer_details->url_structure
-                                                                    .'">'
-                                                                    .$category->category_name
-                                                                    .'</a>'
-                                        							.$cat_crumbs
-                                        							.'</li>'
-                                                                ;
-
-                                                                $prev_level = $category->category_level;
-                                                                $ic++;
                                                             }
 
-                                                            echo '</ul></div>';
+                                                            // if this is last row, set slug segs
+                                                            if ($ic == $row_count)
+                                                            {
+                                                                $last = 'last';
+                                                                // capture the active slugs before next level iteration
+                                                                $slug_segs = @$slug_segs ?: $slugs_link;
+                                                                $slug_segs_name = @$slug_segs_name ?: $slugs_link_name;
+                                                                $p_slug_segs = 'data-slug_segs="'.implode('/', $slug_segs).'" ';
+                                            					$p_slug_segs_name = 'data-slug_segs_name="'.implode(' &nbsp;&raquo;&nbsp; ', $slug_segs_name).'" ';
+                                                            }
                                                         }
 
-                                                        $descnt++;
-                                                    }
-                                                } ?>
+                                                        // first row is usually the top main category...
+                                                        echo '<li class="category_list '
+                                                            .$active
+                                                            .' level-1 '
+                                                            .$last
+                                                            .'" data-category_id="'
+                                                            .$category->category_id
+                                                            .'" data-parent_category="'
+                                                            .$category->parent_category.
+                                                            '" data-category_slug="'
+                                                            .$category->category_slug
+                                                            .'" data-category_name="'
+                                                            .$category->category_name
+                                                            .'" data-category_level="'
+                                                            .$category->category_level
+                                                            .'" data-slug="'
+                                                            .$category->category_slug
+                                                            .'" '
+                                                            .$p_slug_segs
+                                                            .$p_slug_segs_name
+                                                            .'>'
+                                                            .'<a href="javascript:;" style="font-size:0.8em;'
+                                                            .$margin
+                                                            .'" data-slugs_link="'
+                                                            .implode('/', $slugs_link)
+                                                            .'" data-des_slug="'
+                                                            .$designer_details->url_structure
+                                                            .'">'
+                                                            .$category->category_name
+                                                            .'</a></li>'
+                                                        ;
 
-                                            </div>
+                                                        $prev_level = $category->category_level;
+                                                        $ic++;
+                                                    }
+                                                }
+                                                else
+                                                { ?>
+
+                                                <li style="margin-top:15px;margin-bottom:15px;padding-left:15px;">
+                                                    Please select a designer...
+                                                </li>
+
+                                                    <?php
+                                                }?>
+
+                                            </ul>
+
                                         </div>
                                         <!-- /btn-group -->
                                         <div class="form-control cat_crumbs" style="font-style:italic;font-size:0.8em;">
-                                            <?php echo implode(' &nbsp;&raquo;&nbsp; ', $slug_segs_name); ?>
+                                            <?php echo @$slug_segs ? implode(' &nbsp;&raquo;&nbsp; ', @$slug_segs_name) : ''; ?>
                                         </div>
                                     </div>
                                     <!-- /input-group -->
 
                                     <?php if ( ! @$products) { ?>
-                                    <h3 class="blank-grid-text <?php echo $this->session->admin_so_vendor_id ? 'display-none' : ''; ?>">
-                                        <em class="select-vendor">Select a category...</em>
+                                    <h3 class="blank-grid-text <?php echo $this->session->admin_so_des_slug ? 'display-none' : ''; ?>">
+                                        <em class="select-vendor">Select a designer...</em>
                                     </h3>
                                     <?php } ?>
 
@@ -592,7 +623,7 @@
 
                                         	<!--bof form==========================================================================-->
                                         	<?php echo form_open(
-                                        		'admin/sales_orders/search_multiple',
+                                        		$url_pre.'/sales_orders/search_multiple',
                                         		array(
                                                     'class' => 'sa-multi-search-form', // need this for the styling
                                                     'id' => 'so-multi-search-form'
@@ -601,9 +632,14 @@
 
                                                 <style>
                                                     .multi-search-form-control.search_by_style {
-                                                        width: 190px;
+                                                        width: 99%;
+                                                        height: 30px;
+                                                        border: 1px solid #ccc;
+                                                        text-transform: uppercase;
                                                     }
                                                 </style>
+
+                                                <input type="hidden" name="page" value="create" />
 
                                         		<div class="m-grid m-grid-responsive-sm">
                                                     <div class="m-grid-row">
@@ -819,7 +855,7 @@
                                 <div class="col">
                                     <div class="form-group form-group-badge">
                                         <label class="control-label col-md-5">
-                                            <span class="badge custom-badge pull-left step2 <?php echo $items_count > 0 ? 'active' : ''; ?>"> 2 </span>
+                                            <span class="badge custom-badge pull-left step3 <?php echo $items_count > 0 ? 'active' : ''; ?>"> 3 </span>
                                             <span class="badge-label"> Refine Sales Order </span>
                                         </label>
                                         <div class="col-md-7">
@@ -833,7 +869,7 @@
 
                                 <!-- BEGIN FORM =======================================================-->
                                 <?php echo form_open(
-                                    'admin/sales_orders/create',
+                                    $url_pre.'/sales_orders/create',
                                     array(
                                         'class' => 'form-horizontal',
                                         'id' => 'form-so_create_summary_review'
@@ -1255,7 +1291,7 @@
                                                          * IMAGE and Descriptions
                                                          */
                                                         ?>
-                                                        <td>
+                                                        <td style="vertical-align:top;">
                                                             <a href="<?php echo $img_large ?: 'javascript:;'; ?>" class="<?php echo $img_large ? 'fancybox' : ''; ?> pull-left">
                                                                 <img class="" src="<?php echo $img_front_new; ?>" alt="" style="width:60px;height:auto;" onerror="$(this).attr('src','<?php echo $this->config->item('PROD_IMG_URL'); ?>images/instylelnylogo_3.jpg');" />
                                                             </a>
@@ -1286,7 +1322,7 @@
                                                          * Remove button
                                                          */
                                                         ?>
-                                                        <td class="text-right">
+                                                        <td class="text-right" style="vertical-align:top;">
                                                             <button type="button" class="btn btn-link btn-xs summary-item-remove tooltips" data-original-title="Remove Item" data-item="<?php echo $item; ?>" data-prod_no="<?php echo $prod_no; ?>" data-size_label="<?php echo $size_label; ?>">
                                                                 <i class="fa fa-close"></i> <cite class="small hide">rem</cite>
                                                             </button>
@@ -1297,7 +1333,7 @@
                                                          * Unit Price
                                                          */
                                                         ?>
-                                                        <td class="text-right unit-price-wrapper <?php echo $item.' '.$prod_no; ?>" data-item="<?php echo $item; ?>" data-prod_no="<?php echo $prod_no; ?>">
+                                                        <td style="vertical-align:top;" class="text-right unit-price-wrapper <?php echo $item.' '.$prod_no; ?>" data-item="<?php echo $item; ?>" data-prod_no="<?php echo $prod_no; ?>">
                                                             $ <?php echo number_format($price, 2); ?>
                                                         </td>
 
@@ -1306,10 +1342,10 @@
                                                          * Discount
                                                          */
                                                         ?>
-                                                        <td class="text-right discount-wrapper <?php echo $item.' '.$prod_no; ?>">
+                                                        <td style="vertical-align:top;" class="text-right discount-wrapper <?php echo $item.' '.$prod_no; ?>">
                                                             <?php
                                                             $disc = @$options['discount'] ?: 0;
-                                                            if ($disc == '0') echo '-';
+                                                            if ($disc == '0') echo '---';
                                                             else echo number_format($disc, 2);
                                                             ?>
                                                             <br />
@@ -1321,7 +1357,7 @@
                                                          * Extended
                                                          */
                                                         ?>
-                                                        <td class="text-right order-subtotal <?php echo $item.' '.$prod_no; ?>">
+                                                        <td style="vertical-align:top;" class="text-right order-subtotal <?php echo $item.' '.$prod_no; ?>">
                                                             <?php
                                                             $this_size_total = $this_size_qty * ($price - $disc);
                                                             ?>
@@ -1420,7 +1456,7 @@
                                     <hr />
                                     <div class="form-group form-group-badge clearfix" style="margin-bottom:0px;">
                                         <label class="control-label col-md-5">
-                                            <span class="badge custom-badge pull-left <?php echo @$overall_qty ? 'active' : ''; ?> step3"> 3 </span>
+                                            <span class="badge custom-badge pull-left <?php echo @$overall_qty ? 'active' : ''; ?> step4"> 4 </span>
                                             <span class="badge-label"> Create Sales Order </span>
                                         </label>
                                         <div class="col-md-7">
@@ -1431,10 +1467,10 @@
                                     </div>
 
                                     <hr style="margin-top:0px;" />
-                                    <a href="<?php echo site_url('admin/sales_orders/reset'); ?>" style="color:#333;">
-                                        <div class="form-group form-group-badge form-group-badge-step4 clearfix">
+                                    <a href="<?php echo site_url($url_pre.'/sales_orders/reset'); ?>" style="color:#333;">
+                                        <div class="form-group form-group-badge form-group-badge-step5 clearfix">
                                             <label class="control-label col-md-5" style="cursor:pointer;">
-                                                <span class="badge custom-badge pull-left step4"> 4 </span>
+                                                <span class="badge custom-badge pull-left step5"> 5 </span>
                                                 <span class="badge-label"> Clear Sales Order </span>
                                             </label>
                                             <div class="col-md-7">
@@ -1456,7 +1492,7 @@
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                        <h4 class="modal-title"> Add STYLE NUMBERS not on productl ist </h4>
+                                        <h4 class="modal-title"> Add STYLE NUMBERS not on product list </h4>
                                     </div>
 
                                     <!-- BEGIN FORM-->
@@ -1509,7 +1545,7 @@
 
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
+                                        <button type="button" class="btn dark btn-outline" data-dismiss="modal" tabindex="-1">Close</button>
                                         <button type="submit" class="btn dark"> Submit </button>
                                     </div>
 
@@ -1737,7 +1773,7 @@
 
                                             <!-- BEGIN FORM =======================================================-->
                                             <?php echo form_open(
-                                                'admin/sales_orders/add_new_user',
+                                                $url_pre.'/sales_orders/add_new_user',
                                                 array(
                                                     'class' => 'enter-user-form ws clearfix',
                                                     'id' => 'form-so_add_new_user_ws'
@@ -1844,7 +1880,7 @@
 
                                             <!-- BEGIN FORM =======================================================-->
                                             <?php echo form_open(
-                                                'admin/sales_orders/add_new_user',
+                                                $url_pre.'/sales_orders/add_new_user',
                                                 array(
                                                     'class' => 'enter-user-form cs clearfix display-none',
                                                     'id' => 'form-so_add_new_user_cs'

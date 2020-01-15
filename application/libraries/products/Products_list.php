@@ -344,7 +344,11 @@ class Products_list
 					{
 						// we need an OR WHERE for sales package prod_no items
 						// or any search query for prod numbers
-						$this->DB->or_where('tbl_product.prod_no', $val);
+						$this->DB->or_like('tbl_product.prod_no', $val);
+						if ($_search)
+						{
+							$this->DB->where('designer.url_structure', $_search);
+						}
 					}
 				}
 			}

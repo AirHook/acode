@@ -97,6 +97,14 @@ class Details extends Admin_Controller {
 			}
 		}
 
+		// we need to get designer details general size mode for those
+		// items added that is not on product list
+		$this->data['designer_details'] = $this->designer_details->initialize(
+			array(
+				'des_id' => $this->sales_order_details->des_id
+			)
+		);
+
 		// set THE items
 		$this->data['so_items'] = $this->sales_order_details->items;
 		$this->data['so_date'] = $this->sales_order_details->so_date;

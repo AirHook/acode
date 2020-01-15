@@ -391,13 +391,140 @@ class Categories_tree
 	// --------------------------------------------------------------------
 
 	/**
+	 * Get Designer Primary Subcat
+	 *
+	 * @params	string
+	 * @access	public
+	 * @return	boolean FALSE/string
+	 */
+	public function get_primary_subcat($des_slug = '')
+	{
+		if ($des_slug === '')
+		{
+			// nothing more to do...
+			return FALSE;
+		}
+
+		// 1st level categories
+		$this->DB->like('d_url_structure', $des_slug);
+		$this->DB->where('parent_category', '1');
+		$this->DB->where('category_id !=', '1');
+		$this->DB->order_by('category_seque', 'asc');
+		$this->DB->order_by('category_name', 'asc');
+		$q1 = $this->DB->get('categories');
+
+		if ($q1->num_rows() > 0)
+		{
+			foreach ($q1->result() as $r1)
+			{
+				$primary_subcat = $r1->category_slug;
+
+				if ($r1->category_level < $this->_max_category_level())
+				{
+					// 2nd level categories
+					$this->DB->like('d_url_structure', $des_slug);
+					$this->DB->where('parent_category', $r1->category_id);
+					$this->DB->order_by('category_seque', 'asc');
+					$this->DB->order_by('category_name', 'asc');
+					$q2 = $this->DB->get('categories');
+
+					if ($q2->num_rows() > 0)
+					{
+						foreach ($q2->result() as $r2)
+						{
+							$primary_subcat = $r2->category_slug;
+
+							if ($r2->category_level < $this->_max_category_level())
+							{
+								// 3nd level categories
+								$this->DB->like('d_url_structure', $des_slug);
+								$this->DB->where('parent_category', $r2->category_id);
+								$this->DB->order_by('category_seque', 'asc');
+								$this->DB->order_by('category_name', 'asc');
+								$q3 = $this->DB->get('categories');
+
+								if ($q3->num_rows() > 0)
+								{
+									foreach ($q3->result() as $r3)
+									{
+										$primary_subcat = $r3->category_slug;
+
+										if ($r3->category_level < $this->_max_category_level())
+										{
+											// 4th level categories
+											$this->DB->like('d_url_structure', $des_slug);
+											$this->DB->where('parent_category', $r3->category_id);
+											$this->DB->order_by('category_seque', 'asc');
+											$this->DB->order_by('category_name', 'asc');
+											$q4 = $this->DB->get('categories');
+
+											if ($q4->num_rows() > 0)
+											{
+												foreach ($q4->result() as $r4)
+												{
+													$primary_subcat = $r4->category_slug;
+
+													if ($r4->category_level < $this->_max_category_level())
+													{
+														// 5th level categories
+														$this->DB->like('d_url_structure', $des_slug);
+														$this->DB->where('parent_category', $r4->category_id);
+														$this->DB->order_by('category_seque', 'asc');
+														$this->DB->order_by('category_name', 'asc');
+														$q5 = $this->DB->get('categories');
+
+														if ($q5->num_rows() > 0)
+														{
+															foreach ($q5->result() as $r5)
+															{
+																$primary_subcat = $r5->category_slug;
+
+																// ...do we need a 6th level?
+																// add code here when necessary
+															}
+														}
+														else break;
+													}
+
+													// we only need the primary/first subcat
+													break;
+												}
+											}
+											else break;
+										}
+
+										// we only need the primary/first subcat
+										break;
+									}
+								}
+								else break;
+							}
+
+							// we only need the primary/first subcat
+							break;
+						}
+					}
+					else break;
+				}
+
+				// we only need the primary/first subcat
+				break;
+			}
+		}
+
+		return $primary_subcat;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
 	 * Get Child Categories
 	 *
 	 * @params	string
 	 * @access	public
 	 * @return	boolean FALSE/object or array
 	 */
-	public function get_children($parent_category = '', $return_array = FALSE)
+	public function get_children($parent_category = '', $return_array = FALSE, $primary_subcat = '')
 	{
 		if ($parent_category === '')
 		{

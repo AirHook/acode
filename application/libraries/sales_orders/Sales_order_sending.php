@@ -112,6 +112,7 @@ class Sales_order_sending
 		$this->CI->load->library('users/wholesale_user_details');
 		$this->CI->load->library('users/consumer_user_details');
 		$this->CI->load->library('users/sales_user_details');
+		$this->CI->load->library('users/designer_details');
 
 		// initialize sales order properties and items
 		$data['so_details'] = $this->CI->sales_order_details->initialize(
@@ -161,6 +162,14 @@ class Sales_order_sending
 				);
 			}
 		}
+
+		// we need to get designer details general size mode for those
+		// items added that is not on product list
+		$data['designer_details'] = $this->CI->designer_details->initialize(
+			array(
+				'des_id' => $this->CI->sales_order_details->des_id
+			)
+		);
 
 		// set THE items
 		$data['so_items'] = $this->CI->sales_order_details->items;
@@ -251,6 +260,7 @@ class Sales_order_sending
 				// show sending
 				echo $message;
 				$this->CI->session->set_userdata('dev_first_sending', TRUE);
+				exit;
 			}
 			else
 			{

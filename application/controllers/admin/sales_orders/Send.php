@@ -63,7 +63,7 @@ class Send extends Admin_Controller {
 		}
 		else
 		{
-			redirect($this->config->slash_item('admin_folder').'sales_orders');
+			redirect('admin/sales_orders');
 		}
 	}
 

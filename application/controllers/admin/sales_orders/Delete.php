@@ -12,9 +12,9 @@ class Delete extends Admin_Controller {
 	{
 		parent::__construct();
     }
-	
+
 	// ----------------------------------------------------------------------
-	
+
 	/**
 	 * Index - Delete Account
 	 *
@@ -23,31 +23,31 @@ class Delete extends Admin_Controller {
 	public function index($id = '')
 	{
 		echo 'Processing...';
-		
+
 		if ( ! $id)
 		{
 			// nothing more to do...
 			// set flash data
 			$this->session->set_flashdata('error', 'no_id_passed');
-			
+
 			// redirect user
-			redirect($this->config->slash_item('admin_folder').'sales_orders');
+			redirect('admin/sales_orders', 'location');
 		}
-		
+
 		// connect to database
 		$DB = $this->load->database('instyle', TRUE);
-		
+
 		// delete item from records
 		$DB->where('sales_order_id', $id);
 		$DB->delete('sales_orders');
-		
+
 		// set flash data
 		$this->session->set_flashdata('success', 'delete');
-		
+
 		// redirect user
-		redirect($this->config->slash_item('admin_folder').'sales_orders');
+		redirect('admin/sales_orders', 'location');
 	}
-	
+
 	// ----------------------------------------------------------------------
-	
+
 }

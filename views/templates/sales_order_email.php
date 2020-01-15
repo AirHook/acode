@@ -233,7 +233,10 @@
 											$style_no = $item;
 											$prod_no = $exp[0];
 											$color_code = $exp[1];
-											$temp_size_mode = 1; // default size mode
+
+											// take any existing product's size mode
+											// '1' for default size mode
+											$temp_size_mode = @$designer_details->webspace_options['size_mode'] ?: '1';
 
 											// price can be...
 											// onsale price (retail_sale_price or wholesale_price_clearance)
@@ -260,9 +263,6 @@
 												$img_front_new = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_f3.jpg';
 												$size_mode = $product->size_mode;
 												$color_name = $product->color_name;
-
-												// take any existing product's size mode
-												$temp_size_mode = $product->size_mode;
 											}
 											else
 											{
@@ -361,7 +361,7 @@
 									 * Description
 									 */
 									?>
-									<td style="vertical-align:top" class=" <?php echo $product->media_path.$style_no; ?> <?php echo $img_front_new; ?> ">
+									<td style="vertical-align:top" class="<?php echo $img_front_new; ?> ">
 										<strong> <?php echo $prod_no; ?> </strong> <br />
 										<span style="color:#999;">Style#: <?php echo $item; ?></span><br />
 										Color: &nbsp; <?php echo $color_name; ?>

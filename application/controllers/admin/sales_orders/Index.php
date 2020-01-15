@@ -25,13 +25,20 @@ class Index extends Admin_Controller {
 	 */
 	public function index()
 	{
+		// redirect to all orers
+		redirect('admin/sales_orders/all', 'location');
+
 		// generate the plugin scripts and css
 		$this->_create_plugin_scripts();
 
 		// load pertinent library/model/helpers
 		$this->load->library('sales_orders/sales_orders_list');
+		$this->load->library('designers/designers_list');
 		$this->load->library('users/sales_user_details');
 		$this->load->library('users/admin_user_details');
+
+		// get designer list for the dropdown filter
+		$this->data['designers'] = $this->designers_list->select();
 
 		// get data
 		if (@$this->webspace_details->options['site_type'] != 'hub_site')
@@ -46,6 +53,23 @@ class Index extends Admin_Controller {
 		{
 			$this->data['orders'] = $this->sales_orders_list->select();
 		}
+		$this->data['count_all'] = $this->sales_orders_list->count_all;
+
+		// we need a real variable to process some calculations
+		$url_segs = $this->uri->segment_array();
+		$this->data['page'] = is_numeric(end($url_segs)) ? end($url_segs) : 1;
+		$this->data['limit'] = 100;
+		$this->data['offset'] = $this->data['page'] == '' ? 0 : ($this->data['page'] * 100) - 100;
+
+		// set active items
+		$this->data['des_slug'] = !is_numeric(@$des_slug) ? @$des_slug : '';
+
+		// enable pagination
+		$this->_set_pagination($this->data['count_all'], $this->data['limit'], $this->data['des_slug']);
+
+		// need to show loading at start
+		$this->data['show_loading'] = FALSE;
+		$this->data['search'] = FALSE;
 
 		// set data variables...
 		$this->data['file'] = 'so_list'; // sales_orders
@@ -54,6 +78,48 @@ class Index extends Admin_Controller {
 
 		// load views...
 		$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template/template', $this->data);
+	}
+
+	// ----------------------------------------------------------------------
+
+	/**
+	 * PRIVATE - Set pagination parameters
+	 *
+	 * @return	void
+	 */
+	private function _set_pagination($count_all = '', $per_page = '', $des_slug = '')
+	{
+		$this->load->library('pagination');
+
+		$url = 'admin/purchase_orders';
+
+		$config['base_url'] = base_url().$url.($des_slug ? '/index/'.$des_slug.'/' : '');
+		$config['total_rows'] = $count_all;
+		$config['per_page'] = $per_page;
+		$config['num_links'] = 3;
+		$config['use_page_numbers'] = TRUE;
+		$config['full_tag_open'] = '<ul class="pagination pull-right" style="margin:0;">';
+		$config['full_tag_close'] = '</ul>';
+		$config['num_tag_open'] = '<li>';
+		$config['num_tag_close'] = '</li>';
+		$config['cur_tag_open'] = '<li class="active"><a href="javascript:;">';
+		$config['cur_tag_close'] = '</a></li>';
+		$config['first_link'] = '<i class="fa fa-angle-double-left"></i>';
+		$config['first_url'] = site_url($url.($des_slug ? '/index/'.$des_slug : ''));
+		$config['first_tag_open'] = '<li>';
+		$config['first_tag_close'] = '</li>';
+		$config['last_link'] = '<i class="fa fa-angle-double-right"></i>';
+		$config['last_tag_open'] = '<li>';
+		$config['last_tag_close'] = '</li>';
+		$config['prev_link'] = '<i class="fa fa-angle-left"></i>';
+		$config['prev_tag_open'] = '<li>';
+		$config['prev_tag_close'] = '</li>';
+		$config['next_link'] = '<i class="fa fa-angle-right"></i>';
+		$config['next_tag_open'] = '<li>';
+		$config['next_tag_close'] = '</li>';
+
+		$this->pagination->initialize($config);
+
 	}
 
 	// ----------------------------------------------------------------------

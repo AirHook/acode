@@ -38,7 +38,7 @@ class Get_thumbs extends Admin_Controller {
 		//$designer = 'tempoparis';
 		//$vendor_id = '53';
 		//$slug_segs = 'womens_apparel/tops/blouses';
-		$designer = $this->input->post('designer');
+		$designer = $this->input->post('des_slug') ?: $this->input->post('designer');
 		$vendor_id = $this->input->post('vendor_id');
 		$slug_segs = $this->input->post('slugs_link');
 		$style_ary = $this->input->post('style_ary');
@@ -46,11 +46,12 @@ class Get_thumbs extends Admin_Controller {
 		// get the items if any
 		// set the items array
 		$items_array =
-			$this->session->admin_po_items
-			? json_decode($this->session->admin_po_items, TRUE)
+			$this->session->admin_so_items
+			? json_decode($this->session->admin_so_items, TRUE)
 			: array()
 		;
 
+		$where_more = array();
 		if ($slug_segs)
 		{
 			// load pertinent library/model/helpers
@@ -63,6 +64,15 @@ class Get_thumbs extends Admin_Controller {
 			$designer_slug = reset($the_slugs);
 
 			$where_more['designer.url_structure'] = $designer_slug;
+			$where_more['tbl_product.categories LIKE'] = $category_id;
+		}
+		else
+		{
+			$where_more['designer.url_structure'] = $designer;
+
+			$this->load->library('categories/categories_tree');
+			$category_slug = $this->categories_tree->get_primary_subcat($designer);
+			$category_id = $this->categories_tree->get_id($category_slug);
 			$where_more['tbl_product.categories LIKE'] = $category_id;
 		}
 
@@ -80,15 +90,19 @@ class Get_thumbs extends Admin_Controller {
 		// get the products list
 		$params['show_private'] = TRUE; // all items general public (Y) - N for private
 		$params['view_status'] = 'ALL'; // ALL items view status (Y, Y1, Y2, N)
+		$params['view_at_hub'] = TRUE; // all items general public at hub site
+		$params['view_at_satellite'] = TRUE; // all items publis at satellite site
 		$params['variant_publish'] = 'ALL'; // ALL variant level color publish (view status)
-		$params['group_products'] = FALSE; // group per product number or per variant
-		// show items even without stocks at all
+		$params['variant_view_at_hub'] = TRUE; // variant level public at hub site
+		$params['variant_view_at_satellite'] = TRUE; // varian level public at satellite site
 		$params['with_stocks'] = FALSE;
+		$params['group_products'] = FALSE; // group per product number or per variant
+		$params['special_sale'] = FALSE; // special sale items only
 		$this->load->library('products/products_list', $params);
 		$products = $this->products_list->select(
 			$where_more,
 			array( // order conditions
-				'seque' => 'desc',
+				'seque' => 'asc',
 				'tbl_product.prod_no' => 'desc'
 			)
 		);

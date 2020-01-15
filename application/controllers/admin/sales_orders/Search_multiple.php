@@ -62,9 +62,12 @@ class Search_multiple extends Admin_Controller {
 		}
 		else
 		{
+			$where_more['designer.url_structure'] = $this->session->admin_so_des_slug;
 			$where_more['tbl_product.prod_no'] = $prod_no;
 			$where = $where_more;
 		}
+
+		// we need to consider the designer slug so as not to mix products
 
 		// get the products list
 		$params['show_private'] = TRUE; // all items general public (Y) - N for private
@@ -77,9 +80,11 @@ class Search_multiple extends Admin_Controller {
 		$products = $this->products_list->select(
 			$where,
 			array( // order conditions
-				'seque' => 'desc',
+				'seque' => 'asc',
 				'tbl_product.prod_no' => 'desc'
-			)
+			),
+			'',
+			($this->session->admin_so_des_slug ?: NULL)
 		);
 		$products_count = $this->products_list->row_count;
 

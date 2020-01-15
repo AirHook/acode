@@ -1,7 +1,14 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Get_thumbs extends Admin_Controller {
+class Search_multiple extends Sales_user_Controller {
+
+	/**
+	 * Propery post array checked
+	 *
+	 * @params	boolean/int
+	 */
+	protected $post_ary_checked = 0;
 
 	/**
 	 * Constructor
@@ -19,7 +26,6 @@ class Get_thumbs extends Admin_Controller {
 	 * Index - default method
 	 *
 	 * Primary method to call when no other methods are found in url segment
-	 * This method simply lists all sales pacakges
 	 *
 	 * @return	void
 	 */
@@ -27,53 +33,41 @@ class Get_thumbs extends Admin_Controller {
 	{
 		$this->output->enable_profiler(FALSE);
 
-		if ( ! $this->input->post())
+		if (empty($this->input->post()))
 		{
-			// nothing more to do...
-			echo 'There is no post data.';
+			//echo 'uh oh<br />';
+			//echo '<pre>';
+			//print_r($this->input->post());
+			//die();
+			echo '';
 			exit;
 		}
 
-		// grab the post variable
-		$slug_segs = explode('/', $this->input->post('slugs_link'));
-		$style_ary = $this->input->post('style_ary');
+		// grab the input posts
+		$post_ary = $this->input->post();
+		$prod_no = array_map('strtoupper', array_filter($post_ary['style_ary']));
 
 		// get the items if any
 		// set the items array
 		$items_array =
-			$this->session->admin_so_items
-			? json_decode($this->session->admin_so_items, TRUE)
+			$this->session->so_items
+			? json_decode($this->session->so_items, TRUE)
 			: array()
 		;
 
-		if ($slug_segs)
+		// consider input prod_no
+		if (is_array($prod_no))
 		{
-			// load pertinent library/model/helpers
-			$this->load->library('categories/categories_tree');
-
-			// process the active slug segments
-			// getting the last category segment for the product listing
-			// getting the first segment as designer
-			$category_slug = end($slug_segs);
-			$category_id = $this->categories_tree->get_id($category_slug);
-			$designer_slug = reset($slug_segs);
-
-			// set array for where condition of get product list
-			// based on above category and designer items
-			$where['designer.url_structure'] = $designer_slug;
-			$where['tbl_product.categories LIKE'] = '%'.$category_id.'%';
+			$where = $prod_no;
+		}
+		else
+		{
+			$where_more['designer.url_structure'] = $this->session->so_des_slug;
+			$where_more['tbl_product.prod_no'] = $prod_no;
+			$where = $where_more;
 		}
 
-		// if for search
-		if ($style_ary)
-		{
-			// need to show search string
-			$style_ary = array_map('strtoupper', array_filter($style_ary));
-			$search_string = implode(', ', $style_ary);
-			// marge all where's
-			$where = array_merge($style_ary, $where);
-		}
-		else $search_string = '';
+		// we need to consider the designer slug so as not to mix products
 
 		// get the products list
 		$params['show_private'] = TRUE; // all items general public (Y) - N for private
@@ -86,19 +80,24 @@ class Get_thumbs extends Admin_Controller {
 		$products = $this->products_list->select(
 			$where,
 			array( // order conditions
-				'seque' => 'desc',
+				'seque' => 'asc',
 				'tbl_product.prod_no' => 'desc'
-			)
+			),
+			'',
+			($this->session->so_des_slug ?: NULL)
 		);
 		$products_count = $this->products_list->row_count;
 
-		$html = '';
+		// need to show loading at start
+		$search_string = implode(',', $prod_no);
+
+		$html = '<div class="thumb-tiles">';
+
 		if ($search_string)
 		{
 			$html.= '<h1><small><em>Search results for:</em></small> "'.$search_string.'"</h1><br />';
 		}
 
-		$html.= '<div class="thumb-tiles">';
 		if ($products)
 		{
 			$dont_display_thumb = '';
@@ -115,7 +114,7 @@ class Get_thumbs extends Admin_Controller {
 				$path_to_image = $product->media_path.$style_no.'_f3.jpg';
 				$img_front_new = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_f3.jpg';
 				$img_back_new = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_b3.jpg';
-				$img_large = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_f.jpg';
+				$img_linesheet = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_linesheet.jpg';
 
 				// after the first batch, hide the images
 				if ($cnti > 0 && fmod($cnti, 100) == 0)
@@ -155,25 +154,41 @@ class Get_thumbs extends Admin_Controller {
 					.'">'
 				;
 				$html.= '<a href="'
-					.$img_large
-					.'" class="fancybox tooltips" data-original-title="Click to zoom">'
+					.$img_linesheet
+					.'" class="fancybox">'
 				;
 
-				$html.= '<div class="corner"></div><div class="check"> </div><div class="tile-body"><img class="img-b_ img-unveil" '
+				if ($product->publish == '0' OR $product->publish == '3' OR $product->view_status == 'N' OR $product->public == 'N')
+				{
+					$html.= '<div class="ribbon ribbon-shadow ribbon-round ribbon-border-dash ribbon-vertical-left ribbon-color-'
+						.$ribbon_color
+						.' uppercase tooltips" data-placement="top" data-container="body" data-original-title="'
+						.$tooltip
+						.'" style="position:absolute;left:-3px;width:28px;padding:1em 0;"><i class="fa fa-ban"></i></div>'
+					;
+				}
+
+				if ($product->with_stocks == '0')
+				{
+					$html.= '<div class="ribbon ribbon-shadow ribbon-round ribbon-border-dash ribbon-vertical-right ribbon-color-danger uppercase tooltips" data-placement="top" data-container="body" data-original-title="Pre Order" style="position:absolute;right:-3px;width:28px;padding:1em 0;"><i class="fa fa-ban"></i></div>'
+					;
+				}
+
+				$html.= '<div class="corner"></div><div class="check"> </div><div class="tile-body"><img class="img-b img-unveil" '
 					.(
 						$unveil
 						? 'data-src="'.($product->primary_img ? $img_back_new : $img_back_pre.$image).'"'
 						: 'src="'.($product->primary_img ? $img_back_new : $img_back_pre.$image).'"'
 					)
-					.' alt=""><img class="img-a_ img-unveil" '
+					.' alt=""><img class="img-a img-unveil" '
 					.(
 						$unveil
 						? 'data-src="'.($product->primary_img ? $img_front_new : $img_front_pre.$image).'"'
 						: 'src="'.($product->primary_img ? $img_front_new : $img_front_pre.$image).'"'
 					)
-					.' alt=""><noscript><img class="img-b_" src="'
+					.' alt=""><noscript><img class="img-b" src="'
 					.($product->primary_img ? $img_back_new : $img_back_pre.$image)
-					.'" alt=""><img class="img-a_" src="'
+					.'" alt=""><img class="img-a" src="'
 					.($product->primary_img ? $img_front_new : $img_front_pre.$image)
 					.'" alt=""></noscript></div><div class="tile-object"><div class="name">'
 					.$product->prod_no
@@ -183,15 +198,12 @@ class Get_thumbs extends Admin_Controller {
 				;
 
 				$html.= '</a>';
-				$html.= '<div class="" style="color:red;font-size:1rem;">'
+				$html.= '<div class="" style="color:red;font-size:0.9rem;"><span> Add to Sales Order: </span>'
 					.'<i class="fa fa-plus package_items '
 					.$product->prod_no.'_'.$product->color_code
-					.'>" style="background:#ddd;line-height:normal;padding:1px 2px;margin-right:3px;" data-item="'
+					.'" style="position:relative;left:5px;background:#ddd;line-height:normal;padding:1px 2px;" data-item="'
 					.$product->prod_no.'_'.$product->color_code
-					.'"></i>
-					<span class="text-uppercase package_items" data-item="'
-					.$product->prod_no.'_'.$product->color_code
-					.'"> Add to Sales Order </span>'
+					.'"></i></div>'
 				;
 				$html.= '</div>';
 
@@ -200,9 +212,9 @@ class Get_thumbs extends Admin_Controller {
 		}
 		else
 		{
-			if (@$search_string) $txt1 = 'SEARCH DID NOT YIELD PRODUCT RESULTS...';
-			else $txt1 = 'NO PRODUCTS TO LOAD... '.$slug_segs;
-			$html.= '<button class="btn default btn-block btn-lg" data-slug_segs="'.$slug_segs.'"> '.$txt1.' </button>';
+			if ($search_string) $txt1 = 'SEARCH DID NOT YIELD PRODUCT RESULTS...';
+			else $txt1 = 'NO PRODUCTS TO LOAD...';
+			$html.= '<button class="btn default btn-block btn-lg"> '.$txt1.' </button>';
 		}
 		$html.= '</div>';
 

@@ -317,8 +317,8 @@
 			 * Description
 			 */
 			?>
-			<td style="vertical-align:top" class=" <?php echo $product->media_path.$style_no; ?> <?php echo $img_front_new; ?> ">
-				<strong> <?php echo $product->prod_no; ?> </strong> <br />
+			<td style="vertical-align:top" class=" <?php echo $img_front_new; ?> ">
+				<strong> <?php echo $prod_no; ?> </strong> <br />
 				<span style="color:#999;">Style#: <?php echo $item; ?></span><br />
 				Color: &nbsp; <?php echo $color_name; ?>
 				<?php echo @$product->designer_name ? '<br /><cite class="small">'.$product->designer_name.'</cite>' : ''; ?>
