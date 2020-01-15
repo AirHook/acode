@@ -7,7 +7,7 @@
 	'my_account/sales/search',
 	array(
 		'method'=>'POST',
-		'class'=>'search-form search-form-expanded '
+		'class'=>'search-form search-form-expanded hide'
 	)
 ); ?>
 	<div class="input-group">

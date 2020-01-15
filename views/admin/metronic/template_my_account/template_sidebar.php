@@ -2,12 +2,10 @@
 if ($role=='sales')
 { ?>
 	<ul class="page-sidebar-menu   " data-keep-expanded="true" data-auto-scroll="true" data-slide-speed="200">
-		<li class="heading">
-			<h3 class="uppercase">
-				<a href="<?php echo site_url('my_account/sales/dashboard'); ?>" class="nav-link ">
-					Dashboard
-				</a>
-			</h3>
+		<li class="nav-item start uppercase <?php echo $this->uri->segment(3) == 'dashboard' ? 'active' : ''; ?>">
+			<a href="<?php echo site_url('my_account/sales/dashboard'); ?>" class="nav-link font-dark">
+				Dashboard
+			</a>
 		</li>
 
 		<li class="heading">
@@ -52,6 +50,7 @@ if ($role=='sales')
 			</ul>
 		</li>
 
+		<!-- HIDING this for now
 		<li class="heading">
 			<h3 class="uppercase">Orders</h3>
 		</li>
@@ -60,6 +59,7 @@ if ($role=='sales')
 				<span class="title">Order Logs</span>
 			</a>
 		</li>
+		-->
 
 		<li class="heading">
 			<h3 class="uppercase">Sales Orders</h3>

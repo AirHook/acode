@@ -186,7 +186,7 @@ var ComponentsEditors = function () {
                         toastr.info('Item removed...');
                     }
                 } else {
-                    $('.step2').addClass('active');
+                    $('.step3').addClass('active');
                     $('.thumb-tile.'+objectData.prod_no).addClass('selected');
                     // user toastr notification
                     toastr.success('Item added to Sales Order...');
@@ -324,15 +324,23 @@ var ComponentsEditors = function () {
         });
 
         // size and qty change at modal
-        $('.modal-body-cart_basket_wrapper').on('change', '.size-select', function(){
+        $('#form-size_qty_select').submit(function(e){
+            // prevent form from submitting
+            e.preventDefault();
             // call jquery loading on po table of items
             $('.cart_basket_wrapper table tbody').loading();
             // get the object data to pass to post url
-            var objectData = $(this).closest('.modal-body').data('object_data');
-            objectData.qty = $(this).val();
-            objectData.size_label = $(this).attr('name');
-            objectData.prod_no = $(this).data('item');
-            objectData.page = $(this).data('page');
+            var objectData = object_data;
+            objectData.prod_no = $('#size-select-prod_no').val();
+            objectData.page = $('#size-select-page').val();
+            // get the sizes and quantities
+            var size_qty = {};
+            $('.size-select').each(function(){
+                if ($(this).val() != 0){
+                    size_qty[$(this).prop('name')] = $(this).val();
+                }
+            });
+            objectData.size_qty = size_qty;
             // hide this modal
             $('#modal-size_qty').modal('hide');
             // add item...

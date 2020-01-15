@@ -103,6 +103,9 @@ class Get_item extends Sales_user_Controller {
 		$size_names = $this->size_names->get_size_names($size_mode);
 		// = $iodd&1 ? '' : 'odd';
 
+		$html.= '<input type="hidden" id="size-select-prod_no" name="size-select-prod_no" value="'.$item.'" />';
+		$html.= '<input type="hidden" id="size-select-page" name="size-select-page" value="create" />';
+
 		$html.= '<div class="item-container clearfix '
 			//.$odd_class
 			.'" style="padding:5px;"><div class="pull-right"><button type="button" class="btn btn-link btn-xs summary-item-remove-btn tooltips font-grey-cascade hide" data-original-title="Remove" data-page="create" data-item="'

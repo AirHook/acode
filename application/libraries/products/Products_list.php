@@ -709,18 +709,6 @@ class Products_list
 		$this->DB->select('media_library_products.upload_version');
 
 		// items that are necessary for folder structure and url
-		$this->DB->select('
-			(CASE
-				WHEN designer.url_structure = "basix-black-label" THEN "basixblacklabel"
-				ELSE designer.url_structure
-			END) AS d_url_structure
-		');
-		$this->DB->select('
-			(CASE
-				WHEN designer.url_structure = "basix-black-label" THEN "basixblacklabel"
-				ELSE designer.url_structure
-			END) AS folder
-		');
 		$this->DB->select('c1.category_slug as c_url_structure');
 		$this->DB->select('
 			(CASE

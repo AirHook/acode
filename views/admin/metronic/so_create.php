@@ -2001,6 +2001,16 @@
                                         <button type="button" class="close hide" data-dismiss="modal" aria-hidden="true"></button>
                                         <h4 class="modal-title"> Select Item's Size and Quantity </h4>
                                     </div>
+
+                                    <!-- BEGIN FORM =======================================================-->
+                                    <?php echo form_open(
+                                        $url_pre.'/sales_orders/create',
+                                        array(
+                                            'class' => '',
+                                            'id' => 'form-size_qty_select'
+                                        )
+                                    ); ?>
+
                                     <div class="modal-body" data-object_data='{"<?php echo $this->security->get_csrf_token_name(); ?>":"<?php echo $this->security->get_csrf_hash(); ?>"}'>
 
                                         <div class="form modal-body-cart_basket_wrapper margin-bottom-30">
@@ -2009,9 +2019,13 @@
 
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn dark btn-outline modal-size_qty_cancel" data-dismiss="modal">Cancel</button>
-                                        <button type="submit" class="btn dark hide"> Submit </button>
+                                        <button type="button" class="btn dark btn-outline modal-size_qty_cancel" data-dismiss="modal" tabindex="-1">Cancel</button>
+                                        <button type="submit" class="btn dark modal-size_qty_submit"> Submit </button>
                                     </div>
+
+                                    </form>
+                                    <!-- END FORM =========================================================-->
+
                                 </div>
                                 <!-- /.modal-content -->
                             </div>

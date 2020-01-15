@@ -26,7 +26,7 @@
 
 								<input type="hidden" name="page" value="<?php echo @$page; ?>" />
 
-								<div class="form-group">
+								<div class="form-group <?php echo @$role == 'sales' ? 'hide' : ''; ?>">
                                     <label>Filter List</label>
                                     <select class="bs-select form-control filter-options-field" name="page_param">
                                         <option value="all" <?php echo strpos($this->uri->uri_string(), 'admin/orders/all') !== FALSE ? 'selected="selected"' : ''; ?>>
@@ -45,7 +45,7 @@
 								<?php if ($this->webspace_details->options['site_type'] == 'hub_site')
 								{ ?>
 
-								<div class="form-group">
+								<div class="form-group <?php echo @$role == 'sales' ? 'hide' : ''; ?>">
                                     <label>Filter By Designer</label>
 									<select class="bs-select form-control filter-options-field filter_by_designer_select" name="des_slug" data-live-search="true" data-size="5" data-show-subtext="true">
 										<option class="option-placeholder" value="">Select Designer...</option>
@@ -633,7 +633,7 @@
 										else
 										{ ?>
 
-										<tr><td colspan="12">No records found.</td></tr>
+										<tr><td colspan="13">No records found.</td></tr>
 
 											<?php
 										} ?>

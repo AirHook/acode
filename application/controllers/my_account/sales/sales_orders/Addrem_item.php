@@ -36,10 +36,13 @@ class Addrem_item extends MY_Controller {
 
 		// grab the post variables
 		$item = $this->input->post('prod_no');
-		$size_label = $this->input->post('size_label');
-		$qty = $this->input->post('qty');
 		$page = $this->input->post('page');
 		$action = $this->input->post('action');
+		// used by add
+		$size_qty = $this->input->post('size_qty'); // array of size and qty
+		// used by rem
+		$size_label = $this->input->post('size_label');
+		$qty = $this->input->post('qty');
 
 		// set the items array
 		$items_array =
@@ -55,8 +58,10 @@ class Addrem_item extends MY_Controller {
 		}
 		else
 		{
-			//$items_array[$item][$size_label] = $qty;
-			$items_array[$item][$size_label] = array($qty,0,$qty);
+			foreach ($size_qty as $size_label => $qty)
+			{
+				$items_array[$item][$size_label] = array($qty,0,$qty); // qty,shpd,reqd
+			}
 		}
 
 		// check if item still has options
