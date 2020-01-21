@@ -123,7 +123,7 @@ class Index extends Frontend_Controller {
 				$this->session->set_flashdata('error', 'status_inactive');
 
 				// send to request for activation page
-				redirect('account/request/activation');
+				redirect('account/request/activation', 'location');
 			}
 
 			// let us set sessions
@@ -137,8 +137,7 @@ class Index extends Frontend_Controller {
 					$this->session->set_userdata('ws_login_time', @time());
 				}
 			}
-			else $this->wholesale_user_details->unset_session();
-			if ($this->consumer_user_details->user_id)
+			else if ($this->consumer_user_details->user_id)
 			{
 				$this->consumer_user_details->set_session();
 
@@ -147,8 +146,7 @@ class Index extends Frontend_Controller {
 					$this->session->set_userdata('cs_login_time', @time());
 				}
 			}
-			else $this->consumer_user_details->unset_session();
-			if ($this->sales_user_details->admin_sales_id)
+			else if ($this->sales_user_details->admin_sales_id)
 			{
 				$this->sales_user_details->set_session();
 
@@ -157,8 +155,7 @@ class Index extends Frontend_Controller {
 					$this->session->set_userdata('admin_sales_login_time', @time());
 				}
 			}
-			else $this->sales_user_details->unset_session();
-			if ($this->vendor_user_details->vendor_id)
+			else if ($this->vendor_user_details->vendor_id)
 			{
 				$this->vendor_user_details->set_session();
 
@@ -167,7 +164,13 @@ class Index extends Frontend_Controller {
 					$this->session->set_userdata('vendor_login_time', @time());
 				}
 			}
-			else $this->vendor_user_details->unset_session();
+			else
+			{
+				$this->wholesale_user_details->unset_session();
+				$this->consumer_user_details->unset_session();
+				$this->sales_user_details->unset_session();
+				$this->vendor_user_details->unset_session();
+			}
 
 			// redirect to sales user dashboard
 			if ($this->session->admin_sales_loggedin)

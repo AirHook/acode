@@ -5,9 +5,9 @@ class Search_Controller extends Frontend_Controller {
 
 	/**
 	 * Designer/Subcategory Url - Property
-	 * 
+	 *
 	 * Holds the designer/subcat specific url info for use on different
-	 * data queries and equations. This is when the website is 
+	 * data queries and equations. This is when the website is
 	 * designer based (satellite or stand alone sites), and, when
 	 * browsing by designer thumbs products
 	 *
@@ -16,25 +16,25 @@ class Search_Controller extends Frontend_Controller {
     public $d_url_structure = '';
     public $sc_url_structure = '';
     public $category_id = '';
-	
+
 	/**
 	 * Num - Property
-	 * 
+	 *
 	 * For pagination purposes on product thubms
 	 *
 	 * @return	int
 	 */
     public $num = 0;
-	
+
 	/**
 	 * Misc... Properties
-	 * 
+	 *
 	 * @return	various
 	 */
     public $browse_by = '';		// determines whether thumbs page is browse by general categories or by designer
 	public $products = '';		// object that hold the product list after query
-	
-	
+
+
 	/**
 	 * Core Controller for Shop things of the frontend
 	 *
@@ -43,24 +43,24 @@ class Search_Controller extends Frontend_Controller {
 	public function __construct()
 	{
 		parent::__construct();
-		
+
 		// load pertinent library/model/helpers
 		$this->load->library('user_agent');
 		$this->load->library('products/product_details');
-		
+
 		// get the designer slug
 		// helps filter the top nav for non-hub sites
 		// helps filter the side nav on browse by designer
 		// if not hub sites, we use the webspace slug
-		$this->d_url_structure = 
+		$this->d_url_structure =
 			(
-				$this->webspace_details->options['site_type'] == 'sat_site' 
-				OR $this->webspace_details->options['site_type'] == 'sal_site' 
+				$this->webspace_details->options['site_type'] == 'sat_site'
+				OR $this->webspace_details->options['site_type'] == 'sal_site'
 			)
-			? $this->webspace_details->slug 
+			? $this->webspace_details->slug
 			: '';
     }
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -76,7 +76,7 @@ class Search_Controller extends Frontend_Controller {
 			// nothing more to do...
 			return FALSE;
 		}
-		
+
 		// get the products list and total count based on parameters
 		$params['wholesale'] = $this->session->userdata('user_cat') == 'wholesale' ? TRUE : FALSE;
 		$params['show_private'] = $this->session->userdata('user_cat') == 'wholesale' ? TRUE : FALSE;
@@ -104,7 +104,7 @@ class Search_Controller extends Frontend_Controller {
 				'tbl_stock.color_name' => $search_string,
 				'tbl_stock.color_facets' => $search_string,
 				'designer.url_structure' => (
-					$this->webspace_details->options['site_type'] == 'hub_site' 
+					$this->webspace_details->options['site_type'] == 'hub_site'
 					? $search_string
 					: $this->d_url_structure
 				)
@@ -116,19 +116,19 @@ class Search_Controller extends Frontend_Controller {
 			'SEARCH'
 		);
 		$product_count = $this->products_list->count_all;
-		
+
 		// using the same parameters, initialize facets
 		$params['d_url_structure'] = $this->d_url_structure;
-		
+
 		// set product items grouped as one primary image
 		$this->data['grouped_products'] = FALSE;
-		
+
 		// Include the pagination class
 		//$this->_include_pagination($product_count);
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Generate the pagiantion config items (common to all product thumbs list)
 	 *
@@ -140,7 +140,7 @@ class Search_Controller extends Frontend_Controller {
 	{
 		// Prep pagination for the page along with the set style
 		$this->load->library('pagination');
-		
+
 		if ($this->webspace_details->options['theme'] === 'roden2')
 		{
 			switch ($this->webspace_details->slug)
@@ -157,18 +157,18 @@ class Search_Controller extends Frontend_Controller {
 				case 'salesuser':
 					$color = '#846921';	// --> goldish
 				break;
-				
+
 				case 'tempoparis':
 					$color = '#707070';	// --> darkgray
 				break;
-				
+
 				default:
 					$color = '#e0b2aa';	// --> pink (roden original)
 			}
-			
-			$config['base_url'] 				= 
-				$this->uri->uri_string() == 'shop/all' 
-				? base_url('shop/all').'/' 
+
+			$config['base_url'] 				=
+				$this->uri->uri_string() == 'shop/all'
+				? base_url('shop/all').'/'
 				: (
 					$this->browse_by == 'categories'
 					? base_url($this->uri->segment(1).'/'.$this->uri->segment(2)).'/'
@@ -186,12 +186,12 @@ class Search_Controller extends Frontend_Controller {
 
 			$config['first_link'] 				= FALSE;
 			$config['first_tag_open'] 			= '<li class="txt hidden-on-mobile" title="First of '.ceil($product_count/$config['per_page']).'" style="margin-right:15px;"><span class="ico"></span>';
-			$config['first_tag_close'] 			= '</li>';		
+			$config['first_tag_close'] 			= '</li>';
 
 			$config['last_link'] 				= FALSE;
 			$config['last_tag_open'] 			= '<li class="txt hidden-on-mobile" title="Last of '.ceil($product_count/$config['per_page']).'" style="margin-left:15px;"><span class="ico"></span>';
 			$config['last_tag_close'] 			= ' &nbsp; of &nbsp; '.ceil($product_count/$config['per_page']).'</li>';
-	
+
 			$config['cur_tag_open'] 			= '<li class="txt current prev" style="background-color:'.$color.';"><span class="txt"><a href="javascript:void(0);" style="text-decoration:none;color:white;">';
 			$config['cur_tag_close'] 			= '</a></span></li>';
 			$config['num_tag_open'] 			= '<li class="txt pages prev"><span class="ico"></span>';
@@ -215,7 +215,7 @@ class Search_Controller extends Frontend_Controller {
 			$config['first_link'] 				= false;
 			$config['last_link'] 				= false;
 			$config['full_tag_open']			= '<div class="pagination">';
-			$config['full_tag_close'] 			= '</div>';		
+			$config['full_tag_close'] 			= '</div>';
 			$config['cur_tag_open'] 			= '<span class="current" style="background:#AA0000;">';
 			$config['cur_tag_close'] 			= '</span>';
 			$config['prev_link'] 				= '&laquo; previous';
@@ -224,7 +224,7 @@ class Search_Controller extends Frontend_Controller {
 
 		$this->pagination->initialize($config);
 	}
-	
+
 	// --------------------------------------------------------------------
 
 }

@@ -283,6 +283,9 @@ class Shop_Controller extends Frontend_Controller {
             $where['condition'] = $condition;
         }
 
+        // clearance_consumer_only option
+        $where['condition'] = 'tbl_stock.options NOT LIKE \'%"clearance_consumer_only":"1"%\'';
+
 		// get the products list and total count based on parameters
 		$params['wholesale'] = $this->session->userdata('user_cat') == 'wholesale' ? TRUE : FALSE;
 		$params['show_private'] = $this->session->userdata('user_cat') == 'wholesale' ? TRUE : FALSE;

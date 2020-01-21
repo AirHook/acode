@@ -22,7 +22,12 @@
 												You have been logged out from the system. Please login again.
 											</div>
 											<?php } ?>
-											<?php if ($this->session->flashdata('error') == 'invalid_credentials') { ?>
+											<?php if ($this->session->flashdata('error') == 'status_inactive') { ?>
+											<div class="alert alert-danger">
+												<strong>Error!</strong>&nbsp; Status inactive.
+											</div>
+											<?php } ?>
+                                            <?php if ($this->session->flashdata('error') == 'invalid_credentials') { ?>
 											<div class="alert alert-danger">
 												<strong>Error!</strong>&nbsp; Invalid Credentials. Please try again.
 											</div>
@@ -82,7 +87,7 @@
 
                                                     <div class="form form-body">
 
-														<h3 class="form-section">Sign Into My Account</h3>
+														<h3 class="form-section">Sign Into My Account_</h3>
 
 														<div class="form-group">
 															<input type="text" placeholder="Email" class="form-control input-md" name="email" value="<?php echo set_value('email'); ?>" required="required" />

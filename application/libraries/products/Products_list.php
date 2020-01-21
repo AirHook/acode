@@ -357,7 +357,7 @@ class Products_list
 			if ($search_where)
 			{
 				$search_where = "(".ltrim($search_where, 'OR').")";
-
+				$search_where.= ' AND tbl_stock.options NOT LIKE \'%"clearance_consumer_only":"1"%\'';
 				$this->DB->where($search_where);
 			}
 		}
