@@ -88,7 +88,7 @@ class Get_thumbs extends Sales_user_Controller {
 		}
 		else $search_string = '';
 
-		$where_more['condition'] = "(JSON_EXTRACT(tbl_stock.options, '$.clearance_consumer_only') IS NULL OR JSON_EXTRACT(tbl_stock.options, '$.clearance_consumer_only') = '0')";
+		$where_more['condition'] = 'tbl_stock.options NOT LIKE \'%"clearance_consumer_only":"0"%\'';
 
 		// get the products list
 		$params['show_private'] = TRUE; // all items general public (Y) - N for private

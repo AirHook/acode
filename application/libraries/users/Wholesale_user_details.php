@@ -589,35 +589,32 @@ class Wholesale_user_details
 	 */
 	public function unset_session()
 	{
-		if ($this->CI->session->user_cat == 'wholesale')
-		{
-			// for redundancy purposes...
-			if (isset($_SESSION['user_loggedin'])) unset($_SESSION['user_loggedin']);
-			if (isset($_SESSION['user_id'])) unset($_SESSION['user_id']);
-			if (isset($_SESSION['user_cat'])) unset($_SESSION['user_cat']);
-			if (isset($_SESSION['user_name'])) unset($_SESSION['user_name']);
-			if (isset($_SESSION['this_login_id'])) unset($_SESSION['this_login_id']);
-			if (isset($_SESSION['ws_last_active_time'])) unset($_SESSION['ws_last_active_time']);
-			if (isset($_SESSION['ws_login_time'])) unset($_SESSION['ws_login_time']);
+		// for redundancy purposes...
+		if (isset($_SESSION['user_loggedin'])) unset($_SESSION['user_loggedin']);
+		if (isset($_SESSION['user_id'])) unset($_SESSION['user_id']);
+		if (isset($_SESSION['user_cat'])) unset($_SESSION['user_cat']);
+		if (isset($_SESSION['user_name'])) unset($_SESSION['user_name']);
+		if (isset($_SESSION['this_login_id'])) unset($_SESSION['this_login_id']);
+		if (isset($_SESSION['ws_last_active_time'])) unset($_SESSION['ws_last_active_time']);
+		if (isset($_SESSION['ws_login_time'])) unset($_SESSION['ws_login_time']);
 
-			// sales packages are for wholesale users only
-			// ensure that sales package session are unset during logout
-			// below is the unset_session() funtion details copies as is
-			$sesdata = array(
-				'sales_package' => FALSE,
-				'sales_package_id' => '',
-				'sales_package_items' => '',
-				'sales_package_tc' => '',
-				'sales_package_link' => ''
-			);
-			$this->CI->session->unset_userdata($sesdata);
+		// sales packages are for wholesale users only
+		// ensure that sales package session are unset during logout
+		// below is the unset_session() funtion details copies as is
+		$sesdata = array(
+			'sales_package' => FALSE,
+			'sales_package_id' => '',
+			'sales_package_items' => '',
+			'sales_package_tc' => '',
+			'sales_package_link' => ''
+		);
+		$this->CI->session->unset_userdata($sesdata);
 
-			if (isset($_SESSION['sales_package'])) unset($_SESSION['sales_package']);
-			if (isset($_SESSION['sales_package_id'])) unset($_SESSION['sales_package_id']);
-			if (isset($_SESSION['sales_package_items'])) unset($_SESSION['sales_package_items']);
-			if (isset($_SESSION['sales_package_tc'])) unset($_SESSION['sales_package_tc']);
-			if (isset($_SESSION['sales_package_link'])) unset($_SESSION['sales_package_link']);
-		}
+		if (isset($_SESSION['sales_package'])) unset($_SESSION['sales_package']);
+		if (isset($_SESSION['sales_package_id'])) unset($_SESSION['sales_package_id']);
+		if (isset($_SESSION['sales_package_items'])) unset($_SESSION['sales_package_items']);
+		if (isset($_SESSION['sales_package_tc'])) unset($_SESSION['sales_package_tc']);
+		if (isset($_SESSION['sales_package_link'])) unset($_SESSION['sales_package_link']);
 	}
 
 	// ----------------------------------------------------------------------

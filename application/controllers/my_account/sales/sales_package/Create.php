@@ -135,7 +135,8 @@ class Create extends Sales_user_Controller {
 				$where_more['designer.url_structure'] = $designer_slug;
 				$where_more['tbl_product.categories LIKE'] = $category_id;
 
-				$where_more['condition'] = "(JSON_EXTRACT(tbl_stock.options, '$.clearance_consumer_only') IS NULL OR JSON_EXTRACT(tbl_stock.options, '$.clearance_consumer_only') = '0')";
+				//$where_more['condition'] = "(JSON_EXTRACT(tbl_stock.options, '$.clearance_consumer_only') IS NULL OR JSON_EXTRACT(tbl_stock.options, '$.clearance_consumer_only') = '0')";
+				$where_more['condition'] = 'tbl_stock.options NOT LIKE \'%"clearance_consumer_only":"0"%\'';
 
 				// get the products list for the thumbs grid view
 				$params['show_private'] = TRUE; // all items general public (Y) - N for private
