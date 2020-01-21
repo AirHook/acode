@@ -115,6 +115,12 @@ class Edit extends Sales_user_Controller {
 				)
 			);
 
+			// breadcrumbs
+			$this->data['page_breadcrumb'] = array(
+				'users/wholesale' => 'Wholesale Users',
+				'edit' => 'Edit'
+			);
+
 			// set data variables...
 			$this->data['role'] = 'sales';
 			$this->data['file'] = 'users_wholesale_edit';

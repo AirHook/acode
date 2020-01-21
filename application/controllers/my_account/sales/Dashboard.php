@@ -2,7 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Dashboard extends Sales_user_Controller {
-	
+
 	/**
 	 * Constructor
 	 *
@@ -29,6 +29,11 @@ class Dashboard extends Sales_user_Controller {
 				'sales_orders.admin_sales_id' => $this->session->admin_sales_id
 			)
 		);
+
+		// breadcrumbs
+		// dashboard serves as home page so no need to set breadcrumbs
+		$this->data['page_breadcrumb'] = array();
+
 		// set data variables...
 		$this->data['role'] = 'sales'; //userrole will be used for IF statements in template files
 		$this->data['file'] = 'dashboard'; // sales orders

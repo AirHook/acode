@@ -36,6 +36,8 @@ class Addrem extends Sales_user_Controller {
 
 		// grab the post variable
 		$item = $this->input->post('prod_no');
+		$page = $this->input->post('page');
+		$size_qty = $this->input->post('size_qty'); // array of size and qty
 
 		// set the items array
 		$items_array =
@@ -50,7 +52,18 @@ class Addrem extends Sales_user_Controller {
 			if ( ! array_key_exists($item, $items_array))
 			{
 				// set items array with $item as key
-				$items_array[$item] = array();
+				// and size_qty it's array elements
+				if ($size_qty)
+				{
+					foreach ($size_qty as $size_label => $qty)
+					{
+						$items_array[$item][$size_label] = $qty;
+					}
+				}
+				else
+				{
+					$items_array[$item] = array();
+				}
 			}
 
 		}
@@ -60,19 +73,6 @@ class Addrem extends Sales_user_Controller {
 			{
 				unset($items_array[$item]);
 			}
-
-			// remove item from po_size_qty if any
-			/* */
-			$options_array =
-				$this->session->po_size_qty
-				? json_decode($this->session->po_size_qty, TRUE)
-				: array()
-			;
-			if (isset($options_array[$item])) unset($options_array[$item]);
-
-			// reset session value for options array
-			if ( ! empty($options_array)) $this->session->set_userdata('po_size_qty', json_encode($options_array));
-			// */
 		}
 
 		// sort array

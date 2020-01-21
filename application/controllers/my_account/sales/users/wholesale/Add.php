@@ -65,11 +65,17 @@ class Add extends Sales_user_Controller {
 				)
 			);
 
+			// breadcrumbs
+			$this->data['page_breadcrumb'] = array(
+				'users/wholesale' => 'Wholesale Users',
+				'add' => 'Add'
+			);
+
 			// set data variables...
 			$this->data['role'] = 'sales';
 			$this->data['file'] = 'users_wholesale_add';
 			$this->data['page_title'] = 'Wholesale User Add';
-			$this->data['page_description'] = 'Add new wholesale user';
+			$this->data['page_description'] = 'Add New Wholesale User';
 
 			// load views...
 			$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template_my_account/template', $this->data);

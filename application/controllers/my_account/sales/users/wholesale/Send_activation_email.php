@@ -30,7 +30,11 @@ class Send_activation_email extends Sales_user_Controller {
 			$this->session->set_flashdata('error', 'error_sending_activation_email');
 
 			// redirect user
-			redirect('my_account/sales/users/wholesale', 'location');
+			if ($this->session->flashdata('uri_referrer'))
+			{
+				redirect($this->session->flashdata('uri_referrer'), 'location');
+			}
+			else redirect('my_account/sales/users/wholesale', 'location');
 		}
 
 		// load pertinent library/model/helpers
@@ -57,7 +61,11 @@ class Send_activation_email extends Sales_user_Controller {
 		$this->session->set_flashdata('success', 'acivation_email_sent');
 
 		// redirect user
-		redirect('my_account/sales/users/wholesale', 'location');
+		if ($this->session->flashdata('uri_referrer'))
+		{
+			redirect($this->session->flashdata('uri_referrer'), 'location');
+		}
+		else redirect('my_account/sales/users/wholesale', 'location');
 	}
 
 	// ----------------------------------------------------------------------

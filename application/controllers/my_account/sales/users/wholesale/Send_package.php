@@ -47,7 +47,11 @@ class Send_package extends Sales_user_Controller {
 				$this->session->set_flashdata('error', 'no_id_passed');
 
 				// redirect user
-				redirect('my_account/sales/users/wholesale', 'location');
+				if ($this->session->flashdata('uri_referrer'))
+				{
+					redirect($this->session->flashdata('uri_referrer'), 'location');
+				}
+				else redirect('my_account/sales/users/wholesale', 'location');
 			}
 
 			// initialize sales package
@@ -67,7 +71,11 @@ class Send_package extends Sales_user_Controller {
 			$this->session->set_flashdata('error', 'recent_item_needs_updating');
 
 			// redirect user
-			redirect('my_account/sales/users/wholesale', 'location');
+			if ($this->session->flashdata('uri_referrer'))
+			{
+				redirect($this->session->flashdata('uri_referrer'), 'location');
+			}
+			else redirect('my_account/sales/users/wholesale', 'location');
 		}
 
 		// send the sales package
@@ -82,14 +90,22 @@ class Send_package extends Sales_user_Controller {
 		{
 			$this->session->set_flashdata('error', 'error_sending_package');
 
-			redirect('my_account/sales/users/wholesale', 'location');
+			if ($this->session->flashdata('uri_referrer'))
+			{
+				redirect($this->session->flashdata('uri_referrer'), 'location');
+			}
+			else redirect('my_account/sales/users/wholesale', 'location');
 		}
 
 		// set flash data
 		$this->session->set_flashdata('success', 'pacakge_sent');
 
 		// redirect user
-		redirect('my_account/sales/users/wholesale', 'location');
+		if ($this->session->flashdata('uri_referrer'))
+		{
+			redirect($this->session->flashdata('uri_referrer'), 'location');
+		}
+		else redirect('my_account/sales/users/wholesale', 'location');
 	}
 
 	// ----------------------------------------------------------------------

@@ -239,6 +239,25 @@ var ComponentsEditors = function () {
             });
         };
 
+        function getItem(objectData){
+            var addrem = $.ajax({
+                type:    "POST",
+                url:     base_url + "my_account/sales/purchase_orders/get_item.html",
+                data:    objectData
+            });
+            addrem.done(function(data) {
+                // fill in modal
+                $('.modal-body-cart_basket_wrapper').html(data);
+                $('#modal-size_qty').modal('show');
+            });
+            addrem.fail(function(jqXHR, textStatus, errorThrown) {
+                $('#loading').modal('hide');
+                alert("Get Item Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
+                //$('#reloading').modal('show');
+                //location.reload();
+            });
+        };
+
         function addRem(objectData){
             var addrem = $.ajax({
                 type:    "POST",
@@ -324,7 +343,6 @@ var ComponentsEditors = function () {
 
         // select vendor drop down item
         $('[name="vendor_id"]').on('change', function(){
-            //$('#loading').modal('show');
             // get some data
             var objectData = $(this).closest('.form-body').data('object_data');
             var vendor_id = $(this).selectpicker('val');
@@ -342,6 +360,7 @@ var ComponentsEditors = function () {
             }
             if (cfm)
             {
+                $('#loading').modal('show');
                 // set this select vendor as current
                 //$(this).attr('data-vendor_id', vendor_id);
                 $('[name="cur_vendor_id"]').val(vendor_id);
@@ -454,36 +473,57 @@ var ComponentsEditors = function () {
 
         // clicked on product grid view
         $('.thumb-tiles-wrapper').on('click', '.package_items', function() {
-            // call jquery loading on po table of items
-            $('.cart_basket table').loading();
             var objectData = $(this).closest('.thumb-tiles-wrapper').data('object_data');
-            var checked = $(this).is(":checked");
             objectData.prod_no = $(this).val();
+            var checked = $(this).is(":checked");
             if (checked) {
                 objectData.action = 'add_item';
                 // check thumb
                 $('.thumb-tile.'+objectData.prod_no).addClass('selected');
-                /*  // using toastr notifications instead
-                $('.item-added').fadeTo(100, 1).show();
-                setTimeout(function() {
-    				$(".item-added").fadeTo(1000, 0).slideUp(300, function(){
-    					$(this).hide();
-    				});
-    			}, 500);
-                */
-                $('.step3').addClass('active');
-                // user toastr notification
-                toastr.success('Item added to Purchase Order...');
+                // get item...
+                getItem(objectData);
             } else {
+                // remove item from cart summary
                 objectData.action = 'rem_item';
                 // check thumb
                 $('.thumb-tile.'+objectData.prod_no).removeClass('selected');
                 // user toastr notification
                 toastr.info('Item removed...');
+                // rem item
+                addRem(objectData);
             }
-            // add/rem item...
-            // which gets and sets items array as well
+        });
+
+        // size and qty change at modal
+        $('#form-size_qty_select').submit(function(e){
+            // prevent form from submitting
+            e.preventDefault();
+            // call jquery loading on po table of items
+            $('.cart_basket table').loading();
+            //$('.cart_basket_wrapper table tbody').loading();
+            // get the object data to pass to post url
+            var objectData = object_data;
+            objectData.prod_no = $('#size-select-prod_no').val();
+            objectData.page = $('#size-select-page').val();
+            // get the sizes and quantities
+            var size_qty = {};
+            $('.size-select').each(function(){
+                if ($(this).val() != 0){
+                    size_qty[$(this).prop('name')] = $(this).val();
+                }
+            });
+            if (size_qty.length > 0) objectData.size_qty = size_qty;
+            // hide this modal
+            $('#modal-size_qty').modal('hide');
+            // add item...
+            objectData.action = 'add_item';
             addRem(objectData);
+        });
+
+        $('#form-size_qty_select').on('click', '.modal-size_qty_cancel', function(){
+            var prod_no = $('#form-size_qty_select #size-select-prod_no').val();
+            $('.thumb-tile.'+prod_no).removeClass('selected');
+            $('.package_items.'+prod_no).prop('checked', !$('.package_items.'+prod_no).prop('checked'));
         });
 
         // remove item at summary view

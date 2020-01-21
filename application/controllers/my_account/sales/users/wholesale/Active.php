@@ -96,7 +96,15 @@ class Active extends Sales_user_Controller {
 		$this->data['show_loading'] = FALSE;
 		$this->data['search'] = FALSE;
 
-		// set data variables...
+		// set uri referrer session.
+		$this->session->set_flashdata('uri_referrer', $this->uri->uri_string());
+
+		// breadcrumbs
+		$this->data['page_breadcrumb'] = array(
+			'users/wholesale/active' => 'Active Wholesale Users'
+		);
+
+		// final set of data variables to pass to view file
 		$this->data['role'] = 'sales';
 		$this->data['file'] = 'users_wholesale';
 		$this->data['page_title'] = 'Wholesale Users';

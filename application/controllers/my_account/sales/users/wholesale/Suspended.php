@@ -96,6 +96,14 @@ class Suspended extends Sales_user_Controller {
 		$this->data['show_loading'] = FALSE;
 		$this->data['search'] = FALSE;
 
+		// set uri referrer session.
+		$this->session->set_flashdata('uri_referrer', $this->uri->uri_string());
+
+		// breadcrumbs
+		$this->data['page_breadcrumb'] = array(
+			'users/wholesale/suspended' => 'Suspended Wholesale Users'
+		);
+
 		// set data variables...
 		$this->data['role'] = 'sales';
 		$this->data['file'] = 'users_wholesale';
