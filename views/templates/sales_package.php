@@ -77,14 +77,27 @@
 	 * setup $email_message here
 	 */
 	?>
-	<?php echo $email_message; ?>
+	<?php if ($email_message)
+	{
+		echo $email_message;
+		echo '<br>';
+		if ($w_images === 'Y' OR $linesheets_only == 'Y') { ?>
+		See attached linesheets...	<br />
+		<?php }
+	}
+	else
+	{ ?>
 
-	There are several brand new designs for your review.<br>
-	Please respond with items of interest for your stores.<br>
-	<br>
-	<?php if ($w_images === 'Y' OR $linesheets_only == 'Y') { ?>
-	See attached linesheets...	<br />
-	<?php } ?>
+		There are several brand new designs for your review.<br>
+		Please respond with items of interest for your stores.<br>
+		<br>
+		<?php if ($w_images === 'Y' OR $linesheets_only == 'Y') { ?>
+		See attached linesheets...	<br />
+		<?php } ?>
+
+		<?php
+	}
+	?>
 
 	<br><br>
 

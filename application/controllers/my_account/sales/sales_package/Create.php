@@ -135,6 +135,8 @@ class Create extends Sales_user_Controller {
 				$where_more['designer.url_structure'] = $designer_slug;
 				$where_more['tbl_product.categories LIKE'] = $category_id;
 
+				$where_more['condition'] = "(JSON_EXTRACT(tbl_stock.options, '$.clearance_consumer_only') IS NULL OR JSON_EXTRACT(tbl_stock.options, '$.clearance_consumer_only') = '0')";
+
 				// get the products list for the thumbs grid view
 				$params['show_private'] = TRUE; // all items general public (Y) - N for private
 				$params['view_status'] = 'ALL'; // all items view status (Y, Y1, Y2, N)
@@ -150,7 +152,8 @@ class Create extends Sales_user_Controller {
 				$this->data['products'] = $this->products_list->select(
 					$where_more,
 					array( // order conditions
-						'seque' => 'asc'
+						'seque' => 'asc',
+						'tbl_product.prod_no' => 'desc'
 					)
 				);
 				$this->data['products_count'] = $this->products_list->row_count;
@@ -196,6 +199,12 @@ class Create extends Sales_user_Controller {
 			// need to show loading at start
 			$this->data['show_loading'] = @$this->data['products_count'] > 0 ? TRUE : FALSE;
 			$this->data['search_string'] = FALSE;
+
+			// breadcrumbs
+			$this->data['page_breadcrumb'] = array(
+				'sales_package' => 'Sales Packages',
+				'create' => 'Create'
+			);
 
 			// set data variables...
 			$this->data['role'] = 'sales';

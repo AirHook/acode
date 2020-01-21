@@ -47,7 +47,8 @@ class MY_Controller extends CI_Controller
     			)
                 OR @$this->webspace_details->options['wholesale_only_site']
             )
-			&& $this->uri->segment(1) !== $this->config->item('admin_folder')
+			&& $this->uri->segment(1) !== 'admin'
+            && $this->uri->segment(1) !== 'my_account'
 		)
 		{
 			/**************

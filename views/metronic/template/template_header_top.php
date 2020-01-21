@@ -102,7 +102,22 @@
                                             else
                                             { ?>
 
-                                            <div class="logo_slider display-none" style="height:75px;">
+                                            <div class="logo_slider display-none hidden-xs hidden-sm" style="height:75px;">
+                								<ul style="list-style:none;">
+                                                    <?php foreach ($designers as $designer)
+                                                    {
+                                                        if ($designer->with_products)
+                                                        { ?>
+                                                        <li style="float:left;">
+                                                            <img src="<?php echo $this->config->item('PROD_IMG_URL').$designer->logo; ?>" alt="logo" class="logo-default" />
+                    									</li>
+                                                            <?php
+                                                        }
+                                                    } ?>
+                								</ul>
+                							</div>
+
+                                            <div class="logo_slider display-none hidden-md hidden-lg" style="height:75px;width:160px;">
                 								<ul style="list-style:none;">
                                                     <?php foreach ($designers as $designer)
                                                     {

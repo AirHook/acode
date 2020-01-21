@@ -230,8 +230,6 @@ class Get_category_tree extends MY_Controller {
 				.$margin
 				.'" data-slugs_link="'
 				.implode('/', $slugs_link)
-				.'"  data-page="'
-				.$per_page
 				.'" data-des_slug="'
 				.$designer_details->url_structure
 				.'">'

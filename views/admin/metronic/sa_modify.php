@@ -922,11 +922,11 @@
                                                 <div class="mt-radio-list">
                                                     <div class="mt-radio-inline">
                                                         <label class="mt-radio mt-radio-outline" style="margin-bottom:0px;">
-                                                            <input class="radio-options" type="radio" name="options[w_prices]" value="Y" data-option="w_prices" <?php echo @$sa_options['w_prices'] == 'Y' ? 'checked="checked"' : ''; ?>> Yes
+                                                            <input id="w_prices-Y" class="radio-options" type="radio" name="options[w_prices]" value="Y" data-option="w_prices" <?php echo @$sa_options['w_prices'] == 'Y' ? 'checked="checked"' : ''; ?>> Yes
                                                             <span></span>
                                                         </label>
                                                         <label class="mt-radio mt-radio-outline" style="margin-bottom:0px;">
-                                                            <input class="radio-options" type="radio" name="options[w_prices]" value="N" data-option="w_prices" <?php echo @$sa_options['w_prices'] == 'Y' ? '' : 'checked="checked"'; ?>> No
+                                                            <input id="w_prices-N" class="radio-options" type="radio" name="options[w_prices]" value="N" data-option="w_prices" <?php echo @$sa_options['w_prices'] == 'Y' ? '' : 'checked="checked"'; ?>> No
                                                             <span></span>
                                                         </label>
                                                         <label class="" style="margin-bottom:0px;">
@@ -935,11 +935,11 @@
                                                     </div>
                                                     <div class="mt-radio-inline">
                                                         <label class="mt-radio mt-radio-outline" style="margin-bottom:0px;">
-                                                            <input class="radio-options" type="radio" name="options[w_images]" value="Y" data-option="w_images" <?php echo @$sa_options['w_images'] == 'Y' ? 'checked="checked"' : ''; ?>> Yes
+                                                            <input id="w_images-Y" class="radio-options" type="radio" name="options[w_images]" value="Y" data-option="w_images" <?php echo @$sa_options['w_images'] == 'Y' ? 'checked="checked"' : ''; ?>> Yes
                                                             <span></span>
                                                         </label>
                                                         <label class="mt-radio mt-radio-outline" style="margin-bottom:0px;">
-                                                            <input class="radio-options" type="radio" name="options[w_images]" value="N" data-option="w_images" <?php echo @$sa_options['w_images'] == 'Y' ? '' : 'checked="checked"'; ?>> No
+                                                            <input id="w_images-N" class="radio-options" type="radio" name="options[w_images]" value="N" data-option="w_images" <?php echo @$sa_options['w_images'] == 'Y' ? '' : 'checked="checked"'; ?>> No
                                                             <span></span>
                                                         </label>
                                                         <label class="" style="margin-bottom:0px;">
@@ -948,11 +948,11 @@
                                                     </div>
                                                     <div class="mt-radio-inline">
                                                         <label class="mt-radio mt-radio-outline" style="margin-bottom:0px;">
-                                                            <input class="radio-options" type="radio" name="options[linesheets_only]" value="Y" data-option="linesheets_only" <?php echo @$sa_options['linesheets_only'] == 'Y' ? 'checked="checked"' : ''; ?>> Yes
+                                                            <input id="linesheets_only-Y" class="radio-options" type="radio" name="options[linesheets_only]" value="Y" data-option="linesheets_only" <?php echo @$sa_options['linesheets_only'] == 'Y' ? 'checked="checked"' : ''; ?>> Yes
                                                             <span></span>
                                                         </label>
                                                         <label class="mt-radio mt-radio-outline" style="margin-bottom:0px;">
-                                                            <input class="radio-options" type="radio" name="options[linesheets_only]" value="N" data-option="linesheets_only" <?php echo @$sa_options['linesheets_only'] == 'Y' ? '' : 'checked="checked"'; ?>> No
+                                                            <input id="linesheets_only-N" class="radio-options" type="radio" name="options[linesheets_only]" value="N" data-option="linesheets_only" <?php echo @$sa_options['linesheets_only'] == 'Y' ? '' : 'checked="checked"'; ?>> No
                                                             <span></span>
                                                         </label>
                                                         <label class="" style="margin-bottom:0px;">

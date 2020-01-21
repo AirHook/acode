@@ -67,18 +67,24 @@ class Search_multiple extends Sales_user_Controller {
 			$where = $where_more;
 		}
 
+		$where['condition'] = "(JSON_EXTRACT(tbl_stock.options, '$.clearance_consumer_only') IS NULL OR JSON_EXTRACT(tbl_stock.options, '$.clearance_consumer_only') = '0')";
+
 		// get the products list
 		$params['show_private'] = TRUE; // all items general public (Y) - N for private
-		$params['view_status'] = 'ALL'; // ALL items view status (Y, Y1, Y2, N)
-		$params['variant_publish'] = 'ALL'; // ALL variant level color publish (view status)
+		$params['view_status'] = 'ALL'; // all items view status (Y, Y1, Y2, N)
+		$params['view_at_hub'] = TRUE; // all items general public at hub site
+		$params['view_at_satellite'] = TRUE; // all items publis at satellite site
+		$params['variant_publish'] = 'ALL'; // all items at variant level publish (view status)
+		$params['variant_view_at_hub'] = TRUE; // variant level public at hub site
+		$params['variant_view_at_satellite'] = TRUE; // varian level public at satellite site
+		$params['with_stocks'] = FALSE; // Show all with and without stocks
 		$params['group_products'] = FALSE; // group per product number or per variant
-		// show items even without stocks at all
-		$params['with_stocks'] = FALSE;
+		$params['special_sale'] = FALSE; // special sale items only
 		$this->load->library('products/products_list', $params);
 		$products = $this->products_list->select(
 			$where,
 			array( // order conditions
-				'seque' => 'desc',
+				'seque' => 'asc',
 				'tbl_product.prod_no' => 'desc'
 			)
 		);

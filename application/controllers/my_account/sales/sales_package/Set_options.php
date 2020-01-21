@@ -55,7 +55,13 @@ class Set_options extends Sales_user_Controller {
 				else unset($options_array['w_images']);
 			break;
 			case 'linesheets_only':
-				if ($val == 'Y') $options_array['linesheets_only'] = 'Y';
+				if ($val == 'Y')
+				{
+					$options_array['linesheets_only'] = 'Y';
+					// set other options to NO
+					$options_array['w_prices'] = 'N';
+					unset($options_array['w_images']);
+				}
 				else unset($options_array['linesheets_only']);
 			break;
 		}

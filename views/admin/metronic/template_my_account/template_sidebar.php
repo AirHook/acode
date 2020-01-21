@@ -8,7 +8,9 @@ if ($role=='sales')
 			</a>
 		</li>
 
-		<li class="heading">
+		<?php if ($this->sales_user_details->access_level != '2')
+		{ ?>
+		<li class="heading ">
 			<h3 class="uppercase">Products</h3>
 		</li>
 		<li class="nav-item <?php echo $this->uri->segment(3) == 'products' ? 'active' : ''; ?> ">
@@ -88,18 +90,20 @@ if ($role=='sales')
 				<span class="title">Create New Purchase Order</span>
 			</a>
 		</li>
+			<?php
+		} ?>
 
 		<li class="heading">
 			<h3 class="uppercase">Sales Packages</h3>
 		</li>
 		<li class="nav-item with-heading <?php echo $this->uri->uri_string() == 'my_account/sales/sales_package' ? 'active' : ''; ?>">
 			<a href="<?php echo site_url('my_account/sales/sales_package'); ?>" class="nav-link  ">
-				<span class="title">My Sales Package</span>
+				<span class="title">My Sales Packages</span>
 			</a>
 		</li>
 		<li class="nav-item with-heading <?php echo $this->uri->uri_string() == 'my_account/sales/sales_package/create' ? 'active' : ''; ?>">
 			<a href="<?php echo site_url('my_account/sales/sales_package/create'); ?>" class="nav-link  ">
-				<span class="title">Create Sales Package</span>
+				<span class="title">Create a Sales Package</span>
 			</a>
 		</li>
 
@@ -113,7 +117,7 @@ if ($role=='sales')
 		</li>
 		<li class="nav-item with-heading <?php echo $this->uri->uri_string() == 'my_account/sales/users/wholesale/add' ? 'active' : ''; ?>">
 			<a href="<?php echo site_url('my_account/sales/users/wholesale/add'); ?>" class="nav-link  ">
-				<span class="title">Add Wholesale User</span>
+				<span class="title">Add a New Wholesale User</span>
 			</a>
 		</li>
 	</ul>

@@ -65,7 +65,7 @@ class Sales_user_Controller extends MY_Controller {
 		 * ...now, since login session already exists, initialize class admin user details again
 		 */
 		// initialize class admin user details
-		$this->sales_user_details->initialize(array(
+		$this->data['admin_sales_details'] = $this->sales_user_details->initialize(array(
 			'admin_sales_id' => $this->session->admin_sales_id
 		));
     }

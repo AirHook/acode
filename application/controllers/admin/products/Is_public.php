@@ -176,7 +176,8 @@ class Is_public extends Admin_Controller {
 		$this->data['products'] = $this->products_list->select(
 			$where,
 			array( // order conditions
-				'seque'=>'asc'
+				'seque' => 'asc',
+				'tbl_product.prod_no' => 'desc'
 			),
 			$this->data['limit']
 		);

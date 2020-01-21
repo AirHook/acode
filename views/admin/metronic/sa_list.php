@@ -110,7 +110,7 @@
                                     Sales Packages
                                 </a>
                             </li>
-							<li class="">
+							<li class=" hide">
 								<a href="javascript:;" class="tooltips" data-original-title="Currently under construction">
 									Preset Sales Packages
 								</a>

@@ -198,11 +198,16 @@ class Sales_package_sending
 						$this->CI->product_details->initialize(array('tbl_product.prod_no'=>$product));
 
 						// set image paths
+						/*
 						$img_pre = 'product_assets/WMANSAPREL/'.$this->CI->product_details->d_folder.'/'.$this->CI->product_details->sc_folder.'/product_linesheet/';
 						// the image filename (using 1 - 140x210)
 						$image = $this->CI->product_details->prod_no.'_'.$this->CI->product_details->primary_img_id.'.jpg';
+						*/
 
-						$this->CI->email->attach($img_pre.$image);
+						// new image path
+						$linesheet = $this->CI->config->item('PROD_IMG_URL').$this->CI->product_details->media_path.$this->CI->product_details->prod_no.'_'.$this->CI->product_details->primary_img_id.'_linesheet.jpg';
+
+						$this->CI->email->attach($linesheet);
 					}
 				}
 

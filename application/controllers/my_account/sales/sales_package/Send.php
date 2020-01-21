@@ -117,6 +117,12 @@ class Send extends Sales_user_Controller {
 		$this->data['show_loading'] = FALSE;
 		$this->data['search_string'] = FALSE;
 
+		// breadcrumbs
+		$this->data['page_breadcrumb'] = array(
+			'sales_package' => 'Sales Packages',
+			'send' => 'Send'
+		);
+
 		// set data variables...
 		$this->data['role'] = 'sales';
 		$this->data['file'] = 'sa_send';
@@ -167,7 +173,7 @@ class Send extends Sales_user_Controller {
 			$this->session->set_flashdata('error', 'no_input_data');
 
 			// redirect user
-			redirect('admin/campaigns/sales_package/send/index/'.$id, 'location');
+			redirect('my_account/sales/sales_package/send/index/'.$id, 'location');
 		}
 
 		// load pertinent library/model/helpers
@@ -229,19 +235,14 @@ class Send extends Sales_user_Controller {
 		{
 			$this->session->set_flashdata('error', 'error_sending_package');
 
-			redirect('admin/campaigns/sales_package/send/index/'.$id, 'location');
+			redirect('my_account/sales/sales_package/send/index/'.$id, 'location');
 		}
 
 		// set flash data
 		$this->session->set_flashdata('success', 'sa_email_sent');
 
-		// set data variables...
-		$this->data['file'] = 'sa_send';
-		$this->data['page_title'] = 'Sales Package Sending';
-		$this->data['page_description'] = 'Send Sales Packages To Users';
-
-		// load views...
-		$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template_my_account/template', $this->data);
+		// redirect user
+		redirect('my_account/sales/sales_package/send/index/'.$id, 'location');
 	}
 
 	// ----------------------------------------------------------------------

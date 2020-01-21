@@ -69,6 +69,10 @@ class Index extends Sales_user_Controller {
 		}
 		$this->data['packages'] = $this->sales_package_list->select($where);
 
+		// breadcrumbs
+		$this->data['page_breadcrumb'] = array(
+			'sales_package' => 'Sales Packages'
+		);
 
 		// set data variables...
 		$this->data['role'] = 'sales';

@@ -634,6 +634,7 @@ class Products_list
 		// designer associations
 		$this->DB->select('designer.des_id');
 		$this->DB->select('designer.designer');
+		$this->DB->select('designer.url_structure as d_url_structure');
 		// vendor associations
 		$this->DB->select('vendors.vendor_id');
 		$this->DB->select('vendors.vendor_name');
@@ -650,6 +651,8 @@ class Products_list
 		$this->DB->select('tbl_stock.custom_order');
 		$this->DB->select('tbl_stock.new_color_publish');
 		$this->DB->select('tbl_stock.primary_color');
+		$this->DB->select('tbl_stock.options as color_options');
+		$this->DB->select("JSON_EXTRACT(tbl_stock.options, '$.clearance_consumer_only')");
 		$this->DB->select('
 			tbl_stock.size_ss, tbl_stock.size_sm, tbl_stock.size_sl, tbl_stock.size_sxl,
 			tbl_stock.size_sxxl, tbl_stock.size_sxl1, tbl_stock.size_sxl2,

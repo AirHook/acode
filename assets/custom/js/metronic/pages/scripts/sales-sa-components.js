@@ -338,6 +338,13 @@ var ComponentsEditors = function () {
             var objectData = object_data;
             objectData.param = $(this).data('option');
             objectData.val = $(this).val();
+            if (objectData.param == 'linesheets_only' && objectData.val == 'Y')
+            {
+                $('#w_prices-Y').prop('checked', false);
+                $('#w_prices-N').prop('checked', true);
+                $('#w_images-Y').prop('checked', false);
+                $('#w_images-N').prop('checked', true);
+            }
             // set new info
             setOptions(objectData);
         });

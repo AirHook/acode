@@ -92,7 +92,8 @@
                                         <input type="hidden" name="des_slug" value="<?php echo $this->session->sa_des_slug ?: $this->session->admin_sa_des_slug; ?>" />
                                     </div>
                                 </div>
-                                <div class="form-group form-group-badge select-preset-dropdown">
+                                <!-- DOC: remove class "hide" to show div -->
+                                <div class="form-group form-group-badge select-preset-dropdown hide">
                                     <label class="control-label col-md-5">
                                         <span class="badge custom-badge pull-left step-load-presets step2 <?php echo ($this->session->admin_sa_des_slug OR $this->session->sa_des_slug) ? 'active' : ''; ?>"> 2 </span>
                                         <span class="badge-label"> Load Presets (optional) </span>
@@ -109,7 +110,7 @@
                                 </div>
 								<div class="form-group form-group-badge">
                                     <label class="control-label col-md-5">
-                                        <span class="badge custom-badge pull-left step-select_items step3 <?php echo ($this->session->admin_sa_des_slug OR $this->session->sa_des_slug) ? 'active' : ''; ?>"> 3 </span>
+                                        <span class="badge custom-badge pull-left step-select_items step2 <?php echo ($this->session->admin_sa_des_slug OR $this->session->sa_des_slug) ? 'active' : ''; ?>"> 2 </span>
                                         <span class="badge-label"> Select / Search Products </span>
                                     </label>
                                     <div class="col-md-7">
@@ -539,6 +540,9 @@
         												$classes.= 'selected';
         												$checkbox_check = 'checked';
         											}
+
+                                                    // get options if any
+                                                    $color_options = json_decode($product->color_options, TRUE);
         											?>
 
         									<div class="thumb-tile image bg-blue-hoki <?php echo $classes; ?>" style="<?php echo $styles; ?>">
@@ -872,7 +876,7 @@
                                 <div class="col">
                                     <div class="form-group form-group-badge">
                                         <label class="control-label col-md-5">
-                                            <span class="badge custom-badge pull-left step-refine_sales_package step4 <?php echo @$sa_items ? 'active' : ''; ?>"> 4 </span>
+                                            <span class="badge custom-badge pull-left step-refine_sales_package step3 <?php echo @$sa_items ? 'active' : ''; ?>"> 3 </span>
                                             <span class="badge-label"> Refine Sales Package </span>
                                         </label>
                                         <div class="col-md-7">
@@ -976,11 +980,11 @@
                                                         }
                                                         ?>
                                                         <label class="mt-radio mt-radio-outline" style="margin-bottom:0px;">
-                                                            <input class="radio-options" type="radio" name="options[w_prices]" data-option="w_prices" value="Y" <?php echo $Y_prices; ?>> Yes
+                                                            <input id="w_prices-Y" class="radio-options" type="radio" name="options[w_prices]" data-option="w_prices" value="Y" <?php echo $Y_prices; ?>> Yes
                                                             <span></span>
                                                         </label>
                                                         <label class="mt-radio mt-radio-outline" style="margin-bottom:0px;">
-                                                            <input class="radio-options" type="radio" name="options[w_prices]" data-option="w_prices" value="N" <?php echo $N_prices; ?>> No
+                                                            <input id="w_prices-N" class="radio-options" type="radio" name="options[w_prices]" data-option="w_prices" value="N" <?php echo $N_prices; ?>> No
                                                             <span></span>
                                                         </label>
                                                         <label class="" style="margin-bottom:0px;">
@@ -989,11 +993,11 @@
                                                     </div>
                                                     <div class="mt-radio-inline">
                                                         <label class="mt-radio mt-radio-outline" style="margin-bottom:0px;">
-                                                            <input class="radio-options" type="radio" name="options[w_images]" data-option="w_images" value="Y" <?php echo @$sa_options['w_images'] ? 'checked="checked"' : ''; ?>> Yes
+                                                            <input id="w_images-Y" class="radio-options" type="radio" name="options[w_images]" data-option="w_images" value="Y" <?php echo @$sa_options['w_images'] ? 'checked="checked"' : ''; ?>> Yes
                                                             <span></span>
                                                         </label>
                                                         <label class="mt-radio mt-radio-outline" style="margin-bottom:0px;">
-                                                            <input class="radio-options" type="radio" name="options[w_images]" data-option="w_images" value="N" <?php echo @$sa_options['w_images'] ? '' : 'checked="checked"'; ?>> No
+                                                            <input id="w_images-N" class="radio-options" type="radio" name="options[w_images]" data-option="w_images" value="N" <?php echo @$sa_options['w_images'] ? '' : 'checked="checked"'; ?>> No
                                                             <span></span>
                                                         </label>
                                                         <label class="" style="margin-bottom:0px;">
@@ -1001,12 +1005,12 @@
                                                         </label>
                                                     </div>
                                                     <div class="mt-radio-inline">
-                                                        <label class="mt-radio mt-radio-outline" style="margin-bottom:0px;">
+                                                        <label id="linesheets_only-Y" class="mt-radio mt-radio-outline" style="margin-bottom:0px;">
                                                             <input class="radio-options" type="radio" name="options[linesheets_only]" data-option="linesheets_only" value="Y" <?php echo @$sa_options['linesheets_only'] ? 'checked="checked"' : ''; ?>> Yes
                                                             <span></span>
                                                         </label>
                                                         <label class="mt-radio mt-radio-outline" style="margin-bottom:0px;">
-                                                            <input class="radio-options" type="radio" name="options[linesheets_only]" data-option="linesheets_only" value="N" <?php echo @$sa_options['linesheets_only'] ? '' : 'checked="checked"'; ?>> No
+                                                            <input id="linesheets_only-N" class="radio-options" type="radio" name="options[linesheets_only]" data-option="linesheets_only" value="N" <?php echo @$sa_options['linesheets_only'] ? '' : 'checked="checked"'; ?>> No
                                                             <span></span>
                                                         </label>
                                                         <label class="" style="margin-bottom:0px;">
@@ -1055,7 +1059,7 @@
                                     <hr />
                                     <div class="form-group form-group-badge clearfix" style="margin-bottom:0px;">
                                         <label class="control-label col-md-5">
-                                            <span class="badge custom-badge pull-left step-save_and_send step5 <?php echo @$overall_qty ? 'active' : ''; ?>"> 5 </span>
+                                            <span class="badge custom-badge pull-left step-save_and_send step4 <?php echo @$overall_qty ? 'active' : ''; ?>"> 4 </span>
                                             <span class="badge-label"> Save and Send Sales Package </span>
                                         </label>
                                         <div class="col-md-7">
@@ -1069,7 +1073,7 @@
                                     <a href="<?php echo site_url((@$role == 'sales' ? 'my_account/sales' : 'admin/campaigns').'/sales_package/reset'); ?>" style="color:#333;">
                                         <div class="form-group form-group-badge form-group-badge-step6 clearfix">
                                             <label class="control-label col-md-5" style="cursor:pointer;">
-                                                <span class="badge custom-badge pull-left step6 step-reset"> 6 </span>
+                                                <span class="badge custom-badge pull-left step5 step-reset"> 5 </span>
                                                 <span class="badge-label"> Clear Sales Package </span>
                                             </label>
                                             <div class="col-md-7">
