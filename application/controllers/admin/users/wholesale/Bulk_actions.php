@@ -31,6 +31,7 @@ class Bulk_actions extends Admin_Controller {
 		$DB = $this->load->database('instyle', TRUE);
 
 		// load pertinent library/model/helpers
+		$this->load->library('user_agent');
 		$this->load->library('users/wholesale_user_details');
 
 		// set database set clause based on bulk_action for activate and suspend
@@ -51,7 +52,7 @@ class Bulk_actions extends Admin_Controller {
 			case 'su':
 				$status = '2';
 				$DB->set('active_date', '');
-				$DB->set('is_active', '0');
+				$DB->set('is_active', '2');
 			break;
 		}
 
@@ -97,7 +98,11 @@ class Bulk_actions extends Admin_Controller {
 		}
 
 		// redirect user
-		redirect($this->config->slash_item('admin_folder').'users/wholesale');
+		if ($this->agent->is_referral())
+		{
+			redirect($this->agent->referrer(), 'location');
+		}
+		else redirect($this->config->slash_item('admin_folder').'users/wholesale', 'location');
 	}
 
 	// ----------------------------------------------------------------------

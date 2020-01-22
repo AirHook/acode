@@ -138,6 +138,7 @@
 																			} ?>
 
 																		</ul>
+
 																	</div>
 																			<?php
 																		}
@@ -516,6 +517,7 @@
 																				if (
 																					$this->webspace_details->options['site_type'] !== 'hub_site'
 																					&& in_array($this->webspace_details->slug, $linked_designers)
+                                                                                    && $subcat->category_slug != 'prom_dresse'
 																				)
 																				{ ?>
 
@@ -526,7 +528,10 @@
 																	</li>
 																					<?php
 																				}
-																				else if ($this->webspace_details->options['site_type'] == 'hub_site')
+																				else if (
+                                                                                    $this->webspace_details->options['site_type'] == 'hub_site'
+                                                                                    && $subcat->category_slug != 'prom_dresse'
+                                                                                )
 																				{
 																				?>
 
@@ -540,6 +545,35 @@
 																			}
 																		}
 																	} ?>
+
+                                                                    <?php
+                                                                    /**********
+																	 * Hardcoding Facets for Dresses
+																	 */
+                                                                    if (
+                                                                        $main_category->category_slug == 'dresses'
+                                                                        && $this->webspace_details->options['site_type'] == 'hub_site'
+                                                                    )
+                                                                    {
+                                                                        foreach($occassion_ary as $occassion)
+                                                                        {
+                                                                            if (@$_GET['occassion'] && $_GET['occassion'] == $occassion)
+                                                                            {
+                                                                                $occassion_selected = 'active';
+                                                                            }
+                                                                            else $occassion_selected = '';
+                                                                            ?>
+
+                                                                    <li aria-haspopup="true" class="<?php echo $occassion_selected; ?>">
+																		<a href="<?php echo base_url('shop/womens_apparel/'.$main_category->category_slug); ?>?occassion=<?php echo $occassion; ?>" class="nav-link  " onmouseover="$('.<?php echo $main_category->category_slug; ?>-hover-icon').fadeOut();$('.<?php echo $main_category->category_slug; ?>-hover-icon.<?php echo $main_category->category_slug; ?>').fadeIn();">
+																			<?php echo ucfirst($occassion); ?>
+																		</a>
+																	</li>
+
+                                                                            <?php
+                                                                        }
+                                                                    }
+                                                                    ?>
 
 																</ul>
 															</div>

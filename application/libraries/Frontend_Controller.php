@@ -264,6 +264,16 @@ class Frontend_Controller extends MY_Controller {
 				redirect(site_url('wholesale/signin'), 'location');
 			}
 		}
+
+		// this is a hard code
+		// set occassions facet on DRESSES menu drop down
+		// hence we need to get occassions facet universally
+		$config['category_id'] = '161'; // cat_id of 'dresses'
+		$this->load->library('facets', $config);
+		$this->load->helper('facets');
+		// to avoid collussion with 'occassion_array' on SHOP controller,
+		// we use a differenct variable
+		$this->data['occassion_ary'] = extract_facets($this->facets->get('events'), 'events');
     }
 
 	// --------------------------------------------------------------------
