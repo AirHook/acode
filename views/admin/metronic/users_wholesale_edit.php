@@ -76,7 +76,7 @@
                                     <span class="required"> * </span>
                                 </label>
                                 <div class="col-md-4">
-                                    <select class="form-control select2me" name="reference_designer" data-reference_designer="<?php echo $this->wholesale_user_details->reference_designer; ?>">
+                                    <select class="form-control select2me" name="reference_designer" data-reference_designer="<?php echo $this->wholesale_user_details->reference_designer; ?>" <?php echo (@$role == 'sales' OR @$this->sales_user_details->access_level == '2') ? 'disabled' : ''; ?>>
                                         <option value="">Select...</option>
                                         <?php if ($designers) { ?>
                                         <?php foreach ($designers as $designer) { ?>
@@ -94,7 +94,7 @@
                                     <span class="required"> * </span>
                                 </label>
                                 <div class="col-md-4">
-                                    <select class="form-control select2me" name="admin_sales_email">
+                                    <select class="form-control select2me" name="admin_sales_email" <?php echo (@$role == 'sales' OR @$this->sales_user_details->access_level == '2') ? 'disabled' : ''; ?>>
                                         <option value="">Select...</option>
                                         <?php if ($sales) { ?>
                                         <?php foreach ($sales as $sale) { ?>
@@ -263,7 +263,7 @@
                         </div>
 
                         <hr />
-                        <div class="form-actions bottom">
+                        <div class="form-actions bottom margin-bottom-30">
                             <div class="row">
                                 <div class="col-md-3 text-right">
                                     <div class="btn-group">
@@ -277,10 +277,20 @@
                                     <a href="<?php echo @$role === 'sales' ? site_url('my_account/sales/users/wholesale') : site_url('admin/users/wholesale'); ?>" type="button" class="btn default tooltips" data-placement="top" data-original-title="Back to list">Cancel/Back to list</a>
                                     <button type="reset" class="btn grey-salsa btn-outline tooltips hide" onclick="$('input, select').closest('.form-group').removeClass('has-error');$('.alert-danger, .help-block-error').hide();$('#form-users_wholesale_edit').reset();" data-placement="top" data-original-title="Reset form">Reset</button>
                                 </div>
+
+                                <?php
+                                // do not show to level 2 sales users
+                                if (@$role != 'sales' OR @$this->sales_user_details->access_level == '0')
+                                { ?>
+
                                 <div class="col-md-offset-3 col-md-9">
                                     <br />
                                     <a data-toggle="modal" href="#delete-<?php echo $this->wholesale_user_details->user_id; ?>"><em>Delete Permanently</em></a>
                                 </div>
+
+                                    <?php
+                                } ?>
+
                             </div>
                         </div>
 

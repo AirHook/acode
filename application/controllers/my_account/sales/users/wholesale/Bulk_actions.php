@@ -42,8 +42,14 @@ class Bulk_actions extends Sales_user_Controller {
 				$DB->set('is_active', '1');
 			break;
 
-			case 'su':
+			case 'deac':
 				$status = '0';
+				$DB->set('active_date', '');
+				$DB->set('is_active', '0');
+			break;
+
+			case 'su':
+				$status = '2';
 				$DB->set('active_date', '');
 				$DB->set('is_active', '0');
 			break;

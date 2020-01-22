@@ -562,7 +562,8 @@
         											<div class="tile-object">
         												<div class="name">
         													<?php echo $product->prod_no; ?> <br />
-        													<?php echo $product->color_name; ?>
+        													<?php echo $product->color_name; ?> <br />
+                                                            <?php echo '$'.$product->wholesale_price; ?>
         												</div>
         											</div>
 
@@ -574,7 +575,7 @@
                                                     -->
                                                     <!-- Checkbox -->
         											<input type="checkbox" class="package_items <?php echo $product->prod_no.'_'.$product->color_code; ?>" name="prod_no" value="<?php echo $product->prod_no.'_'.$product->color_code; ?>" <?php echo $checkbox_check; ?> data-page="create" data-item="<?php echo $product->prod_no.'_'.$product->color_code; ?>" /> &nbsp;
-                                                    <span class="text-uppercase" data-item="<?php echo $product->prod_no.'_'.$product->color_code; ?>"> Add to Package </span>
+                                                    <span class="text-uppercase" data-item="<?php echo $product->prod_no.'_'.$product->color_code; ?>"> Add to Sales Package </span>
         										</div>
 
         									</div>

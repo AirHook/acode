@@ -209,6 +209,8 @@ class Get_thumbs extends Sales_user_Controller {
 					.$product->prod_no
 					.' <br />'
 					.$product->color_name
+					.' <br />'
+					.'$'.$product->wholesale_price
 					.'</div></div>'
 				;
 
@@ -227,7 +229,7 @@ class Get_thumbs extends Sales_user_Controller {
 					.'" /> &nbsp;'
 					.'<span class="text-uppercase" data-item="'
 					.$product->prod_no.'_'.$product->color_code
-					.'"> Add to Package </span>'
+					.'"> Add to Sales Package </span>'
 					.'</div>'
 				;
 				$html.= '</div>';

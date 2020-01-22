@@ -525,7 +525,8 @@
         											<div class="tile-object">
         												<div class="name">
         													<?php echo $product->prod_no; ?> <br />
-        													<?php echo $product->color_name; ?>
+        													<?php echo $product->color_name; ?> <br />
+                                                            <?php echo '$'.$product->wholesale_price; ?>
         												</div>
         											</div>
 

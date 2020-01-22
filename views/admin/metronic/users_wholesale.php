@@ -207,15 +207,12 @@
                                     <option value="" selected="selected">Bulk Actions</option>
                                     <option value="ac">Activate</option>
                                     <option value="su">Suspend</option>
-                                    <option value="del">Permanently Delete</option>
-                                    <?php if ($this->uri->segment(1) == 'sales')
+                                    <?php
+                                    // do not show to level 2 sales users
+                                    if (@$role != 'sales' OR @$this->sales_user_details->access_level == '0')
                                     { ?>
-                                        <option value="ac" disabled>Send Pre Orer Package</option>
-                                        <option value="su" disabled>Send In Stock Package</option>
-                                        <option value="ac" disabled>Send Best Seller Package</option>
-                                        <option value="su" disabled>Send Off Price Package</option>
-                                        <?php
-                                    } ?>
+                                        <option value="del">Permanently Delete</option>
+                                    <?php } ?>
                                 </select>
                             </div>
                             <button class="btn green hidden-sm hidden-xs" id="apply_bulk_actions" data-toggle="modal" href="#confirm_bulk_actions" disabled> Apply </button>
@@ -387,22 +384,32 @@
                                         <i class="fa fa-check font-dark"></i>
                                     </a>
                                     <?php } ?>
-                                    <?php if ($user->is_active == '1' OR $user->is_active == '2') { ?>
-                                    <!-- Set Inactive -->
-                                    <a data-toggle="modal" href="#set-inactive-<?php echo $user->user_id; ?>" class="tooltips" data-original-title="Set Inactive">
-                                        <i class="fa fa-ban font-dark"></i>
-                                    </a>
-                                    <?php } ?>
                                     <?php if ($user->is_active == '0' OR $user->is_active == '1') { ?>
                                     <!-- Suspend -->
                                     <a data-toggle="modal" href="#suspend-<?php echo $user->user_id; ?>" class="tooltips" data-original-title="Suspend">
                                         <i class="fa fa-dot-circle-o font-dark"></i>
                                     </a>
                                     <?php } ?>
+
+                                    <?php
+                                    // do not show to level 2 sales users
+                                    if (@$role != 'sales' OR @$this->sales_user_details->access_level == '0')
+                                    { ?>
+
+                                    <?php if ($user->is_active == '1' OR $user->is_active == '2') { ?>
+                                    <!-- Set Inactive -->
+                                    <a data-toggle="modal" href="#set-inactive-<?php echo $user->user_id; ?>" class="tooltips" data-original-title="Set Inactive">
+                                        <i class="fa fa-ban font-dark"></i>
+                                    </a>
+                                    <?php } ?>
                                     <!-- Delete -->
                                     <a data-toggle="modal" href="#delete-<?php echo $user->user_id; ?>" class="tooltips" data-original-title="Delete">
                                         <i class="fa fa-trash font-dark"></i>
                                     </a>
+
+                                        <?php
+                                    } ?>
+
                                     <!-- Send Activation Email -->
                                     <a href="<?php echo @$role === 'sales' ? site_url('my_account/sales/users/wholesale/send_activation_email/index/'.$user->user_id) : site_url('admin/users/wholesale/send_activation_email/index/'.$user->user_id); ?>" onclick="$('#loading .modal-title').html('Sending activation email...');$('#loading').modal('show');" class="tooltips" data-original-title="Send Activation Email" <?php echo $i < 3 ? 'data-placement="bottom"' : '';?>>
                                         <i class="fa fa-envelope-o font-dark"></i>
