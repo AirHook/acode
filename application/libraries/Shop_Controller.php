@@ -284,7 +284,7 @@ class Shop_Controller extends Frontend_Controller {
         }
 
         // clearance_consumer_only option
-        $where['condition'] = 'tbl_stock.options NOT LIKE \'%"clearance_consumer_only":"1"%\'';
+        //$where['condition'] = '(tbl_stock.options IS NULL OR tbl_stock.options NOT LIKE \'%"clearance_consumer_only":"1"%\')';
 
 		// get the products list and total count based on parameters
 		$params['wholesale'] = $this->session->userdata('user_cat') == 'wholesale' ? TRUE : FALSE;
@@ -317,6 +317,8 @@ class Shop_Controller extends Frontend_Controller {
 			($this->session->view_list_number ?: '')
 		);
 		$product_count = $this->products_list->count_all;
+
+        //echo $this->products_list->last_query; die();
 
 		// using the same parameters, initialize facets
 		$params['d_url_structure'] = $this->d_url_structure;

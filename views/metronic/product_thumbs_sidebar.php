@@ -37,6 +37,31 @@
 															$ic = 1;
 															foreach ($sidebar_categories as $category)
 															{
+																/**********
+																 * Hardcoding Facets for Dresses
+																 * And hiding PROM DRESSES above
+																 * This will provide a link to all dresses that has PROM facets
+																 * via the PROM facet link
+																 */
+																// get the 'dresses' category and its level
+																$dresses = @$cat_capture ?: 'dresses';
+																// since this is hard coded, we set level of 'dresses' manually
+																$dresses_level = '1';
+																// if past 'dresses', check for same category level
+																// if so, we then squeeze in the facets menu
+																if (
+																	$category->category_slug != $dresses
+																	&& $dresses_level == $category->category_level
+																)
+																{
+																	$draw_facet_menu = TRUE;
+																	$cat_capture = 'none';
+																}
+																else $draw_facet_menu = FALSE;
+																// and remove category 'prom_dresses'
+																if ($category->category_slug == 'prom_dresses') continue;
+																/**********/
+
 																// set select if category is already active
 																$active = in_array($category->category_slug, $uri_segments) ? 'active': '';
 
@@ -131,6 +156,37 @@
 																// dont forget to count the depth of levels
 																if ($category->category_level < $prev_level)
 																{
+																	/**********
+																	 * Hardcoding Facets for Dresses
+																	 * And hiding PROM DRESSES above
+																	 * This will provide a link to all dresses that has PROM facets
+																	 * via the PROM facet link
+																	 */
+																	if ($draw_facet_menu)
+																	{
+																		if ($this->webspace_details->slug != 'tempoparis')
+																		{
+																			foreach($occassion_ary as $occassion)
+																			{
+																				// set active
+
+																				// draw facet
+																				echo '</li><li class="'
+																					.($this->input->get('occassion') == $occassion ? 'active' : '')
+																					.'">'
+																					.'<a href="'
+																					.site_url('shop/womens_apparel/dresses')
+																					.'?occassion='
+																					.$occassion
+																					.'">'
+																					.($this->input->get('occassion') == $occassion ? '<strong>' : '')
+																					.ucfirst($occassion)
+																					.($this->input->get('occassion') == $occassion ? '</strong>' : '')
+																					.'</a>';
+																			}
+																		}
+																	}
+
 																	for ($deep = $prev_level - $category->category_level; $deep >= 0; $deep--)
 																	{
 																		echo '</li></ul>';

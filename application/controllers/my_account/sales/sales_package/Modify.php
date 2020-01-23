@@ -187,7 +187,7 @@ class Modify extends Sales_user_Controller {
 			}
 
 			$where_more['tbl_product.categories LIKE'] = $category_id;
-			$where_more['condition'] = 'tbl_stock.options NOT LIKE \'%"clearance_consumer_only":"1"%\'';
+			//$where_more['condition'] = 'tbl_stock.options NOT LIKE \'%"clearance_consumer_only":"1"%\'';
 
 			// get the products list for the thumbs grid view
 			$params['show_private'] = TRUE; // all items general public (Y) - N for private

@@ -172,10 +172,16 @@
 															&& $category->category_level != '1'
 														)
 													)
-													{ ?>
+													{
+                                                        if ($category->category_slug == 'prom_dresses')
+                                                        {
+                                                            $the_link = site_url('shop/womens_apparel/dresses').'?occassion=prom';
+                                                        }
+                                                        else $the_link = site_url('shop/'.implode('/', $li_a_link));
+                                                        ?>
 
                                                 <div class="cbp-item <?php echo @$slugs ? implode(' ', @$slugs) : ''; ?> clearfix" style="height:345px;">
-                                                    <a href="<?php echo site_url('shop/'.implode('/', $li_a_link)); ?>" class="cbp-caption cbp-singlePageInline_" data-title="<?php echo $category->category_name; ?><br><?php echo $description; ?>" rel="nofollow">
+                                                    <a href="<?php echo $the_link; ?>" class="cbp-caption cbp-singlePageInline_" data-title="<?php echo $category->category_name; ?><br><?php echo $description; ?>" rel="nofollow">
                                                         <div class="cbp-caption-defaultWrap">
                                                             <img src="<?php echo $image ? $this->config->slash_item('PROD_IMG_URL').'images/subcategory_icon/thumb/'.$image : base_url().'images/subcategory_icon/thumb/default-designer-icon.jpg'; ?>" alt="<?php echo $category->category_name; ?>" alt="" />
 														</div>

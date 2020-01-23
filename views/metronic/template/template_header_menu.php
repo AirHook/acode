@@ -428,6 +428,9 @@
                                         <?php } ?>
 
 										<?php
+                                        /**********
+										 * Dynamic Nav
+										 */
 										if ($main_categories)
 										{
 											// set the array_icons variable
@@ -517,11 +520,11 @@
 																				if (
 																					$this->webspace_details->options['site_type'] !== 'hub_site'
 																					&& in_array($this->webspace_details->slug, $linked_designers)
-                                                                                    && $subcat->category_slug != 'prom_dresse'
+                                                                                    && $subcat->category_slug != 'prom_dresses'
 																				)
 																				{ ?>
 
-																	<li aria-haspopup="true" class="<?php echo in_array($subcat->category_slug, $this->uri->segment_array()) ? 'active' : ''; ?>">
+																	<li aria-haspopup="true" class="<?php echo in_array($subcat->category_slug, $this->uri->segment_array()) ? 'active' : ''; ?> sat_site">
 																		<a href="<?php echo site_url('shop/womens_apparel/'.$main_category->category_slug.'/'.$subcat->category_slug); ?>" class="nav-link " onmouseover="$('.<?php echo $main_category->category_slug; ?>-hover-icon').fadeOut();$('.<?php echo $main_category->category_slug; ?>-hover-icon.<?php echo $subcat->category_slug; ?>').fadeIn();">
 																			<?php echo $subcat->category_name; ?>
 																		</a>
@@ -530,12 +533,12 @@
 																				}
 																				else if (
                                                                                     $this->webspace_details->options['site_type'] == 'hub_site'
-                                                                                    && $subcat->category_slug != 'prom_dresse'
+                                                                                    && $subcat->category_slug != 'prom_dresses'
                                                                                 )
 																				{
 																				?>
 
-																	<li aria-haspopup="true" class="<?php echo in_array($subcat->category_slug, $this->uri->segment_array()) ? 'active' : ''; ?>">
+																	<li aria-haspopup="true" class="<?php echo in_array($subcat->category_slug, $this->uri->segment_array()) ? 'active' : ''; ?> hub_site">
 																		<a href="<?php echo site_url('shop/womens_apparel/'.$main_category->category_slug.'/'.$subcat->category_slug); ?>" class="nav-link " onmouseover="$('.<?php echo $main_category->category_slug; ?>-hover-icon').fadeOut();$('.<?php echo $main_category->category_slug; ?>-hover-icon.<?php echo $subcat->category_slug; ?>').fadeIn();">
 																			<?php echo $subcat->category_name; ?>
 																		</a>
@@ -549,10 +552,13 @@
                                                                     <?php
                                                                     /**********
 																	 * Hardcoding Facets for Dresses
+                                                                     * And hiding PROM DRESSES above
+                                                                     * This will provide a link to all dresses that has PROM facets
+                                                                     * via the PROM facet link
 																	 */
                                                                     if (
                                                                         $main_category->category_slug == 'dresses'
-                                                                        && $this->webspace_details->options['site_type'] == 'hub_site'
+                                                                        && $this->webspace_details->slug != 'tempoparis'
                                                                     )
                                                                     {
                                                                         foreach($occassion_ary as $occassion)
