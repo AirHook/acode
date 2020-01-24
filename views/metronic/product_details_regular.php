@@ -645,12 +645,7 @@
 																| Size
 																*/
 																?>
-                                                                <?php
-                                                                if (
-                                                                    $this->webspace_details->slug != 'basixblacklabel'
-                                                                )
-                                                                { ?>
-																<span class="prdname product-form__label" style="margin-top:5px;"><strong>AVAILABLE SIZES:</strong> Please select a size</span>
+																<span class="prdname product-form__label" style="margin-top:5px;"><strong>AVAILABLE SIZES:</strong> <?php echo $this->webspace_details->slug != 'basixblacklabel' ? 'Please select a size' : ''; ?></span>
 
 																<input type="hidden" id="size" name="size" value="" />
 
@@ -724,45 +719,62 @@
                                                                                             $availability != 'availability--preorder'
                                                                                             //OR $this->product_details->retail_price >= '695'
                                                                                         )
-                                                                                        {
-																		?>
+                                                                                        { ?>
 
-																		<li class="hoverable product-form__list-item" <?php echo $hide_size_xxl_xl2; ?> onmouseover="$('#<?php echo $size_stock; ?>.details.unavailable').show();" onmouseout="$('#<?php echo $size_stock; ?>.details.unavailable').hide();$('span#diagonal-line-<?php echo $size_stock; ?>').show();" onclick="
-																			$('span.availability').hide();
-																			$('span.availability.<?php echo $availability; ?>').show();
-																			$('.size-qty-submit').html('<?php echo $check_stock[$size_stock] == 0 ? 'ADD TO BAG (AS PRE ORDER)' : 'ADD TO BAG'; ?>');
-																			$('input#size').val('<?php echo $size->size_name; ?>');
-																			$('input[name=\'qty\']').attr('max', '<?php echo $check_stock[$size_stock] ?: '30'; ?>');
-																			$('input[name=\'custom_order\']').val('<?php echo $check_stock[$size_stock] == 0 ? '1' : $this->product_details->custom_order; ?>');
-																			$('.hoverable.product-form__list-item').css('background-color','transparent');
-																			$(this).css('background-color','#ccc');
-																		">
-																			<a href="javascript:void();" class="<?php echo $a_class; ?>" style="z-index:10;">
+                                                                        <?php if ($this->webspace_details->slug != 'basixblacklabel')
+                                                                        { ?>
+
+                                                                        <li class="hoverable product-form__list-item" <?php echo $hide_size_xxl_xl2; ?> onmouseover="$('#<?php echo $size_stock; ?>.details.unavailable').show();" onmouseout="$('#<?php echo $size_stock; ?>.details.unavailable').hide();$('span#diagonal-line-<?php echo $size_stock; ?>').show();" onclick="
+    																		$('span.availability').hide();
+    																		$('span.availability.<?php echo $availability; ?>').show();
+    																		$('.size-qty-submit').html('<?php echo $check_stock[$size_stock] == 0 ? 'ADD TO BAG (AS PRE ORDER)' : 'ADD TO BAG'; ?>');
+    																		$('input#size').val('<?php echo $size->size_name; ?>');
+    																		$('input[name=\'qty\']').attr('max', '<?php echo $check_stock[$size_stock] ?: '30'; ?>');
+    																		$('input[name=\'custom_order\']').val('<?php echo $check_stock[$size_stock] == 0 ? '1' : $this->product_details->custom_order; ?>');
+    																		$('.hoverable.product-form__list-item').css('background-color','transparent');
+    																		$(this).css('background-color','#ccc');
+    																	">
+    																		<a href="javascript:void();" class="<?php echo $a_class; ?>" style="z-index:10;">
+    																			<span><?php echo $size->size_name; ?></span>
+    																		</a>
+    																		<span class="ico"></span>
+
+    																		<?php
+    																		if ($check_stock[$size_stock] == 0):
+
+    																			if ($this->product_details->d_folder === 'junnieleigh')
+    																			{
+    																				$product_stock_status = '5-12';
+    																			}
+    																		?>
+
+    																		<span id="diagonal-line-<?php echo $size_stock; ?>" class="diagonal-line"></span>
+    																		<span id="<?php echo $size_stock; ?>" class="details unavailable" style="text-align:left;color:red;">
+    																			<span class="pointer"></span>
+    																			Pre-Order<br />
+    																			Size Not In-Stock<br />
+    																			Delivery is <?php echo @$product_stock_status ? $product_stock_status : '14-16'; ?> Weeks<br />
+    																			From Order Date
+    																		</span>
+
+    																		<?php endif; ?>
+
+    																	</li>
+
+                                                                            <?php
+                                                                        }
+                                                                        else
+                                                                        { ?>
+
+                                                                        <li class="hoverable product-form__list-item" <?php echo $hide_size_xxl_xl2; ?>>
+																			<a href="#how-to-oder" class="<?php echo $a_class; ?>" data-toggle="modal" style="z-index:10;">
 																				<span><?php echo $size->size_name; ?></span>
 																			</a>
 																			<span class="ico"></span>
-
-																			<?php
-																			if ($check_stock[$size_stock] == 0):
-
-																				if ($this->product_details->d_folder === 'junnieleigh')
-																				{
-																					$product_stock_status = '5-12';
-																				}
-																			?>
-
-																			<span id="diagonal-line-<?php echo $size_stock; ?>" class="diagonal-line"></span>
-																			<span id="<?php echo $size_stock; ?>" class="details unavailable" style="text-align:left;color:red;">
-																				<span class="pointer"></span>
-																				Pre-Order<br />
-																				Size Not In-Stock<br />
-																				Delivery is <?php echo @$product_stock_status ? $product_stock_status : '14-16'; ?> Weeks<br />
-																				From Order Date
-																			</span>
-
-																			<?php endif; ?>
-
 																		</li>
+
+                                                                            <?php
+                                                                        } ?>
 
 																		<?php
                                                                                         }
@@ -783,13 +795,6 @@
 																	<input type="hidden" id="custom_order-<?php echo $this->product_details->color_code; ?>" name="custom_order" value="0" />
 
 																</div>
-                                                                    <?php
-                                                                }
-                                                                else
-                                                                { ?>
-                                                                <span class="prdname product-form__label" style="margin-top:5px;"><strong>SIZE AVAILABILITY :</strong> <a href="#how-to-oder" class="how-to-oder" data-toggle="modal">CLICK TO SEE AVAILABLE SIZES</a>
-                                                                    <?php
-                                                                } ?>
 
 																<?php
 																/*
@@ -802,10 +807,12 @@
                                                                     $this->webspace_details->slug != 'basixblacklabel'
                                                                 )
                                                                 { ?>
-                                                                    <span class="key  product-form__label  product-form__label--alt  uppercase"><strong>SELECT QUANTITY:</strong></span>
+
+                                                                <span class="key  product-form__label  product-form__label--alt  uppercase"><strong>SELECT QUANTITY:</strong></span>
 																<div class="product-form__qty" style="width:100px;margin-bottom:25px;">
 																	<input id="touchspin_5" type="text" value="" name="qty" class="center text-center" required="required" />
 																</div>
+
                                                                     <?php
                                                                 }
                                                                 else
