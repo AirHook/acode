@@ -512,7 +512,11 @@
 														<td align="right">
                                                             <font style="font-family:Tahoma;font-size:12px;">
                                                                 <?php
-                                                                $add_ny_sales_tax = $this->session->ny_tax ? ($this->webspace_details->options['ny_sales_tax'] * $order_amount) : 0;
+                                                                $add_ny_sales_tax =
+                                                                    $this->session->ny_tax
+                                                                    ? ($this->webspace_details->options['ny_sales_tax'] * $order_amount)
+                                                                    : 0
+                                                                ;
                                                                 $grand_total = $order_amount + $add_ny_sales_tax + $shipping_fee;
                                                                 ?>
                                                                 $ <?php echo $grand_total ? number_format($grand_total, 2) : '<cite>Grand total</cite>'; ?>

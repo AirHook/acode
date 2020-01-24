@@ -123,9 +123,6 @@ class Address extends Frontend_Controller
 					'reference_designer'	=> 'shop7thavenue'
 				);
 				$this->DB->insert('tbluser_data', $data);
-
-				// initialize user details
-				$this->consumer_user_details->initialize(array('email'=>$this->input->post('b_email')));
 			}
 			else
 			{
@@ -151,6 +148,8 @@ class Address extends Frontend_Controller
 				$this->DB->update('tbluser_data', $data);
 			}
 
+			// initialize user details
+			$this->consumer_user_details->initialize(array('email'=>$this->input->post('b_email')));
 			// set sessions
 			// but unset the user_loggedin session so as not to confuse system
 			$this->consumer_user_details->set_session();

@@ -33,6 +33,9 @@
 														<ul class="list-unstyled nested-nav" style="margin-right:30px;" data-row_count="<?php echo @$number_of_categories; ?>">
 
 															<?php
+															// get the 'dresses' category and its level
+															// for the hard coded facets menu
+															$dresses = 'dresses';
 															$li_a_link = array();
 															$ic = 1;
 															foreach ($sidebar_categories as $category)
@@ -43,21 +46,18 @@
 																 * This will provide a link to all dresses that has PROM facets
 																 * via the PROM facet link
 																 */
-																// get the 'dresses' category and its level
-																$dresses = @$cat_capture ?: 'dresses';
 																// since this is hard coded, we set level of 'dresses' manually
 																$dresses_level = '1';
 																// if past 'dresses', check for same category level
 																// if so, we then squeeze in the facets menu
 																if (
-																	$category->category_slug != $dresses
+																	$dresses == 'dresses'
+																	&& $category->category_slug != $dresses
 																	&& $dresses_level == $category->category_level
 																)
 																{
 																	$draw_facet_menu = TRUE;
-																	$cat_capture = 'none';
 																}
-																else $draw_facet_menu = FALSE;
 																// and remove category 'prom_dresses'
 																if ($category->category_slug == 'prom_dresses') continue;
 																/**********/
@@ -180,11 +180,14 @@
 																					.$occassion
 																					.'">'
 																					.($this->input->get('occassion') == $occassion ? '<strong>' : '')
-																					.ucfirst($occassion)
+																					.ucfirst($occassion).'-'.$dresses
 																					.($this->input->get('occassion') == $occassion ? '</strong>' : '')
 																					.'</a>';
 																			}
 																		}
+
+																		$dresses = $category->category_slug;
+																		$draw_facet_menu = FALSE;
 																	}
 
 																	for ($deep = $prev_level - $category->category_level; $deep >= 0; $deep--)

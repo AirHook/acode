@@ -216,11 +216,6 @@ class Frontend_Controller extends MY_Controller {
 
 			$this->data['logindata'] = $this->wholesale_user_details->get_logindata();
 		}
-		else
-		{
-			// de-initialize wholesale user details and set session
-			$this->wholesale_user_details->set_initial_state();
-		}
 
 		// if not within shop/ class directory,
 		// we can add page visits for wholesale users for other pages here

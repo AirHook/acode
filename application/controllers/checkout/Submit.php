@@ -332,7 +332,8 @@ class Submit extends Frontend_Controller
 
 			'courier'			=> $user_array['shipping_courier'],
 			'shipping_fee'		=> $user_array['shipping_fee'] ? (int)$user_array['shipping_fee'] : 0,
-			'amount'			=> $this->cart->total() + (int)$user_array['shipping_fee'],
+			//'amount'			=> $this->cart->total() + (int)$user_array['shipping_fee'],
+			'amount'			=> $this->cart->total(),
 
 			'store_name'		=> (@$user_array['store_name'] ?: ''),
 			'firstname'			=> $user_array['p_first_name'],

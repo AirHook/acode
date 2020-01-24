@@ -2,7 +2,7 @@
 
 /****************
  * Frontend Controller holds any general front end items
- * 
+ *
  * Shop Controller are for items used for shop thumbs pages
  *
  */
@@ -17,9 +17,9 @@ class Update_cart extends Frontend_Controller
 	{
 		parent::__Construct();
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Primary method - index
 	 *
@@ -34,15 +34,27 @@ class Update_cart extends Frontend_Controller
 		);
 
 		// update cart
-		$this->cart->update($data); 
-		
+		$this->cart->update($data);
+
+		if ( ! $this->cart->contents())
+		{
+			// set addresses session data
+			$data = array(
+				'ny_tax' 		=> '',
+				'shipmethod'	=> '',
+				'courier'		=> '',
+				'fix_fee'		=> ''
+			);
+			$this->session->unset_userdata($data);
+		}
+
 		// set flash data
 		$this->session->set_flashdata('flashRegMsg','<div class="successMsg">Cart updated.</div>');
-		
+
 		// redirect user to cart basket
 		redirect('cart', 'location');
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 }
