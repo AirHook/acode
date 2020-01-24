@@ -135,7 +135,17 @@
                                                         <?php if ( ! @$search_result) $this->load->view('metronic/product_thumbs_filter'); ?>
 													</div>
 
-                                                    <div class="m-grid produc-thumbs-filter hidden-xs clearfix" style="padding:12px 10px 15px;">
+                                                    <?php if ($this->filter_items_count > 0)
+                                                    { ?>
+                                                    <div class="row">
+                                                        <div class="col-md-12" style="padding-left:25px;padding-right:25px;">
+                                                            <a href="<?php echo site_url($this->uri->uri_string()); ?>" class="btn red-flamingo pull-right">RESET - CLEAR FILTERS</a>
+                                                        </div>
+                                                    </div>
+                                                        <?php
+                                                    } ?>
+
+                                                    <div class="m-grid produc-thumbs-filter hidden-xs clearfix" style="padding:10px 10px 15px;">
                                                         <div class="m-grid-row">
 
                                                                 <?php

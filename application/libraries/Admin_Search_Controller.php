@@ -118,6 +118,8 @@ class Admin_Search_Controller extends Admin_Controller {
 		);
 		$product_count = $this->products_list->count_all;
 
+        //echo $this->products_list->last_query; die();
+
 		// using the same parameters, initialize facets
 		$params['d_url_structure'] = $this->d_url_structure;
 

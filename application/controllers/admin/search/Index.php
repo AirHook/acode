@@ -45,7 +45,7 @@ class Index extends Admin_Search_Controller
 			$_SESSION['error'] = 'zero_search_result';
 			$this->session->mark_as_flash('error');
 
-			redirect($this->config->slash_item('admin_folder').'products/index/womens_apparel', 'location');
+			redirect('admin/products/all/index/basixblacklabel/womens_apparel', 'location');
 		}
 
 		// some data used by admin/products that we may need to set here to use the same vewi file

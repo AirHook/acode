@@ -11,7 +11,7 @@
                         )
                     ); ?>
                         <div class="input-group">
-                            <input type="text" class="form-control input-sm search_by_style" placeholder="Search..." name="style_no">
+                            <input type="text" class="form-control input-sm search_by_style" placeholder="Search..." name="style_no" style="text-transform:uppercase;">
                             <span class="input-group-btn">
                                 <a href="javascript:;" class="btn submit">
                                     <i class="icon-magnifier"></i>
