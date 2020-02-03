@@ -488,7 +488,7 @@
 																			jsbarcode-height="60"
 																			jsbarcode-fontoptions="bold">
 																		</svg><br />
-																		<a class="small" href="<?php echo site_url($this->uri->segment(1).'/barcodes/print/so_item/index/'.$product->st_id.'/'.$size_label); ?>" target="_blank">
+																		<a class="small" href="<?php echo site_url($this->uri->segment(1).'/barcodes/print/so_item/index/'.$this->sales_order_details->so_number.'/'.$item.'/'.$size_label); ?>" target="_blank">
 									                                        <i class="fa fa-print"></i> Print Barcode
 									                                    </a>
 																	</div>

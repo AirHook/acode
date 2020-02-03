@@ -87,3 +87,11 @@ table.dataTable tbody td {
 .table thead tr th {
     font-size: 10px;
 }
+
+
+.tabledit-input.input-inventory {
+    border: 1px solid #ccc;
+    width: 27px;
+    background: #353535;
+    color: white;
+}

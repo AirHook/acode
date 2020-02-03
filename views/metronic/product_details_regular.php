@@ -865,7 +865,7 @@
 																<?php } else { ?>
 																<button type="submit" class="btn dark btn-block size-qty-submit" onclick="return checkSizeQty();">ADD TO BAG</button>
 																<?php } ?>
-                                                                <button type="button" class="btn btn-default btn-block add-to-favorites-submit"><i class="icon icon-heart"></i> ADD TO FAVORITES</button>
+                                                                <button type="button" class="btn btn-default btn-block add-to-favorites-submit hide"><i class="icon icon-heart"></i> ADD TO FAVORITES</button>
 
 																<script>
 																function checkSizeQty(){

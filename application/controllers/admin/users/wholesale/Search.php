@@ -25,6 +25,10 @@ class Search extends Admin_Controller {
 	 */
 	public function index()
 	{
+		// load pertinent library/model/helpers
+		$this->load->library('user_agent');
+		$this->load->library('users/wholesale_users_list');
+
 		if ( ! $this->input->post())
 		{
 			// nothing more to do...
@@ -32,14 +36,15 @@ class Search extends Admin_Controller {
 			$this->session->set_flashdata('error', 'no_id_passed');
 
 			// redirect user
-			redirect('admin/users/wholesale', 'location');
+			if ($this->agent->is_referral())
+			{
+				redirect($this->agent->referrer(), 'location');
+			}
+			else redirect('admin/users/wholesale');
 		}
 
 		// generate the plugin scripts and css
 		$this->_create_plugin_scripts();
-
-		// load pertinent library/model/helpers
-		$this->load->library('users/wholesale_users_list');
 
 		// get data
 		$this->data['users'] = $this->wholesale_users_list->select(
@@ -182,7 +187,7 @@ class Search extends Admin_Controller {
 			';
 			// handle datatable
 			$this->data['page_level_scripts'].= '
-				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/table-datatables-users_consumer_list.js" type="text/javascript"></script>
+				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/table-datatables-users_wholesale_list.js" type="text/javascript"></script>
 			';
 	}
 

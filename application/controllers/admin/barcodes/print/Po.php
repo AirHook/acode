@@ -88,7 +88,6 @@ class Po extends Admin_Controller {
 									'color_name' => $color_name,
 									'size' => $s,
 									'qty' => $items[$item][$size_label]
-
 								);
 							}
 						}

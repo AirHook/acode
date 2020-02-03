@@ -12,6 +12,36 @@
                                                 <?php
                                             } ?>
 
+                                            <div class="table-toolbar">
+                                                <div class="col-md-6">
+
+                                                    <!-- BEGIN FORM-->
+                                                    <!-- FORM =======================================================================-->
+                                                    <?php echo form_open('admin/inventory/'.$inv_prefix, array('class'=>'form-horizontal', 'id'=>'form-wholesale_users_search_email')); ?>
+
+                                                    <div class="input-group">
+                                                        <input class="form-control" placeholder="Search for STYLE#..." name="search_string" type="text" style="text-transform:uppercase;">
+                                                        <span class="input-group-btn">
+                                                            <button class="btn blue uppercase bold" type="submit">Search</button>
+                                                        </span>
+                                                    </div>
+
+                                                    </form>
+                                                    <!-- End FORM =======================================================================-->
+                                                    <!-- END FORM-->
+
+                                                    <cite class="help-block small">Search entire record</cite>
+
+                                                </div>
+
+                                                <?php
+                                                if ($search)
+                                                {
+                                                    echo '<div class="col-md-12"><h1><small><em>Search results for:</em></small> "'.$search_string.'"</h1><br /></div>';
+                                                }
+                                                ?>
+                                            </div>
+
                                             <!-- BEGIN PRODUCT INVENTORY SIDEBAR -->
                                             <div class="col col-md-3">
                                                 <?php $this->load->view($this->config->slash_item('admin_folder').''.($this->config->slash_item('admin_template') ?: 'metronic/').'inventory_sidebar', $this->data); ?>
@@ -20,7 +50,7 @@
 
                                             <!-- BEGIN PRODUCT INVENTORY LIST -->
                                             <div class="col col-md-9">
-                                                <?php $this->load->view($this->config->slash_item('admin_folder').''.($this->config->slash_item('admin_template') ?: 'metronic/').'inventory_'.$this->uri->segment(3).'_stocks', $this->data); ?>
+                                                <?php $this->load->view($this->config->slash_item('admin_folder').''.($this->config->slash_item('admin_template') ?: 'metronic/').'inventory_stocks', $this->data); ?>
                                             </div>
                                             <!-- END PRODUCT INVENTORY LIST -->
 

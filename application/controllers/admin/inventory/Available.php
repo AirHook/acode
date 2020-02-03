@@ -12,11 +12,15 @@ class Available extends Admin_Controller {
 
 	public function index()
 	{
+		// generate the plugin scripts and css
+		$this->_create_plugin_scripts();
+
 		// load pertinent library/model/helpers
 		$this->load->helper('metronic/create_category_treelist');
 		$this->load->library('designers/designer_details');
 		$this->load->library('categories/categories_tree');
 		$this->load->library('designers/designers_list');
+		$this->load->library('products/size_names');
 
 		// for categories, we check conditions of site type
 		if ($this->webspace_details->options['site_type'] == 'hub_site')
@@ -42,13 +46,18 @@ class Available extends Admin_Controller {
 
 		// let's grab the uri segments
 		$this->session->set_flashdata('inventory_uri_string', $this->uri->uri_string());
-		$this->data['url_segs'] = explode('/', $this->uri->uri_string());
+		$this->data['url_segs'] = $this->uri->segment_array();
 
 		// let's remove the first 2 segments (admin/products) from the resulting array
 		array_shift($this->data['url_segs']); // admin
 		array_shift($this->data['url_segs']); // inventory
 		array_shift($this->data['url_segs']); // available
 		array_shift($this->data['url_segs']); // index
+
+		// set some variables for pagination purposes
+		$this->data['page'] = is_numeric(end($this->data['url_segs'])) ? end($this->data['url_segs']) : 1;
+		$this->data['limit'] = 100;
+		$this->data['offset'] = $this->data['page'] == '' ? 0 : ($this->data['page'] * 100) - 100;
 
 		// get the last segment which will serve as the category_slug in reference for the inventory list
 		if (count($this->data['url_segs']) > 0)
@@ -77,43 +86,58 @@ class Available extends Admin_Controller {
 				$this->data['size_mode'] = '1';
 			}
 
+			// get the size names
+			$this->data['size_names'] = $this->size_names->get_size_names($this->data['size_mode']);
+
 			// last segment as category slug
-			$this->data['active_category'] = $this->data['url_segs'][count($this->data['url_segs']) - 1];
+			if (is_numeric(end($this->data['url_segs']))) array_pop($this->data['url_segs']);
+			$this->data['active_category'] = end($this->data['url_segs']);
+
 			// and set sessiong accordingly
 			$this->session->set_userdata('active_category', $this->data['active_category']);
 		}
 		else
 		{
-			// defauls to all dresses under womens apparel
-			if ($this->webspace_details->options['site_type'] == 'hub_site')
+			if ( ! $this->input->post('search_string'))
 			{
-				redirect($this->config->slash_item('admin_folder').'inventory/available/index/basixblacklabel/womens_apparel/dresses/evening_dresses');
-			}
-			else
-			{
-				redirect($this->config->slash_item('admin_folder').'inventory/available/index/'.$this->webspace_details->slug);
+				// defauls to all dresses under womens apparel
+				if ($this->webspace_details->options['site_type'] == 'hub_site')
+				{
+					redirect($this->config->slash_item('admin_folder').'inventory/available/index/basixblacklabel/womens_apparel/dresses/evening_dresses');
+				}
+				else
+				{
+					redirect($this->config->slash_item('admin_folder').'inventory/available/index/'.$this->webspace_details->slug);
+				}
 			}
 		}
 
-		// generate the plugin scripts and css
-		$this->_create_plugin_scripts();
-
-		// get respective active category ID for use on product list where condition
-		$category_id = @$this->categories_tree->get_id($this->data['active_category']);
-
-		// set product list where condition
-		if (@$this->data['active_designer'] !== FALSE)
+		if ($this->input->post('search_string'))
 		{
-			if ($category_id)
-			{
-				$where = array(
-					'designer.url_structure' => @$this->data['active_designer'],
-					'tbl_product.categories LIKE' => $category_id // last segment of category
-				);
-			}
-			else $where = array('designer.url_structure' => @$this->data['active_designer']);
+			$this->data['search_string'] = $this->input->post('search_string');
+			$where = array('tbl_product.prod_no LIKE' => $this->input->post('search_string'));
 		}
-		else $where = array('tbl_product.categories LIKE' => $category_id);
+		else
+		{
+			$this->data['search_string'] = '';
+
+			// get respective active category ID for use on product list where condition
+			$category_id = @$this->categories_tree->get_id($this->data['active_category']);
+
+			// set product list where condition
+			if (@$this->data['active_designer'] !== FALSE)
+			{
+				if ($category_id)
+				{
+					$where = array(
+						'designer.url_structure' => @$this->data['active_designer'],
+						'tbl_product.categories LIKE' => $category_id // last segment of category
+					);
+				}
+				else $where = array('designer.url_structure' => @$this->data['active_designer']);
+			}
+			else $where = array('tbl_product.categories LIKE' => $category_id);
+		}
 
 		// get the products list and total count
 		$params['show_private'] = TRUE; // all items general public (Y) - N for private
@@ -126,19 +150,33 @@ class Available extends Admin_Controller {
 		$params['with_stocks'] = FALSE; // Show all with and without stocks
 		$params['group_products'] = FALSE; // group per product number or per variant
 		$params['special_sale'] = FALSE; // special sale items only
-		$params['pagination'] = 0; // get all in one query
+		$params['pagination'] = @$this->data['page'] ?: '0'; // '0' get all in one query
 		$this->load->library('products/products_list', $params);
 		$this->data['products'] = $this->products_list->select(
 			$where,
 			array( // order conditions
-				'tbl_product.prod_no'=>'asc',
+				'tbl_product.prod_no'=>'desc',
 				'color_name'=>'asc'
-			)
+			),
+			$this->data['limit']
 		);
+		$this->data['count_all'] = $this->products_list->count_all;
 		$this->data['products_count'] = $this->products_list->row_count;
 
+		// get the size names
+		if ($this->input->post('search_string'))
+		{
+			$this->data['size_mode'] = $this->products_list->first_row->size_mode;
+			$this->data['size_names'] = $this->size_names->get_size_names($this->data['size_mode']);
+		}
+
+		// enable pagination
+		$this->_set_pagination($this->data['count_all'], @$this->data['limit']);
+
 		// need to show loading at start
+		$this->data['search'] = $this->input->post('search_string');
 		$this->data['show_loading'] = TRUE;
+		$this->data['inv_prefix'] = 'available';
 
 		// set data variables...
 		$this->data['file'] = 'inventory';
@@ -147,6 +185,49 @@ class Available extends Admin_Controller {
 
 		// load views...
 		$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template/template', $this->data);
+	}
+
+	// ----------------------------------------------------------------------
+
+	/**
+	 * PRIVATE - Set pagination parameters
+	 *
+	 * @return	void
+	 */
+	private function _set_pagination($count_all = '', $per_page = '')
+	{
+		$this->load->library('pagination');
+
+		$uri_string = $this->uri->segment_array();
+		if (is_numeric(end($uri_string))) array_pop($uri_string);
+
+		$config['base_url'] = base_url().implode('/',$uri_string).'/';
+		$config['total_rows'] = $count_all;
+		$config['per_page'] = $per_page;
+		$config['num_links'] = 3;
+		$config['use_page_numbers'] = TRUE;
+		$config['full_tag_open'] = '<ul class="pagination pagination-sm pull-right" style="margin:0;">';
+		$config['full_tag_close'] = '</ul>';
+		$config['num_tag_open'] = '<li>';
+		$config['num_tag_close'] = '</li>';
+		$config['cur_tag_open'] = '<li class="active"><a href="javascript:;">';
+		$config['cur_tag_close'] = '</a></li>';
+		$config['first_link'] = '<i class="fa fa-angle-double-left"></i>';
+		$config['first_url'] = site_url(implode('/',$uri_string));
+		$config['first_tag_open'] = '<li>';
+		$config['first_tag_close'] = '</li>';
+		$config['last_link'] = '<i class="fa fa-angle-double-right"></i>';
+		$config['last_tag_open'] = '<li>';
+		$config['last_tag_close'] = '</li>';
+		$config['prev_link'] = '<i class="fa fa-angle-left"></i>';
+		$config['prev_tag_open'] = '<li>';
+		$config['prev_tag_close'] = '</li>';
+		$config['next_link'] = '<i class="fa fa-angle-right"></i>';
+		$config['next_tag_open'] = '<li>';
+		$config['next_tag_close'] = '</li>';
+
+		$this->pagination->initialize($config);
+
 	}
 
 	// ----------------------------------------------------------------------
@@ -220,7 +301,7 @@ class Available extends Admin_Controller {
 			';
 			// handle datatable
 			$this->data['page_level_scripts'].= '
-				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/tabledit-inventory-'.$this->data['size_mode'].'.js" type="text/javascript"></script>
+				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/tabledit-inventory.js" type="text/javascript"></script>
 			';
 	}
 

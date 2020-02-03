@@ -476,6 +476,10 @@ class Index extends Admin_Controller {
 						$post_ary_variant_size['size_sonesizefitsall'] = $this->input->post('stock_qty');
 						$post_ary_size['size_sonesizefitsall'] = $this->input->post('stock_qty');
 					}
+
+					// set last modified time for physical stocks
+					$last_modified = time();
+					$post_ary_size['options'] = json_encode(array('last_modified'=>$last_modified));
 				}
 
 				/*

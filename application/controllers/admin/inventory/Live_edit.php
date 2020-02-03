@@ -96,7 +96,12 @@ class Live_edit extends Admin_Controller {
 			$new_available_stock = $value - $row['onorder_'.$size_suffix];
 		}
 
+		// set last modified time
+		$last_modified = time();
+		$options = json_encode(array('last_modified'=>$last_modified));
+
 		// update physical stock
+		$DB->set('options', $options);
 		$DB->set($size_label, $value);
 		$DB->where('st_id', $st_id);
 		$query = $DB->update('tbl_stock_physical');

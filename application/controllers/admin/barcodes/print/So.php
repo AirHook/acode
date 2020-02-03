@@ -21,79 +21,95 @@ class So extends Admin_Controller {
 	 *
 	 * @return	void
 	 */
-    public function index($so_id = NULL)
+    public function index($so_number = '')
     {
-    	if ($so_id != NULL)
-    	{
-			// load pertinent library/model/helpers
-			$this->load->library('barcodes/upc_barcodes');
-			$this->load->library('sales_orders/sales_order_details');
-			$this->load->library('products/product_details');
-			$this->load->library('products/size_names');
+		// load pertinent library/model/helpers
+		$this->load->library('user_agent');
 
-			// initialize...
-			$so_details = $this->sales_order_details->initialize(
-				array(
-					'sales_orders.sales_order_id' => $so_id
-				)
-			);
+    	if ($so_number == '')
+		{
+			// nothing more to do...
+			// set flash data
+			$this->session->set_flashdata('error', 'no_id_passed');
 
-			// set the items
-			$items = $so_details->items;
-
-			// get designer details
-			$this->designer_details->initialize(array('designer.des_id'=>$so_details->des_id));
-
-			// get the barcodes
-			$barcodes = array();
-			if ( ! empty($items))
+			// redirect user
+			if ($this->agent->is_referral())
 			{
-				foreach ($items as $item => $size_qty)
+				redirect($this->agent->referrer(), 'location');
+			}
+			else redirect('admin/sales_orders', 'location');
+		}
+
+		// load pertinent library/model/helpers
+		$this->load->library('barcodes/upc_barcodes');
+		$this->load->library('sales_orders/sales_order_details');
+		$this->load->library('products/product_details');
+		$this->load->library('products/size_names');
+
+		// initialize...
+		$so_details = $this->sales_order_details->initialize(
+			array(
+				'sales_orders.sales_order_id' => $so_number
+			)
+		);
+
+		// set the items
+		$items = $so_details->items;
+
+		// get designer details
+		$this->designer_details->initialize(array('designer.des_id'=>$so_details->des_id));
+
+		// get the barcodes
+		$barcodes = array();
+		if ( ! empty($items))
+		{
+			// for each line item in so
+			foreach ($items as $item => $size_qty)
+			{
+				// get product details
+				$exp = explode('_', $item);
+				$product = $this->product_details->initialize(
+					array(
+						'tbl_product.prod_no' => $exp[0],
+						'color_code' => $exp[1]
+					)
+				);
+
+				// set params where necessary
+				$prod_no = $product->prod_no ?: $exp[0];
+				$color_code = $product->color_code ?: $exp[1];
+				$color_name = $product->color_name ?: $this->product_details->get_color_name($color_code);
+				$st_id = $product->st_id ?: '';
+				$size_mode = $product->size_mode ?: @$this->designer_details->webspace_options['size_mode'];
+
+				// get size names
+				$size_names = $this->size_names->get_size_names($size_mode);
+
+				// each line item has only one size
+				// $item[$size_label] = [req,shpd,bo]
+				foreach ($size_qty as $size_label => $qty_ary)
 				{
-					// get product details
-					$exp = explode('_', $item);
-					$product = $this->product_details->initialize(
-						array(
-							'tbl_product.prod_no' => $exp[0],
-							'color_code' => $exp[1]
-						)
+					// process the items barcode...
+					$upcfg['prod_no'] = $prod_no;
+					$upcfg['st_id'] = $st_id;
+					$upcfg['size_label'] = $size_label;
+					$this->upc_barcodes->initialize($upcfg);
+
+					// generate array to pass to view file
+					//array_push($barcodes, $this->upc_barcodes->generate());
+					$barcodes[$this->upc_barcodes->generate()] = array(
+						'prod_no' => $prod_no,
+						'color_name' => $color_name,
+						'size' => $size_names[$size_label],
+						'qty' => $qty_ary[0]
 					);
-
-					// set params where necessary
-					$prod_no = $product->prod_no ?: $exp[0];
-					$color_code = $product->color_code ?: $exp[1];
-					$color_name = $product->color_name ?: $this->product_details->get_color_name($color_code);
-					$st_id = $product->st_id ?: '';
-					$size_mode = $product->size_mode ?: @$this->designer_details->webspace_options['size_mode'];
-
-					// get size names
-					$size_names = $this->size_names->get_size_names($size_mode);
-
-					foreach ($size_qty as $size_label => $qty)
-					{
-						if (isset($items[$item][$size_label]))
-						{
-							$upcfg['prod_no'] = $prod_no;
-							$upcfg['st_id'] = $st_id;
-							$upcfg['size_label'] = $size_label;
-							$this->upc_barcodes->initialize($upcfg);
-
-							// generate array to pass to view file
-							//array_push($barcodes, $this->upc_barcodes->generate());
-							$barcodes[$this->upc_barcodes->generate()] = array(
-								'prod_no' => $prod_no,
-								'color_name' => $color_name,
-								'size' => $size_names[$size_label]
-							);
-						}
-					}
 				}
 			}
+		}
 
-			$this->data['barcodes'] = $barcodes;
+		$this->data['barcodes'] = $barcodes;
 
-			$this->load->view($this->config->slash_item('admin_folder').'metronic/barcodes/print_barcodes', $this->data);
-    	}
+		$this->load->view($this->config->slash_item('admin_folder').'metronic/barcodes/print_barcodes', $this->data);
     }
 
  	// --------------------------------------------------------------------

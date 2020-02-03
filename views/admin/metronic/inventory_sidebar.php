@@ -62,7 +62,7 @@
 
 																			<?php
 																			$temp_url_segs = $url_segs;
-																			if ($active_designer) array_shift($temp_url_segs);
+																			if (@$active_designer) array_shift($temp_url_segs);
 																			$res_seg = array_merge(array($designer->url_structure), $temp_url_segs);
 																			echo create_admin_inventory_physical_sidebar_category_list(
 																				$des_subcats,

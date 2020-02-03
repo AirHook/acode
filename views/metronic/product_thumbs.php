@@ -135,9 +135,9 @@
                                                         <?php if ( ! @$search_result) $this->load->view('metronic/product_thumbs_filter'); ?>
 													</div>
 
-                                                    <?php if ($this->filter_items_count > 0)
+                                                    <?php if (@$this->filter_items_count > 0)
                                                     { ?>
-                                                    <div class="row">
+                                                    <div class="row hidden-xs">
                                                         <div class="col-md-12" style="padding-left:25px;padding-right:25px;">
                                                             <a href="<?php echo site_url($this->uri->uri_string()); ?>" class="btn red-flamingo pull-right">RESET - CLEAR FILTERS</a>
                                                         </div>
@@ -564,12 +564,29 @@
 															<!-- BEGIN MOBILE THUMBS PAGE TOP UTILITIES FILTER/SORT SECTION -->
 															<div class="thumbs-utilities mobile hidden-sm hidden-md hidden-lg clearfix">
 
-																<div class="thumbs-count-all margin-bottom-10 text-center">
+                                                                <style>
+                                                                .mobile-thumbs-pagination .pagination li a {
+                                                                    padding: 3px 10px;
+                                                                    margin-left: 5px;
+                                                                }
+                                                                </style>
+
+																<div class="mobile-thumbs-pagination thumbs-count-all margin-bottom-10 text-center">
                                                                     <?php echo $this->products_list->count_all > $this->webspace_details->options['items_per_page'] ? $this->pagination->create_links() : ''; ?>
                                                                     <!--
 																	<?php echo number_format($this->products_list->count_all); ?> &nbsp; Items
                                                                     -->
 																</div>
+
+                                                                <?php if (@$this->filter_items_count > 0)
+                                                                { ?>
+                                                                <div class="row hidden-xshidden-sm hidden-md hidden-lg margin-bottom-10">
+                                                                    <div class="col-md-12">
+                                                                        <a href="<?php echo site_url($this->uri->uri_string()); ?>" class="btn red-flamingo pull-right" style="font-size:12px;">RESET - CLEAR FILTERS.</a>
+                                                                    </div>
+                                                                </div>
+                                                                    <?php
+                                                                } ?>
 
 																<div class="mobile-filter-sort-buttons m-grid" data-object_data='{"<?php echo $this->security->get_csrf_token_name(); ?>":"<?php echo $this->security->get_csrf_hash(); ?>"}'>
 
@@ -578,7 +595,7 @@
 
 																			<div class="form-group hide">
 																				<a href="#modal-mobile-filter" class="btn dark btn-block" data-toggle="modal" style="border:3px solid black;">
-																					FILTER <?php echo $this->filter_items_count ? '('.$this->filter_items_count.')' : ''; ?>
+																					FILTER <?php echo @$this->filter_items_count ? '('.@$this->filter_items_count.')' : ''; ?>
 																				</a>
 																			</div>
 
@@ -1319,7 +1336,7 @@
 
 																			<div class="form-group hide">
 																				<a href="#modal-mobile-filter" class="btn dark btn-block" data-toggle="modal" style="border:3px solid black;">
-																					FILTER <?php echo $this->filter_items_count ? '('.$this->filter_items_count.')' : ''; ?>
+																					FILTER <?php echo @$this->filter_items_count ? '('.@$this->filter_items_count.')' : ''; ?>
 																				</a>
 																			</div>
 
@@ -1651,7 +1668,7 @@
 																	</div>
 																</div>
 
-                                                                <div class="thumbs-count-all margin-bottom-10 text-center">
+                                                                <div class="mobile-thumbs-pagination thumbs-count-all margin-top-10 margin-bottom-10 text-center">
                                                                     <?php echo $this->products_list->count_all > $this->webspace_details->options['items_per_page'] ? $this->pagination->create_links() : ''; ?>
                                                                     <!--
 																	<?php echo number_format($this->products_list->count_all); ?> &nbsp; Items

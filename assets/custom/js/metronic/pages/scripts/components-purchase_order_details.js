@@ -10,9 +10,10 @@ var FormValidation = function () {
 			// stop link default action
 			e.preventDefault();
 			// gather data
-			var url = $(this).prop('href');
+			var url = $(this).data('url');
 			var item = $(this).data('item');
 			var size = $(this).data('size');
+			// remove readonly prop to get item value
 			$(this).siblings('.this-size-qty').prop('readonly', false);
 			var qty = $(this).siblings('.this-size-qty').val();
 			$(this).siblings('.this-size-qty').prop('readonly', true);
@@ -26,12 +27,13 @@ var FormValidation = function () {
 				$('input[name="test"][value="1"]').prop('checked', true);
 				$('input[name="test"][value="1"]').closest('label').show();
 				// set default url
-				thisModal.find('.modal-footer button.print-upc-size').attr('data-url', url+'/all.html');
+				thisModal.find('.modal-footer button.print-upc-size').attr('data-url', base_url+url+'/all.html');
 			}else{
 				$('input[name="test"][value="0"]').prop('checked', true);
 				$('input[name="test"][value="1"]').closest('label').hide();
 				// set default url
-				thisModal.find('.modal-footer button.print-upc-size').attr('data-url', url+'.html');
+				alert(base_url+url+'/all.html');
+				thisModal.find('.modal-footer button.print-upc-size').attr('data-url', base_url+url+'.html');
 			}
 			// set body information
 			thisModal.find('.modal-body span.item').html(item);

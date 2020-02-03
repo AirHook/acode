@@ -174,7 +174,9 @@
                                                         		<?php } ?>
                                                         	<?php } ?>
 
-                                                        	<br><br>
+                                                            <?php if (@$custom_message) echo '<br>'.$custom_message.'<br />'; ?>
+
+                                                        	<br>
 
                                                         	To access the wholesale resource, click below:
 

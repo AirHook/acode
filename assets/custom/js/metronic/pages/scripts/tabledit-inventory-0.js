@@ -17,7 +17,7 @@ var Tabledit = function () {
                     [7, 'size_sxxl']
                 ]
             },
-            inputClass: 'input-invenotry',
+            inputClass: 'input-inventory',
             url: base_url + 'admin/inventory/live_edit.html',
             onAjax: function(action, serialize){
                 // check if input is empty

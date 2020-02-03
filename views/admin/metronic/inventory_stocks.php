@@ -15,7 +15,7 @@
 <?php } ?>
 
 <div class="table-scrollable" style="margin-top:0px!important;">
-    <table id="table-inventory-<?php echo $inv_prefix; ?>" class="table table-bordered table-striped table-hover table-condensed inventory-physical">
+    <table id="table-inventory-size_mode-<?php echo $size_mode; ?>" class="table table-bordered table-striped table-hover table-condensed inventory-physical">
         <thead>
             <tr>
                 <th>#</th>
@@ -50,7 +50,7 @@
                     {
                         if ($s == 'XL1' OR $s == 'XL2') continue;
                         $exp = explode('_', $size_label);
-                        $inv_size_label = $inv_prefix.end($exp);
+                        $inv_size_label = ($inv_prefix == 'available' ? 'size' : $inv_prefix).'_'.end($exp);
                         echo '<td>'.$product->$inv_size_label.'</td>';
                     }
                     ?>

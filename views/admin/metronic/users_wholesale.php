@@ -1,6 +1,39 @@
                     <?php
                     $pre_link = @$role == 'sales' ? 'my_account/sales' : 'admin';
                     ?>
+
+                    <?php
+                    /***********
+                     * Noification area
+                     */
+                    ?>
+                    <div class="notifications">
+                        <div class="alert alert-danger display-hide">
+                            <button class="close" data-close="alert"></button> You have some form errors. Please check below. </div>
+                        <div class="alert alert-success display-hide">
+                            <button class="close" data-close="alert"></button> Your form validation is successful! </div>
+                        <?php if ($this->session->flashdata('success') == 'add') { ?>
+                        <div class="alert alert-success auto-remove">
+                            <button class="close" data-close="alert"></button> New user added. Continue editing...
+                        </div>
+                        <?php } ?>
+                        <?php if ($this->session->flashdata('success') == 'acivation_email_sent') { ?>
+                        <div class="alert alert-success auto-remove">
+                            <button class="close" data-close="alert"></button> Activation Email Sent
+                        </div>
+                        <?php } ?>
+                        <?php if ($this->session->flashdata('success') == 'edit') { ?>
+                        <div class="alert alert-success auto-remove">
+                            <button class="close" data-close="alert"></button> User information updated...
+                        </div>
+                        <?php } ?>
+                        <?php if (validation_errors()) { ?>
+                        <div class="alert alert-danger">
+                            <button class="close" data-close="alert"></button> <?php echo validation_errors(); ?>
+                        </div>
+                        <?php } ?>
+                    </div>
+
                     <div class="table-toolbar <?php echo @$role == 'sales' ? 'hide' : ''; ?>">
                         <div class="row">
 
@@ -420,8 +453,12 @@
                                         <?php
                                     } ?>
 
-                                    <!-- Send Activation Email -->
+                                    <!-- Send Activation Email --
                                     <a href="<?php echo site_url($pre_link.'/users/wholesale/send_activation_email/index/'.$user->user_id); ?>" onclick="$('#loading .modal-title').html('Sending activation email...');$('#loading').modal('show');" class="tooltips" data-original-title="Send Activation Email" <?php echo $i < 3 ? 'data-placement="bottom"' : '';?>>
+                                        <i class="fa fa-envelope-o font-dark"></i>
+                                    </a>-->
+                                    <!-- Send Activation Email -->
+                                    <a data-toggle="modal" href="#send_activation_email-<?php echo $user->user_id?>" class="tooltips" data-original-title="Send Activation Email" <?php echo $i < 3 ? 'data-placement="bottom"' : '';?>>
                                         <i class="fa fa-envelope-o font-dark"></i>
                                     </a>
                                     <!-- Send Recent Items Sales Packaget -->
@@ -429,6 +466,40 @@
                                         <i class="fa fa-dropbox font-dark"></i>
                                     </a>
 
+                                    <!-- SEND ACTIVATION EMAIL -->
+                                    <div class="modal fade bs-modal-sm send_activation_email" id="send_activation_email-<?php echo $user->user_id?>" tabindex="-1" role="dialog" aria-hidden="true">
+                                        <div class="modal-dialog modal-sm">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                                    <h4 class="modal-title">Send Activation Email</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <input type="checkbox" name="send_activation_email-<?php echo $user->user_id?>" value="Y" checked /> &nbsp; - &nbsp; Send User Activation Details By Email
+                                                    <br /><br />
+                                                    USER: &nbsp; <?php echo ucwords(strtolower($user->firstname.' '.$user->lastname)); ?><br />
+    												STORE: &nbsp; <?php echo $user->store_name; ?><br />
+    												EMAIL: &nbsp; <?php echo $user->email; ?><br />
+    												PASSWORD: &nbsp; <?php echo $user->pword; ?><br />
+    												<br />
+    												REFERENCE DESIGNER: &nbsp; <strong><?php echo $user->designer; ?></strong><br />
+    												<br />
+    												Additional Message:<br />
+    												<textarea name="send_activation_email_message-<?php echo $user->user_id?>" rows="3" style="width:100%;border:1px solid #ccc;"></textarea>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn dark btn-outline" data-dismiss="modal">Cancel</button>
+                                                    <button type="button" class="btn green send_activation_email" data-user_id="<?php echo $user->user_id; ?>" data-url="<?php echo site_url($pre_link.'/users/wholesale/send_activation_email/send/'.$user->user_id); ?>">
+                                                        <span class="ladda-label">Continue...</span>
+                                                        <span class="ladda-spinner"></span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <!-- /.modal-content -->
+                                        </div>
+                                        <!-- /.modal-dialog -->
+                                    </div>
+                                    <!-- /.modal -->
                                     <!-- ITEM CONFIRM SEND RECENT ITEMS -->
                                     <div class="modal fade bs-modal-sm" id="send_recent-<?php echo $user->user_id?>" tabindex="-1" role="dialog" aria-hidden="true">
                                         <div class="modal-dialog modal-sm">
@@ -709,3 +780,20 @@
 						<!-- /.modal-dialog -->
 					</div>
 					<!-- /.modal -->
+
+                    <!-- BEGIN FORM-->
+                    <!-- FORM =======================================================================-->
+                    <?php echo form_open(
+                        '',
+                        array(
+                            'class'=>'',
+                            'id'=>'form-send_activation_email'
+                        )
+                    ); ?>
+
+                    <input type="hidden" name="user_id" value="" />
+                    <textarea name="message" style="visibility:hidden;"></textarea>
+
+                    </form>
+                    <!-- End FORM =======================================================================-->
+                    <!-- END FORM-->

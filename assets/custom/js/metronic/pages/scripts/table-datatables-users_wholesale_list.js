@@ -1,6 +1,7 @@
 var TableDatatablesManaged = function () {
 
     var base_url = $('body').data('base_url');
+    var object_data = $('body').data('object_data');
 
     var initTable = function () {
 
@@ -185,6 +186,25 @@ var TableDatatablesManaged = function () {
 			return false;
 		}
 	});
+
+    // send activation email modal actions
+    $('.btn.send_activation_email').on('click', function(){
+        // lets get some data
+        var form1 = $('#form-send_activation_email');
+        var user_id = $(this).data('user_id');
+        var checked = $('[name="send_activation_email-'+user_id+'"]').prop('checked');
+        var url = $(this).data('url');
+        var message = $('[name="send_activation_email_message-'+user_id+'"]').val();
+        if (checked) {
+            $('[name="user_id"]').val(user_id);
+            $('[name="message"]').html(message);
+            form1.attr('action', url).submit();
+        }
+        // clear the textarea after
+        $('[name="send_activation_email_message"]').val('');
+        // finally close modal
+        $('.modal.send_activation_email').modal('hide');
+    });
 
     // clear all items button action for sales resource pages using
     // wholesale users list

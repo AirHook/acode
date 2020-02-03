@@ -22,6 +22,13 @@ class Wholesale_activation_email_sending
 	public $users = array();
 
 	/**
+	 * Custom Message
+	 *
+	 * @var	string
+	 */
+	public $custom_message = '';
+
+	/**
 	 * Error Message
 	 *
 	 * @var	string
@@ -147,6 +154,7 @@ class Wholesale_activation_email_sending
 			$data['designer_address1'] = $this->CI->wholesale_user_details->designer_address1;
 			$data['designer_address2'] = $this->CI->wholesale_user_details->designer_address2;
 			$data['designer_phone'] = $this->CI->wholesale_user_details->designer_phone;
+			$data['custom_message'] = $this->custom_message;
 
 			$message = $this->CI->load->view('templates/activation_email', $data, TRUE);
 			$this->CI->email->message($message);

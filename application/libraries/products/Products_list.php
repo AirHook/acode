@@ -185,6 +185,13 @@ class Products_list
 	public $row_count = 0;
 
 	/**
+	 * Get only first row of query
+	 *
+	 * @var	integer
+	 */
+	public $first_row = 0;
+
+	/**
 	 * Last DB query string
 	 *
 	 * @var	boolean/string
@@ -884,6 +891,7 @@ class Products_list
 		else
 		{
 			$this->row_count = $query->num_rows();
+			$this->first_row = $query->first_row();
 
 			// return the object
 			return $query->result();
