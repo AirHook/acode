@@ -321,7 +321,7 @@
                                     <span class="label label-sm label-success"> Active </span>
                                     <?php } ?>
                                     <?php if ($user->is_active == '0') { ?>
-                                    <span class="label label-sm label-danger"> Opted Out </span>
+                                    <span class="label label-sm label-danger"> Inactive </span>
                                     <?php } ?>
                                     <?php if ($user->is_active == '2') { ?>
                                     <span class="label label-sm label-warning"> Suspended </span>
