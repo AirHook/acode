@@ -63,6 +63,7 @@ class Verify_barcode extends Admin_Controller {
 					$data['item'] = $product->prod_no.'_'.$product->color_code;
 					$data['color_code'] = $product->color_code;
 					$data['size_label'] = $this->upc_barcodes->size_label;
+					$data['st_id'] = $st_id;
 					echo json_encode($data);
 					exit;
 				}

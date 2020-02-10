@@ -314,6 +314,11 @@
                                 <span class="title">On-Order Stocks</span>
                             </a>
                         </li>
+                        <li class="nav-item with-heading <?php echo strpos($this->uri->uri_string(), 'admin/inventory/update_by_scan') === FALSE ? '' : 'active'; ?>">
+                            <a href="<?php echo site_url('admin/inventory/update_by_scan'); ?>" class="nav-link ">
+                                <span class="title">Inventory Count By Barcode Scan</span>
+                            </a>
+                        </li>
 
                         <li class="heading">
                             <h3 class="uppercase">Production</h3>
