@@ -194,7 +194,8 @@
                                 <select class="bs-select form-control selectpicker" id="bulk_actions_select" name="bulk_action" disabled>
                                     <option value="" selected="selected">Bulk Actions</option>
                                     <option value="ac">Activate</option>
-                                    <option value="su">Suspend / Move to Opt Out</option>
+                                    <option value="in">Move to Inactive</option>
+                                    <option value="su">Move to Suspended</option>
                                     <option value="se">Send Special Sale Email Invite</option>
                                     <option value="del">Permanently Delete</option>
                                 </select>
@@ -587,6 +588,29 @@
                     <!-- END FORM-->
 
 					<!-- BULK ACTIVATE -->
+					<div class="modal fade bs-modal-sm" id="confirm_bulk_actions-in" tabindex="-1" role="dialog" aria-hidden="true">
+						<div class="modal-dialog modal-sm">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+									<h4 class="modal-title">De-Activate!</h4>
+								</div>
+								<div class="modal-body"> Move multiple items to Inactive? </div>
+								<div class="modal-footer">
+									<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
+									<button onclick="$('#form-consumer_users_bulk_actions').submit();" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+										<span class="ladda-label">Confirm?</span>
+										<span class="ladda-spinner"></span>
+									</button>
+								</div>
+							</div>
+							<!-- /.modal-content -->
+						</div>
+						<!-- /.modal-dialog -->
+					</div>
+					<!-- /.modal -->
+
+                    <!-- BULK ACTIVATE -->
 					<div class="modal fade bs-modal-sm" id="confirm_bulk_actions-ac" tabindex="-1" role="dialog" aria-hidden="true">
 						<div class="modal-dialog modal-sm">
 							<div class="modal-content">
