@@ -50,6 +50,24 @@ class Mailgun
 	public $attachment;
 
     /**
+	 * User Variables
+	 *
+	 * @var	array
+	 */
+	public $vars;
+
+    /**
+	 * O Tags - tags for messages for statistics purposes
+     *
+     * A single message may be marked with up to 3 tags.
+     * Tags are case insensitive and should be ascii only.
+     * Maximum tag length is 128 characters.
+	 *
+	 * @var	string
+	 */
+	public $o_tag;
+
+    /**
 	 * Error Message
 	 *
 	 * @var	string
@@ -84,6 +102,8 @@ class Mailgun
 	 * @var	object
 	 */
 	protected $CI;
+
+    // ----------------------------------------------------------------------
 
     /**
 	 * Constructor
@@ -132,6 +152,22 @@ class Mailgun
         $params['from'] = $this->from;
         $params['to'] = $this->to;
         $params['subject'] = $this->subject;
+
+        // tags
+        if ($this->o_tag)
+        {
+            $params['o:tag'] = $this->o_tag;
+        }
+
+        // user variables
+        if ( ! empty($this->vars))
+        {
+            foreach ($this->vars as $key => $val)
+            {
+                $params['v:'.$key] = $val;
+                $params['v:'.$key] = $val;
+            }
+        }
 
         // the message
 		if ($this->ishtml)
@@ -197,6 +233,9 @@ class Mailgun
         $this->bcc = '';
         $this->subject = '';
         $this->message = '';
+        $this->attachment = '';
+        $this->o_tag = array();
+        $this->error_message = '';
         $this->ishtml = TRUE;
         $this->key = '';
         $this->domain = '';

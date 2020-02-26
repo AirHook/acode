@@ -179,7 +179,7 @@ class Sales_package_sending
 				$this->CI->email->from((@$this->CI->sales_user_details->email ?: $this->CI->wholesale_user_details->designer_info_email), (@$this->CI->sales_user_details->designer_name ?: $this->CI->wholesale_user_details->designer));
 				$this->CI->email->reply_to((@$this->CI->sales_user_details->email ?: $this->CI->wholesale_user_details->designer_info_email));
 				//$this->CI->email->cc($this->CI->config->item('info_email'));
-				$this->CI->email->bcc($this->CI->config->item('info_email').', '.$this->CI->config->item('dev1_email'));
+				$this->CI->email->bcc($this->CI->config->item('info_email').', '.$this->CI->config->item('dev1_email').', help@shop7thavenue.com');
 
 				$this->CI->email->subject($this->CI->sales_package_details->email_subject);
 

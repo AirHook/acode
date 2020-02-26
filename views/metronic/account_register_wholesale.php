@@ -43,7 +43,7 @@
 																)
 															); ?>
 
-															<input type="hidden" name="user_type" value="" />
+															<input type="hidden" name="user_type" value="wholesale" />
 
 															<?php
 															/***********

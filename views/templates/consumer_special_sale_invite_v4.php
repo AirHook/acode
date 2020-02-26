@@ -87,93 +87,6 @@
 								<![endif]-->
 					<table class="content" align="center" cellpadding="0" cellspacing="0" border="0" style="width: 100%; max-width: 625px;">
 
-                        <!--
-						/***********
-						 * HEADER
-						 */
-						-->
-                        <tr>
-                            <td class="header" bgcolor="" style="padding:0;">
-
-								<!--
-								/***********
-								 * Outlook will automatically stack your tables if there isn\'t at
-								 * least 25px to spare on any given row. Allow at least 25px of
-								 * breathing room to stop Outlook from stacking your tables.
-								 */
-								-->
-								<table width="100%" border="0" cellpadding="0" cellspacing="0">
-									<tr bgcolor="">
-
-										<td width="100%" height="92" align="center" style="font-family:Tahoma;font-size:12px;color:black;vertical-align:top;">
-
-                                            <br />
-                                            <span style="font-size:0.8em;line-height:24px;display:none;">
-                                                Can't see the images in this email? &nbsp;
-                                                <a href="<?php echo site_url('consumer/special_sale_invite/index/'.@$user_id); ?>" style="color:black;">
-                                                    View in browser
-                                                </a>
-                                            </span>
-                                            <br />
-
-                                            <!--
-                    						/***********
-                    						 * LOGO
-                    						 */
-                    						-->
-                                            <img src="<?php echo base_url(); ?>assets/images/logo/logo-<?php echo @$reference_designer ?: 'shop7thavenue'; ?>.png" width="300" style="margin-top:10px;margin-bottom:5px;" />
-
-                                            <br />
-
-                                            <hr style="border-top:1px solid black;border-bottom:none;"/>
-
-										</td>
-
-									</tr>
-								</table>
-
-                            </td>
-                        </tr>
-
-						<!--
-						/***********
-						 * Splash Header Image
-						 */
-						-->
-                        <tr>
-                            <td class="header" bgcolor="" style="padding: 0;">
-
-								<!--
-								/***********
-								 * Outlook will automatically stack your tables if there isn\'t at
-								 * least 25px to spare on any given row. Allow at least 25px of
-								 * breathing room to stop Outlook from stacking your tables.
-								 */
-								-->
-								<table width="100%" align="left" border="0" cellpadding="0" cellspacing="0">
-									<tr>
-										<td align="center" style="padding: 0;">
-
-                                            <?php
-                                            // generalized accesslink
-                                            $access_link =
-                                                base_url()
-                                                .'shop/womens_apparel.html?filter=&availability=onsale'
-                                                .'&act='.time()
-                                                .'&cs='.(@$user_id ?: '75806')
-                                            ;
-                                            ?>
-
-											<a href="<?php echo $access_link; ?>" target="_blank">
-												<img src="<?php echo base_url(); ?>assets/images/uploads/2018/01/header-image.jpg" width="100%" border="0" alt="" />
-											</a>
-										</td>
-									</tr>
-								</table>
-
-                            </td>
-                        </tr>
-
 						<!--
 						/***********
 						 * CONTENT BODY Row 1
@@ -190,7 +103,7 @@
 									</tr>
 									<tr>
 										<td class="bodycopy" style="color: #153643; font-family: sans-serif; font-size: 16px; line-height: 22px;">
-											The <?php echo strtoupper(@$designer) ?: 'SHOP 7TH AVENUE'; ?> special sale is open. Save big on fabulous evening and cocktail dresses for the upcoming holidays.
+											The <?php echo strtoupper(@$designer) ?: 'SHOP 7TH AVENUE'; ?> special sale is open. Save up to 70% on evening, cocktail, prom, and mother of bride dresses for the upcoming special events.
 										</td>
 									</tr>
 								</table>
@@ -277,10 +190,6 @@
 
                                                     <!-- BEGIN PRODUCT INFO -->
                 									<div style="margin:3px 0 0;text-align:left;padding-left:7px;">
-                										<img src="<?php echo ($product->primary_img ? $img_coloricon : $color_icon_pre.$color_icon); ?>" width="10" height="10">
-                									</div>
-
-                									<div style="text-align:left;padding-left:7px;">
                 										<span style="font-size:10px;">
                                                             <?php echo $product->prod_no.' ('.$product->color_name.')'; ?>
                                                         </span>

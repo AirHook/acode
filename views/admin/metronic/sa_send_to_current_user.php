@@ -31,7 +31,7 @@
 				                                <?php //echo form_open('admin/users/wholesale/search', array('class'=>'form-horizontal', 'id'=>'form-wholesale_users_search_email')); ?>
 
 				                                <div class="input-group">
-				                                    <input class="form-control select-user-search" placeholder="Search for Email or Store Name..." name="search_string" type="text" data-per_page="<?php echo $users_per_page; ?>" data-total_users="<?php echo $total_users; ?>" />
+				                                    <input class="form-control select-user-search" placeholder="Search for Email or Store Name..." name="search_string" type="text" data-per_page="<?php echo $users_per_page; ?>" data-total_users="<?php echo $total_users; ?>" data-role="<?php echo @$role ?: ''; ?>" />
 				                                    <span class="input-group-btn">
 				                                        <button class="btn-search-current-user btn dark uppercase bold" type="button">Search</button>
 				                                    </span>

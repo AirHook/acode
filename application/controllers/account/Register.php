@@ -276,7 +276,7 @@ class Register extends Frontend_Controller {
 			// and then add some
 			$post_ary['create_date'] = @date('Y-m-d', time());
 			$post_ary['active_date'] = @date('Y-m-d', time());
-			$post_ary['is_active'] = '1';
+			$post_ary['is_active'] = $this->input->post('receive_productupd') ? '1' : '3';
 			$post_ary['admin_sales_email'] = $this->sales_user_details->email;
 			$post_ary['reference_designer'] = $this->webspace_details->slug;
 			// unset some
@@ -286,6 +286,20 @@ class Register extends Frontend_Controller {
 
 			$this->DB->insert('tbluser_data', $post_ary);
 			$insert_id = $this->DB->insert_id();
+
+			// for basix black label
+			// add user to mailgun mailing list "consumers@mg.shop7thavenue.com"
+			if ($this->webspace_details->slug == 'basixblacklabel' && $this->input->post('receive_productupd') == '1')
+			{
+				$params['address'] = $this->input->post('email');
+				$params['fname'] = $this->input->post('firstname');
+				$params['lname'] = $this->input->post('lastname');
+				$params['description'] = 'Basix Black Label Consumer User';
+				$params['list_name'] = 'consumers@mg.shop7thavenue.com';
+				$params['vars'] = '{"designer":"Basix Black Label"}';
+				$this->load->library('mailgun/list_member_add', $params);
+				$res = $this->list_member_add->add();
+			}
 
 			// notify admin
 			$this->_notify_admin($insert_id);

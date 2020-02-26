@@ -59,7 +59,7 @@ class Open extends MY_Controller {
 		parent::__construct();
 
 		// connect to database
-		$this->DB = $this->CI->load->database('instyle', TRUE);
+		$this->DB = $this->load->database('instyle', TRUE);
     }
 
 	// ----------------------------------------------------------------------

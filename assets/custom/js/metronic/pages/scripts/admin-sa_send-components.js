@@ -330,22 +330,32 @@ var ComponentsEditors = function () {
             $('input.send_to_current_user.list[value="'+email+'"]').prop('checked', false);
         });
 
+
+
+
         // search current user
         $('.btn-search-current-user').on('click', function(){
             // call jquery loading on options section
             $('.select-users-list').loading();
             // process data
+            var thisUrl;
+            var role = $('input.select-user-search[name="search_string"]').data('role');
             var per_page = $('input.select-user-search[name="search_string"]').data('per_page');
             var search_string = $('input.select-user-search[name="search_string"]').val();
             var sales_user = $('[name="sales_user"]').val();
             if (search_string != '') {
+                if (role == 'sales') {
+                    thisUrl = base_url + "my_account/sales/sales_package/search_current_user.html"
+                } else {
+                    thisUrl = base_url + "admin/campaigns/sales_package/search_current_user.html";
+                }
                 objectData = object_data;
                 objectData.per_page = per_page;
                 objectData.search_string = search_string;
                 if (sales_user) objectData.admin_sales_email = sales_user;
                 var search_current_users = $.ajax({
                     type:    "POST",
-                    url:     base_url + "admin/campaigns/sales_package/search_current_user.html",
+                    url:     thisUrl,
                     data:    objectData
                 });
                 search_current_users.done(function(data){
@@ -379,15 +389,22 @@ var ComponentsEditors = function () {
             // call jquery loading on options section
             $('.select-users-list').loading();
             // process
+            var thisUrl;
+            var role = $('input.select-user-search[name="search_string"]').data('role');
             var per_page = $('input.select-user-search[name="search_string"]').data('per_page');
             var total_users = $('input.select-user-search[name="search_string"]').data('total_users');
             objectDataReset = object_data;
             objectDataReset.reset = per_page;
             objectDataReset.cur = '1';
             objectDataReset.end_cur = $(this).data('end_cur');
+            if (role == 'sales') {
+                thisUrl = base_url + "my_account/sales/sales_package/reset_search_current_user.html"
+            } else {
+                thisUrl = base_url + "admin/campaigns/sales_package/reset_search_current_user.html";
+            }
             var reset_search = $.ajax({
                 type:    "POST",
-                url:     base_url + "admin/campaigns/sales_package/reset_search_current_user.html",
+                url:     thisUrl,
                 data:    objectDataReset
             });
             reset_search.done(function(data){
@@ -498,12 +515,11 @@ var ComponentsEditors = function () {
         $('.btn-send-sales-package').on('click', function(){
             var form = $('#form-send_sales_package');
             if ($('[name="email[]"]:checked').length > 0){
-                var val = $('[name="emails"]').val();
+                var val;
                 var cnt = 1;
-                var new_val;
                 $('[name="email[]"]:checked').each(function(){
                     if (cnt > 1) val = val+','+$(this).val();
-                    else val = val+$(this).val();
+                    else val = $(this).val();
                     cnt++;
                 });
                 $('[name="emails"]').val(val);

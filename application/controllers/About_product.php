@@ -668,10 +668,24 @@ class About_product extends Frontend_Controller {
 		{
 			if ($valid_user = $this->consumer_user_details->initialize(array('email'=>$this->input->get('user_email'))))
 			{
+				// double check optin status
+
 				// lets update consumer product interest 'product_items'
 				$this->DB->set('product_items', $valid_user->product_items.','.$this->input->get('prod_no').'_'.$this->input->get('color_code'));
-				$this->DB->where('email', $this->input->get(user_email));
+				$this->DB->where('email', $this->input->get('user_email'));
 				$this->DB->update('tbluser_data');
+
+				if ($this->input->get('site_referrer') == 'basixblacklabel' && $this->input->get('opt_type') == '1')
+				{
+					$params['address'] = $this->input->get('user_email');
+					$params['fname'] = $this->input->get('user_fname');
+					$params['lname'] = $this->input->get('user_lname');
+					$params['description'] = 'Basix Black Label Consumer User';
+					$params['list_name'] = 'consumers@mg.shop7thavenue.com';
+					$params['vars'] = '{"designer":"Basix Black Label"}';
+					$this->load->library('mailgun/list_member_add', $params);
+					$this->list_member_add->add();
+				}
 			}
 		}
 
@@ -842,7 +856,7 @@ class About_product extends Frontend_Controller {
 			'password' => $this->webspace_details-slug,
 			'comment' => $this->input->get('comment'),
 			'receive_productupd' => $this->input->get('opt_type'),
-			'is_active' => '1',
+			'is_active' => ($this->input->get('opt_type') == '0' ? '3' : '1'),
 			'site_ini' => $this->input->get('site_referrer'),
 			'reference_designer' => $this->input->get('site_referrer'),
 			'admin_sales_email' => $this->webspace_details->info_email,
@@ -863,6 +877,20 @@ class About_product extends Frontend_Controller {
 			'logindata' => json_encode(array('product_clicks'=>$this->input->get('prod_no')))
 		);
 		$this->DB->insert('tbl_login_detail');
+
+		// add new consumer to mailgun
+		// basix only for now
+		if ($this->input->get('site_referrer') == 'basixblacklabel' && $this->input->get('opt_type') == '1')
+		{
+			$params['address'] = $this->input->get('user_email');
+			$params['fname'] = $this->input->get('user_fname');
+			$params['lname'] = $this->input->get('user_lname');
+			$params['description'] = 'Basix Black Label Consumer User';
+			$params['list_name'] = 'consumers@mg.shop7thavenue.com';
+			$params['vars'] = '{"designer":"Basix Black Label"}';
+			$this->load->library('mailgun/list_member_add', $params);
+			$this->list_member_add->add();
+		}
 	}
 
 	// ----------------------------------------------------------------------

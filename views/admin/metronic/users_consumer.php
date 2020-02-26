@@ -159,6 +159,11 @@
                                     <?php echo $this->uri->segment(4) != 'active' ? 'Show' : ''; ?> Active User List
                                 </a>
                             </li>
+                            <li class="<?php echo $this->uri->segment(4) == 'optout' ? 'optout' : ''; ?>">
+                                <a href="<?php echo site_url('admin/users/consumer/optout'); ?>">
+                                    <?php echo $this->uri->segment(4) != 'optout' ? 'Show' : ''; ?> Active Optout List
+                                </a>
+                            </li>
                             <li class="<?php echo $this->uri->segment(4) == 'inactive' ? 'active' : ''; ?>">
                                 <a href="<?php echo site_url('admin/users/consumer/inactive'); ?>">
                                     <?php echo $this->uri->segment(4) != 'inactive' ? 'Show' : ''; ?> Inactive User List
@@ -327,6 +332,9 @@
                                     <?php if ($user->is_active == '2') { ?>
                                     <span class="label label-sm label-warning"> Suspended </span>
                                     <?php } ?>
+                                    <?php if ($user->is_active == '3') { ?>
+                                    <span class="label label-sm label-danger"> Optout </span>
+                                    <?php } ?>
                                 </td>
                                 <td class="dropdown-wrap dropdown-fix">
 
@@ -431,7 +439,7 @@
                                                             <label class="col-md-3 control-label">Product Item:
                                                             </label>
                                                             <div class="col-md-4" data-product_items="<?php echo $user->product_items; ?>">
-                                                                <img src="<?php echo src_to_thumbs($user->product_items, '2'); ?>" />
+                                                                <img src="<?php //echo src_to_thumbs($user->product_items, '2'); ?>" />
                                                             </div>
                                                         </div>
                                                     </div>
@@ -610,7 +618,7 @@
 					</div>
 					<!-- /.modal -->
 
-                    <!-- BULK ACTIVATE -->
+                    <!-- BULK DEACTIVATE -->
 					<div class="modal fade bs-modal-sm" id="confirm_bulk_actions-ac" tabindex="-1" role="dialog" aria-hidden="true">
 						<div class="modal-dialog modal-sm">
 							<div class="modal-content">
@@ -665,6 +673,29 @@
 									<h4 class="modal-title">Delete!</h4>
 								</div>
 								<div class="modal-body"> Delete multiple items? <br /> This cannot be undone! </div>
+								<div class="modal-footer">
+									<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
+									<button onclick="$('#form-consumer_users_bulk_actions').submit();" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+										<span class="ladda-label">Confirm?</span>
+										<span class="ladda-spinner"></span>
+									</button>
+								</div>
+							</div>
+							<!-- /.modal-content -->
+						</div>
+						<!-- /.modal-dialog -->
+					</div>
+					<!-- /.modal -->
+
+                    <!-- BULK SEND SPECIAL SALE INVITE -->
+					<div class="modal fade bs-modal-sm" id="confirm_bulk_actions-se" tabindex="-1" role="dialog" aria-hidden="true">
+						<div class="modal-dialog modal-sm">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+									<h4 class="modal-title">Send Special Sale</h4>
+								</div>
+								<div class="modal-body"> Send a Special Sales email invite to selected users. </div>
 								<div class="modal-footer">
 									<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
 									<button onclick="$('#form-consumer_users_bulk_actions').submit();" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">

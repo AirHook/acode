@@ -27,6 +27,16 @@ class Bulk_actions extends Admin_Controller {
 	{
 		echo 'Processing...';
 
+		if ($this->input->post('bulk_action') === 'se')
+		{
+			// insert code to send special sale by email here...
+			// set flash data
+			$this->session->set_flashdata('error', 'no_id_passed');
+
+			// redirect user
+			redirect('admin/users/consumer');
+		}
+
 		// connect to database
 		$DB = $this->load->database('instyle', TRUE);
 
@@ -54,6 +64,21 @@ class Bulk_actions extends Admin_Controller {
 		// update or delete items from database
 		if ($this->input->post('bulk_action') === 'del')
 		{
+			// get and set user details
+			$this->load->library('users/consumer_user_details');
+			$cs_user_details = $this->consumer_user_details->initialize(array('user_id'=>$id));
+
+			// delete user from mailgun list
+			// only basix for now
+			if ($cs_user_details->reference_designer == 'basixblacklabel')
+			{
+				$params['address'] = $cs_user_details->email;
+				$params['list_name'] = 'consumers@mg.shop7thavenue.com';
+				$this->load->library('mailgun/list_member_delete', $params);
+				$res = $this->list_member_delete->delete();
+			}
+
+			// ultimately delete record
 			$DB->delete('tbluser_data');
 
 			// set flash data

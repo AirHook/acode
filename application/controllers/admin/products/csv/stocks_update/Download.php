@@ -147,7 +147,7 @@ class Download extends Admin_Controller {
 					tp.clearance = '3'
 					OR ts.custom_order = '3'
 				)
-			ORDER BY Orderkey ASC, prod_no DESC, color_name ASC
+			ORDER BY Orderkey ASC, prod_no ASC, color_name ASC
 		";
 		$qry = $this->DB->query($sel);
 

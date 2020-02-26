@@ -128,9 +128,10 @@ class Consumer_send_special_sale_invite
 			// to and subject
 			$this->CI->email->subject(strtoupper($data['designer']).' SPECIAL SALE');
 			$this->CI->email->to($this->CI->consumer_user_details->email);
+			$this->CI->email->cc($this->CI->webspace_details->info_email);
 
 			// grab template and infuse data and set message
-			$message = $this->CI->load->view('templates/consumer_special_sale_invite_v3', $data, TRUE);
+			$message = $this->CI->load->view('templates/consumer_special_sale_invite_v4', $data, TRUE);
 			$this->CI->email->message($message);
 
 			// send email
@@ -152,7 +153,7 @@ class Consumer_send_special_sale_invite
 			}
 			else
 			{
-				$sendby = @$this->CI->webspace_details->options['email_send_by'] ?: 'mailgun'; // options: mailgun, default (CI native emailer)
+				$sendby = @$this->CI->webspace_details->options['email_send_by'] ?: 'default'; // options: mailgun, default (CI native emailer)
 
 				if ($sendby == 'mailgun')
 				{
