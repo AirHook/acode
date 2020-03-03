@@ -130,10 +130,11 @@
 													<!-- END PAGE SECTION HEADING -->
 
 													<!-- BEGIN DESKTOP PRODUCT FILTER -->
-                                                    <!-- DOC: hiding this old filter system temporarity - for depracation -->
+                                                    <!-- DOC: hiding this old filter system temporarity - for depracation --
 													<div class="produc-thumbs-filter hidden-xs clearfix hide" style="padding:12px 20px 15px;">
-                                                        <?php if ( ! @$search_result) $this->load->view('metronic/product_thumbs_filter'); ?>
+                                                        <?php //if ( ! @$search_result) $this->load->view('metronic/product_thumbs_filter'); ?>
 													</div>
+                                                    -->
 
                                                     <?php if (@$this->filter_items_count > 0)
                                                     { ?>
@@ -468,6 +469,7 @@
                                                                             <option value="preorder" <?php echo @$_GET['availability'] == 'preorder' ? 'selected': '';?>>
                                                                                 Pre Order
                                                                             </option>
+
                                                                             <option value="onsale" <?php echo @$_GET['availability'] == 'onsale' ? 'selected': '';?>>
                                                                                 Clearance
                                                                             </option>

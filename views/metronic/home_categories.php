@@ -208,6 +208,7 @@
 
                                                 if (
                                                     $this->webspace_details->slug !== 'tempoparis'
+                                                    //&& $this->webspace_details->slug !== 'basixblacklabel'
                                                 )
                                                 { ?>
 

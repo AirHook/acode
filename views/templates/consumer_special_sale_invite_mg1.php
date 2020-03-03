@@ -176,7 +176,7 @@
                                                         .'&item='
                                                         .$style_no
                                                     ;
-                                                    $access_link = base_url().'shop/womens_apparel.html?filter=&availability=onsale'
+                                                    $access_link = base_url().'shop/basixblacklabel/womens_apparel/dresses.html?filter=&availability=onsale'
                 									?>
 
                 								<td align="center" style="width:33%;vertical-align:top;padding-bottom:10px;" data-item="<?php echo $item; ?>">

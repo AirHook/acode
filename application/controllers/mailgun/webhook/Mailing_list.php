@@ -490,7 +490,7 @@ class Mailing_list extends MY_Controller {
 		$this->mailgun->vars = array("designer" => "Basix Black Label", "des_slug" => "basixblacklabel");
 		$this->mailgun->o_tag = 'Consumer Special Sale Invite';
 		$this->mailgun->from = 'Basix Black Label <help@basixblacklabel.com>';
-		$this->mailgun->to = 'test@mg.shop7thavenue.com';
+		$this->mailgun->to = 'consumers@mg.shop7thavenue.com';
 		//$this->mailgun->cc = $this->webspace_details->info_email;
 		//$this->mailgun->bcc = $this->CI->config->item('dev1_email');
 		$this->mailgun->subject = 'BASIX BLACK LABEL SPECIAL SALE';

@@ -123,6 +123,17 @@ class Address extends Frontend_Controller
 					'reference_designer'	=> 'shop7thavenue'
 				);
 				$this->DB->insert('tbluser_data', $data);
+
+				// add user to mailgun mailing list
+				// shop7 makes user also for Basix Black Label
+				$params['address'] = $this->input->post('b_email');
+				$params['fname'] = $this->input->post('b_firstname');
+				$params['lname'] = $this->input->post('b_lastname');
+				$params['description'] = 'Basix Black Label Consumer User';
+				$params['list_name'] = 'consumers@mg.shop7thavenue.com';
+				$params['vars'] = '{"designer":"Basix Black Label"}';
+				$this->load->library('mailgun/list_member_add', $params);
+				$res = $this->list_member_add->add();
 			}
 			else
 			{

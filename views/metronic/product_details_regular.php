@@ -645,7 +645,17 @@
 																| Size
 																*/
 																?>
+                                                                <?php if ($this->webspace_details->slug != 'basixblacklabel')
+                                                                { ?>
 																<span class="prdname product-form__label" style="margin-top:5px;"><strong>AVAILABLE SIZES:</strong> <?php echo $this->webspace_details->slug != 'basixblacklabel' ? 'Please select a size' : ''; ?></span>
+                                                                    <?php
+                                                                }
+                                                                else
+                                                                { ?>
+                                                                <a href="#how-to-oder" class="how-to-oder" data-toggle="modal">
+                                                                    AVAILABLE SIZES </a>
+                                                                    <?php
+                                                                } ?>
 
 																<input type="hidden" id="size" name="size" value="" />
 
@@ -766,7 +776,7 @@
                                                                         else
                                                                         { ?>
 
-                                                                        <li class="hoverable product-form__list-item" <?php echo $hide_size_xxl_xl2; ?>>
+                                                                        <li class="hoverable product-form__list-item hide" <?php echo $hide_size_xxl_xl2; ?>>
 																			<a href="#how-to-oder" class="<?php echo $a_class; ?>" data-toggle="modal" style="z-index:10;">
 																				<span><?php echo $size->size_name; ?></span>
 																			</a>

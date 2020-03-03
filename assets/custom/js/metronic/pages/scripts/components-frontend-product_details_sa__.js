@@ -1,8 +1,5 @@
 var ComponentsScripts = function() {
 
-    var base_url = $('body').data('base_url');
-    var object_data = $('.mobile-filter-sort-buttons').data('object_data');
-
     var handleScripts1 = function() {
 
 		/**********
@@ -43,30 +40,6 @@ var ComponentsScripts = function() {
 			$('#form_facet-tagsinput').submit();
 		});
 
-        // mobile thumbs filter actions
-		$('#size-filter-desktop-top, #style-filter-desktop-top, #price-filter-desktop-top, #color-filter-desktop-top, #occassion-filter-desktop-top, #availability-filter-desktop-top, #size-filter-desktop-bottom, #style-filter-desktop-bottom, #price-filter-desktop-bottom, #color-filter-desktop-bottom, #occassion-filter-desktop-bottom, #availability-filter-desktop-bottom, #size-filter-mobile-top, #style-filter-mobile-top, #price-filter-mobile-top, #color-filter-mobile-top, #occassion-filter-mobile-top, #availability-filter-mobile-top, #size-filter-mobile-bottom, #style-filter-mobile-bottom, #price-filter-mobile-bottom, #color-filter-mobile-bottom, #occassion-filter-mobile-bottom, #availability-filter-mobile-bottom').change(function(){
-            // set parent element
-            var form = $(this).parents('form');
-            var desc = form.data('desc');
-            // set this filter value
-            var val = $(this).val();
-            if (val == 'onsale' &&  base_url == 'https://www.basixblacklabel.net/') {
-                window.location.href = "https://www.shop7thavenue.com/shop/basixblacklabel/womens_apparel.html?filter=&availability=onsale";
-                return false;
-            }
-            if (val != 'all' && val != 'default') {
-                // set the items value to the input for submission
-                form.children('.this-filter').val(val);
-            } else {
-                // remove input item so as not to show as empty uri query string
-                form.children('.this-filter').remove();
-            }
-            // submit closest form
-            var dataString = form.serialize();
-            //alert(dataString);
-			form.submit();
-		});
-
 		// desktop - submit sort by drop down on change
 		$('.bs-select.select-sort_by').on('change', function(){
 			$('#form-select-sort_by').submit();
@@ -81,6 +54,13 @@ var ComponentsScripts = function() {
 			$(this).html('Click Apply to effect change');
 			$(this).css('text-decoration', 'none');
 		});
+
+        // sa package add to inquiry button click function
+        $('.size-qty-submit-wholesale').on('click', function(){
+            var el = $(this).closest('.add-to-cart-form');
+            var form = el.children('.frmCart');
+            form.submit();
+        });
     }
 
     return {
