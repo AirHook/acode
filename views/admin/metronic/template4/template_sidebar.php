@@ -130,10 +130,39 @@
                         <li class="heading">
                             <h3 class="uppercase">Orders</h3>
                         </li>
-                        <li class="nav-item with-heading <?php echo $this->uri->segment(2) == 'orders' ? 'active' : ''; ?>">
+                        <li class="nav-item with-heading <?php echo $this->uri->uri_string() == 'admin/orders' ? 'active' : ''; ?>">
                             <a href="<?php echo site_url('admin/orders'); ?>" class="nav-link ">
                                 <span class="title">Order Logs</span>
                             </a>
+                        </li>
+                        <li class="nav-item with-heading <?php echo strpos($this->uri->uri_string(), 'admin/orders/new_orders') === FALSE ? '' : 'active'; ?>">
+                            <a href="<?php echo site_url('admin/orders/new_orders'); ?>" class="nav-link ">
+                                <span class="title">New Orders</span>
+                            </a>
+                        </li>
+                        <li class="nav-item with-heading <?php echo strpos($this->uri->uri_string(), 'admin/orders/shipment_pending') === FALSE ? '' : 'active'; ?>">
+                            <a href="<?php echo site_url('admin/orders/shipment_pending'); ?>" class="nav-link ">
+                                <span class="title">Shipment Pending</span>
+                            </a>
+                        </li>
+                        <li class="nav-item with-heading <?php echo strpos($this->uri->uri_string(), 'admin/orders/shipped') === FALSE ? '' : 'active'; ?>">
+                            <a href="<?php echo site_url('admin/orders/shipped'); ?>" class="nav-link ">
+                                <span class="title">Shipped</span>
+                            </a>
+                        </li>
+                        <li class="nav-item with-heading <?php echo strpos($this->uri->uri_string(), 'admin/orders/store_credit') === FALSE ? '' : 'active'; ?>">
+                            <a href="<?php echo site_url('admin/orders/store_credit'); ?>" class="nav-link ">
+                                <span class="title">Store Credit</span>
+                            </a>
+                        </li>
+                        <li class="nav-item with-heading <?php echo strpos($this->uri->uri_string(), 'admin/orders/refunded') === FALSE ? '' : 'active'; ?>">
+                            <a href="<?php echo site_url('admin/orders/refunded'); ?>" class="nav-link ">
+                                <span class="title">Refunded</span>
+                            </a>
+                        </li>
+
+                        <li class="heading">
+                            <h3 class="uppercase">Sales</h3>
                         </li>
                         <?php
                         // available only on hub sites for now

@@ -5,12 +5,14 @@
 								.filter-options .bootstrap-select.btn-group .dropdown-toggle .filter-option {
 									font-size: 0.8em;
 								}
-								.filter-options .mt-radio {
+								.filter-options .mt-radio,
+								.filter-options .mt-checkbox {
 									margin-bottom: 5px;
 									font-size: 11px;
 									padding-left: 25px;
 								}
-								.filter-options .mt-radio > span {
+								.filter-options .mt-radio > span,
+								.filter-options .mt-checkbox > span {
 									height: 14px;
 									width: 14px;
 								}
@@ -18,24 +20,30 @@
 									left: 3px;
 									top: 3px;
 								}
+								.filter-options .mt-checkbox > span::after {
+									left: 3px;
+									top: 0px;
+								}
 							</style>
 
 							<div class="m-grid-col m-grid-col-md-2 filter-options" style="padding-right:15px;font-size:0.8em;">
 
-								<h4>Options</h4>
+								<h4>Filters</h4>
 
 								<input type="hidden" name="page" value="<?php echo @$page; ?>" />
+								<input type="hidden" name="status" value="<?php echo @$status; ?>" />
 
 								<div class="form-group <?php echo @$role == 'sales' ? 'hide' : ''; ?>">
-                                    <label>Filter List</label>
-                                    <select class="bs-select form-control filter-options-field" name="page_param">
-                                        <option value="all" <?php echo strpos($this->uri->uri_string(), 'admin/orders/all') !== FALSE ? 'selected="selected"' : ''; ?>>
-											All Orders</option>
+                                    <label>By Listing</label>
+                                    <select class="bs-select form-control filter-options-field input-sm" name="page_param">
+                                        <option value="all">
+											All Orders
+										</option>
 										<?php if (@$this->webspace_details->slug != 'tempoparis')
 										{ ?>
-                                        <option value="wholesale" <?php echo strpos($this->uri->uri_string(), 'admin/orders/wholesale') !== FALSE ? 'selected="selected"' : ''; ?>>
+                                        <option value="wholesale" <?php echo strpos($this->uri->uri_string(), 'wholesale') !== FALSE ? 'selected="selected"' : ''; ?>>
 											Wholesale Orders</option>
-                                        <option value="retail" <?php echo strpos($this->uri->uri_string(), 'admin/orders/retail') !== FALSE ? 'selected="selected"' : ''; ?>>
+                                        <option value="consumer" <?php echo strpos($this->uri->uri_string(), 'retail') !== FALSE ? 'selected="selected"' : ''; ?>>
 											Retail Orders</option>
 											<?php
 										} ?>
@@ -46,10 +54,11 @@
 								{ ?>
 
 								<div class="form-group <?php echo @$role == 'sales' ? 'hide' : ''; ?>">
-                                    <label>Filter By Designer</label>
-									<select class="bs-select form-control filter-options-field filter_by_designer_select" name="des_slug" data-live-search="true" data-size="5" data-show-subtext="true">
-										<option class="option-placeholder" value="">Select Designer...</option>
-										<option value="all">All Desginers</option>
+                                    <label>By Designer</label>
+									<select class="bs-select form-control filter-options-field filter_by_designer_select input-sm" name="des_slug" data-live-search="true" data-size="5" data-show-subtext="true">
+										<option value="all">
+											All Desginers
+										</option>
 										<?php if ($this->webspace_details->options['site_type'] == 'hub_site') { ?>
 										<option value="<?php echo $this->webspace_details->slug; ?>" data-subtext="<em>Mixed Designers Order</em>" data-des_slug="<?php echo $this->webspace_details->slug; ?>" data-des_id="<?php echo $this->webspace_details->id; ?>" <?php echo $this->webspace_details->slug === @$des_slug ? 'selected="selected"' : ''; ?>>
 											<?php echo $this->webspace_details->name; ?>
@@ -75,6 +84,34 @@
 								} ?>
 
 								<div class="form-group">
+									<label>By Date Range<br />From Date</label>
+									<div class="input-group date date-picker margin-bottom-5" data-date-format="yyyy-mm-dd">
+										<input type="text" class="form-control input-sm" name="from_date" />
+										<span class="input-group-btn">
+											<button class="btn btn-sm default" type="button">
+												<i class="fa fa-calendar"></i>
+											</button>
+										</span>
+									</div>
+									<!-- /input-group -->
+
+									<label>To Date</label>
+									<div class="input-group date date-picker margin-bottom-5" data-date-format="yyyy-mm-dd">
+										<input type="text" class="form-control input-sm" name="to_date" />
+										<span class="input-group-btn">
+											<button class="btn btn-sm default" type="button">
+												<i class="fa fa-calendar"></i>
+											</button>
+										</span>
+									</div>
+									<!-- /input-group -->
+
+									<a href="<?php echo site_url('admin/orders/'.$status); ?>">
+										<cite class="">Reset Dates</cite>
+									</a>
+								</div>
+
+								<div class="form-group hide">
                                     <label>
 										Filter By Status &nbsp;
 										<?php
@@ -109,7 +146,7 @@
                                     </div>
                                 </div>
 
-								<label>
+								<label class="hide">
 									<a href="<?php echo site_url('admin/orders'); ?>">
 										<cite class="">Reset to All Orders</cite>
 									</a>
@@ -127,7 +164,7 @@
 								); ?>
 
 								<div class="form-group">
-                                    <label>Search Order# or Customer/Store Name</label>
+                                    <label>Search Order# or<br />Customer/Store Name</label>
                                     <input type="text" class="form-control" name="search_string" placeholder="Enter keywords..." />
 								</div>
 
@@ -336,16 +373,15 @@
 			                                        <span></span>
 			                                    </label>
 			                                </th>
-			                                <th style="width:100px;"> Order # </th>
-			                                <th style="width:90px;"> Order Date </th>
+			                                <th style="width:90px;"> Order # </th>
+			                                <th style="width:70px;"> Order Date </th>
 			                                <th> Items </th>
-			                                <th style="width:50px;"> Order<br />Qty </th>
-			                                <th style="width:90px;"> Purchase<br />Amount </th>
-			                                <th> Customer &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </th>
+			                                <th style="width:40px;"> Order<br />Qty </th>
+			                                <th style="width:75px;"> Order<br />Amount </th>
+			                                <th> Customer </th>
 											<th style="width:130px;"> Designer </th>
-			                                <th style="width:43px;"> Role </th>
-											<th style="width:80px;"> Ref SO# </th>
-			                                <th style="width:90px;"> Status </th>
+			                                <th style="width:40px;"> Role </th>
+											<th class="hide" style="width:80px;"> Ref SO# </th>
 			                                <th style="width:70px;"> Actions </th>
 			                            </tr>
 			                        </thead>
@@ -403,9 +439,9 @@
 												?>
 											</td>
 											<!-- Order Qty -->
-			                                <td> <?php echo $order->order_qty; ?> </td>
+			                                <td class="text-center"> <?php echo $order->order_qty; ?> </td>
 											<!-- Purchase Amount -->
-			                                <td> <?php echo '$ '.number_format($order->order_amount, 2); ?> </td>
+			                                <td class="text-right"> <?php echo '$ '.number_format($order->order_amount, 2); ?> </td>
 											<!-- Customer Info -->
 			                                <td>
 												<?php
@@ -420,10 +456,10 @@
 											<!-- Designer Group -->
 			                                <td> <?php echo trim($order->designer_group); ?> </td>
 											<!-- Role -->
-			                                <td> <small><cite><?php echo $order->c == 'guest' ? 'cs' : $order->c; ?></cite></small> </td>
+			                                <td class="text-center"> <small><cite><?php echo $order->c == 'guest' ? 'cs' : $order->c; ?></cite></small> </td>
 											<!-- Ref SO# -->
-			                                <td> <?php echo @$order->sales_order_number; ?> </td>
-											<!-- Status -->
+			                                <td class="hide"> <?php echo @$order->sales_order_number; ?> </td>
+											<!-- Status --
 			                                <td>
 												<?php
 												if ($order->remarks != '0' && $order->remarks != '')
