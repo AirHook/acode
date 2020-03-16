@@ -77,6 +77,7 @@ class MY_Controller extends CI_Controller
 					! preg_match('/(wholesale\/authenticated\/[a-zA-Z0-9.\/&=?-])\S+/', $this->uri->uri_string()) &&
 					// general pages
 					$this->uri->uri_string() !== 'contact' &&
+                    $this->uri->uri_string() !== 'contact/sent' &&
 					$this->uri->uri_string() !== 'ordering' &&
 					$this->uri->uri_string() !== 'shipping' &&
 					$this->uri->uri_string() !== 'return_policy' &&

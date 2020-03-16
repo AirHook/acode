@@ -126,7 +126,7 @@ class Consumer_send_special_sale_invite
 			$data['reference_designer'] = $this->CI->consumer_user_details->reference_designer ?: $this->CI->webspace_details->slug;
 
 			// to and subject
-			$this->CI->email->subject(strtoupper($data['designer']).' SPECIAL SALE');
+			$this->CI->email->subject(strtoupper($data['designer']).' SPECIAL SALE'); // mg1
 			$this->CI->email->to($this->CI->consumer_user_details->email);
 			$this->CI->email->cc($this->CI->webspace_details->info_email);
 

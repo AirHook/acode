@@ -98,48 +98,53 @@ class Mailing_list extends MY_Controller {
 	 *
 	 * @return	void
 	 */
-	public function add_user()
+	public function array_of_sent_clearance_thumbs()
 	{
-		// set main email header params accordingly
-		$params['subscribed'] = TRUE;
-		$params['description'] = 'Consumer User';
-        //$params['address'] = 'rsbgm@instylenewyork.com';
-		//$params['name'] = 'Rey Millares';
-		//$params['address'] = 'joe@rcpixel.com';
-		//$params['name'] = 'Joe Taveras';
-		$params['address'] = 'john@doe.com';
-		$params['name'] = 'John Doe';
+		$thumbs = array(
+			'D9869L','D9855A','D9841L','D9811L','D9776L','D9776A','D9761A','D9755LX','D9685L','D9684L',
+			'D9659L','D9655L','D9646L','D9624A','D9620L','D9618L','D9582L','D9558A','D9554L','D9536L',
+			'D9534A','D9533L','D9525L',
+			'D9954L','D9915L','D9904L','D9814L','D9696L','D9541L','D9521L','D9512L','D9505L','D9503L',
+			'D9502L','D9497L','D9483L','D9482L','D9418L','D9416L','D9412L','D9411L','D9405L','D9404L',
+			'D9400L','D9395L','D9390L','D9387L','D9378L','D9375L','D9372L','D9345L','D9321LM','D9318L'
+		);
 
-		// set vars per user to be able to access it as %recipient.yourvars%
-		//$params['vars'] = '{"designer":"Basix Black Labe",...}'
+		$this->DB->set('config_value', json_encode($thumbs));
+		$this->DB->set('options', '');
+		$this->DB->where('config_name', 'special_sale_thumbs_sent');
+		$this->DB->update('config');
 
-		// let do the curl
-        $csess = curl_init('https://api.mailgun.net/v3/lists/test@mg.shop7thavenue.com/members');
+		echo $this->DB->affected_rows();
+	}
 
-        // set settings
-        curl_setopt($csess, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-        curl_setopt($csess, CURLOPT_USERPWD, 'api:'.$this->key);
-        curl_setopt($csess, CURLOPT_POST, true);
-        curl_setopt($csess, CURLOPT_POSTFIELDS, $params);
-        curl_setopt($csess, CURLOPT_HEADER, false);
-        //curl_setopt($csess, CURLOPT_HTTPHEADER, array('Content-Type: multipart/form-data')); // used for attachments
-        curl_setopt($csess, CURLOPT_ENCODING, 'UTF-8');
-        curl_setopt($csess, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($csess, CURLOPT_SSL_VERIFYPEER, false);
+	// ----------------------------------------------------------------------
 
-        // get response
-        $response = curl_exec($csess);
+	/**
+	 * Add User member to mailing list
+	 *
+	 * @return	void
+	 */
+	public function get_array_of_sent_clearance_thumbs()
+	{
+		$this->DB->select('config_value');
+		$this->DB->where('config_name', 'special_sale_thumbs_sent');
+		$q = $this->DB->get('config');
+		$row = $q->row();
 
-        // close curl
-        curl_close($csess);
+		if (isset($row))
+		{
+			$thumbs = json_decode($row->config_value, TRUE);
+			echo count($thumbs).'<br />';
 
-        // convert to array
-        $results = json_decode($response, true);
-
-		echo '<pre>';
-		print_r($results);
-		echo '<br />';
-		echo 'done';
+			foreach ($thumbs as $thumb)
+			{
+				echo $thumb.'<br />';
+			}
+		}
+		else
+		{
+			echo 'No records found.';
+		}
 	}
 
 	// ----------------------------------------------------------------------

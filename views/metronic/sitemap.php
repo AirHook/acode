@@ -172,7 +172,7 @@
 									;
 
 									// get the designer key index
-									$key = array_search($item->url_structure, $linked_designers) + 1;
+									$key = array_search($item->url_structure, $linked_designers);
 
 									// get the pertinent info
 									@$image = array_key_exists($key, $icon_images) ? $icon_images[$key] : $icon_images[$item->url_structure];

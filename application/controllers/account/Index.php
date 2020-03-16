@@ -213,7 +213,8 @@ class Index extends Frontend_Controller {
 				}
 				else
 				{
-					redirect('https://www.'.$this->webspace_details->parent_site().'/my_account/wholesale/authenticate/index/'.$this->session->user_id, 'location');
+					//redirect('https://www.'.$this->webspace_details->parent_site().'/my_account/wholesale/authenticate/index/'.$this->session->user_id, 'location');
+					redirect('https://www.'.$this->webspace_details->parent_site().'/shop/designers/'.$this->webspace_details->slug.'.html', 'location');
 				}
 			}
 
