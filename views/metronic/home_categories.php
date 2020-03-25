@@ -115,12 +115,18 @@
 														// get the pertinent info
 														@$image = array_key_exists($key, $icon_images) ? $icon_images[$key] : $icon_images[$this->webspace_details->slug];
 														@$description = array_key_exists($key, $descriptions) ? $descriptions[$key] : $descriptions[$this->webspace_details->slug];
+
+                                                        // latest db json data
+                                                        $image = $icon_images[$this->webspace_details->slug];
 													}
 													else
 													{
 														// key index 0 is the item for general designers
 														@$image = array_key_exists(0, $icon_images) ? $icon_images[0] : $icon_images['general'];
 														@$description = array_key_exists(0, $descriptions) ? $descriptions[0] : $descriptions['general'];
+
+                                                        // latest db json data
+                                                        $image = $icon_images['general'];
 													}
 
 													// get category linked designer slugs
