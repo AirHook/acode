@@ -130,7 +130,7 @@
                         <li class="heading">
                             <h3 class="uppercase">Orders</h3>
                         </li>
-                        <li class="nav-item with-heading <?php echo $this->uri->uri_string() == 'admin/orders' ? 'active' : ''; ?>">
+                        <li class="nav-item with-heading <?php echo $this->uri->uri_string() == 'admin/orders' ? 'active' : ''; ?> hide">
                             <a href="<?php echo site_url('admin/orders'); ?>" class="nav-link ">
                                 <span class="title">Order Logs</span>
                             </a>
@@ -158,6 +158,11 @@
                         <li class="nav-item with-heading <?php echo strpos($this->uri->uri_string(), 'admin/orders/refunded') === FALSE ? '' : 'active'; ?>">
                             <a href="<?php echo site_url('admin/orders/refunded'); ?>" class="nav-link ">
                                 <span class="title">Refunded</span>
+                            </a>
+                        </li>
+                        <li class="nav-item with-heading <?php echo strpos($this->uri->uri_string(), 'admin/orders/cancelled') === FALSE ? '' : 'active'; ?>">
+                            <a href="<?php echo site_url('admin/orders/cancelled'); ?>" class="nav-link ">
+                                <span class="title">Cancelled</span>
                             </a>
                         </li>
 

@@ -141,13 +141,13 @@
                                             <option value=""></option>
                                             <?php if ($webspaces) { ?>
                                             <?php foreach ($webspaces as $webspace) { ?>
-                                            <option value="<?php echo $webspace->webspace_id; ?>" <?php echo ($this->designer_details->webspace_id == $webspace->webspace_id) ? 'selected="selected"': ''; ?>>
+                                            <option value="<?php echo $webspace->webspace_id; ?>" <?php echo ($this->designer_details->webspace_id == $webspace->webspace_id) ? 'selected="selected"': ''; ?> data-webspace_domain_name="<?php echo $webspace->domain_name; ?>">
                                                 <?php echo $webspace->domain_name; ?>
                                             </option>
                                             <?php } ?>
                                             <?php } ?>
                                         </select>
-                                        <input type="hidden" name="webspace_domain_name" value="" />
+                                        <input type="hidden" name="webspace_domain_name" value="<?php echo $this->designer_details->site_domain; ?>" />
                                     </div>
                                     <?php if ( ! $this->designer_details->webspace_id) { ?>
                                     <span class="help-block text-danger">
