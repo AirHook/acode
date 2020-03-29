@@ -433,6 +433,12 @@
                         } ?>
                         <li class="nav-item with-heading ">
                             <a href="javascript:;" class="nav-link tooltips" data-original-title="Currently Under Construction" data-placement="right">
+                                <span class="title uppercase">Task Manager</span>
+                                <span class="arrow"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item with-heading ">
+                            <a href="javascript:;" class="nav-link tooltips" data-original-title="Currently Under Construction" data-placement="right">
                                 <span class="title uppercase">Pages Manager</span>
                                 <span class="arrow"></span>
                             </a>

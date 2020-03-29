@@ -46,12 +46,19 @@ class Orders_list
 	public $row_count = 0;
 
 	/**
+	 * Last DB query string
+	 *
+	 * @var	boolean/string
+	 */
+	public $last_query = FALSE;
+
+
+	/**
 	 * This Class database object holder
 	 *
 	 * @var	object
 	 */
 	protected $DB = '';
-
 
 	/**
 	 * CI Singleton
@@ -186,6 +193,13 @@ class Orders_list
 		$query = $this->DB->get('tbl_order_log');
 
 		//echo $this->DB->last_query(); die();
+
+		// save last query string (with out the LIMIT portion)
+		$this->last_query =
+			strpos($this->DB->last_query(), 'LIMIT')
+			? substr($this->DB->last_query(), 0, strpos($this->DB->last_query(), 'LIMIT'))
+			: $this->DB->last_query()
+		;
 
 		// when pagination is used
 		if ($this->pagination > 0)

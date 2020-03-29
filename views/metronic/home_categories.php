@@ -117,7 +117,7 @@
 														@$description = array_key_exists($key, $descriptions) ? $descriptions[$key] : $descriptions[$this->webspace_details->slug];
 
                                                         // latest db json data
-                                                        $image = $icon_images[$this->webspace_details->slug];
+                                                        $image = @$icon_images[$this->webspace_details->slug];
 													}
 													else
 													{
@@ -126,7 +126,7 @@
 														@$description = array_key_exists(0, $descriptions) ? $descriptions[0] : $descriptions['general'];
 
                                                         // latest db json data
-                                                        $image = $icon_images['general'];
+                                                        $image = @$icon_images['general'];
 													}
 
 													// get category linked designer slugs
@@ -161,8 +161,6 @@
 													{
 														for ($deep = $prev_level - $category->category_level; $deep >= 0; $deep--)
 														{
-															echo '</li></ul>';
-
 															// update link
 															$pop = array_pop($li_a_link);
 														}
@@ -189,7 +187,7 @@
                                                 <div class="cbp-item <?php echo @$slugs ? implode(' ', @$slugs) : ''; ?> clearfix" style="height:345px;">
                                                     <a href="<?php echo $the_link; ?>" class="cbp-caption cbp-singlePageInline_" data-title="<?php echo $category->category_name; ?><br><?php echo $description; ?>" rel="nofollow">
                                                         <div class="cbp-caption-defaultWrap">
-                                                            <img src="<?php echo $image ? $this->config->slash_item('PROD_IMG_URL').'images/subcategory_icon/thumb/'.$image : base_url().'images/subcategory_icon/thumb/default-designer-icon.jpg'; ?>" alt="<?php echo $category->category_name; ?>" alt="" />
+                                                            <img src="<?php echo $image ? $this->config->slash_item('PROD_IMG_URL').'images/subcategory_icon/thumb/'.$image : base_url().'images/subcategory_icon/thumb/default-designer-icon.jpg'; ?>" alt="<?php echo $category->category_name; ?>" />
 														</div>
                                                         <div class="cbp-caption-activeWrap">
                                                             <div class="cbp-l-caption-alignLeft">

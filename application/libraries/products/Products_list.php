@@ -658,7 +658,8 @@ class Products_list
 		$this->DB->select('tbl_stock.custom_order');
 		$this->DB->select('tbl_stock.new_color_publish');
 		$this->DB->select('tbl_stock.primary_color');
-		$this->DB->select('tbl_stock.options as color_options');
+		$this->DB->select('tbl_stock.options as color_options'); // alias as this may be in use already (for further review)
+		$this->DB->select('tbl_stock.options as stocks_options');
 		//$this->DB->select("JSON_EXTRACT(tbl_stock.options, '$.clearance_consumer_only')");
 		// referencing link: https://dev.mysql.com/doc/refman/5.7/en/json-search-functions.html
 		$this->DB->select('

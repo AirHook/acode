@@ -352,21 +352,24 @@ class Submit extends Frontend_Controller
 
 			'agree_policy'		=> $user_array['agree_policy'],
 			'options'			=> json_encode(array('test'=>TRUE))
-
+			// 'status' defaults to '0' for new orders or pending orders
 		);
 		$this->DB->insert('tbl_order_log', $log_data);
-		$order_log_id	= $this->DB->insert_id();
+		$order_log_id = $this->DB->insert_id();
 
 		$this->load->helper('string');
-		$random_code	= strtoupper(random_string('alnum', 16)); // ----> randon_string() - a CI string helper function.
+		$random_code = strtoupper(random_string('alnum', 16)); // ----> randon_string() - a CI string helper function.
 
-		// insert cart/order details to order log detail
+		// load reserve stock class
+		$this->load->library('inventory/update_stocks');
+
 		$i = 1;
 		foreach ($this->cart->contents() as $items)
 		{
+			// insert cart/order details to order log detail
 			$log_detail_data = array(
 				'order_log_id'			=> $order_log_id,
-				'transaction_code'		=> $random_code,
+				'transaction_code'		=> $random_code, // for deprecation
 				'image'					=> (
 											(isset($items['options']['prod_image_url']) && ! empty($items['options']['prod_image_url']))
 											? $items['options']['prod_image_url']
@@ -381,10 +384,25 @@ class Submit extends Frontend_Controller
 				'qty'					=> $items['qty'],
 				'unit_price'			=> $items['price'],
 				'subtotal'				=> $items['subtotal'],
+				// custom_order = 0-instock, 1-preorer, 3-instock/clearance
 				'custom_order'			=> ($items['options']['custom_order'] ?: '0'),
 				'options'				=> json_encode(array('product_details_link'=>$items['options']['current_url']))
 			);
 			$this->DB->insert('tbl_order_log_details', $log_detail_data);
+
+			// process inventory by deducting from available and putting to onorder unless preorder
+			// once order is complete, deduct from onorder and physical
+			// items needed are prod_no, color_code, size, qty
+			if ($log_detail_data['custom_order'] != '1')
+			{
+				$config['prod_sku'] = $items['id'];
+				$config['size'] = $items['options']['size'];
+				$config['qty'] = $items['qty'];
+				$config['order_id'] = $order_log_id;
+				$this->update_stocks->initialize($config);
+				$this->update_stocks->reserve();
+			}
+
 			$i++;
 		}
 

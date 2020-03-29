@@ -320,6 +320,7 @@ class Product_details
 	 * @var	array
 	 */
 	public $options = array();
+	public $stocks_options = array();
 
 
 	/**
@@ -397,7 +398,7 @@ class Product_details
 		$this->DB->select('designer.designer AS designer_name, designer.url_structure AS d_url_structure, designer.size_chart');
 		$this->DB->select('tblcolor.color_name, tblcolor.color_code');
 		$this->DB->select('vendors.vendor_id, vendors.vendor_name, vendors.vendor_code');
-		$this->DB->select('tbl_stock.st_id, tbl_stock.custom_order, tbl_stock.image_url_path');
+		$this->DB->select('tbl_stock.st_id, tbl_stock.custom_order, tbl_stock.image_url_path, tbl_stock.options as stocks_options');
 		$this->DB->select('media_path, media_name, upload_version');
 		$this->DB->select('
 			tbl_stock.size_ss, tbl_stock.size_sm, tbl_stock.size_sl, tbl_stock.size_sxl,
@@ -698,6 +699,7 @@ class Product_details
 
 			// the options
 			$this->options = ($row->options && $row->options != '') ? json_decode($row->options , TRUE) : array();
+			$this->stocks_options = ($row->stocks_options && $row->stocks_options != '') ? json_decode($row->stocks_options , TRUE) : array();
 
 			return $this;
 		}

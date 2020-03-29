@@ -90,7 +90,7 @@ class Search extends Admin_Controller {
 		$this->data['search_string'] = $this->input->post('search_string');
 
 		// set data variables...
-		$this->data['file'] = 'orders';
+		$this->data['file'] = 'orders_new_orders';
 		$this->data['page_title'] = 'Order Logs';
 		$this->data['page_description'] = 'List of orders';
 

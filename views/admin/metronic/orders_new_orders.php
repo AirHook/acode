@@ -30,20 +30,17 @@
 
 								<h4>Filters</h4>
 
-								<input type="hidden" name="page" value="<?php echo @$page; ?>" />
-								<input type="hidden" name="status" value="<?php echo @$status; ?>" />
-
 								<div class="form-group <?php echo @$role == 'sales' ? 'hide' : ''; ?>">
                                     <label>By Listing</label>
-                                    <select class="bs-select form-control filter-options-field input-sm" name="page_param">
+                                    <select class="bs-select form-control filter-options-field filter_by_listing_select input-sm" name="page_param" <?php echo $search ? 'disabled' : ''; ?>>
                                         <option value="all">
 											All Orders
 										</option>
 										<?php if (@$this->webspace_details->slug != 'tempoparis')
 										{ ?>
-                                        <option value="wholesale" <?php echo strpos($this->uri->uri_string(), 'wholesale') !== FALSE ? 'selected="selected"' : ''; ?>>
+                                        <option value="ws" <?php echo strpos($this->uri->uri_string(), 'ws') !== FALSE ? 'selected="selected"' : ''; ?>>
 											Wholesale Orders</option>
-                                        <option value="consumer" <?php echo strpos($this->uri->uri_string(), 'retail') !== FALSE ? 'selected="selected"' : ''; ?>>
+                                        <option value="cs" <?php echo strpos($this->uri->uri_string(), 'cs') !== FALSE ? 'selected="selected"' : ''; ?>>
 											Retail Orders</option>
 											<?php
 										} ?>
@@ -55,7 +52,7 @@
 
 								<div class="form-group <?php echo @$role == 'sales' ? 'hide' : ''; ?>">
                                     <label>By Designer</label>
-									<select class="bs-select form-control filter-options-field filter_by_designer_select input-sm" name="des_slug" data-live-search="true" data-size="5" data-show-subtext="true">
+									<select class="bs-select form-control filter-options-field filter_by_designer_select input-sm" name="des_slug" data-live-search="true" data-size="5" data-show-subtext="true" <?php echo $search ? 'disabled' : ''; ?>>
 										<option value="all">
 											All Desginers
 										</option>
@@ -85,10 +82,10 @@
 
 								<div class="form-group">
 									<label>By Date Range<br />From Date</label>
-									<div class="input-group date date-picker margin-bottom-5" data-date-format="yyyy-mm-dd">
-										<input type="text" class="form-control input-sm" name="from_date" />
+									<div class="input-group date date-picker from_date margin-bottom-5" data-date-format="yyyy-mm-dd">
+										<input type="text" class="form-control date-date-picker input-sm" name="from_date" value="<?php echo @$from_date; ?>" <?php echo $search ? 'disabled' : ''; ?> />
 										<span class="input-group-btn">
-											<button class="btn btn-sm default" type="button">
+											<button class="btn btn-sm default" type="button" <?php echo $search ? 'disabled' : ''; ?>>
 												<i class="fa fa-calendar"></i>
 											</button>
 										</span>
@@ -96,21 +93,22 @@
 									<!-- /input-group -->
 
 									<label>To Date</label>
-									<div class="input-group date date-picker margin-bottom-5" data-date-format="yyyy-mm-dd">
-										<input type="text" class="form-control input-sm" name="to_date" />
+									<div class="input-group date date-picker to_date margin-bottom-5" data-date-format="yyyy-mm-dd">
+										<input type="text" class="form-control date-date-picker input-sm" name="to_date" value="<?php echo @$to_date; ?>" <?php echo $search ? 'disabled' : ''; ?> />
 										<span class="input-group-btn">
-											<button class="btn btn-sm default" type="button">
+											<button class="btn btn-sm default" type="button" <?php echo $search ? 'disabled' : ''; ?>>
 												<i class="fa fa-calendar"></i>
 											</button>
 										</span>
 									</div>
 									<!-- /input-group -->
 
-									<a href="<?php echo site_url('admin/orders/'.$status); ?>">
-										<cite class="">Reset Dates</cite>
+									<a href="<?php echo site_url($this->uri->uri_string()); ?>">
+										<cite class="">Remove Date Ranges</cite>
 									</a>
 								</div>
 
+								<!--
 								<div class="form-group hide">
                                     <label>
 										Filter By Status &nbsp;
@@ -151,6 +149,7 @@
 										<cite class="">Reset to All Orders</cite>
 									</a>
 								</label>
+								-->
 
 								<hr style="margin:5px 0 15px;" />
 
@@ -179,47 +178,6 @@
 
 							<div class="m-grid-col m-grid-col-md-10">
 
-								<?php if ($this->webspace_details->options['site_type'] == 'hub_site')
-								{ ?>
-
-								<div class="table-toolbar hide">
-
-									<div class="row">
-
-										<div class="col-lg-3 col-md-4">
-											<select class="bs-select form-control" id="filter_by_designer_select" name="des_slug" data-live-search="true" data-size="5" data-show-subtext="true">
-												<option class="option-placeholder" value="">Select Designer...</option>
-												<option value="all">All Orders</option>
-												<?php if ($this->webspace_details->options['site_type'] == 'hub_site') { ?>
-												<option value="<?php echo $this->webspace_details->slug; ?>" data-subtext="<em>Mixed Designers</em>" data-des_slug="<?php echo $this->webspace_details->slug; ?>" data-des_id="<?php echo $this->webspace_details->id; ?>" <?php echo $this->webspace_details->slug === @$des_slug ? 'selected="selected"' : ''; ?>>
-													<?php echo $this->webspace_details->name; ?>
-												</options>
-												<?php } ?>
-												<?php
-												if (@$designers)
-												{
-													foreach ($designers as $designer)
-													{ ?>
-
-												<option value="<?php echo $designer->url_structure; ?>" data-subtext="<em></em>" data-des_slug="<?php echo $designer->url_structure; ?>" data-des_id="<?php echo $designer->des_id; ?>" <?php echo $designer->url_structure === @$des_slug ? 'selected="selected"' : ''; ?>>
-													<?php echo ucwords(strtolower($designer->designer)); ?>
-												</option>
-
-														<?php
-													}
-												} ?>
-											</select>
-										</div>
-										<button class="apply_filer_by_designer btn dark hidden-sm hidden-xs" data-page_param="<?php echo $this->uri->segment(3); ?>"> Filter </button>
-
-									</div>
-									<button class="apply_filer_by_designer btn dark btn-block margin-top-10 hidden-lg hidden-md" data-page_param="<?php echo $this->uri->segment(3); ?>"> Apply Filter By Designer </button>
-
-								</div>
-
-									<?php
-								} ?>
-
 								<?php if (@$search) { ?>
 		                        <h1><small><em>Search results for:</em></small> "<?php echo $search_string; ?>"</h1>
 		                        <br />
@@ -234,6 +192,9 @@
 			                            'id'=>'form-orders_bulk_actions'
 			                        )
 			                    ); ?>
+
+								<input type="hidden" name="page" value="<?php echo @$page; ?>" />
+								<input type="hidden" name="status" value="<?php echo @$status; ?>" />
 
 			                    <?php
 			                    /***********
@@ -275,6 +236,7 @@
 
 			                    <div class="table-toolbar">
 
+									<!--
 									<style>
 			                            .nav > li > a {
 			                                padding: 8px 15px;
@@ -311,6 +273,7 @@
 			                        </ul>
 
 			                        <br />
+									-->
 
 			                        <div class="row">
 
@@ -318,10 +281,15 @@
 											<select class="bs-select form-control" id="bulk_actions_select" name="bulk_action" disabled>
 												<option value="" selected="selected">Bulk Actions</option>
 												<option class="hide" value="ho">Set as On Hold</option>
+												<?php if ($status == 'new_orders') { ?>
+												<option class="" value="ac">Acknowledge Orders</option>
 												<option class="" value="ca">Cancel Orders</option>
+												<?php } ?>
+												<?php if ($status == 'shipment_pending') { ?>
 												<option class="" value="co">Set as Complete</option>
-												<option class="" value="re">Set as Returned</option>
-												<?php if ($this->webspace_details->options['site_type'] == 'hub_site') { ?>
+												<option class="" value="ca">Cancel Orders</option>
+												<?php } ?>
+												<?php if ($this->webspace_details->options['site_type'] == 'hub_site_') { ?>
 												<option class="" value="del">Permanently Delete</option>
 												<?php } ?>
 											</select>
@@ -497,35 +465,96 @@
 			                                    <span class="label label-sm label-<?php echo $label; ?> small"> <?php echo $text; ?> </span>
 			                                </td>
 											<!-- Actions -->
-			                                <td class="dropdown-wrap dropdown-fix">
+			                                <td class="dropdown-wrap dropdown-fix" data-status="<?php echo $order->status; ?>">
 
 												<!-- Edit -->
 			                                    <a href="<?php echo $edit_link; ?>" class="tooltips" data-original-title="View Details">
 			                                        <i class="fa fa-eye font-dark"></i>
 			                                    </a>
-			                                    <?php if ($order->status == '0') { ?>
-			                                    <!-- Complete -->
-			                                    <a data-toggle="modal" href="#complete-<?php echo $order->order_id; ?>" class="tooltips" data-original-title="Set as Complete">
+
+			                                    <?php if ($order->status == '0') { // for new orders ?>
+			                                    <!-- Acknowledge -->
+			                                    <a data-toggle="modal" href="#acknowledge-<?php echo $order->order_id; ?>" class="tooltips" data-original-title="Acknowledge Order">
 			                                        <i class="fa fa-check font-dark"></i>
 			                                    </a>
+												<?php } ?>
+
+												<?php if ($order->status == '5' OR $order->status == '4' OR $order->status == '6') { ?>
+												<!-- Complete -->
+			                                    <a data-toggle="modal" href="#complete-<?php echo $order->order_id; ?>" class="tooltips" data-original-title="Complete Order">
+			                                        <i class="fa fa-check font-dark"></i>
+			                                    </a>
+												<?php } ?>
+
+												<?php if ($order->status == '0' OR $order->status == '5') { ?>
 												<!-- Cancel -->
 			                                    <a data-toggle="modal" href="#cancel-<?php echo $order->order_id; ?>" class="tooltips" data-original-title="Cancel Order">
 			                                        <i class="fa fa-ban font-dark"></i>
 			                                    </a>
 												<?php } ?>
+
 												<?php if ($order->status == '1') { ?>
-												<!-- Return -->
-			                                    <a data-toggle="modal" href="#return-<?php echo $order->order_id; ?>" class="tooltips" data-original-title="Returned Order">
+												<!-- Return / Refund -->
+			                                    <a data-toggle="modal" href="#return-<?php echo $order->order_id; ?>" class="tooltips" data-original-title="Refund Order">
 			                                        <i class="fa fa-undo font-dark"></i>
 			                                    </a>
+												<!-- Store Credit -->
+			                                    <a data-toggle="modal" href="#store_credit-<?php echo $order->order_id; ?>" class="tooltips" data-original-title="For Store Credit">
+			                                        <i class="fa fa-credit-card font-dark"></i>
+			                                    </a>
 												<?php } ?>
-												<?php if ($this->webspace_details->options['site_type'] == 'hub_site') { ?>
+
+												<?php if ($this->webspace_details->options['site_type'] == 'hub_site_' OR $order->status == '3') { ?>
 			                                    <!-- Delete -->
 			                                    <a data-toggle="modal" href="#delete-<?php echo $order->order_id; ?>" class="tooltips" data-original-title="Delete">
 			                                        <i class="fa fa-trash font-dark"></i>
 			                                    </a>
 												<?php } ?>
 
+												<!-- STORE CREDIT -->
+												<div class="modal fade bs-modal-sm" id="store_credit-<?php echo $order->order_id?>" tabindex="-1" role="dialog" aria-hidden="true">
+													<div class="modal-dialog modal-sm">
+														<div class="modal-content">
+															<div class="modal-header">
+																<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+																<h4 class="modal-title">Update Order Info</h4>
+															</div>
+															<div class="modal-body"> Acknowledge Order? </div>
+															<div class="modal-footer">
+																<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
+																<a href="<?php echo site_url('admin/orders/status/index/'.$order->order_id.'/store_credit/'.$status); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+																	<span class="ladda-label">Confirm?</span>
+																	<span class="ladda-spinner"></span>
+																</a>
+															</div>
+														</div>
+														<!-- /.modal-content -->
+													</div>
+													<!-- /.modal-dialog -->
+												</div>
+												<!-- /.modal -->
+												<!-- ACKNOWLEDEGE -->
+												<div class="modal fade bs-modal-sm" id="acknowledge-<?php echo $order->order_id?>" tabindex="-1" role="dialog" aria-hidden="true">
+													<div class="modal-dialog modal-sm">
+														<div class="modal-content">
+															<div class="modal-header">
+																<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+																<h4 class="modal-title">Update Order Info</h4>
+															</div>
+															<div class="modal-body"> Acknowledge Order? </div>
+															<div class="modal-footer">
+																<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
+																<a href="<?php echo site_url('admin/orders/status/index/'.$order->order_id.'/acknowledge/'.$status); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+																	<span class="ladda-label">Confirm?</span>
+																	<span class="ladda-spinner"></span>
+																</a>
+															</div>
+														</div>
+														<!-- /.modal-content -->
+													</div>
+													<!-- /.modal-dialog -->
+												</div>
+												<!-- /.modal -->
 												<!-- PENDING -->
 												<div class="modal fade bs-modal-sm" id="pending-<?php echo $order->order_id?>" tabindex="-1" role="dialog" aria-hidden="true">
 													<div class="modal-dialog modal-sm">
@@ -537,7 +566,7 @@
 															<div class="modal-body"> Set order as PENDING? </div>
 															<div class="modal-footer">
 																<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-																<a href="<?php echo site_url($this->config->slash_item('admin_folder').'orders/status/index/'.$order->order_id.'/pending'); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+																<a href="<?php echo site_url($this->config->slash_item('admin_folder').'orders/status/index/'.$order->order_id.'/pending/'.$status); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
 																	<span class="ladda-label">Confirm?</span>
 																	<span class="ladda-spinner"></span>
 																</a>
@@ -559,7 +588,7 @@
 															<div class="modal-body"> Set order as ON HOLD? </div>
 															<div class="modal-footer">
 																<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-																<a href="<?php echo site_url($this->config->slash_item('admin_folder').'orders/status/index/'.$order->order_id.'/on_hold'); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+																<a href="<?php echo site_url($this->config->slash_item('admin_folder').'orders/status/index/'.$order->order_id.'/on_hold/'.$status); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
 																	<span class="ladda-label">Confirm?</span>
 																	<span class="ladda-spinner"></span>
 																</a>
@@ -581,7 +610,7 @@
 															<div class="modal-body"> Cancel Order? </div>
 															<div class="modal-footer">
 																<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-																<a href="<?php echo site_url($this->config->slash_item('admin_folder').'orders/status/index/'.$order->order_id.'/cancel'); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+																<a href="<?php echo site_url($this->config->slash_item('admin_folder').'orders/status/index/'.$order->order_id.'/cancel/'.$status); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
 																	<span class="ladda-label">Confirm?</span>
 																	<span class="ladda-spinner"></span>
 																</a>
@@ -600,10 +629,10 @@
 																<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
 																<h4 class="modal-title">Update Order Info</h4>
 															</div>
-															<div class="modal-body"> Set order as COMPLETE? </div>
+															<div class="modal-body"> Set order as COMPLETE and SHIPPED? </div>
 															<div class="modal-footer">
 																<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-																<a href="<?php echo site_url($this->config->slash_item('admin_folder').'orders/status/index/'.$order->order_id.'/complete'); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+																<a href="<?php echo site_url($this->config->slash_item('admin_folder').'orders/status/index/'.$order->order_id.'/complete/'.$status); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
 																	<span class="ladda-label">Confirm?</span>
 																	<span class="ladda-spinner"></span>
 																</a>
@@ -625,7 +654,7 @@
 															<div class="modal-body"> Set order as RETURNED? </div>
 															<div class="modal-footer">
 																<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-																<a href="<?php echo site_url($this->config->slash_item('admin_folder').'orders/status/index/'.$order->order_id.'/return'); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+																<a href="<?php echo site_url($this->config->slash_item('admin_folder').'orders/status/index/'.$order->order_id.'/return/'.$status); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
 																	<span class="ladda-label">Confirm?</span>
 																	<span class="ladda-spinner"></span>
 																</a>
@@ -757,6 +786,31 @@
 								<div class="modal-body">
 									Set multiple items as CANCELLED? <br />
 									<cite class="small">NOTE: only Pending orders will be cancelled.</cite>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
+									<button onclick="$('#form-orders_bulk_actions').submit();" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+										<span class="ladda-label">Confirm?</span>
+										<span class="ladda-spinner"></span>
+									</button>
+								</div>
+							</div>
+							<!-- /.modal-content -->
+						</div>
+						<!-- /.modal-dialog -->
+					</div>
+					<!-- /.modal -->
+
+					<!-- BULK ACKNOLEDGE -->
+					<div class="modal fade bs-modal-sm" id="confirm_bulk_actions-ac" tabindex="-1" role="dialog" aria-hidden="true">
+						<div class="modal-dialog modal-sm">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+									<h4 class="modal-title">Acknowledge!</h4>
+								</div>
+								<div class="modal-body">
+									Acknowledge multiple items and set as SHIPMENT PENDING?
 								</div>
 								<div class="modal-footer">
 									<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>

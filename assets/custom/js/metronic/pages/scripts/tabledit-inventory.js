@@ -33,8 +33,13 @@ var Tabledit = function () {
                     }
                 });
             },
+            onSuccess: function(data){
+                //alert(JSON.stringify(data));
+            },
             onFail: function(jqXHR, textStatus, errorThrown) {
                 alert(textStatus+'\n'+errorThrown);
+                //alert('Ooops... Something went wrong. Please contact admin.');
+                //location.reload();
             }
         });
 

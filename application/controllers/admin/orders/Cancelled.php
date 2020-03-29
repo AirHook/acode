@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Shipment_pending extends Admin_Controller {
+class Cancelled extends Admin_Controller {
 
 	/**
 	 * Constructor
@@ -82,7 +82,7 @@ class Shipment_pending extends Admin_Controller {
 			else $where['tbl_order_log.c'] = $list;
 		}
 		// 0-new,1-complete,2-onhold,3-canclled,4-returned/refunded,5-shipment_pending,6-store_credit
-		$where['status'] = '5';
+		$where['status'] = '3';
 		// check for date ranges in uri query strings
 		$this->data['from_date'] = @$_GET['from_date'] ?: '';
 		$this->data['to_date'] = @$_GET['to_date'] ?: '';
@@ -105,7 +105,7 @@ class Shipment_pending extends Admin_Controller {
 
 		// other data
 		$this->data['list'] = $list;
-		$this->data['status'] = 'shipment_pending';
+		$this->data['status'] = 'cancelled';
 
 		// enable pagination
 		$this->_set_pagination($this->data['count_all'], $this->data['limit'], $list, $des_slug);
@@ -116,7 +116,7 @@ class Shipment_pending extends Admin_Controller {
 
 		// set data variables...
 		$this->data['file'] = 'orders_new_orders';
-		$this->data['page_title'] = 'Shipmnet Pending';
+		$this->data['page_title'] = 'Cancelled';
 		$this->data['page_description'] = 'Order Logs';
 
 		// load views...
@@ -136,11 +136,11 @@ class Shipment_pending extends Admin_Controller {
 
 		if ($des_slug && !is_numeric($des_slug))
 		{
-			$ref_uri = 'admin/orders/shipment_pending/index/'.$list.'/'.$des_slug;
+			$ref_uri = 'admin/orders/cancelled/index/'.$list.'/'.$des_slug;
 		}
-		else $ref_uri = $list == 'all' ? 'admin/orders/shipment_pending' : 'admin/orders/shipment_pending/index/'.$list;
+		else $ref_uri = $list == 'all' ? 'admin/orders/cancelled' : 'admin/orders/cancelled/index/'.$list;
 
-		$config['base_url'] = base_url().'admin/orders/shipment_pending/index/'.($list ? $list.'/' : '').(($des_slug && !is_numeric($des_slug)) ? $des_slug.'/' : '');
+		$config['base_url'] = base_url().'admin/orders/cancelled/index/'.($list ? $list.'/' : '').(($des_slug && !is_numeric($des_slug)) ? $des_slug.'/' : '');
 		$config['total_rows'] = $count_all;
 		$config['per_page'] = $per_page;
 		$config['num_links'] = 3;

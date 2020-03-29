@@ -72,7 +72,29 @@ class New_orders extends Admin_Controller {
 				}
 			}
 		}
-		$where['status'] = '0'; // new orders
+		if ($list != 'all')
+		{
+			if ($list == 'cs')
+			{
+				$where['tbl_order_log.c'] = $list;
+				$where['OR tbl_order_log.c'] = 'guest';
+			}
+			else $where['tbl_order_log.c'] = $list;
+		}
+		// 0-new,1-complete,2-onhold,3-canclled,4-returned/refunded,5-shipment_pending,6-store_credit
+		$where['status'] = '0';
+		// check for date ranges in uri query strings
+		$this->data['from_date'] = @$_GET['from_date'] ?: '';
+		$this->data['to_date'] = @$_GET['to_date'] ?: '';
+		if ($this->data['to_date'] && $this->data['from_date'])
+		{
+			// convert dates to timestamp
+			$from_date = strtotime($this->data['from_date']);
+			$to_date = strtotime($this->data['to_date']);
+			$where['tbl_order_log.order_date >='] = $from_date;
+			$where['tbl_order_log.order_date <='] = $to_date;
+		}
+		// get the orders
 		$this->data['orders'] = $this->orders_list->select(
 			$where,
 			array(), // order_by
@@ -86,16 +108,16 @@ class New_orders extends Admin_Controller {
 		$this->data['status'] = 'new_orders';
 
 		// enable pagination
-		$this->_set_pagination($this->data['count_all'], $this->data['limit'], $des_slug);
+		$this->_set_pagination($this->data['count_all'], $this->data['limit'], $list, $des_slug);
 
 		// need to show loading at start
 		$this->data['show_loading'] = FALSE;
 		$this->data['search'] = FALSE;
 
 		// set data variables...
-		$this->data['file'] = 'orders';
-		$this->data['page_title'] = 'Order Logs';
-		$this->data['page_description'] = 'List of orders';
+		$this->data['file'] = 'orders_new_orders';
+		$this->data['page_title'] = 'New Orders';
+		$this->data['page_description'] = 'Order Logs';
 
 		// load views...
 		$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template/template', $this->data);
@@ -108,11 +130,17 @@ class New_orders extends Admin_Controller {
 	 *
 	 * @return	void
 	 */
-	private function _set_pagination($count_all = '', $per_page = '', $param)
+	private function _set_pagination($count_all = '', $per_page = '', $list, $des_slug)
 	{
 		$this->load->library('pagination');
 
-		$config['base_url'] = base_url().'admin/orders/all/index/'.($param ? $param.'/' : '');
+		if ($des_slug && !is_numeric($des_slug))
+		{
+			$ref_uri = 'admin/orders/new_orders/index/'.$list.'/'.$des_slug;
+		}
+		else $ref_uri = $list == 'all' ? 'admin/orders/new_orders' : 'admin/orders/new_orders/index/'.$list;
+
+		$config['base_url'] = base_url().'admin/orders/new_orders/index/'.($list ? $list.'/' : '').(($des_slug && !is_numeric($des_slug)) ? $des_slug.'/' : '');
 		$config['total_rows'] = $count_all;
 		$config['per_page'] = $per_page;
 		$config['num_links'] = 3;
@@ -124,7 +152,7 @@ class New_orders extends Admin_Controller {
 		$config['cur_tag_open'] = '<li class="active"><a href="javascript:;">';
 		$config['cur_tag_close'] = '</a></li>';
 		$config['first_link'] = '<i class="fa fa-angle-double-left"></i>';
-		$config['first_url'] = site_url('admin/orders/all');
+		$config['first_url'] = site_url($ref_uri);
 		$config['first_tag_open'] = '<li>';
 		$config['first_tag_close'] = '</li>';
 		$config['last_link'] = '<i class="fa fa-angle-double-right"></i>';
@@ -227,7 +255,7 @@ class New_orders extends Admin_Controller {
 			';
 			// handle datatable
 			$this->data['page_level_scripts'].= '
-				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/table-datatables-orders.js" type="text/javascript"></script>
+				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/components-admin_orders.js" type="text/javascript"></script>
 			';
 	}
 
