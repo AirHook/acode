@@ -112,7 +112,7 @@
 								<a href="<?php echo site_url('admin/orders/view_packing_list/index/'.$this->order_details->order_id); ?>" class="btn grey-gallery btn-block btn-sm" target="_blank">
 									View/Print Packing List
 								</a>
-								<a href="javascript:;" class="btn grey-gallery btn-block btn-sm">
+								<a href="<?php echo site_url('admin/barcodes/print/co/index/'.$this->order_details->order_id); ?>" class="btn grey-gallery btn-block btn-sm" target="_blank">
 									View/Print Barcodes
 								</a>
 								<a href="javascript:;" class="btn grey-gallery btn-block btn-sm btn-resend_email_confirmation" data-user_id="<?php echo $this->order_details->user_id; ?>" data-order_id="<?php echo $this->order_details->order_id; ?>" data-user_cat="<?php echo $this->order_details->c; ?>">
@@ -359,12 +359,27 @@
 															{
 																$i = 1;
 																foreach ($this->order_details->items() as $item)
-																{ ?>
+																{
+																	// get product details
+	                                                                $exp = explode('_', $item->prod_sku);
+	                                                                $product = $this->product_details->initialize(
+	                                                                    array(
+	                                                                        'tbl_product.prod_no' => $exp[0],
+	                                                                        'color_code' => $exp[1]
+	                                                                    )
+	                                                                );
+
+																	// get size label
+																	$size = $item->size;
+																	$size_names = $this->size_names->get_size_names($product->size_mode);
+																	$size_label = array_search($size, $size_names);
+																	?>
 
 															<tr class="odd gradeX" onmouseover="$(this).find('.hidden_first_edit_link').show();" onmouseout="$(this).find('.hidden_first_edit_link').hide();">
 																<td class="hidden-xs hidden-sm text-center">
 																	<?php echo $i; ?>
 																</td>
+																<!-- Images -->
 																<td class="text-center"> <!-- Images -->
 																	<div class="thumb-tiles">
 																		<div class="thumb-tile image bg-blue-hoki">
@@ -377,13 +392,50 @@
 																		</div>
 																	</div>
 																</td>
-																<td> <?php echo $item->prod_name; ?> </td>
+																<!-- Item Name -->
+																<td>
+																	<?php echo $item->prod_name; ?>
+																	<br />
+																	<?php
+																	if (@$product->st_id)
+																	{
+																		$upcfg['prod_no'] = $product->prod_no;
+																		$upcfg['st_id'] = $product->st_id;
+																		$upcfg['size_label'] = $size_label;
+																		$this->upc_barcodes->initialize($upcfg);
+																		//echo $this->upc_barcodes->max_st_id;
+																		//echo $this->upc_barcodes->generate();
+																		?>
+																	<div style="display:inline-block;text-align:center;">
+																		<svg style="float:right;"
+																			class="barcode"
+																			jsbarcode-format="upc"
+																			jsbarcode-value="<?php echo $this->upc_barcodes->generate(); ?>"
+																			jsbarcode-textmargin="0"
+																			jsbarcode-width="1"
+																			jsbarcode-height="60"
+																			jsbarcode-fontoptions="bold">
+																		</svg><br />
+																		<a class="small" href="<?php echo site_url('admin/barcodes/print/single/index/'.$item->prod_sku.'/'.$size_label.'/'.$item->qty); ?>" target="_blank">
+									                                        <i class="fa fa-print"></i> Print Barcode
+									                                    </a>
+																	</div>
+																		<?php
+																	} ?>
+																</td>
+																<!-- Prdo No -->
 																<td> <?php echo $item->prod_no; ?> </td>
+																<!-- Designer -->
 																<td> <?php echo $item->designer; ?> </td>
+																<!-- Size -->
 																<td> <?php echo $item->size; ?> </td>
+																<!-- Color -->
 																<td> <?php echo $item->color; ?> </td>
+																<!-- Qty -->
 																<td> <?php echo $item->qty; ?> </td>
+																<!-- Unit Price -->
 																<td> <?php echo '$'.number_format($item->unit_price, 2); ?> </td>
+																<!-- Subtotal -->
 																<td> <?php echo '$'.number_format($item->subtotal, 2); ?> </td>
 															</tr>
 

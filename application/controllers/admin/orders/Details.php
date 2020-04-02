@@ -41,6 +41,8 @@ class Details extends Admin_Controller {
 		// load pertinent library/model/helpers
 		$this->load->library('products/product_details');
 		$this->load->library('orders/order_details');
+		$this->load->library('products/size_names');
+		$this->load->library('barcodes/upc_barcodes');
 
 		// initialize...
 		$this->data['order_details'] = $this->order_details->initialize(array('tbl_order_log.order_log_id'=>$id));
