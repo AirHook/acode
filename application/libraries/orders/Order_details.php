@@ -38,6 +38,13 @@ class Order_details
 	public $date_timestamp = ''; // alias as timestamp
 
 	/**
+	 * Status Text based on Status value
+	 *
+	 * @var	string/array
+	 */
+	public $status_text = ''; // 0-new,1-complete,2-onhold,3-canclled,4-returned/refunded,5-shipment_pending,6-store_credit
+
+	/**
 	 * Order Summary
 	 *
 	 * @var	string/array
@@ -54,6 +61,7 @@ class Order_details
 	 */
 	public $designers = '';
 	public $designer_group = '';
+	public $designer_slug = '';
 	public $agree_policy = '';
 
 	/**
@@ -164,7 +172,7 @@ class Order_details
 		$this->DB->select('COUNT(qty) AS number_of_orders');
 		$this->DB->select('SUM(qty) AS order_qty');
 		$this->DB->select('SUM(subtotal) AS order_amount');
-		$this->DB->select('GROUP_CONCAT(DISTINCT CONCAT(designer)) AS designers');
+		$this->DB->select('GROUP_CONCAT(DISTINCT CONCAT(tbl_order_log_details.designer)) AS designers');
 		$this->DB->select('tbl_order_log.order_log_id AS order_id');
 		$this->DB->select('tbl_order_log_details.*');
 		$this->DB->select('
@@ -177,9 +185,33 @@ class Order_details
 				ELSE "Mixed Designers"
 			END) AS designer_group
 		');
+		$this->DB->select('
+			(CASE
+				WHEN
+					(SELECT COUNT(DISTINCT tbl_order_log_details.designer)
+					FROM tbl_order_log_details
+					WHERE tbl_order_log_details.order_log_id = tbl_order_log.order_log_id) = "1"
+					THEN designer.url_structure
+				ELSE "'.$this->CI->webspace_details->slug.'"
+			END) AS designer_slug
+		');
+		// 0-new,1-complete,2-onhold,3-canclled,4-returned/refunded,5-shipment_pending,6-store_credit
+		$this->DB->select('
+			(CASE
+				WHEN status = "0" THEN "new_orders"
+				WHEN status = "1" THEN "shipped"
+				WHEN status = "2" THEN "on_hold"
+				WHEN status = "3" THEN "cancelled"
+				WHEN status = "4" THEN "refunded"
+				WHEN status = "5" THEN "shipment_pending"
+				WHEN status = "6" THEN "store_credit"
+				ELSE "new_orders"
+			END) AS status_text
+		');
 
 		// set joins
 		$this->DB->join('tbl_order_log_details', 'tbl_order_log_details.order_log_id = tbl_order_log.order_log_id', 'left');
+		$this->DB->join('designer', 'designer.designer = tbl_order_log_details.designer', 'left');
 
 		// group by
 		$this->DB->group_by('tbl_order_log.order_log_id');
@@ -209,6 +241,7 @@ class Order_details
 			$this->date_timestamp = $row->order_date;
 
 			$this->status = $row->status;
+			$this->status_text = $row->status_text;
 			$this->remarks = $row->remarks; // 1 - return for exchange, 2 - return for store credit, 3 - return for refund, 4 - return for other reasons (comments)
 			//$this->comments = $row->comments;
 
@@ -239,6 +272,7 @@ class Order_details
 			// get items
 			$this->designers = $row->designer_group;
 			$this->designer_group = $row->designer_group;
+			$this->designer_slug = $row->designer_slug;
 			$qry2 = $this->DB->get_where('tbl_order_log_details', array('order_log_id'=>$row->order_id));
 			$this->order_items = $qry2->result();
 

@@ -113,18 +113,22 @@ class Bulk_actions extends Admin_Controller {
 			// this iteration is for updating stocks
 			// we need to separate from above iteration
 			// to avoid db cross processing conflict
-			foreach ($this->input->post('checkbox') as $key => $id)
+			// setting a time to start this where previous orders will not affect stocks
+			if (time() > strtotime('2020-02-28'))
 			{
-				if ($this->input->post('bulk_action') == 'ac') $this->_send_order_acknowledgement($id);
-				if ($this->input->post('bulk_action') == 'co') $this->_remove_stocks($id);
-				if (
-					$this->input->post('bulk_action') == 'ca'
-					OR $this->input->post('bulk_action') == 're'
-					OR $this->input->post('bulk_action') == 'cr'
-				)
+				foreach ($this->input->post('checkbox') as $key => $id)
 				{
-					// return stocks
-					$this->_return_stocks($id, $this->input->post('bulk_action'));
+					if ($this->input->post('bulk_action') == 'ac') $this->_send_order_acknowledgement($id);
+					if ($this->input->post('bulk_action') == 'co') $this->_remove_stocks($id);
+					if (
+						$this->input->post('bulk_action') == 'ca'
+						OR $this->input->post('bulk_action') == 're'
+						OR $this->input->post('bulk_action') == 'cr'
+					)
+					{
+						// return stocks
+						$this->_return_stocks($id, $this->input->post('bulk_action'));
+					}
 				}
 			}
 

@@ -145,6 +145,8 @@ class Update_stocks {
 		$size = $this->size;
 		$size_names = $this->CI->size_names->get_size_names($product->size_mode);
 		$size_label = array_search($size, $size_names);
+		$exp = explode('_', $size_label);
+		$size_suffix = $exp[1];
 
 		$qty = $this->qty;
 
@@ -156,10 +158,10 @@ class Update_stocks {
 
 		// get current stock and update accordingly
 		$availabe_stock = $product->$size_label;
-		$final_available_stock = $availabe_stock - $qty;
+		$final_available_stock = ($availabe_stock - $qty) < 0 ? 0 : $availabe_stock - $qty;
 
 		// get on order stock and update accordingly
-		$onorder_label = 'onorder_'.$size;
+		$onorder_label = 'onorder_'.$size_suffix;
 		$onorder_stock = $product->$onorder_label;
 		$final_onorder_stock = $onorder_stock + $qty;
 
@@ -217,6 +219,8 @@ class Update_stocks {
 		$size = $this->size;
 		$size_names = $this->CI->size_names->get_size_names($product->size_mode);
 		$size_label = array_search($size, $size_names);
+		$exp = explode('_', $size_label);
+		$size_suffix = $exp[1];
 
 		$qty = $this->qty;
 
@@ -228,17 +232,30 @@ class Update_stocks {
 		if (!empty($stocks['onorder'])) $stocks_options['onorder'] = $stocks['onorder'];
 		else unset($stocks_options['onorder']);
 
-		// get on order stock
-		$onorder_label = 'onorder_'.$size;
+		// remove from onorder stock
+		$onorder_label = 'onorder_'.$size_suffix;
 		$onorder_stock = $product->$onorder_label;
-		$final_onorder_stock = $onorder_stock - $qty;
+		$final_onorder_stock = ($onorder_stock - $qty) < 0 ? 0 : $onorder_stock - $qty;
 
-		// get physical stock
-		$physical_label = 'physical_'.$size;
+		// remove from physical stock
+		$physical_label = 'physical_'.$size_suffix;
 		$physical_stock = $product->$physical_label;
-		$final_physical_stock = $physical_stock - $qty;
+		$final_physical_stock = ($physical_stock - $qty) < 0 ? 0 : $physical_stock - $qty;
 
-		// remove onorder note of tbl_stock options
+		// check if necessary changes are required for final availabe stock
+		// set or remove flag - stock => insufficient where necessary
+		if (($final_physical_stock - $final_onorder_stock) <= 0)
+		{
+			$final_available_stock = 0;
+			if (isset($stocks_options['onorder'])) $stocks_options['stock'] = 'insufficient';
+		}
+		else
+		{
+			$final_available_stock = $final_physical_stock - $final_onorder_stock;
+			// all onorders are accounted by $stocks_options['onorder']
+			// since, this condition is positive already, remove any flag stock=>insufficient
+			if (isset($stocks_options['stock'])) unset($stocks_options['stock']);
+		}
 
 		// update records
 		$this->DB->where('st_id', $product->st_id);
@@ -290,36 +307,59 @@ class Update_stocks {
 		$size = $this->size;
 		$size_names = $this->CI->size_names->get_size_names($product->size_mode);
 		$size_label = array_search($size, $size_names);
+		$exp = explode('_', $size_label);
+		$size_suffix = $exp[1];
 
 		$qty = $this->qty;
 
-		// remove the order id accordingly
+		// remove the order id on cancelled orders
+		$is_for_cancel = FALSE; // false means item is return (refunded or store_credit)
 		$stocks_options = $product->stocks_options;
 		$stocks['onorder'] = @$stocks_options['onorder'] ?: array();
 		$okey = array_search($this->order_id, $stocks['onorder']);
-		if ($okey !== FALSE) unset($stocks['onorder'][$okey]);
+		if ($okey !== FALSE)
+		{
+			// since order_id is still noted as onorder meaning not yet shipped
+			// thus, order is being cancelled
+			unset($stocks['onorder'][$okey]);
+			$is_for_cancel = TRUE;
+		}
 		if (!empty($stocks['onorder'])) $stocks_options['onorder'] = $stocks['onorder'];
 		else unset($stocks_options['onorder']);
 
 		// get physical stock and onorder stock
-		$physical_label = 'physical_'.$size;
+		$physical_label = 'physical_'.$size_suffix;
 		$physical_stock = $product->$physical_label;
-		$onorder_label = 'onorder_'.$size;
+		$onorder_label = 'onorder_'.$size_suffix;
 		$onorder_stock = $product->$onorder_label;
 
 		// set final onorder stock
-		$final_onorder_stock = ($onorder_stock - $qty) <= 0 ? 0 : $onorder_stock - $qty;
+		// set final physical stock
+		if ($is_for_cancel === TRUE)
+		{
+			// cancel - remove from onorder
+			$final_onorder_stock = ($onorder_stock - $qty) <= 0 ? 0 : $onorder_stock - $qty;
+			$final_physical_stock = $physical_stock;
+		}
+		else
+		{
+			// return - add to physical
+			$final_onorder_stock = $onorder_stock;
+			$final_physical_stock = $physical_stock + $qty;
+		}
 
 		// set final availabe stock
 		// set or remove flag - stock => insufficient
-		if (($physical_stock - $final_onorder_stock) <= 0)
+		if (($final_physical_stock - $final_onorder_stock) <= 0)
 		{
 			$final_available_stock = 0;
 			$stocks_options['stock'] = 'insufficient';
 		}
 		else
 		{
-			$final_available_stock = $physical_stock - $final_onorder_stock;
+			$final_available_stock = $final_physical_stock - $final_onorder_stock;
+			// all onorders are accounted by $stocks_options['onorder']
+			// since, this condition is positive already, remove any flag stock=>insufficient
 			if (isset($stocks_options['stock'])) unset($stocks_options['stock']);
 		}
 
@@ -336,6 +376,8 @@ class Update_stocks {
 		);
 		// onorder stocks
 		$this->DB->update('tbl_stock_onorder', array($size_label => $final_onorder_stock));
+		// physical stocks
+		$this->DB->update('tbl_stock_physical', array($size_label => $final_physical_stock));
 
 		return TRUE;
 	}

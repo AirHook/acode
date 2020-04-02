@@ -224,6 +224,19 @@ var TableDatatablesManaged = function () {
         window.location.href = url;
 	});
 
+    // order details sidebar filter
+    $('.filter-options-field-details').change(function(){
+        // set and get values
+        var status = $('[name="status"]:checked').val();
+        var order_id = $('[name="order_id"]').val();
+        var referrer = 'details';
+        // set url params - id, status, referrer
+        var url = base_url + "admin/orders/status/index/" + order_id + "/" + status + "/" + referrer + ".html";
+        // redirect page
+        $('#loading').modal('show');
+        window.location.href = url;
+	});
+
     // resend order email confirmation
     $('.btn-resend_email_confirmation').on('click', function(){
         // show loading modal

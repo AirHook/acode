@@ -391,7 +391,6 @@ class Submit extends Frontend_Controller
 			$this->DB->insert('tbl_order_log_details', $log_detail_data);
 
 			// process inventory by deducting from available and putting to onorder unless preorder
-			// once order is complete, deduct from onorder and physical
 			// items needed are prod_no, color_code, size, qty
 			if ($log_detail_data['custom_order'] != '1')
 			{

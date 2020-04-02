@@ -75,23 +75,27 @@ class Status extends Admin_Controller {
 		$DB->update('tbl_order_log');
 
 		// process stocks, etc...
-		switch ($status)
+		// setting a time to start this where previous orders will not affect stocks
+		if (time() > strtotime('2020-02-28'))
 		{
-			case 'cancel':
-			case 'return':
-			case 'refunded':
-			case 'store_credit':
-				// return stocks
-				$this->_return_stocks($id, $status);
-			break;
-			case 'acknowledge':
-				// send order acknowledgement email
-				$this->_send_order_acknowledgement($id);
-			break;
-			case 'complete':
-				// process inventory count
-				$this->_remove_stocks($id);
-			break;
+			switch ($status)
+			{
+				case 'cancel':
+				case 'return':
+				case 'refunded':
+				case 'store_credit':
+					// return stocks
+					$this->_return_stocks($id, $status);
+				break;
+				case 'acknowledge':
+					// send order acknowledgement email
+					$this->_send_order_acknowledgement($id);
+				break;
+				case 'complete':
+					// process inventory count
+					$this->_remove_stocks($id);
+				break;
+			}
 		}
 
 		// set flash data
@@ -100,7 +104,11 @@ class Status extends Admin_Controller {
 		// redirect user
 		if ($referrer)
 		{
-			redirect('admin/orders/'.$referrer, 'location');
+			if ($referrer == 'details')
+			{
+				redirect('admin/orders/'.$referrer.'/index/'.$id, 'location');
+			}
+			else redirect('admin/orders/'.$referrer, 'location');
 		}
 		else redirect('admin/orders/new_orders', 'location');
 	}

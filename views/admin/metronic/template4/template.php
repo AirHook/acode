@@ -68,12 +68,6 @@
                         <!-- BEGIN PAGE TOOLBAR -->
                         <div class="page-toolbar ">
                             <!-- BEGIN ACTION BUTTONS -->
-                            <?php if ($file == 'orders_details')
-                            { ?>
-                            <a class="btn btn-secondary-outline" href="<?php echo site_url('admin/orders'); ?>">
-                                <i class="fa fa-reply"></i> Back to Order logs</a>
-                                <?php
-                            } ?>
                             <!-- END ACTION BUTTONS -->
                         </div>
                         <!-- END PAGE TOOLBAR -->

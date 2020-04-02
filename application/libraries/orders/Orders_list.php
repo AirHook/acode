@@ -160,6 +160,19 @@ class Orders_list
 				ELSE "Mixed Designers"
 			END) AS designer_group
 		');
+		// 0-new,1-complete,2-onhold,3-canclled,4-returned/refunded,5-shipment_pending,6-store_credit
+		$this->DB->select('
+			(CASE
+				WHEN status = "0" THEN "new_orders"
+				WHEN status = "1" THEN "shipped"
+				WHEN status = "2" THEN "on_hold"
+				WHEN status = "3" THEN "cancelled"
+				WHEN status = "4" THEN "refunded"
+				WHEN status = "5" THEN "shipment_pending"
+				WHEN status = "6" THEN "store_credit"
+				ELSE "new_orders"
+			END) AS status_text
+		');
 
 		// set joins
 		$this->DB->join('tbl_order_log_details', 'tbl_order_log_details.order_log_id = tbl_order_log.order_log_id', 'left');

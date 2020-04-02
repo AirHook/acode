@@ -29,26 +29,75 @@
 										Status
 									</label>
                                     <div class="mt-radio-list" style="padding:0px;">
-										<label class="mt-radio mt-radio-outline"> Pending
-                                            <input type="radio" class="filter-options-field" value="pending" name="status" <?php echo @$this->order_details->status == '0' ? 'checked="checked"' : ''; ?> />
+
+										<?php if ($order_details->status == '1')
+										{ ?>
+
+										<label>
+											This order is closed and shipped. In case of return, please select return options below:
+										</label>
+										<label class="mt-radio mt-radio-outline"> Refunded
+                                            <input type="radio" class="filter-options-field-details" value="refunded" name="status" <?php echo @$this->order_details->status == '4' ? 'checked="checked"' : ''; ?>  />
                                             <span></span>
                                         </label>
-										<label class="mt-radio mt-radio-outline"> Complete
-                                            <input type="radio" class="filter-options-field" value="complete" name="status" <?php echo @$this->order_details->status == '1' ? 'checked="checked"' : ''; ?> />
+										<label class="mt-radio mt-radio-outline"> Store Credit
+                                            <input type="radio" class="filter-options-field-details" value="store_credit" name="status" <?php echo @$this->order_details->status == '6' ? 'checked="checked"' : ''; ?>  />
                                             <span></span>
                                         </label>
-										<label class="mt-radio mt-radio-outline"> On Hold
-                                            <input type="radio" class="filter-options-field" value="complete" name="status" <?php echo @$this->order_details->status == '2' ? 'checked="checked"' : ''; ?> />
+
+											<?php
+										}
+										// for returned orders
+										else if ($order_details->status == '4')
+										{ ?>
+
+										<label class="mt-radio mt-radio-outline"> Refunded
+                                            <input type="radio" class="filter-options-field-details" value="refunded" name="status" <?php echo @$this->order_details->status == '4' ? 'checked="checked"' : ''; ?>  />
+                                            <span></span>
+                                        </label>
+
+											<?php
+										}
+										// for returned orders
+										else if ($order_details->status == '6')
+										{ ?>
+
+										<label class="mt-radio mt-radio-outline"> Store Credit
+                                            <input type="radio" class="filter-options-field-details" value="store_credit" name="status" <?php echo @$this->order_details->status == '6' ? 'checked="checked"' : ''; ?>  />
+                                            <span></span>
+                                        </label>
+
+											<?php
+										}
+										// all esle...
+										else
+										{
+											if ($order_details->status == '0')
+											{ ?>
+
+										<label class="mt-radio mt-radio-outline"> New Order
+                                            <input type="radio" class="filter-options-field-details" value="pending" name="status" <?php echo @$this->order_details->status == '0' ? 'checked="checked"' : ''; ?> />
+                                            <span></span>
+                                        </label>
+
+												<?php
+											} ?>
+
+										<label class="mt-radio mt-radio-outline"> Shipment Pending
+                                            <input type="radio" class="filter-options-field-details" value="acknowledge" name="status" <?php echo @$this->order_details->status == '5' ? 'checked="checked"' : ''; ?> />
+                                            <span></span>
+                                        </label>
+										<label class="mt-radio mt-radio-outline"> Complete / Shipped
+                                            <input type="radio" class="filter-options-field-details" value="complete" name="status" <?php echo @$this->order_details->status == '1' ? 'checked="checked"' : ''; ?> />
                                             <span></span>
                                         </label>
                                         <label class="mt-radio mt-radio-outline"> Cancelled
-                                            <input type="radio" class="filter-options-field" value="cancelled" name="status" <?php echo @$this->order_details->status == '3' ? 'checked="checked"' : ''; ?>  />
+                                            <input type="radio" class="filter-options-field-details" value="cancel" name="status" <?php echo @$this->order_details->status == '3' ? 'checked="checked"' : ''; ?>  />
                                             <span></span>
                                         </label>
-										<label class="mt-radio mt-radio-outline"> Returned
-                                            <input type="radio" class="filter-options-field" value="returned" name="status" <?php echo @$this->order_details->status == '4' ? 'checked="checked"' : ''; ?>  />
-                                            <span></span>
-                                        </label>
+
+											<?php
+										} ?>
                                     </div>
                                 </div>
 
@@ -60,18 +109,18 @@
 
 								<hr style="margin:5px 0 15px;" />
 
-								<?php if (
-									! @$this->order_details->sales_order_number
-									&& @$this->order_details->status != '1'
-									&& @$this->webspace_details->slug != 'tempoparis'
-								)
-								{ ?>
-								<a href="javascript:;" class="btn grey-gallery btn-block btn-sm">
-									Create Sales Order
+								<a href="<?php echo site_url('admin/orders/view_packing_list/index/'.$this->order_details->order_id); ?>" class="btn grey-gallery btn-block btn-sm" target="_blank">
+									View/Print Packing List
 								</a>
-								<?php } ?>
+								<a href="javascript:;" class="btn grey-gallery btn-block btn-sm">
+									View/Print Barcodes
+								</a>
 								<a href="javascript:;" class="btn grey-gallery btn-block btn-sm btn-resend_email_confirmation" data-user_id="<?php echo $this->order_details->user_id; ?>" data-order_id="<?php echo $this->order_details->order_id; ?>" data-user_cat="<?php echo $this->order_details->c; ?>">
 									Resend Email Confirmation
+								</a>
+
+	                            <a class="btn btn-secondary-outline btn-sm btn-block" href="<?php echo site_url('admin/orders/'.$status); ?>">
+	                                <i class="fa fa-reply"></i> Back to Order logs
 								</a>
 
 								<?php if ($this->webspace_details->options['site_type'] == 'hub_site') { ?>
@@ -101,6 +150,8 @@
 											'id'=>'form-orders_details'
 										)
 									); ?>
+
+									<input type="hidden" name="order_id" value="<?php echo $order_details->order_id; ?>" />
 
 									<?php
 									/***********
@@ -143,7 +194,7 @@
 												</div>
 												<div class="actions">
 													<div class="btn-group btn-group-devided">
-														<a class="btn btn-secondary-outline" href="<?php echo site_url($this->config->slash_item('admin_folder').'orders'); ?>">
+														<a class="btn btn-secondary-outline" href="<?php echo site_url($this->config->slash_item('admin_folder').'orders/'); ?>">
 															<i class="fa fa-reply"></i> Back to order logs
 														</a>
 													</div>
@@ -169,9 +220,9 @@
 													</div>
 													<div class="col-md-6 col-sm-12">
 														<div class="row static-info">
-															<div class="col-xs-5 col-sm-4 name"> Category: </div>
+															<div class="col-xs-5 col-sm-4 name"> Role: </div>
 															<div class="col-xs-7 col-sm-8 value"> <?php echo ($this->order_details->c == 'guest' OR $this->order_details->c == 'cs') ? 'Retail' : 'Wholesale'; ?> </div>
-															<div class="col-xs-5 col-sm-4 name"> Payment Info<span class="hidden-xs">rmation</span>: </div>
+															<div class="col-xs-5 col-sm-4 name"> Payment Info: </div>
 															<div class="col-xs-7 col-sm-8 value"> Credit Card </div>
 														</div>
 													</div>
@@ -318,7 +369,7 @@
 																	<div class="thumb-tiles">
 																		<div class="thumb-tile image bg-blue-hoki">
 																			<div class="tile-body">
-																				<img class="" src="<?php echo $this->config->item('PROD_IMG_URL').$item->image; ?>" alt="">
+																				<img class="" src="<?php echo $this->config->item('PROD_IMG_URL').(str_replace('_f2', '_f3', $item->image)); ?>" alt="">
 																			</div>
 																			<div class="tile-object">
 																				<div class="name"> <?php echo $item->prod_no; ?> </div>
