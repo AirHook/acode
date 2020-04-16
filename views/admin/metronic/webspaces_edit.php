@@ -416,27 +416,27 @@
 
                                     <div class="mt-radio-list">
                                         <label class="mt-radio mt-radio-outline">
-                                            <input type="radio" name="options[size_mode]" value="1" <?php echo $this->edit_webspace_details->options['size_mode'] == '1' ? 'checked="checked"' : ''; ?> />
+                                            <input type="radio" name="options[size_mode]" value="1" <?php echo @$this->edit_webspace_details->options['size_mode'] == '1' ? 'checked="checked"' : ''; ?> />
                                             Mode A: 0,2,4,6,8,10,...,22
                                             <span></span>
                                         </label>
                                         <label class="mt-radio mt-radio-outline">
-                                            <input type="radio" name="options[size_mode]" value="0" <?php echo $this->edit_webspace_details->options['size_mode'] == '0' ? 'checked="checked"' : ''; ?> />
+                                            <input type="radio" name="options[size_mode]" value="0" <?php echo @$this->edit_webspace_details->options['size_mode'] == '0' ? 'checked="checked"' : ''; ?> />
                                             Mode B: S,M,L,XL,XXL
                                             <span></span>
                                         </label>
                                         <label class="mt-radio mt-radio-outline">
-                                            <input type="radio" name="options[size_mode]" value="2" <?php echo $this->edit_webspace_details->options['size_mode'] == '2' ? 'checked="checked"' : ''; ?> />
+                                            <input type="radio" name="options[size_mode]" value="2" <?php echo @$this->edit_webspace_details->options['size_mode'] == '2' ? 'checked="checked"' : ''; ?> />
                                             Mode C: Pre-packed (1S-2M-2L-1XL)
                                             <span></span>
                                         </label>
                                         <label class="mt-radio mt-radio-outline">
-                                            <input type="radio" name="options[size_mode]" value="3" <?php echo $this->edit_webspace_details->options['size_mode'] == '3' ? 'checked="checked"' : ''; ?> />
+                                            <input type="radio" name="options[size_mode]" value="3" <?php echo @$this->edit_webspace_details->options['size_mode'] == '3' ? 'checked="checked"' : ''; ?> />
                                             Mode D: S-M, M-L
                                             <span></span>
                                         </label>
                                         <label class="mt-radio mt-radio-outline">
-                                            <input type="radio" name="options[size_mode]" value="4" <?php echo $this->edit_webspace_details->options['size_mode'] == '4' ? 'checked="checked"' : ''; ?> />
+                                            <input type="radio" name="options[size_mode]" value="4" <?php echo @$this->edit_webspace_details->options['size_mode'] == '4' ? 'checked="checked"' : ''; ?> />
                                             Mode E: One Size Fits All
                                             <span></span>
                                         </label>

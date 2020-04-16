@@ -77,7 +77,7 @@
                     <?php $this->load->view($this->config->slash_item('admin_folder').'metronic/template4/template_page_breadcrumb'); ?>
                     <ul class="page-breadcrumb breadcrumb hide">
                         <li>
-                            <a href="<?php echo site_url($this->config->slash_item('admin_folder').'dashboard'); ?>">Home</a>
+                            <a href="<?php echo site_url($this->config->slash_item('admin_folder').'dashboard'); ?>">Dashborad</a>
                             <i class="fa fa-circle"></i>
                         </li>
                         <li>

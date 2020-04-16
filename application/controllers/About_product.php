@@ -51,6 +51,16 @@ class About_product extends Frontend_Controller {
 		//print_r($this->input->post());
 		//die();
 
+		if ( ! $this->input->post())
+		{
+			// nothing more to do...
+			// set flash data
+			$this->session->set_flashdata('error', 'no_id_passed');
+
+			// redirect user
+			redirect(site_url(), 'location');
+		}
+
 		// grab the input posts
 		$the_time = $this->input->post('the_time');
 		$return_url = $this->input->post('return_url');
@@ -67,6 +77,17 @@ class About_product extends Frontend_Controller {
 		$email1 = htmlspecialchars($this->input->post('email'));
 
 		$no_stocks_at_all = $this->input->post('no_stocks_at_all');
+
+		// let's check for $prod_no
+		if (trim($prod_no) == '')
+		{
+			// nothing more to do...
+			// set flash data
+			$this->session->set_flashdata('error', 'no_id_passed');
+
+			// redirect user
+			redirect(site_url(), 'location');
+		}
 
 		// check for time interval
 		if ($the_time < (time() - 180) // to far in the past (more than 3 mins (180 secs))
@@ -115,6 +136,7 @@ class About_product extends Frontend_Controller {
 					window.location.href="'.$destination.'";
 				</script>
 			';
+			exit;
 		}
 
 		/*
@@ -426,6 +448,7 @@ class About_product extends Frontend_Controller {
 					window.location.href="'.$destination.'";
 				</script>
 			';
+			exit;
 		}
 
 		/*

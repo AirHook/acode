@@ -431,10 +431,9 @@
                         </li>
                             <?php
                         } ?>
-                        <li class="nav-item with-heading ">
-                            <a href="javascript:;" class="nav-link tooltips" data-original-title="Currently Under Construction" data-placement="right">
+                        <li class="nav-item with-heading <?php echo strpos($this->uri->uri_string(), 'admin/task_manager') === FALSE ? '' : 'active'; ?>">
+                            <a href="<?php echo site_url('admin/task_manager/projects'); ?>" class="nav-link ">
                                 <span class="title uppercase">Task Manager</span>
-                                <span class="arrow"></span>
                             </a>
                         </li>
                         <li class="nav-item with-heading ">
