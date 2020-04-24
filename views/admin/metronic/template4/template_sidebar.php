@@ -124,6 +124,11 @@
                                 <span class="title">Facets Manager</span>
                             </a>
                         </li>
+                        <li class="nav-item <?php echo strpos($this->uri->uri_string(), 'admin/products/csv/stocks_update') === FALSE ? '' : 'active'; ?>">
+                            <a href="<?php echo site_url('admin/products/csv/stocks_update'); ?>" class="nav-link ">
+                                <span class="title">Product Stocks CSV Update</span>
+                            </a>
+                        </li>
                             <?php
                         } ?>
 

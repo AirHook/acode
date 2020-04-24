@@ -131,7 +131,7 @@
                                             <div class="logo_slider display-none hidden-md hidden-lg" style="height:75px;width:160px;">
                 								<ul style="list-style:none;">
                                                     <?php
-                                                    if ($desigenrs)
+                                                    if ($designers)
                                                     {
                                                         foreach ($designers as $designer)
                                                         {

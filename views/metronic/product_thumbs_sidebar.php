@@ -180,7 +180,7 @@
 																					.$occassion
 																					.'">'
 																					.($this->input->get('occassion') == $occassion ? '<strong>' : '')
-																					.ucfirst($occassion).'-'.$dresses
+																					.ucfirst($occassion)
 																					.($this->input->get('occassion') == $occassion ? '</strong>' : '')
 																					.'</a>';
 																			}
