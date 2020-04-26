@@ -96,8 +96,8 @@ class Edit extends Admin_Controller {
 
 		// set validation rules
 		$this->form_validation->set_rules('publish_date', 'Publish Date', 'trim|required');
-		$this->form_validation->set_rules('prod_no', 'Product No (SKU)', 'trim|required');
-		$this->form_validation->set_rules('prod_name', 'Product Name', 'trim|required');
+		$this->form_validation->set_rules('prod_no', 'Product No (SKU)', 'trim|alpha_numeric|required');
+		$this->form_validation->set_rules('prod_name', 'Product Name', 'trim|alpha_numeric_spaces|required');
 		$this->form_validation->set_rules('designer', 'Desginer', 'trim|required');
 		$this->form_validation->set_rules('categories[]', 'Categories', 'required');
 		$this->form_validation->set_rules('less_discount', 'Retail Price', 'trim|required');

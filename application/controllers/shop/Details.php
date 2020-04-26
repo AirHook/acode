@@ -83,7 +83,7 @@ class Details extends Frontend_Controller
 		// to be able to draw up a correct category breadcrumb
 		// we grab some data from url identifying the nth product
 		// number of current select product detail
-		$prod_list_seq = explode('of', $this->uri->segment(8));
+		$prod_list_seq = explode('of', $this->uri->segment(7));
 		$this->data['nth_prod'] = $prod_list_seq[0];
 		$this->data['total_products_in_list'] = $prod_list_seq[1];
 
