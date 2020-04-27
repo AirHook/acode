@@ -1,7 +1,16 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Projects_add extends Admin_Controller {
+class Projects_edit extends Admin_Controller {
+
+	/**
+	 * This Class database object holder
+	 *
+	 * @var	object
+	 */
+	protected $DB = '';
+
+	// ----------------------------------------------------------------------
 
 	/**
 	 * Constructor
@@ -11,6 +20,9 @@ class Projects_add extends Admin_Controller {
 	public function __construct()
 	{
 		parent::__construct();
+
+		// connect to database
+		$this->DB = $this->load->database('instyle', TRUE);
     }
 
 	// ----------------------------------------------------------------------
@@ -20,8 +32,18 @@ class Projects_add extends Admin_Controller {
 	 *
 	 * @return	void
 	 */
-	public function index()
+	public function index($project_id = '')
 	{
+		if ($project_id == '')
+		{
+			// nothing more to do...
+			// set flash data
+			$this->session->set_flashdata('error', 'no_id_passed');
+
+			// redirect user
+			redirect('admin/task_manager/projects', 'location');
+		}
+
 		// generate the plugin scripts and css
 		$this->_create_plugin_scripts();
 
@@ -30,6 +52,7 @@ class Projects_add extends Admin_Controller {
 		$this->load->library('webspaces/webspaces_list');
 		$this->load->library('users/tm_users_list');
 		$this->load->library('form_validation');
+		$this->load->library('task_manager/project_details');
 
 		// set validation rules
 		$this->form_validation->set_rules('status', 'Status', 'trim|required');
@@ -39,12 +62,18 @@ class Projects_add extends Admin_Controller {
 		if ($this->form_validation->run() == FALSE)
 		{
 			// get data
+			// get the data
+			$this->data['project_details'] = $this->project_details->initialize(
+				array(
+					'project_id' => $project_id
+				)
+			);
 			$this->data['webspaces'] = $this->webspaces_list->select();
 
 			// set data variables...
-			$this->data['file'] = 'tm_projects_add';
+			$this->data['file'] = 'tm_projects_edit';
 			$this->data['page_title'] = 'Task Manager';
-			$this->data['page_description'] = 'Add new project';
+			$this->data['page_description'] = 'Edit project';
 
 			// load views...
 			$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template/template', $this->data);
@@ -54,20 +83,79 @@ class Projects_add extends Admin_Controller {
 			// grab post data
 			$post_ary = $this->input->post();
 
-			// set other necessary variables
-			$post_ary['date_start'] = time();
+			// process some post data
+			$post_ary['webspace_id'] = $this->input->post('webspace_id') ?: '0';
 
-			// connect to database
-			$DB = $this->load->database('instyle', TRUE);
-			$query = $DB->insert('tm_projects', $post_ary);
+			// update record
+			$this->DB->where('project_id', $project_id);
+			$query = $this->DB->update('tm_projects', $post_ary);
 
 			// set flash data
-			$this->session->set_flashdata('success', 'add');
+			$this->session->set_flashdata('success', 'edit');
+
+			// redirect user
+			redirect('admin/task_manager/projects_edit/index/'.$project_id, 'location');
+		}
+	}
+
+	// ----------------------------------------------------------------------
+
+	/**
+	 * Constructor
+	 *
+	 * @return	void
+	 */
+	public function status($project_id = '', $status = '')
+	{
+		if ($project_id == '' OR $status == '')
+		{
+			// nothing more to do...
+			// set flash data
+			$this->session->set_flashdata('error', 'no_id_passed');
 
 			// redirect user
 			redirect('admin/task_manager/projects', 'location');
 		}
-	}
+
+		$this->DB->set('status', $status);
+		$this->DB->where('project_id', $project_id);
+		$this->DB->update('tm_projects');
+
+		// set flash data
+		$this->session->set_flashdata('success', 'edit');
+
+		// redirect user
+		redirect('admin/task_manager/projects', 'location');
+    }
+
+	// ----------------------------------------------------------------------
+
+	/**
+	 * Constructor
+	 *
+	 * @return	void
+	 */
+	public function delete($project_id = '')
+	{
+		if ($project_id == '')
+		{
+			// nothing more to do...
+			// set flash data
+			$this->session->set_flashdata('error', 'no_id_passed');
+
+			// redirect user
+			redirect('admin/task_manager/projects', 'location');
+		}
+
+		$this->DB->where('project_id', $project_id);
+		$this->DB->delete('tm_projects');
+
+		// set flash data
+		$this->session->set_flashdata('success', 'delete');
+
+		// redirect user
+		redirect('admin/task_manager/projects', 'location');
+    }
 
 	// ----------------------------------------------------------------------
 

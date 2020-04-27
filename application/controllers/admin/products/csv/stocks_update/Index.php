@@ -27,7 +27,7 @@ class Index extends Admin_Controller {
 		if ($this->uri->uri_string() == $this->config->slash_item('admin_folder').'products/csv/stocks_update')
 		{
 			if ($this->session->stocks_update_csv_uri_string) redirect ($this->session->stocks_update_csv_uri_string, 'location');
-			else redirect($this->config->slash_item('admin_folder').'products/csv/stocks_update/index/basixblacklabel/womens_apparel/dresses/evening_dreses');
+			else redirect($this->config->slash_item('admin_folder').'products/csv/stocks_update/index/basixblacklabel/womens_apparel/dresses/evening_dresses');
 		}
 		else
 		{
@@ -119,7 +119,7 @@ class Index extends Admin_Controller {
 		else
 		{
 			// defauls to all dresses under basixblacklabel womens apparel
-			redirect($this->config->slash_item('admin_folder').'products/csv/stocks_update/index/basixblacklabel/womens_apparel/dresses/evening_dreses');
+			redirect($this->config->slash_item('admin_folder').'products/csv/stocks_update/index/basixblacklabel/womens_apparel/dresses/evening_dresses');
 		}
 
 		// we get the size mode necessary for the table and script requirements

@@ -148,7 +148,7 @@ class Live_edit extends Admin_Controller {
 		$DB->update('tbl_stock_physical');
 
 		// update available stock where necessary
-		$DB->set('options', json_encode($stocks_options));
+		if ( ! empty($stocks_options)) $DB->set('options', json_encode($stocks_options));
 		$DB->set($size_label, $new_available_stock);
 		$DB->where('st_id', $st_id);
 		$DB->update('tbl_stock');

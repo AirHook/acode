@@ -34,39 +34,43 @@ class Bulk_actions extends Admin_Controller {
 		switch ($this->input->post('bulk_action'))
 		{
 			case 'ac':
-				$DB->set('is_active', '1');
+				$DB->set('status', '1');
 			break;
 
-			case 'su':
-				$DB->set('is_active', '0');
+			case 'de':
+				$DB->set('status', '0');
+			break;
+
+			case 'ur':
+				$DB->set('status', '2');
 			break;
 		}
 
 		// iterate through the selected checkboxes and where clause
 		foreach ($this->input->post('checkbox') as $key => $id)
 		{
-			if ($key === 0) $DB->where('id', $id);
-			else $DB->or_where('id', $id);
+			if ($key === 0) $DB->where('project_id', $id);
+			else $DB->or_where('project_id', $id);
 		}
 
 		// update or delete items from database
 		if ($this->input->post('bulk_action') === 'del')
 		{
-			$DB->delete('tm_users');
+			$DB->delete('tm_projects');
 
 			// set flash data
 			$this->session->set_flashdata('success', 'delete');
 		}
 		else
 		{
-			$DB->update('tm_users');
+			$DB->update('tm_projects');
 
 			// set flash data
 			$this->session->set_flashdata('success', 'edit');
 		}
 
 		// redirect user
-		redirect('admin/task_manager/users');
+		redirect('admin/task_manager/projects');
 	}
 
 	// ----------------------------------------------------------------------

@@ -21,6 +21,13 @@ class Project_task_details
 	public $task_id = '';
 
 	/**
+	 * Seque
+	 *
+	 * @var	numeric
+	 */
+	public $seque = '';
+
+	/**
 	 * Task Title
 	 *
 	 * @var	string
@@ -62,6 +69,14 @@ class Project_task_details
 	public $date_end_target = '';
 	public $date_end_complete = '';
 	public $last_modified = '';
+
+	/**
+	 * Status
+	 *
+	 * @var	string
+	 */
+	public $status = '';
+	public $urgent = '';
 
 	/**
 	 * Options
@@ -125,6 +140,7 @@ class Project_task_details
 
 		// set selects
 		$this->DB->select('tm_tasks.*');
+		$this->DB->select('tm_tasks.status as task_status');
 		$this->DB->select('tm_tasks.date_start AS task_date_start');
 		$this->DB->select('tm_tasks.last_modified AS task_last_modified');
 		$this->DB->select('tm_tasks.options AS task_options');
@@ -151,6 +167,7 @@ class Project_task_details
 		{
 			// initialize properties
 			$this->task_id = $row->task_id;
+			$this->seque = $row->seque;
 			$this->title = $row->title;
 			$this->description = $row->description;
 			$this->project_id = $row->project_id;
@@ -164,6 +181,8 @@ class Project_task_details
 			$this->date_end_target = $row->date_end_target;
 			$this->date_end_complete = $row->date_end_complete;
 			$this->last_modified = $row->task_last_modified;
+			$this->status = $row->task_status;
+			$this->urgent = $row->urgent;
 			$this->options = $row->task_options != '' ? json_decode($row->task_options , TRUE) : array();
 			$this->attachments = $row->attachments != '' ? json_decode($row->attachments , TRUE) : array();
 

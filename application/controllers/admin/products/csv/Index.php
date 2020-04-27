@@ -22,6 +22,9 @@ class Index extends Admin_Controller {
 	 */
 	public function index()
 	{
+		// redirect for now
+		redirect('admin/products/csv/stocks_update', 'location');
+
 		// check for csv_uri_string and load it instead
 		// revert to defaul where necessary
 		if ($this->uri->uri_string() == $this->config->slash_item('admin_folder').'products/csv')

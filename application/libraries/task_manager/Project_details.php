@@ -50,11 +50,36 @@ class Project_details
 	public $last_modified = '';
 
 	/**
+	 * Status
+	 *
+	 * @var	numeric
+	 */
+	public $status = '';
+
+	/**
 	 * Options
 	 *
 	 * @var	numeric
 	 */
 	public $options = array();
+
+	/**
+	 * Webspace Details
+	 *
+	 * @var	string
+	 */
+	public $webspace_id = '';
+	public $webspace_name = '';
+	public $webspace_slug = '';
+	public $domain_name = '';
+
+	/**
+	 * Platform Details
+	 *
+	 * @var	string
+	 */
+	public $platform = '';
+	public $platform_name = '';
 
 
 	/**
@@ -63,7 +88,6 @@ class Project_details
 	 * @var	object
 	 */
 	protected $DB = '';
-
 
 	/**
 	 * CI Singleton
@@ -109,8 +133,14 @@ class Project_details
 			return FALSE;
 		}
 
-		// join
-		//$this->DB->join('tm_users', 'webspaces.webspace_id = tbladmin.webspace_id', 'left');
+		// selects
+		$this->DB->select('tm_projects.*');
+		$this->DB->select('webspaces.*');
+		$this->DB->select('platform.webspace_name as platform_name');
+
+		// joins
+		$this->DB->join('webspaces', 'webspaces.webspace_id = tm_projects.webspace_id', 'left');
+		$this->DB->join('webspaces platform', 'platform.webspace_slug = tm_projects.platform', 'left');
 
 		// order by
 		//$this->DB->order_by('admin_name', 'asc');
@@ -134,7 +164,16 @@ class Project_details
 			$this->date_start = $row->date_start;
 			$this->date_end = $row->date_end;
 			$this->last_modified = $row->last_modified;
+			$this->status = $row->status;
 			$this->options = $row->options != '' ? json_decode($row->options , TRUE) : array();
+
+			$this->webspace_id = $row->webspace_id;
+			$this->webspace_name = $row->webspace_name;
+			$this->webspace_slug = $row->webspace_slug;
+			$this->domain_name = $row->domain_name;
+
+			$this->platform = $row->platform;
+			$this->platform_name = $row->platform_name;
 
 			return $this;
 		}

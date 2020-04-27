@@ -222,13 +222,13 @@ class Register extends Frontend_Controller {
 		// set validation rules
 		$this->form_validation->set_rules('password', 'Password', 'trim|required');
 		$this->form_validation->set_rules('passconf', 'Confirm Password', 'trim|required|matches[password]');
-		$this->form_validation->set_rules('zip_postcode', 'Zip Code', 'trim|required');
+		$this->form_validation->set_rules('zip_postcode', 'Zip Code', 'trim|alpha_dash|required');
 		$this->form_validation->set_rules('state_province', 'State', 'trim|required');
-		$this->form_validation->set_rules('firstname', 'First Name', 'trim|required|callback_filter_string');
-		$this->form_validation->set_rules('lastname', 'Last Name', 'trim|required|callback_filter_string');
+		$this->form_validation->set_rules('firstname', 'First Name', 'trim|alpha_numeric_spaces|required|callback_filter_string');
+		$this->form_validation->set_rules('lastname', 'Last Name', 'trim|alpha_numeric_spaces|differs[firstname]|required|callback_filter_string');
 		$this->form_validation->set_rules('email', 'Email', 'trim|required|callback_validate_email');
-		$this->form_validation->set_rules('address1', 'Address 1', 'trim|required');
-		$this->form_validation->set_rules('city', 'City', 'trim|required|callback_filter_string');
+		$this->form_validation->set_rules('address1', 'Address 1', 'trim|differs[address2]|required');
+		$this->form_validation->set_rules('city', 'City', 'trim|differs[address1]|required|callback_filter_string');
 		$this->form_validation->set_rules('country', 'Country', 'trim|required');
 		$this->form_validation->set_rules('telephone', 'Telephone', 'trim|required');
 
@@ -340,13 +340,13 @@ class Register extends Frontend_Controller {
 		$this->form_validation->set_rules('store_name', 'Store Name', 'trim|required');
 		$this->form_validation->set_rules('pword', 'Password', 'trim|required');
 		$this->form_validation->set_rules('confpassword', 'Confirm Password', 'trim|required|matches[pword]');
-		$this->form_validation->set_rules('zipcode', 'Zip Code', 'trim|required');
+		$this->form_validation->set_rules('zipcode', 'Zip Code', 'trim|alpha_dash|required');
 		$this->form_validation->set_rules('state', 'State', 'trim|required');
-		$this->form_validation->set_rules('firstname', 'First Name', 'trim|required|callback_filter_string');
-		$this->form_validation->set_rules('lastname', 'Last Name', 'trim|required|callback_filter_string');
+		$this->form_validation->set_rules('firstname', 'First Name', 'trim|alpha_numeric_spaces|required|callback_filter_string');
+		$this->form_validation->set_rules('lastname', 'Last Name', 'trim|alpha_numeric_spaces|differs[firstname]|required|callback_filter_string');
 		$this->form_validation->set_rules('email', 'Email', 'trim|required|callback_validate_email');
-		$this->form_validation->set_rules('address1', 'Address 1', 'trim|required');
-		$this->form_validation->set_rules('city', 'City', 'trim|required');
+		$this->form_validation->set_rules('address1', 'Address 1', 'trim|differs[address2]|required');
+		$this->form_validation->set_rules('city', 'City', 'trim|differs[address1]|required');
 		$this->form_validation->set_rules('country', 'Country', 'trim|required');
 		$this->form_validation->set_rules('telephone', 'Telephone', 'trim|required');
 

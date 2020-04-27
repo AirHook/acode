@@ -74,6 +74,23 @@
     border-bottom-color: transparent;
     cursor: default;
 }
+/* task manager projects items */
+.todo-project-item-foot p {
+	margin: 10px 0 0 0;
+}
+.todo-project-item-foot .dd-item,
+.todo-project-item-foot .dd-empty,
+.todo-project-item-foot .dd-placeholder {
+	font-size: 10px;
+	line-height: 15px;
+}
+.todo-project-item-foot .dd-handle,
+.todo-project-item-foot .dd3-content {
+	height: 25px;
+}
+.todo-project-item-foot .dd3-handle::before {
+	top: 5px;
+}
 
 /******
  * Datatable Fixes
@@ -82,4 +99,17 @@ table.dataTable thead th,
 table.dataTable tbody td {
     padding: 5px 8px;
     font-size: 0.8em;
+}
+
+/******
+ * Form Validation Items
+ */
+.form-group-bs-select.has-error {
+    margin-bottom: 30px;
+}
+.form-group-bs-select.has-error .help-block-error {
+    font-size: 12px;
+}
+.form-group-bs-select.has-error .bs-select .bs-placeholder {
+	margin-bottom: 5px;
 }

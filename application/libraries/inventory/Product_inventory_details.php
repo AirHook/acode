@@ -21,6 +21,8 @@ class Product_inventory_details
 	 * @var	string
 	 */
 	public $st_id = '';
+	public $prod_no = '';
+	public $color_name = '';
 
 	/**
 	 * Sizes for when product details has color as params or st_id
@@ -28,6 +30,7 @@ class Product_inventory_details
 	 *
 	 * @var	int
 	 */
+	public $stock_id = '';
 	// AVAILABLE STOCK
 	// size mode 0
 	public $size_ss = 0;
@@ -188,6 +191,7 @@ class Product_inventory_details
 		}
 
 		// get all stocks information
+		$this->DB->select('tbl_stock.st_id as stock_id');
 		$this->DB->select('
 			tbl_stock.size_ss, tbl_stock.size_sm, tbl_stock.size_sl, tbl_stock.size_sxl,
 			tbl_stock.size_sxxl, tbl_stock.size_sxl1, tbl_stock.size_sxl2,
@@ -234,7 +238,9 @@ class Product_inventory_details
 		$this->DB->join('tbl_stock_onorder tso', 'tso.st_id = tbl_stock.st_id', 'left');
 		$this->DB->join('tbl_stock_physical tsp', 'tsp.st_id = tbl_stock.st_id', 'left');
 		$this->DB->join('tblcolor', 'tblcolor.color_name = tbl_stock.color_name', 'left');
-		$this->DB->where('tbl_stock.st_id', $this->st_id);
+		if ($this->st_id) $this->DB->where('tbl_stock.st_id', $this->st_id);
+		if ($this->prod_no) $this->DB->where('tbl_stock.prod_no', $this->prod_no);
+		if ($this->color_name) $this->DB->where('tbl_stock.color_name', $this->color_name);
 		$get = $this->DB->get();
 
 		//echo $this->DB->last_query(); die();
@@ -247,6 +253,7 @@ class Product_inventory_details
 
 		if (isset($row))
 		{
+			$this->stock_id = $row->stock_id;
 			// color variant data if such
 			// AVAILABLE SIZES
 			$this->size_ss = $row->size_ss;

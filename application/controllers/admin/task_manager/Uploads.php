@@ -54,7 +54,7 @@ class Uploads extends Admin_Controller {
 			$task_id = $this->input->post('task_id');
 
 			// Check if image file is a actual image or fake image
-			/* */
+			/* *
 			$check = getimagesize($_FILES["file"]["tmp_name"]);
 			if ($check === false)
 			{

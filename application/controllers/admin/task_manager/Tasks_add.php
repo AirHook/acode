@@ -30,31 +30,41 @@ class Tasks_add extends Admin_Controller {
 	 *
 	 * @return	void
 	 */
-	public function index($project_id = '')
+	public function index()
 	{
 		echo 'Processing...';
 
 		if (
 			! $this->input->post('title')
-			&& ! $this->input->post('description')
-			&& ! $this->input->post('due_date')
-			&& ! $this->input->post('user_id')
+			OR ! $this->input->post('description')
+			OR ! $this->input->post('project_id')
 		)
 		{
 			$this->session->set_flashdata('error', 'edit');
 
 			// redirect user
-			redirect('admin/task_manager/tasks/index/'.$project_id, 'location');
+			if ($this->input->post('project_id'))
+			{
+				redirect('admin/task_manager/tasks/index/'.$this->input->post('project_id'), 'location');
+			}
+			else
+			{
+				redirect('admin/task_manager', 'location');
+			}
 		}
+
+		// lets check for status of webspace and account
+		$this->load->library('task_manager/tasks_list');
 
 		// insert record
 		$post_ary = $this->input->post();
 		// set necessary variables
 		//$post_ary['account_status'] = '1';
 		// process some variables
-		$post_ary['project_id'] = $project_id;
+		$post_ary['seque'] = $this->tasks_list->max_seque($this->input->post('project_id')) + 1;
 		$post_ary['date_start'] = time();
-		$post_ary['date_end_target'] = strtotime($this->input->post('due_date'));
+		$post_ary['date_end_target'] = $this->input->post('due_date') ? strtotime($this->input->post('due_date')) : '0';
+		$post_ary['user_id'] = $this->input->post('user_id') ?: NULL;
 		// unset unneeded variables
 		unset($post_ary['due_date']);
 
@@ -71,7 +81,7 @@ class Tasks_add extends Admin_Controller {
 		}
 
 		// redirect user
-		redirect('admin/task_manager/tasks/index/'.$project_id, 'location');
+		redirect('admin/task_manager/tasks/index/'.$this->input->post('project_id'), 'location');
 	}
 
 	// ----------------------------------------------------------------------

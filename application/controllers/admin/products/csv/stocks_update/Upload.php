@@ -111,41 +111,155 @@ class Upload extends Admin_Controller {
 			{
 				if ($row['prod_no'] != '')
 				{
-					$upd = "
-						UPDATE tbl_stock
-						SET
-							size_0 = '".$row['size_0']."',
-							size_2 = '".$row['size_2']."',
-							size_4 = '".$row['size_4']."',
-							size_6 = '".$row['size_6']."',
-							size_8 = '".$row['size_8']."',
-							size_10 = '".$row['size_10']."',
-							size_12 = '".$row['size_12']."',
-							size_14 = '".$row['size_14']."',
-							size_16 = '".$row['size_16']."',
-							size_18 = '".$row['size_18']."',
-							size_20 = '".$row['size_20']."',
-							size_22 = '".$row['size_22']."'
-						WHERE
-							prod_no = '".trim($row['prod_no'])."'
-							AND color_name = '".trim($row['color_name'])."'
-					";
+					// get the onorder stocks
+					// compare physical qty with onorder stocks
+					// if physical is less than onorder, flag for insufficient stock
+					// update stock[options] data for flag
+					// otherwise, compute for available stock
 
-					$qry = $this->DB->query($upd);
+					// initialize class
+					$this->load->library('inventory/product_inventory_details');
+					$this->product_inventory_details->initialize(
+						array(
+							'prod_no' => trim($row['prod_no']),
+							'color_name' => trim($row['color_name'])
+						)
+					);
+
+					// iterate through the row data
+					foreach ($row as $size_label => $value)
+					{
+						if ($size_label != 'prod_no' && $size_label != 'color_name')
+						{
+							// extract size suffix
+							$exp = explode('_', $size_label);
+							$size_suffix = $exp[1];
+
+							// get onorder stock if any
+							$onorder_label = 'onorder_'.$size_suffix;
+							$onorder_stock = $this->product_inventory_details->$onorder_label;
+
+							// get stock options data particularly the onorder(orderId) array
+							$stocks_options = $this->product_inventory_details->options;
+
+							// check if affecting order stocks and flag it accordingly
+							if (
+								$onorder_stock > 0
+								&& (($value - $onorder_stock) < 0) // new physical stock is lower than onorder
+							)
+							{
+								// flag stocks
+								$stocks_options['stock'] = 'insufficient';
+
+								// flag orders
+								if (isset($stocks_options['onorder']))
+								{
+									foreach ($stocks_options['onorder'] as $order_id)
+									{
+										$qry1 = $this->DB->get_where(
+											'tbl_order_log_details',
+											array(
+												'order_log_id' => $order_id,
+												'prod_sku' => $this->product_inventory_details->prod_no.'_'.$this->product_inventory_details->color_code
+											)
+										);
+										$row = $qry1->row();
+
+										if (isset($row))
+										{
+											$options = json_decode($row->options, TRUE);
+											$options['stock'] = 'insufficient';
+
+											$this->DB->set('options', json_encode($options));
+											$this->DB->where('order_log_detail_id', $row->order_log_detail_id);
+											$qry2 = $this->DB->update('tbl_order_log_details');
+										}
+									}
+								}
+
+								// set new available stock
+								$new_available_stock[$size_label] = 0;
+							}
+							else
+							{
+								// unset flag
+								if (isset($stocks_options['stock'])) unset($stocks_options['stock']);
+
+								if (isset($stocks_options['onorder']))
+								{
+									foreach ($stocks_options['onorder'] as $order_id)
+									{
+										$qry3 = $this->DB->get_where(
+											'tbl_order_log_details',
+											array(
+												'order_log_id' => $order_id,
+												'prod_sku' => $this->product_inventory_details->prod_no.'_'.$this->product_inventory_details->color_code
+											)
+										);
+										$row = $qry3->row();
+
+										if (isset($row))
+										{
+											$options = json_decode($row->options, TRUE);
+											if (isset($options['stock'])) unset($options['stock']);
+
+											$this->DB->set('options', json_encode($options));
+											$this->DB->where('order_log_detail_id', $row->order_log_detail_id);
+											$qry4 = $this->DB->update('tbl_order_log_details');
+										}
+									}
+								}
+
+								// set new available stock
+								$new_available_stock[$size_label] = $value - $onorder_stock;
+							}
+
+							// set the data to update
+							$new_physical_stock[$size_label] = $value;
+						}
+					}
+
+					// set last modified time
+					$last_modified = time();
+					$stocks_options['last_modified'] = $last_modified;
+
+					// update physical stock
+					$this->DB->set($new_physical_stock);
+					$this->DB->where('st_id', $this->product_inventory_details->stock_id);
+					$q1 = $this->DB->update('tbl_stock_physical');
+
+					if ( ! $q1)
+					{
+						// nothing to do anymore, bring back to main page...
+						echo 'There was an error updating database - q1.<br />';
+						echo '<pre>';
+						print_r($this->DB->error());
+						exit;
+					}
+
+					// update available stock
+					$this->DB->set($new_available_stock);
+					//$this->DB->set('custom_order', '3'); // setting item as clearance
+					if ( ! empty($stocks_options)) $this->DB->set('options', json_encode($stocks_options));
+					$this->DB->where('st_id', $this->product_inventory_details->stock_id);
+					$q2 = $this->DB->update('tbl_stock');
 
 					// hopefully, there are no database errors
 					/* */
-					if ( ! $qry)
+					if (! $q2)
 					{
 						// nothing to do anymore, bring back to main page...
-						echo 'There was an error updating database.';
-						exit();
+						echo 'There was an error updating database - q2.<br />';
+						echo '<pre>';
+						print_r($this->DB->error());
+						exit;
 					}
 					// */
 
 					// needed to add this query to update item to public
 					// this is for task dated 20190415 inventory update via CSV
-					/* */
+					// disabling this as of 20200419
+					/* *
 					if (
 						$row['size_0'] > 0
 						OR $row['size_2'] > 0
@@ -176,7 +290,7 @@ class Upload extends Admin_Controller {
 
 					// if there are no affected rows, there must be something wrong with the params
 					// on the where clause
-					/* */
+					/* *
 					if ( ! $r)
 					{
 						// can only assume either prod_no or color_name or both are invalid
@@ -185,6 +299,7 @@ class Upload extends Admin_Controller {
 						$error_log .= 'Invalid '.$row['prod_no'].' and/or '.$row['color_name'].'<br />';
 					}
 					// */
+
 				}
 			}
 		}

@@ -58,12 +58,18 @@
                  */
                 ?>
                 <div class="todo-head">
-                    <button class="btn btn-square btn-sm dark todo-bold todo-inline">Complete Task</button>
+
+                    <button data-toggle="modal" href="#complete-<?php echo $task_details->task_id?>" class="btn btn-square btn-sm dark todo-bold todo-inline" style="margin-right:2em;" <?php echo $task_details->status == '2' ? 'disabled' : '';?>>Complete Task</button>
+
                     <p class="todo-task-modal-title todo-inline">
-                        Due: &nbsp; <?php echo date('M j, Y', $task_details->date_end_target); ?>
+
+                        Due: &nbsp; <input class="form-control input-inline input-medium date-picker todo-details-task-due todo-inline" type="text" value="<?php echo $task_details->date_end_target ? date('M j, Y', $task_details->date_end_target) : ''; ?>" placeholder="Select date..." data-date-format="MM d, yyyy" style="width:150px !important;" <?php echo $task_details->status == '2' ? 'disabled' : '';?> />
+
                     </p>
                     <p class="todo-task-modal-title todo-inline">
-                        Champion: &nbsp; <?php echo $task_details->fname.' '.$task_details->lname; ?>
+
+                        Champion: &nbsp; <button class="btn <?php echo $task_details->fname ? 'default' : 'btn-outline'; ?> todo-task-assign" data-toggle="modal" href="#todo-members-modal" <?php echo $task_details->status == '2' ? 'disabled' : '';?>><?php echo $task_details->fname ? $task_details->fname.' '.$task_details->lname : 'Select'; ?></button>
+
                     </p>
                 </div>
                 <?php
@@ -72,13 +78,30 @@
                  */
                 ?>
                 <div class="modal-body todo-task-modal-body">
+
+                    <?php
+                    /***********
+                     * Noification area
+                     */
+                    ?>
+                    <div class="notifcations">
+                        <div class="alert alert-danger <?php echo $task_details->urgent ?: 'display-none';?>">
+                            <button class="close hide" data-close="alert"></button>
+                            This item is <strong>Urgent!</strong>
+                        </div>
+                        <div class="alert alert-success <?php echo $task_details->status == '2' ?: 'display-none';?>">
+                            <button class="close hide" data-close="alert"></button>
+                            This item is compmlete and <strong>CLOSED!</strong>
+                        </div>
+                    </div>
+
                     <?php
                     /*********
                      * TASK TITLE
                      */
                     ?>
                     <h3 class="todo-task-modal-bg">
-                        <?php echo $task_details->title; ?>
+                        <?php echo $task_details->title.$task_details->status; ?>
                     </h3>
                     <?php
                     /*********
@@ -110,13 +133,13 @@
                             foreach ($attachments as $attachment)
                             { ?>
 
-                        <div class="col-md-2">
+                        <div class="col-md-2" style="overflow:hidden;">
                             <div class="thumbnail" style="width:140px;height:95px;overflow:hidden;margin-bottom:5px;">
                                 <a href="<?php echo base_url().$attachment->media_url; ?>" class="fancybox-button" data-fancybox data-rel="fancybox-button" data-options='{"autoResize":"false","fitToView":"false"}'>
-                                    <img src="<?php echo base_url().$attachment->media_url; ?>" alt="" />
+                                    <img src="<?php echo base_url().$attachment->media_url; ?>" alt="<?php echo $attachment->media_filename; ?>" />
                                 </a>
                             </div>
-                            <a href="<?php echo base_url().$attachment->media_url; ?>" download> <cite class="small"><i class="fa fa-download font-dark"></i></cite> </a>
+                            <a href="<?php echo base_url().$attachment->media_url; ?>" download> <i class="fa fa-download font-dark tooltips" data-original-title="Download"></i> <?php echo trim($attachment->media_dimensions) == 'x' ? '<small title="'.$attachment->media_filename.'">'.$attachment->media_filename.'</small>' : ''; ?> </a>
                         </div>
 
                                 <?php
@@ -214,7 +237,7 @@
 
                         <div class="chat-form">
                             <div class="input-cont">
-                                <select class="form-control select2m" name="user_id" style="width:15%!important;float:left;" >
+                                <select class="form-control select2m" name="user_id" style="width:15%!important;float:left;" <?php echo $task_details->status == '2' ? 'disabled' : '';?>>
 
                                     <option value="">Select...</option>
 
@@ -238,11 +261,11 @@
                                     } ?>
 
                                 </select>
-                                <input class="form-control" type="text" style="width:85%!important;" name="message" placeholder="Type your message here..." />
+                                <input class="form-control" type="text" style="width:85%!important;" name="message" placeholder="Type your message here..." <?php echo $task_details->status == '2' ? 'disabled' : '';?> />
                             </div>
                             <div class="btn-cont">
-                                <span class="arrow" style="border-right: 8px solid #2f353b;"> </span>
-                                <button type="submit" class="btn dark icn-only">
+                                <span class="arrow" style="border-right: 8px solid <?php echo $task_details->status == '2' ? '#2f353b' : '#2f353b';?>;"> </span>
+                                <button type="submit" class="btn dark icn-only" <?php echo $task_details->status == '2' ? 'disabled' : '';?>>
                                     <i class="fa fa-check icon-white"></i>
                                 </button>
                             </div>
@@ -256,6 +279,29 @@
                 <!-- END PORTLET-->
             </div>
         </div>
+
+        <!-- ITEM COMPLETE -->
+        <div class="modal fade bs-modal-sm" id="complete-<?php echo $task_details->task_id?>" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                        <h4 class="modal-title">Update Item Info</h4>
+                    </div>
+                    <div class="modal-body"> Are you sure task is already COMPLETE? </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
+                        <a href="<?php echo site_url('admin/task_manager/task_details/complete/'.$task_details->task_id); ?>" type="button" class="btn green">
+                            <span class="ladda-label">Confirm?</span>
+                            <span class="ladda-spinner"></span>
+                        </a>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+        <!-- /.modal -->
 
         <!-- UPLOAD IMAGES -->
         <div class="modal fade bs-modal-md" id="modal-upload_images" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
@@ -299,6 +345,79 @@
                 <!-- /.modal-content -->
             </div>
             <!-- /.modal-dialog -->
+        </div>
+        <!-- /.modal -->
+
+        <!-- SELECT ASSIGN USER -->
+        <div id="todo-members-modal" class="modal fade" role="dialog" aria-labelledby="myModalLabel10" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                        <h4 class="modal-title">Select a Member</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form action="#" class="form-horizontal" role="form">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">Assign a user to the task</label>
+                                <div class="col-md-8">
+                                    <select id="select2_sample2" class="form-control select2 select-height" multiple>
+
+                                        <?php
+                                        if (@$users)
+                                        {
+                                            foreach ($users as $user)
+                                            { ?>
+
+                                        <option value="<?php echo $user->id; ?>"><?php echo $user->fname.' '.$user->lname; ?></option>
+
+                                                <?php
+                                            }
+                                        }
+                                        else
+                                        { ?>
+
+                                        <option value="add_user">Add users first</option>
+
+                                            <?php
+                                        } ?>
+
+                                        <!--
+                                        <optgroup label="Senior Developers">
+                                            <option>Rudy</option>
+                                            <option>Shane</option>
+                                            <option>Sean</option>
+                                        </optgroup>
+                                        <optgroup label="Technical Team">
+                                            <option>Kathy</option>
+                                            <option>Luke</option>
+                                            <option>John</option>
+                                            <option>Darren</option>
+                                        </optgroup>
+                                        <optgroup label="Design Team">
+                                            <option>Bob</option>
+                                            <option>Carolina</option>
+                                            <option>Randy</option>
+                                            <option>Michael</option>
+                                        </optgroup>
+                                        <optgroup label="Testers">
+                                            <option>Chris</option>
+                                            <option>Louis</option>
+                                            <option>Greg</option>
+                                            <option>Ashe</option>
+                                        </optgroup>
+                                        -->
+                                    </select>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn default" data-dismiss="modal" aria-hidden="true">Close</button>
+                        <button class="btn green todo-details-members-modal-submit">Submit</button>
+                    </div>
+                </div>
+            </div>
         </div>
         <!-- /.modal -->
 

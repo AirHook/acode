@@ -93,6 +93,10 @@ class Tasks extends Admin_Controller {
 			$this->data['page_level_styles_plugins'].= '
 				<link href="'.$assets_url.'/assets/global/plugins/bootstrap-summernote/summernote.css" rel="stylesheet" type="text/css" />
 			';
+			// nestable list
+			$this->data['page_level_styles_plugins'].= '
+				<link href="'.$assets_url.'/assets/global/plugins/jquery-nestable/jquery.nestable.css" rel="stylesheet" type="text/css" />
+			';
 
 
 		/****************
@@ -124,6 +128,11 @@ class Tasks extends Admin_Controller {
 			$this->data['page_level_plugins'].= '
 				<script src="'.$assets_url.'/assets/global/plugins/bootstrap-summernote/summernote.min.js" type="text/javascript"></script>
 			';
+			// nestable list
+			$this->data['page_level_plugins'].= '
+				<script src="'.$assets_url.'/assets/global/plugins/jquery-nestable/jquery.nestable.js" type="text/javascript"></script>
+			';
+			
 
 		/****************
 		 * page scripts inserted at <bottom>

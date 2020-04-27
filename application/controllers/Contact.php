@@ -32,7 +32,7 @@ class Contact extends Frontend_Controller {
 
 		// set validation rules
 		$this->form_validation->set_rules('fname', 'Frist Name', 'trim|required');
-		$this->form_validation->set_rules('lname', 'Last Name', 'trim|required|alpha|differs[fname]');
+		$this->form_validation->set_rules('lname', 'Last Name', 'trim|alpha|differs[fname]|required');
 		$this->form_validation->set_rules('state', 'State', 'trim|required');
 		$this->form_validation->set_rules('country', 'Country', 'trim|required');
 		$this->form_validation->set_rules('telephone', 'Telephone', 'required');

@@ -25,9 +25,12 @@ class Projects extends Admin_Controller {
 
 		// lets check for status of webspace and account
 		$this->load->library('task_manager/projects_list');
+		$this->load->library('task_manager/tasks_list');
+		$this->load->library('users/tm_users_list');
 
 		// get the data
 		$this->data['projects'] = $this->projects_list->select();
+		$this->data['users'] = $this->tm_users_list->select();
 
 		/* */
 		// set data variables...
@@ -67,6 +70,10 @@ class Projects extends Admin_Controller {
 			$this->data['page_level_styles_plugins'].= '
 				<link href="'.$assets_url.'/assets/global/plugins/bootstrap-summernote/summernote.css" rel="stylesheet" type="text/css" />
 			';
+			// nestable list
+			$this->data['page_level_styles_plugins'].= '
+				<link href="'.$assets_url.'/assets/global/plugins/jquery-nestable/jquery.nestable.css" rel="stylesheet" type="text/css" />
+			';
 
 
 		/****************
@@ -78,6 +85,7 @@ class Projects extends Admin_Controller {
 			$this->data['page_level_styles'].= '
 				<link href="'.$assets_url.'/assets/apps/css/todo.min.css" rel="stylesheet" type="text/css" />
 			';
+
 
 		/****************
 		 * page js plugins inserted at <bottom>
@@ -94,6 +102,11 @@ class Projects extends Admin_Controller {
 			$this->data['page_level_plugins'].= '
 				<script src="'.$assets_url.'/assets/global/plugins/bootstrap-summernote/summernote.min.js" type="text/javascript"></script>
 			';
+			// nestable list
+			$this->data['page_level_plugins'].= '
+				<script src="'.$assets_url.'/assets/global/plugins/jquery-nestable/jquery.nestable.js" type="text/javascript"></script>
+			';
+
 
 		/****************
 		 * page scripts inserted at <bottom>

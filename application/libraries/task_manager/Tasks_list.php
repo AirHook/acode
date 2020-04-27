@@ -82,12 +82,25 @@ class Tasks_list
 			}
 		}
 
+		// selects
+		$this->DB->select('tm_tasks.*, tm_users.*');
+		$this->DB->select('
+			(CASE
+				WHEN tm_tasks.status = "0" THEN "0"
+				WHEN tm_tasks.status = "1" THEN "0"
+				WHEN tm_tasks.status = "3" THEN "0"
+				ELSE "1"
+			END) AS status_complete
+		');
+
 		// join
 		$this->DB->join('tm_users', 'tm_users.id = tm_tasks.user_id', 'left');
 
 		// order by
-		$this->DB->order_by('date_end_complete', 'asc');
-		$this->DB->order_by('date_end_target', 'desc');
+		$this->DB->order_by('status_complete', 'asc');
+		$this->DB->order_by('seque', 'asc');
+		$this->DB->order_by('date_end_complete', 'desc');
+		$this->DB->order_by('date_end_target', 'asc');
 
 		// get records
 		$query = $this->DB->get('tm_tasks');
@@ -105,6 +118,40 @@ class Tasks_list
 
 			// return the object
 			return $query->result();
+		}
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Select and get the list
+	 *
+	 * List all items as per params intialized
+	 *
+	 * @return	object List or FALSE on failure
+	 */
+	public function max_seque($project_id = '')
+	{
+		if ( ! $project_id)
+		{
+			// nothing more to do...
+			return FALSE;
+		}
+
+		// select
+		$this->DB->select_max('seque', 'max_seque');
+		$this->DB->where('project_id', $project_id);
+		$query = $this->DB->get('tm_tasks');
+
+		$row = $query->row();
+
+		if (isset($row))
+		{
+			return $row->max_seque;
+		}
+		else
+		{
+			return FALSE;
 		}
 	}
 

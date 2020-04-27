@@ -82,10 +82,17 @@ class Projects_list
 			}
 		}
 
-		// join
-		//$this->DB->join('tm_users', 'webspaces.webspace_id = tbladmin.webspace_id', 'left');
+		// selects
+		$this->DB->select('tm_projects.*');
+		$this->DB->select('webspaces.*');
+		$this->DB->select('platform.webspace_name as platform_name');
+
+		// joins
+		$this->DB->join('webspaces', 'webspaces.webspace_id = tm_projects.webspace_id', 'left');
+		$this->DB->join('webspaces platform', 'platform.webspace_slug = tm_projects.platform', 'left');
 
 		// order by
+		$this->DB->order_by('status', 'desc');
 		$this->DB->order_by('date_end', 'asc');
 		$this->DB->order_by('date_start', 'desc');
 

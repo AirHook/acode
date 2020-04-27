@@ -776,7 +776,7 @@
                                                                         else
                                                                         { ?>
 
-                                                                        <li class="hoverable product-form__list-item hide" <?php echo $hide_size_xxl_xl2; ?>>
+                                                                        <li class="hoverable product-form__list-item basix-only" <?php echo $hide_size_xxl_xl2; ?>>
 																			<a href="#how-to-oder" class="<?php echo $a_class; ?>" data-toggle="modal" style="z-index:10;">
 																				<span><?php echo $size->size_name; ?></span>
 																			</a>
