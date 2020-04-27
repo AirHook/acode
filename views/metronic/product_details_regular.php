@@ -400,14 +400,14 @@
 																	$i = 0;
 																	foreach ($get_color_list as $color)
 																	{
-																		/*
+																		/* */
 																		// hide items with no stocks at all
 																		if ( ! $color->with_stocks)
 																		{
 																			$i++;
 																			continue;
 																		}
-																		*/
+																		// */
 
                                                                         // show only public variants
                                                                         if (
@@ -495,6 +495,15 @@
 														{
 															foreach ($get_color_list as $color)
 															{
+                                                                /* */
+                                                                // hide items with no stocks at all
+                                                                if ( ! $color->with_stocks)
+                                                                {
+                                                                    $i++;
+                                                                    continue;
+                                                                }
+                                                                // */
+
                                                                 // show only public variants
                                                                 // AND
                                                                 // show item conditions

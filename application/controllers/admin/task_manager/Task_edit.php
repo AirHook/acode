@@ -4,11 +4,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Task_edit extends Admin_Controller {
 
 	/**
-	 * This Class database object holder
+	 * DB Reference
 	 *
 	 * @var	object
 	 */
-	protected $DB = '';
+	protected $DB;
 
 	// ----------------------------------------------------------------------
 
@@ -32,70 +32,48 @@ class Task_edit extends Admin_Controller {
 	 *
 	 * @return	void
 	 */
-	public function index($project_id = '')
+	public function index()
 	{
-		if ($project_id == '')
+		echo 'Processing...<br />';
+
+		if (
+			! $this->input->post('title')
+			OR ! $this->input->post('description')
+			OR ! $this->input->post('task_id')
+		)
 		{
-			// nothing more to do...
-			// set flash data
-			$this->session->set_flashdata('error', 'no_id_passed');
+			$this->session->set_flashdata('error', 'edit');
 
 			// redirect user
-			redirect('admin/task_manager/projects', 'location');
+			redirect('admin/task_manager/task_details/index/'.$this->input->post('task_id'), 'location');
 		}
 
-		// generate the plugin scripts and css
-		$this->_create_plugin_scripts();
+		// update record
+		$post_ary = $this->input->post();
+		// set necessary variables
+		//$post_ary['account_status'] = '1';
+		// process some variables
+		$post_ary['last_modified'] = time();
+		// unset unneeded variables
+		unset($post_ary['task_id']);
 
-		// load pertinent library/model/helpers
-		$this->load->library('designers/designers_list');
-		$this->load->library('webspaces/webspaces_list');
-		$this->load->library('users/tm_users_list');
-		$this->load->library('form_validation');
-		$this->load->library('task_manager/project_details');
+		$this->DB->where('task_id', $this->input->post('task_id'));
+		$query = $this->DB->update('tm_tasks', $post_ary);
 
-		// set validation rules
-		$this->form_validation->set_rules('status', 'Status', 'trim|required');
-		$this->form_validation->set_rules('name', 'Project Name', 'trim|required');
-		$this->form_validation->set_rules('description', 'Project Description', 'trim|required');
+		//echo $this->DB->last_query(); die();
 
-		if ($this->form_validation->run() == FALSE)
+		// set flash data
+		if ($query)
 		{
-			// get data
-			// get the data
-			$this->data['project_details'] = $this->project_details->initialize(
-				array(
-					'project_id' => $project_id
-				)
-			);
-			$this->data['webspaces'] = $this->webspaces_list->select();
-
-			// set data variables...
-			$this->data['file'] = 'tm_projects_edit';
-			$this->data['page_title'] = 'Task Manager';
-			$this->data['page_description'] = 'Edit project';
-
-			// load views...
-			$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template/template', $this->data);
+			$this->session->set_flashdata('success', 'edit');
 		}
 		else
 		{
-			// grab post data
-			$post_ary = $this->input->post();
-
-			// process some post data
-			$post_ary['webspace_id'] = $this->input->post('webspace_id') ?: '0';
-
-			// update record
-			$this->DB->where('project_id', $project_id);
-			$query = $this->DB->update('tm_projects', $post_ary);
-
-			// set flash data
-			$this->session->set_flashdata('success', 'edit');
-
-			// redirect user
-			redirect('admin/task_manager/projects_edit/index/'.$project_id, 'location');
+			$this->session->set_flashdata('error', 'edit');
 		}
+
+		// redirect user
+		redirect('admin/task_manager/task_details/index/'.$this->input->post('task_id'), 'location');
 	}
 
 	// ----------------------------------------------------------------------
@@ -497,6 +475,8 @@ class Task_edit extends Admin_Controller {
 		$message.= 'TASK: '.$task_details->title;
 		$message.= '<br />';
 		$message.= 'DESC: '.$task_details->description;
+		$message.= '<br /><br />';
+		$message.= site_url('admin/task_manager/projects');
 		$message.= '<br /><br />';
 		$message.= '<br /><br />';
 		$message.= 'Admin';

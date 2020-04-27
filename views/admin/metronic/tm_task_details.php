@@ -60,6 +60,9 @@
                 <div class="todo-head">
 
                     <button data-toggle="modal" href="#complete-<?php echo $task_details->task_id?>" class="btn btn-square btn-sm dark todo-bold todo-inline" style="margin-right:2em;" <?php echo $task_details->status == '2' ? 'disabled' : '';?>>Complete Task</button>
+                    <button data-toggle="modal" href="#todo-task-modal" class="btn btn-square btn-sm grey todo-bold todo-inline" style="margin-right:5px;" <?php echo $task_details->status == '2' ? 'disabled' : '';?>>Edit</button>
+                    <a class="btn btn-secondary-outline font-dark todo-bold todo-inline" href="<?php echo site_url('admin/task_manager/tasks/index/'.$task_details->project_id); ?>">
+                        <i class="fa fa-reply"></i> Back to task list</a>
 
                     <p class="todo-task-modal-title todo-inline">
 
@@ -101,7 +104,7 @@
                      */
                     ?>
                     <h3 class="todo-task-modal-bg">
-                        <?php echo $task_details->title.$task_details->status; ?>
+                        <?php echo $task_details->title; ?>
                     </h3>
                     <?php
                     /*********
@@ -154,7 +157,7 @@
                     <div class="portlet-title">
                         <div class="caption">
                             <i class="icon-bubble font-hide hide"></i>
-                            <span class="caption-subject font-hide bold uppercase">Correspondeces</span>
+                            <span class="caption-subject font-hide bold uppercase">Correspondece and Team Notes</span>
                         </div>
                     </div>
                     <div class="portlet-body" id="chats">
@@ -416,6 +419,45 @@
                         <button class="btn default" data-dismiss="modal" aria-hidden="true">Close</button>
                         <button class="btn green todo-details-members-modal-submit">Submit</button>
                     </div>
+                </div>
+            </div>
+        </div>
+        <!-- /.modal -->
+
+        <!-- EDIT TASK -->
+        <div id="todo-task-modal" class="modal fade" role="dialog" aria-labelledby="myModalLabel10" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content scroller" style="height: 100%;" data-always-visible="1" data-rail-visible="0">
+
+                    <div class="modal-header">
+                        <button type="button" class="close tooltips" data-original-title="Cancel" data-placement="bottom" data-dismiss="modal" aria-hidden="true"></button>
+                        <h4 class="modal-title">Edit Task Details</h4>
+                    </div>
+
+                    <!-- FORM open =========================================================-->
+                    <?php echo form_open(
+                        'admin/task_manager/task_edit'
+                    ); ?>
+
+                    <input type="hidden" name="task_id" value="<?php echo $task_details->task_id; ?>" />
+
+                    <div class="modal-body todo-task-modal-body" style="padding-bottom:30px;">
+                        <h3 class="todo-task-modal-bg">
+                            <input class="form-control todo-task-title" name="title" type="text" value="<?php echo $task_details->title; ?>" placeholder="Task title..." />
+                        </h3>
+                        <p class="todo-task-modal-bg">
+                            <textarea class="form-control todo-task-description" name="description" rows="15" placeholder="Description..."><?php echo $task_details->description; ?></textarea>
+                        </p>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button class="btn default" data-dismiss="modal" aria-hidden="true">Cancel</button>
+                        <button type="submit" class="btn dark">Submit</button>
+                    </div>
+
+                    </form>
+                    <!-- FORM close ========================================================-->
+
                 </div>
             </div>
         </div>

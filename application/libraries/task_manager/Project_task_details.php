@@ -144,7 +144,7 @@ class Project_task_details
 		$this->DB->select('tm_tasks.date_start AS task_date_start');
 		$this->DB->select('tm_tasks.last_modified AS task_last_modified');
 		$this->DB->select('tm_tasks.options AS task_options');
-		$this->DB->select('tm_projects.*');
+		$this->DB->select('tm_projects.project_id, tm_projects.name');
 		$this->DB->select('tm_projects.description AS project_description');
 		$this->DB->select('tm_users.*');
 

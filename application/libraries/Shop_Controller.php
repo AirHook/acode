@@ -292,8 +292,8 @@ class Shop_Controller extends Frontend_Controller {
 		if ($this->webspace_details->options['site_type'] != 'hub_site') $params['view_at_hub'] = FALSE;
 		if ($this->webspace_details->options['site_type'] == 'hub_site') $params['view_at_satellite'] = FALSE;
 		// show items even without stocks at all
-		$params['with_stocks'] = FALSE;
-		$params['group_products'] = FALSE;
+        $params['group_products'] = FALSE;
+		$params['with_stocks'] = $params['group_products'] ? FALSE : TRUE;
 		// set facet searching if needed
 		$params['facets'] = @$_GET ?: array();
 		// others

@@ -10,6 +10,8 @@ class Tasks_add extends Admin_Controller {
 	 */
 	protected $DB;
 
+	// ----------------------------------------------------------------------
+
 	/**
 	 * Constructor
 	 *

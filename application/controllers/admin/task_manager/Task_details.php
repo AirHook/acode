@@ -155,6 +155,8 @@ class Task_details extends Admin_Controller {
 		$message.= '<br />';
 		$message.= 'DESC: '.$task_details->description;
 		$message.= '<br /><br />';
+		$message.= site_url('admin/task_manager/projects');
+		$message.= '<br /><br />';
 		$message.= '<br /><br />';
 		$message.= 'Admin';
 
