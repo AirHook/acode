@@ -88,26 +88,9 @@ class Add_color extends Admin_Controller {
 			$stock_id = $DB->insert_id();
 			$post_ary['st_id'] = $stock_id;
 
-			// additional items for odoo
-			$post_ary['designer_slug'] = $this->product_details->d_url_structure;
-
-			/***********
-			 * Update ODOO
-			 *
-			// pass data to odoo
-			if (
-				ENVIRONMENT !== 'development'
-				&& $post_ary['designer_slug'] === 'basixblacklabel'
-			)
-			{
-				$odoo_response = $this->odoo->post_data($post_ary, 'products', 'edit');
-			}
-			// */
-
-			//echo '<pre>';
-			//print_r($post_ary);
-			//echo $odoo_response;
-			//die('<br />here');
+			// insert new color to physical stock list
+			$DB->set('st_id', $stock_id);
+			$DB->insert('tbl_stock_physical');
 
 			// set flash data
 			$this->session->set_flashdata('color_added', TRUE);

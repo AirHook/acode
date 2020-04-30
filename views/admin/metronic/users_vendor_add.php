@@ -45,7 +45,7 @@
                                 <div class="col-md-4">
                                     <select class="form-control select2me" id="is_active" name="is_active" data-base_url="<?php echo base_url(); ?>" data-token="<?php echo $this->security->get_csrf_hash(); ?>">
                                         <option value="1" <?php echo set_select('is_active', '1', TRUE); ?>>Active</option>
-                                        <option value="0" <?php echo set_select('is_active', '0'); ?>>Suspended</option>
+                                        <option value="0" <?php echo set_select('is_active', '0'); ?>>Inactive</option>
                                     </select>
                                     <p class="help-block small"><em> By default, new vendor is always active. </em></p>
                                     <?php if (form_error('is_active')) { ?>

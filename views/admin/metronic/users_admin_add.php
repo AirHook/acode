@@ -55,7 +55,7 @@
                                 <div class="col-md-4">
                                     <select class="form-control bs-select" name="is_active">
                                         <option value="1" selected="selected">Active</option>
-                                        <option value="0">Suspended</option>
+                                        <option value="0">Inactive</option>
                                     </select>
                                     <cite class="help-block small"> By default, new user is always active. </cite>
                                 </div>

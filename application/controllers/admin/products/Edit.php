@@ -317,9 +317,6 @@ class Edit extends Admin_Controller {
 	 */
 	private function _post_to_variant($post_ary, $prod_id, $post_to_tbl_product)
 	{
-		// load pertinent library/model/helpers
-		$this->load->library('odoo');
-
 		foreach ($post_ary['st_id'] as $st_id)
 		{
 			// new_color_publish
@@ -418,56 +415,6 @@ class Edit extends Admin_Controller {
 			$this->DB->where('st_id', $st_id);
 			$this->DB->update('tbl_stock');
 			// */
-
-			/***********
-			 * Update ODOO									ODOO - disabled
-			 *
-			// additional items for passing data to odoo
-			$post_to_odoo = array_merge($post_to_tbl_product, $post_to_color_ary);
-			if (isset($post_to_odoo['less_discount']))
-			{
-				$post_to_odoo['retail_price'] = $post_to_odoo['less_discount'];
-				unset($post_to_odoo['less_discount']);
-			}
-			// old items
-			$post_to_odoo['cat_slug'] = $this->categories_tree->get_slug($post_to_odoo['cat_id']);
-			$post_to_odoo['subcat_slug'] = $this->categories_tree->get_slug($post_to_odoo['subcat_id']);
-			$post_to_odoo['designer_slug'] = $post_ary['designer_slug'];
-			$post_to_odoo['category_slugs'] = $post_ary['category_slugs'];
-			$post_to_odoo['st_id'] = $st_id;
-			$post_to_odoo['color'] = $post_ary['color_name'][$st_id];
-			$post_to_odoo['color_code'] = $post_ary['color_code'][$st_id];
-			$post_to_odoo['primary_color'] = $post_ary['primary_color'][$st_id];
-			$post_to_odoo['image_url'] = $post_ary['image_url'][$st_id];
-			$post_to_odoo['color_publish_unpublish'] = $post_ary['new_color_publish'][$st_id];
-			$post_to_odoo['color_public_private_view'] = $post_ary['color_publish'][$st_id];
-
-			// unset unnecessary variables
-			unset($post_to_odoo['color_name']);
-			unset($post_to_odoo['new_color_publish']);
-			unset($post_to_odoo['color_publish']);
-			unset($post_to_odoo['vendor_id']);
-			unset($post_to_odoo['image_url_path']);
-			unset($post_to_odoo['des_id']);
-
-			//echo '<pre>';
-			//print_r($post_to_odoo);
-			//die();
-
-			// pass data to odoo
-			if (
-				ENVIRONMENT !== 'development'
-				&& $post_ary['designer_slug'] === 'basixblacklabel'
-			)
-			{
-				$odoo_response = $this->odoo->post_data($post_to_odoo, 'products', 'edit');
-			}
-			// */
-
-			//echo '<pre>';
-			//print_r($post_to_odoo);
-			//echo $odoo_response;
-			//die();
 		}
 	}
 

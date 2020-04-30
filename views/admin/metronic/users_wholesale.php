@@ -98,9 +98,11 @@
                                 </select>
                             </div>
                             <button class="apply_filer_by_designer btn dark hidden-sm hidden-xs" data-page_param="<?php echo $this->uri->segment(4); ?>"> Filter </button>
+                            <a href="<?php echo site_url('admin/users/wholesale/'.$status); ?>" class="apply_filer_by_designer btn default hidden-sm hidden-xs"> Clear Filter </a>
 
                         </div>
                         <button class="apply_filer_by_designer btn dark btn-block margin-top-10 hidden-lg hidden-md" data-page_param="<?php echo $this->uri->segment(4); ?>"> Filter </button>
+                        <a href="<?php echo site_url('admin/users/wholesale/'.$status); ?>" class="apply_filer_by_designer btn dark btn-block margin-top-10 hidden-lg hidden-md"> Clear Filter </a>
 
                     </div>
 
@@ -204,17 +206,17 @@
 
                         <ul class="nav nav-tabs">
                             <li class="<?php echo ($this->uri->segment(4) == 'active' OR $this->uri->segment(5) == 'active') ? 'active' : ''; ?>">
-                                <a href="<?php echo site_url($pre_link.'/users/wholesale/active'); ?>">
+                                <a href="<?php echo site_url($pre_link.'/users/wholesale/active'.($des_slug ? '/index/'.$des_slug : '')); ?>">
                                     <?php echo $this->uri->segment(4) != 'active' ? 'Show' : ''; ?> Active User List
                                 </a>
                             </li>
                             <li class="<?php echo ($this->uri->segment(4) == 'inactive' OR $this->uri->segment(5) == 'inactive') ? 'active' : ''; ?>">
-                                <a href="<?php echo site_url($pre_link.'/users/wholesale/inactive'); ?>">
+                                <a href="<?php echo site_url($pre_link.'/users/wholesale/inactive'.($des_slug ? '/index/'.$des_slug : '')); ?>">
                                     <?php echo $this->uri->segment(4) != 'inactive' ? 'Show' : ''; ?> Inactive User List
                                 </a>
                             </li>
-                            <li class="<?php echo ($this->uri->segment(4) == 'suspended' OR $this->uri->segment(5) == 'suspended') ? 'active' : ''; ?>">
-                                <a href="<?php echo site_url($pre_link.'/users/wholesale/suspended'); ?>">
+                            <li class="hide <?php echo ($this->uri->segment(4) == 'suspended' OR $this->uri->segment(5) == 'suspended') ? 'active' : ''; ?>">
+                                <a href="<?php echo site_url($pre_link.'/users/wholesale/suspended'.($des_slug ? '/index/'.$des_slug : '')); ?>">
                                     <?php echo $this->uri->segment(4) != 'suspended' ? 'Show' : ''; ?> Suspended Users
                                 </a>
                             </li>
@@ -248,7 +250,8 @@
                                 <select class="bs-select form-control selectpicker" id="bulk_actions_select" name="bulk_action" disabled>
                                     <option value="" selected="selected">Bulk Actions</option>
                                     <option value="ac">Activate</option>
-                                    <option value="su">Suspend</option>
+                                    <option value="deac">Set as Inactive</option>
+                                    <option class="hide" value="su">Suspend</option>
                                     <?php
                                     // do not show to level 2 sales users
                                     if (@$role != 'sales' OR @$this->sales_user_details->access_level == '0')
@@ -424,10 +427,11 @@
                                     </a>
                                     <?php } ?>
                                     <?php if ($user->is_active == '0' OR $user->is_active == '1') { ?>
-                                    <!-- Suspend -->
+                                    <!-- Suspend --
                                     <a data-toggle="modal" href="#suspend-<?php echo $user->user_id; ?>" class="tooltips" data-original-title="Suspend">
                                         <i class="fa fa-dot-circle-o font-dark"></i>
                                     </a>
+                                    -->
                                     <?php } ?>
 
                                     <?php
@@ -697,7 +701,30 @@
 					</div>
 					<!-- /.modal -->
 
-					<!-- BULK SUSPEND -->
+					<!-- BULK DEACTIVATE -->
+					<div class="modal fade bs-modal-sm" id="confirm_bulk_actions-su" tabindex="-1" role="dialog" aria-hidden="true">
+						<div class="modal-dialog modal-sm">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+									<h4 class="modal-title">Deactivate!</h4>
+								</div>
+								<div class="modal-body"> Deactivate multiple items? </div>
+								<div class="modal-footer">
+									<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
+									<button onclick="$('#form-wholesale_users_bulk_actions').submit();" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+										<span class="ladda-label">Confirm?</span>
+										<span class="ladda-spinner"></span>
+									</button>
+								</div>
+							</div>
+							<!-- /.modal-content -->
+						</div>
+						<!-- /.modal-dialog -->
+					</div>
+					<!-- /.modal -->
+
+                    <!-- BULK SUSPEND -->
 					<div class="modal fade bs-modal-sm" id="confirm_bulk_actions-su" tabindex="-1" role="dialog" aria-hidden="true">
 						<div class="modal-dialog modal-sm">
 							<div class="modal-content">

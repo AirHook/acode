@@ -113,6 +113,9 @@ class Update_stocks {
 	/**
 	 * Reserve
 	 *
+	 * Reserve stocks from available to onorder while the order is in process
+	 * This is done on checkout submit, etc..
+	 *
 	 * @return	boolean
 	 */
 	public function reserve()
@@ -166,9 +169,8 @@ class Update_stocks {
 		$final_onorder_stock = $onorder_stock + $qty;
 
 		// update records
-		$this->DB->where('st_id', $product->st_id);
-
 		// available stocks
+		$this->DB->where('st_id', $product->st_id);
 		$this->DB->update(
 			'tbl_stock',
 			array(
@@ -176,8 +178,19 @@ class Update_stocks {
 				'options' => json_encode($stocks_options)
 			)
 		);
+
 		// onorder stocks
-		$this->DB->update('tbl_stock_onorder', array($size_label => $final_onorder_stock));
+		if ($product->onorder_st_id)
+		{
+			$this->DB->where('st_id', $product->st_id);
+			$this->DB->update('tbl_stock_onorder', array($size_label => $final_onorder_stock));
+		}
+		else
+		{
+			$this->DB->set('st_id', $product->st_id);
+			$this->DB->set($size_label, $final_onorder_stock);
+			$this->DB->insert('tbl_stock_onorder');
+		}
 
 		return TRUE;
 	}
@@ -185,7 +198,10 @@ class Update_stocks {
 	// --------------------------------------------------------------------
 
 	/**
-	 * Reserve
+	 * Remove
+	 *
+	 * Remove stocks ultimately from physical stocks upon completion of order
+	 * This in turn remove any reserved stocks on onorder
 	 *
 	 * @return	boolean
 	 */
@@ -273,7 +289,11 @@ class Update_stocks {
 	// --------------------------------------------------------------------
 
 	/**
-	 * Reserve
+	 * Return
+	 *
+	 * Returns stocks to available when orders are cancelled or returned
+	 * Cancelled means to return from onorder to available
+	 * Returned means to return to physical and available
 	 *
 	 * @return	boolean
 	 */

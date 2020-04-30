@@ -66,7 +66,7 @@
 							</div>
                         </div>
 
-						<div class="col-lg-3 col-md-4 col-xs-12 pull-right">
+						<div class="col-lg-3 col-md-4 col-xs-12 pull-right" data-st_id="<?php echo $this->product_details->onorder_st_id; ?>">
 							<!-- BEGIN Portlet PORTLET-->
 							<div class="portlet box blue form">
 								<div class="portlet-title">

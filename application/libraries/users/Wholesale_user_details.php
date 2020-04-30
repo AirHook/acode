@@ -43,6 +43,7 @@ class Wholesale_user_details
 	public $email2 = '';
 	public $password = '';
 	public $store_name = '';
+	public $website = '';
 	public $fname = '';
 	public $lname = '';
 
@@ -257,6 +258,7 @@ class Wholesale_user_details
 			$this->password = $row->pword;
 
 			$this->store_name = $row->store_name;
+			$this->website = $row->website;
 			$this->fname = $row->firstname;
 			$this->lname = $row->lastname;
 
@@ -802,6 +804,7 @@ class Wholesale_user_details
 		$this->password = '';
 
 		$this->store_name = '';
+		$this->website = '';
 		$this->fname = '';
 		$this->lname = '';
 

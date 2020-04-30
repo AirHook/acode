@@ -54,7 +54,7 @@
                                 <div class="col-md-4">
                                     <select class="form-control select2me" name="is_active">
                                         <option value="1" <?php echo set_select('is_active', '1', TRUE); ?>>Active</option>
-                                        <option value="0" <?php echo set_select('is_active', '0'); ?>>Suspended</option>
+                                        <option value="0" <?php echo set_select('is_active', '0'); ?>>Inactive</option>
                                     </select>
                                     <cite class="help-block small"> By default, new user is always active. </cite>
                                 </div>
@@ -157,6 +157,18 @@
                                 </label>
                                 <div class="col-md-4">
                                     <input name="store_name" type="text" class="form-control" value="<?php echo set_value('store_name'); ?>" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3">Website
+                                </label>
+                                <div class="col-md-4">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            www.
+                                        </span>
+                                        <input type="text" name="website" class="form-control" value="<?php echo set_value('website'); ?>" />
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-group">

@@ -660,8 +660,20 @@
                     														 * Size Col
                     														 */
                     														?>
-                                                                            <div class="col-xs-4">
-                                                                                <div class="hoverable product-form__list-item">
+                                                                            <div class="col-xs-4" style="padding-right:5px;">
+
+                                                                                <?php if ($qty > 0)
+                                                                                { ?>
+
+                                                                                <span class="tooltips" data-original-title="Available Stock" style="display:inline-block;float:right;position:relative;top:7px;color:red;margin-left:7px;">
+                                                                                    (<?php echo $qty; ?>)
+                                                                                </span>
+
+                                                                                    <?php
+                                                                                } ?>
+
+                                                                                <div class="hoverable product-form__list-item" style="display:inline-block;">
+
                                                                                     <a href="javascript:void();" class="input-control parent-select product-form__product-size unavailable product-form__product-size--out-of-stock product_details-size_box <?php echo $size_class; ?>" style="z-index:10;" data-size_key="<?php echo $skey; ?>" data-dsize="<?php echo $size; ?>" data-available_qty="<?php echo $qty ?: 30; ?>">
         																				<span>
                                                                                             <?php echo $size_html; ?>
@@ -681,8 +693,10 @@
                                                                                     <input type="hidden" name="custom_order[<?php echo $skey; ?>]" value="1" />
                                                                                         <?php
                                                                                     } ?>
+
                                                                                 </div>
                                                                                 <input type="hidden" class="size_key" name="size[<?php echo $skey; ?>]" value="" />
+
                                                                             </div>
 
                                                                             <?php

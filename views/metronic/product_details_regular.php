@@ -753,6 +753,17 @@
     																		$('.hoverable.product-form__list-item').css('background-color','transparent');
     																		$(this).css('background-color','#ccc');
     																	">
+
+                                                                        <?php if ($this->session->userdata('user_cat') == 'wholesale')
+                                                                        { ?>
+
+                                                                        <span class="tooltips" data-original-title="Available Stock" style="display:inline-block;float:right;position:relative;top:7px;color:red;margin-left:7px;">
+                                                                            ( <?php echo $check_stock[$size_stock]; ?> )
+                                                                        </span>
+
+                                                                            <?php
+                                                                        } ?>
+
     																		<a href="javascript:void();" class="<?php echo $a_class; ?>" style="z-index:10;">
     																			<span><?php echo $size->size_name; ?></span>
     																		</a>

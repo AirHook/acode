@@ -45,7 +45,7 @@
                                 <div class="col-md-4">
                                     <select class="form-control bs-select" name="is_active">
                                         <option value="1" <?php echo set_select('is_active', '1', TRUE); ?>>Active</option>
-                                        <option value="0" <?php echo set_select('is_active', '0'); ?>>Suspended</option>
+                                        <option value="0" <?php echo set_select('is_active', '0'); ?>>Inactive</option>
                                     </select>
                                     <cite class="help-block small font-red-mint"> <?php echo form_error('is_active'); ?> </cite>
                                     <cite class="help-block small"> By default, new user is always active. </cite>

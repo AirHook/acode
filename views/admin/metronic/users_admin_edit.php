@@ -62,7 +62,7 @@
                                 <div class="col-md-4">
                                     <select class="form-control bs-select" name="is_active">
                                         <option value="1" <?php echo $this->admin_user_details->status == '1' ? 'selected="selected"' : ''; ?>>Active</option>
-                                        <option value="0" <?php echo $this->admin_user_details->status == '0' ? 'selected="selected"' : ''; ?>>Suspended</option>
+                                        <option value="0" <?php echo $this->admin_user_details->status == '0' ? 'selected="selected"' : ''; ?>>Inactive</option>
                                     </select>
                                     <cite class="help-block font-red-mint small"> <?php echo form_error('is_active'); ?> </cite>
                                 </div>

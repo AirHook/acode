@@ -68,7 +68,7 @@
                                 <div class="col-md-4">
                                     <select class="form-control select2me" name="is_active">
                                         <option value="1" <?php echo $this->vendor_user_details->status === '1' ? 'selected="selected"' : ''; ?>>Active</option>
-                                        <option value="0" <?php echo $this->vendor_user_details->status === '0' ? 'selected="selected"' : ''; ?>>Suspended</option>
+                                        <option value="0" <?php echo $this->vendor_user_details->status === '0' ? 'selected="selected"' : ''; ?>>Inactive</option>
                                     </select>
                                     <?php if (form_error('is_active')) { ?>
                                     <cite class="help-block small font-red-mint"> <?php echo form_error('is_active'); ?> </cite>

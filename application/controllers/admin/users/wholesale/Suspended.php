@@ -55,6 +55,7 @@ class Suspended extends Admin_Controller {
 
 		// set active items
 		$this->data['des_slug'] = !is_numeric($des_slug) ? $des_slug : '';
+		$this->data['status'] = 'suspended';
 
 		// count all records
 		$DB = $this->load->database('instyle', TRUE);

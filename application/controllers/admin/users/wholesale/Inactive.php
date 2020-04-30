@@ -55,6 +55,7 @@ class Inactive extends Admin_Controller {
 
 		// set active items
 		$this->data['des_slug'] = !is_numeric($des_slug) ? $des_slug : '';
+		$this->data['status'] = 'inactive';
 
 		// count all records
 		$DB = $this->load->database('instyle', TRUE);

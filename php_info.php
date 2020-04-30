@@ -10,7 +10,7 @@
   </head>
   <body>
     <p>
-      The browser you're using is 
+      The browser you're using is
       <?php echo $_SERVER['HTTP_USER_AGENT']; ?>
     </p>
     <p>
@@ -23,4 +23,3 @@
     <?php phpinfo(); ?>
   </body>
 </html>
-	

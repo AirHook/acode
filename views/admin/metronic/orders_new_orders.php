@@ -479,7 +479,7 @@
 			                                    </a>
 												<?php } ?>
 
-												<?php if ($order->status == '5' OR $order->status == '4' OR $order->status == '6') { ?>
+												<?php if ($order->status == '5') { ?>
 												<!-- Complete -->
 			                                    <a data-toggle="modal" href="#complete-<?php echo $order->order_id; ?>" class="tooltips" data-original-title="Complete Order">
 			                                        <i class="fa fa-check font-dark"></i>

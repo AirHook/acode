@@ -374,6 +374,7 @@ class Index extends Admin_Controller {
 				// */
 
 				/**
+				// LINK CATEGORIES
 				 * Link designer and categories where necessary
 				 */
 				// for each category
@@ -415,6 +416,7 @@ class Index extends Admin_Controller {
 				// */
 
 				/**
+				// ADD/UPDATE PRODUCT VARIANTS/COLORS
 				 * Process the variant part of the product
 				 */
 				// process color
@@ -479,7 +481,8 @@ class Index extends Admin_Controller {
 
 					// set last modified time for physical stocks
 					$last_modified = time();
-					$post_ary_size['options'] = json_encode(array('last_modified'=>$last_modified));
+					$post_ary_variant['options'] = json_encode(array('last_modified'=>$last_modified));
+					//$post_ary_size['options'] = json_encode(array('last_modified'=>$last_modified));
 				}
 
 				/*

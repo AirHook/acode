@@ -66,7 +66,7 @@
                                 <div class="col-md-4">
                                     <select class="form-control select2me" name="is_active">
                                         <option value="1" <?php echo $this->wholesale_user_details->status === '1' ? 'selected="selected"' : ''; ?>>Active</option>
-                                        <option value="0" <?php echo $this->wholesale_user_details->status === '0' ? 'selected="selected"' : ''; ?>>Suspended</option>
+                                        <option value="0" <?php echo $this->wholesale_user_details->status === '0' ? 'selected="selected"' : ''; ?>>Inactive</option>
                                     </select>
                                 </div>
                             </div>
@@ -155,6 +155,18 @@
                                 </label>
                                 <div class="col-md-4">
                                     <input name="store_name" type="text" class="form-control" value="<?php echo $this->wholesale_user_details->store_name; ?>" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3">Website
+                                </label>
+                                <div class="col-md-4">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            www.
+                                        </span>
+                                        <input type="text" name="website" class="form-control" value="<?php echo $this->wholesale_user_details->website; ?>" />
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-group">

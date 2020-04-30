@@ -256,6 +256,7 @@ class Product_details
 
 	// ONORDER STOCK
 	// size mode 0
+	public $onorder_st_id = '';
 	public $onorder_ss = 0;
 	public $onorder_sm = 0;
 	public $onorder_sl = 0;
@@ -286,6 +287,7 @@ class Product_details
 
 	// PHYSICAL STOCK
 	// size mode 0
+	public $physical_st_id = '';
 	public $physical_ss = 0;
 	public $physical_sm = 0;
 	public $physical_sl = 0;
@@ -411,6 +413,7 @@ class Product_details
 			tbl_stock.size_sonesizefitsall
 		');
 		$this->DB->select('
+			tso.st_id AS onorder_st_id,
 			tso.size_ss AS onorder_ss, tso.size_sm AS onorder_sm,
 			tso.size_sl AS onorder_sl, tso.size_sxl AS onorder_sxl,
 			tso.size_sxxl AS onorder_sxxl, tso.size_sxl1 AS onorder_sxl1,
@@ -426,6 +429,7 @@ class Product_details
 			tso.size_sonesizefitsall AS onorder_sonesizefitsall
 		');
 		$this->DB->select('
+			tsp.st_id AS physical_st_id,
 			tsp.size_ss AS physical_ss, tsp.size_sm AS physical_sm,
 			tsp.size_sl AS physical_sl, tsp.size_sxl AS physical_sxl,
 			tsp.size_sxxl AS physical_sxxl, tsp.size_sxl1 AS physical_sxl1,
@@ -637,6 +641,7 @@ class Product_details
 			$this->size_sonesizefitsall = $row->size_sonesizefitsall;
 
 			// ONORDER SIZES
+			$this->onorder_st_id = $row->onorder_st_id;
 			$this->onorder_ss = $row->onorder_ss;
 			$this->onorder_sm = $row->onorder_sm;
 			$this->onorder_sl = $row->onorder_sl;
@@ -662,6 +667,7 @@ class Product_details
 			$this->onorder_sonesizefitsall = $row->onorder_sonesizefitsall;
 
 			// PHYSICAL SIZES
+			$this->physical_st_id = $row->physical_st_id;
 			$this->physical_ss = $row->physical_ss;
 			$this->physical_sm = $row->physical_sm;
 			$this->physical_sl = $row->physical_sl;
@@ -1331,6 +1337,7 @@ class Product_details
 		$this->size_sml = 0;
 		$this->size_sonesizefitsall = 0;
 		// ONORDER
+		$this->onorder_st_id = '';
 		$this->onorder_0 = 0;
 		$this->onorder_2 = 0;
 		$this->onorder_4 = 0;
@@ -1355,6 +1362,7 @@ class Product_details
 		$this->onorder_sml = 0;
 		$this->onorder_sonesizefitsall = 0;
 		// PHYSICAL
+		$this->physical_st_id = '';
 		$this->physical_0 = 0;
 		$this->physical_2 = 0;
 		$this->physical_4 = 0;
