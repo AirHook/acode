@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Is_public extends Admin_Controller {
+class Clearance_cs_only extends Admin_Controller {
 
 	/**
 	 * Constructor
@@ -41,7 +41,7 @@ class Is_public extends Admin_Controller {
 		$this->data['url_segs'] = $uri_string;
 		array_shift($this->data['url_segs']); // admin
 		array_shift($this->data['url_segs']); // products
-		array_shift($this->data['url_segs']); // index/all/private/unpublished/instock/onorder/clearance/by_vendor
+		array_shift($this->data['url_segs']); // index/all/private/unpublished/instock/onorder/clearance/by_vendor/clearance_cs_only
 		array_shift($this->data['url_segs']); // index
 
 		// we need a real variable to process some calculations
@@ -83,6 +83,7 @@ class Is_public extends Admin_Controller {
 			);
 		}
 		$this->data['number_of_categories'] = $this->categories_tree->row_count;
+
 
 		// get the last segment which will serve as the category_slug in reference for the product list
 		if (count($url_segs) > 0)
@@ -127,16 +128,16 @@ class Is_public extends Admin_Controller {
 			{
 				$redirect_url =
 					$prev_url_segs
-					? 'admin/products/is_public/index'.$prev_url_segs
-					: 'admin/products/is_public/index/basixblacklabel/womens_apparel/dresses/evening_dresses'
+					? 'admin/products/clearance_cs_only/index'.$prev_url_segs
+					: 'admin/products/clearance_cs_only/index/basixblacklabel/womens_apparel/dresses/evening_dresses'
 				;
 			}
 			else
 			{
 				$redirect_url =
 					$prev_url_segs
-					? 'admin/products/is_public/index'.$prev_url_segs
-					: 'admin/products/is_public/index/womens_apparel'
+					? 'admin/products/clearance_cs_only/index'.$prev_url_segs
+					: 'admin/products/clearance_cs_only/index/womens_apparel'
 				;
 			}
 
@@ -158,11 +159,10 @@ class Is_public extends Admin_Controller {
 		}
 		else $where['tbl_product.categories LIKE'] = $category_id;
 
-		$where['tbl_product.public'] = 'Y';
-		$where['tbl_product.publish'] = '1';
+		$where['tbl_stock.options LIKE'] = '"clearance_consumer_only":"1"';
 
 		// get the products list and total count
-		$params['show_private'] = FALSE; // all items general public (Y) - N for private
+		$params['show_private'] = TRUE; // all items general public (Y) - N for private
 		$params['view_status'] = 'ALL'; // all items view status (Y, Y1, Y2, N)
 		$params['view_at_hub'] = TRUE; // all items general public at hub site
 		$params['view_at_satellite'] = TRUE; // all items publis at satellite site
@@ -170,8 +170,8 @@ class Is_public extends Admin_Controller {
 		$params['variant_view_at_hub'] = TRUE; // variant level public at hub site
 		$params['variant_view_at_satellite'] = TRUE; // varian level public at satellite site
 		$params['with_stocks'] = FALSE; // Show all with and without stocks
-		$params['group_products'] = TRUE; // group per product number or per variant
-		$params['special_sale'] = FALSE; // special sale items only
+		$params['group_products'] = FALSE; // group per product number or per variant
+		$params['special_sale'] = TRUE; // special sale items only
 		$params['pagination'] = $this->data['page']; // get all in one query
 		$this->load->library('products/products_list', $params);
 		$this->data['products'] = $this->products_list->select(
@@ -187,7 +187,7 @@ class Is_public extends Admin_Controller {
 
 		// need to show loading at start
 		$this->data['show_loading'] = FALSE;
-		$this->data['page_param'] = 'is_public';
+		$this->data['page_param'] = 'clearance_cs_only';
 
 		// enable pagination
 		$this->_set_pagination($this->data['count_all'], $this->data['limit']);
@@ -246,7 +246,7 @@ class Is_public extends Admin_Controller {
 		$config['cur_tag_open'] = '<li class="active"><a href="javascript:;">';
 		$config['cur_tag_close'] = '</a></li>';
 		$config['first_link'] = '<i class="fa fa-angle-double-left"></i>';
-		$config['first_url'] = site_url('admin/products/is_public/index/womens_apparel');
+		$config['first_url'] = site_url('admin/products/clearance/index/womens_apparel');
 		$config['first_tag_open'] = '<li>';
 		$config['first_tag_close'] = '</li>';
 		$config['last_link'] = '<i class="fa fa-angle-double-right"></i>';
@@ -358,9 +358,9 @@ class Is_public extends Admin_Controller {
 			$this->data['page_level_scripts'].= '
 				<script src="'.$assets_url.'/assets/pages/scripts/components-bootstrap-select.min.js" type="text/javascript"></script>
 			';
-			// handle datatable and form validation
+			// handle scripts
 			$this->data['page_level_scripts'].= '
-				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/table-datatables-product_list.js" type="text/javascript"></script>
+				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/table-datatables-product_list_no_nl.js" type="text/javascript"></script>
 			';
 	}
 

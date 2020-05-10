@@ -157,6 +157,7 @@ class Get_wholesale_login_details extends CI_Model {
 		}
 
 		// get records
+		$this->DB->query('SET SESSION group_concat_max_len = 1000000');
 		$this->DB->select('
 			tbl_login_detail_wholesale.create_date AS xdate,
 			tbl_login_detail_wholesale.create_time AS xtime

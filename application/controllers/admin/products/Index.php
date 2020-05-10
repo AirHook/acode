@@ -23,7 +23,7 @@ class Index extends Admin_Controller {
 	public function index()
 	{
 		// defauls to all dresses under womens apparel
-		redirect('admin/products/all');
+		redirect('admin/products/all', 'location');
 
 		// generate the plugin scripts and css
 		$this->_create_plugin_scripts();
@@ -39,7 +39,7 @@ class Index extends Admin_Controller {
 
 		// get some data
 		$this->data['designers'] = $this->designers_list->select();
-		$this->data['view_as'] = $this->session->userdata('view_as') ?: 'products_list'; // products_grid, products_list
+		$this->data['view_as'] = $this->session->userdata('view_as') ?: 'products_nestable_list'; // products_grid, products_list, products_nestable_list
 		$this->data['order_by'] = $this->session->userdata('order_by') ?: 'prod_date';
 
 		// for categories, we check conditions of site type
@@ -96,7 +96,7 @@ class Index extends Admin_Controller {
 		else
 		{
 			// defauls to all dresses under womens apparel
-			redirect($this->config->slash_item('admin_folder').'products/index/womens_apparel');
+			redirect('admin/products/index/womens_apparel');
 			//$this->data['active_designer'] = FALSE;
 			//$this->data['active_category'] = 'womens_apparel';
 		}

@@ -26,12 +26,20 @@ class Tasks_list
 	public $row_count = 0;
 
 	/**
+	 * Count of open task
+	 * Based on input params
+	 *
+	 * @var	integer
+	 */
+	public $open_tasks = 0;
+
+
+	/**
 	 * This Class database object holder
 	 *
 	 * @var	object
 	 */
 	protected $DB = '';
-
 
 	/**
 	 * CI Singleton
@@ -92,6 +100,9 @@ class Tasks_list
 				ELSE "1"
 			END) AS status_complete
 		');
+		$this->DB->select('
+			(SELECT COUNT(*) FROM tm_tasks WHERE tm_tasks.status = "0" OR tm_tasks.status = "1" OR tm_tasks.status = "3") AS remaining_tasks
+		');
 
 		// join
 		$this->DB->join('tm_users', 'tm_users.id = tm_tasks.user_id', 'left');
@@ -115,6 +126,25 @@ class Tasks_list
 		else
 		{
 			$this->row_count = $query->num_rows();
+
+			// let's get the open tasks
+			$this->DB->select('COUNT(*) AS count');
+			if ( ! empty($where))
+			{
+				foreach ($where as $key => $val)
+				{
+					if ($val !== '')
+					{
+						$this->DB->where($key, $val);
+					}
+				}
+			}
+			$this->DB->where('(tm_tasks.status = "0" OR tm_tasks.status = "1" OR tm_tasks.status = "3")');
+			$q2 = $this->DB->get('tm_tasks');
+			$r2	= $q2->row();
+			$this->open_tasks = $r2->count;
+
+			//echo $this->DB->last_query(); die();
 
 			// return the object
 			return $query->result();

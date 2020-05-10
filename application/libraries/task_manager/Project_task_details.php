@@ -65,10 +65,18 @@ class Project_task_details
 	 *
 	 * @var	string
 	 */
+	public $date_created = '';
 	public $date_start = '';
 	public $date_end_target = '';
 	public $date_end_complete = '';
 	public $last_modified = '';
+
+	/**
+	 * Task Description
+	 *
+	 * @var	string
+	 */
+	public $website = '';
 
 	/**
 	 * Status
@@ -141,15 +149,18 @@ class Project_task_details
 		// set selects
 		$this->DB->select('tm_tasks.*');
 		$this->DB->select('tm_tasks.status as task_status');
+		$this->DB->select('tm_tasks.date_created AS task_date_created');
 		$this->DB->select('tm_tasks.date_start AS task_date_start');
 		$this->DB->select('tm_tasks.last_modified AS task_last_modified');
 		$this->DB->select('tm_tasks.options AS task_options');
 		$this->DB->select('tm_projects.project_id, tm_projects.name');
+		$this->DB->select('webspaces.webspace_name');
 		$this->DB->select('tm_projects.description AS project_description');
 		$this->DB->select('tm_users.*');
 
 		// join
 		$this->DB->join('tm_projects', 'tm_projects.project_id = tm_tasks.project_id', 'left');
+		$this->DB->join('webspaces', 'webspaces.webspace_id = tm_projects.webspace_id', 'left');
 		$this->DB->join('tm_users', 'tm_users.id = tm_tasks.user_id', 'left');
 
 		// order by
@@ -177,10 +188,12 @@ class Project_task_details
 			$this->email = $row->email;
 			$this->fname = $row->fname;
 			$this->lname = $row->lname;
+			$this->date_created = $row->task_date_created;
 			$this->date_start = $row->task_date_start;
 			$this->date_end_target = $row->date_end_target;
 			$this->date_end_complete = $row->date_end_complete;
 			$this->last_modified = $row->task_last_modified;
+			$this->website = $row->webspace_name;
 			$this->status = $row->task_status;
 			$this->urgent = $row->urgent;
 			$this->options = $row->task_options != '' ? json_decode($row->task_options , TRUE) : array();

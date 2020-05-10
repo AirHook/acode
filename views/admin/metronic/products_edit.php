@@ -171,7 +171,7 @@
 													</div>
 												</div>
 											</div>
-											<div class="form-group">
+											<div class="form-group hide">
 												<label class="control-label col-md-4">Sequence:</label>
 												<div class="col-md-8">
 													<input type="text" class="form-control" name="seque" value="<?php echo $this->product_details->seque; ?>" />

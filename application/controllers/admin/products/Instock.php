@@ -61,7 +61,7 @@ class Instock extends Admin_Controller {
 
 		// get some data
 		$this->data['designers'] = $this->designers_list->select();
-		$this->data['view_as'] = $this->session->userdata('view_as') ?: 'products_list'; // products_grid, products_list
+		$this->data['view_as'] = $this->session->userdata('view_as') ?: 'products_nestable_list'; // products_grid, products_list, products_nestable_list
 		$this->data['order_by'] = $this->session->userdata('order_by') ?: 'prod_date';
 
 		// for categories, we check conditions of site type
@@ -128,7 +128,7 @@ class Instock extends Admin_Controller {
 				$redirect_url =
 					$prev_url_segs
 					? 'admin/products/instock/index'.$prev_url_segs
-					: 'admin/products/instock/index/basixblacklabel/womens_apparel'
+					: 'admin/products/instock/index/basixblacklabel/womens_apparel/dresses/evening_dresses'
 				;
 			}
 			else
@@ -145,6 +145,7 @@ class Instock extends Admin_Controller {
 
 		// get respective active category ID for use on product list where condition
 		$category_id = $this->categories_tree->get_id($this->data['active_category']);
+		$this->data['active_category_id'] = $category_id;
 
 		// set product list where condition
 		if ($this->data['active_designer'] !== FALSE)
@@ -183,6 +184,7 @@ class Instock extends Admin_Controller {
 
 		// need to show loading at start
 		$this->data['show_loading'] = FALSE;
+		$this->data['page_param'] = 'instock';
 
 		// enable pagination
 		$this->_set_pagination($this->data['count_all'], $this->data['limit']);
@@ -290,11 +292,17 @@ class Instock extends Admin_Controller {
 				<link href="'.$assets_url.'/assets/global/plugins/datatables/datatables.min.css" rel="stylesheet" type="text/css" />
 				<link href="'.$assets_url.'/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css" rel="stylesheet" type="text/css" />
 			';
+			// nestable list
+			$this->data['page_level_styles_plugins'].= '
+				<link href="'.$assets_url.'/assets/global/plugins/jquery-nestable/jquery.nestable.css" rel="stylesheet" type="text/css" />
+			';
+
 
 		/****************
 		 * page style sheets inserted at <head>
 		 */
 		$this->data['page_level_styles'] = '';
+
 
 		/****************
 		 * page js plugins inserted at <bottom>
@@ -327,6 +335,11 @@ class Instock extends Admin_Controller {
 				<script src="'.$assets_url.'/assets/global/plugins/datatables/datatables.min.js" type="text/javascript"></script>
 				<script src="'.$assets_url.'/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>
 			';
+			// nestable list
+			$this->data['page_level_plugins'].= '
+				<script src="'.$assets_url.'/assets/global/plugins/jquery-nestable/jquery.nestable.js" type="text/javascript"></script>
+			';
+
 
 		/****************
 		 * page scripts inserted at <bottom>

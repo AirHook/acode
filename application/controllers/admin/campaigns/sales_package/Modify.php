@@ -123,16 +123,18 @@ class Modify extends Admin_Controller {
 			$designer_slug =
 				@$this->data['sa_options']['des_slug']
 				?: (
-					@$this->sales_user_details->designer
+					@$admin_sales_details->designer // only on sales user logged in
 					?: (
 						@$this->webspace_details->options['site_type'] != 'hub_site'
 						? $this->webspace_details->slug // can only use if sat_site
-						: ''
+						: @$this->webspace_details->options['primary_designer']
 						// we have to trap the chance that the options didn't capture the des_slug
 						// setting it to blank for now
 					)
 				)
 			;
+
+			//echo $designer_slug; die();
 
 			// get the designer name
 			$this->data['designer_details'] = $this->designer_details->initialize(

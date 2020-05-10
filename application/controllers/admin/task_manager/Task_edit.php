@@ -257,8 +257,14 @@ class Task_edit extends Admin_Controller {
 			}
 		}
 
-		// notify admin of accept
-		$this->_notify_admin($task_id, 'unaccept');
+		// get the data
+		$this->load->library('task_manager/project_task_details');
+		$task_details = $this->project_task_details->initialize(
+			array(
+				'task_id' => $task_id
+			)
+		);
+		$user = $task_details->fname.' '.$task_details->lname;
 
 		// update records
 		$this->DB->set('last_modified', time());
@@ -267,6 +273,9 @@ class Task_edit extends Admin_Controller {
 		$this->DB->set('user_id', '0');
 		$this->DB->where('task_id', $task_id);
 		$this->DB->update('tm_tasks');
+
+		// notify admin of accept
+		$this->_notify_admin($task_id, 'unaccept', $user);
 
 		// set flash data
 		$this->session->set_flashdata('success', 'edit');
@@ -284,6 +293,8 @@ class Task_edit extends Admin_Controller {
 	 */
 	public function accept($task_id = '', $project_id = '', $user_id = '')
 	{
+		$this->output->enable_profiler(FALSE);
+
 		if (
 			$task_id == ''
 			OR $project_id == ''
@@ -296,7 +307,9 @@ class Task_edit extends Admin_Controller {
 		}
 
 		// update records
-		$this->DB->set('last_modified', time());
+		$this_time = time();
+		$this->DB->set('last_modified', $this_time);
+		$this->DB->set('date_start', $this_time);
 		$this->DB->set('status', '1');
 		$this->DB->set('user_id', $user_id);
 		$this->DB->where('task_id', $task_id);
@@ -343,9 +356,11 @@ class Task_edit extends Admin_Controller {
 		}
 
 		// update records
-		$this->DB->set('last_modified', time());
+		$this_time = time();
+		$this->DB->set('last_modified', $this_time);
+		$this->DB->set('date_end_complete', $this_time);
 		$this->DB->set('status', '2'); // '2' for complete
-		$this->DB->set('urgent', '0'); // retore urgent status to normal
+		$this->DB->set('urgent', '0'); // restore urgent status to normal
 		$this->DB->where('task_id', $task_id);
 		$this->DB->update('tm_tasks');
 
@@ -368,6 +383,8 @@ class Task_edit extends Admin_Controller {
 	 */
 	public function assign($user_id = '')
 	{
+		$this->output->enable_profiler(FALSE);
+
 		if (
 			$user_id == ''
 			OR ! $this->input->post()
@@ -396,12 +413,14 @@ class Task_edit extends Admin_Controller {
 	// ----------------------------------------------------------------------
 
 	/**
-	 * Method Assign
+	 * Method Set Target Date to Complete
 	 *
 	 * @return	void
 	 */
 	public function due_date()
 	{
+		$this->output->enable_profiler(FALSE);
+
 		if ( ! $this->input->post())
 		{
 			// response
@@ -430,7 +449,7 @@ class Task_edit extends Admin_Controller {
 	 *
 	 * @return	void
 	 */
-	public function _notify_admin($task_id = '', $status = '')
+	public function _notify_admin($task_id = '', $status = '', $user = '')
 	{
 		if (
 			$task_id == ''
@@ -459,21 +478,30 @@ class Task_edit extends Admin_Controller {
 		switch ($status)
 		{
 			case 'unaccept':
-				$message.= $task_details->fname.' '.$task_details->lname;
+				$status_text = 'unaccepted';
+				$message.= $user;
 				$message.= '... has unaccepted the task below:';
 			break;
 			case 'accept':
+				$status_text = 'accepted';
 				$message.= $task_details->fname.' '.$task_details->lname;
 				$message.= '... has accepted the task below:';
 			break;
 			case 'complete':
-				$message.= 'Below task is already complete:';
+				$status_text = 'completed';
+				$message.= 'Below task is complete:';
 			break;
 		}
 
 		$message.= '<br /><br />';
-		$message.= 'TASK: '.$task_details->title;
-		$message.= '<br />';
+		$message.= 'TASK NAME: '.$task_details->title;
+		$message.= '<br /><br />';
+		$message.= 'DATE CREATED: '.($task_details->date_created ? date('F j, Y', $task_details->date_created) : '').'<br />';
+		$message.= 'DATE STARTED: '.($task_details->date_start ? date('F j, Y', $task_details->date_start) : '').'<br />';
+		$message.= 'DATE COMPLETED: '.($task_details->date_end_complete ? date('F j, Y', $task_details->date_end_complete) : '');
+		$message.= '<br /><br />';
+		$message.= 'AFFECTED WEBSITE: '.$task_details->website;
+		$message.= '<br /><br />';
 		$message.= 'DESC: '.$task_details->description;
 		$message.= '<br /><br />';
 		$message.= site_url('admin/task_manager/projects');
@@ -482,10 +510,10 @@ class Task_edit extends Admin_Controller {
 		$message.= 'Admin';
 
 		$this->email->from($this->webspace_details->info_email, $this->webspace_details->name);
-		$this->email->to($this->webspace_details->info_email);
+		$this->email->to('joe@rcpixel.com');
 		$this->email->bcc($this->config->item('dev1_email'));
 
-		$this->email->subject('Task Manager Action - '.strtoupper($status));
+		$this->email->subject('Task Manager - '.strtoupper($status_text).' Task Notification');
 		$this->email->message($message);
 
 		$this->email->send();

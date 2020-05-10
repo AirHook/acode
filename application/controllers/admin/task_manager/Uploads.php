@@ -91,6 +91,7 @@ class Uploads extends Admin_Controller {
 				array_push($attachments, $this->image_upload->media_lib_id);
 
 				// update records
+				$this->DB->set('last_modified', $this_time);
 				$this->DB->set('attachments', json_encode($attachments));
 				$this->DB->where('task_id', $task_id);
 				$q2 = $this->DB->update('tm_tasks');

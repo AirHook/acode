@@ -20,7 +20,7 @@ class Send extends Admin_Controller {
 	 *
 	 * @return	void
 	 */
-	public function index($id = '')
+	public function index($id = '', $user_id = '')
 	{
 		if ( ! $id)
 		{
@@ -42,10 +42,19 @@ class Send extends Admin_Controller {
 		$this->load->library('products/product_details');
 		$this->load->library('designers/designers_list');
 		$this->load->library('categories/categories_tree');
+		$this->load->library('users/wholesale_user_details');
 		$this->load->library('users/wholesale_users_list');
 		$this->load->library('users/sales_user_details');
 		$this->load->library('color_list');
 		$this->load->library('form_validation');
+
+		// check for presence of wholesale user_id coming from
+		// create sales package by product clicks report
+		$this->data['ws_user_details'] = $this->wholesale_user_details->initialize(
+			array(
+				'user_id' => $user_id
+			)
+		);
 
 		// initialize sales package properties
 		$this->data['sa_details'] = $this->sales_package_details->initialize(
@@ -89,6 +98,8 @@ class Send extends Admin_Controller {
 		// limits and per page
 		$per_page = 20;
 		$limit = $per_page > 0 ? array($per_page) : array();
+
+		// active user list
 		// where clauses
 		$where['tbluser_data_wholesale.is_active'] = '1';
 		if ($this->session->admin_sales_loggedin)

@@ -147,6 +147,12 @@
 				<br />
 			</td>
 		</tr>
+		<tr>
+			<td style="padding:0 0 20px 30px;">
+				<br />
+					Click <a href="<?php echo site_url('admin/campaigns/sales_pacakge/create/by_product_clicks_report'); ?>?date=<?php echo $wholesale_user->xdate; ?>&user=<?php echo $wholesale_user->email; ?>">HERE</a> to send user package offer of items clicked.
+			</td>
+		</tr>
 
 				<?php
 				// let's make an array of the wholesale user possibly having more than one visit a day

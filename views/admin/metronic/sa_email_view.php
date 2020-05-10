@@ -88,19 +88,30 @@
 								foreach($sa_items as $item)
 								{
 									// get product details
-									$exp = explode('_', $item);
-									$product = $this->product_details->initialize(
-										array(
-											'tbl_product.prod_no' => $exp[0],
-											'color_code' => $exp[1]
-										)
-									);
+									// either item is a prod_no only or the complete style number
+									// consider both
+									$product = $this->product_details->initialize(array('tbl_product.prod_no' => $item));
+									if ( ! $product)
+									{
+										$exp = explode('_', $item);
+										$product = $this->product_details->initialize(
+											array(
+												'tbl_product.prod_no' => $exp[0],
+												'color_code' => $exp[1]
+											)
+										);
+										$prod_no = $exp[0];
+										$color_code = $exp[1];
+									}
+									else
+									{
+										$prod_no = $product->prod_no;
+										$color_code = $product->color_code;
+									}
 
 									// set image paths
 									// the new way relating records with media library
-									$style_no = $item;
-									$prod_no = $exp[0];
-									$color_code = $exp[1];
+									$style_no = $prod_no.'_'.$color_code;
 
 									// the image filename
 									if ($product)

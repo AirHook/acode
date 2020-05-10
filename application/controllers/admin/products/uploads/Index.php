@@ -367,6 +367,11 @@ class Index extends Admin_Controller {
 				}
 				else
 				{
+					// before inserting new product
+					// we need to update seque since new product's seque is '0'
+					$qry_str1 = "UPDATE tbl_product SET seque = seque + 1";
+					$this->DB->query($qry_str1);
+
 					// insert the record...
 					$query3 = $this->DB->insert('tbl_product', $post_ary);
 					$prod_id = $this->DB->insert_id();

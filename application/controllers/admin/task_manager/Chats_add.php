@@ -48,7 +48,8 @@ class Chats_add extends Admin_Controller {
 		// grab post data
 		$post_ary = $this->input->post();
 		// set necessary variables
-		$post_ary['date_sent'] = time();
+		$this_time = time();
+		$post_ary['date_sent'] = $this_time;
 		// process some variables
 		//$post_ary['date_end_target'] = strtotime($this->input->post('due_date'));
 		// unset unneeded variables
@@ -59,6 +60,11 @@ class Chats_add extends Admin_Controller {
 		// set flash data
 		if ($query)
 		{
+			// update last modified
+			$this->DB->set('last_modified', $this_time);
+			$this->DB->where('task_id', $this->input->post('task_id'));
+			$this->DB->update('tm_tasks');
+
 			$this->session->set_flashdata('success', 'add');
 		}
 		else

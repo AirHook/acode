@@ -99,6 +99,11 @@
 									Clearance
 								</a>
 							</li>
+							<li class="<?php echo ($this->uri->segment(3) == 'clearance_cs_only' OR $this->uri->segment(4) == 'clearance_cs_only') ? 'active' : ''; ?>">
+								<a href="<?php echo site_url($link_prefix.'/products/clearance_cs_only'); ?>">
+									Clearance CS Only
+								</a>
+							</li>
 							<li class="<?php echo ($this->uri->segment(3) == 'unpublished' OR $this->uri->segment(4) == 'unpublished') ? 'active' : ''; ?>">
 								<a href="<?php echo site_url($link_prefix.'/products/unpublished'); ?>">
 									Unpublished
@@ -128,7 +133,7 @@
 							{ ?>
 							<li>
 								<a href="<?php echo site_url('admin/products/add'); ?>">
-									Add New Product <i class="fa fa-plus"></i>
+									Add Product <i class="fa fa-plus"></i>
 								</a>
 							</li>
 							<li>

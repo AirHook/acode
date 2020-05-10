@@ -98,11 +98,25 @@
                                 </select>
                             </div>
                             <button class="apply_filer_by_designer btn dark hidden-sm hidden-xs" data-page_param="<?php echo $this->uri->segment(4); ?>"> Filter </button>
-                            <a href="<?php echo site_url('admin/users/wholesale/'.$status); ?>" class="apply_filer_by_designer btn default hidden-sm hidden-xs"> Clear Filter </a>
+
+                            <?php if ($search)
+                            { ?>
+
+                            <a href="<?php echo site_url('admin/users/wholesale/'.@$status); ?>" class="apply_filer_by_designer btn default hidden-sm hidden-xs"> Clear Filter </a>
+
+                                <?php
+                            } ?>
 
                         </div>
                         <button class="apply_filer_by_designer btn dark btn-block margin-top-10 hidden-lg hidden-md" data-page_param="<?php echo $this->uri->segment(4); ?>"> Filter </button>
-                        <a href="<?php echo site_url('admin/users/wholesale/'.$status); ?>" class="apply_filer_by_designer btn dark btn-block margin-top-10 hidden-lg hidden-md"> Clear Filter </a>
+
+                        <?php if ($search)
+                        { ?>
+
+                        <a href="<?php echo site_url('admin/users/wholesale/'.@$status); ?>" class="apply_filer_by_designer btn dark btn-block margin-top-10 hidden-lg hidden-md"> Clear Filter </a>
+
+                            <?php
+                        } ?>
 
                     </div>
 
@@ -206,17 +220,17 @@
 
                         <ul class="nav nav-tabs">
                             <li class="<?php echo ($this->uri->segment(4) == 'active' OR $this->uri->segment(5) == 'active') ? 'active' : ''; ?>">
-                                <a href="<?php echo site_url($pre_link.'/users/wholesale/active'.($des_slug ? '/index/'.$des_slug : '')); ?>">
+                                <a href="<?php echo site_url($pre_link.'/users/wholesale/active'.(@$des_slug ? '/index/'.$des_slug : '')); ?>">
                                     <?php echo $this->uri->segment(4) != 'active' ? 'Show' : ''; ?> Active User List
                                 </a>
                             </li>
                             <li class="<?php echo ($this->uri->segment(4) == 'inactive' OR $this->uri->segment(5) == 'inactive') ? 'active' : ''; ?>">
-                                <a href="<?php echo site_url($pre_link.'/users/wholesale/inactive'.($des_slug ? '/index/'.$des_slug : '')); ?>">
+                                <a href="<?php echo site_url($pre_link.'/users/wholesale/inactive'.(@$des_slug ? '/index/'.$des_slug : '')); ?>">
                                     <?php echo $this->uri->segment(4) != 'inactive' ? 'Show' : ''; ?> Inactive User List
                                 </a>
                             </li>
                             <li class="hide <?php echo ($this->uri->segment(4) == 'suspended' OR $this->uri->segment(5) == 'suspended') ? 'active' : ''; ?>">
-                                <a href="<?php echo site_url($pre_link.'/users/wholesale/suspended'.($des_slug ? '/index/'.$des_slug : '')); ?>">
+                                <a href="<?php echo site_url($pre_link.'/users/wholesale/suspended'.(@$des_slug ? '/index/'.$des_slug : '')); ?>">
                                     <?php echo $this->uri->segment(4) != 'suspended' ? 'Show' : ''; ?> Suspended Users
                                 </a>
                             </li>

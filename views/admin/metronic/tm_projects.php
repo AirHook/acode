@@ -1,47 +1,3 @@
-                    <?php if ($this->webspace_details->options['site_type'] == 'hub_site_')
-                    { ?>
-
-                    <div class="table-toolbar">
-
-                        <div class="row">
-
-                            <div class="col-lg-3 col-md-4">
-                                <select class="bs-select form-control" id="filter_by_designer_select" name="des_slug" data-live-search="true" data-size="5" data-show-subtext="true">
-                                    <option class="option-placeholder" value="">Select Designer...</option>
-                                    <option value="all">All Admins</option>
-                                    <?php if ($this->webspace_details->options['site_type'] == 'hub_site') { ?>
-                                    <option value="<?php echo $this->webspace_details->slug; ?>" data-subtext="<em></em>" data-des_slug="<?php echo $this->webspace_details->slug; ?>" data-des_id="<?php echo $this->webspace_details->id; ?>" <?php echo $this->webspace_details->slug === @$des_slug ? 'selected="selected"' : ''; ?>>
-                                        <?php echo $this->webspace_details->name; ?>
-                                    </options>
-                                    <?php } ?>
-                                    <?php
-                                    if (@$designers)
-                                    {
-                                        foreach ($designers as $designer)
-                                        {
-                                            if ($this->webspace_details->slug != $designer->url_structure)
-                                            { ?>
-
-                                    <option value="<?php echo $designer->url_structure; ?>" data-subtext="<em></em>" data-des_slug="<?php echo $designer->url_structure; ?>" data-des_id="<?php echo $designer->des_id; ?>" <?php echo $designer->url_structure === @$des_slug ? 'selected="selected"' : ''; ?>>
-                                        <?php echo ucwords(strtolower($designer->designer)); ?>
-                                    </option>
-
-                                                <?php
-                                            }
-                                        }
-                                    } ?>
-                                </select>
-                            </div>
-                            <button class="apply_filer_by_designer btn dark hidden-sm hidden-xs" data-page_param="<?php echo $this->uri->segment(4); ?>"> Filter </button>
-
-                        </div>
-                        <button class="apply_filer_by_designer btn dark btn-block margin-top-10 hidden-lg hidden-md" data-page_param="<?php echo $this->uri->segment(4); ?>"> Filter </button>
-
-                    </div>
-
-                        <?php
-                    } ?>
-
                     <!-- BEGIN FORM-->
                     <!-- FORM =======================================================================-->
                     <?php echo form_open(
@@ -216,9 +172,13 @@
                                     { ?>
 
                                     <div class="todo-project-item-foot">
+
                                         <!-- Number of Tasks -->
+                                        <?php if ($this->tasks_list->open_tasks > 0)
+                                        { ?>
+
                                         <p class="todo-red todo-inline">
-                                            <?php echo $this->tasks_list->row_count; ?> Tasks
+                                            <?php echo @$this->tasks_list->open_tasks; ?> <?php echo @$this->tasks_list->open_tasks < $this->tasks_list->row_count ? 'Remaining ' : ''; ?>Tasks
                                             &nbsp;
                                             <a class="nestable-collapse-expand nestable-expand" data-action="expand" href="javascript:;" style="color:#d39790;">
                                                 <i class="fa fa-chevron-down tooltips" data-original-title="Expand"></i>
@@ -227,6 +187,19 @@
                                                 <i class="fa fa-chevron-up tooltips" data-original-title="Collapse"></i>
                                             </a>
                                         </p>
+
+                                            <?php
+                                        }
+                                        else
+                                        { ?>
+
+                                        <p class="todo-red todo-inline">
+                                            Tasks completed
+                                        </p>
+
+                                            <?php
+                                        } ?>
+
                                         <!-- Number users involved -->
                                         <p class="todo-inline todo-float-r hide">
                                             1 Responsible

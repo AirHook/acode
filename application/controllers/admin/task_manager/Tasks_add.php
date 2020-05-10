@@ -64,7 +64,7 @@ class Tasks_add extends Admin_Controller {
 		//$post_ary['account_status'] = '1';
 		// process some variables
 		$post_ary['seque'] = $this->tasks_list->max_seque($this->input->post('project_id')) + 1;
-		$post_ary['date_start'] = time();
+		$post_ary['date_created'] = time();
 		$post_ary['date_end_target'] = $this->input->post('due_date') ? strtotime($this->input->post('due_date')) : '0';
 		$post_ary['user_id'] = $this->input->post('user_id') ?: NULL;
 		// unset unneeded variables

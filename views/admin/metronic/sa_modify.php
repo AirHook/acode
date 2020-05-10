@@ -897,6 +897,14 @@
                                                 <cite class="help-block small"> A a user friendly name to identify this package as reference. </cite>
                                             </div>
                                         </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Date Created
+                                                <span class="required"> * </span>
+                                            </label>
+                                            <div class="col-md-9">
+                                                <input type="text" name="date_create" class="form-control input-sa_info" value="<?php echo $sa_details->date_create; ?>" readonly />
+                                            </div>
+                                        </div>
                                         <hr />
                                         <div class="form-group">
                                             <label class="col-md-3 control-label">Email Subject

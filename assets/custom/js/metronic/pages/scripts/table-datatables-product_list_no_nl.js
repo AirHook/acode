@@ -355,45 +355,6 @@ var TableDatatablesManaged = function () {
 			$('#bulk_actions_select').selectpicker("refresh");
 		});
 
-		// nestable list initialize, and, on drag function
-		$('.nestable_list').nestable().on('change', function(){
-			// grab some data
-			var objectData = object_data; // csrf token
-			var page = parseInt($(this).data('page'));
-
-			// sample listSerial data
-			// [{"seque":0,"prod_id":930},{"seque":0,"prod_id":2925},...]
-
-			// grab serialized list data
-			listSerial = $(this).nestable('serialize');
-			objectData.list_json = listSerial; // includes csrf token already
-			objectData.page = page;
-			//alert(JSON.stringify(objectData));
-
-			// show correct sequencing number at frontend
-			for (let [key, value] of Object.entries(listSerial)) {
-				var seque = (parseInt(key) + 1) + ((page - 1) * 100);
-				var el = $('.dd3-item[data-prod_id="'+value.prod_id+'"]').find('span.t_no');
-				el.html(seque);
-			}
-
-			// set new seque via ajax call here
-			/* */
-			var edit_seque = $.ajax({
-				type:       "POST",
-				url:        base_url + "admin/products/update_seque/nl_seque.html",
-				data:       objectData
-			});
-			edit_seque.done(function(data){
-				//alert(data);
-			});
-			edit_seque.fail(function(jqXHR, textStatus, errorThrown) {
-				//$('#loading').modal('hide');
-				alert("Edit Seque Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
-			});
-			// */
-		});
-
 		// manual edit seque
 		$('.modal-edit_seque').on('click', function(){
 			var prod_id = $(this).parents('.dd3-item').data('prod_id');

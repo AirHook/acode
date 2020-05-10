@@ -322,17 +322,21 @@
                                     </label>
                                 </td>
                                 <td>
+
 									<?php if ($package->sales_package_id == '2') { ?>
 									<a href="#modal-select_designer_for_designer_recent_sales_package" data-toggle="modal">
 									<?php } else { ?>
 									<a href="<?php echo $edit_link; ?>">
 									<?php } ?>
-										<?php echo $package->sales_package_name; ?></a>
+										<?php echo $package->sales_package_name; ?>
+									</a>
+
 									<!-- DOC: Removing 'Set as Default' to avoid user confusion -->
 									<?php if ($package->set_as_default == '1_') { ?>
 									<small class="text-danger"> <cite> &nbsp; Set as Default </cite></small>
 									<?php } ?>
 									<!-- -->
+
 									<!-- DOC: Show notice if package has empty items -->
 									<?php if ($package->sales_package_items == '') { ?>
 									&nbsp;
@@ -341,6 +345,7 @@
 										<small><cite>Select items first for this package</cite></small>
 									</a>
 									<?php } ?>
+
 									<!-- -->
 									&nbsp;
 									<?php if ($package->sales_package_id == '2') { ?>
@@ -349,106 +354,108 @@
 									<a class="hidden_first_edit_link" style="display:none;" href="<?php echo $edit_link; ?>">
 									<?php } ?>
 										<small class="hide"><cite>view/edit</cite></small></a>
-                                        <br /><br />
-									</td>
-	                                <td>
-                                        <?php
-        								/***********
-        								 * Selected Items Thumbs
-        								 */
-        								?>
-    									<div class="thumb-tiles sales-package clearfix">
+                                    <br /><br />
 
-    										<?php
-    										if ($package->sales_package_items)
-    										{
-                                                $items = json_decode($package->sales_package_items, TRUE);
-    											foreach ($items as $item)
-    											{
-													// just a catch all error suppression
-													if ( ! $item) continue;
+								</td>
+                                <td>
 
-													// get product details
-													// NOTE: some items may not be in product list
-													$product = $this->product_details->initialize(array('tbl_product.prod_no' => $item));
-													if ( ! $product)
-													{
-														$exp = explode('_', $item);
-														$product = $this->product_details->initialize(
-															array(
-																'tbl_product.prod_no' => $exp[0],
-																'color_code' => $exp[1]
-															)
-														);
-														$prod_no = $exp[0];
-														$color_code = $exp[1];
-													}
-													else
-													{
-														$prod_no = $product->prod_no;
-														$color_code = $product->color_code;
-													}
+                                    <?php
+    								/***********
+    								 * Selected Items Thumbs
+    								 */
+    								?>
+									<div class="thumb-tiles sales-package clearfix">
 
-													// set image paths
-													$style_no = $item;
+										<?php
+										if ($package->sales_package_items)
+										{
+                                            $items = json_decode($package->sales_package_items, TRUE);
+											foreach ($items as $item)
+											{
+												// just a catch all error suppression
+												if ( ! $item) continue;
 
-													if ($product)
-													{
-														$image_new = $product->media_path.$style_no.'_f3.jpg';
-														$img_front_new = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_f3.jpg';
-														$img_back_new = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_b3.jpg';
-														$img_linesheet = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_linesheet.jpg';
-														$img_large = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_f.jpg';
-														$color_name = $product->color_name;
-													}
-													else
-													{
-														$image_new = 'images/instylelnylogo_3.jpg';
-														$img_front_new = $this->config->item('PROD_IMG_URL').'images/instylelnylogo_3.jpg';
-														$img_back_new = $this->config->item('PROD_IMG_URL').'images/instylelnylogo_3.jpg';
-														$img_linesheet = '';
-														$img_large = '';
-														$color_name = $this->product_details->get_color_name($color_code);
-													}
+												// get product details
+												// NOTE: some items may not be in product list
+												$product = $this->product_details->initialize(array('tbl_product.prod_no' => $item));
+												if ( ! $product)
+												{
+													$exp = explode('_', $item);
+													$product = $this->product_details->initialize(
+														array(
+															'tbl_product.prod_no' => $exp[0],
+															'color_code' => $exp[1]
+														)
+													);
+													$prod_no = $exp[0];
+													$color_code = $exp[1];
+												}
+												else
+												{
+													$prod_no = $product->prod_no;
+													$color_code = $product->color_code;
+												}
 
-    												// set image paths
-    												$img_front_pre = $this->config->item('PROD_IMG_URL').'product_assets/WMANSAPREL/'.$this->product_details->d_folder.'/'.$this->product_details->sc_folder.'/product_front/thumbs/';
-    												$img_back_pre = $this->config->item('PROD_IMG_URL').'product_assets/WMANSAPREL/'.$this->product_details->d_folder.'/'.$this->product_details->sc_folder.'/product_back/thumbs/';
-    												// the image filename
-    												// the image filename
-    												// the old ways dependent on category and folder structure
-    												$image = $this->product_details->prod_no.'_'.$this->product_details->primary_img_id.'_3.jpg';
-    												// the new way relating records with media library
-    												$img_front_new = $this->config->item('PROD_IMG_URL').$this->product_details->media_path.$this->product_details->media_name.'_f3.jpg';
-    												$img_back_new = $this->config->item('PROD_IMG_URL').$this->product_details->media_path.$this->product_details->media_name.'_b3.jpg';
-    												?>
+												// set image paths
+												$style_no = $item;
 
-    											<div class="thumb-tile package image bg-blue-hoki <?php echo $item; ?> selected" data-sku="<?php echo $item; ?>" data-prod_no="<?php echo $prod_no; ?>" data-prod_id="<?php echo @$product->prod_id; ?>">
+												if ($product)
+												{
+													$image_new = $product->media_path.$style_no.'_f3.jpg';
+													$img_front_new = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_f3.jpg';
+													$img_back_new = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_b3.jpg';
+													$img_linesheet = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_linesheet.jpg';
+													$img_large = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_f.jpg';
+													$color_name = $product->color_name;
+												}
+												else
+												{
+													$image_new = 'images/instylelnylogo_3.jpg';
+													$img_front_new = $this->config->item('PROD_IMG_URL').'images/instylelnylogo_3.jpg';
+													$img_back_new = $this->config->item('PROD_IMG_URL').'images/instylelnylogo_3.jpg';
+													$img_linesheet = '';
+													$img_large = '';
+													$color_name = $this->product_details->get_color_name($color_code);
+												}
 
-    												<div class="corner"> </div>
-    												<div class="check"> </div>
-    												<div class="tile-body">
-    													<img class="img-b" src="<?php echo (@$product->primary_img ? $img_back_new : $img_back_pre.$image); ?>" alt="">
-    													<img class="img-a" src="<?php echo (@$product->primary_img ? $img_front_new : $img_front_pre.$image); ?>" alt="">
-    												</div>
-    												<div class="tile-object">
-    													<div class="name"> <?php echo @$product->public == 'N' ? '<span style="color:#ed6b75;"> Private </span> <br />' : ''; ?> <?php echo @$product->prod_no; ?> </div>
-    												</div>
+												// set image paths
+												$img_front_pre = $this->config->item('PROD_IMG_URL').'product_assets/WMANSAPREL/'.$this->product_details->d_folder.'/'.$this->product_details->sc_folder.'/product_front/thumbs/';
+												$img_back_pre = $this->config->item('PROD_IMG_URL').'product_assets/WMANSAPREL/'.$this->product_details->d_folder.'/'.$this->product_details->sc_folder.'/product_back/thumbs/';
+												// the image filename
+												// the image filename
+												// the old ways dependent on category and folder structure
+												$image = $this->product_details->prod_no.'_'.$this->product_details->primary_img_id.'_3.jpg';
+												// the new way relating records with media library
+												$img_front_new = $this->config->item('PROD_IMG_URL').$this->product_details->media_path.$this->product_details->media_name.'_f3.jpg';
+												$img_back_new = $this->config->item('PROD_IMG_URL').$this->product_details->media_path.$this->product_details->media_name.'_b3.jpg';
+												?>
 
-    											</div>
+											<div class="thumb-tile package image bg-blue-hoki <?php echo $item; ?> selected" data-sku="<?php echo $item; ?>" data-prod_no="<?php echo $prod_no; ?>" data-prod_id="<?php echo @$product->prod_id; ?>">
 
-    										<?php
-    											}
-    										}
-    										else
-                                            { ?>
-                                                <h3><cite> Selected images will show up here... </cite></h3>
-                                                <?php
-                                                echo '<input type="hidden" id="items_count" name="items_count" value="0" />';
-                                            }
-    										?>
+												<div class="corner"> </div>
+												<div class="check"> </div>
+												<div class="tile-body">
+													<img class="img-b" src="<?php echo (@$product->primary_img ? $img_back_new : $img_back_pre.$image); ?>" alt="">
+													<img class="img-a" src="<?php echo (@$product->primary_img ? $img_front_new : $img_front_pre.$image); ?>" alt="">
+												</div>
+												<div class="tile-object">
+													<div class="name"> <?php echo @$product->public == 'N' ? '<span style="color:#ed6b75;"> Private </span> <br />' : ''; ?> <?php echo @$product->prod_no; ?> </div>
+												</div>
 
-    									</div>
+											</div>
+
+										<?php
+											}
+										}
+										else
+                                        { ?>
+                                            <h3><cite> Selected images will show up here... </cite></h3>
+                                            <?php
+                                            echo '<input type="hidden" id="items_count" name="items_count" value="0" />';
+                                        }
+										?>
+
+									</div>
 
 								</td>
                                 <td class="hidden-xs hidden-sm">

@@ -137,7 +137,7 @@ var ComponentsEditors = function () {
             var objectData = object_data;
             objectData.date_end_target = $(this).val();
             objectData.task_id = $('[name="task_id"]').val();
-            alert(JSON.stringify(objectData));
+            //alert(JSON.stringify(objectData));
             // update records
             /* */
             var due_date = $.ajax({
@@ -225,7 +225,7 @@ var ComponentsEditors = function () {
                     $('[name="user_id"]').val(user_id);
                     $('[name="message"]').val('');
                 }else{
-                    alert(JSON.stringify(data));
+                    //alert(JSON.stringify(data));
                 }
             });
             send_correspondence.fail(function(jqXHR, textStatus, errorThrown) {
