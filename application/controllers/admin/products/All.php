@@ -61,7 +61,7 @@ class All extends Admin_Controller {
 
 		// get some default items
 		$this->data['designers'] = $this->designers_list->select();
-		$this->data['view_as'] = $this->session->userdata('view_as') ?: 'products_nestable_list'; // products_grid, products_list, products_nestable_list
+		$this->data['view_as'] = $this->session->userdata('view_as') ?: 'products_list'; // products_grid, products_list, products_nestable_list
 		$this->data['order_by'] = $this->session->userdata('order_by') ?: 'prod_date';
 
 		// for categories, we check conditions of site type

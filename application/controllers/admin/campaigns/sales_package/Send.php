@@ -48,14 +48,6 @@ class Send extends Admin_Controller {
 		$this->load->library('color_list');
 		$this->load->library('form_validation');
 
-		// check for presence of wholesale user_id coming from
-		// create sales package by product clicks report
-		$this->data['ws_user_details'] = $this->wholesale_user_details->initialize(
-			array(
-				'user_id' => $user_id
-			)
-		);
-
 		// initialize sales package properties
 		$this->data['sa_details'] = $this->sales_package_details->initialize(
 			array(
@@ -66,6 +58,15 @@ class Send extends Admin_Controller {
 		// disect some information from sales package
 		$this->data['sa_items'] = $this->sales_package_details->items;
 		$this->data['sa_options'] = $this->sales_package_details->options;
+
+		// check for presence of wholesale user_id coming from
+		// create sales package by product clicks report
+		// or, from options['product_clicks']
+		$this->data['ws_user_details'] = $this->wholesale_user_details->initialize(
+			array(
+				'user_id' => ($user_id ?: @$this->data['sa_options']['product_clicks'])
+			)
+		);
 
 		// author
 		if ($this->sales_package_details->sales_user == '1')

@@ -41,8 +41,11 @@ class By_product_clicks_report extends Admin_Controller {
 		if ( ! $this->input->get('date') OR ! $this->input->get('user'))
 		{
 			// nothing more to do...
-			echo 'no data';
-			die();
+			// set flash data
+			$this->session->set_flashdata('error', 'no_id_passed');
+
+			// redirect user
+			redirect($this->config->slash_item('admin_folder').'campaigns/sales_package', 'location');
 		}
 
 		// get user details
@@ -138,7 +141,8 @@ class By_product_clicks_report extends Admin_Controller {
 			'w_prices' => 'Y',
 			'w_images' => 'N',
 			'linesheets_only' => 'N',
-			'des_slug' => $user_details->reference_designer
+			'des_slug' => $user_details->reference_designer,
+			'product_clicks' => $user_id
 		);
 		$post_ary['options'] = json_encode($options);
 		$post_ary['sales_package_items'] = json_encode($sa_items);

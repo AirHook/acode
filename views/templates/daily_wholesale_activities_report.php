@@ -125,34 +125,41 @@
 			<td style="padding:0 0 20px 60px;">
 				Product Clicks:
 
-					<?php
-					if ( ! empty(@$logindata['product_clicks']))
+				<?php
+				if ( ! empty(@$logindata['product_clicks']))
+				{
+					foreach ($logindata['product_clicks'] as $key => $val)
 					{
-						foreach ($logindata['product_clicks'] as $key => $val)
+						if ( ! is_int($key))
 						{
-							if ( ! is_int($key))
-							{
-								echo '<br />';
-								echo '&nbsp; &nbsp; &nbsp; '.$key.' ('.(is_array($val) ? array_sum($val) : $val).')';
-							}
-							else{
-								echo '<br />';
-								echo '&nbsp; &nbsp; &nbsp; '.$val;
-							}
+							echo '<br />';
+							echo '&nbsp; &nbsp; &nbsp; '.$key.' ('.(is_array($val) ? array_sum($val) : $val).')';
+						}
+						else{
+							echo '<br />';
+							echo '&nbsp; &nbsp; &nbsp; '.$val;
 						}
 					}
-					else echo '<br />&nbsp; &nbsp; &nbsp; No product clicks.';
-					?>
+				}
+				else echo '<br />&nbsp; &nbsp; &nbsp; No product clicks.';
+				?>
 
 				<br />
 			</td>
 		</tr>
+
+				<?php if ( ! empty(@$logindata['product_clicks']))
+				{ ?>
+
 		<tr>
 			<td style="padding:0 0 20px 30px;">
 				<br />
 					Click <a href="<?php echo site_url('admin/campaigns/sales_pacakge/create/by_product_clicks_report'); ?>?date=<?php echo $wholesale_user->xdate; ?>&user=<?php echo $wholesale_user->email; ?>">HERE</a> to send user package offer of items clicked.
 			</td>
 		</tr>
+
+					<?php
+				} ?>
 
 				<?php
 				// let's make an array of the wholesale user possibly having more than one visit a day

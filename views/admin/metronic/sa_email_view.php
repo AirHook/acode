@@ -2,6 +2,10 @@
 	/***********
 	 * setup $USER here
 	 */
+	if (@$ws_user_details)
+	{
+		$username = $ws_user_details->store_name;
+	}
 	?>
 	Dear <?php echo @$username ?: 'Guest'; ?>,
 

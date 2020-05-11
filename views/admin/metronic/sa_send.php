@@ -141,12 +141,12 @@
                                         </div>
                                     </div>
 
-                                    <div class="form-group <?php echo $ws_user_details ? 'hide' : ''; ?>">
+                                    <div class="form-group">
                                         <div class="col-md-12">
-                                            <a href="javascript:;" class="btn dark btn-md select-send-options send-to-current-user col-md-4" style="font-size:0.9em;">
+                                            <a href="javascript:;" class="btn dark btn-md select-send-options send-to-current-user col-md-4 <?php echo $ws_user_details ? 'hide' : ''; ?>" style="font-size:0.9em;">
                                                 Send To Existing User(s)
                                             </a>
-                                            <a href="javascript:;" class="btn dark btn-md select-send-options send-to-new-user col-md-4" style="font-size:0.9em;">
+                                            <a href="javascript:;" class="btn dark btn-md select-send-options send-to-new-user col-md-4 <?php echo $ws_user_details ? 'hide' : ''; ?>" style="font-size:0.9em;">
                                                 Send To New Wholesale User
                                             </a>
                                             <!--

@@ -893,7 +893,7 @@
                                                 <span class="required"> * </span>
                                             </label>
                                             <div class="col-md-9">
-                                                <input type="text" name="sales_package_name" data-required="1" class="form-control input-sa_info" value="<?php echo $sa_details->sales_package_name; ?>" placeholder="Sales Package Name" />
+                                                <input type="text" name="sales_package_name" data-required="1" class="form-control input-sa_info" value="<?php echo $sa_details->sales_package_name; ?>" placeholder="Sales Package Name" <?php echo @$sa_options['product_clicks'] ? 'readonly' : ''; ?> />
                                                 <cite class="help-block small"> A a user friendly name to identify this package as reference. </cite>
                                             </div>
                                         </div>
