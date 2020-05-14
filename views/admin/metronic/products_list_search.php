@@ -134,10 +134,12 @@
 													?>
 
                                             <tr class="odd gradeX" onmouseover="$(this).find('.hidden_first_edit_link').show();" onmouseout="$(this).find('.hidden_first_edit_link').hide();">
+												<!-- Counter -->
                                                 <td class="hidden-xs hidden-sm">
                                                     <?php echo $i; ?>
                                                 </td>
-                                                <td class="text-center"> <!-- Images -->
+												<!-- Images -->
+                                                <td class="text-center">
 													<div class="thumb-tiles">
 														<?php
 														/*********
@@ -189,10 +191,12 @@
 														</div>
 													</div>
                                                 </td>
+												<!-- Publish -->
 												<!-- DOC: Remove "disabled-link disable-target" classes to enable the element -->
-                                                <td> <!-- Publish -->
+                                                <td style="padding-top:10px;">
 													<?php
-													switch ($product->publish)
+													//switch ($product->publish)
+													switch ($product->new_color_publish)
 													{
 														case '1':
 														case '11':
@@ -214,18 +218,22 @@
 															$label_text = 'Unpublished';
 													}
 													?>
-                                                    <span class="label label-sm label-<?php echo $label; ?>"> <?php echo $label_text; ?> </span>
+                                                    <span class="label label-sm label-<?php echo $label; ?>" style="margin-top:5px;"> <?php echo $label_text; ?> </span>
 												</td>
+												<!-- Prod No -->
                                                 <td>
 													<?php echo $product->prod_no; ?> <br />
 													<small>
 														<a class="hidden_first_edit_link" style="display:none;" href="<?php echo site_url($this->config->slash_item('admin_folder').'products/edit/index/'.$product->prod_id); ?>"><cite>edit/view variants</cite></a>
 													</small>
 												</td>
+												<!-- Designer -->
                                                 <td> <?php echo $product->designer; ?> </td>
                                                 <td class="hide"> <?php //echo $product->designer; ?> </td>
+												<!-- Prod Name -->
                                                 <td> <?php echo $product->prod_name; ?> </td>
-                                                <td> <!-- Actions -->
+												<!-- Actions -->
+                                                <td>
 													<a href="<?php echo site_url($this->config->slash_item('admin_folder').'products/edit/index/'.$product->prod_id); ?>">
 														<i class="icon-pencil"></i> Edit </a>
                                                 </td>

@@ -101,6 +101,38 @@ class Task_edit extends Admin_Controller {
 	// ----------------------------------------------------------------------
 
 	/**
+	 * Method Re-open Tasks
+	 *
+	 * @return	void
+	 */
+	public function reopen($task_id = '')
+	{
+		if ($task_id == '')
+		{
+			// nothing more to do...
+			// set flash data
+			$this->session->set_flashdata('error', 'no_id_passed');
+
+			// redirect user
+			redirect('admin/task_manager/task_details/index/'.$task_id, 'location');
+		}
+
+		// update records
+		$this->DB->set('last_modified', time());
+		$this->DB->set('status', '1');
+		$this->DB->where('task_id', $task_id);
+		$this->DB->update('tm_tasks');
+
+		// set flash data
+		$this->session->set_flashdata('success', 'edit');
+
+		// redirect user
+		redirect('admin/task_manager/task_details/index/'.$task_id, 'location');
+    }
+
+	// ----------------------------------------------------------------------
+
+	/**
 	 * Method Status
 	 *
 	 * @return	void

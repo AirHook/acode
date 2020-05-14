@@ -175,22 +175,23 @@
 														// let set the classes and other items...
 														$classes = $product->prod_no.'_'.$product->primary_img_id.' ';
 														$classes.= $batch.' ';
-														$classes.= ($product->publish == '0' OR $product->publish == '3' OR $product->view_status == 'N' OR $product->public == 'N') ? 'mt-element-ribbon' : '';
+														// set ribbon for PRIVATE & UNPUBLISH items
+														$classes.= $product->publish != '1' ? 'mt-element-ribbon' : '';
 
 														// let set the css style...
 														$styles = $dont_display_thumb;
-														$styles.= ($product->publish == '0' OR $product->publish == '3' OR $product->view_status == 'N') ? 'cursor:not-allowed;' : '';
+														//$styles.= $product->publish != '1' ? 'cursor:not-allowed;' : '';
 
 														// ribbon color - assuming that other an not published or pending (danger/unpublished), the item is private (info/private)
-														$ribbon_color = ($product->publish == '0' OR $product->publish == '3' OR $product->view_status == 'N') ? 'danger' : 'info';
-														$tooltip = $product->publish == '3' ? 'Pending' : (($product->publish == '0' OR $product->view_status == 'N') ? 'Unpubished' : 'Private');
+														$ribbon_color = $product->publish == '0' ? 'danger' : 'info';
+														$tooltip = $product->publish == '3' ? 'Pending' : ($product->publish == '0' ? 'Unpubished' : 'Private');
 														?>
 
 												<div class="thumb-tile image bg-blue-hoki <?php echo $classes; ?>" style="<?php echo $styles; ?>">
 
 													<a href="<?php echo site_url($this->config->slash_item('admin_folder').'products/edit/index/'.$product->prod_id); ?>">
 
-														<?php if ($product->publish == '0' OR $product->publish == '3' OR $product->view_status == 'N' OR $product->public == 'N') { ?>
+														<?php if ($product->publish != '1') { ?>
 														<div class="ribbon ribbon-shadow ribbon-round ribbon-border-dash ribbon-vertical-left ribbon-color-<?php echo $ribbon_color; ?> uppercase tooltips" data-placement="top" data-container="body" data-original-title="<?php echo $tooltip; ?>" style="position:absolute;left:-3px;width:28px;padding:1em 0;">
 															<i class="fa fa-ban"></i>
 														</div>

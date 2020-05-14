@@ -59,8 +59,22 @@
                 ?>
                 <div class="todo-head">
 
-                    <button data-toggle="modal" href="#complete-<?php echo $task_details->task_id?>" class="btn btn-square btn-sm dark todo-bold todo-inline" style="margin-right:2em;" <?php echo $task_details->status == '2' ? 'disabled' : '';?>>Complete Task</button>
-                    <button data-toggle="modal" href="#todo-task-modal" class="btn btn-square btn-sm grey todo-bold todo-inline" style="margin-right:5px;" <?php echo $task_details->status == '2' ? 'disabled' : '';?>>Edit</button>
+                    <?php if ($task_details->status == '2')
+                    { ?>
+
+                    <button onclick="location.href='<?php echo site_url('admin/task_manager/task_edit/reopen/'.$task_details->task_id); ?>';" class="btn btn-square btn-sm dark todo-bold todo-inline" style="margin-right:2em;">Re-Open Task</button>
+
+                        <?php
+                    }
+                    else
+                    { ?>
+
+                    <button data-toggle="modal" href="#complete-<?php echo $task_details->task_id; ?>" class="btn btn-square btn-sm dark todo-bold todo-inline" style="margin-right:2em;">Complete Task</button>
+                    <button data-toggle="modal" href="#todo-task-modal" class="btn btn-square btn-sm grey todo-bold todo-inline" style="margin-right:5px;">Edit</button>
+
+                        <?php
+                    } ?>
+
                     <a class="btn btn-secondary-outline font-dark todo-bold todo-inline" href="<?php echo site_url('admin/task_manager/tasks/index/'.$task_details->project_id); ?>">
                         <i class="fa fa-reply"></i> Back to task list</a>
 

@@ -310,6 +310,7 @@ var ComponentsProductEdit = function () {
 		$('.new_color_publish input[type="radio"]').click(function(){
 			// let get necessary information
 			var primary_color = $(this).closest('.section-options').data('primary_color');
+            var main_publish = $('[name="publish"]').val();
 			var st_id = $(this).closest('.section-options').data('st_id');
 			var color_code = $(this).closest('.section-options').data('color_code');
 			var base_url = $(this).closest('.section-options').data('base_url');
@@ -321,6 +322,12 @@ var ComponentsProductEdit = function () {
 			}
 			// get publish change value
 			var publish = $('input[name="new_color_publish[' + st_id + ']"]:checked').val();
+            // if main product option publish is unpublish, or, private - must not update
+            if (main_publish == '0' && publish == '1')
+            {
+                alert('Cannot publish this color because main publish option is not "Publish Public".');
+                return false;
+            }
 			// get publish at hub/sat data
 			if ($('#new_color_publish_at_hub-' + color_code).is(":checked")) var ncph = 1;
 			else var ncph = 0;
@@ -375,6 +382,7 @@ var ComponentsProductEdit = function () {
 		$('.color_publish input[type="radio"]').click(function(){
 			// let get necessary information
 			var primary_color = $(this).closest('.section-options').data('primary_color');
+            var main_publish = $('[name="publish"]').val();
 			var st_id = $(this).closest('.section-options').data('st_id');
 			var base_url = $(this).closest('.section-options').data('base_url');
 			var dataObject = $(this).closest('.section-options').data('object_data');
@@ -385,6 +393,12 @@ var ComponentsProductEdit = function () {
 			}
 			// get public/private view value
 			var view = $('input[name="color_publish[' + st_id + ']"]:checked').val();
+            // if main product option publish is unpublish, or, private - must not update
+            if ((main_publish == '0' || main_publish == '2') && view == '1')
+            {
+                alert('Cannot set this color to PUBLIC'+'\n'+'because main publish option is not "Publish Public".');
+                return false;
+            }
 			if (view == 0) var cp = 'N';
 			else var cp = 'Y';
 			// update data to server

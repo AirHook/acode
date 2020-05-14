@@ -31,6 +31,10 @@ class Update_stocks extends Admin_Controller {
 
 		// initialize certain properties
 		$this->product_details->initialize(array('tbl_product.prod_id'=>$prod_id));
+		$stocks_options = $this->product_details->stocks_options;
+
+		// set options last modified
+		$stocks_options['last_modified'] = time();
 
 		// grab post items
 		$post_ary = $this->input->post();
@@ -40,6 +44,7 @@ class Update_stocks extends Admin_Controller {
 
 		// update stock record
 		// lets remove primary color first
+		$DB->set('options', json_encode($stocks_options));
 		$DB->set($post_ary);
 		$DB->where('st_id', $this->input->post('st_id'));
 		$DB->update('tbl_stock');

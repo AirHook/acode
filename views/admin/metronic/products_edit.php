@@ -99,43 +99,68 @@
 
 									<div class="form-body">
 										<div class="row">
+
 											<div class="form-group">
 												<label class="col-md-4 control-label">Publish:
 												</label>
 												<div class="col-md-8">
                                                     <select class="bs-select form-control" data-show-subtext="true" id="publish" name="publish" tabindex="-98" data-orignial_publish="<?php echo $this->product_details->publish; ?>" <?php echo $this->product_details->publish === '3' ? 'disabled' : ''; ?>>
-                                                        <option value="1" id="publish-publish" onclick="$('#publish-at').show();$('#private-at').hide();" <?php echo (($this->product_details->publish === '1' OR $this->product_details->publish === '11' OR $this->product_details->publish === '12' OR $this->product_details->view_status === 'Y' OR $this->product_details->view_status === 'Y1' OR $this->product_details->view_status === 'Y2') AND $this->product_details->public === 'Y') ? 'selected': ''; ?> <?php echo ($inc_general OR @$inc_colors  OR $inc_images) ? 'data-subtext="incomplete"': ''; ?>>
+
+														<?php
+														if (
+															$this->product_details->publish === '1'
+															OR $this->product_details->publish === '11'
+															OR $this->product_details->publish === '12'
+															OR $this->product_details->view_status === 'Y'
+															OR $this->product_details->view_status === 'Y1'
+															OR $this->product_details->view_status === 'Y2'
+														)
+														{
+															$publish_selected = 'selected';
+														}
+														else $publish_selected = '';
+														?>
+
+                                                        <option value="1" id="publish-publish" onclick="$('#publish-at').show();$('#private-at').hide();" <?php echo $publish_selected; ?> <?php echo ($inc_general OR @$inc_colors  OR $inc_images) ? 'data-subtext="incomplete"': ''; ?>>
 															Publish
 														</option>
-                                                        <option value="2" id="publish-private" onclick="$('#publish-at').hide();$('#private-at').show();" <?php echo ($this->product_details->publish === '2' OR $this->product_details->public === 'N') ? 'selected': ''; ?> <?php echo ($inc_general OR @$inc_colors  OR $inc_images) ? 'data-subtext="incomplete"': ''; ?>>
+                                                        <option value="2" id="publish-private" onclick="$('#publish-at').hide();$('#private-at').show();" <?php echo ($this->product_details->publish === '2') ? 'selected': ''; ?> <?php echo ($inc_general OR @$inc_colors  OR $inc_images) ? 'data-subtext="incomplete"': ''; ?>>
 															Private
 														</option>
-                                                        <option value="0" id="publish-unpublish" onclick="$('#publish-at, #private-at').hide();" <?php echo ($this->product_details->publish === '0'  AND $this->product_details->view_status === 'N') ? 'selected': ''; ?>>
+                                                        <option value="0" id="publish-unpublish" onclick="$('#publish-at, #private-at').hide();" <?php echo ($this->product_details->publish === '0') ? 'selected': ''; ?>>
 															Unpublish
 														</option>
+
                                                     </select>
-													<span class="help-block" id="private-at" <?php echo ($this->product_details->publish === '2' && $this->product_details->public === 'N') ? '': 'style="display:none;"'; ?>> for admin and wholesale users view only </span>
-													<span class="help-block" id="pending-at" style="color:red;<?php echo ($this->product_details->publish === '3' AND $this->product_details->view_status === 'N') ? '': 'display:none;'; ?>"> publishing pending publish date below </span>
+													<span class="help-block <?php echo ($this->product_details->publish === '2') ?: 'display-none'; ?>" id="private-at"> for admin and wholesale users view only </span>
+													<span class="help-block <?php echo ($this->product_details->publish === '3') ?: 'display-none'; ?>" id="pending-at" style="color:red;"> publishing pending publish date below </span>
 												</div>
 											</div>
+
 											<?php if (@$this->webspace_details->options['site_type'] == 'hub_site') { ?>
-                                            <div class="form-group" id="publish-at" <?php echo ($this->product_details->publish === '0' OR $this->product_details->publish === '2' OR $this->product_details->public === 'N' OR $this->product_details->view_status === 'N') ? 'style="display:none;"': ''; ?>>
+                                            <div class="form-group" id="publish-at" <?php echo ($this->product_details->publish === '0' OR $this->product_details->publish === '2' OR $this->product_details->view_status === 'N') ? 'style="display:none;"': ''; ?>>
                                                 <div class="col-md-8 col-md-offset-4">
                                                     <div class="mt-checkbox-list">
                                                         <label class="mt-checkbox mt-checkbox-outline">
-                                                            <input type="checkbox" class="publish_at" id="publish_at_hub" name="publish_at_hub" value="1" <?php echo ($this->product_details->publish === '1' OR $this->product_details->publish === '11' OR $this->product_details->public === 'N') ? 'checked' : ''; ?>> at this hub site
+                                                            <input type="checkbox" class="publish_at" id="publish_at_hub" name="publish_at_hub" value="1" <?php echo ($this->product_details->publish === '1' OR $this->product_details->publish === '11') ? 'checked' : ''; ?>> at this hub site
                                                             <span></span>
                                                         </label>
                                                         <label class="mt-checkbox mt-checkbox-outline">
-                                                            <input type="checkbox" class="publish_at" id="publish_at_satellite" name="publish_at_satellite" value="1" <?php echo ($this->product_details->publish === '1' OR $this->product_details->publish === '12' OR $this->product_details->public === 'N') ? 'checked' : ''; ?>> at satellite site
+                                                            <input type="checkbox" class="publish_at" id="publish_at_satellite" name="publish_at_satellite" value="1" <?php echo ($this->product_details->publish === '1' OR $this->product_details->publish === '12') ? 'checked' : ''; ?>> at satellite site
                                                             <span></span>
                                                         </label>
                                                     </div>
                                                 </div>
                                             </div>
 											<?php } ?>
+
+											<?php
+											/***********
+											 * Date to Publish
+											 */
+											?>
                                             <div class="form-group">
-                                                <label class="control-label col-md-4">Date:
+                                                <label class="control-label col-md-4">Date to Publish:
 												</label>
                                                 <div class="col-md-8">
 													<?php if (@$inc_general OR @$inc_colors  OR @$inc_images) { ?>
@@ -146,7 +171,6 @@
 														Select/Type date <br /> format: yyyy-mm-dd <br />
 														<small><a class="publish_date" name="refresh_date" onclick="$('.publish_date.date-picker').datepicker('setDate', '<?php echo $this->product_details->publish_date ?: $this->product_details->create_date; ?>');"><cite>refresh date</cite></a></small>
 													</span>
-													<br />
 													<?php if (@$inc_general OR @$inc_colors  OR @$inc_images) { ?>
                                                     <span class="help-block">
 														Unable to edit publish date while product information is incomplete
@@ -158,6 +182,7 @@
 													<?php } ?>
                                                 </div>
                                             </div>
+
 											<div class="form-group">
 												<label class="control-label col-md-4">Clearance:</label>
 												<div class="col-md-8">
@@ -171,18 +196,21 @@
 													</div>
 												</div>
 											</div>
-											<div class="form-group hide">
+
+											<div class="form-group">
 												<label class="control-label col-md-4">Sequence:</label>
-												<div class="col-md-8">
+												<div class="col-md-4">
 													<input type="text" class="form-control" name="seque" value="<?php echo $this->product_details->seque; ?>" />
 												</div>
 											</div>
+
 											<div class="actions btn-set">
 												<button type="submit" class="btn blue btn-lg btn-block mt-ladda-btn ladda-button mt-progress-demo" data-style="slide-left" onclick="$('#loading .modal-title').html('Updating...');$('#loading').modal('show');">
 													<span class="ladda-label">Update</span>
 													<span class="ladda-spinner"></span>
 												</button>
 											</div>
+
 											<!-- DOC: Add "hide" class to disable -->
 											<div class="col " style="margin-top:30px;">
 												<a data-toggle="modal" href="#delete-<?php echo $this->product_details->prod_id; ?>"><em> Delete Permanently </em></a><br />

@@ -73,13 +73,26 @@ class Product_details
 	public $vendor_code = '';
 
 	/**
+	 * Sequencing
+	 *
+	 * @var	string (numeric)
+	 */
+	public $seque = '';
+
+	/**
 	 * View Statuses
+	   This status properties are for depracation
 	 *
 	 * @var	string/array
 	 */
-	public $seque = '';
 	public $view_status = '';				// Y, Y1 (hub), Y2 (satellite), N
 	public $public = '';					// Y, N - also a check for private wholesale view in old code
+
+	/**
+	 * Clearance or Pre order status
+	 *
+	 * @var	string/array
+	 */
 	public $custom_order = '';
 
 	/**
@@ -109,8 +122,10 @@ class Product_details
 	 *
 	 * @var	date/array of dates
 	 */
-	public $create_date = '';
+	public $prod_date = ''; // prod_date
+	public $create_date = ''; // alias to prod_date
 	public $publish_date = '';
+	public $last_modified = '';
 
 	/**
 	 * Auto Sequence
@@ -575,8 +590,10 @@ class Product_details
 
 			$this->pending = $row->pending;
 
+			$this->prod_date = $row->prod_date;
 			$this->create_date = $row->prod_date;
 			$this->publish_date = $row->publish_date;
+			$this->last_modified = $row->last_modified;
 
 			$this->auto_seque = $row->auto_seque;
 			$this->size_mode = $row->size_mode;
@@ -704,8 +721,16 @@ class Product_details
 			$this->colors = $row->colors;
 
 			// the options
-			$this->options = ($row->options && $row->options != '') ? json_decode($row->options , TRUE) : array();
-			$this->stocks_options = ($row->stocks_options && $row->stocks_options != '') ? json_decode($row->stocks_options , TRUE) : array();
+			$this->options =
+				($row->options && $row->options != '')
+				? json_decode($row->options , TRUE)
+				: array()
+			; // tbl_product options
+			$this->stocks_options =
+				($row->stocks_options && $row->stocks_options != '')
+				? json_decode($row->stocks_options , TRUE)
+				: array()
+			; // tbl_stock options
 
 			return $this;
 		}
@@ -1269,8 +1294,10 @@ class Product_details
 
 		$this->pending = 0;
 
+		$this->prod_date = '';
 		$this->create_date = '';
 		$this->publish_date = '';
+		$this->last_modified = '';
 
 		$this->auto_seque = '';
 		$this->size_mode = '';

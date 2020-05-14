@@ -176,6 +176,7 @@ class Edit extends Admin_Controller {
 			 * Update tbl_product
 			 */
 			// lets go ahead and update tbl_product record
+			$this->DB->set('last_modified', time());
 			$this->DB->set($post_to_tbl_product);
 			$this->DB->where('prod_id', $id);
 			$q = $this->DB->update('tbl_product');
@@ -253,7 +254,7 @@ class Edit extends Admin_Controller {
 		else // this is presumably PENDING
 		{
 			$post_ary['publish'] == '1';
-			$post_ary['public'] = '1';
+			$post_ary['public'] = 'Y';
 			$post_ary['view_status'] = 'Y';
 		}
 
@@ -319,61 +320,121 @@ class Edit extends Admin_Controller {
 	{
 		foreach ($post_ary['st_id'] as $st_id)
 		{
-			// new_color_publish
-			if (@$post_ary['new_color_publish'][$st_id] == '1')
+			// check if primary color and folor main product options
+			if ($post_ary['primary_color'][$st_id]) // publish
 			{
-				if (@$post_ary['new_color_publish_at_hub'][$st_id] && ! @$post_ary['new_color_publish_at_satellite'][$st_id])
+				// new_color_publish (publish, at hub, at sat, or not)
+				if ($post_ary['publish'] == '1')
 				{
-					$post_to_color_ary['new_color_publish'] = '11';
+					if (@$post_ary['publish_at_hub'] && ! @$post_ary['publish_at_satellite'])
+					{
+						$post_to_color_ary['new_color_publish'] = '11';
+					}
+					elseif ( ! @$post_ary['publish_at_hub'] && @$post_ary['publish_at_satellite'])
+					{
+						$post_to_color_ary['new_color_publish'] = '12';
+					}
+
+					$post_to_color_ary['new_color_publish'] = '1';
+					$post_to_color_ary['color_publish'] = 'Y';
 				}
-				elseif ( ! @$post_ary['new_color_publish_at_hub'][$st_id] && @$post_ary['new_color_publish_at_satellite'][$st_id])
+				elseif ($post_ary['publish'] == '2') // private
 				{
-					$post_to_color_ary['new_color_publish'] = '12';
+					$post_to_color_ary['new_color_publish'] = '2';
+					$post_to_color_ary['color_publish'] = 'N';
 				}
-				elseif (@$post_ary['new_color_publish_at_hub'][$st_id] && @$post_ary['new_color_publish_at_satellite'][$st_id])
+				elseif ($post_ary['publish'] == '0') // unpublish
+				{
+					$post_to_color_ary['new_color_publish'] = '0';
+					$post_to_color_ary['color_publish'] = 'N';
+				}
+				else // default: publish public
 				{
 					$post_to_color_ary['new_color_publish'] = '1';
+					$post_to_color_ary['color_publish'] = 'Y';
 				}
-			}
-			elseif (@$post_ary['new_color_publish'][$st_id] == '0') // unpublish
-			{
-				$post_to_color_ary['new_color_publish'] = '0';
-			}
 
-			// color_publish
-			if (@$post_ary['color_publish'][$st_id] == '1') // public
-			{
-				$post_to_color_ary['color_publish'] = 'Y';
-			}
-			else $post_to_color_ary['color_publish'] = 'N'; // private
-
-			// stock_date
-			if (@$post_ary['stock_date'][$st_id] != '')
-			{
-				$post_to_color_ary['stock_date'] = $post_ary['stock_date'][$st_id];
-			}
-
-			// clearance/custom_order
-			if ( ! isset($post_ary['clearance']))
-			{
-				$post_ary['clearance'] = '0';
-			}
-			// check if main clearance was change on this edit
-			if ($post_ary['clearance'] != $post_ary['clearance_old'])
-			{
+				// clearance/custom_order
+				if ( ! isset($post_ary['clearance']))
+				{
+					$post_ary['clearance'] = '0';
+				}
+				// primary color variant takes on main product clearance
 				$post_to_color_ary['custom_order'] = $post_ary['clearance'];
 			}
 			else
 			{
-				if ( ! isset($post_ary['custom_order'][$st_id]))
+				if ($post_ary['publish'] == '2') // private
 				{
-					$post_ary['custom_order'][$st_id] = '0';
+					$post_to_color_ary['new_color_publish'] = '1';
+					$post_to_color_ary['color_publish'] = 'N';
 				}
-				// check if there are changes to variant level clearance
-				if ($post_ary['custom_order'][$st_id] != $post_ary['custom_order_old'][$st_id])
+				elseif ($post_ary['publish'] == '0') // unpublish
 				{
-					$post_to_color_ary['custom_order'] = $post_ary['custom_order'][$st_id];
+					$post_to_color_ary['new_color_publish'] = '0';
+					$post_to_color_ary['color_publish'] = 'N';
 				}
+				// main product should be publish public in order for color options to work
+				else
+				{
+					// new_color_publish
+					if (@$post_ary['new_color_publish'][$st_id] == '1')
+					{
+						if (@$post_ary['new_color_publish_at_hub'][$st_id] && ! @$post_ary['new_color_publish_at_satellite'][$st_id])
+						{
+							$post_to_color_ary['new_color_publish'] = '11';
+						}
+						elseif ( ! @$post_ary['new_color_publish_at_hub'][$st_id] && @$post_ary['new_color_publish_at_satellite'][$st_id])
+						{
+							$post_to_color_ary['new_color_publish'] = '12';
+						}
+						elseif (@$post_ary['new_color_publish_at_hub'][$st_id] && @$post_ary['new_color_publish_at_satellite'][$st_id])
+						{
+							$post_to_color_ary['new_color_publish'] = '1';
+						}
+					}
+					elseif (@$post_ary['new_color_publish'][$st_id] == '0') // unpublish
+					{
+						$post_to_color_ary['new_color_publish'] = '0';
+					}
+
+					// color_publish
+					if (@$post_ary['color_publish'][$st_id] == '1') // public
+					{
+						$post_to_color_ary['color_publish'] = 'Y';
+					}
+					else $post_to_color_ary['color_publish'] = 'N'; // private
+
+					// stock_date
+					if (@$post_ary['stock_date'][$st_id] != '')
+					{
+						$post_to_color_ary['stock_date'] = $post_ary['stock_date'][$st_id];
+					}
+
+					// clearance/custom_order
+					if ( ! isset($post_ary['clearance']))
+					{
+						$post_ary['clearance'] = '0';
+					}
+					// check if main clearance was change on this edit
+					if ($post_ary['clearance'] != $post_ary['clearance_old'])
+					{
+						$post_to_color_ary['custom_order'] = $post_ary['clearance'];
+					}
+					else
+					{
+						if ( ! isset($post_ary['custom_order'][$st_id]))
+						{
+							$post_ary['custom_order'][$st_id] = '0';
+						}
+						// check if there are changes to variant level clearance
+						if ($post_ary['custom_order'][$st_id] != $post_ary['custom_order_old'][$st_id])
+						{
+							$post_to_color_ary['custom_order'] = $post_ary['custom_order'][$st_id];
+						}
+					}
+				}
+
 			}
 
 			// variant options
