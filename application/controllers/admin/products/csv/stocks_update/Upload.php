@@ -140,7 +140,7 @@ class Upload extends Admin_Controller {
 							$onorder_stock = $this->product_inventory_details->$onorder_label;
 
 							// get stock options data particularly the onorder(orderId) array
-							$stocks_options = $this->product_inventory_details->options;
+							$stocks_options = $this->product_inventory_details->stocks_options;
 
 							// check if affecting order stocks and flag it accordingly
 							if (

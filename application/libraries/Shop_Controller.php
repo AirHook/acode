@@ -279,8 +279,12 @@ class Shop_Controller extends Frontend_Controller {
         {
             // don't show clearance items
             //$where['tbl_stock.custom_order !='] = '3';
-            $condition = "(tbl_stock.custom_order != '3' OR (tbl_stock.custom_order = '3' AND designer.url_structure != 'basixblacklabel'))";
-            $where['condition'] = $condition;
+            $con_clearance = "(tbl_stock.custom_order != '3' OR (tbl_stock.custom_order = '3' AND designer.url_structure != 'basixblacklabel'))";
+            $where['condition'] = $con_clearance;
+
+            // don't show clearance cs only items
+            $con_clearance_cs_only = 'tbl_stock.options NOT LIKE \'%"clearance_consumer_only":"1"%\' ESCAPE \'!\'';
+            $where['condition'] = $con_clearance_cs_only;
         }
 
         // clearance_consumer_only option

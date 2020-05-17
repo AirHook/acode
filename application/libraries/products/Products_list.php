@@ -302,9 +302,55 @@ class Products_list
 							}
 							else
 							{
-								// this OR_WHERE item is used for search strings
-								// on the associative $where array
-								$search_where .= "OR ".$key." LIKE '%".$val."%' ESCAPE '!' ";
+								//$has_operand = preg_match('/(<|>|!|=|\sIS NULL|\sIS NOT NULL|\sEXISTS|\sBETWEEN|\sLIKE|\sIN\s*\(|\s)/i', trim($key));
+
+								// OR is usually for a simple OR conditioin
+								if (strpos($key, 'OR ') !== FALSE)
+								{
+									$key = ltrim($key, 'OR ');
+									$this->DB->or_where($key, $val);
+								}
+								// we now add this NOT LIKE condition for the new category tree system
+								elseif (strpos($key, ' NOT LIKE') !== FALSE)
+								{
+									$key = rtrim($key, ' NOT LIKE');
+
+									if ($key == 'tbl_product.categories')
+									{
+										$notlikewhere = "tbl_product.categories NOT LIKE '%\"".$val."\"%' ESCAPE '!'";
+										$this->DB->where($notlikewhere);
+									}
+									else $this->DB->not_like($key, $val);
+								}
+								// we now add this LIKE condition for the new category tree system
+								elseif (strpos($key, ' LIKE') !== FALSE)
+								{
+									$key = rtrim($key, ' LIKE');
+
+									if ($key == 'tbl_product.categories')
+									{
+										$likewhere = "tbl_product.categories LIKE '%\"".$val."\"%' ESCAPE '!'";
+										$this->DB->where($likewhere);
+									}
+									else $this->DB->like($key, $val);
+								}
+								// we now add the HAVING condition
+								elseif (strpos($key, 'HAVING ') !== FALSE)
+								{
+									$key = ltrim($key, 'HAVING ');
+									$this->DB->having($key, $val);
+								}
+								// custom setting to indicate that $key is a query phrase in itself
+								elseif ($key === 'condition')
+								{
+									$this->DB->where($val);
+								}
+								else
+								{
+									// this OR_WHERE item is used for search strings
+									// on the associative $where array
+									$search_where .= "OR ".$key." LIKE '%".$val."%' ESCAPE '!' ";
+								}
 							}
 						}
 						else
@@ -316,6 +362,18 @@ class Products_list
 							{
 								$key = ltrim($key, 'OR ');
 								$this->DB->or_where($key, $val);
+							}
+							// we now add this NOT LIKE condition for the new category tree system
+							elseif (strpos($key, ' NOT LIKE') !== FALSE)
+							{
+								$key = rtrim($key, ' NOT LIKE');
+
+								if ($key == 'tbl_product.categories')
+								{
+									$notlikewhere = "tbl_product.categories NOT LIKE '%\"".$val."\"%' ESCAPE '!'";
+									$this->DB->where($notlikewhere);
+								}
+								else $this->DB->not_like($key, $val);
 							}
 							// we now add this LIKE condition for the new category tree system
 							elseif (strpos($key, ' LIKE') !== FALSE)
@@ -344,7 +402,6 @@ class Products_list
 							{
 								$this->DB->where($key, $val);
 							}
-
 						}
 					}
 					else // else, it's an integer key for a simple $where array of prod_no

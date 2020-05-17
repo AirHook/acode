@@ -405,7 +405,7 @@
 									</div>
 								</div>
 								<div class="form-group">
-									<label class="control-label col-md-4">Clearance:</label>
+									<label class="control-label col-md-4">On Sale:</label>
 									<div class="col-md-8">
 										<div class="mt-checkbox-inline">
 											<label class="mt-checkbox mt-checkbox-outline">
@@ -425,7 +425,7 @@
 									<div class="col-md-8">
 										<div class="mt-checkbox-inline">
 											<label class="mt-checkbox mt-checkbox-outline">
-												<input type="checkbox" class="clearance_consumer_only" id="clearance_consumer_only-<?php echo $color->color_code; ?>" name="clearance_consumer_only[<?php echo $color->st_id; ?>]" value="1" <?php echo @$color_options['clearance_consumer_only'] == '1' ? 'checked': ''; ?> <?php echo ($this->product_details->publish === '0') ? 'disabled': ''; ?> /> Yes
+												<input type="checkbox" class="clearance_consumer_only" id="clearance_consumer_only-<?php echo $color->color_code; ?>" name="clearance_consumer_only[<?php echo $color->st_id; ?>]" value="1" <?php echo @$color_options['clearance_consumer_only'] == '1' ? 'checked': ''; ?> /> Yes
 												<span></span>
 												<input type="hidden" name="clearance_consumer_only_old[<?php echo $color->st_id; ?>]" value="<?php echo @$color_options['clearance_consumer_only']; ?>" />
 											</label>
@@ -491,7 +491,7 @@
 							<a id="modal_stocks-<?php echo $color->st_id; ?>" data-toggle="modal" href="#update_stock" class="modal_stocks btn btn-default btn-sm" data-stocks="<?php echo $size_csv; ?>" data-size_mode="<?php echo $this->product_details->size_mode; ?>" data-color_name="<?php echo $color->color_name; ?>" data-st_id="<?php echo $color->st_id; ?>">
 								<i class="fa fa-pencil"></i> Edit stocks... </a>
 							<a href="javascript:;" class="modal_stocks btn btn-default btn-sm">
-								Last modified: <?php echo @$this->product_details->stocks_options['last_modified'] ? date('Y-m-d', $this->product_details->stocks_options['last_modified']) : '--'; ?> </a>
+								Last modified: <?php echo date('Y-m-d', @$color_options['last_modified']); ?> </a>
 							<a href="#barcode-<?php echo $this->product_details->prod_no.'_'.$color->color_code; ?>" data-toggle="modal" class="btn dark btn-sm">Print Barcode Labels</a>
 						</div>
 

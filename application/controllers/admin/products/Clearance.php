@@ -159,6 +159,7 @@ class Clearance extends Admin_Controller {
 		else $where['tbl_product.categories LIKE'] = $category_id;
 
 		$where['tbl_product.clearance'] = '3';
+		$where['tbl_stock.options NOT LIKE'] = '"clearance_consumer_only":"1"';
 
 		// get the products list and total count
 		$params['show_private'] = TRUE; // all items general public (Y) - N for private

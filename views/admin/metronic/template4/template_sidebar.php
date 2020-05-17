@@ -33,9 +33,20 @@
                                 </li>
                                 <li class="nav-item  <?php echo $this->uri->segment(3) == 'clearance' ? 'active open' : ''; ?>">
                                     <a href="<?php echo site_url('admin/products/clearance'); ?>" class="nav-link  ">
-                                        <span class="title">Clearance</span>
+                                        <span class="title">On Sale</span>
                                     </a>
                                 </li>
+                                <?php
+                                // available only on hub sites for now
+                                if ($this->webspace_details->options['site_type'] == 'hub_site')
+                                { ?>
+                                <li class="nav-item  <?php echo $this->uri->segment(3) == 'clearance_consumer_only' ? 'active open' : ''; ?>">
+                                    <a href="<?php echo site_url('admin/products/clearance_consumer_only'); ?>" class="nav-link  ">
+                                        <span class="title">Clearance CS Only</span>
+                                    </a>
+                                </li>
+                                    <?php
+                                } ?>
                                 <li class="nav-item  <?php echo $this->uri->segment(3) == 'unpublished' ? 'active open' : ''; ?>">
                                     <a href="<?php echo site_url('admin/products/unpublished'); ?>" class="nav-link  ">
                                         <span class="title">Unpublished</span>
@@ -62,11 +73,11 @@
                         // available only on hub sites for now
                         if ($this->webspace_details->options['site_type'] == 'hub_site')
                         { ?>
-                            <li class="nav-item <?php echo $this->uri->uri_string() == 'admin/desiproducts/add' ? 'active' : ''; ?>">
-                                <a href="<?php echo site_url('admin/products/add'); ?>" class="nav-link ">
-                                    <span class="title">Add New Product</span>
-                                </a>
-                            </li>
+                        <li class="nav-item <?php echo $this->uri->uri_string() == 'admin/desiproducts/add' ? 'active' : ''; ?>">
+                            <a href="<?php echo site_url('admin/products/add'); ?>" class="nav-link ">
+                                <span class="title">Add New Product</span>
+                            </a>
+                        </li>
                         <li class="nav-item <?php echo $this->uri->uri_string() == 'admin/desiproducts/add/multiple_upload_images' ? 'active' : ''; ?>">
                             <a href="<?php echo site_url('admin/products/add/multiple_upload_images'); ?>" class="nav-link ">
                                 <span class="title">Add Multiple Product via Images</span>

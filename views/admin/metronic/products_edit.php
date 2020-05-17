@@ -184,7 +184,7 @@
                                             </div>
 
 											<div class="form-group">
-												<label class="control-label col-md-4">Clearance:</label>
+												<label class="control-label col-md-4">On Sale:</label>
 												<div class="col-md-8">
 													<div class="mt-checkbox-inline">
 														<label class="mt-checkbox mt-checkbox-outline">

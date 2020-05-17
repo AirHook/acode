@@ -96,14 +96,22 @@
 							</li>
 							<li class="<?php echo ($this->uri->segment(3) == 'clearance' OR $this->uri->segment(4) == 'clearance') ? 'active' : ''; ?>">
 								<a href="<?php echo site_url($link_prefix.'/products/clearance'); ?>">
-									Clearance
+									On Sale
 								</a>
 							</li>
+							<?php
+							// available only on hub sites for now
+							if (
+								$this->webspace_details->options['site_type'] == 'hub_site'
+								&& ! @$role
+							)
+							{ ?>
 							<li class="<?php echo ($this->uri->segment(3) == 'clearance_cs_only' OR $this->uri->segment(4) == 'clearance_cs_only') ? 'active' : ''; ?>">
 								<a href="<?php echo site_url($link_prefix.'/products/clearance_cs_only'); ?>">
 									Clearance CS Only
 								</a>
 							</li>
+							<?php } ?>
 							<li class="<?php echo ($this->uri->segment(3) == 'unpublished' OR $this->uri->segment(4) == 'unpublished') ? 'active' : ''; ?>">
 								<a href="<?php echo site_url($link_prefix.'/products/unpublished'); ?>">
 									Unpublished

@@ -438,7 +438,7 @@ class Edit extends Admin_Controller {
 			}
 
 			// variant options
-			$options = array();
+			$options = $this->product_details->stocks_options;
 			// ----
 			// insert options here
 			// clearance for consumer only checkbox (first of all options)

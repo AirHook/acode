@@ -77,6 +77,60 @@ class Search_Controller extends Frontend_Controller {
 			return FALSE;
 		}
 
+        // set $where conditions
+        $where['tbl_product.prod_no'] = $search_string;
+        $where['tbl_product.prod_name'] = $search_string;
+        $where['tbl_product.prod_desc'] = $search_string;
+        //$where['tbl_product.colors'] = $search_string;
+        //$where['tbl_product.colornames'] = $search_string;
+        $where['tbl_product.materials'] = $search_string;
+        $where['tbl_product.trends'] = $search_string;
+        $where['tbl_product.events'] = $search_string;
+        $where['tbl_product.styles'] = $search_string;
+        $where['c1.category_slug'] = $search_string;
+        $where['c2.category_slug'] = $search_string;
+        $where['tbl_stock.color_name'] = $search_string;
+        $where['tbl_stock.color_facets'] = $search_string;
+        $where['designer.url_structure'] =
+            $this->webspace_details->options['site_type'] == 'hub_site'
+            ? $search_string
+            : $this->d_url_structure
+        ;
+
+        // some show item conditions
+        // 1. wholesale users gets to see everything except on sale items
+        //      a. This is true for Basix
+        //      b. Not ture for Tempo
+        // 2. consumer to see items that has stock only
+        // 3. consumer gets to see on sale items
+        /* */
+        if (
+            $this->session->userdata('user_cat') != 'wholesale'
+            && @$_GET['availability'] != 'onsale'
+        )
+        {
+            $where['HAVING with_stocks'] = '1';
+        }
+        else if (
+            $this->session->userdata('user_cat') == 'wholesale'
+            && @$_GET['availability'] == 'onsale'
+        )
+        {
+            // can only show non-basix items
+            $where['designer.url_structure !='] = 'basixblacklabel';
+        }
+        else if ($this->session->userdata('user_cat') == 'wholesale')
+        {
+            // don't show clearance items
+            $con_clearance = "(tbl_stock.custom_order != '3' OR (tbl_stock.custom_order = '3' AND designer.url_structure != 'basixblacklabel'))";
+            $where['condition'] = $con_clearance;
+
+            // don't show clearance cs only items
+            $con_clearance_cs_only = 'tbl_stock.options NOT LIKE \'%"clearance_consumer_only":"1"%\' ESCAPE \'!\'';
+            $where['condition'] = $con_clearance_cs_only;
+        }
+        // */
+
 		// get the products list and total count based on parameters
 		$params['wholesale'] = $this->session->userdata('user_cat') == 'wholesale' ? TRUE : FALSE;
 		$params['show_private'] = $this->session->userdata('user_cat') == 'wholesale' ? TRUE : FALSE;
@@ -89,30 +143,15 @@ class Search_Controller extends Frontend_Controller {
 		$params['pagination'] = $this->num ?: TRUE;
 		$this->load->library('products/products_list', $params);
 		$this->products = $this->products_list->select(
-			array( // where conditions
-				'tbl_product.prod_no' => $search_string,
-				'tbl_product.prod_name' => $search_string,
-				'tbl_product.prod_desc' => $search_string,
-				//'tbl_product.colors' => $search_string,
-				//'tbl_product.colornames' => $search_string,
-				'tbl_product.materials' => $search_string,
-				'tbl_product.trends' => $search_string,
-				'tbl_product.events' => $search_string,
-				'tbl_product.styles' => $search_string,
-				'c1.category_slug' => $search_string,
-				'c2.category_slug' => $search_string,
-				'tbl_stock.color_name' => $search_string,
-				'tbl_stock.color_facets' => $search_string,
-				'designer.url_structure' => (
-					$this->webspace_details->options['site_type'] == 'hub_site'
-					? $search_string
-					: $this->d_url_structure
-				)
-			),
-			array( // order conditions
+            // where conditions
+            $where,
+            // sorting conditions
+			array(
 				//'seque'=>'asc'
 			),
+            // limits
 			0,
+            // search switch
 			'SEARCH'
 		);
 		$product_count = $this->products_list->count_all;

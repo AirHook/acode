@@ -175,7 +175,7 @@
                         </div>
                         <?php } ?>
                         <?php if ($this->session->flashdata('error') == 'user_not_found') { ?>
-                        <div class="alert alert-danger auto-remove">
+                        <div class="alert alert-danger ">
                             <button class="close" data-close="alert"></button> User not found.
                         </div>
                         <?php } ?>

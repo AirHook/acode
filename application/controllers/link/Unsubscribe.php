@@ -143,24 +143,36 @@ class Unsubscribe extends MY_Controller
 				break;
 			}
 
-			// get user options if any...
-			$options = $this->user_details->options;
+			// catch if user id is no longer in the list
+			if ( ! $this->user_details)
+			{
+				$username = 'Someone whose user id is '.$user_id;
+				$link = '';
+			}
+			else
+			{
+				$username = ucfirst($this->user_details->fname.' '.$this->user_details->lname).' ('.$this->user_details->email.')';
+				$link = site_url('admin/users/wholesale/edit/index/'.$user_id);
 
-			// set email track option
-			$options['unsubscribe'][$email_type_code][$ts] =
-				isset($options['unsubscribe'][$email_type_code][$ts])
-				? $options['unsubscribe'][$email_type_code][$ts] + 1
-				: 1
-			;
+				// get user options if any...
+				$options = $this->user_details->options;
 
-			// connect to database
-			$DB = $this->load->database('instyle', TRUE);
-			$DB->set('is_active', '0');
-			$DB->set('options', json_encode($options));
-			$DB->where('user_id', $user_id);
-			$DB->update($db_table);
+				// set email track option
+				$options['unsubscribe'][$email_type_code][$ts] =
+					isset($options['unsubscribe'][$email_type_code][$ts])
+					? $options['unsubscribe'][$email_type_code][$ts] + 1
+					: 1
+				;
 
-			$this->_notify_admin();
+				// connect to database
+				$DB = $this->load->database('instyle', TRUE);
+				$DB->set('is_active', '0');
+				$DB->set('options', json_encode($options));
+				$DB->where('user_id', $user_id);
+				//$DB->update($db_table);
+			}
+
+			$this->_notify_admin($username, $link);
 
 			$this->load->view('unsubscribe_message');
 		}
@@ -173,17 +185,19 @@ class Unsubscribe extends MY_Controller
 	 *
 	 * @return	void
 	 */
-	private function _notify_admin()
+	private function _notify_admin($username, $link)
 	{
 		// begin send email requet to isntyle admin
 		$email_message = '
 			<br /><br />
 			Dear Admin,
 			<br /><br />
-			'.ucfirst($this->user_details->fname.' '.$this->user_details->lname).' ('.$this->user_details->email.') has UNSUBSCRIBED.<br />
-			A click on an unsubscribe link has been detected from '.$this->email_type.'.<br />
+			'.$username.' has UNSUBSCRIBED.<br />
+			A click on an unsubscribe link has been detected from '.strtoupper($this->email_type).'.<br />
 			His or her status is now INACTIVE/SUSPENDED/OPTEDOUT.
 			<br /><br />
+			<br /><br />
+			'.($link ? 'Click here for user details: <a href="'.$link.'">'.$link.'</a>' : '').'
 			<br />
 		';
 
