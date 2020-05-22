@@ -203,6 +203,21 @@ class Add_cart extends Frontend_Controller
 		//print_r(array_filter($this->input->post('qty')));
 		//die();
 
+		// we need to put a check for when ordering is done via satellite site
+		// only logged in wholesale users are allowed to order on satellite site
+		if (
+			$this->webspace_details->options['site_type'] === 'sat_site'
+			&& ! $this->session->user_role == 'wholesale'
+		)
+		{
+			// nothing more to do...
+			// set flash session
+			$this->session->set_flashdata('error', 'must_login');
+
+			// redirect user
+			redirect(site_url(), 'location');
+		}
+
 		// grab the post information
 		$prod_name		= $this->input->post('prod_name');
 		// cart option items

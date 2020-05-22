@@ -142,7 +142,7 @@ class By_product_clicks_report extends Admin_Controller {
 			'w_images' => 'N',
 			'linesheets_only' => 'N',
 			'des_slug' => $user_details->reference_designer,
-			'product_clicks' => $user_id
+			'product_clicks' => $user_details->user_id
 		);
 		$post_ary['options'] = json_encode($options);
 		$post_ary['sales_package_items'] = json_encode($sa_items);
@@ -156,7 +156,7 @@ class By_product_clicks_report extends Admin_Controller {
 		$this->session->set_flashdata('success', 'add');
 
 		// redirect user
-		redirect($this->config->slash_item('admin_folder').'campaigns/sales_package/send/index/'.$insert_id.'/'.$user_id, 'location');
+		redirect($this->config->slash_item('admin_folder').'campaigns/sales_package/send/index/'.$insert_id.'/'.$user_details->user_id, 'location');
 	}
 
 	// ----------------------------------------------------------------------

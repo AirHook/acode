@@ -750,11 +750,24 @@
 																}
 																</style>
 
-																<?php if ($this->webspace_details->options['site_type'] === 'sat_site') { ?>
+																<?php
+                                                                if (
+                                                                    $this->webspace_details->options['site_type'] === 'sat_site'
+                                                                    && ! $this->session->user_role == 'wholesale'
+                                                                )
+                                                                { ?>
+
 																<a href="#how-to-oder" class="btn dark btn-block how-to-oder" data-toggle="modal">HOW TO ORDER</a>
-																<?php } else { ?>
+
+																    <?php
+                                                                }
+                                                                else
+                                                                { ?>
+
 																<button type="submit" class="btn dark btn-block size-qty-submit-wholesale">ADD TO INQUIRY</button>
-																<?php } ?>
+
+                                                                    <?php
+                                                                } ?>
 
 															<?php
 															echo form_close();
@@ -859,7 +872,7 @@
 												<!-- /col-sm-7 -->
 												<!-- END DESKTOP PRODUCT DETAILS INFO -->
 
-												<!-- DELETE ITEM -->
+												<!-- HOW TO ORDER MODAL -->
 												<div class="modal fade bs-modal-lg" id="how-to-oder" tabindex="-1" role="dialog" aria-hidden="true">
 													<div class="modal-dialog modal-lg">
 														<div class="modal-content">

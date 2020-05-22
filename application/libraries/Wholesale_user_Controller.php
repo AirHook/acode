@@ -12,7 +12,6 @@ class Wholesale_user_Controller extends Frontend_Controller {
 
 		// load pertinent libraries/models/helpers
 		$this->load->library('users/wholesale_user_details');
-		//$this->load->library('designers/designer_details');
 
 		/*****
 		 * ...is there a session for admin already?
@@ -20,17 +19,24 @@ class Wholesale_user_Controller extends Frontend_Controller {
 		 */
 		if(
 			! $this->session->userdata('user_loggedin')
-			OR $this->session->userdata('user_cat') != 'wholesale'
+			OR $this->session->userdata('user_role') != 'wholesale'
 		)
 		{
 			// let us remember the page being accessed other than index
 			$this->session->set_flashdata('access_uri', $this->uri->uri_string());
 
+			// remove any previous session
+			$this->wholesale_user_details->initialize();
+			$this->wholesale_user_details->unset_session();
+
+			// destroy any cart items
+			$this->cart->destroy();
+
 			// set flash message
-			$this->session->set_flashdata('login_info', 'You must be logged in to access page.');
+			$this->session->set_flashdata('error', 'no_id_passed');
 
 			// redirect to login page
-			redirect($this->config->slash_item('admin_folder').'login');
+			redirect('account', 'location');
 		}
 
 		/*****
@@ -62,7 +68,7 @@ class Wholesale_user_Controller extends Frontend_Controller {
 			$this->session->set_flashdata('login_info', 'Please login again.');
 
 			// send user back to login page
-			redirect($this->config->slash_item('admin_folder').'login');
+			redirect('account', 'location');
 		}
 
 		/*****

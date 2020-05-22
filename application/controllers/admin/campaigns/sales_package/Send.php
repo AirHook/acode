@@ -246,13 +246,8 @@ class Send extends Admin_Controller {
 		// set flash data
 		$this->session->set_flashdata('success', 'sa_email_sent');
 
-		// set data variables...
-		$this->data['file'] = 'sa_send';
-		$this->data['page_title'] = 'Sales Package Sending';
-		$this->data['page_description'] = 'Send Sales Packages To Users';
-
-		// load views...
-		$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template5/template', $this->data);
+		// send user back
+		redirect('admin/campaigns/sales_package/send/index/'.$id, 'location');
 	}
 
 	// ----------------------------------------------------------------------

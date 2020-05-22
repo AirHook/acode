@@ -143,11 +143,14 @@ class Frontend_Controller extends MY_Controller {
 		// relapse uses the same logindata while login again uses a new logindata
 		if (
 			$this->session->user_loggedin
-			&& $this->session->user_cat == 'wholesale'
+			&& $this->session->user_role == 'wholesale'
+			// removing this exemption and considering all sites for wholesale logged in users
+			/* *
 			&& (
 				$this->webspace_details->options['site_type'] == 'hub_site'
 				OR $this->webspace_details->slug == 'tempoparis' // sal_site exemption
 			)
+			// */
 		)
 		{
 			if ( ! $this->wholesale_user_details->initialize(array('user_id'=>$this->session->user_id)))
@@ -222,7 +225,7 @@ class Frontend_Controller extends MY_Controller {
 		// this controller renders designer categories thumbs page
 		if (
 			$this->session->user_loggedin
-			&& $this->session->user_cat == 'wholesale'
+			&& $this->session->user_role == 'wholesale'
 			&& $this->session->this_login_id
 			&& (
 				$this->uri->segment(1) != ''

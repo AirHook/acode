@@ -219,14 +219,16 @@ class Vendor_user_details
 		// this is legacy method and redundancy method
 		$sesdata = array(
 			'vendor_loggedin'			=> TRUE,
-			'user_cat'					=> 'vendor',
+			'user_cat'					=> 'vendor', // for depracation due to conflict with 'admin'
+			'user_role'					=> 'vendor',
 			'vendor_id'					=> $this->vendor_id
 		);
 		$this->CI->session->set_userdata($sesdata);
 
 		// forward compatibility
 		$_SESSION['vendor_loggedin'] = TRUE;
-		$_SESSION['user_cat'] = 'vendor';
+		$_SESSION['user_cat'] = 'vendor'; // for depracation due to conflict with 'admin'
+		$_SESSION['user_role'] = 'vendor';
 		$_SESSION['vendor_id'] = $this->vendor_id;
 	}
 
@@ -244,7 +246,8 @@ class Vendor_user_details
 			// this is here for backwards compatibility
 			$sesdata = array(
 				'vendor_loggedin'			=> FALSE,
-				'user_cat'					=> '',
+				'user_cat'					=> '',		// for depracation due to conflict with 'admin'
+				'user_role'					=> '',
 				'vendor_id'					=> '',
 				'vendor_login_time'			=> ''		// related to session_lapse property
 			);
@@ -255,7 +258,8 @@ class Vendor_user_details
 			// this is legacy method and redundancy method
 			$sesdata = array(
 				'vendor_loggedin',
-				'user_cat',
+				'user_cat',	// for depracation due to conflict with 'admin'
+				'user_role',
 				'vendor_id',
 				'vendor_login_time'
 			);
@@ -265,7 +269,8 @@ class Vendor_user_details
 		// for redundancy purposes...
 		// and forward compatibility
 		if (isset($_SESSION['vendor_loggedin'])) unset($_SESSION['vendor_loggedin']);
-		if (isset($_SESSION['user_cat'])) unset($_SESSION['user_cat']);
+		if (isset($_SESSION['user_cat'])) unset($_SESSION['user_cat']); // for depracation due to conflict with 'admin'
+		if (isset($_SESSION['user_role'])) unset($_SESSION['user_role']);
 		if (isset($_SESSION['vendor_id'])) unset($_SESSION['vendor_id']);
 		if (isset($_SESSION['vendor_login_time'])) unset($_SESSION['vendor_login_time']);
 	}

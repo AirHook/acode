@@ -41,6 +41,10 @@ class Wholesale_user_details
 	public $user_id = '';
 	public $email = '';
 	public $email2 = '';
+	public $email3 = '';
+	public $email4 = '';
+	public $email5 = '';
+	public $email6 = '';
 	public $password = '';
 	public $store_name = '';
 	public $website = '';
@@ -56,6 +60,8 @@ class Wholesale_user_details
 	public $state = '';
 	public $zipcode = '';
 	public $telephone = '';
+	public $telephone2 = '';
+	public $telephone3 = '';
 	public $fax = '';
 	public $comments = '';
 
@@ -254,8 +260,13 @@ class Wholesale_user_details
 			// initialize properties
 			$this->user_id = $row->user_id;
 			$this->email = $row->email;
-			$this->email2 = $row->email2;
 			$this->password = $row->pword;
+
+			$this->email2 = $row->email2;
+			$this->email3 = $row->email3;
+			$this->email4 = $row->email4;
+			$this->email5 = $row->email5;
+			$this->email6 = $row->email6;
 
 			$this->store_name = $row->store_name;
 			$this->website = $row->website;
@@ -271,6 +282,8 @@ class Wholesale_user_details
 			$this->state = $row->state;
 			$this->zipcode = $row->zipcode;
 			$this->telephone = $row->telephone;
+			$this->telephone2 = $row->telephone2;
+			$this->telephone3 = $row->telephone3;
 			$this->fax = $row->fax;
 			$this->comments = $row->comments;
 
@@ -464,7 +477,7 @@ class Wholesale_user_details
 				'online_users',
 				array(
 					'user_id' => $this->user_id,
-					'user_cat' => 'wholesale',
+					'user_cat' => 'wholesale', // take note for 'online_users' we retain user_cat
 					'email' => $this->email,
 				)
 			)->result()
@@ -472,7 +485,7 @@ class Wholesale_user_details
 		{
 			$data = array(
 				'user_id' => $this->user_id,
-				'user_cat' => 'wholesale',
+				'user_cat' => 'wholesale', // take note for 'online_users' we retain user_cat
 				'email' => $this->email,
 				'lastonline' => $this->time_record
 			);
@@ -482,7 +495,7 @@ class Wholesale_user_details
 		{
 			$this->DB->set('lastonline', $this->time_record);
 			$this->DB->where('user_id', $this->user_id);
-			$this->DB->where('user_cat', 'wholesale');
+			$this->DB->where('user_cat', 'wholesale'); // take note for 'online_users' we retain user_cat
 			$this->DB->where('email', $this->email);
 			$this->DB->update('online_users');
 		}
@@ -563,7 +576,8 @@ class Wholesale_user_details
 				$sesdata = array(
 					'user_loggedin'				=> TRUE,
 					'user_id'					=> $this->user_id,
-					'user_cat'					=> 'wholesale',
+					'user_cat' 					=> 'wholesale', // for depracation due to conflict with 'admin'
+					'user_role' 				=> 'wholesale',
 					'user_name'					=> $this->fname,
 					'ws_last_active_time'		=> time()
 				);
@@ -574,7 +588,8 @@ class Wholesale_user_details
 				// forward compatibility
 				$_SESSION['user_loggedin'] = TRUE;
 				$_SESSION['user_id'] = $this->user_id;
-				$_SESSION['user_cat'] = 'wholesale';
+				$_SESSION['user_cat'] = 'wholesale'; // for depracation due to conflict with 'admin'
+				$_SESSION['user_role'] = 'wholesale';
 				$_SESSION['user_name'] = $this->fname;
 				$_SESSION['ws_last_active_time'] = time();
 			}
@@ -595,6 +610,7 @@ class Wholesale_user_details
 		if (isset($_SESSION['user_loggedin'])) unset($_SESSION['user_loggedin']);
 		if (isset($_SESSION['user_id'])) unset($_SESSION['user_id']);
 		if (isset($_SESSION['user_cat'])) unset($_SESSION['user_cat']);
+		if (isset($_SESSION['user_role'])) unset($_SESSION['user_role']);
 		if (isset($_SESSION['user_name'])) unset($_SESSION['user_name']);
 		if (isset($_SESSION['this_login_id'])) unset($_SESSION['this_login_id']);
 		if (isset($_SESSION['ws_last_active_time'])) unset($_SESSION['ws_last_active_time']);
@@ -800,8 +816,13 @@ class Wholesale_user_details
 		// reset variables to default
 		$this->user_id = '';
 		$this->email = '';
-		$this->email2 = '';
 		$this->password = '';
+
+		$this->email2 = '';
+		$this->email3 = '';
+		$this->email4 = '';
+		$this->email5 = '';
+		$this->email6 = '';
 
 		$this->store_name = '';
 		$this->website = '';
@@ -817,6 +838,8 @@ class Wholesale_user_details
 		$this->state = '';
 		$this->zipcode = '';
 		$this->telephone = '';
+		$this->telephone2 = '';
+		$this->telephone3 = '';
 		$this->fax = '';
 		$this->comments = '';
 

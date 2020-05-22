@@ -161,6 +161,9 @@ class Is_public extends Admin_Controller {
 		$where['tbl_product.public'] = 'Y';
 		$where['tbl_product.publish'] = '1';
 
+		// don't show clearance cs only items
+		$where['tbl_stock.options NOT LIKE'] = '"clearance_consumer_only":"1"';
+		
 		// get the products list and total count
 		$params['show_private'] = FALSE; // all items general public (Y) - N for private
 		$params['view_status'] = 'ALL'; // all items view status (Y, Y1, Y2, N)

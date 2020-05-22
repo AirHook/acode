@@ -95,6 +95,14 @@ class Add extends Admin_Controller {
 			unset($post_ary['passconf']);
 			unset($post_ary['send_activation_email']);
 
+			// since email2 to email6 are options only,
+			// we need to verify them if present
+			if ( ! $this->validate_email($post_ary['email2'])) unset($post_ary['email2']);
+			if ( ! $this->validate_email($post_ary['email3'])) unset($post_ary['email3']);
+			if ( ! $this->validate_email($post_ary['email4'])) unset($post_ary['email4']);
+			if ( ! $this->validate_email($post_ary['email5'])) unset($post_ary['email5']);
+			if ( ! $this->validate_email($post_ary['email6'])) unset($post_ary['email6']);
+
 			// connect and add record to database
 			$DB = $this->load->database('instyle', TRUE);
 			$query = $DB->insert('tbluser_data_wholesale', $post_ary);

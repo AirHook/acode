@@ -143,6 +143,14 @@ class Edit extends Admin_Controller {
 			unset($post_ary['passconf']);
 			unset($post_ary['change-password']);
 
+			// since email2 to email6 are options only,
+			// we need to verify them if present
+			if ( ! $this->validate_email($post_ary['email2'])) unset($post_ary['email2']);
+			if ( ! $this->validate_email($post_ary['email3'])) unset($post_ary['email3']);
+			if ( ! $this->validate_email($post_ary['email4'])) unset($post_ary['email4']);
+			if ( ! $this->validate_email($post_ary['email5'])) unset($post_ary['email5']);
+			if ( ! $this->validate_email($post_ary['email6'])) unset($post_ary['email6']);
+
 			// update record
 			$this->DB->where('user_id', $id);
 			$query = $this->DB->update('tbluser_data_wholesale', $post_ary);

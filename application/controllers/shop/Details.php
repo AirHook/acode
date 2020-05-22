@@ -250,18 +250,29 @@ class Details extends Frontend_Controller
 		// we do all frontend calculations and setting of variables here before loading view file
 		$this->_get_details();
 
+		// set $file view file
+		// this used to be simply 'product_details_regular' for sat_site
+		// now joe wants to have it the same as tempo where users who
+		// logs in at sat_site goes directly to the MY ACCOUNT on the sat_site
+		/* *
+		$this->data['file'] = $this->webspace_details->options['site_type'] == 'sat_site'
+			//? 'product_detail_inquiry'
+			? 'product_details_regular'
+			: (
+				$this->session->userdata('user_cat') == 'wholesale'
+					? 'product_details_wholesale'
+					//? 'product_details_regular'
+					//: 'product_detail_order'
+					: 'product_details_regular'
+			);
+		// */
+		$this->data['file'] =
+			$this->session->userdata('user_cat') == 'wholesale'
+			? 'product_details_wholesale'
+			: 'product_details_regular'
+		;
+
 		// set data variables to pass to view file
-		$this->data['file'] 			=
-			$this->webspace_details->options['site_type'] == 'sat_site'
-				//? 'product_detail_inquiry'
-				? 'product_details_regular'
-				: (
-					$this->session->userdata('user_cat') == 'wholesale'
-						? 'product_details_wholesale'
-						//? 'product_details_regular'
-						//: 'product_detail_order'
-						: 'product_details_regular'
-				);
 		$this->data['view_pane']		= @$_GET['vw'] ?: '';
 		$this->data['product']		 	= ''; //$prod_qry->row();
 		$this->data['search_by_style'] 	= FALSE;
@@ -274,8 +285,6 @@ class Details extends Frontend_Controller
 		$this->data['footer_text']		= $this->product_details->prod_no.' - '.ucwords(strtolower($this->product_details->color_name)).' '.$this->product_details->prod_name;
 
 		// load the view
-		//$this->load->view($this->config->slash_item('template').'template', $this->data);
-		//$this->load->view($this->webspace_details->options['theme'].'/template', $this->data);
 		$this->load->view('metronic/template/template', $this->data);
 	}
 

@@ -34,6 +34,9 @@ class Logout extends MY_Controller {
 		$this->wholesale_user_details->set_initial_state();
 		$this->consumer_user_details->set_initial_state();
 
+		// destroy any cart sessions
+		$this->cart->destroy();
+
 		// redirect user to account signin page
 		if ($this->session->flashdata('days_lapsed'))
 		{

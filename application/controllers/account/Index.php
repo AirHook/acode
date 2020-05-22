@@ -48,7 +48,7 @@ class Index extends Frontend_Controller {
 		}
 		else
 		{
-			// authenticate user
+			// authenticate user and return to login page if invalid
 			if ($this->webspace_details->options['site_type'] !== 'hub_site')
 			{
 				if (
@@ -78,7 +78,7 @@ class Index extends Frontend_Controller {
 					$this->session->set_flashdata('error', 'invalid_credentials');
 
 					// rediect back to sign in page
-					redirect('account');
+					redirect('account', 'location');
 				}
 			}
 			else
@@ -106,9 +106,11 @@ class Index extends Frontend_Controller {
 					$this->session->set_flashdata('error', 'invalid_credentials');
 
 					// rediect back to sign in page
-					redirect('account');
+					redirect('account', 'location');
 				}
 			}
+
+			// user is now authenticated
 
 			// if user is inactive or suspended...
 			if (
@@ -190,13 +192,19 @@ class Index extends Frontend_Controller {
 				// record login which starts the login session
 				$this->wholesale_user_details->record_login_detail();
 
-				// notify sales user
-				$this->wholesale_user_details->notify_sales_user_online();
+				if (ENVIRONMENT !== 'development')
+				{
+					// notify sales user
+					$this->wholesale_user_details->notify_sales_user_online();
 
-				// notify admin
-				$this->wholesale_user_details->notify_admin_user_online();
+					// notify admin
+					$this->wholesale_user_details->notify_admin_user_online();
+				}
 
 				// send user to hub if not already at hub
+				// send to subcat icons page of the respective designer
+				// users wil now stay at respective sat and sal sites
+				// at MY ACCOUNTS page
 				if (
 					$this->webspace_details->options['site_type'] == 'hub_site'
 					OR $this->webspace_details->slug == 'tempoparis'
@@ -213,8 +221,11 @@ class Index extends Frontend_Controller {
 				}
 				else
 				{
-					//redirect('https://www.'.$this->webspace_details->parent_site().'/my_account/wholesale/authenticate/index/'.$this->session->user_id, 'location');
-					redirect('https://www.'.$this->webspace_details->parent_site().'/shop/designers/'.$this->webspace_details->slug.'.html', 'location');
+					// default designer subcat icons page at hub site
+					redirect('my_account/wholesale/dashboard', 'location');
+
+					// default designer subcat icons page at hub site
+					//redirect('https://www.'.$this->webspace_details->parent_site().'/shop/designers/'.$this->webspace_details->slug.'.html', 'location');
 				}
 			}
 

@@ -146,11 +146,21 @@
                         <li class="heading">
                             <h3 class="uppercase">Orders</h3>
                         </li>
-                        <li class="nav-item with-heading <?php echo $this->uri->uri_string() == 'admin/orders' ? 'active' : ''; ?> hide">
+                        <?php
+                        // available only for tempoparis
+                        if ($this->webspace_details->slug == 'tempoparis')
+                        { ?>
+                        <li class="nav-item with-heading <?php echo $this->uri->uri_string() == 'admin/orders' ? 'active' : ''; ?> ">
                             <a href="<?php echo site_url('admin/orders'); ?>" class="nav-link ">
                                 <span class="title">Order Logs</span>
                             </a>
                         </li>
+                            <?php
+                        } ?>
+                        <?php
+                        // available only on hub sites for now
+                        if ($this->webspace_details->options['site_type'] == 'hub_site')
+                        { ?>
                         <li class="nav-item with-heading <?php echo strpos($this->uri->uri_string(), 'admin/orders/new_orders') === FALSE ? '' : 'active'; ?>">
                             <a href="<?php echo site_url('admin/orders/new_orders'); ?>" class="nav-link ">
                                 <span class="title">New Orders</span>
@@ -181,14 +191,16 @@
                                 <span class="title">Cancelled</span>
                             </a>
                         </li>
+                            <?php
+                        } ?>
 
-                        <li class="heading">
-                            <h3 class="uppercase">Sales</h3>
-                        </li>
                         <?php
                         // available only on hub sites for now
                         if ($this->webspace_details->options['site_type'] == 'hub_site')
                         { ?>
+                        <li class="heading">
+                            <h3 class="uppercase">Sales</h3>
+                        </li>
                         <li class="nav-item with-heading <?php echo $this->uri->segment(3) == 'sales_package' ? 'active' : ''; ?>">
                             <a href="<?php echo site_url('admin/campaigns/sales_package'); ?>" class="nav-link ">
                                 <span class="title uppercase">Sales Package Manager</span>
@@ -346,6 +358,10 @@
                             </ul>
                         </li>
 
+                        <?php
+                        // available only on hub sites for now
+                        if ($this->webspace_details->options['site_type'] == 'hub_site')
+                        { ?>
                         <li class="heading">
                             <h3 class="uppercase">Inventory</h3>
                         </li>
@@ -369,7 +385,13 @@
                                 <span class="title">Inventory Count By Barcode Scan</span>
                             </a>
                         </li>
+                            <?php
+                        } ?>
 
+                        <?php
+                        // available only on hub sites for now
+                        if ($this->webspace_details->options['site_type'] == 'hub_site')
+                        { ?>
                         <li class="heading">
                             <h3 class="uppercase">Production</h3>
                         </li>
@@ -387,6 +409,8 @@
                                 <span class="title">Accounting <cite class="small font-red-flamingo">(Under Construction)</cite></span>
                             </a>
                         </li>
+                            <?php
+                        } ?>
 
                         <li class="heading">
                             <h3 class="uppercase">General</h3>
@@ -445,8 +469,6 @@
                                 <span class="title">Link to Sales Dashboard</span>
                             </a>
                         </li>
-                            <?php
-                        } ?>
                         <li class="nav-item with-heading <?php echo strpos($this->uri->uri_string(), 'admin/task_manager') === FALSE ? '' : 'active'; ?>">
                             <a href="<?php echo site_url('admin/task_manager/projects'); ?>" class="nav-link ">
                                 <span class="title uppercase">Task Manager</span>
@@ -516,5 +538,7 @@
                                 </li>
                             </ul>
                         </li>
+                            <?php
+                        } ?>
                     </ul>
                     <!-- END SIDEBAR MENU -->

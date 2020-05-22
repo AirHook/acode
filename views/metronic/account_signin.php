@@ -62,6 +62,11 @@
 												You must be logged in to access the page.
 											</div>
 											<?php } ?>
+                                            <?php if ($this->session->flashdata('error') == 'must_login') { ?>
+											<div class="alert alert-danger">
+												You must be logged in to access the page.
+											</div>
+											<?php } ?>
                                             <?php if ($this->session->flashdata('error') == 'click_one_error') { ?>
 											<div class="alert alert-danger">
 												The activation email link you are accessing is no longer valid.
@@ -127,7 +132,7 @@
 												</div>
 												<div class="col-sm-6">
 
-                                                    <?php if ($this->webspace_details->slug !== 'tempoparis')
+                                                    <?php if ($this->webspace_details->options['site_type'] === 'hub_site')
                                                     { ?>
 
 													<!-- BOF Form ==============================================================-->

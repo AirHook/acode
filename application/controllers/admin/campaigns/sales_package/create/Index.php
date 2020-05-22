@@ -116,15 +116,41 @@ class Index extends Admin_Controller {
 				);
 				$this->data['row_count'] = $this->categories_tree->row_count;
 				$this->data['max_level'] = $this->categories_tree->max_category_level;
+				$this->data['primary_subcat'] = $this->categories_tree->get_primary_subcat($this->session->admin_sa_des_slug);
 
 				// get last category slug if slug_segs is present
-				$this->data['slug_segs'] = json_decode($this->session->admin_sa_slug_segs, TRUE);
-				$category_slug = end($this->data['slug_segs']);
-				$category_id = $this->categories_tree->get_id($category_slug);
-				$designer_slug = reset($this->data['slug_segs']);
+				if ($this->session->admin_sa_slug_segs)
+				{
+					$this->data['slug_segs'] = json_decode($this->session->admin_sa_slug_segs, TRUE);
+					$category_slug = end($this->data['slug_segs']);
+					$category_id = $this->categories_tree->get_id($category_slug);
+					$designer_slug = reset($this->data['slug_segs']);
+				}
+				else
+				{
+					$designer_slug = $this->session->admin_sa_des_slug;
+					$category_id = $this->categories_tree->get_id($this->data['primary_subcat']);
+				}
 
 				$where_more['designer.url_structure'] = $designer_slug;
 				$where_more['tbl_product.categories LIKE'] = $category_id;
+
+				// show published items only (public and private)
+				$con_published = 'tbl_product.publish = \'1\' OR tbl_product.publish = \'11\' OR tbl_product.publish = \'12\' OR tbl_product.publish = \'2\'';
+				$where_more['condition'] = $con_published;
+
+				// sales user show item conditions
+		        // 1. sales users gets to see everything except"
+		        // 		preorder items
+		        // 		esp not clearance cs items
+				// super admin gets to see everything
+				// but right now, sales packages are for the following:
+				//		instock items
+				//		on sale items
+
+				// don't show clearance cs only items
+				$con_clearance_cs_only = 'tbl_stock.options NOT LIKE \'%"clearance_consumer_only":"1"%\' ESCAPE \'!\'';
+				$where_more['condition'] = $con_clearance_cs_only;
 
 				// get the products list for the thumbs grid view
 				$params['show_private'] = TRUE; // all items general public (Y) - N for private
@@ -134,14 +160,17 @@ class Index extends Admin_Controller {
 				$params['variant_publish'] = 'ALL'; // all items at variant level publish (view status)
 				$params['variant_view_at_hub'] = TRUE; // variant level public at hub site
 				$params['variant_view_at_satellite'] = TRUE; // varian level public at satellite site
-				$params['with_stocks'] = FALSE; // Show all with and without stocks
+				$params['with_stocks'] = TRUE; // Show all with and without stocks
 				$params['group_products'] = FALSE; // group per product number or per variant
 				$params['special_sale'] = FALSE; // special sale items only
 				$this->load->library('products/products_list', $params);
 				$this->data['products'] = $this->products_list->select(
+					// where conditions
 					$where_more,
-					array( // order conditions
-						'seque' => 'asc'
+					// sorting conditions
+					array(
+						'seque' => 'asc',
+						'tbl_product.prod_no' => 'desc'
 					)
 				);
 				$this->data['products_count'] = $this->products_list->row_count;

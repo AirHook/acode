@@ -94,6 +94,14 @@ class Unsubscribe extends MY_Controller
 			$ts = array_pop($email_id_ary);
 			$email_id_ary = implode('t', $email_id_ary);
 
+			// validity of ts is one week
+			if ($ts < (strtotime('last week')))
+			{
+				$output = $this->load->view('past_link', NULL, TRUE);
+				echo $output;
+				exit;
+			}
+
 			// get email type id
 			$email_id_ary = explode('i', $email_id_ary);
 			$email_type_code = array_pop($email_id_ary);

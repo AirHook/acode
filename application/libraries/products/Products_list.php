@@ -345,6 +345,18 @@ class Products_list
 								{
 									$this->DB->where($val);
 								}
+								// for search on multiple prod_no using 'prod_no' as key to identify the array of prod_no
+								elseif ($key === 'prod_no')
+								{
+									$i = 1;
+									//$search_where .= "AND ";
+									foreach ($val as $prod_no_item)
+									{
+										if ($i == 1) $search_where .= "tbl_product.prod_no LIKE '%".$prod_no_item."%' ESCAPE '!' ";
+										else $search_where .= "OR tbl_product.prod_no LIKE '%".$prod_no_item."%' ESCAPE '!' ";
+										$i++;
+									}
+								}
 								else
 								{
 									// this OR_WHERE item is used for search strings

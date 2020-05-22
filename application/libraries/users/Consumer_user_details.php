@@ -358,7 +358,8 @@ class Consumer_user_details
 				$sesdata = array(
 					'user_loggedin'				=> TRUE,
 					'user_id'					=> $this->user_id,
-					'user_cat'					=> 'consumer',
+					'user_cat'					=> 'consumer', // for depracation due to conflict with 'admin'
+					'user_role'					=> 'consumer',
 					'user_name'					=> $this->fname,
 					'cs_last_active_time'		=> time()
 				);
@@ -369,7 +370,8 @@ class Consumer_user_details
 				// forward compatibility
 				$_SESSION['user_loggedin'] = TRUE;
 				$_SESSION['user_id'] = $this->user_id;
-				$_SESSION['user_cat'] = 'consumer';
+				$_SESSION['user_cat'] = 'consumer'; // for depracation due to conflict with 'admin'
+				$_SESSION['user_role'] = 'consumer';
 				$_SESSION['user_name'] = $this->fname;
 				$_SESSION['cs_last_active_time'] = time();
 			}
@@ -394,7 +396,8 @@ class Consumer_user_details
 				$sesdata = array(
 					'user_loggedin'				=> FALSE,
 					'user_id'					=> '',
-					'user_cat'					=> '',
+					'user_cat'					=> '', // for depracation due to conflict with 'admin'
+					'user_role'					=> '',
 					'user_name'					=> '',
 					'cs_last_active_time'		=> '',
 					'cs_login_time'				=> ''
@@ -407,7 +410,8 @@ class Consumer_user_details
 				$sesdata = array(
 					'user_loggedin',
 					'user_id',
-					'user_cat',
+					'user_cat', // for depracation due to conflict with 'admin'
+					'user_role',
 					'user_name',
 					'cs_last_active_time',
 					'cs_login_time'
@@ -418,7 +422,8 @@ class Consumer_user_details
 			// for redundancy purposes...
 			if (isset($_SESSION['user_loggedin'])) unset($_SESSION['user_loggedin']);
 			if (isset($_SESSION['user_id'])) unset($_SESSION['user_id']);
-			if (isset($_SESSION['user_cat'])) unset($_SESSION['user_cat']);
+			if (isset($_SESSION['user_cat'])) unset($_SESSION['user_cat']); // for depracation due to conflict with 'admin'
+			if (isset($_SESSION['user_role'])) unset($_SESSION['user_role']);
 			if (isset($_SESSION['user_name'])) unset($_SESSION['user_name']);
 			if (isset($_SESSION['cs_last_active_time'])) unset($_SESSION['cs_last_active_time']);
 			if (isset($_SESSION['cs_login_time'])) unset($_SESSION['cs_login_time']);

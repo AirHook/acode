@@ -375,14 +375,16 @@ class Sales_user_details
 		// this is legacy method and redundancy method
 		$sesdata = array(
 			'admin_sales_loggedin'		=> TRUE,
-			'user_cat'					=> 'sales',
+			'user_cat'					=> 'sales', // for depracation due to conflict with 'admin'
+			'user_role'					=> 'sales',
 			'admin_sales_id'			=> $this->admin_sales_id
 		);
 		$this->CI->session->set_userdata($sesdata);
 
 		// forward compatibility
 		$_SESSION['admin_sales_loggedin'] = TRUE;
-		$_SESSION['user_cat'] = 'sales';
+		$_SESSION['user_cat'] = 'sales'; // for depracation due to conflict with 'admin'
+		$_SESSION['user_role'] = 'sales';
 		$_SESSION['admin_sales_id'] = $this->admin_sales_id;
 	}
 
@@ -400,7 +402,8 @@ class Sales_user_details
 			// this is here for backwards compatibility
 			$sesdata = array(
 				'admin_sales_loggedin'		=> FALSE,
-				'user_cat'					=> '',
+				'user_cat'					=> '',		// for depracation due to conflict with 'admin'
+				'user_role'					=> '',
 				'admin_sales_id'			=> '',
 				'admin_sales_login_time'	=> ''		// related to session_lapse property
 			);
@@ -411,7 +414,8 @@ class Sales_user_details
 			// this is legacy method and redundancy method
 			$sesdata = array(
 				'admin_sales_loggedin',
-				'user_cat',
+				'user_cat',								// for depracation due to conflict with 'admin'
+				'user_role',
 				'admin_sales_id',
 				'admin_sales_login_time'				// related to session_lapse property
 			);
@@ -420,7 +424,8 @@ class Sales_user_details
 
 		// for redundancy purposes...
 		if (isset($_SESSION['admin_sales_loggedin'])) unset($_SESSION['admin_sales_loggedin']);
-		if (isset($_SESSION['user_cat'])) unset($_SESSION['user_cat']);
+		if (isset($_SESSION['user_cat'])) unset($_SESSION['user_cat']); // for depracation due to conflict with 'admin'
+		if (isset($_SESSION['user_role'])) unset($_SESSION['user_role']);
 		if (isset($_SESSION['admin_sales_id'])) unset($_SESSION['admin_sales_id']);
 		if (isset($_SESSION['admin_sales_login_time'])) unset($_SESSION['admin_sales_login_time']);
 	}

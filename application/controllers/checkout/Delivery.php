@@ -85,7 +85,7 @@ class Delivery extends Frontend_Controller
 			// initialize user details
 			if ($this->session->user_loggedin)
 			{
-				if ($this->session->user_cat == 'wholesale')
+				if ($this->session->user_role == 'wholesale')
 				{
 					if ($this->wholesale_user_details->state == 'New York')
 					{

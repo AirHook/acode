@@ -2,7 +2,7 @@
 
 /****************
  * Frontend Controller holds any general front end items
- * 
+ *
  * Shop Controller are for items used for shop thumbs pages
  *
  */
@@ -14,8 +14,8 @@ class Index extends Frontend_Controller
 	 * @return	object
 	 */
 	protected $DB;
-	
-	
+
+
 	/**
 	 * Constructor
 	 *
@@ -24,14 +24,14 @@ class Index extends Frontend_Controller
 	function __Construct()
 	{
 		parent::__Construct();
-		
+
 		// connect to database for use by model
 		$this->DB = $this->load->database('instyle', TRUE);
-		
+
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Primary method - index
 	 *
@@ -39,6 +39,21 @@ class Index extends Frontend_Controller
 	 */
 	function index()
 	{
+		// we need to put a check for when ordering is done via satellite site
+		// only logged in wholesale users are allowed to order on satellite site
+		if (
+			$this->webspace_details->options['site_type'] === 'sat_site'
+			&& ! $this->session->user_role == 'wholesale'
+		)
+		{
+			// nothing more to do...
+			// set flash session
+			$this->session->set_flashdata('error', 'must_login');
+
+			// redirect user
+			redirect('account', 'location');
+		}
+
 		if ($this->session->userdata('user_cat') != 'wholesale')
 		{
 			$data_shipping = array(
@@ -48,7 +63,7 @@ class Index extends Frontend_Controller
 				'shipping_courier'	=> ''
 			);
 			$this->session->unset_userdata($data_shipping);
-		
+
 			$reset_checkbox = 'onload="reset_checkboxes()"';
 			$function_reset_checkboxes = '
 				<script>
@@ -68,7 +83,7 @@ class Index extends Frontend_Controller
 			$function_reset_checkboxes = '';
 			$div_loader = '';
 		}
-		
+
 		// set data variables to pass to view file
 		$this->data['file'] 						= 'cart_basket';
 		$this->data['reset_checkbox'] 				= $reset_checkbox;
@@ -78,12 +93,12 @@ class Index extends Frontend_Controller
 		$this->data['site_keywords']				= @$meta_tags['keyword'];
 		$this->data['site_description']				= @$meta_tags['description'];
 		$this->data['alttags']						= @$meta_tags['alttags'];
-		
+
 		// load the view
 		//$this->load->view($this->webspace_details->options['theme'].'/template', $this->data);
 		$this->load->view('metronic/template/template', $this->data);
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 }

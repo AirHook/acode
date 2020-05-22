@@ -385,11 +385,8 @@ var ComponentsEditors = function () {
             addRemItem(objectData);
         });
 
-
-
-
         // multiple search submit action
-        $('#so-multi-search-form_').on('submit', function(e){
+        $('#sa-multi-search-form').on('submit', function(e){
             $('#loading').modal('show');
             var this_form = $(this);
             // prevent the form from submitting
@@ -410,20 +407,22 @@ var ComponentsEditors = function () {
             var objectData = $(this).serializeArray();
             var search_for_thumbs = $.ajax({
                 type:    "POST",
-                url:     base_url + "admin/sales_orders/search_multiple.html",
+                url:     base_url + "admin/campaigns/sales_package/search_multiple.html",
                 data:    objectData
             });
             search_for_thumbs.done(function(data){
-                $('.blank-grid-text').hide();
-                $('.search-multiple-items-wrapper').hide(); // hide the form
-                $('.thumbs-grid').fadeIn();
-                // populate thumbs
-                $('.thumb-tiles-wrapper').hide();
-                $('.thumb-tiles-wrapper').html(data);
-                $('.thumb-tiles-wrapper').fadeIn();
-                $('.select-product-options').css('background-color', '#2f353b');
-                $('.select-product-options.thumbs-grid-view').css('background-color', '#696969');
-                $('#loading').modal('hide');
+                if (data != 'error') {
+                    $('.blank-grid-text').hide();
+                    $('.search-multiple-items-wrapper').hide(); // hide the form
+                    $('.thumbs-grid').fadeIn();
+                    // populate thumbs
+                    $('.thumb-tiles-wrapper').hide();
+                    $('.thumb-tiles-wrapper').html(data);
+                    $('.thumb-tiles-wrapper').fadeIn();
+                    // set options button bar tone
+                    $('.select-product-options').css('background-color', '#2f353b');
+                    $('#loading').modal('hide');
+                }
             });
             search_for_thumbs.fail(function(jqXHR, textStatus, errorThrown) {
                 $('#loading').modal('hide');

@@ -93,7 +93,7 @@
                                         <a href="javascript:;" class="btn dark btn-md select-product-options search-multiple-form col-md-4">
                                             Multi Style Search
                                         </a>
-                                        <a href="javascript:;" data-toggle="modal" data-modal-id="modal-unlisted_style_no" class="btn dark btn-md select-product-options add-unlisted-style-no col-md-4">
+                                        <a href="javascript:;" data-toggle="modal" data-modal-id="modal-unlisted_style_no" class="btn dark btn-md select-product-options_ add-unlisted-style-no col-md-4 tooltips" data-original-title="Under Construction">
                                             Add New Product
                                         </a>
                                     </div>
@@ -902,7 +902,7 @@
                                                 <span class="required"> * </span>
                                             </label>
                                             <div class="col-md-9">
-                                                <input type="text" name="date_create" class="form-control input-sa_info" value="<?php echo $sa_details->date_create; ?>" readonly />
+                                                <input type="text" name="date_create" class="form-control input-sa_info" value="<?php echo date('Y-m-d', $sa_details->date_create); ?>" readonly />
                                             </div>
                                         </div>
                                         <hr />

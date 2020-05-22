@@ -127,7 +127,7 @@
                                         <a href="javascript:;" class="btn dark btn-md select-product-options search-multiple-form col-md-4">
                                             Multi Style Search
                                         </a>
-                                        <a href="javascript:;" data-toggle="modal" data-modal-id="modal-unlisted_style_no" class="btn dark btn-md select-product-options add-unlisted-style-no col-md-4">
+                                        <a href="javascript:;" data-toggle="modal" data-modal-id="modal-unlisted_style_no" class="btn dark btn-md select-product-options_ add-unlisted-style-no col-md-4 tooltips" data-original-title="Under Construction">
                                             Add New Product
                                         </a>
                                     </div>
@@ -486,10 +486,11 @@
                                             top: 0;
                                         }
                                     </style>
+
                                     <div class="thumb-tiles-wrapper margin-top-20 <?php echo @$des_subcats ? '' : 'display-none'; ?>" data-row-count="<?php echo @$products_count; ?>" data-object_data='{"<?php echo $this->security->get_csrf_token_name(); ?>":"<?php echo $this->security->get_csrf_hash(); ?>"}'>
 
         								<?php if (@$search_string) { ?>
-        	                            <h1><small><em>Search results for:</em></small> "<?php echo $search_string; ?>"</h1>
+        	                            <h1 style="word-wrap:break-word;"><small><em>Search results for:</em></small> "<?php echo $search_string; ?>"</h1>
         	                            <br />
         	                            <?php } ?>
 
@@ -526,11 +527,16 @@
         											$classes = $product->prod_no.' ';
         											$classes.= $style_no.' ';
         											$classes.= $batch.' ';
-        											$classes.= ($product->publish == '0' OR $product->publish == '3' OR $product->view_status == 'N' OR $product->public == 'N') ? 'mt-element-ribbon ' : '';
+                                                    // set ribbon for PRIVATE & UNPUBLISH items
+                                                    $classes.= $product->publish != '1' ? 'mt-element-ribbon' : '';
 
         											// let set the css style...
         											$styles = $dont_display_thumb;
-        											$styles.= ($product->publish == '0' OR $product->publish == '3' OR $product->view_status == 'N') ? 'cursor:not-allowed;' : '';
+        											//$styles.= ($product->publish == '0' OR $product->publish == '3' OR $product->view_status == 'N') ? 'cursor:not-allowed;' : '';
+
+                                                    // ribbon color - assuming that other an not published or pending (danger/unpublished), the item is private (info/private)
+                                                    //$ribbon_color = $product->publish == '0' ? 'danger' : 'info';
+                                                    //$tooltip = $product->publish == '3' ? 'Pending' : ($product->publish == '0' ? 'Unpubished' : 'Private');
 
         											// due to showing of all colors in thumbs list, we now consider the color code
         											// we check if item has color_code. if it has only product number use the primary image instead

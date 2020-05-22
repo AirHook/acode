@@ -134,6 +134,56 @@
                                 </div>
                             </div>
                             <div class="form-group">
+                                <label class="col-md-3 control-label">Email 3
+                                </label>
+                                <div class="col-md-4">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            <i class="fa fa-envelope"></i>
+                                        </span>
+                                        <input type="email" name="email3" class="form-control" value="<?php echo $this->wholesale_user_details->email3; ?>" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Email 4
+                                </label>
+                                <div class="col-md-4">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            <i class="fa fa-envelope"></i>
+                                        </span>
+                                        <input type="email" name="email4" class="form-control" value="<?php echo $this->wholesale_user_details->email4; ?>" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Email 5
+                                </label>
+                                <div class="col-md-4">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            <i class="fa fa-envelope"></i>
+                                        </span>
+                                        <input type="email" name="email5" class="form-control" value="<?php echo $this->wholesale_user_details->email5; ?>" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Email 6
+                                </label>
+                                <div class="col-md-4">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            <i class="fa fa-envelope"></i>
+                                        </span>
+                                        <input type="email" name="email6" class="form-control" value="<?php echo $this->wholesale_user_details->email6; ?>" />
+                                    </div>
+                                    <cite class="help-block small"> Any optional emails found invalid will not be saved. </cite>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="form-group">
                                 <label class="col-md-3 control-label">First Name
                                     <span class="required"> * </span>
                                 </label>
@@ -177,11 +227,26 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-md-3 control-label">Telephone
+                                <label class="col-md-3 control-label">Main Contact Number
                                     <span class="required"> * </span>
                                 </label>
                                 <div class="col-md-4">
                                     <input name="telephone" type="text" class="form-control" value="<?php echo $this->wholesale_user_details->telephone; ?>" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Contact Number 2
+                                </label>
+                                <div class="col-md-4">
+                                    <input name="telephone2" type="text" class="form-control" value="<?php echo $this->wholesale_user_details->telephone2; ?>" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Contact Number 3
+                                </label>
+                                <div class="col-md-4">
+                                    <input name="telephone3" type="text" class="form-control" value="<?php echo $this->wholesale_user_details->telephone3; ?>" />
+                                    <cite class="help-block small"> Contact numbers can be a landline or mobile number. </cite>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -255,7 +320,7 @@
                                 </div>
                             </div>
                             <div class="form-group hide-password display-none">
-                                <label class="control-label col-md-3">Password
+                                <label class="control-label col-md-3">View/Edit Password
                                 </label>
                                 <div class="col-md-4">
                                     <input type="password" id="pword" name="pword" class="form-control input-password" disabled value="<?php echo $this->wholesale_user_details->password; ?>" />

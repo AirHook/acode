@@ -1,7 +1,8 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Profile extends Wholesale_user_Controller {
+class Profile extends Wholesale_user_Controller
+{
 	/**
 	 * Constructor
 	 *
@@ -14,21 +15,31 @@ class Profile extends Wholesale_user_Controller {
 		// connect to database
 		$this->DB = $this->load->database('instyle', TRUE);
     }
+
+	// ----------------------------------------------------------------------
+
 	public function index()
 	{
 		$id = $this->session->userdata['user_id'];
-		
+
 		if ( ! $id)
 		{
 			// nothing more to do...
+			// destroy admin user session if any
+			$this->wholesale_user_details->unset_session();
+			$this->wholesale_user_details->set_initial_state();
+
+			// let us remember the page being accessed other than index
+			$this->session->set_flashdata('access_uri', $this->uri->uri_string());
+
 			// set flash data
 			$this->session->set_flashdata('error', 'no_id_passed');
 
 			// redirect user
-			redirect('my_account/wholesale/profile');
+			redirect('account', 'location');
 		}
 
-		//echo '<pre>';
+		//echo '<pre>'; // for debug purposes
 		//print_r($this->input->post());
 		//die();
 
@@ -113,7 +124,7 @@ class Profile extends Wholesale_user_Controller {
 			$this->data['file'] = '../my_account/profile_wholesale'; // profile page
 			$this->data['page_title'] = 'My Info';
 			$this->data['page_description'] = 'General information of user';
-			
+
 			// load views...
 			$this->load->view('metronic/template/template', $this->data);
 		}
@@ -128,6 +139,14 @@ class Profile extends Wholesale_user_Controller {
 			if ($post_ary['pword'] == '') unset($post_ary['pword']);
 			// unset unneeded variables
 			unset($post_ary['passconf']);
+
+			// since email2 to email6 are options only,
+			// we need to verify them if present
+			if ( ! $this->validate_email($post_ary['email2'])) unset($post_ary['email2']);
+			if ( ! $this->validate_email($post_ary['email3'])) unset($post_ary['email3']);
+			if ( ! $this->validate_email($post_ary['email4'])) unset($post_ary['email4']);
+			if ( ! $this->validate_email($post_ary['email5'])) unset($post_ary['email5']);
+			if ( ! $this->validate_email($post_ary['email6'])) unset($post_ary['email6']);
 
 			// update record
 			$this->DB->where('user_id', $id);

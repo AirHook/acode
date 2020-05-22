@@ -58,7 +58,7 @@
                                             <label class="col-md-3 control-label">Date Created
                                             </label>
                                             <div class="col-md-9">
-                                                <input type="text" name="date_create" class="form-control input-sa_info clear-readonly" value="<?php echo $sa_details->date_create; ?>" readonly />
+                                                <input type="text" name="date_create" class="form-control input-sa_info clear-readonly" value="<?php echo date('Y-m-d', $sa_details->date_create); ?>" readonly />
                                             </div>
                                         </div>
                                         <hr />

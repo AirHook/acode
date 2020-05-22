@@ -154,7 +154,7 @@
 		<tr>
 			<td style="padding:0 0 20px 30px;">
 				<br />
-					Click <a href="<?php echo site_url('admin/campaigns/sales_pacakge/create/by_product_clicks_report'); ?>?date=<?php echo $wholesale_user->xdate; ?>&user=<?php echo $wholesale_user->email; ?>">HERE</a> to send user package offer of items clicked.
+					Click <a href="<?php echo site_url('admin/campaigns/sales_package/create/by_product_clicks_report'); ?>?date=<?php echo $wholesale_user->xdate; ?>&user=<?php echo $wholesale_user->email; ?>">HERE</a> to send user package offer of items clicked.
 			</td>
 		</tr>
 
