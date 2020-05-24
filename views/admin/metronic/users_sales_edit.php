@@ -63,14 +63,32 @@
                                     <?php if ($this->sales_user_details->admin_sales_id === '1') { ?>
                                     <input type="hidden" name="is_active" value="<?php echo $this->sales_user_details->status; ?>" data-required="1" />
                                     <?php } ?>
-                                    <select class="form-control bs-select" <?php echo $this->sales_user_details->admin_sales_id === '1' ? 'disabled=""' : 'name="is_active"'; ?>>
+                                    <select class="form-control select2me" <?php echo $this->sales_user_details->admin_sales_id === '1' ? 'disabled=""' : 'name="is_active"'; ?>>
                                         <option value="1" <?php echo $this->sales_user_details->status === '1' ? 'selected="selected"' : ''; ?>>Active</option>
                                         <option value="0" <?php echo $this->sales_user_details->status === '0' ? 'selected="selected"' : ''; ?>>Inactive</option>
                                     </select>
                                     <cite class="help-block small font-red-mint"> <?php echo form_error('is_active'); ?> </cite>
                                 </div>
                             </div>
-                            <hr />
+                            <hr /> <!--------------------------------->
+                            <div class="form-group">
+                                <label class="control-label col-md-3">User Level
+                                    <span class="required"> * </span>
+                                </label>
+                                <div class="col-md-4">
+                                    <select class="form-control select2me" name="access_level">
+                                        <option value="">Select...</option>
+                                        <option value="1" <?php echo $this->sales_user_details->access_level === '1' ? 'selected="selected"' : ''; ?>>Level 1</option>
+                                        <option value="2" <?php echo $this->sales_user_details->access_level === '2' ? 'selected="selected"' : ''; ?>>Level 2</option>
+                                    </select>
+                                    <cite class="help-block small ">
+                                        LEVEL 1: Access to INSTOCK, PREORDER, ONSALE, all sizes<br />
+                                        LEVEL 2: Access to INSTOCK and ONSALE, available size only<br />
+                                        * Sales users cannot see CS Clearance Items
+                                    </cite>
+                                </div>
+                            </div>
+                            <hr /> <!--------------------------------->
                             <div class="form-group">
                                 <label class="control-label col-md-3">Reference Designer
                                     <span class="required"> * </span>
@@ -79,7 +97,7 @@
                                     <?php if ($this->sales_user_details->admin_sales_id === '1') { ?>
                                     <input type="hidden" name="admin_sales_designer" value="<?php echo $this->sales_user_details->designer; ?>" />
                                     <?php } ?>
-                                    <select class="form-control bs-select" <?php echo $this->sales_user_details->admin_sales_id === '1' ? 'disabled=""' : 'name="admin_sales_designer"'; ?> data-required="1" >
+                                    <select class="form-control select2me" <?php echo $this->sales_user_details->admin_sales_id === '1' ? 'disabled=""' : 'name="admin_sales_designer"'; ?> data-required="1" >
                                         <option value="">Select...</option>
                                         <?php if ($designers) { ?>
                                         <?php foreach ($designers as $designer) { ?>

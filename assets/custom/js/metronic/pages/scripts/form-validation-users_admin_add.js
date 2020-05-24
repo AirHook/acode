@@ -19,6 +19,9 @@ var FormValidation = function () {
 				is_active: {
 					required: true
 				},
+                access_level: {
+					required: true
+				},
 				admin_name: {
 					required: true
 				},

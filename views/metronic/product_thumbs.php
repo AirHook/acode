@@ -1144,7 +1144,6 @@
                                                                             <?php
 																			/**********
 																			 * PROD NO
-                                                                             * PRICE
 																			 */
 																			?>
 																			<p style="margin:8px 0px;font-size:0.8em;">
@@ -1159,19 +1158,39 @@
 																				<br />
 
 																				<?php
+                                                                                /**********
+                                                                                 * PRICE
+    																			 */
                                                                                 if (
                                                                                     $this->webspace_details->options['site_type'] == 'hub_site'
                                                                                     OR $this->session->user_role == 'wholesale'
                                                                                 )
                                                                                 {
+                                                                                    // show price or not
     																				$price_class =
     																					@$this->webspace_details->options['show_product_price'] == '1'
     																					? ''
     																					: 'hidden'
     																				;
+
+                                                                                    // check for ONSALE and overriding CS Clearance
+                                                                                    $stocks_options = json_decode($thumb->stocks_options, TRUE);
+                                                                                    if (
+                                                                                        $thumb->custom_order === '3'
+                                                                                        OR @$stocks_options['clearance_consumer_only'] == '1'
+                                                                                    )
+                                                                                    {
+                                                                                        $line_thru = 'text-decoration:line-through;';
+                                                                                        $mark_down_price_class = '';
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        $line_thru = '';
+                                                                                        $mark_down_price_class = 'hide';
+                                                                                    }
     																				?>
 
-																				<span class="<?php echo $price_class; ?>" itemprop="price" <?php echo $thumb->custom_order === '3' ? 'style="text-decoration:line-through;"' : '';?>>
+																				<span class="<?php echo $price_class; ?>" itemprop="price" style="<?php echo $line_thru; ?>">
 																					<!--&#36;<span>5</span>70.00-->
 																					<?php
 																					/**********
@@ -1186,11 +1205,8 @@
 																					?>
 																				</span>
 
-                                                                                    <?php if ($thumb->custom_order === '3')
-                                                                                    { ?>
-
 																				<br />
-																				<span class="<?php echo $price_class; ?>" itemprop="price" style="color:red;">
+																				<span class="<?php echo $price_class.' '.$mark_down_price_class; ?>" itemprop="price" style="color:red;">
 																					<?php
 																					/**********
 																					 * Wholeslae price clearance
@@ -1204,8 +1220,7 @@
 																					?>
 																				</span>
 
-                                                                                        <?php
-                                                                                    }
+                                                                                    <?php
                                                                                 } ?>
 
 																			</p>

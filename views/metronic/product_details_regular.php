@@ -267,7 +267,9 @@
     															 * and get the wholesale clearance price
     															 */
     															if ($this->product_details->custom_order === '3')
-    															$price = $this->product_details->wholesale_price_clearance; // --> retail price
+                                                                {
+                                                                    $price = $this->product_details->wholesale_price_clearance; // --> ws clearance price
+                                                                }
 
                                                                 if (@$this->webspace_details->options['show_product_price'] == '0')
                                                                 { ?>
@@ -294,7 +296,10 @@
                                                                     }
                                                                 }
                                                             }
-															elseif ($this->product_details->custom_order === '3')
+															elseif (
+                                                                $this->product_details->custom_order === '3'
+                                                                OR @$this->product_details->stocks_options['clearance_consumer_only'] == '1'
+                                                            )
                                                             {
     															/**********
     															 * Sale price

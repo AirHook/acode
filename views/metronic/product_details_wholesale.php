@@ -642,6 +642,16 @@
 
                                                                             $qty = $this->product_details->$size_label;
 
+                                                                            // don't show preorer to level 2 ws users
+                                                                            if (
+                                                                                $this->wholesale_user_details->access_level == 2
+                                                                                && $qty == 0
+                                                                            )
+                                                                            {
+                                                                                $display_size = 'hide';
+                                                                            }
+                                                                            else $display_size = '';
+
                                                                             if ($size_label == 'size_ssm') $size_class = 's_sm';
                                                                             elseif ($size_label == 'size_sml') $size_class = 's_ml';
                                                                             elseif ($size_label == 'size_sprepack1221') $size_class = 's_prepak';
@@ -653,7 +663,7 @@
                                                                             else $size_html = $size;
                                                                             ?>
 
-                                                                        <div class="row" onmouseover="$(this).find('span.details.unavailable').show();" onmouseout="$(this).find('span.details.unavailable').hide();">
+                                                                        <div class="row <?php echo $display_size; ?>" onmouseover="$(this).find('span.details.unavailable').show();" onmouseout="$(this).find('span.details.unavailable').hide();">
 
                                                                             <?php
                     														/**********

@@ -60,13 +60,33 @@
                                     <span class="required"> * </span>
                                 </label>
                                 <div class="col-md-4">
-                                    <select class="form-control bs-select" name="is_active">
+                                    <select class="form-control select2me" name="is_active">
                                         <option value="1" <?php echo $this->admin_user_details->status == '1' ? 'selected="selected"' : ''; ?>>Active</option>
                                         <option value="0" <?php echo $this->admin_user_details->status == '0' ? 'selected="selected"' : ''; ?>>Inactive</option>
                                     </select>
                                     <cite class="help-block font-red-mint small"> <?php echo form_error('is_active'); ?> </cite>
                                 </div>
                             </div>
+                            <hr /> <!--------------------------------->
+                            <div class="form-group">
+                                <label class="control-label col-md-3">User Level
+                                    <span class="required"> * </span>
+                                </label>
+                                <div class="col-md-4">
+                                    <select class="form-control select2me" name="access_level">
+                                        <option value="">Select...</option>
+                                        <option value="1" <?php echo $this->admin_user_details->access_level === '1' ? 'selected="selected"' : ''; ?>>Level 1</option>
+                                        <option value="2" <?php echo $this->admin_user_details->access_level === '2' ? 'selected="selected"' : ''; ?>>Level 2</option>
+                                        <option value="3" <?php echo $this->admin_user_details->access_level === '3' ? 'selected="selected"' : ''; ?>>Level 3</option>
+                                    </select>
+                                    <cite class="help-block small ">
+                                        LEVEL 1:<br />
+                                        LEVEL 2:<br />
+                                        LEVEL 3:
+                                    </cite>
+                                </div>
+                            </div>
+                            <hr /> <!--------------------------------->
                             <div class="form-group">
                                 <label class="control-label col-md-3">Reference Designer
                                 </label>

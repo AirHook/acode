@@ -2,7 +2,7 @@ var FormValidation = function () {
 
     // basic validation
     var handleValidation1 = function() {
-        // for more info visit the official plugin documentation: 
+        // for more info visit the official plugin documentation:
 		// http://docs.jquery.com/Plugins/Validation
 
 		var form1 = $('#form-users_sales_add');
@@ -14,9 +14,12 @@ var FormValidation = function () {
 			errorClass: 'help-block help-block-error', // default input error message class
 			focusInvalid: false, // do not focus the last invalid input
 			ignore: "",  // validate all fields including form hidden input
-			
+
 			rules: {
 				is_active: {
+					required: true
+				},
+                access_level: {
 					required: true
 				},
 				admin_sales_designer: {
@@ -45,8 +48,8 @@ var FormValidation = function () {
 					valueNotEquals: "Please select a Reference Designer"
 				}
 			},
-			
-			invalidHandler: function (event, validator) { //display error alert on form submit              
+
+			invalidHandler: function (event, validator) { //display error alert on form submit
 				success1.hide();
 				error1.show();
 				App.scrollTo(error1, -200);
@@ -83,7 +86,7 @@ var FormValidation = function () {
 				form.submit();
 			}
 		});
-		
+
 		//apply validation on select dropdown value change, this only needed for chosen dropdown integration.
 		$('.bs-select', form1).change(function () {
 			form1.validate().element($(this)); //revalidate the chosen dropdown value and show error or success message for the input

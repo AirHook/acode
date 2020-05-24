@@ -272,12 +272,14 @@
 	/***********
 	 * Optout option using md5 email for now
 	 * as class is using md5 email to process it
-	 */
+	 * - only for consumers
+	 *
 	?>
 	<span style="color:red;">[
 		To opt out from product updates, please click <a href="<?php echo base_url(); ?>wholesale/optout/index/<?php echo md5($email); ?>" target="_blank">here</a>.
 	]</span>
 	<br>
+	<?php // */ ?>
 	<span style="color:gray;font-size:0.6em;">[
 		You are receiving this email of recent designs from us because your registeration has just been activated.
 	]</span>

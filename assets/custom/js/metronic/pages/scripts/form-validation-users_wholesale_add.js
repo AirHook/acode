@@ -28,6 +28,9 @@ var FormValidation = function () {
 				is_active: {
 					required: true
 				},
+                access_level: {
+					required: true
+				},
 				reference_designer: {
 					required: true
 				},

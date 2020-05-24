@@ -53,13 +53,33 @@
                                     <span class="required"> * </span>
                                 </label>
                                 <div class="col-md-4">
-                                    <select class="form-control bs-select" name="is_active">
+                                    <select class="form-control select2me" name="is_active">
                                         <option value="1" selected="selected">Active</option>
                                         <option value="0">Inactive</option>
                                     </select>
                                     <cite class="help-block small"> By default, new user is always active. </cite>
                                 </div>
                             </div>
+                            <hr /> <!--------------------------------->
+                            <div class="form-group">
+                                <label class="control-label col-md-3">User Level
+                                    <span class="required"> * </span>
+                                </label>
+                                <div class="col-md-4">
+                                    <select class="form-control select2me" name="access_level">
+                                        <option value="">Select...</option>
+                                        <option value="1" <?php echo set_select('access_level', '1'); ?>>Level 1</option>
+                                        <option value="2" <?php echo set_select('access_level', '2'); ?>>Level 2</option>
+                                        <option value="3" <?php echo set_select('access_level', '3'); ?>>Level 3</option>
+                                    </select>
+                                    <cite class="help-block small hide">
+                                        LEVEL 1:<br />
+                                        LEVEL 2:<br />
+                                        LEVEL 3:
+                                    </cite>
+                                </div>
+                            </div>
+                            <hr /> <!--------------------------------->
                             <div class="form-group">
                                 <label class="control-label col-md-3">Reference Designer
                                 </label>

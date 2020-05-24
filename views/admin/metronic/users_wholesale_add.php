@@ -68,7 +68,25 @@
                                     <cite class="help-block small"> Checked by default, which this will send activation email to user on submit. </cite>
                                 </div>
                             </div>
-                            <hr />
+                            <hr /> <!--------------------------------->
+                            <div class="form-group">
+                                <label class="control-label col-md-3">User Level
+                                    <span class="required"> * </span>
+                                </label>
+                                <div class="col-md-4">
+                                    <select class="form-control select2me" name="access_level">
+                                        <option value="">Select...</option>
+                                        <option value="1" <?php echo set_select('access_level', '1'); ?>>Level 1</option>
+                                        <option value="2" <?php echo set_select('access_level', '2'); ?>>Level 2</option>
+                                    </select>
+                                    <cite class="help-block small hide">
+                                        LEVEL 1: Access to INSTOCK, PREORDER, ONSALE, all sizes<br />
+                                        LEVEL 2: Access to INSTOCK and ONSALE, available size only<br />
+                                        * Wholesale users cannot see CS Clearance Items
+                                    </cite>
+                                </div>
+                            </div>
+                            <hr /> <!--------------------------------->
                             <div class="form-group">
                                 <label class="control-label col-md-3">Reference Designer
                                     <span class="required"> * </span>
