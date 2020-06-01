@@ -58,7 +58,8 @@ class Active extends Sales_user_Controller {
 		$this->wholesale_users_list->pagination = $this->data['page'];
 
 		// set active items
-		$this->data['des_slug'] = $this->sales_user_details->designer;
+		$this->data['des_slug'] = '';
+		$this->data['status'] = 'active';
 
 		// get data
 		$custom_where = ''; // handles mixed designer or no designer query
@@ -90,28 +91,25 @@ class Active extends Sales_user_Controller {
 		$this->data['count_all'] = $this->wholesale_users_list->count_all;
 
 		// enable pagination
-		$this->_set_pagination($this->data['count_all'], $this->data['limit']);
+		$this->_set_pagination($this->data['count_all'], $this->data['limit'], $this->data['des_slug']);
 
 		// need to show loading at start
 		$this->data['show_loading'] = FALSE;
 		$this->data['search'] = FALSE;
-
-		// set uri referrer session.
-		$this->session->set_flashdata('uri_referrer', $this->uri->uri_string());
 
 		// breadcrumbs
 		$this->data['page_breadcrumb'] = array(
 			'users/wholesale/active' => 'Active Wholesale Users'
 		);
 
-		// final set of data variables to pass to view file
+		// set data variables...
 		$this->data['role'] = 'sales';
 		$this->data['file'] = 'users_wholesale';
 		$this->data['page_title'] = 'Wholesale Users';
 		$this->data['page_description'] = 'List of whooesale users';
 
 		// load views...
-		$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template_my_account/template', $this->data);
+		$this->load->view('admin/metronic/template_my_account/template', $this->data);
 	}
 
 	// ----------------------------------------------------------------------
@@ -125,7 +123,7 @@ class Active extends Sales_user_Controller {
 	{
 		$this->load->library('pagination');
 
-		$url = 'my_account/sales/users/wholesale/active';
+		$url = 'admin/users/wholesale/active';
 
 		$config['base_url'] = base_url().$url.'/index/'.($des_slug ? $des_slug.'/' : '');
 		$config['total_rows'] = $count_all;

@@ -256,13 +256,18 @@ class Create extends Sales_user_Controller
 			$this->data['show_loading'] = TRUE;
 			$this->data['search_string'] = FALSE;
 
+			// breadcrumbs
+			$this->data['page_breadcrumb'] = array(
+				'sales_orders/create' => 'Create Sales Orders'
+			);
+
 			$this->data['role'] = 'sales';
 			$this->data['file'] = 'so_create';
 			$this->data['page_title'] = 'Sales Order Create';
 			$this->data['page_description'] = 'Create a Sales Order';
 
 			// load views...
-			$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template_my_account/template', $this->data);
+			$this->load->view('admin/metronic/template_my_account/template', $this->data);
 		}
 		else
 		{

@@ -1,7 +1,7 @@
-								<div class="send_to_current_user <?php echo $ws_user_details ? '' : 'display-none'; ?>">
+								<div class="send_to_current_user <?php echo @$ws_user_details ? '' : 'display-none'; ?>">
 
-									<div class="form-body selected-users-list-wrapper <?php echo $ws_user_details ? '' : 'display-none'; ?>">
-										<span class="caption">Send to the following <cite class="<?php echo $ws_user_details ? 'hide' : ''; ?>">(maximum of 10 users per sending)</cite>:</span>
+									<div class="form-body selected-users-list-wrapper <?php echo @$ws_user_details ? '' : 'display-none'; ?>">
+										<span class="caption">Send to the following <cite class="<?php echo @$ws_user_details ? 'hide' : ''; ?>">(maximum of 10 users per sending)</cite>:</span>
 										<input type="hidden" name="emails" value="" />
 										<div class="mt-checkbox-list selected-users-list">
 											<!-- DOC: example child element --
@@ -12,13 +12,13 @@
 												<span></span>
 											</label>
 											-->
-											<?php if ($ws_user_details)
+											<?php if (@$ws_user_details)
 											{ ?>
 
 											<label class="mt-checkbox mt-checkbox-outline" style="font-size:0.9em;">
-												<?php echo $ws_user_details->store_name; ?> -
-												<?php echo $ws_user_details->fname.' '.$ws_user_details->lname; ?> <cite class="small">(<?php echo $ws_user_details->email; ?>)</cite>
-												<input type="checkbox" class="send_to_current_user_ selected-list" name="email[]" value="<?php echo $ws_user_details->email; ?>" checked />
+												<?php echo @$ws_user_details->store_name; ?> -
+												<?php echo @$ws_user_details->fname.' '.@$ws_user_details->lname; ?> <cite class="small">(<?php echo @$ws_user_details->email; ?>)</cite>
+												<input type="checkbox" class="send_to_current_user_ selected-list" name="email[]" value="<?php echo @$ws_user_details->email; ?>" checked />
 												<span></span>
 											</label>
 
@@ -26,12 +26,12 @@
 											} ?>
 
 										</div>
-	                                    <button type="button" class="btn-send-sales-package btn dark btn-sm <?php echo $sa_details->sales_package_id ? 'mt-bootbox-existing' : 'mt-bootbox-new'; ?> margin-bottom-10">
+	                                    <button type="button" class="btn-send-sales-package btn dark btn-sm <?php echo @$sa_details->sales_package_id ? 'mt-bootbox-existing' : 'mt-bootbox-new'; ?> margin-bottom-10">
 	                                        Send <?php echo @$linesheet_sending_only ? 'Linesheet' : 'Package'; ?>
 	                                    </button>
 									</div>
 
-									<div class="form-body <?php echo $ws_user_details ? 'hide' : ''; ?>">
+									<div class="form-body <?php echo @$ws_user_details ? 'hide' : ''; ?>">
 
 										<h5> <cite>MY CURRENT ACTIVE USERS:</cite> <span class="font-red-flamingo"> * </span></h5>
 
@@ -148,8 +148,11 @@
 
 													<div class="mt-checkbox-list select-users-list">
 
-														<?php foreach ($users as $user)
-														{ ?>
+														<?php
+														if (@$users)
+														{
+															foreach ($users as $user)
+															{ ?>
 
                                                         <label class="mt-checkbox mt-checkbox-outline" style="font-size:0.8em;">
 															<?php echo ucwords($user->store_name); ?> -
@@ -158,7 +161,8 @@
                                                             <span></span>
                                                         </label>
 
-															<?php
+																<?php
+															}
 														} ?>
 
                                                     </div>

@@ -54,31 +54,38 @@ class Add extends Sales_user_Controller {
 		if ($this->form_validation->run() == FALSE)
 		{
 			// some pertinent data
-			$this->data['designers'] = $this->designers_list->select(
-				array(
-					'designer.url_structure' => $this->sales_user_details->designer
-				)
-			);
-			$this->data['sales'] = $this->sales_users_list->select(
-				array(
-					'tbladmin_sales.admin_sales_designer' => $this->sales_user_details->designer
-				)
-			);
+			if (@$this->webspace_details->options['site_type'] != 'hub_site')
+			{
+				$this->data['designers'] = $this->designers_list->select(
+					array(
+						'designer.url_structure' => @$this->webspace_details->slug
+					)
+				);
+				$this->data['sales'] = $this->sales_users_list->select(
+					array(
+						'tbladmin_sales.admin_sales_designer' => @$this->webspace_details->slug
+					)
+				);
+			}
+			else
+			{
+				$this->data['designers'] = $this->designers_list->select();
+				$this->data['sales'] = $this->sales_users_list->select();
+			}
 
 			// breadcrumbs
 			$this->data['page_breadcrumb'] = array(
-				'users/wholesale' => 'Wholesale Users',
-				'add' => 'Add'
+				'users/wholesale/add' => 'Inactive Wholesale Users'
 			);
 
 			// set data variables...
 			$this->data['role'] = 'sales';
 			$this->data['file'] = 'users_wholesale_add';
 			$this->data['page_title'] = 'Wholesale User Add';
-			$this->data['page_description'] = 'Add New Wholesale User';
+			$this->data['page_description'] = 'Add new wholesale user';
 
 			// load views...
-			$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template_my_account/template', $this->data);
+			$this->load->view('admin/metronic/template_my_account/template', $this->data);
 		}
 		else
 		{
@@ -93,6 +100,14 @@ class Add extends Sales_user_Controller {
 			// unset unneeded variables
 			unset($post_ary['passconf']);
 			unset($post_ary['send_activation_email']);
+
+			// since email2 to email6 are options only,
+			// we need to verify them if present
+			if ( ! $this->validate_email($post_ary['email2'])) unset($post_ary['email2']);
+			if ( ! $this->validate_email($post_ary['email3'])) unset($post_ary['email3']);
+			if ( ! $this->validate_email($post_ary['email4'])) unset($post_ary['email4']);
+			if ( ! $this->validate_email($post_ary['email5'])) unset($post_ary['email5']);
+			if ( ! $this->validate_email($post_ary['email6'])) unset($post_ary['email6']);
 
 			// connect and add record to database
 			$DB = $this->load->database('instyle', TRUE);
@@ -119,7 +134,7 @@ class Add extends Sales_user_Controller {
 					$this->session->set_flashdata('error_message', $this->wholesale_activation_email_sending->error);
 
 					// redirect user
-					redirect('my_account/sales/users/wholesale/edit/index/'.$insert_id);
+					redirect($this->config->slash_item('admin_folder').'users/wholesale/edit/index/'.$insert_id);
 				}
 
 			}
@@ -127,7 +142,7 @@ class Add extends Sales_user_Controller {
 			// set flash data
 			$this->session->set_flashdata('success', 'add');
 
-			redirect('my_account/sales/users/wholesale/edit/index/'.$insert_id);
+			redirect($this->config->slash_item('admin_folder').'users/wholesale/edit/index/'.$insert_id);
 		}
 	}
 

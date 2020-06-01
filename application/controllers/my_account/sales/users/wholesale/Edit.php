@@ -41,7 +41,7 @@ class Edit extends Sales_user_Controller {
 			$this->session->set_flashdata('error', 'no_id_passed');
 
 			// redirect user
-			redirect('my_account/sales/users/wholesale');
+			redirect($this->config->slash_item('admin_folder').'users/wholesale');
 		}
 
 		//echo '<pre>';
@@ -90,7 +90,7 @@ class Edit extends Sales_user_Controller {
 				// set flash data
 				$this->session->set_flashdata('error', 'user_not_found');
 
-				redirect('my_account/sales/users/wholesale');
+				redirect($this->config->slash_item('admin_folder').'users/wholesale');
 			}
 
 			if ( ! $this->session->flashdata('clear_recent_wholesale'))
@@ -104,21 +104,32 @@ class Edit extends Sales_user_Controller {
 			}
 
 			// some pertinent data
-			$this->data['designers'] = $this->designers_list->select(
-				array(
-					'designer.url_structure' => $this->sales_user_details->designer
-				)
-			);
-			$this->data['sales'] = $this->sales_users_list->select(
-				array(
-					'tbladmin_sales.admin_sales_designer' => $this->sales_user_details->designer
-				)
-			);
+			if (@$this->webspace_details->options['site_type'] != 'hub_site')
+			{
+				$this->data['designers'] = $this->designers_list->select(
+					array(
+						'designer.url_structure' => @$this->webspace_details->slug
+					)
+				);
+				$this->data['sales'] = $this->sales_users_list->select(
+					array(
+						'tbladmin_sales.admin_sales_designer' => @$this->webspace_details->slug
+					)
+				);
+			}
+			else
+			{
+				$this->data['designers'] = $this->designers_list->select();
+				$this->data['sales'] = $this->sales_users_list->select();
+			}
+
+			// need to show loading at start
+			$this->data['show_loading'] = FALSE;
+			$this->data['search'] = FALSE;
 
 			// breadcrumbs
 			$this->data['page_breadcrumb'] = array(
-				'users/wholesale' => 'Wholesale Users',
-				'edit' => 'Edit'
+				'sales_orders/all' => 'My Sales Orders'
 			);
 
 			// set data variables...
@@ -128,7 +139,7 @@ class Edit extends Sales_user_Controller {
 			$this->data['page_description'] = 'Edit Wholesale User Details';
 
 			// load views...
-			$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template_my_account/template', $this->data);
+			$this->load->view('admin/metronic/template_my_account/template', $this->data);
 		}
 		else
 		{
@@ -142,6 +153,14 @@ class Edit extends Sales_user_Controller {
 			unset($post_ary['passconf']);
 			unset($post_ary['change-password']);
 
+			// since email2 to email6 are options only,
+			// we need to verify them if present
+			if ( ! $this->validate_email($post_ary['email2'])) unset($post_ary['email2']);
+			if ( ! $this->validate_email($post_ary['email3'])) unset($post_ary['email3']);
+			if ( ! $this->validate_email($post_ary['email4'])) unset($post_ary['email4']);
+			if ( ! $this->validate_email($post_ary['email5'])) unset($post_ary['email5']);
+			if ( ! $this->validate_email($post_ary['email6'])) unset($post_ary['email6']);
+
 			// update record
 			$this->DB->where('user_id', $id);
 			$query = $this->DB->update('tbluser_data_wholesale', $post_ary);
@@ -152,7 +171,7 @@ class Edit extends Sales_user_Controller {
 			// set flash data
 			$this->session->set_flashdata('success', 'edit');
 
-			redirect('my_account/sales/users/wholesale/edit/index/'.$id, 'location');
+			redirect($this->config->slash_item('admin_folder').'users/wholesale/edit/index/'.$id, 'location');
 		}
 	}
 

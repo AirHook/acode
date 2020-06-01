@@ -33,10 +33,15 @@ class All extends Sales_user_Controller {
 		$this->load->library('purchase_orders/purchase_orders_list');
 
 		// get designer list for the dropdown filter
-		$this->data['designers'] = $this->designers_list->select();
+		$this->data['designers'] = $this->designers_list->select(
+			array(
+				'designer.url_structure' =>$this->sales_user_details->designer
+			)
+		);
 
 		// set active items
-		$this->data['des_slug'] = !is_numeric(@$des_slug) ? @$des_slug : '';
+		$this->data['des_slug'] = '';
+		$this->data['status'] = 'all';
 
 		// get data
 		if ($this->session->admin_sales_loggedin)
@@ -84,6 +89,11 @@ class All extends Sales_user_Controller {
 		// need to show loading at start
 		$this->data['show_loading'] = FALSE;
 		$this->data['search'] = FALSE;
+
+		// breadcrumbs
+		$this->data['page_breadcrumb'] = array(
+			'purchase_orders/all' => 'My Sales Orders'
+		);
 
 		// set data variables...
 		$this->data['role'] = 'sales';

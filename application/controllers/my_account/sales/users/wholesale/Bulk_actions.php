@@ -84,18 +84,23 @@ class Bulk_actions extends Sales_user_Controller {
 		// update or delete items from database
 		if ($this->input->post('bulk_action') === 'del')
 		{
-			$DB->delete('tbluser_data_wholesale');
+			$DB->set('admin_sales_id', NULL);
+			$DB->set('admin_sales_email', NULL);
+			$DB->set('reference_designer', NULL);
+			$DB->set('is_active', '0');
+			$DB->set('comments', $comments);
 
 			// set flash data
 			$this->session->set_flashdata('success', 'delete');
 		}
 		else
 		{
-			$DB->update('tbluser_data_wholesale');
-
 			// set flash data
 			$this->session->set_flashdata('success', 'edit');
 		}
+
+		// update records
+		$DB->update('tbluser_data_wholesale');
 
 		// redirect user
 		if ($this->agent->is_referral())

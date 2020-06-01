@@ -505,7 +505,7 @@ class Wholesale_user_details
 	// --------------------------------------------------------------------
 
 	/**
-	 * Universally SET Admin Sales only session
+	 * Act Click One Method
 	 *
 	 * @return	void
 	 */
@@ -521,6 +521,32 @@ class Wholesale_user_details
 		if ( ! isset($options['act'][$tc])) $options['act'][$tc] = $id;
 
 		$this->options = $options;
+
+		// update recrods
+		$this->DB->set('options', json_encode($this->options));
+		$this->DB->where('user_id', $user_id);
+		$this->DB->update('tbluser_data_wholesale');
+
+		return $this;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Product Clicks Click 1 Method
+	 *
+	 * @return	void
+	 */
+	public function prod_clicks_one($user_id = '', $tc = '', $session_id = '')
+	{
+		if ($user_id == '' OR $tc == '' OR $session_id =='')
+		{
+			// nothing more to do...
+			return FALSE;
+		}
+
+		// update property
+		$this->options['product_cliks'][$tc] = $session_id;
 
 		// update recrods
 		$this->DB->set('options', json_encode($this->options));

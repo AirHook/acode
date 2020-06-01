@@ -450,7 +450,7 @@
 
                                     <?php
                                     // do not show to level 2 sales users
-                                    if (@$role != 'sales' OR @$this->sales_user_details->access_level == '0')
+                                    if (@$role != 'sales' OR @$this->sales_user_details->access_level == '2')
                                     { ?>
 
                                     <?php if ($user->is_active == '1' OR $user->is_active == '2') { ?>
@@ -464,7 +464,7 @@
                                         <i class="fa fa-trash font-dark"></i>
                                     </a>
                                     <!-- Transfer User to Consumer -->
-                                    <a data-toggle="modal" href="#transfer-<?php echo $user->user_id; ?>" class="tooltips" data-original-title="Transfer User to Consumer">
+                                    <a data-toggle="modal" href="#transfer-<?php echo $user->user_id; ?>" class="tooltips <?php echo @$role == 'sales' ? 'hide' : ''; ?>" data-original-title="Transfer User to Consumer">
                                         <i class="fa fa-play-circle-o font-dark"></i>
                                     </a>
 

@@ -220,11 +220,14 @@ class Modify extends Sales_user_Controller {
 			}
 			else
 			{
-				$this->sales_user_details->initialize(
-					array(
-						'admin_sales_id' => $this->sales_package_details->sales_user
-					)
-				);
+				if ( ! $this->session->admin_sales_loggedin)
+				{
+					$this->sales_user_details->initialize(
+						array(
+							'admin_sales_id' => $this->sales_package_details->sales_user
+						)
+					);
+				}
 
 				$this->data['author_name'] = $this->sales_user_details->fname.' '.$this->sales_user_details->lname;
 				$this->data['author'] = $this->data['author_name'];
@@ -234,7 +237,7 @@ class Modify extends Sales_user_Controller {
 
 			// need to show loading at start
 			$this->data['show_loading'] = @$this->data['products_count'] > 0 ? TRUE : FALSE;
-			$this->data['search_string'] = FALSE;
+			$this->data['search'] = FALSE;
 
 			// breadcrumbs
 			$this->data['page_breadcrumb'] = array(
@@ -249,7 +252,7 @@ class Modify extends Sales_user_Controller {
 			$this->data['page_description'] = 'Modify Sales Packages';
 
 			// load views...
-			$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template_my_account/template', $this->data);
+			$this->load->view('admin/metronic/template_my_account/template', $this->data);
 		}
 		else
 		{

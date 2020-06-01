@@ -31,7 +31,7 @@ class Suspend extends Sales_user_Controller {
 			$this->session->set_flashdata('error', 'no_id_passed');
 
 			// redirect user
-			redirect('my_account/sales/users/wholesale/'.$page, 'location');
+			redirect('admin/users/wholesale/'.$page, 'location');
 		}
 
 		// udpate record
@@ -45,7 +45,7 @@ class Suspend extends Sales_user_Controller {
 		$this->session->set_flashdata('success', 'edit');
 
 		// redirect user
-		redirect('my_account/sales/users/wholesale/'.$page, 'location');
+		redirect('admin/users/wholesale/'.$page, 'location');
 	}
 
 	// ----------------------------------------------------------------------

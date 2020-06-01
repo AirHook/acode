@@ -81,14 +81,20 @@ class Get_item extends Sales_user_Controller {
 
 		if ($product)
 		{
-			$image_new = $product->media_path.$style_no.'_f3.jpg';
-			$img_front_new = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_f3.jpg';
+			$image_new = $product->media_path.$style_no.'_f.jpg';
+			$img_front_new = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_f.jpg';
 			$img_linesheet = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_linesheet.jpg';
 			$size_mode = $product->size_mode;
 			$color_name = $product->color_name;
 
 			// take any existing product's size mode
 			$temp_size_mode = $product->size_mode;
+
+			// price
+			$price = $product->wholesale_price;
+			$sale_price = $product->wholesale_price_clearance;
+			$line_thru = $product->custom_order == '3' ? 'text-decoration:line-through;' : '';
+			$hide_sale_price = $product->custom_order == '3' ? '' : 'hide';
 		}
 		else
 		{
@@ -116,16 +122,45 @@ class Get_item extends Sales_user_Controller {
 			.(@$img_linesheet ? 'fancybox' : '')
 			.' pull-left"><img class="" src="'
 			.$img_front_new
-			.'" alt="" style="width:70px;height:auto;" onerror="$(this).attr(\'src\',\''
+			.'" alt="" style="width:340px;height:510px;" onerror="$(this).attr(\'src\',\''
 			.$this->config->item('PROD_IMG_URL')
-			.'images/instylelnylogo_3.jpg\');" /></a><div class="modal-shop-cart-item-details" style="margin-left:80px;"><h5 style="margin:0px;">'
+			.'images/instylelnylogo_3.jpg\');" /></a><div class="modal-shop-cart-item-details" style="margin-left:350px;"><h4 style="margin:0px;">'
 			.$item
-			.'</h5><h6 style="margin:0px;"><span style="color:#999;">Product#: '
+			.'</h4><h6 style="margin:0px;"><span style="color:#999;">Product#: '
 			.$prod_no
 			.'</span><br />Color: &nbsp; '
 			.$color_name
-			.'</h6><div class="size-and-qty-wrapper">'
+			.'<br style="margin-bottom:10px;" />'
+			.'PRICE: $ <span style="'.$line_thru.'">'.number_format($price, 2).'</span> &nbsp; <span class="'.$hide_sale_price.' font-red-flamingo">[ON SALE] $ '.number_format($sale_price, 2).'</span>'
+			.'</h6><br />'
 		;
+
+		$html.= '<div class="size-and-qty-wrapper">AVALABLE STOCK<br />';
+
+		//$this_size_qty = 0;
+		foreach ($size_names as $size_label => $s)
+		{
+			$qty = 0;
+				//isset($size_qty[$size_label])
+				//? $size_qty[$size_label]
+				//: 0
+			//;
+			//$this_size_qty += $qty;
+
+			if ($s != 'XL1' && $s != 'XL2')
+			{
+				$html.= '<div style="display:inline-block;font-size:0.6em;">size '
+					.$s
+					.' <br /><select class="stock-select" style="border:1px solid #ccc;" disabled>'
+					.'<option>'
+					.$product->$size_label
+					.'</option></select></div>';
+			}
+		}
+
+		$html.= '</div><br /><br />';
+
+		$html.= '<div class="size-and-qty-wrapper">IN BOXES BELOW, SELECT APPROPRIATE SIZE AND QUANTITY AND PRESS SUBMIT.<br /><cite class="small">NOTE: Items with no stock are PRE-ORDER and should be sent in separate orders to customer and factory.</cite><br /><br />';
 
 		//$this_size_qty = 0;
 		foreach ($size_names as $size_label => $s)
@@ -160,7 +195,9 @@ class Get_item extends Sales_user_Controller {
 			}
 		}
 
-		$html.= '</div></div></div>';
+		$html.= '</div>';
+
+		$html.= '</div></div>';
 
 		if ($html) echo $html;
 		else {

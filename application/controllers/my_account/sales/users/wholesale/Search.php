@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class All extends Sales_user_Controller {
+class Search extends Sales_user_Controller {
 
 	/**
 	 * Constructor
@@ -23,73 +23,52 @@ class All extends Sales_user_Controller {
 	 *
 	 * @return	void
 	 */
-	public function index($des_slug = '')
+	public function index()
 	{
+		// load pertinent library/model/helpers
+		$this->load->library('user_agent');
+		$this->load->library('users/wholesale_users_list');
+
+		if ( ! $this->input->post())
+		{
+			// nothing more to do...
+			// set flash data
+			$this->session->set_flashdata('error', 'no_id_passed');
+
+			// redirect user
+			if ($this->agent->is_referral())
+			{
+				redirect($this->agent->referrer(), 'location');
+			}
+			else redirect('admin/users/wholesale');
+		}
+
 		// generate the plugin scripts and css
 		$this->_create_plugin_scripts();
 
-		// load pertinent library/model/helpers
-		$this->load->library('sales_orders/sales_orders_list');
-		$this->load->library('users/admin_user_details');
-		$this->load->library('designers/designers_list');
-
-		// get designer list for the dropdown filter
-		$this->data['designers'] = $this->designers_list->select(
-			array(
-				'designer.url_structure' =>$this->sales_user_details->designer
-			)
-		);
-
-		// this file is for sales user my account only
-		// extended controller takes care of loggedin sessions
 		// get data
-		if ($this->sales_user_details->access_level == 1)
-		{
-			$this->data['orders'] = $this->sales_orders_list->select(
-				array(
-					'designer.url_structure' => @$this->sales_user_details->designer,
-					'author' => $this->sales_user_details->admin_sales_id
-				)
-			);
-		}
-		else
-		{
-			// sat and sal site level 0 admin
-			$this->data['orders'] = $this->sales_orders_list->select(
-				array(
-					'designer.url_structure' => $this->sales_user_details->designer
-				)
-			);
-		}
-		$this->data['count_all'] = $this->sales_orders_list->count_all;
-
-		// we need a real variable to process some calculations
-		$url_segs = $this->uri->segment_array();
-		$this->data['page'] = is_numeric(end($url_segs)) ? end($url_segs) : 1;
-		$this->data['limit'] = 100;
-		$this->data['offset'] = $this->data['page'] == '' ? 0 : ($this->data['page'] * 100) - 100;
-
-		// set active items
-		$this->data['des_slug'] = '';
-		$this->data['status'] = 'all';
-
-		// enable pagination
-		$this->_set_pagination($this->data['count_all'], $this->data['limit'], $this->data['des_slug']);
-
-		// need to show loading at start
-		$this->data['show_loading'] = FALSE;
-		$this->data['search'] = FALSE;
+		$this->data['users'] = $this->wholesale_users_list->select(
+			array(),
+			array(),
+			array(),
+			"tbluser_data_wholesale.email LIKE '%".$this->input->post('search_string')."%'
+			OR tbluser_data_wholesale.store_name LIKE '%".$this->input->post('search_string')."%'
+			OR tbluser_data_wholesale.firstname LIKE '%".$this->input->post('search_string')."%'
+			OR tbluser_data_wholesale.lastname LIKE '%".$this->input->post('search_string')."%'
+			OR tbluser_data_wholesale.telephone LIKE '%".$this->input->post('search_string')."%'"
+		);
+		$this->data['search'] = TRUE;
+		$this->data['search_string'] = $this->input->post('search_string');
 
 		// breadcrumbs
 		$this->data['page_breadcrumb'] = array(
-			'sales_orders/all' => 'My Sales Orders'
+			'users/wholesale/search' => 'Search Wholesale Users'
 		);
 
 		// set data variables...
-		$this->data['role'] = 'sales';
-		$this->data['file'] = 'so_list'; // sales_orders
-		$this->data['page_title'] = 'Sales Orders';
-		$this->data['page_description'] = 'List of Sales Orders of items for stores and consumers';
+		$this->data['file'] = 'users_wholesale';
+		$this->data['page_title'] = 'Wholesale Users';
+		$this->data['page_description'] = 'Search wholesale users';
 
 		// load views...
 		$this->load->view('admin/metronic/template_my_account/template', $this->data);
@@ -102,13 +81,11 @@ class All extends Sales_user_Controller {
 	 *
 	 * @return	void
 	 */
-	private function _set_pagination($count_all = '', $per_page = '', $des_slug = '')
+	private function _set_pagination($count_all = '', $per_page = '')
 	{
 		$this->load->library('pagination');
 
-		$url = 'my_account/sales/sales_orders';
-
-		$config['base_url'] = base_url().$url.($des_slug ? '/index/'.$des_slug.'/' : '');
+		$config['base_url'] = base_url().'admin/users/consumer/active/index/';
 		$config['total_rows'] = $count_all;
 		$config['per_page'] = $per_page;
 		$config['num_links'] = 3;
@@ -120,7 +97,7 @@ class All extends Sales_user_Controller {
 		$config['cur_tag_open'] = '<li class="active"><a href="javascript:;">';
 		$config['cur_tag_close'] = '</a></li>';
 		$config['first_link'] = '<i class="fa fa-angle-double-left"></i>';
-		$config['first_url'] = site_url($url.($des_slug ? '/index/'.$des_slug : ''));
+		$config['first_url'] = site_url('admin/users/consumer/active');
 		$config['first_tag_open'] = '<li>';
 		$config['first_tag_close'] = '</li>';
 		$config['last_link'] = '<i class="fa fa-angle-double-right"></i>';
@@ -215,7 +192,7 @@ class All extends Sales_user_Controller {
 			';
 			// handle datatable
 			$this->data['page_level_scripts'].= '
-				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/table-datatables-sales_orders.js" type="text/javascript"></script>
+				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/table-datatables-users_wholesale_list.js" type="text/javascript"></script>
 			';
 	}
 

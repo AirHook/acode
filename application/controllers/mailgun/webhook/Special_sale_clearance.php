@@ -154,7 +154,7 @@ class Special_sale_clearance extends MY_Controller {
 		$this->DB->where('config_name', 'special_sale_thumbs_sent');
 		$q = $this->DB->get('config');
 		$row = $q->row();
-		$thumbs = json_decode($row->config_value, TRUE);
+		$thumbs = $row->config_value ? json_decode($row->config_value, TRUE) : array();
 
 		// capture product numbers and set items array
 		if ($products)

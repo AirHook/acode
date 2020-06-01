@@ -69,6 +69,10 @@ class Index extends Sales_user_Controller {
 		}
 		$this->data['packages'] = $this->sales_package_list->select($where);
 
+		// need to show loading at start
+		$this->data['show_loading'] = FALSE;
+		$this->data['search'] = FALSE;
+
 		// breadcrumbs
 		$this->data['page_breadcrumb'] = array(
 			'sales_package' => 'Sales Packages'
@@ -81,7 +85,7 @@ class Index extends Sales_user_Controller {
 		$this->data['page_description'] = 'List of Sales Packages';
 
 		// load views...
-		$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template_my_account/template', $this->data);
+		$this->load->view('admin/metronic/template_my_account/template', $this->data);
 	}
 
 	// ----------------------------------------------------------------------

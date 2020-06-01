@@ -60,6 +60,11 @@
 					 */
 					?>
 					<div class="notifications">
+						<?php if ($this->session->flashdata('success') == 'send_product_clicks') { ?>
+						<div class="alert alert-success ">
+							<button class="close" data-close="alert"></button> Sales Package Offer successfully sent
+						</div>
+						<?php } ?>
 						<?php if ($this->session->flashdata('success') == 'add') { ?>
 						<div class="alert alert-success auto-remove">
 							<button class="close" data-close="alert"></button> New Sales Package CREATED!

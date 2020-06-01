@@ -115,6 +115,15 @@ class Details extends Sales_user_Controller {
 			$this->data['so_number'] = '0'.$this->data['so_number'];
 		}
 
+		// need to show loading at start
+		$this->data['show_loading'] = FALSE;
+		$this->data['search'] = FALSE;
+
+		// breadcrumbs
+		$this->data['page_breadcrumb'] = array(
+			'sales_orders/details' => 'Sales Order Details'
+		);
+
 		// set data variables...
 		$this->data['role'] = 'sales';
 		$this->data['file'] = 'so_details_v3'; // sales_orders_details
@@ -122,7 +131,7 @@ class Details extends Sales_user_Controller {
 		$this->data['page_description'] = 'Details of the sales order from sales for wholesale user';
 
 		// load views...
-		$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template_my_account/template', $this->data);
+		$this->load->view('admin/metronic/template_my_account/template', $this->data);
 	}
 
 	// ----------------------------------------------------------------------

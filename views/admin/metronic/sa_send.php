@@ -58,7 +58,7 @@
                                             <label class="col-md-3 control-label">Date Created
                                             </label>
                                             <div class="col-md-9">
-                                                <input type="text" name="date_create" class="form-control input-sa_info clear-readonly" value="<?php echo date('Y-m-d', $sa_details->date_create); ?>" readonly />
+                                                <input type="text" name="date_create" class="form-control input-sa_info clear-readonly" value="<?php echo is_numeric($sa_details->date_create) ? @date('Y-m-d', $sa_details->date_create) : $sa_details->date_create; ?>" readonly />
                                             </div>
                                         </div>
                                         <hr />
@@ -134,7 +134,7 @@
                                             <span class="badge custom-badge active pull-left step1"> 1 </span>
                                             <span class="badge-label"> Send Sales Package </span>
                                         </label>
-                                        <div class="col-md-8 <?php echo $ws_user_details ? 'hide' : ''; ?>">
+                                        <div class="col-md-8 <?php echo @$ws_user_details ? 'hide' : ''; ?>">
                                             <cite class="help-block font-red" style="padding-top:3px;">
                                                 Select From Options below
                                             </cite>
@@ -143,10 +143,10 @@
 
                                     <div class="form-group">
                                         <div class="col-md-12">
-                                            <a href="javascript:;" class="btn dark btn-md select-send-options send-to-current-user col-md-4 <?php echo $ws_user_details ? 'hide' : ''; ?>" style="font-size:0.9em;">
+                                            <a href="javascript:;" class="btn dark btn-md select-send-options send-to-current-user col-md-4 <?php echo @$ws_user_details ? 'hide' : ''; ?>" style="font-size:0.9em;">
                                                 Send To Existing User(s)
                                             </a>
-                                            <a href="javascript:;" class="btn dark btn-md select-send-options send-to-new-user col-md-4 <?php echo $ws_user_details ? 'hide' : ''; ?>" style="font-size:0.9em;">
+                                            <a href="javascript:;" class="btn dark btn-md select-send-options send-to-new-user col-md-4 <?php echo @$ws_user_details ? 'hide' : ''; ?>" style="font-size:0.9em;">
                                                 Send To New Wholesale User
                                             </a>
                                             <!--
@@ -211,7 +211,7 @@
 
                                 <?php $this->load->view('admin/metronic/sa_send_to_current_user'); ?>
 
-                                <h3 class="notice-select-action <?php echo $ws_user_details ? 'hide' : ''; ?>"><cite>Select action...</cite></h3>
+                                <h3 class="notice-select-action <?php echo @$ws_user_details ? 'hide' : ''; ?>"><cite>Select action...</cite></h3>
 
                                 <?php echo form_close(); ?>
                                 <!-- End FORM ===================================================================-->

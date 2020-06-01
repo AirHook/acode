@@ -199,7 +199,7 @@ class Create extends Sales_user_Controller {
 
 			// need to show loading at start
 			$this->data['show_loading'] = @$this->data['products_count'] > 0 ? TRUE : FALSE;
-			$this->data['search_string'] = FALSE;
+			$this->data['search'] = FALSE;
 
 			// breadcrumbs
 			$this->data['page_breadcrumb'] = array(
@@ -214,7 +214,7 @@ class Create extends Sales_user_Controller {
 			$this->data['page_description'] = 'Create Sales Packages';
 
 			// load views...
-			$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template_my_account/template', $this->data);
+			$this->load->view('admin/metronic/template_my_account/template', $this->data);
 		}
 		else
 		{

@@ -1005,7 +1005,7 @@
                                     <div class="m-grid-row">
                                         <div class="m-grid-col">
 
-                                            <h6> Ref Check Out Order# (if any): </h6>
+                                            <h6> Ref Customer Order# (if any): </h6>
                                             <div class="form-group row">
                                                 <div class="col-md-6 col-sm-12">
                                                     <input class="form-control form-control-inline" size="16" type="text" value="" name="options[ref_checkout_no]" />
@@ -1100,6 +1100,7 @@
                                                 .size-and-qty-wrapper .this-total-qty {
                                                     font-size: 10px;
                                                 }
+                                                .stock-select,
                                                 .size-select {
                                                     border: 0;
                                                     font-size: 10px;
@@ -1108,6 +1109,7 @@
                                                     -moz-appearance: none;
                                                     appearance: none;
                                                 }
+                                                .stock-select:after,
                                                 .size-select:after {
                                                     content: "\f0dc";
                                                     font-family: FontAwesome;
@@ -1324,7 +1326,7 @@
                                                         ?>
                                                         <td class="text-right" style="vertical-align:top;">
                                                             <button type="button" class="btn btn-link btn-xs summary-item-remove tooltips" data-original-title="Remove Item" data-item="<?php echo $item; ?>" data-prod_no="<?php echo $prod_no; ?>" data-size_label="<?php echo $size_label; ?>">
-                                                                <i class="fa fa-close"></i> <cite class="small hide">rem</cite>
+                                                                <i class="fa fa-close" style="color:#8896a0;"></i> <cite class="small hide">rem</cite>
                                                             </button>
                                                         </td>
 
@@ -1995,11 +1997,11 @@
 
                         <!-- ITEM SELECT SIZE AND QTY -->
                         <div class="modal fade" id="modal-size_qty" tabindex="-1" role="basic" aria-hidden="true" data-backdrop="static" data-keyboard="false">
-                            <div class="modal-dialog">
+                            <div class="modal-dialog modal-lg">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <button type="button" class="close hide" data-dismiss="modal" aria-hidden="true"></button>
-                                        <h4 class="modal-title"> Select Item's Size and Quantity </h4>
+                                        <h4 class="modal-title"> Select Size and Quantity </h4>
                                     </div>
 
                                     <!-- BEGIN FORM =======================================================-->

@@ -314,11 +314,11 @@
 
 									<!-- Close PO -->
                                     <a data-toggle="modal" href="#complete-<?php echo $order->po_id; ?>" class="tooltips" data-original-title="Close PO">
-                                        <i class="fa fa-close"></i>
+                                        <i class="fa fa-close font-dark"></i>
                                     </a>
 									<!-- Cancel PO -->
                                     <a data-toggle="modal" href="#cancel-<?php echo $order->po_id; ?>" class="tooltips" data-original-title="Cancel PO">
-                                        <i class="fa fa-ban"></i>
+                                        <i class="fa fa-ban font-dark"></i>
                                     </a>
 
 									<!-- PENDING -->

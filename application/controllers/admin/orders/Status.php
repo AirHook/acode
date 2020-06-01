@@ -156,6 +156,8 @@ class Status extends Admin_Controller {
 			$this->update_stocks->return();
 		}
 
+		// turning ORDERS notification for now
+		/* *
 		$store_name = $order->store_name ?: '';
 		$username = ucwords(strtolower($order->firstname.' '.$order->lastname));
 
@@ -197,6 +199,7 @@ class Status extends Admin_Controller {
 			exit;
 		}
 		else @$this->email->send();
+		// */
 	}
 
 	// --------------------------------------------------------------------
@@ -229,6 +232,8 @@ class Status extends Admin_Controller {
 			$this->update_stocks->remove();
 		}
 
+		// turning ORDERS notification for now
+		/* *
 		$store_name = @$order->store_name ?: '';
 		$username = ucwords(strtolower(@$order->firstname.' '.@$order->lastname));
 
@@ -270,6 +275,7 @@ class Status extends Admin_Controller {
 			exit;
 		}
 		else @$this->email->send();
+		// */
 	}
 
 	// --------------------------------------------------------------------
@@ -288,6 +294,8 @@ class Status extends Admin_Controller {
 		// initialize...
 		$order = $this->order_details->initialize(array('tbl_order_log.order_log_id'=>$order_id));
 
+		// turning ORDERS notification for now
+		/* *
 		$store_name = @$order->store_name ?: '';
 		$username = ucwords(strtolower(@$order->firstname.' '.@$order->lastname));
 
@@ -329,6 +337,7 @@ class Status extends Admin_Controller {
 			exit;
 		}
 		else @$this->email->send();
+		// */
 	}
 
 	// ----------------------------------------------------------------------

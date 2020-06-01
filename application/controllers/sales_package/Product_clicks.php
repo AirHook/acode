@@ -12,7 +12,7 @@
  * @author		WebGuy
  * @link
  */
-class Link extends Shop_Controller
+class Product_clicks extends Shop_Controller
 {
 	/**
 	 * Constructor
@@ -31,7 +31,7 @@ class Link extends Shop_Controller
 	 *
 	 * Show the sales package items as thumbs page
 	 */
-	function index($sales_package_id = '', $wholesale_user_id = '', $tc = '')
+	function index($date = '', $wholesale_user_id = '', $tc = '')
 	{
 		// sales packages are only for hub sites
 		if (
@@ -49,13 +49,10 @@ class Link extends Shop_Controller
 		// validate url segments and if sales package id is correct
 		if (
 			! $tc
-			OR ! $sales_package_id
+			OR ! $date
 			OR ! $wholesale_user_id
 		)
 		{
-			// unset any or old sales package sessions
-			$this->_unset_sa_session();
-
 			// set flash notice
 			$this->session->set_flashdata('error', 'sales_package_invalid_link');
 
@@ -64,42 +61,23 @@ class Link extends Shop_Controller
 		}
 
 		// load pertinent library/model/helpers
-		$this->load->library('user_agent');
-		$this->load->library('sales_package/sales_package_details');
+		//$this->load->library('user_agent');
 		$this->load->library('users/wholesale_user_details');
-		$this->load->library('designers/designer_details');
-		$this->load->library('categories/category_details');
-		$this->load->helpers('metronic/create_category_treelist_helper');
+		//$this->load->library('designers/designer_details');
+		//$this->load->library('categories/category_details');
+		//$this->load->helpers('metronic/create_category_treelist_helper');
 
 		// generate the plugin scripts and css
 		$this->_create_plugin_scripts();
 
 		/****************
-		 * Lets get the sales pakage details
-		 */
-		if ( ! $this->sales_package_details->initialize(array('sales_package_id'=>$sales_package_id)))
-		{
-			// unset any or old sales package sessions
-			$this->_unset_sa_session();
-
-			// set flash notice
-			$this->session->set_flashdata('error', 'sales_package_invalid_link');
-
-			// nothing more to do...
-			redirect('shop/categories');
-		}
-
-		/****************
 		 * Lets get the wholesale user details
 		 */
 		// check for logged in users and verify link user id
-		if ($this->session->user_loggedin && $this->session->user_cat === 'wholesale')
+		if ($this->session->user_loggedin && $this->session->user_role === 'wholesale')
 		{
 			if ($this->session->user_id != $wholesale_user_id)
 			{
-				// unset any or old sales package sessions
-				$this->_unset_sa_session();
-
 				// set flash notice
 				$this->session->set_flashdata('error', 'sa_diff_user_loggedin');
 
@@ -113,9 +91,6 @@ class Link extends Shop_Controller
 		{
 			if ( ! $this->wholesale_user_details->initialize(array('user_id'=>$wholesale_user_id)))
 			{
-				// unset any or old sales package sessions
-				$this->_unset_sa_session();
-
 				// set flash notice
 				$this->session->set_flashdata('error', 'invalid_credentials');
 
@@ -126,6 +101,7 @@ class Link extends Shop_Controller
 
 		// auto sign in user is not already signed in
 		// do notifications where necessary
+		/* */
 		if ( ! $this->session->this_login_id)
 		{
 			// auto activate user if he clicks on the sales package
@@ -135,43 +111,41 @@ class Link extends Shop_Controller
 			// record login details
 			$this->wholesale_user_details->record_login_detail();
 			// notify sales user
-			$this->wholesale_user_details->notify_sales_user_online();
+			//$this->wholesale_user_details->notify_sales_user_online();
 			// notify admin user is online
-			$this->wholesale_user_details->notify_admin_user_online();
+			//$this->wholesale_user_details->notify_admin_user_online();
 		}
+		// */
 
 		/****************
 		 * Lets check for 1 click session
 		 */
 		// get the sales package options property
-		$options = $this->sales_package_details->options;
+		$options = $this->wholesale_user_details->options;
 
 		// if click 1 is not yet set, we set it
-		if ( ! isset($options[$wholesale_user_id][$tc]))
+		if ( ! isset($options['product_cliks'][$tc]))
 		{
 			// this only means it's the user's firt time to click the link
 			// set the [user_id][tc] = logid option indicating user now clicked on the link
-			$this->sales_package_details->click_one(
+			$this->wholesale_user_details->prod_clicks_one(
 				$wholesale_user_id,
 				$tc,
 				$this->session->this_login_id
 			);
 
 			// reload options
-			$options = $this->sales_package_details->options;
+			$options = $this->wholesale_user_details->options;
 		}
 
 		// if click 1 is set, check for same session login id
-		if (@$options[$wholesale_user_id][$tc] !== $this->session->this_login_id)
+		if (@$options['product_cliks'][$tc] !== $this->session->this_login_id)
 		{
-			// unset any or old sales package sessions
-			$this->_unset_sa_session();
-
 			// set flash notice
 			$this->session->set_flashdata('error', 'click_one_error');
 
 			// nothing more to do...
-			redirect('account/request/sales_package/'.$sales_package_id);
+			redirect('account/request/sales_package/0', 'location');
 		}
 
 		/****************
@@ -179,14 +153,75 @@ class Link extends Shop_Controller
 		 */
 		$this->_sa_click_notification();
 
-		// set the sales packages session
-		$this->sales_package_details->set_session();
-		$this->session->set_userdata('sales_package_tc', $tc);
-		$this->session->set_userdata('sales_package_link', json_encode($this->uri->segment_array()));
-		if ( ! $this->session->userdata('sales_package_items')) $this->session->set_userdata('sales_package_items', $this->sales_package_details->sales_package_items);
+		/****************
+		 * We now get the product clicks and set as sales package items
+		 */
+		 // connect to database for use by model
+ 		$DB = $this->load->database('instyle', TRUE);
 
-		// we define the shop_controller sales_package_items properly
-		$this->sales_package_items = json_decode($this->sales_package_details->sales_package_items, TRUE);
+ 		// get user details manually
+ 		$DB->query('SET SESSION group_concat_max_len = 1000000');
+ 		$DB->select('GROUP_CONCAT(tbl_login_detail_wholesale.logindata) AS logindata');
+ 		$DB->select('tbluser_data_wholesale.*');
+ 		$DB->select('
+ 			tbladmin_sales.admin_sales_id,
+ 			tbladmin_sales.admin_sales_user,
+ 			tbladmin_sales.admin_sales_lname
+ 		');
+ 		$DB->from('tbl_login_detail_wholesale');
+ 		$DB->join(
+ 			'tbluser_data_wholesale',
+ 			'tbluser_data_wholesale.email = tbl_login_detail_wholesale.email',
+ 			'left'
+ 		);
+ 		$DB->join(
+ 			'tbladmin_sales',
+ 			'tbladmin_sales.admin_sales_email = tbluser_data_wholesale.admin_sales_email',
+ 			'left'
+ 		);
+ 		$DB->where('tbl_login_detail_wholesale.create_date', $date);
+ 		$DB->where('tbl_login_detail_wholesale.user_id', $wholesale_user_id);
+ 		$q1 = $DB->get();
+
+ 		//echo $DB->last_query(); die();
+
+ 		$user_details = $q1->row();
+
+		// decode and combine $logindata into one array
+		// usual contents of $logindata are: 'active_time', 'page_visist', 'product_clicks'
+		// then, get the 'product_clicks'
+		$json_str = str_replace('},{', '}|{', $user_details->logindata);
+		$json_arys = explode('|', $json_str);
+		$logindata = array();
+		foreach ($json_arys as $json)
+		{
+			// merge all arrays within the json data
+			$temp_ary = json_decode($json, TRUE);
+			$logindata = is_array($temp_ary) ? array_merge_recursive($logindata, $temp_ary) : array_merge_recursive($logindata);
+		}
+
+		// set 'product_clicks' array
+		$this->data['sa_items'] = array();
+		if ( ! empty(@$logindata['product_clicks']))
+		{
+			foreach ($logindata['product_clicks'] as $key => $val)
+			{
+				if ( ! is_int($key) OR ! in_array($key, $this->data['sa_items']))
+				{
+					array_push($this->data['sa_items'], $key);
+				}
+			}
+		}
+
+		// this usualy doesn't happen but if product clicks array is empty...
+		if (empty($this->data['sa_items']))
+		{
+			echo 'Something went wrong.<br />Sorry for the inconvenience.<br />Checkout our website instead <a href="'.site_url().'">here</a>.';
+			exit;
+		}
+
+		// save sa_items into session for the send process
+		$this->sales_package_items = $this->data['sa_items'];
 
 		// there is another page visit recording with the entire url recorded
 		// holding this here for further evaluation
@@ -241,7 +276,7 @@ class Link extends Shop_Controller
 		$this->get_products();
 
 		// set data variables to pass to view file
-		$this->data['file'] 			= 'product_details_sa'; //'product_thumbs';
+		$this->data['file'] 			= 'product_details_sa_prod_clicks'; //'product_thumbs';
 		$this->data['view_pane']	 	= 'thumbs_list_sales_pacakge'; // used to indentify if sales package thumbs page
 		$this->data['view_pane_sql'] 	= @$this->products ?: @$this->suggested_products; //$products;
 		$this->data['left_nav'] 		= $this->browse_by;
@@ -266,27 +301,6 @@ class Link extends Shop_Controller
 		$this->load->view('metronic/template/template', $this->data);
 	}
 
-	// --------------------------------------------------------------------
-
-	/**
-	 * PRIVATE unset sales packages session
-	 *
-	 * @return	void
-	 */
-	private function _unset_sa_session()
-	{
-		// unset any or old sales package sessions
-		$sesdata = array(
-			'sales_package' => FALSE,
-			'sales_package_id' => ''
-		);
-		$this->session->unset_userdata($sesdata);
-
-		// for redundancy purposes..
-		unset($_SESSION['sales_package']);
-		unset($_SESSION['sales_package_id']);
-	}
-
 	// ----------------------------------------------------------------------
 
 	/**
@@ -301,8 +315,8 @@ class Link extends Shop_Controller
 			<br /><br />
 			Dear '.ucwords($this->wholesale_user_details->admin_sales_user).',
 			<br /><br />
-			'.ucfirst($this->wholesale_user_details->fname.' '.$this->wholesale_user_details->lname).' just cliked on a sales package offer.<br />
-			Sales Package Details  - ( ID# '.$this->sales_package_details->sales_package_id.' ) '.$this->sales_package_details->sales_package_name.'
+			'.ucfirst($this->wholesale_user_details->fname.' '.$this->wholesale_user_details->lname).' just cliked on a sales package offer<br />
+			from a product clicks report.
 			<br /><br />
 			User Details:
 			<br /><br />

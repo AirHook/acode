@@ -28,7 +28,7 @@ class Index extends Sales_user_Controller {
 		// send user to active list
 		redirect('my_account/sales/users/wholesale/active', 'location');
 	}
-	
+
 	// ----------------------------------------------------------------------
 
 }

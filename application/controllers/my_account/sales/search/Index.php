@@ -55,6 +55,14 @@ class Index extends Sales_User_Search_Controller
 
 		// need to show loading at start
 		$this->data['show_loading'] = FALSE;
+		$this->data['search'] = TRUE;
+
+		// breadcrumbs
+		$this->data['page_breadcrumb'] = array(
+			'sales_package' => 'Sales Packages',
+			'serach' => 'Search'
+		);
+
 
 		// set data variables...
 		$this->data['role'] = 'sales';
@@ -63,7 +71,7 @@ class Index extends Sales_User_Search_Controller
 		$this->data['page_description'] = 'List of search results';
 
 		// load views...
-		$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template_my_account/template', $this->data);
+		$this->load->view('admin/metronic/template_my_account/template', $this->data);
 	}
 
 	// ----------------------------------------------------------------------

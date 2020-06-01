@@ -109,7 +109,7 @@ class Search_Controller extends Frontend_Controller {
             && @$_GET['availability'] != 'onsale'
         )
         {
-            $where['HAVING with_stocks'] = '1';
+            //$where['HAVING with_stocks'] = '1';
         }
         else if (
             $this->session->userdata('user_cat') == 'wholesale'
@@ -155,6 +155,8 @@ class Search_Controller extends Frontend_Controller {
 			'SEARCH'
 		);
 		$product_count = $this->products_list->count_all;
+
+        //echo $this->products_list->last_query; die();
 
 		// using the same parameters, initialize facets
 		$params['d_url_structure'] = $this->d_url_structure;

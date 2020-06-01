@@ -36,12 +36,12 @@ class Dashboard extends Sales_user_Controller {
 
 		// set data variables...
 		$this->data['role'] = 'sales'; //userrole will be used for IF statements in template files
-		$this->data['file'] = 'dashboard'; // sales orders
+		$this->data['file'] = 'sales_dashboard'; // sales orders
 		$this->data['page_title'] = 'Dashboard';
 		$this->data['page_description'] = 'Sales User Dashboard';
 
 		// load views...
-		$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template_my_account/template', $this->data);
+		$this->load->view('admin/metronic/template_my_account/template', $this->data);
 	}
 
 	// ----------------------------------------------------------------------

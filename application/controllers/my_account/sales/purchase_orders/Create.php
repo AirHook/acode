@@ -245,6 +245,11 @@ class Create extends Sales_user_Controller
 			$this->data['show_loading'] = TRUE;
 			$this->data['search_string'] = FALSE;
 
+			// breadcrumbs
+			$this->data['page_breadcrumb'] = array(
+				'purchase_orders/all' => 'My Sales Orders'
+			);
+
 			$this->data['role'] = 'sales';
 			$this->data['file'] = 'po_create';
 			$this->data['page_title'] = 'Create Purchase Order';

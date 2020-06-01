@@ -130,13 +130,14 @@ class Index extends Frontend_Controller {
 
 			// let us set sessions
 			// and set the session lapse time if it has not been set
+			$sestime = @time();
 			if ($this->wholesale_user_details->user_id)
 			{
 				$this->wholesale_user_details->set_session();
 
 				if ( ! $this->session->userdata('ws_login_time'))
 				{
-					$this->session->set_userdata('ws_login_time', @time());
+					$this->session->set_userdata('ws_login_time', $sestime);
 				}
 			}
 			else if ($this->consumer_user_details->user_id)
@@ -145,7 +146,7 @@ class Index extends Frontend_Controller {
 
 				if ( ! $this->session->userdata('cs_login_time'))
 				{
-					$this->session->set_userdata('cs_login_time', @time());
+					$this->session->set_userdata('cs_login_time', $sestime);
 				}
 			}
 			else if ($this->sales_user_details->admin_sales_id)
@@ -154,7 +155,7 @@ class Index extends Frontend_Controller {
 
 				if ( ! $this->session->userdata('admin_sales_login_time'))
 				{
-					$this->session->set_userdata('admin_sales_login_time', @time());
+					$this->session->set_userdata('admin_sales_login_time', $sestime);
 				}
 			}
 			else if ($this->vendor_user_details->vendor_id)
@@ -163,7 +164,7 @@ class Index extends Frontend_Controller {
 
 				if ( ! $this->session->userdata('vendor_login_time'))
 				{
-					$this->session->set_userdata('vendor_login_time', @time());
+					$this->session->set_userdata('vendor_login_time', $sestime);
 				}
 			}
 			else

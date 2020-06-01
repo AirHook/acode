@@ -340,11 +340,11 @@
 
                                     <!-- Close SO -->
                                     <a data-toggle="modal" href="#complete-<?php echo $order->sales_order_id; ?>" class="tooltips" data-original-title="Close SO">
-                                        <i class="fa fa-close"></i>
+                                        <i class="fa fa-close font-dark"></i>
                                     </a>
 									<!-- Cancel SO -->
                                     <a data-toggle="modal" href="#cancel-<?php echo $order->sales_order_id; ?>" class="tooltips" data-original-title="Cancel SO">
-                                        <i class="fa fa-ban"></i>
+                                        <i class="fa fa-ban font-dark"></i>
                                     </a>
 
                 					<!-- CANCEL -->
@@ -485,6 +485,13 @@
                 					<?php
                 					$i++;
                 				}
+                            }
+							else
+							{ ?>
+
+							<tr><td colspan="10" align="center">No records found.</td></tr>
+
+								<?php
                 			} ?>
 
                         </tbody>

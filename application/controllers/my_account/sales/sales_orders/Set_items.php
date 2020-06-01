@@ -69,21 +69,14 @@ class Set_items extends MY_Controller {
 			// price can be...
 			// onsale price (retail_sale_price or wholesale_price_clearance)
 			// regular price (retail_price or wholesale_price)
+			// this is sales user account mainly for wholesale users only
 			if (@$product->custom_order == '3')
 			{
-				$price =
-					$this->session->so_user_cat == 'ws'
-					? (@$product->wholesale_price_clearance ?: 0)
-					: (@$product->retail_sale_price ?: 0)
-				;
+				$price = @$product->wholesale_price_clearance ?: 0;
 			}
 			else
 			{
-				$price =
-					$this->session->so_user_cat == 'ws'
-					? (@$product->wholesale_price ?: 0)
-					: (@$product->retail_price ?: 0)
-				;
+				$price = @$product->wholesale_price ?: 0;
 			}
 
 			if ($product)
@@ -121,17 +114,17 @@ class Set_items extends MY_Controller {
 				// and check for on sale items
 				if ($product)
 				{
-					if ($product->$size_label == '0')
+					if ($product->$size_label == '0') // -> no stock, PREORDER
 					{
 						$preorder = TRUE;
 						$partial_stock = FALSE;
 					}
-					elseif ($qty[0] <= $product->$size_label)
+					elseif ($qty[0] <= $product->$size_label) // -> INSTOCK
 					{
 						$preorder = FALSE;
 						$partial_stock = FALSE;
 					}
-					elseif ($qty[0] > $product->$size_label)
+					elseif ($qty[0] > $product->$size_label) // -> partial stock
 					{
 						$preorder = TRUE;
 						$partial_stock = TRUE;
@@ -224,7 +217,7 @@ class Set_items extends MY_Controller {
 						.$prod_no
 						.'" data-size_label="'
 						.$size_label
-						.'"><i class="fa fa-close"></i> <cite class="small hide">rem</cite></button>'
+						.'"><i class="fa fa-close" style="color:#8896a0;"></i> <cite class="small hide">rem</cite></button>'
 						.'</td>'
 					;
 

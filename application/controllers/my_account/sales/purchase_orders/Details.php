@@ -113,6 +113,12 @@ class Details extends Sales_user_Controller {
 
 		// need to show loading at start
 		$this->data['show_loading'] = FALSE;
+		$this->data['search'] = FALSE;
+
+		// breadcrumbs
+		$this->data['page_breadcrumb'] = array(
+			'purchase_orders/details' => 'My Sales Orders'
+		);
 
 		// set data variables...
 		$this->data['role'] = 'sales';

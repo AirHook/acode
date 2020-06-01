@@ -21,7 +21,24 @@ class Admin_Controller extends MY_Controller {
 		if ( ! $this->session->userdata('admin_loggedin'))
 		{
 			// let us remember the page being accessed other than index
-			$this->session->set_flashdata('access_uri', $this->uri->uri_string());
+			if (@$_GET)
+			{
+				// remove empty $_GET array elements
+				$_GET = array_filter($_GET, function($value) { return $value !== ''; });
+
+				foreach ($_GET as $key => $val)
+				{
+					$this->filter_items_count += count(explode(',', $_GET[$key]));
+				}
+
+				$get = http_build_query($_GET);
+
+				$this->session->set_flashdata('access_uri', site_url($this->uri->uri_string()).'?'.http_build_query($_GET));
+			}
+			else
+			{
+				$this->session->set_flashdata('access_uri', $this->uri->uri_string());
+			}
 
 			// set flash message
 			$this->session->set_flashdata('login_info', 'You must be logged in to access page.');
