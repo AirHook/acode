@@ -53,37 +53,76 @@ if ($role=='sales')
 			</ul>
 		</li>
 
-		<li class="heading">
-			<h3 class="uppercase">Orders</h3>
-		</li>
-		<li class="nav-item with-heading <?php echo $this->uri->segment(3) == 'orders' ? 'active' : ''; ?>">
-			<a href="<?php echo site_url('my_account/sales/orders'); ?>" class="nav-link ">
-				<span class="title">Order Logs</span>
-			</a>
-		</li>
 		-->
 			<?php
 		} ?>
 
+		<!-- =============-->
 		<li class="heading">
-			<h3 class="uppercase">Sales Orders</h3>
+			<h3 class="uppercase">Orders</h3>
 		</li>
-		<li class="nav-item with-heading ">
-			<a href="javascript:;" class="nav-link  ">
-				<span class="title">Order</span>
+		<li class="nav-item with-heading <?php echo $this->uri->uri_string() == 'my_account/sales/orders/new_orders' ? 'active' : ''; ?>">
+			<a href="<?php echo site_url('my_account/sales/orders/new_orders'); ?>" class="nav-link ">
+				<span class="title">New Orders</span>
 			</a>
 		</li>
-		<li class="nav-item with-heading <?php echo $this->uri->uri_string() === 'my_account/sales/sales_orders' ? 'active' : ''; ?>">
-			<a href="<?php echo site_url('my_account/sales/sales_orders'); ?>" class="nav-link  ">
-				<span class="title">My Sales Order</span>
+		<li class="nav-item with-heading <?php echo $this->uri->uri_string() == 'my_account/sales/orders/shipment_pending' ? 'active' : ''; ?>">
+			<a href="<?php echo site_url('my_account/sales/orders/shipment_pending'); ?>" class="nav-link ">
+				<span class="title">Shipment Pending</span>
 			</a>
 		</li>
-		<li class="nav-item with-heading <?php echo $this->uri->uri_string() === 'my_account/sales/sales_orders/create' ? 'active' : ''; ?>">
-			<a href="<?php echo site_url('my_account/sales/sales_orders/create'); ?>" class="nav-link  ">
-				<span class="title">Create New Sales Order</span>
+		<li class="nav-item with-heading <?php echo $this->uri->uri_string() == 'my_account/sales/orders/shipped' ? 'active' : ''; ?>">
+			<a href="<?php echo site_url('my_account/sales/orders/shipped'); ?>" class="nav-link ">
+				<span class="title">Shipped</span>
+			</a>
+		</li>
+		<li class="nav-item with-heading <?php echo $this->uri->uri_string() == 'my_account/sales/orders/store_credit' ? 'active' : ''; ?>">
+			<a href="<?php echo site_url('my_account/sales/orders/store_credit'); ?>" class="nav-link ">
+				<span class="title">Store Credit</span>
+			</a>
+		</li>
+		<li class="nav-item with-heading <?php echo $this->uri->uri_string() == 'my_account/sales/orders/refunded' ? 'active' : ''; ?>">
+			<a href="<?php echo site_url('my_account/sales/orders/refunded'); ?>" class="nav-link ">
+				<span class="title">Refunded</span>
+			</a>
+		</li>
+		<li class="nav-item with-heading <?php echo $this->uri->uri_string() == 'my_account/sales/orders/cancelled' ? 'active' : ''; ?>">
+			<a href="<?php echo site_url('my_account/sales/orders/cancelled'); ?>" class="nav-link ">
+				<span class="title">Cancelled</span>
+			</a>
+		</li>
+		<li class="nav-item with-heading <?php echo $this->uri->uri_string() == 'my_account/sales/sales_orders/create' ? 'active' : ''; ?>">
+			<a href="<?php echo site_url('my_account/sales/sales_orders/create'); ?>" class="nav-link ">
+				<span class="title">New Sales Order</span>
 			</a>
 		</li>
 
+		<!-- =============-->
+		<?php
+		$sa_list_active = 'active';
+		if (
+			$this->uri->uri_string() != 'my_account/sales/sales_package'
+			&& strpos($this->uri->uri_string(), 'my_account/sales/sales_package/modify') === FALSE
+		)
+		{
+			$sa_list_active = '';
+		} ?>
+
+		<li class="heading">
+			<h3 class="uppercase">Sales</h3>
+		</li>
+		<li class="nav-item with-heading <?php echo $sa_list_active; ?>">
+			<a href="<?php echo site_url('my_account/sales/sales_package'); ?>" class="nav-link  ">
+				<span class="title">List Sales Packages</span>
+			</a>
+		</li>
+		<li class="nav-item with-heading <?php echo $this->uri->uri_string() == 'my_account/sales/sales_package/create' ? 'active' : ''; ?>">
+			<a href="<?php echo site_url('my_account/sales/sales_package/create'); ?>" class="nav-link  ">
+				<span class="title">Create Sales Package</span>
+			</a>
+		</li>
+
+		<!-- =============-->
 		<li class="heading">
 			<h3 class="uppercase">Users</h3>
 		</li>
@@ -101,38 +140,31 @@ if ($role=='sales')
 
 		<li class="nav-item with-heading <?php echo $ws_list_active; ?>">
 			<a href="<?php echo site_url('my_account/sales/users/wholesale'); ?>" class="nav-link  ">
-				<span class="title">My Wholesale Users</span>
+				<span class="title">List Wholesale Users</span>
 			</a>
+			<ul class="sub-menu">
+				<li class="nav-item  <?php echo $this->uri->segment(5) == 'active' ? 'active open' : ''; ?>">
+					<a href="<?php echo site_url('my_account/sales/users/wholesale/active'); ?>" class="nav-link  ">
+						<span class="title">Active Users</span>
+					</a>
+				</li>
+				<li class="nav-item  <?php echo $this->uri->segment(5) == 'inactive' ? 'active open' : ''; ?>">
+					<a href="<?php echo site_url('my_account/sales/products/inactive'); ?>" class="nav-link  ">
+						<span class="title">Inactive Users</span>
+					</a>
+				</li>
+			</ul>
 		</li>
 		<li class="nav-item with-heading <?php echo $this->uri->uri_string() === 'my_account/sales/users/wholesale/add' ? 'active' : ''; ?>">
 			<a href="<?php echo site_url('my_account/sales/users/wholesale/add'); ?>" class="nav-link  ">
-				<span class="title">Add a New Wholesale User</span>
+				<span class="title">Add New Wholesale User</span>
 			</a>
 		</li>
 
 		<?php
-		$sa_list_active = 'active';
-		if (
-			$this->uri->uri_string() != 'my_account/sales/sales_package'
-			&& strpos($this->uri->uri_string(), 'my_account/sales/sales_package/modify') === FALSE
-		)
-		{
-			$sa_list_active = '';
-		} ?>
+		// above items are access level 2
+		?>
 
-		<li class="heading">
-			<h3 class="uppercase">Sales Packages</h3>
-		</li>
-		<li class="nav-item with-heading <?php echo $sa_list_active; ?>">
-			<a href="<?php echo site_url('my_account/sales/sales_package'); ?>" class="nav-link  ">
-				<span class="title">My Sales Packages</span>
-			</a>
-		</li>
-		<li class="nav-item with-heading <?php echo $this->uri->uri_string() == 'my_account/sales/sales_package/create' ? 'active' : ''; ?>">
-			<a href="<?php echo site_url('my_account/sales/sales_package/create'); ?>" class="nav-link  ">
-				<span class="title">Create a Sales Package</span>
-			</a>
-		</li>
 
 		<?php if ($this->sales_user_details->access_level == '0')
 		{ ?>

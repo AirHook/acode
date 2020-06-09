@@ -81,22 +81,24 @@ class Special_sale_clearance extends MY_Controller {
 
 		// grab template and infuse data and set message
 		//$template = 'consumer_special_sale_invite_mg1'; // send Feb 28, 2020
-		$template = 'consumer_special_sale_invite_mg2'; // send Mar 06, 2020, Mar 13, 2020
+		$template = 'consumer_special_sale_invite_mg2'; // send Mar 06, 2020, Mar 13, 2020, refresh list on mg3, refresh list on mg4
 		$message = $this->load->view('templates/'.$template, $data, TRUE);
 
 		// load pertinent library/model/helpers
 		$this->load->library('mailgun/mailgun');
 
 		// set up properties
+		/* */
 		$this->mailgun->vars = array("designer" => "Basix Black Label", "des_slug" => "basixblacklabel");
 		$this->mailgun->o_tag = 'Consumer Special Sale Invite';
 		$this->mailgun->from = 'Basix Black Label <help@basixblacklabel.com>';
 		$this->mailgun->to = 'consumers@mg.shop7thavenue.com';
 		//$this->mailgun->cc = $this->webspace_details->info_email;
 		//$this->mailgun->bcc = $this->CI->config->item('dev1_email');
-		//$this->mailgun->subject = 'BASIX BLACK LABEL SPECIAL SALE'; // mg1
+		//$this->mailgun->subject = 'BASIX BLACK LABEL SPECIAL SALE'; // mg1 batch
 		//$this->mailgun->subject = 'BASIX NEW ARRIVALS ON CLEARANCE SALE'; // mg2
-		$this->mailgun->subject = 'BASIX CLEARANCE SALE'; // mg3 using mg2 again
+		//$this->mailgun->subject = 'BASIX CLEARANCE SALE'; // mg3 using mg2 again refresh list
+		$this->mailgun->subject = 'MORE BASIX CLEARANCE SALE'; // mg4 using mg2 template refresh list as well
 		$this->mailgun->message = $message;
 
 		if ( ! $this->mailgun->Send())
@@ -109,6 +111,7 @@ class Special_sale_clearance extends MY_Controller {
 		}
 
 		$this->mailgun->clear();
+		// */
 
 		echo 'Done<br />';
 	}
@@ -154,7 +157,7 @@ class Special_sale_clearance extends MY_Controller {
 		$this->DB->where('config_name', 'special_sale_thumbs_sent');
 		$q = $this->DB->get('config');
 		$row = $q->row();
-		$thumbs = $row->config_value ? json_decode($row->config_value, TRUE) : array();
+		$thumbs = ($row->config_value && ! is_null($row->config_value)) ? json_decode($row->config_value, TRUE) : array();
 
 		// capture product numbers and set items array
 		if ($products)

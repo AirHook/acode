@@ -498,6 +498,9 @@
         											$styles = $dont_display_thumb;
         											$styles.= ($product->publish == '0' OR $product->publish == '3' OR $product->view_status == 'N') ? 'cursor:not-allowed;' : '';
 
+                                                    // check if item is on sale
+                									$onsale = (@$product->clearance == '3' OR $product->custom_order == '3') ? TRUE : FALSE;
+
         											// due to showing of all colors in thumbs list, we now consider the color code
         											// we check if item has color_code. if it has only product number use the primary image instead
         											$checkbox_check = '';
@@ -526,7 +529,12 @@
         												<div class="name">
         													<?php echo $product->prod_no; ?> <br />
         													<?php echo $product->color_name; ?> <br />
-                                                            <?php echo '$'.$product->wholesale_price; ?>
+                                                            <span style="<?php echo $onsale ? 'text-decoration:line-through;' : ''; ?>">
+                                                                $<?php echo $product->wholesale_price; ?>
+                                                            </span>
+                                                            <span style="color:pink;<?php echo $onsale ? '' : 'display:none;'; ?>">
+                                                                &nbsp;$<?php echo $product->wholesale_price_clearance; ?>
+                                                            </span>
         												</div>
         											</div>
 
@@ -902,7 +910,7 @@
                                                 <span class="required"> * </span>
                                             </label>
                                             <div class="col-md-9">
-                                                <input type="text" name="date_create" class="form-control input-sa_info" value="<?php echo date('Y-m-d', $sa_details->date_create); ?>" readonly />
+                                                <input type="text" name="date_create" class="form-control input-sa_info" value="<?php echo is_numeric($sa_details->date_create) ? @date('Y-m-d', $sa_details->date_create) : $sa_details->date_create; ?>" readonly />
                                             </div>
                                         </div>
                                         <hr />

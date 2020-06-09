@@ -1,3 +1,11 @@
+					<?php
+					// let's set the role for sales user my account
+					$pre_link =
+						@$role == 'sales'
+						? 'my_account/sales'
+						: 'admin'
+					;
+					?>
 					<div class="m-grid page-file-wrapper" data-object_data='{"<?php echo $this->security->get_csrf_token_name(); ?>":"<?php echo $this->security->get_csrf_hash(); ?>"}'>
 						<div class="m-grid-row">
 
@@ -30,7 +38,7 @@
 
 								<h4>Filters</h4>
 
-								<div class="form-group <?php echo @$role == 'sales' ? 'hide' : ''; ?>">
+								<div class="form-group <?php echo @$role == 'sales' ? 'hide_' : ''; ?>">
                                     <label>By Listing</label>
                                     <select class="bs-select form-control filter-options-field filter_by_listing_select input-sm" name="page_param" <?php echo $search ? 'disabled' : ''; ?>>
                                         <option value="all">
@@ -50,17 +58,29 @@
 								<?php if ($this->webspace_details->options['site_type'] == 'hub_site')
 								{ ?>
 
-								<div class="form-group <?php echo @$role == 'sales' ? 'hide' : ''; ?>">
+								<div class="form-group <?php echo @$role == 'sales' ? 'hide_' : ''; ?>">
                                     <label>By Designer</label>
-									<select class="bs-select form-control filter-options-field filter_by_designer_select input-sm" name="des_slug" data-live-search="true" data-size="5" data-show-subtext="true" <?php echo $search ? 'disabled' : ''; ?>>
+									<select class="bs-select form-control filter-options-field filter_by_designer_select input-sm" name="des_slug" data-live-search="true" data-size="5" data-show-subtext="true" <?php echo $search ? 'disabled' : ''; ?> placeholder="Select...">
+										<option>Select...</option>
+
+										<?php if (@$role != 'sales')
+										{ ?>
 										<option value="all">
 											All Desginers
 										</option>
-										<?php if ($this->webspace_details->options['site_type'] == 'hub_site') { ?>
+											<?php
+										} ?>
+
+										<?php if ($this->webspace_details->options['site_type'] == 'hub_site'
+											&& @$role != 'sales'
+										)
+										{ ?>
 										<option value="<?php echo $this->webspace_details->slug; ?>" data-subtext="<em>Mixed Designers Order</em>" data-des_slug="<?php echo $this->webspace_details->slug; ?>" data-des_id="<?php echo $this->webspace_details->id; ?>" <?php echo $this->webspace_details->slug === @$des_slug ? 'selected="selected"' : ''; ?>>
 											<?php echo $this->webspace_details->name; ?>
 										</options>
-										<?php } ?>
+											<?php
+										} ?>
+
 										<?php
 										if (@$designers)
 										{
@@ -156,7 +176,7 @@
 								<!-- BEGIN FORM-->
 								<!-- FORM =======================================================================-->
 								<?php echo form_open(
-									'admin/orders/search',
+									$pre_link.'/orders/search',
 									array(
 										'id'=>'form-orders_search'
 									)
@@ -186,7 +206,7 @@
 								<!-- BEGIN FORM-->
 								<!-- FORM =======================================================================-->
 								<?php echo form_open(
-			                        $this->config->slash_item('admin_folder').'orders/bulk_actions',
+			                        $pre_link.'/orders/bulk_actions',
 			                        array(
 			                            'class'=>'form-horizontal',
 			                            'id'=>'form-orders_bulk_actions'
@@ -361,7 +381,7 @@
 											$i = 1;
 											foreach ($orders as $order)
 											{
-												$edit_link = site_url('admin/orders/details/index/'.$order->order_id);
+												$edit_link = site_url($pre_link.'/orders/details/index/'.$order->order_id);
 
 												// for wholesale only site like tempoparis, show only wholesale orders
 												// for now, we use this condition to remove consuemr orders
@@ -522,7 +542,7 @@
 															<div class="modal-body"> Acknowledge Order? </div>
 															<div class="modal-footer">
 																<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-																<a href="<?php echo site_url('admin/orders/status/index/'.$order->order_id.'/store_credit/'.$status); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+																<a href="<?php echo site_url($pre_link.'orders/status/index/'.$order->order_id.'/store_credit/'.$status); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
 																	<span class="ladda-label">Confirm?</span>
 																	<span class="ladda-spinner"></span>
 																</a>
@@ -544,7 +564,7 @@
 															<div class="modal-body"> Acknowledge Order? </div>
 															<div class="modal-footer">
 																<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-																<a href="<?php echo site_url('admin/orders/status/index/'.$order->order_id.'/acknowledge/'.$status); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+																<a href="<?php echo site_url($pre_link.'orders/status/index/'.$order->order_id.'/acknowledge/'.$status); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
 																	<span class="ladda-label">Confirm?</span>
 																	<span class="ladda-spinner"></span>
 																</a>
@@ -566,7 +586,7 @@
 															<div class="modal-body"> Set order as PENDING? </div>
 															<div class="modal-footer">
 																<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-																<a href="<?php echo site_url($this->config->slash_item('admin_folder').'orders/status/index/'.$order->order_id.'/pending/'.$status); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+																<a href="<?php echo site_url($pre_link.'orders/status/index/'.$order->order_id.'/pending/'.$status); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
 																	<span class="ladda-label">Confirm?</span>
 																	<span class="ladda-spinner"></span>
 																</a>
@@ -588,7 +608,7 @@
 															<div class="modal-body"> Set order as ON HOLD? </div>
 															<div class="modal-footer">
 																<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-																<a href="<?php echo site_url($this->config->slash_item('admin_folder').'orders/status/index/'.$order->order_id.'/on_hold/'.$status); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+																<a href="<?php echo site_url($pre_link.'orders/status/index/'.$order->order_id.'/on_hold/'.$status); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
 																	<span class="ladda-label">Confirm?</span>
 																	<span class="ladda-spinner"></span>
 																</a>
@@ -610,7 +630,7 @@
 															<div class="modal-body"> Cancel Order? </div>
 															<div class="modal-footer">
 																<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-																<a href="<?php echo site_url($this->config->slash_item('admin_folder').'orders/status/index/'.$order->order_id.'/cancel/'.$status); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+																<a href="<?php echo site_url($pre_link.'orders/status/index/'.$order->order_id.'/cancel/'.$status); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
 																	<span class="ladda-label">Confirm?</span>
 																	<span class="ladda-spinner"></span>
 																</a>
@@ -632,7 +652,7 @@
 															<div class="modal-body"> Set order as COMPLETE and SHIPPED? </div>
 															<div class="modal-footer">
 																<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-																<a href="<?php echo site_url($this->config->slash_item('admin_folder').'orders/status/index/'.$order->order_id.'/complete/'.$status); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+																<a href="<?php echo site_url($pre_link.'orders/status/index/'.$order->order_id.'/complete/'.$status); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
 																	<span class="ladda-label">Confirm?</span>
 																	<span class="ladda-spinner"></span>
 																</a>
@@ -654,7 +674,7 @@
 															<div class="modal-body"> Set order as RETURNED? </div>
 															<div class="modal-footer">
 																<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-																<a href="<?php echo site_url($this->config->slash_item('admin_folder').'orders/status/index/'.$order->order_id.'/return/'.$status); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+																<a href="<?php echo site_url($pre_link.'orders/status/index/'.$order->order_id.'/return/'.$status); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
 																	<span class="ladda-label">Confirm?</span>
 																	<span class="ladda-spinner"></span>
 																</a>
@@ -676,7 +696,7 @@
 															<div class="modal-body"> DELETE order? <br /> This cannot be undone! </div>
 															<div class="modal-footer">
 																<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-																<a href="<?php echo site_url($this->config->slash_item('admin_folder').'orders/delete/index/'.$order->order_id); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+																<a href="<?php echo site_url($pre_link.'orders/delete/index/'.$order->order_id); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
 																	<span class="ladda-label">Confirm?</span>
 																	<span class="ladda-spinner"></span>
 																</a>

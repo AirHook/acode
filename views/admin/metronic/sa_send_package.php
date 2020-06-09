@@ -9,11 +9,9 @@
                             )
                         ); ?>
 
-                        <input type="hidden" name="date" value="<?php echo @$date; ?>" />
                         <input type="hidden" name="sales_user" value="<?php echo @$sales_user; ?>" />
-                        <input type="hidden" name="store_name" value="<?php echo @$ws_user_details->store_name; ?>" />
 
-                        <div class="col col-md-8" style="border:1px solid #ccc;min-height:500px;">
+                        <div class="col col-md-6" style="border:1px solid #ccc;min-height:500px;">
                             <div class="row">
 
                                 <?php
@@ -56,14 +54,14 @@
                                             <label class="col-md-3 control-label">Email Subject
                                             </label>
                                             <div class="col-md-8">
-                                                <input type="text" name="email_subject" class="form-control input-sa_info clear-readonly" value="Products of Interests" />
+                                                <input type="text" name="email_subject" class="form-control input-sa_info clear-readonly" value="<?php echo $sa_email_subject; ?>" />
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label class="col-md-3 control-label">Message
                                             </label>
                                             <div class="col-md-8">
-                                                <textarea name="email_message" class="form-control summernote input-sa_info" id="summernote_1" data-error-container="email_message_error">Here are designs that are now available. Review them for your store.</textarea>
+                                                <textarea name="email_message" class="form-control summernote input-sa_info" id="summernote_1" data-error-container="email_message_error"><?php echo $sa_email_message; ?></textarea>
                                                 <cite class="help-block small"> A short message to the users. HTML tags are accepted. </cite>
                                                 <div id="email_message_error"> </div>
                                             </div>
@@ -73,6 +71,11 @@
 
                                 </div>
 
+                                <?php
+                                /***********
+                                 * Sales Package Items
+                                 */
+                                ?>
                                 <div class="col-sm-12">
 
                                     <h4 style="margin:5px 0;">Package Items</h4>
@@ -89,7 +92,8 @@
                                 	// Condition is set for when the template is viewed on a browser via
                                 	// admin view of sales package for sending to users
                                 	?>
-                                	<table cellspacing="0" cellpadding="0" border="0" style="<?php echo @$file == 'sa_send' ? '' : 'width:758px;'; ?>">
+                                	<!--<table cellspacing="0" cellpadding="0" border="0" style="<?php echo @$file == 'sa_send' ? '' : 'width:758px;'; ?>">-->
+                                    <table cellspacing="0" cellpadding="0" border="0" style="<?php echo @$file == 'sa_send' ? '' : 'width:610px;'; ?>">
                                 		<tbody>
                                 			<tr>
                                 				<td>
@@ -99,7 +103,7 @@
                                 					 * The IMAGES CHILD container
                                 					 */
                                 					?>
-                                					<table cellspacing="0" cellpadding="0" border="0" style="margin-top:10px;<?php echo @$file == 'sa_send' ? '' : 'width:758px;'; ?>">
+                                					<table cellspacing="0" cellpadding="0" border="0" style="margin-top:10px;<?php echo @$file == 'sa_send' ? '' : 'width:610px;'; ?>">
                                 						<tbody>
                                 							<tr>
                                 								<?php
@@ -184,22 +188,18 @@
                                 									}
                                 									?>
 
-                                								<td style="vertical-align:top;<?php echo @$file == 'sa_send' ? 'width:20%;padding-right:10px;' : 'width:154px;'; ?>">
-                                                                    <!-- THUMB -->
+                                								<td style="vertical-align:top;width:20%;padding-right:10px;">
                                 									<a href="<?php echo @$access_link; ?>" style="text-decoration:none;margin:0;padding:0;color:inherit;display:inline-block;">
-                                										<div id="spthumbdiv_<?php echo $item; ?>" class="fadehover" style="<?php echo @$file == 'sa_send' ? '' : 'width:140px;height:210px;'; ?>">
-                                											<img src="<?php echo $img_front_new; ?>" alt="<?php echo $prod_no; ?>" title="<?php echo $prod_no; ?>" border="0" style="<?php echo @$file == 'sa_send' ? 'width:100%;' : 'width:140px;'; ?>">
+                                										<div id="spthumbdiv_<?php echo $item; ?>" class="fadehover" style="<?php echo @$file == 'sa_send' ? '' : 'width:100%;'; ?>">
+                                											<img src="<?php echo $img_front_new; ?>" alt="<?php echo $prod_no; ?>" title="<?php echo $prod_no; ?>" border="0" style="width:100%;">
                                 										</div>
                                 									</a>
-                                                                    <!-- hiding the coloricon -->
-                                									<div class="hide" style="margin:3px 0 0;">
+                                									<div style="margin:3px 0 0;">
                                 										<img src="<?php echo $img_coloricon; ?>" width="10" height="10">
                                 									</div>
-                                                                    <!-- detail -->
-                                									<div style="<?php echo @$file == 'sa_send' ? '' : 'width:140px;'; ?>">
+
+                                									<div style="width:100%;">
                                 										<span style="font-size:10px;"><?php echo $prod_no; ?></span>
-                                                                        <br />
-                                										<span style="font-size:10px;"><?php echo $color_name; ?></span>
                                 										<?php if (@$sa_options['w_prices'] == 'Y') { ?>
                                 										<br />
                                                                         <span style="font-size:10px;<?php echo $onsale ? 'text-decoration:line-through;' : ''; ?>">
@@ -228,7 +228,7 @@
                                 								// let us finish the columns to 5 if less than 5 on the last item
                                 								for($icol; $icol <= 5; $icol++)
                                 								{
-                                									echo '<td style="vertical-align:top;width:154px"></td>';
+                                									echo '<td style="vertical-align:top;width:20%;padding-right:10px;"></td>';
                                 								}
                                 								?>
                                 							</tr>
@@ -257,7 +257,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-md-6">
 
                             <div class="form-horizontal" role="form">
 
@@ -300,10 +300,29 @@
     								 */
     								?>
                                     <div class="form-group form-group-badge select-vendor-dropdown">
-                                        <label class="control-label col-md-12">
+                                        <label class="control-label col-md-4">
                                             <span class="badge custom-badge active pull-left step1"> 1 </span>
                                             <span class="badge-label"> Send Sales Package </span>
                                         </label>
+                                        <div class="col-md-8">
+                                            <cite class="help-block font-red" style="padding-top:3px;">
+                                                Select From Options below
+                                            </cite>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="col-md-12">
+                                            <a href="javascript:;" class="btn dark btn-md select-send-options send-to-current-user col-md-4" style="font-size:0.9em;">
+                                                Send To Existing User(s)
+                                            </a>
+                                            <a href="javascript:;" class="btn dark btn-md select-send-options send-to-new-user col-md-4" style="font-size:0.9em;">
+                                                Send To New Wholesale User
+                                            </a>
+                                            <a href="<?php echo site_url((@$role == 'sales' ? 'my_account/sales' : 'admin/campaigns').'/sales_package/create'); ?>" class="btn dark btn-md select-send-options thumbs-grid-view col-md-4" style="font-size:0.9em;">
+                                                Modify Sales Package
+                                            </a>
+                                        </div>
                                     </div>
 
                                     <hr />
@@ -342,39 +361,11 @@
                                     <?php } ?>
                                 </div>
 
-                                <div class="send_to_current_user">
+                                <?php $this->load->view('admin/metronic/sa_send_to_new_user'); ?>
 
-									<div class="form-body selected-users-list-wrapper">
-										<span class="caption">Send to the following:</span>
-										<div class="mt-checkbox-list selected-users-list">
-											<!-- DOC: example child element --
-											<label class="mt-checkbox mt-checkbox-outline" style="font-size:0.9em;">
-												Rey Store -
-												Rey Millares <cite class="small">(rsbgm@rcpixel.com)</cite>
-												<input type="checkbox" class="send_to_current_user selected-list" name="email[]" value="rsbgm@rcpixel.com" checked />
-												<span></span>
-											</label>
-											-->
-											<?php if (@$ws_user_details)
-											{ ?>
+                                <?php $this->load->view('admin/metronic/sa_send_to_current_user'); ?>
 
-											<label class="mt-checkbox mt-checkbox-outline" style="font-size:0.9em;">
-												<?php echo @$ws_user_details->store_name; ?> -
-												<?php echo @$ws_user_details->fname.' '.@$ws_user_details->lname; ?> <cite class="small">(<?php echo @$ws_user_details->email; ?>)</cite>
-												<input type="checkbox" class="send_to_current_user_ selected-list" name="email" value="<?php echo @$ws_user_details->email; ?>" checked />
-												<span></span>
-											</label>
-
-												<?php
-											} ?>
-
-										</div>
-	                                    <button type="submit" class="btn dark btn-sm mt-bootbox-new margin-bottom-10">
-	                                        Send Package
-	                                    </button>
-									</div>
-
-								</div>
+                                <h3 class="notice-select-action"><cite>Select action...</cite></h3>
 
                             </div>
 

@@ -217,19 +217,32 @@
 															/**********
 															 * The PRICE
 															 */
+                                                            $price = $product->wholesale_price;
+                                                            $orig_price = $product->wholesale_price;
 
-															/**********
-															 * Wholesale price by default
-                                                             * Check for edited price for sales packages
-															 */
+                                                            // check for onsale
+                                                            if ($product->custom_order === '3')
+                                                            $price = $product->wholesale_price_clearance;
+
                                                             // retrieve sa_options for possible changes to 'e_prices'
                                                             $options_array = $this->sales_package_details->options;
-															$price = @$options_array['e_prices'][$item] ?: $product->wholesale_price;
+                                                            if (@$options_array['e_prices'][$item])
+															$price = $options_array['e_prices'][$item];
                                                             ?>
 
-															<span itemprop="price" <?php echo $this->product_details->custom_order === '3' ? 'style="text-decoration:line-through;"' : ''; ?>>
-                                                                [WHOLESALE PRICE] &nbsp; <?php echo $this->config->item('currency').' '.number_format($price, 2); ?>
+															<span itemprop="price" <?php echo $product->custom_order === '3' ? 'style="text-decoration:line-through;"' : ''; ?>>
+                                                                [WHOLESALE PRICE] &nbsp; <?php echo $this->config->item('currency').' '.number_format($orig_price, 2); ?>
                                                             </span>&nbsp;
+
+                                                            <?php if ($product->custom_order === '3' OR @$options_array['e_prices'][$item])
+                                                            { ?>
+
+                                                            &nbsp; <span itemprop="price" style="color:red;">
+                                                                [CLEARANCE] &nbsp; <?php echo $this->config->item('currency').' '.number_format($price, 2); ?>
+                                                                </span>
+
+                                                                <?php
+                                                            } ?>
 
 														</h5>
 
@@ -290,6 +303,7 @@
 																<input type="hidden" name="prod_name" value="<?php echo $product->prod_name; ?>" />
 																<input type="hidden" name="price" value="<?php echo $price; ?>" />
 																<input type="hidden" name="label_designer" value="<?php echo $product->designer_name; ?>" />
+                                                                <input type="hidden" name="orig_price" value="<?php echo @$orig_price; ?>" />
 
 																<input type="hidden" name="color_code" value="<?php echo $product->color_code; ?>" />
 																<input type="hidden" name="prod_sku" value="<?php echo $style_no; ?>" />

@@ -36,18 +36,15 @@
 													<!-- BEGIN THUMBS BREADCRUMBS -->
 													<ul class="page-breadcrumb breadcrumb breadcrumb-thumbs margin-bottom-10" style="padding-right:20px;display:inline-block;">
 
-                                                        <?php
-                                                        $sa_link = site_url('sales_package/link/index/'.$this->session->userdata('sales_package_id').'/'.$this->session->userdata('user_id').'/'.$this->session->userdata('sales_package_tc'));
-                                                        ?>
                                                         <li>
-															<a href="<?php echo site_url(@$sa_link); ?>">
+															<a href="javascript:;">
                                                                 <strong> Sales Package </strong>
 															</a>
 															<i class="fa fa-angle-right"></i>
 														</li>
                                                         <li>
-															<a href="<?php echo site_url($sa_link); ?>">
-                                                                <?php echo @$this->sales_package_details->sales_package_name; ?>
+                                                            <a href="javascript:;">
+                                                                Product Clicks
 															</a>
 														</li>
 
@@ -218,16 +215,24 @@
 															 * The PRICE
 															 */
 															$price = $product->wholesale_price;
+                                                            $orig_price = $product->wholesale_price;
+
+                                                            // check for onsale
+                                                            if ($product->custom_order === '3')
+                                                            $price = $product->wholesale_price_clearance;
+
+                                                            // retrieve sa_options for possible changes to 'e_prices'
+                                                            $options_array = @$this->sales_package_details->options ?: array();
+                                                            if (@$options_array['e_prices'][$item])
+															$price = $options_array['e_prices'][$item];
                                                             ?>
 
-															<span itemprop="price" <?php echo $this->product_details->custom_order === '3' ? 'style="text-decoration:line-through;"' : ''; ?>>
-                                                                [WHOLESALE PRICE] &nbsp; <?php echo $this->config->item('currency').' '.number_format($price, 2); ?>
+															<span itemprop="price" <?php echo $product->custom_order === '3' ? 'style="text-decoration:line-through;"' : ''; ?>>
+                                                                [WHOLESALE PRICE] &nbsp; <?php echo $this->config->item('currency').' '.number_format(($orig_price), 2); ?>
                                                             </span>&nbsp;
 
-                                                            <?php if ($this->product_details->custom_order === '3')
-                                                            {
-                                                                $price = $product->wholesale_price_clearance;
-                                                                ?>
+                                                            <?php if ($product->custom_order === '3' OR @$options_array['e_prices'][$item])
+                                                            { ?>
 
                                                             &nbsp; <span itemprop="price" style="color:red;">
                                                                 [CLEARANCE] &nbsp; <?php echo $this->config->item('currency').' '.number_format($price, 2); ?>
@@ -295,6 +300,7 @@
 																<input type="hidden" name="prod_name" value="<?php echo $product->prod_name; ?>" />
 																<input type="hidden" name="price" value="<?php echo $price; ?>" />
 																<input type="hidden" name="label_designer" value="<?php echo $product->designer_name; ?>" />
+                                                                <input type="hidden" name="orig_price" value="<?php echo @$orig_price; ?>" />
 
 																<input type="hidden" name="color_code" value="<?php echo $product->color_code; ?>" />
 																<input type="hidden" name="prod_sku" value="<?php echo $style_no; ?>" />

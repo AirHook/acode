@@ -36,7 +36,9 @@
 																					<img alt="" src="<?php echo $this->config->item('PROD_IMG_URL').$href_text; ?>" />
 																				</a>
 																			</div>
+																			<!-- INFO -->
 																			<div class="list-item-content">
+																				<!-- Prod No and Details -->
 																				<h4 style="margin:0px;">
 																					<?php echo $items['options']['prod_no']; ?>
 																					<br />
@@ -44,6 +46,7 @@
 																						<?php echo $items['name']; ?>
 																					</span>
 																				</h4>
+																				<!-- Sub Details -->
 																				<p style="margin:0px;">
 																					<span style="color:#999;">Product#: <?php echo $items['options']['prod_no']; ?></span><br />
 																					Size: &nbsp; <?php echo $items['options']['size']; ?><br />
@@ -60,6 +63,7 @@
 																					</small>
 																				</p>
 																			</div>
+																			<!-- SUBTOTAL -->
 																			<div class="list-item-price">
 																				$ <?php echo $this->cart->format_number($items['subtotal']); ?>
 																			</div>

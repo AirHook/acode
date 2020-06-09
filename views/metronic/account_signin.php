@@ -92,7 +92,7 @@
 
                                                     <div class="form form-body">
 
-														<h3 class="form-section">Sign Into My Account</h3>
+														<h3 class="form-section">Sign In To My Account</h3>
 
 														<div class="form-group">
 															<input type="text" placeholder="Email" class="form-control input-md" name="email" value="<?php echo set_value('email'); ?>" required="required" />
@@ -117,10 +117,12 @@
 
 														<h3 class="form-section">I'm New Here</h3>
 
-                                                        <?php if ($this->webspace_details->slug !== 'tempoparis')
+                                                        <?php
+                                                        // hidding from all sites using class 'hide'
+                                                        if ($this->webspace_details->slug !== 'tempoparis')
                                                         { ?>
 
-														<a href="<?php echo site_url('account/register/consumer'); ?>" class="btn btn-default btn-block margin-bottom-20" style="border:3px solid black;">CREATE CONSUMER ACCOUNT</a>
+														<a href="<?php echo site_url('account/register/consumer'); ?>" class="btn btn-default btn-block margin-bottom-20 hide" style="border:3px solid black;">CREATE CONSUMER ACCOUNT</a>
 
                                                             <?php
                                                         } ?>

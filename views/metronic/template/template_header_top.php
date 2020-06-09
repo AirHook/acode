@@ -194,7 +194,7 @@
 												else
 												{ ?>
 												<a href="<?php echo site_url('account'); ?>" class="dropdown-toggle" >
-													<span class="username"> LogIn / Register </span>
+													<span class="username"> Log In &nbsp;/&nbsp; Register </span>
 												</a>
 													<?php
 												} ?>
@@ -211,7 +211,7 @@
                                                 else
                                                 { ?>
                                                 <a href="<?php echo site_url('account'); ?>" class="dropdown-toggle" >
-													<span class="username" style="font-size:0.85em;line-height:1em;text-align:center;position:relative;top:6px;"> Login / Register </span>
+													<span class="username" style="font-size:0.85em;line-height:1em;text-align:center;position:relative;top:6px;"> Log In &nbsp;/&nbsp; Register </span>
 												</a>
                                                     <?php
                                                 } ?>

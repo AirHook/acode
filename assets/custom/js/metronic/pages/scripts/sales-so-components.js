@@ -273,6 +273,14 @@ var ComponentsEditors = function () {
             getCategoryTree(objectData);
         });
 
+        // product filter checkbox
+        $('.filter-products-checkbox').on('change', function(){
+            // not yet in place -------------------->
+            var objectData = object_data;
+            var checked = $(this).is(":checked");
+            //if (checked) alert($(this).val());
+        });
+
         // select product option buttons function
         $('.select-product-options').on('click', function(){
             if ($('.step2').hasClass('active')) {

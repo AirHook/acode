@@ -345,11 +345,11 @@
 																<th> Item Name </th>
 																<th> Product No </th>
 																<th> Designer </th>
-																<th> Size </th>
-																<th> Color </th>
-																<th> Qty </th>
-																<th> Unit Price </th>
-																<th> Sub Total </th>
+																<th class="text-center"> Size </th>
+																<th class="text-center"> Color </th>
+																<th class="text-center"> Qty </th>
+																<th class="text-right"> Unit Price </th>
+																<th class="text-right"> Sub Total </th>
 															</tr>
 														</thead>
 														<tbody>
@@ -373,6 +373,12 @@
 																	$size = $item->size;
 																	$size_names = $this->size_names->get_size_names($product->size_mode);
 																	$size_label = array_search($size, $size_names);
+
+																	// set original price in case options['orig_price'] is not set
+																	$orig_price = $this->order_details->c == 'ws' ? $product->wholesale_price : $product->retail_price;
+
+																	// get items options
+																	$options = $item->options ? json_decode($item->options, TRUE) : array();
 																	?>
 
 															<tr class="odd gradeX" onmouseover="$(this).find('.hidden_first_edit_link').show();" onmouseout="$(this).find('.hidden_first_edit_link').hide();">
@@ -424,19 +430,39 @@
 																	} ?>
 																</td>
 																<!-- Prdo No -->
-																<td> <?php echo $item->prod_no; ?> </td>
+																<td>
+																	<?php echo $item->prod_no; ?>
+																	<?php echo ($item->custom_order == '3' ? '<br /><em style="color:red;font-size:0.8em;">On Clearance</em>' : ''); ?>
+																</td>
 																<!-- Designer -->
 																<td> <?php echo $item->designer; ?> </td>
 																<!-- Size -->
-																<td> <?php echo $item->size; ?> </td>
+																<td class="text-center"> <?php echo $item->size; ?> </td>
 																<!-- Color -->
-																<td> <?php echo $item->color; ?> </td>
+																<td class="text-center"> <?php echo $item->color; ?> </td>
 																<!-- Qty -->
-																<td> <?php echo $item->qty; ?> </td>
+																<td class="text-center"> <?php echo $item->qty; ?> </td>
 																<!-- Unit Price -->
-																<td> <?php echo '$'.number_format($item->unit_price, 2); ?> </td>
+																<td class="text-right">
+																	<?php if (
+																		$item->custom_order == '3'
+																		&& (
+																			$item->unit_price != @$options['orig_price']
+																			&& $item->unit_price != $orig_price
+																		)
+																	)
+																	{
+																		echo '<span style="text-decoration:line-through;">$ '.number_format((@$options['orig_price'] ?: $orig_price), 2).'</span>';
+																		echo '&nbsp;';
+																		echo '<span style="color:red;">$ '.number_format($item->unit_price, 2).'</span>';
+																	}
+																	else
+																	{
+																		echo '$ '.number_format($item->unit_price, 2);
+																	} ?>
+																</td>
 																<!-- Subtotal -->
-																<td> <?php echo '$'.number_format($item->subtotal, 2); ?> </td>
+																<td class="text-right"> <?php echo '$'.number_format($item->subtotal, 2); ?> </td>
 															</tr>
 
 																	<?php

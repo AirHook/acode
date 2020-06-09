@@ -176,6 +176,7 @@ class Orders_list
 
 		// set joins
 		$this->DB->join('tbl_order_log_details', 'tbl_order_log_details.order_log_id = tbl_order_log.order_log_id', 'left');
+		$this->DB->join('tbluser_data_wholesale', '(tbluser_data_wholesale.user_id = tbl_order_log.user_id AND tbl_order_log.c = \'ws\')', 'left');
 
 		if ($having_des_group)
 		{

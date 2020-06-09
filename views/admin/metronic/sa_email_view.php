@@ -126,9 +126,6 @@
 										$img_large = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_f.jpg';
 										$img_coloricon = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_c.jpg';
 										$color_name = $product->color_name;
-
-										// set price
-										$price = @$sa_options['e_prices'][$item] ?: $product->wholesale_price;
 									}
 									else
 									{
@@ -138,9 +135,26 @@
 										$img_large = $this->config->item('PROD_IMG_URL').'images/instylelnylogo_3.jpg';
 										$img_coloricon = $this->config->item('PROD_IMG_URL').'images/instylelnylogo_3.jpg';
 										$color_name = $this->product_details->get_color_name($color_code);
+									}
 
-										// set price
-										$price = @$sa_options['e_prices'][$item] ?: 0;
+									// check stocks options for clearance cs only and pre-set price for on sale
+									// even if on sale price is not used
+									$stocks_options = @$product->stocks_options ?: array();
+									$price = @$sa_options['e_prices'][$item] ?: $product->wholesale_price_clearance;
+
+									// check if item is on sale
+									if (
+										@$product->clearance == '3'
+										OR $product->custom_order == '3'
+										OR $stocks_options['clearance_consumer_only'] == '1'
+										OR @$sa_options['e_prices'][$item]
+									)
+									{
+										$onsale = TRUE;
+									}
+									else
+									{
+										$onsale= FALSE;
 									}
 
 									if ($icol == 6)
@@ -151,21 +165,28 @@
 									?>
 
 								<td style="vertical-align:top;<?php echo @$file == 'sa_send' ? 'width:20%;padding-right:10px;' : 'width:154px;'; ?>">
+									<!-- THUMB -->
 									<a href="<?php echo $access_link; ?>" style="text-decoration:none;margin:0;padding:0;color:inherit;display:inline-block;">
 										<div id="spthumbdiv_<?php echo $item; ?>" class="fadehover" style="<?php echo @$file == 'sa_send' ? '' : 'width:140px;height:210px;'; ?>">
 											<img src="<?php echo $img_front_new; ?>" alt="<?php echo $prod_no; ?>" title="<?php echo $prod_no; ?>" border="0" style="<?php echo @$file == 'sa_send' ? 'width:100%;' : 'width:140px;'; ?>">
 										</div>
 									</a>
-									<div style="margin:3px 0 0;">
+									<!-- hiding the coloricon -->
+									<div class="hide" style="margin:3px 0 0;font-size:10px;">
 										<img src="<?php echo $img_coloricon; ?>" width="10" height="10">
 									</div>
-
+									<!-- detail -->
 									<div style="<?php echo @$file == 'sa_send' ? '' : 'width:140px;'; ?>">
 										<span style="font-size:10px;"><?php echo $prod_no; ?></span>
+										<br />
+										<span style="font-size:10px;"><?php echo $color_name; ?></span>
 										<?php if (@$sa_options['w_prices'] == 'Y') { ?>
 										<br />
-										<span style="font-size:10px;">
-											$ <?php echo number_format($price, 2); ?>
+										<span style="font-size:10px;<?php echo $onsale ? 'text-decoration:line-through;' : ''; ?>">
+											$<?php echo number_format($product->wholesale_price, 2); ?>
+										</span>
+										<span style="font-size:10px;color:red;<?php echo $onsale ? '' : 'display:none;'; ?>">
+											&nbsp;$<?php echo number_format($price, 2); ?>
 										</span>
 										<?php } ?>
 									</div>

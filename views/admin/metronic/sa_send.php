@@ -73,6 +73,11 @@
 
                                 </div>
 
+                                <?php
+                                /***********
+                                 * Sales Package Items
+                                 */
+                                ?>
                                 <div class="col-sm-12">
 
                                     <h4>Email Details</h4>
@@ -177,6 +182,7 @@
                                 <?php echo form_open(
                                     (@$role == 'sales' ? 'my_account/sales' : 'admin/campaigns').'/sales_package/send/sa/'.$sa_details->sales_package_id,
                                     array(
+                                        'class' => 'form-horizontal',
                                         'id' => 'form-send_sales_package'
                                     )
                                 ); ?>

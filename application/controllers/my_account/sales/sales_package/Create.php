@@ -52,21 +52,26 @@ class Create extends Sales_user_Controller {
 				OR $this->session->sa_mod_slug_segs
 			)
 			{
-				// new po admin createa ccess
-				unset($_SESSION['sa_id']);
-				unset($_SESSION['sa_des_slug']);
-				unset($_SESSION['sa_slug_segs']);
-				unset($_SESSION['sa_items']);
-				unset($_SESSION['sa_name']); // used at view
-				unset($_SESSION['sa_email_subject']); // used at view
-				unset($_SESSION['sa_email_message']); // used at view
-				unset($_SESSION['sa_options']);
-				// remove po mod details
+				// first, remove sa modify details
 				unset($_SESSION['sa_mod_id']);
 				unset($_SESSION['sa_mod_items']);
 				unset($_SESSION['sa_mod_slug_segs']);
 				unset($_SESSION['sa_mod_options']);
 				unset($_SESSION['sa_mod_des_slug']);
+
+				// check for sa create session
+				if ( ! $this->session->sa_items)
+				{
+					// unset all session and send to create page
+					unset($_SESSION['sa_id']);
+					unset($_SESSION['sa_des_slug']);
+					unset($_SESSION['sa_slug_segs']);
+					unset($_SESSION['sa_items']);
+					unset($_SESSION['sa_name']); // used at view
+					unset($_SESSION['sa_email_subject']); // used at view
+					unset($_SESSION['sa_email_message']); // used at view
+					unset($_SESSION['sa_options']);
+				}
 			}
 
 			// get color list
@@ -140,13 +145,16 @@ class Create extends Sales_user_Controller {
 
 				// get the products list for the thumbs grid view
 				$params['show_private'] = TRUE; // all items general public (Y) - N for private
-				$params['view_status'] = 'ALL'; // all items view status (Y, Y1, Y2, N)
-				$params['view_at_hub'] = TRUE; // all items general public at hub site
-				$params['view_at_satellite'] = TRUE; // all items publis at satellite site
-				$params['variant_publish'] = 'ALL'; // all items at variant level publish (view status)
-				$params['variant_view_at_hub'] = TRUE; // variant level public at hub site
-				$params['variant_view_at_satellite'] = TRUE; // varian level public at satellite site
-				$params['with_stocks'] = FALSE; // Show all with and without stocks
+				//$params['view_status'] = 'ALL'; // all items view status (Y, Y1, Y2, N)
+				//$params['view_at_hub'] = TRUE; // all items general public at hub site
+				//$params['view_at_satellite'] = TRUE; // all items publis at satellite site
+				//$params['variant_publish'] = 'ALL'; // all items at variant level publish (view status)
+				//$params['variant_view_at_hub'] = TRUE; // variant level public at hub site
+				//$params['variant_view_at_satellite'] = TRUE; // varian level public at satellite site
+
+				// level 2 users show only items with stocks
+				$params['with_stocks'] = TRUE; // TRUE shows instock items only
+
 				$params['group_products'] = FALSE; // group per product number or per variant
 				$params['special_sale'] = FALSE; // special sale items only
 				$this->load->library('products/products_list', $params);
@@ -178,12 +186,6 @@ class Create extends Sales_user_Controller {
 			// set author to 1 for Inhouse or set logged in admin sales user
 			if ($this->session->admin_sales_loggedin)
 			{
-				$this->sales_user_details->initialize(
-					array(
-						'admin_sales_id' => $this->session->admin_sales_id
-					)
-				);
-
 				$this->data['author_name'] = $this->sales_user_details->fname.' '.$this->sales_user_details->lname;
 				$this->data['author'] = $this->data['author_name'];
 				$this->data['author_email'] = $this->sales_user_details->email;
@@ -226,70 +228,85 @@ class Create extends Sales_user_Controller {
 			Array
 			(
 				[date_create] => 1572636339
-			    [last_modified] => 1572636339
-			    [sales_package_name] => My First Sales Package
-			    [email_subject] => New Designs
-			    [email_message] => Here are designs that are now available. Review them for your store.
-			    [files] =>
-			    [options] => Array
-			        (
-			            [w_prices] => Y
-			            [w_images] => N
-			            [linesheets_only] => N
-			        )
-
-			    [sales_user] => 1
-			    [author] => admin
-			    [prod_no] => Array
-			        (
-			            [0] => 036_BEIG1
-			            [1] => 036_GREY1
-			            [2] => 045_TAUP1
-			        )
+				[last_modified] => 1572636339
+				[sales_package_name] => My First Sales Package
+				[email_subject] => New Designs
+				[email_message] => Here are designs that are now available. Review them for your store.
+				[files] =>
+				[options] => Array
+					(
+						[w_prices] => Y
+						[w_images] => N
+						[linesheets_only] => N
+					)
+				[sales_user] => 1
+				[author] => admin
+				[prod_no] => Array
+					(
+						[0] => 036_BEIG1
+						[1] => 036_GREY1
+						[2] => 045_TAUP1
+					)
+				[save_sales_package] => 1
 			)
 			// other needed items
 			[sales_package_items] -> sa_items
 			// */
 
-			echo 'Processing...';
+			if ($this->input->post('save_sales_package'))
+			{
+				// connect to database
+				$DB = $this->load->database('instyle', TRUE);
 
-			// connect to database
-			$DB = $this->load->database('instyle', TRUE);
+				// grab post data and process some of them to accomodate database
+				$post_ary = $this->input->post();
+				$post_ary['options']['des_slug'] = $this->session->sa_des_slug; // additional data
+				$post_ary['options'] = json_encode($post_ary['options']);
 
-			// grab post data and process some of them to accomodate database
-			$post_ary = $this->input->post();
-			$post_ary['options']['des_slug'] = $this->session->sa_des_slug; // additional data
-			$post_ary['options'] = json_encode($post_ary['options']);
+				// additional items to set
 
-			// additional items to set
+				// remove variables not needed
+				unset($post_ary['files']);
+				unset($post_ary['prod_no']);
+				unset($post_ary['save_sales_package']);
 
-			// remove variables not needed
-			unset($post_ary['files']);
-			unset($post_ary['prod_no']);
+				// set sales package items
+				$post_ary['sales_package_items'] = $this->session->sa_items;
 
-			// set sales package items
-			$post_ary['sales_package_items'] = $this->session->sa_items;
+				// update records
+				$DB->set($post_ary);
+				$q = $DB->insert('sales_packages');
+				$insert_id = $DB->insert_id();
 
-			// update records
-			$DB->set($post_ary);
-			$q = $DB->insert('sales_packages');
-			$insert_id = $DB->insert_id();
+				// unset create sessions
+				unset($_SESSION['sa_id']);
+				unset($_SESSION['sa_des_slug']);
+				unset($_SESSION['sa_slug_segs']);
+				unset($_SESSION['sa_items']);
+				unset($_SESSION['sa_name']); // used at view
+				unset($_SESSION['sa_email_subject']); // used at view
+				unset($_SESSION['sa_email_message']); // used at view
+				unset($_SESSION['sa_options']);
 
-			// unset create sessions
-			unset($_SESSION['sa_id']);
-			unset($_SESSION['sa_des_slug']);
-			unset($_SESSION['sa_slug_segs']);
-			unset($_SESSION['sa_items']);
-			unset($_SESSION['sa_name']); // used at view
-			unset($_SESSION['sa_email_subject']); // used at view
-			unset($_SESSION['sa_email_message']); // used at view
-			unset($_SESSION['sa_options']);
+				// set flash data
+				$this->session->set_flashdata('success', 'add');
 
-			// set flash data
-			$this->session->set_flashdata('success', 'add');
+				// redirect user
+				redirect('my_account/sales/sales_package/send/index/'.$insert_id);
+			}
+			else
+			{
+				// we shall make additional session data
+				$_SESSION['date_create'] = $this->input->post('date_create');
+				$_SESSION['last_modified'] = $this->input->post('last_modified');
+				$_SESSION['sa_name'] = $this->input->post('sales_package_name');
+				$_SESSION['sa_email_subject'] = $this->input->post('email_subject');
+				$_SESSION['sa_email_message'] = $this->input->post('email_message');
+				$_SESSION['sa_options'] = json_encode($this->input->post('options'));
 
-			// redirect user
-			redirect('my_account/sales/sales_package/send/index/'.$insert_id);
+				// redirect user
+				redirect('my_account/sales/sales_package/send_package', 'location');
+			}
 		}
 	}
 

@@ -2,7 +2,7 @@
 
 									<h4> <cite>NEW USER:</cite> </h4>
 
-									<div class="form-body">
+									<div class="form-body col-md-12">
 
 										<input type="hidden" name="reference_designer" class="send_to_new_user" value="<?php echo @$this->sales_user_details->designer; ?>" />
 										<input type="hidden" name="admin_sales_email" class="send_to_new_user" value="<?php echo @$this->sales_user_details->email; ?>" />
@@ -86,11 +86,13 @@
 
 										<hr />
 
-										<div class="btn-set btn-set-send-sales-package display-none">
-		                                    <button type="button" class="btn-send-sales-package btn dark btn-lg btn-block <?php echo $sa_details->sales_package_id ? 'mt-bootbox-existing' : 'mt-bootbox-new'; ?>">
-		                                        Send <?php echo @$linesheet_sending_only ? 'Linesheet' : 'Package'; ?>
-		                                    </button>
-		                                </div>
+										<div class="form-group">
+											<div class="btn-set btn-set-send-sales-package display-none">
+			                                    <button type="button" class="btn-send-sales-package btn dark btn-lg btn-block <?php echo @$sa_details->sales_package_id ? 'mt-bootbox-existing' : 'mt-bootbox-new'; ?>">
+			                                        Send <?php echo @$linesheet_sending_only ? 'Linesheet' : 'Package'; ?>
+			                                    </button>
+			                                </div>
+										</div>
 
 									</div>
 

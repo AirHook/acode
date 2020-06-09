@@ -54,6 +54,7 @@ class Receipt extends Frontend_Controller
 		// load pertinent library/model/helpers
 		$this->load->library('users/consumer_user_details');
 		$this->load->library('orders/order_details');
+		$this->load->library('products/product_details');
 
 		// initialize order details
 		$this->order_details->initialize(array('tbl_order_log.order_log_id'=>$order_id));

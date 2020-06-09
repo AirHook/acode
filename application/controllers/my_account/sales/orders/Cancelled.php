@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class All extends Sales_user_Controller {
+class Cancelled extends Sales_user_Controller {
 
 	/**
 	 * Constructor
@@ -23,11 +23,14 @@ class All extends Sales_user_Controller {
 	 *
 	 * @return	void
 	 */
-	//public function index($param = FALSE)
-	public function index($des_slug = '', $status = '')
+	public function index($list = 'all', $des_slug = '')
 	{
 		// generate the plugin scripts and css
 		$this->_create_plugin_scripts();
+
+		// adding these line to identify controlls for sales users
+		$des_slug = $this->sales_user_details->designer;
+		$list = 'ws'; // --> sales users is always working for their wholesale users
 
 		// load pertinent library/model/helpers
 		$this->load->library('orders/orders_list');
@@ -35,13 +38,12 @@ class All extends Sales_user_Controller {
 		$this->load->library('designers/designers_list');
 
 		// get designer list for the dropdown filter
-		$this->designers_list->initialize(
+		$this->designers_list->initialize(array('with_products'=>TRUE));
+		$this->data['designers'] = $this->designers_list->select(
 			array(
-				'with_products' => TRUE,
-				'd_url_structure' => $this->sales_user_details->designer // used by my_account sales
+				'url_structure' => $this->sales_user_details->designer
 			)
 		);
-		$this->data['designers'] = $this->designers_list->select();
 
 		// set some variables
 		// we need a real variable to process some calculations
@@ -53,37 +55,59 @@ class All extends Sales_user_Controller {
 
 		// get data
 		$where = array();
-		$having_des_group = $this->sales_user_details->designer_name; //FALSE; -> used for my_account sales
-		$this->data['des_slug'] = $this->sales_user_details->designer;
-		if (
-			$this->webspace_details->options['site_type'] == 'sal_site'
-			OR $this->webspace_details->options['site_type'] == 'sal_site'
-		)
+		$having_des_group = FALSE;
+		if (@$this->webspace_details->options['site_type'] == 'sal_site')
 		{
 			$where['tbl_order_log.webspace_id'] = @$this->webspace_details->id;
 		}
-		if ($status && !is_numeric($status))
+		elseif ($this->webspace_details->options['site_type'] == 'sat_site')
 		{
-			switch ($status)
-			{
-				case 'complete':
-					$where['status'] = '1';
-				break;
-				case 'pending':
-					$where['status'] = '0';
-				break;
-				case 'onhold':
-					$where['status'] = '2';
-				break;
-				case 'cancelled':
-					$where['status'] = '3';
-				break;
-				case 'returned':
-					$where['status'] = '4';
-				break;
-			}
-			$this->data['status'] = $status;
+			$having_des_group = $this->webspace_details->name;
 		}
+		else
+		{
+			if ($des_slug && !is_numeric($des_slug))
+			{
+				$designer_details = $this->designer_details->initialize(array('designer.url_structure'=>$des_slug));
+				if ($designer_details)
+				{
+					$having_des_group =
+						$designer_details->url_structure == $this->webspace_details->slug
+						? 'Mixed Designers'
+						: $designer_details->designer
+					;
+					$this->data['des_slug'] = $designer_details->url_structure;
+				}
+			}
+		}
+		if ($list != 'all')
+		{
+			if ($list == 'cs')
+			{
+				$where['tbl_order_log.c'] = $list;
+				$where['OR tbl_order_log.c'] = 'guest';
+			}
+			else $where['tbl_order_log.c'] = $list;
+		}
+		// 0-new,1-complete,2-onhold,3-canclled,4-returned/refunded,5-shipment_pending,6-store_credit
+		$where['status'] = '3';
+		// list orders of ws users under the sales user for level 2
+		if ($this->sales_user_details->access_level == '2')
+		{
+			$where['tbluser_data_wholesale.admin_sales_email'] = $this->sales_user_details->email;
+		}
+		// check for date ranges in uri query strings
+		$this->data['from_date'] = @$_GET['from_date'] ?: '';
+		$this->data['to_date'] = @$_GET['to_date'] ?: '';
+		if ($this->data['to_date'] && $this->data['from_date'])
+		{
+			// convert dates to timestamp
+			$from_date = strtotime($this->data['from_date']);
+			$to_date = strtotime($this->data['to_date']);
+			$where['tbl_order_log.order_date >='] = $from_date;
+			$where['tbl_order_log.order_date <='] = $to_date;
+		}
+		// get the orders
 		$this->data['orders'] = $this->orders_list->select(
 			$where,
 			array(), // order_by
@@ -92,8 +116,14 @@ class All extends Sales_user_Controller {
 		);
 		$this->data['count_all'] = $this->orders_list->count_all;
 
+		//echo $this->orders_list->last_query; die();
+
+		// other data
+		$this->data['list'] = $list;
+		$this->data['status'] = 'cancelled';
+
 		// enable pagination
-		$this->_set_pagination($this->data['count_all'], $this->data['limit']);
+		$this->_set_pagination($this->data['count_all'], $this->data['limit'], $list, $des_slug);
 
 		// need to show loading at start
 		$this->data['show_loading'] = FALSE;
@@ -101,14 +131,15 @@ class All extends Sales_user_Controller {
 
 		// breadcrumbs
 		$this->data['page_breadcrumb'] = array(
-			'orders' => 'My Orders'
+			'orders/cancelled' => 'Orders',
+			'cancelled' => 'Cancelled'
 		);
 
 		// set data variables...
 		$this->data['role'] = 'sales';
-		$this->data['file'] = 'orders';
-		$this->data['page_title'] = 'Order Logs';
-		$this->data['page_description'] = 'List of orders';
+		$this->data['file'] = 'orders_new_orders';
+		$this->data['page_title'] = 'Cancelled';
+		$this->data['page_description'] = 'Order Logs';
 
 		// load views...
 		$this->load->view('admin/metronic/template_my_account/template', $this->data);
@@ -121,11 +152,17 @@ class All extends Sales_user_Controller {
 	 *
 	 * @return	void
 	 */
-	private function _set_pagination($count_all = '', $per_page = '', $param = '')
+	private function _set_pagination($count_all = '', $per_page = '', $list, $des_slug)
 	{
 		$this->load->library('pagination');
 
-		$config['base_url'] = base_url().'admin/orders/all/index/'.($param ? $param.'/' : '');
+		if ($des_slug && !is_numeric($des_slug))
+		{
+			$ref_uri = 'admin/orders/cancelled/index/'.$list.'/'.$des_slug;
+		}
+		else $ref_uri = $list == 'all' ? 'admin/orders/cancelled' : 'admin/orders/cancelled/index/'.$list;
+
+		$config['base_url'] = base_url().'admin/orders/cancelled/index/'.($list ? $list.'/' : '').(($des_slug && !is_numeric($des_slug)) ? $des_slug.'/' : '');
 		$config['total_rows'] = $count_all;
 		$config['per_page'] = $per_page;
 		$config['num_links'] = 3;
@@ -137,7 +174,7 @@ class All extends Sales_user_Controller {
 		$config['cur_tag_open'] = '<li class="active"><a href="javascript:;">';
 		$config['cur_tag_close'] = '</a></li>';
 		$config['first_link'] = '<i class="fa fa-angle-double-left"></i>';
-		$config['first_url'] = site_url('admin/orders/all');
+		$config['first_url'] = site_url($ref_uri);
 		$config['first_tag_open'] = '<li>';
 		$config['first_tag_close'] = '</li>';
 		$config['last_link'] = '<i class="fa fa-angle-double-right"></i>';
@@ -181,6 +218,10 @@ class All extends Sales_user_Controller {
 				<link href="'.$assets_url.'/assets/global/plugins/select2/css/select2-bootstrap.min.css" rel="stylesheet" type="text/css" />
 				<link href="'.$assets_url.'/assets/global/plugins/bootstrap-select/css/bootstrap-select.min.css" rel="stylesheet" type="text/css" />
 			';
+			// datepicker & date-time-pickers
+			$this->data['page_level_styles_plugins'].= '
+				<link href="'.$assets_url.'/assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet" type="text/css" />
+			';
 			// datatable
 			$this->data['page_level_styles_plugins'].= '
 				<link href="'.$assets_url.'/assets/global/plugins/datatables/datatables.min.css" rel="stylesheet" type="text/css" />
@@ -209,6 +250,10 @@ class All extends Sales_user_Controller {
 				<script src="'.$assets_url.'/assets/global/plugins/select2/js/select2.full.min.js" type="text/javascript"></script>
 				<script src="'.$assets_url.'/assets/global/plugins/bootstrap-select/js/bootstrap-select.min.js" type="text/javascript"></script>
 			';
+			// datepicker & date-time-pickers
+			$this->data['page_level_plugins'].= '
+				<script src="'.$assets_url.'/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js" type="text/javascript"></script>
+			';
 			// datatable
 			$this->data['page_level_plugins'].= '
 				<script src="'.$assets_url.'/assets/global/scripts/datatable.js" type="text/javascript"></script>
@@ -232,7 +277,7 @@ class All extends Sales_user_Controller {
 			';
 			// handle datatable
 			$this->data['page_level_scripts'].= '
-				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/table-datatables-orders.js" type="text/javascript"></script>
+				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/components-admin_orders.js" type="text/javascript"></script>
 			';
 	}
 

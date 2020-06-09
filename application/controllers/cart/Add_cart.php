@@ -53,6 +53,7 @@ class Add_cart extends Frontend_Controller
 		$color			= $this->input->post('label_color');
 		$prod_sku		= $this->input->post('prod_sku');
 		$price			= $this->input->post('price');
+		$orig_price		= $this->input->post('orig_price');
 
 		$qty			= $this->input->post('qty');
 		$size			= $this->input->post('size');
@@ -102,6 +103,7 @@ class Add_cart extends Frontend_Controller
 				'prod_image_url'	=> $prod_image_url, // new image url system
 				'color'				=> $color,
 				'designer'			=> $designer,
+				'orig_price'		=> $orig_price,
 				'current_url'		=> $previous_url,
 				'custom_order' 		=> $custom_order,
 				'sa_item' 			=> $this->input->post('package_details')
@@ -134,6 +136,7 @@ class Add_cart extends Frontend_Controller
 	     [prod_name] => D9114L
 	     [price] => 0
 	     [label_designer] => Basix Black Label
+		 [orig_price] => 0
 	     [color_code] => PINK1
 	     [prod_sku] => D9114L_PINK1
 	     [label_color] => PINK
@@ -242,6 +245,7 @@ class Add_cart extends Frontend_Controller
 		$color			= $this->input->post('label_color');
 		$prod_sku		= $this->input->post('prod_sku');
 		$price			= $this->input->post('price');
+		$orig_price		= $this->input->post('orig_price');
 
 		$qty_ary			= array_filter($this->input->post('qty'));
 		$size_ary			= $this->input->post('size');
@@ -264,6 +268,7 @@ class Add_cart extends Frontend_Controller
 					'prod_image_url'	=> $prod_image_url, // new image url system
 					'color'				=> $color,
 					'designer'			=> $designer,
+					'orig_price'		=> $orig_price,
 					'current_url'		=> $previous_url,
 					'custom_order' 		=> (@$custom_order[$key] ?: 0),
 					'sa_item' 			=> $this->input->post('package_details')

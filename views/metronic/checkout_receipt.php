@@ -105,7 +105,22 @@
 																	{
 																		$i = 1;
 																		foreach ($this->order_details->order_items as $items)
-																		{ ?>
+																		{
+                                                                            // get product details
+        	                                                                $exp = explode('_', $items->prod_sku);
+        	                                                                $product = $this->product_details->initialize(
+        	                                                                    array(
+        	                                                                        'tbl_product.prod_no' => $exp[0],
+        	                                                                        'color_code' => $exp[1]
+        	                                                                    )
+        	                                                                );
+
+                                                                            // set original price in case options['orig_price'] is not set
+        																	$orig_price = $this->order_details->c == 'ws' ? $product->wholesale_price : $product->retail_price;
+
+        																	// get items options
+        																	$options = $items->options ? json_decode($items->options, TRUE) : array();
+                                                                            ?>
 
 																	<tr>
 																		<?php
@@ -155,10 +170,32 @@
 																		</td>
 																		<?php
 																		/**********
-																		 * Unit Price and Subtotal
+																		 * Unit Price
 																		 */
 																		?>
-																		<td class="text-right"> $ <?php echo $this->cart->format_number($items->unit_price); ?> </td>
+																		<td class="text-right">
+                                                                            <?php if (
+        																		$items->custom_order == '3'
+        																		&& (
+        																			$items->unit_price != @$options['orig_price']
+        																			&& $items->unit_price != $orig_price
+        																		)
+        																	)
+        																	{
+        																		echo '<span style="text-decoration:line-through;">$ '.number_format((@$options['orig_price'] ?: $orig_price), 2).'</span>';
+        																		echo '&nbsp;';
+        																		echo '<span style="color:red;">$ '.number_format($items->unit_price, 2).'</span>';
+        																	}
+        																	else
+        																	{
+        																		echo '$ '.number_format($items->unit_price, 2);
+        																	} ?>
+                                                                        </td>
+                                                                        <?php
+																		/**********
+																		 * Subtotal
+																		 */
+																		?>
 																		<td class="text-right">
 																			$ <?php echo $this->cart->format_number($items->subtotal); ?>
 																		</td>

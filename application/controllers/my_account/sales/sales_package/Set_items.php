@@ -86,7 +86,12 @@ class Set_items extends MY_Controller {
 					$color_name = $product->color_name;
 
 					// set price
-					$price = @$sa_options['e_prices'][$item] ?: $product->wholesale_price;
+					$price =
+						@$sa_options['e_prices'][$item]
+						?: ($product->clearance == '3' OR $product->custom_order == '3')
+							? $product->wholesale_price_clearance
+							: $product->wholesale_price
+					;
 				}
 				else
 				{
@@ -99,6 +104,9 @@ class Set_items extends MY_Controller {
 					// set price
 					$price = @$sa_options['e_prices'][$item] ?: 0;
 				}
+
+				// check if item is on sale
+				$onsale = ($product->clearance == '3' OR $product->custom_order == '3') ? TRUE : FALSE;
 
 				// check if price is changed
 				if ( ! isset($sa_options['w_prices']))
@@ -156,7 +164,16 @@ class Set_items extends MY_Controller {
 					.'">'
 					.'<span class="e_prices" data-price="'
 					.$price
-					.'">$ '
+					.'" style="'
+					.($onsale ? 'text-decoration:line-through;' : '')
+					.'">$'
+					.number_format($price, 2)
+					.'</span>'
+					.'<span class="e_prices" data-price="'
+					.$price
+					.'" style="color:red;'
+					.($onsale ? '' : 'display:none;')
+					.'">&nbsp;$'
 					.number_format($price, 2)
 					.'</span>'
 					.'<button type="button" data-item="'

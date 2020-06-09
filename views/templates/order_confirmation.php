@@ -415,7 +415,7 @@
 													 * Heading
 													 */
 													-->
-													<tr>
+													<tr style="margin-bottom:10px;">
 														<td align="center" background="http://www.<?php echo $this->webspace_details->slug; ?>.com/images/newsletter/bar_bg.jpg"><font style="font-family:Tahoma;font-size:11px;" color="#a1a1a1"><b>Thumb</b></font></td>
 														<td align="center" background="http://www.<?php echo $this->webspace_details->slug; ?>.com/images/newsletter/bar_bg.jpg"><font style="font-family:Tahoma;font-size:11px;" color="#a1a1a1"><b>Item</b></font></td>
 														<td align="center" background="http://www.<?php echo $this->webspace_details->slug; ?>.com/images/newsletter/bar_bg.jpg"><font style="font-family:Tahoma;font-size:11px;" color="#a1a1a1"><b>Style Number</b></font></td>
@@ -444,18 +444,39 @@
                                                         ?>
 
 													<tr>
-														<td align="center">
+                                                        <!-- Thumb -->
+														<td align="center" style="vertical-align:top;padding-top:10px;">
                                                             <a href="<?php echo $product_details_link; ?>">
                                                                 <img src="<?php echo $this->config->item('PROD_IMG_URL').$items->image; ?>" width="60" height="90" border="0">
                                                             </a>
 														</td>
-														<td align="center"><font style="font-family:Tahoma;font-size:10px;"><?php echo $items->prod_name; ?></font></td>
-														<td align="center"><font style="font-family:Tahoma;font-size:10px;"><?php echo $items->prod_no; ?></font></td>
-														<td align="center"><font style="font-family:Tahoma;font-size:10px;"><?php echo $items->size; ?></font></td>
-														<td align="center"><font style="font-family:Tahoma;font-size:10px;"><?php echo $items->color.($items->custom_order == '3' ? '<br /><em style="color:red;">On Clearance</em>' : ''); ?></font></td>
-														<td align="center"><font style="font-family:Tahoma;font-size:10px;"><?php echo $items->qty; ?></font></td>
-														<td align="center"><font style="font-family:Tahoma;font-size:10px;">$ <?php echo $items->unit_price; ?></font></td>
-														<td align="center"><font style="font-family:Tahoma;font-size:10px;">$ <?php echo $items->qty * $items->unit_price; ?></font></td>
+                                                        <!-- Item -->
+														<td align="center" style="vertical-align:top;padding-top:10px;"><font style="font-family:Tahoma;font-size:10px;"><?php echo $items->prod_name; ?></font></td>
+                                                        <!-- Style Number -->
+														<td align="center" style="vertical-align:top;padding-top:10px;"><font style="font-family:Tahoma;font-size:10px;"><?php echo $items->prod_no; ?></font></td>
+                                                        <!-- Size -->
+														<td align="center" style="vertical-align:top;padding-top:10px;"><font style="font-family:Tahoma;font-size:10px;"><?php echo $items->size; ?></font></td>
+                                                        <!-- Color -->
+														<td align="center" style="vertical-align:top;padding-top:10px;"><font style="font-family:Tahoma;font-size:10px;"><?php echo $items->color.($items->custom_order == '3' ? '<br /><em style="color:red;">On Clearance</em>' : ''); ?></font></td>
+                                                        <!-- Qty -->
+														<td align="center" style="vertical-align:top;padding-top:10px;"><font style="font-family:Tahoma;font-size:10px;"><?php echo $items->qty; ?></font></td>
+                                                        <!-- Unit Price -->
+														<td align="center" style="vertical-align:top;padding-top:10px;">
+                                                            <font style="font-family:Tahoma;font-size:10px;">
+                                                                <?php if ($items->custom_order == '3' && $items->unit_price != @$options['orig_price'])
+                                                                {
+                                                                    echo '<span style="text-decoration:line-through;">$ '.$options['orig_price'].'</span>';
+                                                                    echo '&nbsp;';
+                                                                    echo '<span style="color:red;">$ '.$items->unit_price.'</span>';
+                                                                }
+                                                                else
+                                                                {
+                                                                    echo '$ '.$items->unit_price;
+                                                                } ?>
+                                                            </font>
+                                                        </td>
+                                                        <!-- Subtotal -->
+														<td align="center" style="vertical-align:top;padding-top:10px;"><font style="font-family:Tahoma;font-size:10px;">$ <?php echo $items->qty * $items->unit_price; ?></font></td>
 													</tr>
 
 														<?php
@@ -496,7 +517,7 @@
 													<?php if (@$this->session->ny_tax) { ?>
 													<tr>
 														<td colspan="7" align="right"><font style="font-family:Tahoma;font-size:10px;">NY Sales Tax : </font></td>
-														<td align="right"><font style="font-family:Tahoma;font-size:10px;">$ <?php echo number_format($this->webspace_details->options['ny_sales_tax'] * $this->cart->total(), 2); ?></font></td>
+														<td align="right"><font style="font-family:Tahoma;font-size:10px;">$ <?php echo number_format((@$this->webspace_details->options['ny_sales_tax'] ?: '0.08875') * $this->cart->total(), 2); ?></font></td>
 													</tr>
 													<?php } ?>
 

@@ -57,7 +57,6 @@
 								 * Dropdown and Options
 								 */
 								?>
-                                <!-- Select Designer -->
                                 <div class="form-group form-group-badge select-designer-dropdown">
                                     <label class="control-label col-md-5">
                                         <span class="badge custom-badge pull-left step-select-designer step1 active"> 1 </span>
@@ -83,30 +82,6 @@
                                         <input type="hidden" id="des_id" name="des_id" value="<?php echo @$des_id; ?>" />
                                     </div>
                                 </div>
-                                <!-- Filter Products --
-                                <div class="form-group form-group-badge hide">
-                                    <label class="col-md-4 control-label">
-                                        <span class="badge custom-badge pull-left step2 <?php echo (@$role == 'sales' ? $this->session->so_des_slug : $this->session->admin_so_des_slug) ? 'active' : ''; ?>"> 2 </span>
-                                        <span class="badge-label"> Filter Products By Status </span>
-                                    </label>
-                                    <div class="col-md-8">
-                                        <div class="mt-checkbox-inline" style="padding-bottom:0px;">
-                                            <label class="mt-checkbox mt-checkbox-outline" style="margin-bottom:0px;font-size:12px;">
-                                                <input type="checkbox" class="filter-products-checkbox" name="instock" value="1"> Instock
-                                                <span></span>
-                                            </label>
-                                            <label class="mt-checkbox mt-checkbox-outline" style="margin-bottom:0px;font-size:12px;">
-                                                <input type="checkbox" class="filter-products-checkbox" name="preorder" value="1"> Pre Order
-                                                <span></span>
-                                            </label>
-                                            <label class="mt-checkbox mt-checkbox-outline" style="margin-bottom:0px;font-size:12px;">
-                                                <input type="checkbox" class="filter-products-checkbox" name="publish" value="0"> Unpublished
-                                                <span></span>
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Select Products -->
 								<div class="form-group form-group-badge">
                                     <label class="control-label col-md-4">
                                         <span class="badge custom-badge pull-left step2 <?php echo (@$role == 'sales' ? $this->session->so_des_slug : $this->session->admin_so_des_slug) ? 'active' : ''; ?>"> 2 </span>
@@ -118,7 +93,6 @@
                                         </cite>
                                     </div>
                                 </div>
-                                <!-- Action Buttons -->
                                 <div class="form-group">
                                     <div class="col-md-12">
                                         <a href="javascript:;" class="btn dark btn-md select-product-options thumbs-grid-view col-md-4" style="<?php echo (@$role == 'sales' ? $this->session->so_des_slug : $this->session->admin_so_des_slug) ? 'background-color:#696969;' : ''; ?>" data-original-title="Select a designer first">

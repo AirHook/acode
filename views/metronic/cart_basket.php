@@ -197,10 +197,26 @@
 																		</td>
 																		<?php
 																		/**********
-																		 * Unit Price and Subtotal
+																		 * Unit Price
 																		 */
 																		?>
-																		<td class="text-right"> $ <?php echo $this->cart->format_number($items['price']); ?> </td>
+																		<td class="text-right">
+                                                                            <?php if (@$items['options']['custom_order'] == '3')
+																			{
+                                                                                echo '<span style="text-decoration:line-through;">$ '.$this->cart->format_number(@$items['options']['orig_price']).'</span>';
+                                                                                echo '&nbsp;';
+                                                                                echo '<span style="color:red;">$ '.$this->cart->format_number($items['price']).'</span>';
+																			}
+                                                                            else
+                                                                            {
+                                                                                echo '$ '.$this->cart->format_number($items['price']);
+                                                                            } ?>
+                                                                        </td>
+                                                                        <?php
+																		/**********
+																		 * Subtotal
+																		 */
+																		?>
 																		<td class="text-right">
 																			$ <?php echo $this->cart->format_number($items['subtotal']); ?>
 																		</td>

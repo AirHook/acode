@@ -143,7 +143,12 @@
 										$color_name = $product->color_name;
 
 										// set price
-										$price = @$sa_options['e_prices'][$item] ?: $product->wholesale_price;
+										$price =
+											@$sa_options['e_prices'][$item]
+											?: ($product->clearance == '3' OR $product->custom_order == '3')
+												? $product->wholesale_price_clearance
+												: $product->wholesale_price
+										;
 									}
 									else
 									{
@@ -156,6 +161,9 @@
 										// set price
 										$price = @$sa_options['e_prices'][$item] ?: 0;
 									}
+
+									// check if item is on sale
+									$onsale = ($product->clearance == '3' OR $product->custom_order == '3') ? TRUE : FALSE;
 
 									$display_prices = @$sa_options['w_prices'] == 'N' ? 'display-none' : '';
 									?>
@@ -182,7 +190,12 @@
 									<?php echo $prod_no; ?> <br />
 									<?php echo $color_name; ?> <br />
 									<div class="item_prices <?php echo $style_no; ?> <?php echo $display_prices; ?>">
-										<span class="e_prices" data-price="<?php echo $price; ?>"><?php echo '$ '.number_format($price, 2); ?></span>
+										<span class="<?php echo $onsale ? '' : 'e_prices'; ?>" data-price="<?php echo $price; ?>" style="<?php echo $onsale ? 'text-decoration:line-through;' : ''; ?>">
+											<?php echo '$'.number_format($price, 2); ?>
+										</span>
+										<span class="<?php echo $onsale ? 'e_prices' : ''; ?>" data-price="<?php echo $price; ?>" style="color:red;<?php echo $onsale ? '' : 'display:none;'; ?>">
+											<?php echo '&nbsp;$'.number_format($product->wholesale_price_clearance, 2); ?>
+										</span>
 										<button type="button" data-item="<?php echo $item; ?>" class="btn btn-link btn-xs btn-edit_item_price tooltips" data-original-title="Edit Price" style="position:relative;top:-2px;"><i class="fa fa-pencil small"></i></button>
 									</div>
 								</div>

@@ -547,6 +547,9 @@
         												$checkbox_check = 'checked';
         											}
 
+                                                    // check if item is on sale
+                									$onsale = (@$product->clearance == '3' OR $product->custom_order == '3') ? TRUE : FALSE;
+
                                                     // get options if any
                                                     $color_options = json_decode($product->color_options, TRUE);
         											?>
@@ -569,7 +572,12 @@
         												<div class="name">
         													<?php echo $product->prod_no; ?> <br />
         													<?php echo $product->color_name; ?> <br />
-                                                            <?php echo '$'.$product->wholesale_price; ?>
+                                                            <span style="<?php echo $onsale ? 'text-decoration:line-through;' : ''; ?>">
+                                                                $<?php echo $product->wholesale_price; ?>
+                                                            </span>
+                                                            <span style="color:pink;<?php echo $onsale ? '' : 'display:none;'; ?>">
+                                                                &nbsp;$<?php echo $product->wholesale_price_clearance; ?>
+                                                            </span>
         												</div>
         											</div>
 
@@ -1000,11 +1008,11 @@
                                                     </div>
                                                     <div class="mt-radio-inline">
                                                         <label class="mt-radio mt-radio-outline" style="margin-bottom:0px;">
-                                                            <input id="w_images-Y" class="radio-options" type="radio" name="options[w_images]" data-option="w_images" value="Y" <?php echo @$sa_options['w_images'] ? 'checked="checked"' : ''; ?>> Yes
+                                                            <input id="w_images-Y" class="radio-options" type="radio" name="options[w_images]" data-option="w_images" value="Y" <?php echo (@$sa_options['w_images'] && $sa_options['w_images'] == 'Y') ? 'checked="checked"' : ''; ?>> Yes
                                                             <span></span>
                                                         </label>
                                                         <label class="mt-radio mt-radio-outline" style="margin-bottom:0px;">
-                                                            <input id="w_images-N" class="radio-options" type="radio" name="options[w_images]" data-option="w_images" value="N" <?php echo @$sa_options['w_images'] ? '' : 'checked="checked"'; ?>> No
+                                                            <input id="w_images-N" class="radio-options" type="radio" name="options[w_images]" data-option="w_images" value="N" <?php echo (@$sa_options['w_images'] && $sa_options['w_images'] == 'Y') ? '' : 'checked="checked"'; ?>> No
                                                             <span></span>
                                                         </label>
                                                         <label class="" style="margin-bottom:0px;">
@@ -1013,11 +1021,11 @@
                                                     </div>
                                                     <div class="mt-radio-inline">
                                                         <label id="linesheets_only-Y" class="mt-radio mt-radio-outline" style="margin-bottom:0px;">
-                                                            <input class="radio-options" type="radio" name="options[linesheets_only]" data-option="linesheets_only" value="Y" <?php echo @$sa_options['linesheets_only'] ? 'checked="checked"' : ''; ?>> Yes
+                                                            <input class="radio-options" type="radio" name="options[linesheets_only]" data-option="linesheets_only" value="Y" <?php echo (@$sa_options['linesheets_only'] && $sa_options['linesheets_only'] == 'Y') ? 'checked="checked"' : ''; ?>> Yes
                                                             <span></span>
                                                         </label>
                                                         <label class="mt-radio mt-radio-outline" style="margin-bottom:0px;">
-                                                            <input id="linesheets_only-N" class="radio-options" type="radio" name="options[linesheets_only]" data-option="linesheets_only" value="N" <?php echo @$sa_options['linesheets_only'] ? '' : 'checked="checked"'; ?>> No
+                                                            <input id="linesheets_only-N" class="radio-options" type="radio" name="options[linesheets_only]" data-option="linesheets_only" value="N" <?php echo (@$sa_options['linesheets_only'] && $sa_options['linesheets_only'] == 'Y') ? '' : 'checked="checked"'; ?>> No
                                                             <span></span>
                                                         </label>
                                                         <label class="" style="margin-bottom:0px;">
@@ -1054,8 +1062,15 @@
                                     </div>
                                 </div>
 
-                                <div class="col-sm-12 text-center">
-                                    <button type="submit" class="btn dark">Save and Send Sales Package</button>
+                                <div class="col-sm-12">
+                                    <div class="mt-checkbox-list">
+                                        <label class="mt-checkbox mt-checkbox-outline" style="font-size:12px;">
+                                            Do you want to save Sales Package to your list?
+                                            <input type="checkbox" class="" name="save_sales_package" value="1" />
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                    <button type="submit" class="btn dark">Send Sales Package</button>
                                 </div>
 
                                 </form>

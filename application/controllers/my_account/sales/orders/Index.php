@@ -26,7 +26,8 @@ class Index extends Sales_user_Controller {
 	public function index($page_param = 'all', $des_slug = 'all', $status = '', $sort = '')
 	{
 		// redirect users
-		redirect('my_account/sales/orders/all', 'location');
+		//redirect('my_account/sales/orders/all', 'location');
+		redirect('my_account/sales/orders/new_orders', 'location');
 	}
 
 	// ----------------------------------------------------------------------

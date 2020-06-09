@@ -31,11 +31,11 @@
 	                                    </button>
 									</div>
 
-									<div class="form-body <?php echo @$ws_user_details ? 'hide' : ''; ?>">
+									<div class="form-body col-md-12 <?php echo @$ws_user_details ? 'hide' : ''; ?>">
 
 										<h5> <cite>MY CURRENT ACTIVE USERS:</cite> <span class="font-red-flamingo"> * </span></h5>
 
-										<?php if ($total_users > $users_per_page) { ?>
+										<?php if (@$total_users > @$users_per_page) { ?>
 										<div class="row">
 				                            <div class="col-md-9 margin-bottom-5">
 
@@ -44,7 +44,7 @@
 				                                <?php //echo form_open('admin/users/wholesale/search', array('class'=>'form-horizontal', 'id'=>'form-wholesale_users_search_email')); ?>
 
 				                                <div class="input-group">
-				                                    <input class="form-control select-user-search" placeholder="Search for Email or Store Name..." name="search_string" type="text" data-per_page="<?php echo $users_per_page; ?>" data-total_users="<?php echo $total_users; ?>" data-role="<?php echo @$role ?: ''; ?>" />
+				                                    <input class="form-control select-user-search" placeholder="Search for Email or Store Name..." name="search_string" type="text" data-per_page="<?php echo @$users_per_page; ?>" data-total_users="<?php echo @$total_users; ?>" data-role="<?php echo @$role ?: ''; ?>" />
 				                                    <span class="input-group-btn">
 				                                        <button class="btn-search-current-user btn dark uppercase bold" type="button">Search</button>
 				                                    </span>
@@ -64,7 +64,7 @@
 										<style>
 											.sa-send.toolbar .caption.showing {
 												position: relative;
-												bottom: <?php echo $total_users > $users_per_page ? '-12px' : '0px'; ?>;
+												bottom: <?php echo @$total_users > @$users_per_page ? '-12px' : '0px'; ?>;
 											}
 											.sa-send.toolbar .pagination {
 												margin: 0px;
@@ -174,11 +174,13 @@
 
 										<hr />
 
-										<div class="btn-set btn-set-send-sales-package display-none">
-		                                    <button type="button" class="btn-send-sales-package btn dark btn-lg btn-block <?php echo $sa_details->sales_package_id ? 'mt-bootbox-existing' : 'mt-bootbox-new'; ?>">
-		                                        Send <?php echo @$linesheet_sending_only ? 'Linesheet' : 'Package'; ?>
-		                                    </button>
-		                                </div>
+										<div class="form-group">
+											<div class="btn-set btn-set-send-sales-package display-none">
+			                                    <button type="button" class="btn-send-sales-package btn dark btn-lg btn-block <?php echo @$sa_details->sales_package_id ? 'mt-bootbox-existing' : 'mt-bootbox-new'; ?>">
+			                                        Send <?php echo @$linesheet_sending_only ? 'Linesheet' : 'Package'; ?>
+			                                    </button>
+			                                </div>
+										</div>
 
 									</div>
 

@@ -247,6 +247,7 @@
     															 * Wholeslae price
     															 */
     															$price = $this->product_details->wholesale_price; // --> wholesale price
+                                                                $orig_price = $this->product_details->wholesale_price;
 
     															/**********
     															 * If item is on SPEICAL SALE
@@ -290,6 +291,7 @@
     															 * price is set OUR SALE PRICE (catalogue_price)
     															 */
     															$price = $this->product_details->retail_sale_price; // --> sale price
+                                                                $orig_price = $this->product_details->retail_price;
 
     															/**********
     															 * If item is on SPEICAL SALE
@@ -325,6 +327,7 @@
     															 * Retail price
     															 */
     															$price = $this->product_details->retail_price; // --> retail price
+                                                                $orig_price = $this->product_details->retail_price;
                                                                 if (@$this->webspace_details->options['show_product_price'] == '0')
                                                                 { ?>
 
@@ -541,6 +544,7 @@
 																<input type="hidden" name="prod_name" value="<?php echo $this->product_details->prod_name; ?>" />
 																<input type="hidden" name="price" value="<?php echo $price; ?>" />
 																<input type="hidden" name="label_designer" value="<?php echo $this->product_details->designer_name; ?>" />
+                                                                <input type="hidden" name="orig_price" value="<?php echo @$orig_price; ?>" />
 
 																<input type="hidden" name="color_code" value="<?php echo $this->product_details->color_code; ?>" />
 																<input type="hidden" name="prod_sku" value="<?php echo $this->product_details->prod_no.'_'.$this->product_details->color_code; ?>" />
