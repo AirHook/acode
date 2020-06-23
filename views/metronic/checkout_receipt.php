@@ -39,21 +39,21 @@
 												</div>
 
 												<div class="col-sm-12">
-													<h3 class=""> Thank you for your order!
+													<h3 class=""> Thank you for your <?php echo $this->session->user_role == 'wholesale' ? 'order inquiry' : 'order'; ?>!
 														<small class="pull-right" style="position:relative;top:3px;font-size:0.5em;">
 															<a class="a-black hide" href="#pending-print-receipt" data-toggle="modal">
 																Print Receipt </a> <!--&nbsp; | &nbsp;-->
-															<a class="a-black" href="<?php echo site_url('shop/womens_apparel'); ?>">
+															<a class="a-black hide" href="<?php echo site_url('shop/womens_apparel'); ?>">
 																Continue Shopping </a>
 														</small>
 													</h3>
-													<h4 class=""> Order#: <?php echo $order_id; ?> </h4>
+													<h4 class=""> <?php echo $this->session->user_role == 'wholesale' ? 'Order Inquiry' : 'Order'; ?>#: <?php echo $order_id; ?> </h4>
 													<p>
-														Your order was successfully placed on <?php echo $this->order_details->order_date; ?>.<br />
+														Your order was successfully placed.<br />
                                                         * NOTE: Your order was received and will be researched for availability on product.<br />
                                                         <?php echo $this->webspace_details->name ?: 'Shop 7th Avenue / In Style New York'; ?> <?php echo $this->webspace_details->address1.($this->webspace_details->address2 ? ' '.$this->webspace_details->address1 : ' ').$this->webspace_details->city.', '.$this->webspace_details->state.' '.$this->webspace_details->zipcode; ?><br />
                                                         EMAIL <?php echo safe_mailto($this->webspace_details->info_email); ?><br />
-                                                        Purchaser agrees to abide by the company <a href="<?php echo site_url('return_policy'); ?>" target="_blank">Return Policy</a>.
+                                                        Purchaser agrees to abide by the company <a href="javascript:;" class="disabled-link disable-target" target="_blank">Return Policy</a>.
 													</p>
 												</div>
 
@@ -64,10 +64,51 @@
 
 																<h5> Payment Information </h5>
 
-																<div style="width:153px;height:24px;overflow:hidden;display:inline-block;">
+                                                                <?php
+                                                                if ($this->session->user_role == 'wholesale')
+                                                                {
+                                                                    switch ($this->session->ws_payment_options)
+                                                                    {
+                                                                        case '1':
+                                                                            echo 'Use my card on file.';
+                                                                        break;
+                                                                        case '2':
+                                                                            echo 'Add a card.<br />';
+                                                                        break;
+                                                                        case '3':
+                                                                            echo 'Send Paypal Invoice.';
+                                                                        break;
+                                                                        case '4':
+                                                                            echo 'Bill My Account.';
+                                                                        break;
+                                                                        case '5':
+                                                                            echo 'Send Wire Request.';
+                                                                        break;
+                                                                    }
+
+                                                                    if ($this->session->ws_payment_options == '2')
+                                                                    { ?>
+
+                                                                <div style="width:153px;height:24px;overflow:hidden;display:inline-block;">
 																	<img style="width:216px;height:24px;" src="<?php echo base_url(); ?>images/credit-card-graphic.gif" />
 																</div>
-																xxxx-xxxx-xxxx-<?php echo substr($this->session->flashdata('cc_number'), 12); ?>
+
+                                                                        <?php
+                                                                        echo '&nbsp; xxxx-xxxx-xxxx-'.substr($this->session->flashdata('cc_number'), 12);
+                                                                    }
+                                                                    echo '<br />Account payment terms applicable.';
+                                                                }
+                                                                else
+                                                                { ?>
+
+                                                                <div style="width:153px;height:24px;overflow:hidden;display:inline-block;">
+																	<img style="width:216px;height:24px;" src="<?php echo base_url(); ?>images/credit-card-graphic.gif" />
+																</div>
+
+                                                                    <?php
+                                                                    echo '&nbsp; xxxx-xxxx-xxxx-'.substr($this->session->flashdata('cc_number'), 12);
+                                                                } ?>
+
 															</div>
 														</div>
 
@@ -94,8 +135,9 @@
 																		<th> Items (<?php echo $this->order_details->order_qty; ?>) </th>
 																		<th> Availability </th>
 																		<th> Quantity </th>
-																		<th class="text-right"> Unit Price </th>
-																		<th class="text-right"> Subtotal </th>
+                                                                        <th class="text-right"> Regular Price </th>
+                                                                        <th class="text-right"> Discounted Price </th>
+																		<th class="text-right"> Extended Price </th>
 																	</tr>
 																</thead>
 																<tbody>
@@ -156,7 +198,7 @@
 																			<?php if (@$items->custom_order == '3')
 																			{ ?>
 																			<br />
-																			<span style="color:red;">On Clearance</span>
+																			<span style="color:red;">On Sale</span>
 																				<?php
 																			} ?>
 																		</td>
@@ -183,8 +225,6 @@
         																	)
         																	{
         																		echo '<span style="text-decoration:line-through;">$ '.number_format((@$options['orig_price'] ?: $orig_price), 2).'</span>';
-        																		echo '&nbsp;';
-        																		echo '<span style="color:red;">$ '.number_format($items->unit_price, 2).'</span>';
         																	}
         																	else
         																	{
@@ -193,7 +233,22 @@
                                                                         </td>
                                                                         <?php
 																		/**********
-																		 * Subtotal
+																		 * Discounted Price
+																		 */
+																		?>
+																		<td class="text-right">
+                                                                            <?php if ($items->custom_order == '3')
+																			{
+                                                                                echo '<span style="color:red;">$ '.number_format($items->unit_price, 2).'</span>';
+																			}
+                                                                            else
+                                                                            {
+                                                                                echo '--';
+                                                                            } ?>
+                                                                        </td>
+                                                                        <?php
+																		/**********
+																		 * Extended
 																		 */
 																		?>
 																		<td class="text-right">
@@ -256,6 +311,14 @@
 															</td>
 														</tr>
 													</table>
+
+                                                    <div class="row">
+														<div class="col-sm-6 pull-right">
+
+                                                            <a href="<?php echo site_url(); ?>" class="btn dark btn-block" type="button"> CONTINUE SHOPPING </a>
+
+														</div>
+													</div>
 												</div>
 
 													<?php

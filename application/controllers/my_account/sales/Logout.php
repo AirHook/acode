@@ -19,6 +19,11 @@ class Logout extends MY_Controller {
 		$this->sales_user_details->unset_session();
 		$this->sales_user_details->set_initial_state();
 
+		// unset other sessions used by sales user
+		unset($_SESSION['so_user_id']);
+		unset($_SESSION['so_des_slug']);
+		unset($_SESSION['so_items']);
+
 		// set flash message
 		$this->session->set_flashdata('success', 'logout_successful');
 

@@ -155,6 +155,7 @@ class Wholesale_activation_email_sending
 			$data['designer_address2'] = $this->CI->wholesale_user_details->designer_address2;
 			$data['designer_phone'] = $this->CI->wholesale_user_details->designer_phone;
 			$data['custom_message'] = $this->custom_message;
+			$data['ws_access_level'] = $this->CI->wholesale_user_details->access_level;
 
 			$message = $this->CI->load->view('templates/activation_email', $data, TRUE);
 			$this->CI->email->message($message);

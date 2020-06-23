@@ -54,7 +54,7 @@ class Create extends Sales_user_Controller
 			if ($this->session->so_mod_items)
 			{
 				// new po admin access
-				unset($_SESSION['so_user_id']); // store or consumer and 0 for manual input
+				unset($_SESSION['so_user_id']);
 				unset($_SESSION['so_user_cat']); // ws, cs
 				unset($_SESSION['so_des_slug']);
 				unset($_SESSION['so_slug_segs']);
@@ -156,7 +156,7 @@ class Create extends Sales_user_Controller
 
 				// level 2 users show only items with stocks
 				$params['with_stocks'] = TRUE; // TRUE shows instock items only
-				
+
 				$params['group_products'] = FALSE; // group per product number or per variant
 				$params['special_sale'] = FALSE; // special sale items only
 				$this->load->library('products/products_list', $params);

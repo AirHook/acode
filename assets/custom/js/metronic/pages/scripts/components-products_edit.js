@@ -1,5 +1,8 @@
 var ComponentsProductEdit = function () {
 
+    var base_url = $('body').data('base_url');
+    var object_data = $('.body-content').data('object_data');
+
     var handleDatePickers = function () {
 
         if (jQuery().datepicker) {
@@ -155,6 +158,30 @@ var ComponentsProductEdit = function () {
 				return false;
 			}
 		});
+
+        // Main On Sale checkbox
+        $('[name="clearance"]').on('change', function(){
+            if ($(this).is(":checked")) {
+                var r = confirm('Set all variants to "ON SALE".\n\nContinue?\n\n');
+                if (r == true) {
+                    $('.custom_order').prop('checked', true);
+                } else {
+                    $(this).prop('checked', false);
+                    return;
+                }
+            } else {
+                var r = confirm('UNCHECK all variants ON SALE option checkbox.\n\nContinue?\n\n');
+                if (r == true) {
+                    $('.custom_order').prop('checked', false);
+                } else {
+                    $(this).prop('checked', true);
+                    return;
+                }
+            }
+			$('#loading .modal-title').html('Updating...');
+			$('#loading').modal('show');
+            $('#form-products_edit').submit();
+        });
 
 		// fix for checkboxes on modals not working properly
 		// this helps in showing the check on click
@@ -517,7 +544,7 @@ var ComponentsProductEdit = function () {
 			});
 		});
 
-        // Checkbox Custom Order/Clearance Consumer Only per variant
+        // Checkbox Clearance Consumer Only per variant
         $('.clearance_consumer_only').on('change', function(){
             // let get necessary information
 			var primary_color = $(this).closest('.section-options').data('primary_color');
@@ -661,7 +688,6 @@ var ComponentsProductEdit = function () {
 			var vendor_code = $(this).find(':selected').data('vendor_code');
 			$('input[name="vendor_code"]').val(vendor_code);
 		});
-
 
 		// float update button at lower right corner of screen
 		$(document).scroll(function() {

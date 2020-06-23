@@ -67,15 +67,23 @@ class Search_multiple extends Sales_user_Controller {
 			$where = $where_more;
 		}
 
+		// don't show clearance cs only items for level 2 users
+		$con_clearance_cs_only = 'tbl_stock.options NOT LIKE \'%"clearance_consumer_only":"1"%\' ESCAPE \'!\'';
+		$where['condition'] = $con_clearance_cs_only;
+
 		// we need to consider the designer slug so as not to mix products
 
 		// get the products list
 		$params['show_private'] = TRUE; // all items general public (Y) - N for private
-		$params['view_status'] = 'ALL'; // ALL items view status (Y, Y1, Y2, N)
-		$params['variant_publish'] = 'ALL'; // ALL variant level color publish (view status)
+		//$params['view_status'] = 'ALL'; // ALL items view status (Y, Y1, Y2, N)
+		//$params['variant_publish'] = 'ALL'; // ALL variant level color publish (view status)
 		$params['group_products'] = FALSE; // group per product number or per variant
-		// show items even without stocks at all
-		$params['with_stocks'] = FALSE;
+
+		// level 2 users show only items with stocks
+		$params['with_stocks'] = TRUE;
+
+		$params['group_products'] = FALSE; // group per product number or per variant
+		$params['special_sale'] = FALSE; // special sale items only
 		$this->load->library('products/products_list', $params);
 		$products = $this->products_list->select(
 			$where,

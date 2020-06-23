@@ -535,7 +535,7 @@
                                                                 <?php
                                                                 $add_ny_sales_tax =
                                                                     $this->session->ny_tax
-                                                                    ? ($this->webspace_details->options['ny_sales_tax'] * $order_amount)
+                                                                    ? ((@$this->webspace_details->options['ny_sales_tax'] ?: '0.08875') * $order_amount)
                                                                     : 0
                                                                 ;
                                                                 $grand_total = $order_amount + $add_ny_sales_tax + $shipping_fee;

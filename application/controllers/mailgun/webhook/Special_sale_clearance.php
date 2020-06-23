@@ -57,6 +57,8 @@ class Special_sale_clearance extends MY_Controller {
 	public function index()
 	{
 		echo 'Processing...<br />';
+		echo 'Not done...';
+		die();
 
 		// load pertinent library/model/helpers
 		$this->load->library('email');
@@ -98,7 +100,7 @@ class Special_sale_clearance extends MY_Controller {
 		//$this->mailgun->subject = 'BASIX BLACK LABEL SPECIAL SALE'; // mg1 batch
 		//$this->mailgun->subject = 'BASIX NEW ARRIVALS ON CLEARANCE SALE'; // mg2
 		//$this->mailgun->subject = 'BASIX CLEARANCE SALE'; // mg3 using mg2 again refresh list
-		$this->mailgun->subject = 'MORE BASIX CLEARANCE SALE'; // mg4 using mg2 template refresh list as well
+		$this->mailgun->subject = 'CLEARANCE SALE ON BASIX ITEMS'; // mg4 using mg2 template refresh list as well
 		$this->mailgun->message = $message;
 
 		if ( ! $this->mailgun->Send())

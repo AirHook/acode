@@ -304,6 +304,7 @@ class Edit extends Admin_Controller {
 		unset($post_ary['custom_order_old']);
 		unset($post_ary['clearance_consumer_only']);
 		unset($post_ary['clearance_consumer_only_old']);
+		unset($post_ary['warehouse_code']);
 
 		return $post_ary;
 	}
@@ -449,6 +450,14 @@ class Edit extends Admin_Controller {
 			else
 			{
 				$options['clearance_consumer_only'] = $post_ary['clearance_consumer_only'][$st_id];
+			}
+			// warehouse_code
+			// warehouse_code - 6 boxes
+			if (isset($post_ary['warehouse_code'][$st_id]))
+			{
+				$warehouse_code_ary = $post_ary['warehouse_code'][$st_id];
+				$warehouse_code_ary = array_values(array_filter($warehouse_code_ary, 'strlen'));
+				$options['warehouse_code'] = $warehouse_code_ary;
 			}
 			// ----
 			// set options

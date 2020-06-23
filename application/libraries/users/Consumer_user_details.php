@@ -439,9 +439,6 @@ class Consumer_user_details
 	 */
 	public function set_initial_state()
 	{
-		// destroy session
-		$this->unset_session();
-
 		// reset variables to default
 		$this->user_id = '';
 		$this->email = '';

@@ -553,6 +553,8 @@
                                                                 <input type="hidden" name="prod_image" value="<?php echo $img_front; ?>" />
 																<input type="hidden" name="current_url" value="<?php echo current_url(); ?>" />
 
+                                                                <input type="hidden" name="custom_order" value="<?php echo $this->product_details->custom_order; ?>" />
+
 																<?php
 																// new image url system
 																echo form_hidden(
@@ -704,7 +706,6 @@
         																				Delivery is <?php echo @$product_stock_status ? $product_stock_status : '14-16'; ?> Weeks<br />
         																				From Order Date
         																			</span>
-                                                                                    <input type="hidden" name="custom_order[<?php echo $skey; ?>]" value="1" />
                                                                                         <?php
                                                                                     } ?>
 
@@ -720,11 +721,16 @@
                     														?>
                                                                             <div class="col-xs-8">
                                                                                 <div class="row">
-                                                                                    <div class="col-md-10 product-form__qty tooltips" <?php echo $qty ? 'data-original-title="Max in-stock qty is '.$qty.'"' : ''; ?>>
+                                                                                    <div class="col-md-10 product-form__qty <?php echo $this->wholesale_user_details->access_level == 2 ? '' : 'tooltips'; ?>" <?php echo $qty ? 'data-original-title="Max in-stock qty is '.$qty.'"' : ''; ?>>
                                                                                         <select class="bs-select form-control product_details-qty_box input-sm" name="qty[<?php echo $skey; ?>]" data-size="6" data-max_qty="<?php echo $qty; ?>" data-dsize="<?php echo $size; ?>" data-size_key="<?php echo $skey; ?>">
                                                                                             <option class="opt_zeroval">0</option>
                                                                                             <?php
-                                                                                            $this_qty = 30; //$qty ?: 30;
+                                                                                            //$this_qty = 30; //$qty ?: 30;
+                                                                                            if ($this->wholesale_user_details->access_level == 2)
+                                                                                            {
+                                                                                                $this_qty = $qty;
+                                                                                            }
+                                                                                            else $this_qty = 30;
                                                                                             for ($i = 1; $i <= $this_qty; $i++)
                                                                                             {
                                                                                                 echo '<option class="opt_val" value="'.$i.'">'.$i.'</option>';
@@ -739,7 +745,7 @@
                                                                             <?php
                                                                         }
 
-                                                                        $skey++;
+                                                                        if ($display_size != 'hide') $skey++;
                                                                     }
 
                                                                     echo '</div>';

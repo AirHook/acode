@@ -720,12 +720,12 @@ class Product_details
 			// Variants
 			$this->colors = $row->colors;
 
-			// the options
+			// the main product options
 			$this->options =
 				($row->options && $row->options != '')
 				? json_decode($row->options , TRUE)
 				: array()
-			; // tbl_product options
+			; // tbl_stock options
 			$this->stocks_options =
 				($row->stocks_options && $row->stocks_options != '')
 				? json_decode($row->stocks_options , TRUE)

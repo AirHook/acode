@@ -160,11 +160,16 @@ class Delivery extends Frontend_Controller
 			);
 			$this->session->set_userdata($shippingdata);
 
-			if ($this->session->user_cat == 'wholesale')
+			// we need to put back the payment page for wholesale
+			// and ask them for their options
+			/* *
+			if ($this->session->user_role == 'wholesale')
 			{
 				redirect('checkout/review');
 			}
 			else redirect('checkout/payment');
+			// */
+			redirect('checkout/payment', 'location');
 		}
 	}
 

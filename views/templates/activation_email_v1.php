@@ -293,6 +293,15 @@
 
                 									}
 
+                                                    // activation email is for wholesale users only
+                                                    // hence, wholesale user prices
+                                                    $orig_price = @$product->wholesale_price ?: 0;
+                                                    $price =
+                                                        @$product->custom_order == '3'
+                                                        ? (@$product->wholesale_price_clearance ?: 0)
+                                                        : $orig_price
+                                                    ;
+
                 									// set image paths
                 									// old folder structure system (for depracation)
                 									$pre_url =
@@ -352,7 +361,13 @@
                                                         </span>
                                                         <br />
                                                         <span style="font-size:10px;text-decoration:">
-                											$ <?php echo number_format($product->wholesale_price, 2); ?>
+                                                            <span style="<?php echo $orig_price == $price ?: 'text-decoration:line-through;'; ?>">
+                                                                $ <?php echo number_format($product->wholesale_price, 2); ?>
+                                                            </span>
+                                                            &nbsp;
+                                                            <span style="color:red;<?php echo $orig_price == $price ? 'display:none;' : ''; ?>">
+                                                                $ <?php echo number_format($price, 2); ?>
+                                                            </span>
                 										</span>
                 									</div>
                                                     <!-- END PRODUCT INFO -->
@@ -398,6 +413,7 @@
                         <?php if (
                             @$preorder_products
                             && $this->webspace_details->slug != 'temopparis'
+                            && $ws_access_level != '2'
                         )
                         { ?>
 						<tr>

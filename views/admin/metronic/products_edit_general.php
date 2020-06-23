@@ -128,7 +128,7 @@
 															<span class="required"> * </span>
 														</label>
 														<div class="col-lg-9">
-															<div class="form-control cat_crumbs help-block" style="font-style:italic;">
+															<div class="form-control cat_crumbs help-block" style="font-style:italic;font-size:80%;">
 																<?php echo implode('&nbsp; &raquo; &nbsp;', $this->product_details->category_names); ?>
 															</div>
 															<div class="form-control height-auto">

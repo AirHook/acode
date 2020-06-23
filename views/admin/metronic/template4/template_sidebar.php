@@ -5,6 +5,9 @@
                     <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
                     <!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
                     <!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
+                    <!-- DOC: Set class="always-open" to "sub-menu" to keep submenus open -->
+                    <!-- DOC: Set class="open" to keep arrow pointing down for "sub-menu always-open" -->
+                    <!-- DOC: Set class="with-heading" li nav-item if with sub-menu -->
                     <ul class="page-sidebar-menu   " data-keep-expanded="true" data-auto-scroll="true" data-slide-speed="200">
                         <li class="nav-item start ">
                             <a href="<?php echo site_url('admin/dashboard'); ?>" class="nav-link ">
@@ -15,12 +18,12 @@
                         <li class="heading">
                             <h3 class="uppercase">Products</h3>
                         </li>
-                        <li class="nav-item <?php echo $this->uri->segment(2) == 'products' ? 'active' : ''; ?>">
+                        <li class="nav-item with-heading <?php echo $this->uri->segment(2) == 'products' ? 'active' : ''; ?>">
                             <a href="<?php echo site_url('admin/products'); ?>" class="nav-link ">
                                 <span class="title uppercase">All Products</span>
-                                <span class="arrow <?php echo $this->uri->segment(2) == 'products' ? 'open' : ''; ?>"></span>
+                                <span class="arrow <?php echo $this->uri->segment(2) == 'products' ? 'open' : 'open'; ?>"></span>
                             </a>
-                            <ul class="sub-menu">
+                            <ul class="sub-menu always-open">
                                 <li class="nav-item  <?php echo $this->uri->segment(3) == 'is_public' ? 'active open' : ''; ?>">
                                     <a href="<?php echo site_url('admin/products/is_public'); ?>" class="nav-link  ">
                                         <span class="title">Public</span>
@@ -86,9 +89,9 @@
                         <li class="nav-item with-heading <?php echo $this->uri->segment(2) == 'designers' ? 'active' : ''; ?>">
                             <a href="<?php echo site_url('admin/designers'); ?>" class="nav-link ">
                                 <span class="title uppercase">Designers</span>
-                                <span class="arrow <?php echo $this->uri->segment(2) == 'designers' ? 'open' : ''; ?>"></span>
+                                <span class="arrow <?php echo $this->uri->segment(2) == 'designers' ? 'open' : 'open'; ?>"></span>
                             </a>
-                            <ul class="sub-menu">
+                            <ul class="sub-menu always-open">
                                 <li class="nav-item  <?php echo $this->uri->uri_string() == 'admin/designers' ? 'active open' : ''; ?>">
                                     <a href="<?php echo site_url('admin/designers'); ?>" class="nav-link  ">
                                         <span class="title">Designer List</span>
@@ -106,9 +109,9 @@
                         <li class="nav-item with-heading <?php echo $this->uri->segment(2) == 'categories' ? 'active' : ''; ?>">
                             <a href="<?php echo site_url('admin/categories'); ?>" class="nav-link ">
                                 <span class="title uppercase">Categories</span>
-                                <span class="arrow <?php echo $this->uri->segment(2) == 'categories' ? 'open' : ''; ?>"></span>
+                                <span class="arrow <?php echo $this->uri->segment(2) == 'categories' ? 'open' : 'open'; ?>"></span>
                             </a>
-                            <ul class="sub-menu">
+                            <ul class="sub-menu always-open">
                                 <li class="nav-item  <?php echo $this->uri->uri_string() == 'admin/categories' ? 'active open' : ''; ?>">
                                     <a href="<?php echo site_url('admin/categories'); ?>" class="nav-link  ">
                                         <span class="title">Category List</span>
@@ -161,32 +164,32 @@
                         // available only on hub sites for now
                         if ($this->webspace_details->options['site_type'] == 'hub_site')
                         { ?>
-                        <li class="nav-item with-heading <?php echo strpos($this->uri->uri_string(), 'admin/orders/new_orders') === FALSE ? '' : 'active'; ?>">
+                        <li class="nav-item <?php echo strpos($this->uri->uri_string(), 'admin/orders/new_orders') === FALSE ? '' : 'active'; ?>">
                             <a href="<?php echo site_url('admin/orders/new_orders'); ?>" class="nav-link ">
                                 <span class="title">New Orders</span>
                             </a>
                         </li>
-                        <li class="nav-item with-heading <?php echo strpos($this->uri->uri_string(), 'admin/orders/shipment_pending') === FALSE ? '' : 'active'; ?>">
+                        <li class="nav-item <?php echo strpos($this->uri->uri_string(), 'admin/orders/shipment_pending') === FALSE ? '' : 'active'; ?>">
                             <a href="<?php echo site_url('admin/orders/shipment_pending'); ?>" class="nav-link ">
                                 <span class="title">Shipment Pending</span>
                             </a>
                         </li>
-                        <li class="nav-item with-heading <?php echo strpos($this->uri->uri_string(), 'admin/orders/shipped') === FALSE ? '' : 'active'; ?>">
+                        <li class="nav-item <?php echo strpos($this->uri->uri_string(), 'admin/orders/shipped') === FALSE ? '' : 'active'; ?>">
                             <a href="<?php echo site_url('admin/orders/shipped'); ?>" class="nav-link ">
                                 <span class="title">Shipped</span>
                             </a>
                         </li>
-                        <li class="nav-item with-heading <?php echo strpos($this->uri->uri_string(), 'admin/orders/store_credit') === FALSE ? '' : 'active'; ?>">
+                        <li class="nav-item <?php echo strpos($this->uri->uri_string(), 'admin/orders/store_credit') === FALSE ? '' : 'active'; ?>">
                             <a href="<?php echo site_url('admin/orders/store_credit'); ?>" class="nav-link ">
                                 <span class="title">Store Credit</span>
                             </a>
                         </li>
-                        <li class="nav-item with-heading <?php echo strpos($this->uri->uri_string(), 'admin/orders/refunded') === FALSE ? '' : 'active'; ?>">
+                        <li class="nav-item <?php echo strpos($this->uri->uri_string(), 'admin/orders/refunded') === FALSE ? '' : 'active'; ?>">
                             <a href="<?php echo site_url('admin/orders/refunded'); ?>" class="nav-link ">
                                 <span class="title">Refunded</span>
                             </a>
                         </li>
-                        <li class="nav-item with-heading <?php echo strpos($this->uri->uri_string(), 'admin/orders/cancelled') === FALSE ? '' : 'active'; ?>">
+                        <li class="nav-item <?php echo strpos($this->uri->uri_string(), 'admin/orders/cancelled') === FALSE ? '' : 'active'; ?>">
                             <a href="<?php echo site_url('admin/orders/cancelled'); ?>" class="nav-link ">
                                 <span class="title">Cancelled</span>
                             </a>
@@ -204,12 +207,12 @@
                         <li class="nav-item with-heading <?php echo $this->uri->segment(3) == 'sales_package' ? 'active' : ''; ?>">
                             <a href="<?php echo site_url('admin/campaigns/sales_package'); ?>" class="nav-link ">
                                 <span class="title uppercase">Sales Package Manager</span>
-                                <span class="arrow <?php echo $this->uri->segment(3) == 'sales_package' ? 'open' : ''; ?>"></span>
+                                <span class="arrow <?php echo $this->uri->segment(3) == 'sales_package' ? 'open' : 'open'; ?>"></span>
                             </a>
-                            <ul class="sub-menu">
+                            <ul class="sub-menu always-open">
                                 <li class="nav-item  <?php echo $this->uri->uri_string() == 'admin/campaigns/sales_package' ? 'active open' : ''; ?>">
                                     <a href="<?php echo site_url('admin/campaigns/sales_package'); ?>" class="nav-link  ">
-                                        <span class="title">List Sales Package</span>
+                                        <span class="title">List Sales Packages</span>
                                     </a>
                                 </li>
                                 <li class="nav-item  <?php echo $this->uri->uri_string() == 'admin/campaigns/sales_package/create' ? 'active open' : ''; ?>">
@@ -222,12 +225,12 @@
                         <li class="nav-item with-heading <?php echo $this->uri->segment(2) == 'sales_orders' ? 'active' : ''; ?>">
                             <a href="<?php echo site_url('admin/sales_orders'); ?>" class="nav-link ">
                                 <span class="title uppercase">Sales Order Manager</span>
-                                <span class="arrow <?php echo $this->uri->segment(2) == 'sales_orders' ? 'open' : ''; ?>"></span>
+                                <span class="arrow <?php echo $this->uri->segment(2) == 'sales_orders' ? 'open' : 'open'; ?>"></span>
                             </a>
-                            <ul class="sub-menu">
+                            <ul class="sub-menu always-open">
                                 <li class="nav-item  <?php echo $this->uri->uri_string() == 'admin/sales_orders' ? 'active open' : ''; ?>">
                                     <a href="<?php echo site_url('admin/sales_orders'); ?>" class="nav-link  ">
-                                        <span class="title">List Sales Order</span>
+                                        <span class="title">List Sales Orders</span>
                                     </a>
                                 </li>
                                 <li class="nav-item  <?php echo $this->uri->uri_string() == 'admin/sales_orders/create' ? 'active open' : ''; ?>">
@@ -240,12 +243,12 @@
                         <li class="nav-item with-heading <?php echo $this->uri->segment(2) == 'purchase_orders' ? 'active' : ''; ?>">
                             <a href="<?php echo site_url('admin/purchase_orders'); ?>" class="nav-link ">
                                 <span class="title uppercase">Purchase Order Manager</span>
-                                <span class="arrow <?php echo $this->uri->segment(2) == 'purchase_orders' ? 'open' : ''; ?>"></span>
+                                <span class="arrow <?php echo $this->uri->segment(2) == 'purchase_orders' ? 'open' : 'open'; ?>"></span>
                             </a>
-                            <ul class="sub-menu">
+                            <ul class="sub-menu always-open">
                                 <li class="nav-item  <?php echo $this->uri->uri_string() == 'admin/purchase_orders' ? 'active open' : ''; ?>">
                                     <a href="<?php echo site_url('admin/purchase_orders'); ?>" class="nav-link  ">
-                                        <span class="title">List Purchase Order</span>
+                                        <span class="title">List Purchase Orders</span>
                                     </a>
                                 </li>
                                 <li class="nav-item  <?php echo $this->uri->uri_string() == 'admin/purchase_orders/create' ? 'active open' : ''; ?>">
@@ -264,9 +267,9 @@
                         <li class="nav-item with-heading <?php echo $this->uri->segment(3) == 'wholesale' ? 'active' : ''; ?>">
                             <a href="<?php echo site_url('admin/users/wholesale'); ?>" class="nav-link ">
                                 <span class="title uppercase">Wholesale Users Manager</span>
-                                <span class="arrow <?php echo $this->uri->segment(3) == 'purchase_orders' ? 'open' : ''; ?>"></span>
+                                <span class="arrow <?php echo $this->uri->segment(3) == 'purchase_orders' ? 'open' : 'open'; ?>"></span>
                             </a>
-                            <ul class="sub-menu">
+                            <ul class="sub-menu always-open">
                                 <li class="nav-item  <?php echo ($this->uri->uri_string() == 'admin/users/wholesale/active' OR $this->uri->uri_string() == 'admin/users/wholesale/inactive' OR $this->uri->uri_string() == 'admin/users/wholesale/suspended') ? 'active open' : ''; ?>">
                                     <a href="<?php echo site_url('admin/users/wholesale'); ?>" class="nav-link  ">
                                         <span class="title">List Wholesale Users</span>
@@ -286,9 +289,9 @@
                         <li class="nav-item with-heading <?php echo $this->uri->segment(3) == 'consumer' ? 'active' : ''; ?>">
                             <a href="<?php echo site_url('admin/users/consumer'); ?>" class="nav-link ">
                                 <span class="title uppercase">Consumer Users Manager</span>
-                                <span class="arrow <?php echo $this->uri->segment(3) == 'consumer' ? 'open' : ''; ?>"></span>
+                                <span class="arrow <?php echo $this->uri->segment(3) == 'consumer' ? 'open' : 'open'; ?>"></span>
                             </a>
-                            <ul class="sub-menu">
+                            <ul class="sub-menu always-open">
                                 <li class="nav-item  <?php echo ($this->uri->uri_string() == 'admin/users/consumer/active' OR $this->uri->uri_string() == 'admin/users/consumer/inactive' OR $this->uri->uri_string() == 'admin/users/consumer/suspended') ? 'active open' : ''; ?>">
                                     <a href="<?php echo site_url('admin/users/consumer'); ?>" class="nav-link  ">
                                         <span class="title">List Consumer Users</span>
@@ -306,9 +309,9 @@
                         <li class="nav-item with-heading <?php echo $this->uri->segment(3) == 'sales' ? 'active' : ''; ?>">
                             <a href="<?php echo site_url('admin/users/sales'); ?>" class="nav-link ">
                                 <span class="title uppercase">Sales Users Manager</span>
-                                <span class="arrow <?php echo $this->uri->segment(3) == 'sales' ? 'open' : ''; ?>"></span>
+                                <span class="arrow <?php echo $this->uri->segment(3) == 'sales' ? 'open' : 'open'; ?>"></span>
                             </a>
-                            <ul class="sub-menu">
+                            <ul class="sub-menu always-open">
                                 <li class="nav-item  <?php echo ($this->uri->uri_string() == 'admin/users/sales/active' OR $this->uri->uri_string() == 'admin/users/sales/inactive' OR $this->uri->uri_string() == 'admin/users/sales/suspended') ? 'active open' : ''; ?>">
                                     <a href="<?php echo site_url('admin/users/sales'); ?>" class="nav-link  ">
                                         <span class="title">List Sales Users</span>
@@ -324,9 +327,9 @@
                         <li class="nav-item with-heading <?php echo $this->uri->segment(3) == 'vendor' ? 'active' : ''; ?>">
                             <a href="<?php echo site_url('admin/users/vendor'); ?>" class="nav-link ">
                                 <span class="title uppercase">Vendor Users Manager</span>
-                                <span class="arrow <?php echo $this->uri->segment(3) == 'vendor' ? 'open' : ''; ?>"></span>
+                                <span class="arrow <?php echo $this->uri->segment(3) == 'vendor' ? 'open' : 'open'; ?>"></span>
                             </a>
-                            <ul class="sub-menu">
+                            <ul class="sub-menu always-open">
                                 <li class="nav-item  <?php echo $this->uri->uri_string() == 'admin/users/vendor' ? 'active open' : ''; ?>">
                                     <a href="<?php echo site_url('admin/users/vendor'); ?>" class="nav-link  ">
                                         <span class="title">List Vendor Users</span>
@@ -342,9 +345,9 @@
                         <li class="nav-item with-heading <?php echo $this->uri->segment(3) == 'admin' ? 'active' : ''; ?>">
                             <a href="<?php echo site_url('admin/users/admin'); ?>" class="nav-link ">
                                 <span class="title uppercase">Admin Users Manager</span>
-                                <span class="arrow <?php echo $this->uri->segment(3) == 'admin' ? 'open' : ''; ?>"></span>
+                                <span class="arrow <?php echo $this->uri->segment(3) == 'admin' ? 'open' : 'open'; ?>"></span>
                             </a>
-                            <ul class="sub-menu">
+                            <ul class="sub-menu always-open">
                                 <li class="nav-item  <?php echo $this->uri->uri_string() == 'admin/users/admin' ? 'active open' : ''; ?>">
                                     <a href="<?php echo site_url('admin/users/admin'); ?>" class="nav-link  ">
                                         <span class="title">List Admin Users</span>
@@ -365,22 +368,22 @@
                         <li class="heading">
                             <h3 class="uppercase">Inventory</h3>
                         </li>
-                        <li class="nav-item with-heading <?php echo strpos($this->uri->uri_string(), 'admin/inventory/physical') === FALSE ? '' : 'active'; ?>">
+                        <li class="nav-item <?php echo strpos($this->uri->uri_string(), 'admin/inventory/physical') === FALSE ? '' : 'active'; ?>">
                             <a href="<?php echo site_url('admin/inventory/physical'); ?>" class="nav-link ">
                                 <span class="title">Physical Stocks</span>
                             </a>
                         </li>
-                        <li class="nav-item with-heading <?php echo strpos($this->uri->uri_string(), 'admin/inventory/available') === FALSE ? '' : 'active'; ?>">
+                        <li class="nav-item <?php echo strpos($this->uri->uri_string(), 'admin/inventory/available') === FALSE ? '' : 'active'; ?>">
                             <a href="<?php echo site_url('admin/inventory/available'); ?>" class="nav-link ">
                                 <span class="title">Available Stocks</span>
                             </a>
                         </li>
-                        <li class="nav-item with-heading <?php echo strpos($this->uri->uri_string(), 'admin/inventory/onorder') === FALSE ? '' : 'active'; ?>">
+                        <li class="nav-item <?php echo strpos($this->uri->uri_string(), 'admin/inventory/onorder') === FALSE ? '' : 'active'; ?>">
                             <a href="<?php echo site_url('admin/inventory/onorder'); ?>" class="nav-link ">
                                 <span class="title">On-Order Stocks</span>
                             </a>
                         </li>
-                        <li class="nav-item with-heading <?php echo strpos($this->uri->uri_string(), 'admin/inventory/update_by_scan') === FALSE ? '' : 'active'; ?>">
+                        <li class="nav-item <?php echo strpos($this->uri->uri_string(), 'admin/inventory/update_by_scan') === FALSE ? '' : 'active'; ?>">
                             <a href="<?php echo site_url('admin/inventory/update_by_scan'); ?>" class="nav-link ">
                                 <span class="title">Inventory Count By Barcode Scan</span>
                             </a>
@@ -395,7 +398,7 @@
                         <li class="heading">
                             <h3 class="uppercase">Production</h3>
                         </li>
-                        <li class="nav-item with-heading <?php echo $this->uri->segment(2) == 'production' ? 'active' : ''; ?>">
+                        <li class="nav-item <?php echo $this->uri->segment(2) == 'production' ? 'active' : ''; ?>">
                             <a href="<?php echo site_url('admin/production'); ?>" class="nav-link ">
                                 <span class="title">Production <cite class="small font-red-flamingo">(Under Construction)</cite></span>
                             </a>
@@ -404,7 +407,7 @@
                         <li class="heading">
                             <h3 class="uppercase">Accounting</h3>
                         </li>
-                        <li class="nav-item with-heading <?php echo $this->uri->segment(2) == 'accounting' ? 'active' : ''; ?>">
+                        <li class="nav-item <?php echo $this->uri->segment(2) == 'accounting' ? 'active' : ''; ?>">
                             <a href="<?php echo site_url('admin/accounting'); ?>" class="nav-link ">
                                 <span class="title">Accounting <cite class="small font-red-flamingo">(Under Construction)</cite></span>
                             </a>
@@ -415,17 +418,17 @@
                         <li class="heading">
                             <h3 class="uppercase">General</h3>
                         </li>
-                        <li class="nav-item with-heading <?php echo $this->uri->uri_string() == 'admin/settings/general' ? 'active' : ''; ?>">
+                        <li class="nav-item <?php echo $this->uri->uri_string() == 'admin/settings/general' ? 'active' : ''; ?>">
                             <a href="<?php echo site_url('admin/settings/general'); ?>" class="nav-link ">
                                 <span class="title">General Settings</span>
                             </a>
                         </li>
-                        <li class="nav-item with-heading <?php echo $this->uri->uri_string() == 'admin/settings/meta' ? 'active' : ''; ?>">
+                        <li class="nav-item <?php echo $this->uri->uri_string() == 'admin/settings/meta' ? 'active' : ''; ?>">
                             <a href="<?php echo site_url('admin/settings/meta'); ?>" class="nav-link ">
                                 <span class="title">Site SEO</span>
                             </a>
                         </li>
-                        <li class="nav-item with-heading <?php echo $this->uri->uri_string() == 'admin/settings/options' ? 'active' : ''; ?>">
+                        <li class="nav-item <?php echo $this->uri->uri_string() == 'admin/settings/options' ? 'active' : ''; ?>">
                             <a href="<?php echo site_url('admin/settings/options'); ?>" class="nav-link ">
                                 <span class="title">Site Options</span>
                             </a>
@@ -434,7 +437,7 @@
                         // available only on hub sites for now
                         if ($this->webspace_details->options['site_type'] == 'hub_site')
                         { ?>
-                        <li class="nav-item with-heading <?php echo $this->uri->uri_string() == 'admin/chagne_pass' ? 'active' : ''; ?>">
+                        <li class="nav-item <?php echo $this->uri->uri_string() == 'admin/chagne_pass' ? 'active' : ''; ?>">
                             <a href="<?php echo site_url('admin/change_pass'); ?>" class="nav-link ">
                                 <span class="title">Admin Change Password</span>
                             </a>
@@ -445,7 +448,7 @@
                         <li class="heading">
                             <h3 class="uppercase">Tools</h3>
                         </li>
-                        <li class="nav-item with-heading <?php echo $this->uri->uri_string() == 'admin/dcn/create' ? 'active' : ''; ?>">
+                        <li class="nav-item <?php echo $this->uri->uri_string() == 'admin/dcn/create' ? 'active' : ''; ?>">
                             <a href="<?php echo site_url('admin/dcn/create'); ?>" class="nav-link ">
                                 <span class="title">Documentation</span>
                             </a>
@@ -454,22 +457,22 @@
                         // available only on hub sites for now
                         if ($this->webspace_details->options['site_type'] == 'hub_site')
                         { ?>
-                        <li class="nav-item with-heading <?php echo $this->uri->uri_string() == 'admin/accounts' ? 'active' : ''; ?>">
+                        <li class="nav-item <?php echo $this->uri->uri_string() == 'admin/accounts' ? 'active' : ''; ?>">
                             <a href="<?php echo site_url('admin/accounts'); ?>" class="nav-link ">
                                 <span class="title">Accounts</span>
                             </a>
                         </li>
-                        <li class="nav-item with-heading <?php echo $this->uri->uri_string() == 'admin/webspaces' ? 'active' : ''; ?>">
+                        <li class="nav-item <?php echo $this->uri->uri_string() == 'admin/webspaces' ? 'active' : ''; ?>">
                             <a href="<?php echo site_url('admin/webspaces'); ?>" class="nav-link ">
                                 <span class="title">Webspaces</span>
                             </a>
                         </li>
-                        <li class="nav-item with-heading <?php echo $this->uri->uri_string() == 'admin/sales' ? 'active' : ''; ?>">
+                        <li class="nav-item <?php echo $this->uri->uri_string() == 'admin/sales' ? 'active' : ''; ?>">
                             <a href="<?php echo site_url('admin/sales'); ?>" class="nav-link ">
                                 <span class="title">Link to Sales Dashboard</span>
                             </a>
                         </li>
-                        <li class="nav-item with-heading <?php echo strpos($this->uri->uri_string(), 'admin/task_manager') === FALSE ? '' : 'active'; ?>">
+                        <li class="nav-item <?php echo strpos($this->uri->uri_string(), 'admin/task_manager') === FALSE ? '' : 'active'; ?>">
                             <a href="<?php echo site_url('admin/task_manager/projects'); ?>" class="nav-link ">
                                 <span class="title uppercase">Task Manager</span>
                             </a>
@@ -477,9 +480,9 @@
                         <li class="nav-item with-heading ">
                             <a href="javascript:;" class="nav-link tooltips" data-original-title="Currently Under Construction" data-placement="right">
                                 <span class="title uppercase">Pages Manager</span>
-                                <span class="arrow"></span>
+                                <span class="arrow open"></span>
                             </a>
-                            <ul class="sub-menu">
+                            <ul class="sub-menu always-open">
                                 <li class="nav-item  ">
                                     <a href="javascript:;" class="nav-link tooltips" data-original-title="Currently Under Construction" data-placement="right">
                                         <span class="title">Pages</span>
@@ -495,9 +498,9 @@
                         <li class="nav-item with-heading ">
                             <a href="javascript:;" class="nav-link tooltips" data-original-title="Currently Under Construction" data-placement="right">
                                 <span class="title uppercase">Reports Manager</span>
-                                <span class="arrow"></span>
+                                <span class="arrow open"></span>
                             </a>
-                            <ul class="sub-menu">
+                            <ul class="sub-menu always-open">
                                 <li class="nav-item  ">
                                     <a href="javascript:;" class="nav-link tooltips" data-original-title="Currently Under Construction" data-placement="right">
                                         <span class="title">Sales Report</span>
@@ -523,9 +526,9 @@
                         <li class="nav-item with-heading ">
                             <a href="javascript:;" class="nav-link tooltips" data-original-title="Currently Under Construction" data-placement="right">
                                 <span class="title uppercase">Newsletter</span>
-                                <span class="arrow"></span>
+                                <span class="arrow open"></span>
                             </a>
-                            <ul class="sub-menu">
+                            <ul class="sub-menu always-open">
                                 <li class="nav-item  ">
                                     <a href="javascript:;" class="nav-link tooltips" data-original-title="Currently Under Construction" data-placement="right">
                                         <span class="title">List Newsletter</span>

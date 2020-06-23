@@ -135,11 +135,14 @@ class Get_item extends Sales_user_Controller {
 			.'</h6><br />'
 		;
 
-		$html.= '<div class="size-and-qty-wrapper">AVALABLE STOCK<br />';
+		$html.= '<div class="size-and-qty-wrapper">AVAILABLE STOCK<br />';
 
 		//$this_size_qty = 0;
 		foreach ($size_names as $size_label => $s)
 		{
+			// level 2 users, do not show zero stock sizes
+			if ($product->$size_label === '0') continue;
+
 			$qty = 0;
 				//isset($size_qty[$size_label])
 				//? $size_qty[$size_label]
@@ -147,9 +150,12 @@ class Get_item extends Sales_user_Controller {
 			//;
 			//$this_size_qty += $qty;
 
+			/**********
+			 * Available Qty
+			 */
 			if ($s != 'XL1' && $s != 'XL2')
 			{
-				$html.= '<div style="display:inline-block;font-size:0.6em;">size '
+				$html.= '<div style="display:inline-block;font-size:85%;">size '
 					.$s
 					.' <br /><select class="stock-select" style="border:1px solid #ccc;" disabled>'
 					.'<option>'
@@ -160,11 +166,14 @@ class Get_item extends Sales_user_Controller {
 
 		$html.= '</div><br /><br />';
 
-		$html.= '<div class="size-and-qty-wrapper">IN BOXES BELOW, SELECT APPROPRIATE SIZE AND QUANTITY AND PRESS SUBMIT.<br /><cite class="small">NOTE: Items with no stock are PRE-ORDER and should be sent in separate orders to customer and factory.</cite><br /><br />';
+		$html.= '<div class="size-and-qty-wrapper">SELECT SIZES AND QUANTITIES AND ADD TO SALES ORDER<br /><cite class="small hide">NOTE: Items with no stock are PRE-ORDER and should be sent in separate orders to customer and factory.<br /><br /></cite>';
 
 		//$this_size_qty = 0;
 		foreach ($size_names as $size_label => $s)
 		{
+			// level 2 users, do not show zero stock sizes
+			if ($product->$size_label === '0') continue;
+
 			$qty = 0;
 				//isset($size_qty[$size_label])
 				//? $size_qty[$size_label]
@@ -172,9 +181,12 @@ class Get_item extends Sales_user_Controller {
 			//;
 			//$this_size_qty += $qty;
 
+			/**********
+			 * Select Size Qty
+			 */
 			if ($s != 'XL1' && $s != 'XL2')
 			{
-				$html.= '<div style="display:inline-block;font-size:0.6em;">size '
+				$html.= '<div style="display:inline-block;font-size:85%;">size '
 					.$s
 					.' <br /><select name="'
 					.$size_label
@@ -185,7 +197,8 @@ class Get_item extends Sales_user_Controller {
 					.'">'
 				;
 
-				for ($i=0;$i<31;$i++)
+				// level 2 users, must see max qty equivalent to availabel stock
+				for ($i=0;$i<=$product->$size_label;$i++)
 				{
 					$html.= '<option value="'.$i.'" '.($i == $qty ? 'selected' : '').'>'.$i.'</option>';
 				}

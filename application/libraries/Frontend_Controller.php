@@ -181,7 +181,7 @@ class Frontend_Controller extends MY_Controller {
 			// otherwise, continue with activity and set
 			// session variable ws_last_active_time to now
 			$lapsed_time = time() - $this->session->ws_last_active_time;
-		//	if ($lapsed_time > $this->wholesale_user_details->session_lapse)
+			// if ($lapsed_time > $this->wholesale_user_details->session_lapse)
 
 			// changing this $lapsed_time to daily
 			// so that product clicks and page visits are recorded on a daily basis

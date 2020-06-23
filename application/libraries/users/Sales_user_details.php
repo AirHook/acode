@@ -128,6 +128,12 @@ class Sales_user_details
 	 */
 	public $session_lapse = 172800; // (2 * 24 * 60 * 60);
 
+	/**
+	 * Webspace ID
+	 *
+	 * @var	string
+	 */
+	public $webspace_id = '';
 
 	/**
 	 * CI Singleton
@@ -176,7 +182,9 @@ class Sales_user_details
 		// get recrods
 		$this->DB->select('tbladmin_sales.*');
 		$this->DB->select('designer.designer, designer.des_id');
+		$this->DB->select('webspaces.webspace_id AS webspace_idd');
 		$this->DB->join('designer', 'designer.url_structure = tbladmin_sales.admin_sales_designer', 'left');
+		$this->DB->join('webspaces', 'webspaces.webspace_id = designer.webspace_id', 'left');
 		$this->DB->where($params);
 		$query = $this->DB->get('tbladmin_sales');
 
@@ -197,6 +205,7 @@ class Sales_user_details
 			$this->access_level = $row->access_level;
 			$this->favorites = ($row->favorites && $row->favorites != '') ? json_decode($row->favorites, TRUE) : array();
 			$this->options = ($row->options && $row->options != '') ? json_decode($row->options , TRUE) : array();
+			$this->webspace_id = $row->webspace_idd;
 
 			return $this;
 		}
@@ -439,9 +448,6 @@ class Sales_user_details
 	 */
 	public function set_initial_state()
 	{
-		// destroy session
-		$this->unset_session();
-
 		// reset variables to default
 		$this->admin_sales_id = '';
 		$this->email = '';
@@ -453,8 +459,9 @@ class Sales_user_details
 		$this->designer_name = '';
 		$this->status = '';
 		$this->access_level = '';
-		$this->favorites = '';
-		$this->options = '';
+		$this->favorites = array();
+		$this->options = array();
+		$this->webspace_id = '';
 	}
 
 	// --------------------------------------------------------------------

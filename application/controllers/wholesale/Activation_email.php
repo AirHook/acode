@@ -143,7 +143,7 @@ class Activation_email extends Frontend_Controller
 			array_push($onsale_items_array, $product->prod_no.'_'.$product->color_code);
 		}
 
-		$this->data['onsale_products'] = $onsale_items_array;
+		$this->data['onsale_products'] = ''; //$onsale_items_array;
 
 
 		// connect to database
@@ -168,6 +168,7 @@ class Activation_email extends Frontend_Controller
 		$this->data['designer_address1'] = $this->wholesale_user_details->designer_address1;
 		$this->data['designer_address2'] = $this->wholesale_user_details->designer_address2;
 		$this->data['designer_phone'] = $this->wholesale_user_details->designer_phone;
+		$this->data['ws_access_level'] = $this->wholesale_user_details->access_level;
 
 		// load the view
 		$message = $this->load->view('templates/activation_email_v1', $this->data, TRUE);

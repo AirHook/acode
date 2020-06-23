@@ -827,11 +827,11 @@
 
 																	<?php
 																	/**********
-																	 * This is set to zero by default indicating that item is in-stock
+                                                                     * This is set to product's custom order value whic is either (0-default, 3-onsale)
 																	 * Script on click of size box changes this to 1 for pre-order sizes
 																	 */
 																	?>
-																	<input type="hidden" id="custom_order-<?php echo $this->product_details->color_code; ?>" name="custom_order" value="0" />
+																	<input type="hidden" id="custom_order-<?php echo $this->product_details->color_code; ?>" name="custom_order" value="<?php echo $this->product_details->custom_order; ?>" />
 
 																</div>
 

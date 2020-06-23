@@ -299,6 +299,15 @@
 
                 									}
 
+                                                    // activation email is for wholesale users only
+                                                    // hence, wholesale user prices
+                                                    $orig_price = @$product->wholesale_price ?: 0;
+                                                    $price =
+                                                        @$product->custom_order == '3'
+                                                        ? (@$product->wholesale_price_clearance ?: 0)
+                                                        : $orig_price
+                                                    ;
+
                 									// set image paths
                 									// old folder structure system (for depracation)
                 									$pre_url =
@@ -347,18 +356,29 @@
                 									</a>
                                                     <!-- END IMAGE -->
 
-                                                    <!-- BEGIN PRODUCT INFO -->
+                                                    <!-- BEGIN PRODUCT INFO --
                 									<div style="margin:3px 0 0;text-align:left;padding-left:13px;">
                 										<img src="<?php echo ($product->primary_img ? $img_coloricon : $color_icon_pre.$color_icon); ?>" width="10" height="10">
                 									</div>
+                                                    -->
 
-                									<div style="text-align:left;padding-left:13px;">
+                									<div style="text-align:left;padding-left:13px;margin-top:3px;">
                 										<span style="font-size:10px;">
-                                                            <?php echo $product->prod_no.' ('.$product->color_name.')'; ?>
+                                                            <?php echo $product->prod_no; ?>
                                                         </span>
                                                         <br />
-                                                        <span style="font-size:10px;text-decoration:">
-                											$ <?php echo number_format($product->wholesale_price, 2); ?>
+                                                        <span style="font-size:10px;">
+                                                            <?php echo $product->color_name; ?>
+                                                        </span>
+                                                        <br />
+                                                        <span style="font-size:10px;">
+                                                            <span style="<?php echo $orig_price == $price ?: 'text-decoration:line-through;'; ?>">
+                                                                $ <?php echo number_format($product->wholesale_price, 2); ?>
+                                                            </span>
+                                                            &nbsp;
+                                                            <span style="color:red;<?php echo $orig_price == $price ? 'display:none;' : ''; ?>">
+                                                                $ <?php echo number_format($price, 2); ?>
+                                                            </span>
                 										</span>
                 									</div>
                                                     <!-- END PRODUCT INFO -->
@@ -404,6 +424,7 @@
                         <?php if (
                             @$preorder_products
                             && $this->webspace_details->slug != 'temopparis'
+                            && $ws_access_level != '2'
                         )
                         { ?>
 						<tr>
@@ -511,7 +532,7 @@
                                                             <?php echo $product->prod_no.' ('.$product->color_name.')'; ?>
                                                         </span>
                 										<br />
-                                                        <span style="font-size:10px;text-decoration:">
+                                                        <span style="font-size:10px;">
                 											$ <?php echo number_format($product->wholesale_price, 2); ?>
                 										</span>
                 									</div>

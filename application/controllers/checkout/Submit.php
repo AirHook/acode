@@ -48,8 +48,12 @@ class Submit extends Frontend_Controller
 		}
 
 		// load pertinent library/model/helpers
+		$this->load->library('users/wholesale_user_details');
 		$this->load->library('users/consumer_user_details');
+		$this->load->library('designers/designer_details');
+		$this->load->library('products/product_details');
 		$this->load->library('orders/order_details');
+		$this->load->library('products/size_names');
 
 		// initialize consumer details
 		$this->consumer_user_details->initialize(array('user_id'=>$this->session->user_id));
@@ -109,14 +113,91 @@ class Submit extends Frontend_Controller
 
 		// let's start email sending
 		$email_subject = $this->webspace_details->name.' Product Order'.($this->session->user_cat == 'wholesale' ? ' - Wholesale' : '');
-
 		$message = $this->load->view('templates/order_confirmation', $email_data, TRUE);
+
+			/**********
+			 * New Order Confirmation Layout
+			 * Uses most of the above items but needs to add a few things to make the new
+			 * HTML layout work
+			 * - this overrides above order details, email subject, and html message
+			*/
+			// initialize...
+			$this->data['order_details'] = $this->order_details->initialize(array('tbl_order_log.order_log_id'=>$order_log_id));
+
+			// get user_id and role and designer group
+			$user_role = $this->data['order_details']->c;
+			$user_id = $this->data['order_details']->user_id;
+			$designer_group = $this->data['order_details']->designer_group;
+			$designer_slug = $this->data['order_details']->designer_slug;
+
+			// initialize user details
+			if ($user_role == 'ws')
+			{
+				// wholesale
+				$this->data['user_details'] = $this->wholesale_user_details->initialize(array('user_id'=>$user_id));
+			}
+			else
+			{
+				// consumer
+				$this->data['user_details'] = $this->consumer_user_details->initialize(array('user_id'=>$user_id));
+			}
+
+			// set company details via order designer
+			if ($designer_group == 'Mixed Designers')
+			{
+				$this->data['company_name'] = $this->webspace_details->name;
+				$this->data['company_address1'] = $this->webspace_details->address1;
+				$this->data['company_address2'] = $this->webspace_details->address2;
+				$this->data['company_city'] = $this->webspace_details->city;
+				$this->data['company_state'] = $this->webspace_details->state;
+				$this->data['company_zipcode'] = $this->webspace_details->zipcode;
+				$this->data['company_country'] = $this->webspace_details->country;
+				$this->data['company_telephone'] = $this->webspace_details->phone;
+				$info_email = $this->webspace_details->info_email;
+				$this->data['logo'] =
+					@$this->webspace_details->options['logo']
+					? $this->config->item('PROD_IMG_URL').$this->webspace_details->options['logo']
+					: $this->config->item('PROD_IMG_URL').'assets/images/logo/logo-shop7thavenue.png'
+				;
+			}
+			else
+			{
+				// initialize class
+				$this->designer_details->initialize(
+					array(
+						'url_structure' => $designer_slug
+					)
+				);
+
+				$this->data['company_name'] = $this->designer_details->designer;
+				$this->data['company_address1'] = $this->designer_details->address1;
+				$this->data['company_address2'] = $this->designer_details->address2;
+				$this->data['company_city'] = $this->designer_details->city;
+				$this->data['company_state'] = $this->designer_details->state;
+				$this->data['company_zipcode'] = $this->designer_details->zipcode;
+				$this->data['company_country'] = $this->designer_details->country;
+				$this->data['company_telephone'] = $this->designer_details->phone;
+				$info_email = $this->designer_details->info_email;
+				$this->data['logo'] = $this->config->item('PROD_IMG_URL').$this->designer_details->logo;
+			}
+
 
 		if (ENVIRONMENT == 'development') // ---> used for development purposes
 		{
 			// we are unable to send out email in our dev environment
 			// so we check on the email template instead.
 			// just don't forget to comment these accordingly
+
+			// load the view
+			$message = $this->load->view('templates/order_confirmation_new', $this->data, TRUE);
+
+			echo $message;
+			echo '<br /><br />';
+
+			// load the view
+			$this->data['sending_to_admin'] = TRUE; //$this->order_details->c == 'ws' ? FALSE : TRUE;
+			$message = $this->load->view('templates/order_confirmation_new', $this->data, TRUE);
+
 			echo $message;
 			echo '<br /><br />';
 
@@ -142,8 +223,14 @@ class Submit extends Frontend_Controller
 
 			$sendby = @$this->webspace_details->options['email_send_by'] ?: 'default'; // options: mailgun, default (CI native emailer)
 
-			// send to user
+			// set email subject
+			$email_subject = $this->data['company_name'].' - Product Order'.($user_role == 'ws' ? ' - Wholesale' : '');
+
+			// --> send to user
 			$this->email->clear();
+
+			// load the view
+			$message = $this->load->view('templates/order_confirmation_new', $this->data, TRUE);
 
 			$this->email->from($this->webspace_details->info_email, $this->webspace_details->name);
 
@@ -182,8 +269,12 @@ class Submit extends Frontend_Controller
 			}
 			//$this->email->send();
 
-			// send to admin
+			// --> send to admin
 			$this->email->clear();
+
+			// load the view
+			$this->data['sending_to_admin'] = $this->order_details->c == 'ws' ? FALSE : TRUE;
+			$message = $this->load->view('templates/order_confirmation_new', $this->data, TRUE);
 
 			$this->email->from($this->webspace_details->info_email, $this->webspace_details->name);
 			$this->email->reply_to($user_array['p_email']);
@@ -323,6 +414,10 @@ class Submit extends Frontend_Controller
 
 	function _log_order($user_array)
 	{
+		// set order options
+		$order_options = array();
+		if ($this->session->ws_payment_options) $order_options['ws_payment_options'] = $this->session->ws_payment_options;
+
 		// insert user and shipping data to order log
 		$log_data = array(
 			'user_id'			=> $this->session->user_id,
@@ -351,7 +446,7 @@ class Submit extends Frontend_Controller
 			'webspace_id'		=> $this->webspace_details->id,
 
 			'agree_policy'		=> $user_array['agree_policy'],
-			'options'			=> json_encode(array('test'=>TRUE))
+			'options'			=> json_encode($order_options)
 			// 'status' defaults to '0' for new orders or pending orders
 		);
 		$this->DB->insert('tbl_order_log', $log_data);

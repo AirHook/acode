@@ -57,11 +57,19 @@ class Payment extends Frontend_Controller
 		$this->load->library('form_validation');
 
 		// set validation rules
-		$this->form_validation->set_rules('creditCardNumber', 'Card Number', 'trim|required');
-		$this->form_validation->set_rules('creditCardExpirationMonth', 'Month', 'trim|required');
-		$this->form_validation->set_rules('creditCardExpirationYear', 'Year', 'trim|required');
-		$this->form_validation->set_rules('creditCardSecurityCode', 'Security Code', 'trim|required');
-		$this->form_validation->set_rules('agree_to_policy', 'Agree To Policy', 'trim|required');
+		if ($this->input->post('ws_payment_options'))
+		{
+			// 1-use card on file,2-add a card,3-paypal invoice,4-bill account,5-wire request
+			$this->form_validation->set_rules('ws_payment_options', 'Select Option', 'trim|required');
+		}
+		else
+		{
+			$this->form_validation->set_rules('creditCardNumber', 'Card Number', 'trim|required');
+			$this->form_validation->set_rules('creditCardExpirationMonth', 'Month', 'trim|required');
+			$this->form_validation->set_rules('creditCardExpirationYear', 'Year', 'trim|required');
+			$this->form_validation->set_rules('creditCardSecurityCode', 'Security Code', 'trim|required');
+			$this->form_validation->set_rules('agree_to_policy', 'Agree To Policy', 'trim|required');
+		}
 
 		if ($this->form_validation->run() == FALSE)
 		{
@@ -95,14 +103,21 @@ class Payment extends Frontend_Controller
 		}
 		else
 		{
-			// add session data
-			$this->session->set_flashdata('cc_type', $this->input->post('creditCardType'));
-			$this->session->set_flashdata('cc_number', $this->input->post('creditCardNumber'));
-			$this->session->set_flashdata('cc_expmo', $this->input->post('creditCardExpirationMonth'));
-			$this->session->set_flashdata('cc_expyy', $this->input->post('creditCardExpirationYear'));
-			$this->session->set_flashdata('cc_code', $this->input->post('creditCardSecurityCode'));
+			if ($this->session->user_role == 'wholesale')
+			{
+				// check for options
+				$this->session->set_userdata('ws_payment_options', $this->input->post('ws_payment_options'));
+			}
 
-			redirect('checkout/review');
+			// simply add session data for credit card info where available
+			// generally set for consumer and guests, but, set for wholesale only when chosen
+			if ($this->input->post('creditCardType')) $this->session->set_flashdata('cc_type', $this->input->post('creditCardType'));
+			if ($this->input->post('creditCardNumber')) $this->session->set_flashdata('cc_number', $this->input->post('creditCardNumber'));
+			if ($this->input->post('creditCardExpirationMonth')) $this->session->set_flashdata('cc_expmo', $this->input->post('creditCardExpirationMonth'));
+			if ($this->input->post('creditCardExpirationYear')) $this->session->set_flashdata('cc_expyy', $this->input->post('creditCardExpirationYear'));
+			if ($this->input->post('creditCardSecurityCode')) $this->session->set_flashdata('cc_code', $this->input->post('creditCardSecurityCode'));
+
+			redirect('checkout/review', 'location');
 		}
 	}
 

@@ -33,19 +33,49 @@
 															<?php } else { ?>
 															<a href="<?php echo $stepi <= 3 ? 'javascript:;' : site_url('checkout/payment'); ?>">
 															<?php } ?>
-																<i class="fa fa-<?php echo $stepi > 3 ? 'check' : 'credit-card'; ?>"></i> Payment
+																<i class="fa fa-<?php echo $stepi > 3 ? 'check' : 'credit-card'; ?>"></i>
+																<?php
+																if ($this->session->user_role == 'wholesale')
+																{
+																	echo 'Payment Options';
+																}
+																else
+																{
+																	echo 'Payment';
+																}
+																?>
 															</a>
 														</li>
 														<li class="<?php echo $step == 'review' ? 'current' : ''; ?>" style="width:18.33333%;">
 															<div class="end-bg <?php echo $step == 'review' ? 'current' : ''; ?><?php echo $step == 'receipt' ? 'end' : ''; ?>"></div>
 															<a href="<?php echo $stepi <= 4 ? 'javascript:;' : site_url('checkout/review'); ?>">
-																<i class="fa fa-<?php echo $stepi > 4 ? 'check' : 'pencil'; ?>"></i> Review
+																<i class="fa fa-<?php echo $stepi > 4 ? 'check' : 'pencil'; ?>"></i>
+																<?php
+																if ($this->session->user_role == 'wholesale')
+																{
+																	echo 'Review Your Inquiry';
+																}
+																else
+																{
+																	echo 'Review';
+																}
+																?>
 															</a>
 														</li>
 														<li class="<?php echo $step == 'receipt' ? 'current' : ''; ?>" style="width:18.33333%;">
 															<div class="last-bg <?php echo $step == 'receipt' ? 'current' : ''; ?>"></div>
 															<a href="<?php echo $stepi <= 5 ? 'javascript:;' : site_url('checkout/receipt'); ?>">
-																<i class="fa fa-<?php echo $stepi > 5 ? 'check' : 'file-text-o'; ?>"></i> Receipt
+																<i class="fa fa-<?php echo $stepi > 5 ? 'check' : 'file-text-o'; ?>"></i>
+																<?php
+																if ($this->session->user_role == 'wholesale')
+																{
+																	echo 'Inquiry Receipt';
+																}
+																else
+																{
+																	echo 'Receipt';
+																}
+																?>
 															</a>
 														</li>
 													</ul>

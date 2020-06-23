@@ -8,7 +8,10 @@
 									<hr />
                                     <ul class="list-unstyled list-inline text-center">
                                         <?php
-                                        if ($this->webspace_details->slug == 'tempoparis')
+                                        if (
+                                            $this->webspace_details->slug == 'tempoparis'
+                                            OR $this->session->user_role == 'wholesale'
+                                        )
                                         {
                                             $disabled_footer = 'disabled-link disable-target';
                                         }

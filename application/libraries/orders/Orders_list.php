@@ -173,6 +173,7 @@ class Orders_list
 				ELSE "new_orders"
 			END) AS status_text
 		');
+		$this->DB->select('tbl_order_log.options AS order_options');
 
 		// set joins
 		$this->DB->join('tbl_order_log_details', 'tbl_order_log_details.order_log_id = tbl_order_log.order_log_id', 'left');
@@ -235,6 +236,22 @@ class Orders_list
 			// return the object
 			return $query->result();
 		}
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Get the latest PO#
+	 *
+	 * @return	String
+	 */
+	public function max_order_number()
+	{
+		$this->DB->select_max('order_log_id');
+		$query = $this->DB->get('tbl_order_log');
+		$row = $query->row();
+		if ($row) return $row->order_log_id;
+		else return FALSE;
 	}
 
 	// --------------------------------------------------------------------

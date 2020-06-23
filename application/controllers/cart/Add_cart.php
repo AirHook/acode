@@ -180,20 +180,7 @@ class Add_cart extends Frontend_Controller
 	 *
 	 * Additional post data if from sales package details page
 	 *
-	 [custom_order] => Array
-		 (
-			 [1] => 1
-			 [4] => 1
-			 [5] => 1
-			 [6] => 1
-			 [7] => 1
-			 [8] => 1
-			 [9] => 1
-			 [10] => 1
-			 [11] => 1
-			 [12] => 1
-		 )
-
+	 [custom_order] => 0/3/1
 	 *
 	 * @return	void
 	 */
@@ -270,7 +257,7 @@ class Add_cart extends Frontend_Controller
 					'designer'			=> $designer,
 					'orig_price'		=> $orig_price,
 					'current_url'		=> $previous_url,
-					'custom_order' 		=> (@$custom_order[$key] ?: 0),
+					'custom_order' 		=> ($custom_order ?: 0),
 					'sa_item' 			=> $this->input->post('package_details')
 				)
 			);

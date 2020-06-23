@@ -634,7 +634,9 @@
                                         </li>
                                         <!-- -->
 
-                                        <?php if (
+                                        <?php
+                                        // clearance is forwarded to hub site?
+                                        if (
                                             (
                                                 $this->webspace_details->slug != 'tempoparis'
                                                 //&& $this->webspace_details->slug != 'basixblacklabel'

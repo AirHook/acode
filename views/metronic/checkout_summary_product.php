@@ -2,12 +2,28 @@
 													<div class="portlet light bordered order-summary">
 														<div class="portlet-title">
 															<div class="caption">
-																<span class="caption-subject"> Order Summary</span>
+																<span class="caption-subject">
+																	<?php
+		                                                            if ($this->session->user_role == 'wholesale')
+		                                                            {
+		                                                                echo 'Inquiry Summary';
+		                                                            }
+		                                                            else
+		                                                            {
+		                                                                echo 'Order Summary';
+		                                                            }
+		                                                            ?>
+																</span>
 															</div>
 														</div>
 														<div class="portlet-body">
 
-															<div class="mt-element-list">
+															<div>
+																<span class="pull-right" style="padding-right:15px;">Extended Price</span>
+																<span class="" style="padding-left:15px;">Items</span>
+															</div>
+
+															<div class="mt-element-list" style="border-top:1px solid #e7ecf1;">
 																<div class="mt-list-container list-news ext-1">
 																	<ul>
 																		<?php
@@ -57,7 +73,7 @@
 																						<?php if (@$items['options']['custom_order'] == '3')
 																						{ ?>
 																						<br />
-																						<cite style="color:red;">On Clearance</cite>
+																						<cite style="color:red;">On Sale</cite>
 																							<?php
 																						} ?>
 																					</small>
@@ -113,7 +129,7 @@
 																				OR ($this->session->ny_tax && $stepi > 1)
 																			)
 																			{
-																				$summary_nytax = $this->cart->total() * $this->webspace_details->options['ny_sales_tax'];
+																				$summary_nytax = $this->cart->total() * (@$this->webspace_details->options['ny_sales_tax'] ?: '0.08875');
 																				echo '$ '.$this->cart->format_number($summary_nytax);
 																			}
 																			else

@@ -208,6 +208,7 @@ class Order_details
 				ELSE "new_orders"
 			END) AS status_text
 		');
+		$this->DB->select('tbl_order_log.options AS order_options');
 
 		// set joins
 		$this->DB->join('tbl_order_log_details', 'tbl_order_log_details.order_log_id = tbl_order_log.order_log_id', 'left');
@@ -266,7 +267,7 @@ class Order_details
 			$this->ship_country = $row->ship_country;
 			$this->ship_zipcode = $row->ship_zipcode;
 
-			$this->options = ($row->options && $row->options != '') ? json_decode($row->options , TRUE) : array();
+			$this->options = ($row->order_options && $row->order_options != '') ? json_decode($row->order_options , TRUE) : array();
 			$this->webspace_id = $row->webspace_id;
 
 			// get items

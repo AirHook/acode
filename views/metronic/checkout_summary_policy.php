@@ -1,6 +1,10 @@
 													<div class="margin-top-30">
                                                         <div class="form-group">
-    														<label class="mt-checkbox mt-checkbox-outline"> By continuing, I agree to the <a href="#modal-return_policy" data-toggle="modal">Return Policy</a> and confirm that my information is correct.
+    														<label class="mt-checkbox mt-checkbox-outline"> By continuing, I agree to the
+																<!--<a href="#modal-return_policy" data-toggle="modal">-->
+																<a href="javascript:;" data-toggle="modal" class="disabled-link disable-target">
+																	Return Policy
+																</a> and confirm that my information is correct.
     															<input type="checkbox" value="1" name="agree_to_policy" <?php echo $this->session->agree_to_policy == '1' ? 'checked' : ''; ?> />
     															<span></span>
     														</label>
@@ -11,7 +15,7 @@
                                                     <!-- RETURN POLICY -->
                                                     <?php
 
-                                            		if (isset($_SESSION['user_cat']) && $_SESSION['user_cat'] == 'wholesale')
+                                            		if ($this->session->user_role == 'wholesale')
                                             		{
                                             			$page_details = $this->get_pages->page_details('wholesale_return_policy');
                                             		}

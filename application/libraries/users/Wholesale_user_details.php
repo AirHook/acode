@@ -83,6 +83,7 @@ class Wholesale_user_details
 	public $designer_address2 = '';
 	public $designer_info_email = '';
 	public $designer_phone = '';
+	public $designer_logo = '';
 
 	public $options = array();
 
@@ -230,6 +231,7 @@ class Wholesale_user_details
 				designer.designer_address2,
 				designer.designer_info_email,
 				designer.designer_phone,
+				designer.logo,
 
 				tbladmin_sales.admin_sales_id AS sales_admin_id,
 				tbladmin_sales.admin_sales_user,
@@ -305,6 +307,7 @@ class Wholesale_user_details
 			$this->designer_address2 = $row->designer_address2;
 			$this->designer_info_email = $row->designer_info_email;
 			$this->designer_phone = $row->designer_phone;
+			$this->designer_logo = $row->logo;
 
 			$this->total_visits = $row->total_visits;
 			$this->visits_after_activation = $row->total_visits;
@@ -836,9 +839,6 @@ class Wholesale_user_details
 	 */
 	public function set_initial_state()
 	{
-		// destroy session
-		$this->unset_session();
-
 		// reset variables to default
 		$this->user_id = '';
 		$this->email = '';
@@ -886,6 +886,7 @@ class Wholesale_user_details
 		$this->designer_address2 = '';
 		$this->designer_info_email = '';
 		$this->designer_phone = '';
+		$this->designer_logo = '';
 
 		$this->total_visits = 0;
 		$this->visits_after_activation = 0;

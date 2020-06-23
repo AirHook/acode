@@ -167,11 +167,11 @@
 									</td>
 									<td style="border:1px solid #ccc;height:24px;"> <?php echo $po_details->delivery_date; ?>
 									</td>
-									<td style="border:1px solid #ccc;height:24px;"> <?php echo $po_options['ship_via']; ?>
+									<td style="border:1px solid #ccc;height:24px;"> <?php echo @$po_options['ship_via']; ?>
 									</td>
-									<td style="border:1px solid #ccc;height:24px;"> <?php echo $po_options['fob']; ?>
+									<td style="border:1px solid #ccc;height:24px;"> <?php echo @$po_options['fob']; ?>
 									</td>
-									<td style="border:1px solid #ccc;height:24px;"> <?php echo $po_options['terms']; ?>
+									<td style="border:1px solid #ccc;height:24px;"> <?php echo @$po_options['terms']; ?>
 									</td>
 								</tr>
 							</table>

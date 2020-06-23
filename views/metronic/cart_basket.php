@@ -33,7 +33,18 @@
 												<div class="col col-sm-12">
 													<div class="cart_basket">
 
-														<h3>SHOPPING BAG</h3>
+														<h3>
+                                                            <?php
+                                                            if ($this->session->user_role == 'wholesale')
+                                                            {
+                                                                echo 'WHOLESALE ORDER INQUIRY';
+                                                            }
+                                                            else
+                                                            {
+                                                                echo 'SHOPPING BAG';
+                                                            }
+                                                            ?>
+                                                        </h3>
 
 														<hr style="margin:5px 0 10px;border-color:#888;border-width:2px;" />
 
@@ -44,8 +55,9 @@
 																		<th> Items (<?php echo $this->cart->total_items(); ?>) </th>
 																		<th> Quantity </th>
 																		<th> Status </th>
-																		<th class="text-right"> Unit Price </th>
-																		<th class="text-right"> Subtotal </th>
+																		<th class="text-right"> Regular Price </th>
+                                                                        <th class="text-right"> Discounted Price </th>
+																		<th class="text-right"> Extended Price </th>
 																	</tr>
 																</thead>
 																<tbody>
@@ -191,25 +203,38 @@
 																			<?php if (@$items['options']['custom_order'] == '3')
 																			{ ?>
 																			<br />
-																			<span style="color:red;">On Clearance</span>
+																			<span style="color:red;">On Sale</span>
 																				<?php
 																			} ?>
 																		</td>
 																		<?php
 																		/**********
-																		 * Unit Price
+																		 * Regular Price
 																		 */
 																		?>
 																		<td class="text-right">
                                                                             <?php if (@$items['options']['custom_order'] == '3')
 																			{
                                                                                 echo '<span style="text-decoration:line-through;">$ '.$this->cart->format_number(@$items['options']['orig_price']).'</span>';
-                                                                                echo '&nbsp;';
-                                                                                echo '<span style="color:red;">$ '.$this->cart->format_number($items['price']).'</span>';
 																			}
                                                                             else
                                                                             {
                                                                                 echo '$ '.$this->cart->format_number($items['price']);
+                                                                            } ?>
+                                                                        </td>
+                                                                        <?php
+																		/**********
+																		 * Discounted Price
+																		 */
+																		?>
+																		<td class="text-right">
+                                                                            <?php if (@$items['options']['custom_order'] == '3')
+																			{
+                                                                                echo '<span style="color:red;">$ '.$this->cart->format_number($items['price']).'</span>';
+																			}
+                                                                            else
+                                                                            {
+                                                                                echo '--';
                                                                             } ?>
                                                                         </td>
                                                                         <?php
@@ -291,16 +316,24 @@
 
 													<div class="row">
 														<div class="col-sm-6 pull-right">
-															<?php if ($this->session->user_loggedin)
+
+															<?php if ($this->session->user_role == 'wholesale')
 															{ ?>
-															<a href="<?php echo site_url('checkout/delivery'); ?>" class="btn dark btn-block" type="button"> Proceed to Checkout </a>
+
+															<a href="<?php echo site_url('checkout/delivery'); ?>" class="btn dark btn-block" type="button"> PROCEED TO SEND ORDER INQUIRY </a>
+
 																<?php
 															}
 															else
 															{ ?>
-															<a href="<?php echo site_url('checkout'); ?>" class="btn dark btn-block" type="button"> Proceed to Checkout </a>
+
+															<a href="<?php echo site_url('checkout'); ?>" class="btn dark btn-block" type="button"> PROCEED TO CHECKOUT </a>
+
 																<?php
 															} ?>
+
+                                                            <a href="<?php echo site_url(); ?>" class="btn grey btn-block" type="button"> CONTINUE SHOPPING </a>
+
 														</div>
 													</div>
 

@@ -87,15 +87,22 @@ class Get_thumbs extends Sales_user_Controller {
 		}
 		else $search_string = '';
 
+		// don't show clearance cs only items for level 2 users
+		$con_clearance_cs_only = 'tbl_stock.options NOT LIKE \'%"clearance_consumer_only":"1"%\' ESCAPE \'!\'';
+		$where_more['condition'] = $con_clearance_cs_only;
+
 		// get the products list
 		$params['show_private'] = TRUE; // all items general public (Y) - N for private
-		$params['view_status'] = 'ALL'; // ALL items view status (Y, Y1, Y2, N)
-		$params['view_at_hub'] = TRUE; // all items general public at hub site
-		$params['view_at_satellite'] = TRUE; // all items publis at satellite site
-		$params['variant_publish'] = 'ALL'; // ALL variant level color publish (view status)
-		$params['variant_view_at_hub'] = TRUE; // variant level public at hub site
-		$params['variant_view_at_satellite'] = TRUE; // varian level public at satellite site
-		$params['with_stocks'] = FALSE;
+		//$params['view_status'] = 'ALL'; // ALL items view status (Y, Y1, Y2, N)
+		//$params['view_at_hub'] = TRUE; // all items general public at hub site
+		//$params['view_at_satellite'] = TRUE; // all items publis at satellite site
+		//$params['variant_publish'] = 'ALL'; // ALL variant level color publish (view status)
+		//$params['variant_view_at_hub'] = TRUE; // variant level public at hub site
+		//$params['variant_view_at_satellite'] = TRUE; // varian level public at satellite site
+
+		// level 2 users show only items with stocks
+		$params['with_stocks'] = TRUE;
+
 		$params['group_products'] = FALSE; // group per product number or per variant
 		$params['special_sale'] = FALSE; // special sale items only
 		$this->load->library('products/products_list', $params);
@@ -170,9 +177,9 @@ class Get_thumbs extends Sales_user_Controller {
 					.$styles
 					.'">'
 				;
-				$html.= '<a href="'
-					.$img_large
-					.'" class="fancybox tooltips" data-original-title="Click to zoom">'
+				$html.= '<a href="javascript:;" class="package_items" data-item="'
+					.$product->prod_no.'_'.$product->color_code
+					.'">'
 				;
 
 				if ($product->with_stocks == '0')

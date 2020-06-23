@@ -404,10 +404,14 @@
 										</span>
 									</div>
 								</div>
-								<div class="form-group">
+
+									<?php
+								} ?>
+
+								<div class="form-group" style="margin-bottom:0px;">
 									<label class="control-label col-md-4">On Sale:</label>
 									<div class="col-md-8">
-										<div class="mt-checkbox-inline">
+										<div class="mt-checkbox-inline" style="padding-bottom:0px;">
 											<label class="mt-checkbox mt-checkbox-outline">
 												<input type="checkbox" class="custom_order" id="custom_order-<?php echo $color->color_code; ?>" name="custom_order[<?php echo $color->st_id; ?>]" value="3" <?php echo $color->custom_order == '3' ? 'checked': ''; ?> <?php echo ($this->product_details->publish === '0') ? 'disabled': ''; ?> /> Yes
 												<span></span>
@@ -416,10 +420,6 @@
 										</div>
 									</div>
 								</div>
-
-									<?php
-								} ?>
-
 								<div class="form-group">
 									<label class="control-label col-md-4">Clearance Consumer Only:</label>
 									<div class="col-md-8">
@@ -495,7 +495,7 @@
 							<a href="#barcode-<?php echo $this->product_details->prod_no.'_'.$color->color_code; ?>" data-toggle="modal" class="btn dark btn-sm">Print Barcode Labels</a>
 						</div>
 
-						<table class=" table-bordered table-striped table-hover">
+						<table class=" table-bordered table-striped table-hover margin-top-10">
 							<thead>
 								<tr>
 									<?php $size_cnt = count($size_names); ?>
@@ -519,7 +519,7 @@
 											else $th_width = 'width:70px;';
 											?>
 
-										<th style="font-weight:600;padding:8px;<?php echo $th_width; ?>"> <?php echo $s; ?> </th>
+										<th style="text-align:center;font-weight:600;padding:8px;<?php echo $th_width; ?>"> <?php echo $s; ?> </th>
 
 											<?php
 										} ?>
@@ -543,6 +543,15 @@
 
 							<?php
 						} ?>
+
+						<div class="actions margin-top-10">
+							<input type="text" class="" name="warehouse_code[<?php echo $color->st_id; ?>][]" value="<?php echo @$color_options['warehouse_code'][0]; ?>" placeholder="WHCode" style="width:60px;text-align:center;border:1px solid #ccc;font-size:12px;line-height:1.5;padding:5px 0px;" />
+							<input type="text" class="" name="warehouse_code[<?php echo $color->st_id; ?>][]" value="<?php echo @$color_options['warehouse_code'][1]; ?>" placeholder="WHCode" style="width:60px;text-align:center;border:1px solid #ccc;font-size:12px;line-height:1.5;padding:5px 0px;" />
+							<input type="text" class="" name="warehouse_code[<?php echo $color->st_id; ?>][]" value="<?php echo @$color_options['warehouse_code'][2]; ?>" placeholder="WHCode" style="width:60px;text-align:center;border:1px solid #ccc;font-size:12px;line-height:1.5;padding:5px 0px;" />
+							<input type="text" class="" name="warehouse_code[<?php echo $color->st_id; ?>][]" value="<?php echo @$color_options['warehouse_code'][3]; ?>" placeholder="WHCode" style="width:60px;text-align:center;border:1px solid #ccc;font-size:12px;line-height:1.5;padding:5px 0px;" />
+							<input type="text" class="" name="warehouse_code[<?php echo $color->st_id; ?>][]" value="<?php echo @$color_options['warehouse_code'][4]; ?>" placeholder="WHCode" style="width:60px;text-align:center;border:1px solid #ccc;font-size:12px;line-height:1.5;padding:5px 0px;" />
+							<input type="text" class="" name="warehouse_code[<?php echo $color->st_id; ?>][]" value="<?php echo @$color_options['warehouse_code'][5]; ?>" placeholder="WHCode" style="width:60px;text-align:center;border:1px solid #ccc;font-size:12px;line-height:1.5;padding:5px 0px;" />
+						</div>
 
 					</div>
 				</div>

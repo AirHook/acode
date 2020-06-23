@@ -89,6 +89,8 @@ class Get_thumbs extends Sales_user_Controller {
 		else $search_string = '';
 
 		//$where_more['condition'] = 'tbl_stock.options NOT LIKE \'%"clearance_consumer_only":"1"%\'';
+		$con_clearance_cs_only = 'tbl_stock.options NOT LIKE \'%"clearance_consumer_only":"1"%\' ESCAPE \'!\'';
+		$where_more['condition'] = $con_clearance_cs_only;
 
 		// get the products list
 		$params['show_private'] = TRUE; // all items general public (Y) - N for private

@@ -105,24 +105,37 @@
                                             <div class="logo_slider display-none hidden-xs hidden-sm" style="height:75px;">
                 								<ul style="list-style:none;">
                                                     <?php
-                                                    if ($designers)
+                                                    if ($this->session->user_role == 'wholesale')
+                                                    { ?>
+
+                                                    <li style="float:left;" data-here="here">
+                                                        <img src="<?php echo $this->config->item('PROD_IMG_URL').$this->wholesale_user_details->designer_logo; ?>" alt="logo" class="logo-default" />
+                									</li>
+
+                                                        <?php
+                                                    }
+                                                    elseif ($designers)
                                                     {
                                                         foreach ($designers as $designer)
                                                         {
                                                             if ($designer->with_products)
                                                             { ?>
-                                                            <li style="float:left;">
-                                                                <img src="<?php echo $this->config->item('PROD_IMG_URL').$designer->logo; ?>" alt="logo" class="logo-default" />
-                        									</li>
+
+                                                    <li style="float:left;" data-here="here">
+                                                        <img src="<?php echo $this->config->item('PROD_IMG_URL').$designer->logo; ?>" alt="logo" class="logo-default" />
+                									</li>
+
                                                                 <?php
                                                             }
                                                         }
                                                     }
                                                     else
                                                     { ?>
-                                                        <li style="float:left;">
-                                                            <img src="<?php echo base_url(); ?>assets/images/logo/logo-<?php echo $this->webspace_details->slug; ?>-dark.png" alt="logo" class="logo-default" />
-                                                        </li>
+
+                                                    <li style="float:left;">
+                                                        <img src="<?php echo base_url(); ?>assets/images/logo/logo-<?php echo $this->webspace_details->slug; ?>-dark.png" alt="logo" class="logo-default" />
+                                                    </li>
+
                                                         <?php
                                                     } ?>
                 								</ul>
@@ -131,7 +144,16 @@
                                             <div class="logo_slider display-none hidden-md hidden-lg" style="height:75px;width:160px;">
                 								<ul style="list-style:none;">
                                                     <?php
-                                                    if ($designers)
+                                                    if ($this->session->user_role == 'ws')
+                                                    { ?>
+
+                                                    <li style="float:left;" data-here="here">
+                                                        <img src="<?php echo $this->config->item('PROD_IMG_URL').$this->wholesale_user_details->designer_logo; ?>" alt="logo" class="logo-default" />
+                									</li>
+
+                                                        <?php
+                                                    }
+                                                    elseif ($designers)
                                                     {
                                                         foreach ($designers as $designer)
                                                         {

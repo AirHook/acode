@@ -183,7 +183,7 @@
                                                 </div>
                                             </div>
 
-											<div class="form-group">
+											<div class="form-group" style="margin-bottom:0px;">
 												<label class="control-label col-md-4">On Sale:</label>
 												<div class="col-md-8">
 													<div class="mt-checkbox-inline">
@@ -191,7 +191,7 @@
 															<input type="checkbox" name="clearance" value="3" <?php echo $this->product_details->clearance == '3' ? 'checked="checked"' : ''; ?> /> Yes
 															<span></span>
 														</label>
-														<span class="help-block"> Sets entire product (all colors) to clearance </span>
+														<span class="help-block hide"> Sets entire product (all colors) to clearance </span>
 														<input type="hidden" name="clearance_old" value="<?php echo $this->product_details->clearance; ?>" />
 													</div>
 												</div>
@@ -371,6 +371,31 @@
 
                     </div>
                     <!-- END PAGE CONTENT BODY -->
+
+					<!-- Alert -->
+					<div class="modal fade bs-modal-sm" id="alert" tabindex="-1" role="dialog" aria-hidden="true">
+						<div class="modal-dialog modal-sm">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+									<h4 class="modal-title">Notice!</h4>
+								</div>
+								<div class="modal-body">
+									<p> </p>
+								</div>
+								<div class="modal-footer">
+									<button class="btn dark btn-outline" data-dismiss="modal">Cancel</button>
+									<button class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+										<span class="ladda-label">Continue</span>
+										<span class="ladda-spinner"></span>
+									</button>
+								</div>
+							</div>
+							<!-- /.modal-content -->
+						</div>
+						<!-- /.modal-dialog -->
+					</div>
+					<!-- /.modal -->
 
 					<!-- DELETE ITEM -->
 					<div class="modal fade bs-modal-sm" id="delete-<?php echo $this->product_details->prod_id; ?>" tabindex="-1" role="dialog" aria-hidden="true">

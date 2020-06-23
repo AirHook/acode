@@ -39,6 +39,7 @@
 												</div>
 
 												<div class="col-sm-8 checkout-summary-addresses clearfix">
+
 													<div class="row">
 														<div class="col-sm-12">
 															<h4> Payment Method</h4>
@@ -48,9 +49,70 @@
 
 														<div class="form-horizontal col-sm-12 clearfix">
 
-															<h5> <i class="fa fa-truck"></i> Choose options for delivery method</h5>
+															<h5> <i class="fa fa-truck"></i> Choose options for payment method</h5>
 
-															<div class="well clearfix">
+                                                            <?php
+            												/***********
+            												 * Wholesale User Payment Options
+            												 */
+                                                            if ($this->session->user_role == 'wholesale')
+                                                            { ?>
+
+                                                            <div class="well clearfix">
+
+																<div class="form-group">
+																	<div class="col-md-7 col-md-offset-2">
+																		<h4> Select Option </h4>
+																	</div>
+																</div>
+                                                                <div class="form-group">
+                                                                    <label class="col-md-2 control-label"></label>
+                                                                    <div class="col-md-4">
+                                                                        <div class="mt-radio-list" data-error-container="use_shipmethod_error">
+
+                                                                            <label class="mt-radio mt-radio-outline">
+                                                                                Use my card on file
+                                                                                <input value="1" name="ws_payment_options" type="radio" />
+                                                                                <span></span>
+                                                                            </label>
+                                                                            <label class="mt-radio mt-radio-outline hide">
+                                                                                Add a Credit Card
+                                                                                <input value="2" name="ws_payment_options" type="radio" />
+                                                                                <span></span>
+                                                                            </label>
+                                                                            <label class="mt-radio mt-radio-outline">
+                                                                                Send me Paypal Invoice
+                                                                                <input value="3" name="ws_payment_options" type="radio" />
+                                                                                <span></span>
+                                                                            </label>
+                                                                            <label class="mt-radio mt-radio-outline">
+                                                                                Bill My Account
+                                                                                <input value="4" name="ws_payment_options" type="radio" />
+                                                                                <span></span>
+                                                                            </label>
+                                                                            <label class="mt-radio mt-radio-outline">
+                                                                                Send me Wire Request
+                                                                                <input value="5" name="ws_payment_options" type="radio" />
+                                                                                <span></span>
+                                                                            </label>
+
+                                                                        </div>
+                                                                        <div id="use_shipmethod_error"> </div>
+                                                                    </div>
+                                                                </div>
+
+															</div>
+
+                                                                <?php
+                                                            } ?>
+
+                                                            <?php
+            												/***********
+            												 * Regular Payment Options
+                                                             * (usually for consumers and the general public)
+            												 */
+            												?>
+															<div class="well cc-info clearfix <?php echo $this->session->user_role == 'wholesale' ? 'display-none' : ''; ?>">
 
 																<div class="form-group">
 																	<div class="col-md-7 col-md-offset-2">
@@ -139,7 +201,9 @@
 
 														</div>
 													</div>
+
 												</div>
+
 												<div class="col-sm-4">
 
 													<?php $this->load->view('metronic/checkout_summary_product'); ?>
@@ -149,6 +213,7 @@
                                                     <?php $this->load->view('metronic/checkout_summary_policy'); ?>
 
 												</div>
+
 											</div>
 
 											</form>

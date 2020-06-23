@@ -188,7 +188,7 @@
 
 												<div class="caption">
 													<i class="icon-settings font-dark"></i>
-													<span class="caption-subject font-dark sbold uppercase"> Order #<?php echo $this->order_details->order_id.'-'.strtoupper(substr(($this->order_details->designer_group == 'Mixed Designers' ? 'Shop 7th Avenue' : $this->order_details->designer_group),0,3)); ?>
+													<span class="caption-subject font-dark sbold uppercase"> Order #<?php echo $this->order_details->order_id.'-'.strtoupper(substr(($this->order_details->designer_group == 'Mixed Designers' ? 'SHO' : $this->order_details->designer_group),0,3)); ?> <?php echo @$this->order_details->options['sales_order'] ? '| SO' : ''; ?>
 														<span class="hidden-xs">| <?php echo $this->order_details->order_date; ?> </span>
 													</span>
 												</div>
@@ -206,7 +206,7 @@
 													<div class="col-md-6 col-sm-12">
 														<h3>
 					                                        <strong>
-																ORDER #<?php echo $this->order_details->order_id.'-'.strtoupper(substr(($this->order_details->designer_group == 'Mixed Designers' ? 'Shop 7th Avenue' : $this->order_details->designer_group),0,3)); ?>
+																ORDER #<?php echo $this->order_details->order_id.'-'.strtoupper(substr(($this->order_details->designer_group == 'Mixed Designers' ? 'SHO' : $this->order_details->designer_group),0,3)); ?> <?php echo @$this->order_details->options['sales_order'] ? '| SO' : ''; ?>
 															</strong>
 															<br />
 					                                        <small> Date: <?php echo $this->order_details->order_date; ?> </small>
@@ -257,8 +257,17 @@
 
 													</div>
 												</div>
+												<div class="row">
+													<div class="col-md-12 col-sm-12 margin-top-20">
 
-												<hr style="margin:35px 0 20px;border-color:#888;border-width:2px;" />
+														<h4 style="display:inline-block;"> Ship Method: </h4>
+														&nbsp; &nbsp;
+														<?php echo @$this->order_details->courier ?: 'DHL Rates Apply'; ?>
+
+													</div>
+												</div>
+
+												<hr style="margin:20px 0 20px;border-color:#888;border-width:2px;" />
 												<?php
 												/*********
 												 * This style a fix to the dropdown menu inside table-responsive table-scrollable
@@ -341,15 +350,15 @@
 														<thead>
 															<tr>
 																<th class="hidden-xs hidden-sm"> <!-- counter --> </th>
-																<th> Image </th>
-																<th> Item Name </th>
+																<th style="min-width:180px;"> Image </th>
+																	<!--<th class="hide"> Item Name </th>-->
 																<th> Product No </th>
-																<th> Designer </th>
 																<th class="text-center"> Size </th>
 																<th class="text-center"> Color </th>
 																<th class="text-center"> Qty </th>
-																<th class="text-right"> Unit Price </th>
-																<th class="text-right"> Sub Total </th>
+																<th class="text-right" style="width:70px;"> Regular Price </th>
+																<th class="text-right" style="width:70px;"> Discounted Price </th>
+																<th class="text-right" style="width:70px;"> Extended </th>
 															</tr>
 														</thead>
 														<tbody>
@@ -385,21 +394,30 @@
 																<td class="hidden-xs hidden-sm text-center">
 																	<?php echo $i; ?>
 																</td>
-																<!-- Images -->
-																<td class="text-center"> <!-- Images -->
-																	<div class="thumb-tiles">
+																<!-- Image -->
+																<td class="">
+																	<div class="thumb-tiles pulll-left">
 																		<div class="thumb-tile image bg-blue-hoki">
 																			<div class="tile-body">
-																				<img class="" src="<?php echo $this->config->item('PROD_IMG_URL').(str_replace('_f2', '_f3', $item->image)); ?>" alt="">
+																				<img class="" src="<?php echo (str_replace('_f2', '_f3', $item->image)); ?>" alt="">
 																			</div>
 																			<div class="tile-object">
 																				<div class="name"> <?php echo $item->prod_no; ?> </div>
 																			</div>
 																		</div>
 																	</div>
+																	<p style="margin:0px;">
+	                                                                    <span style="color:#999;">Style#:&nbsp;<?php echo $item->prod_sku; ?></span><br />
+	                                                                    Color: &nbsp; <?php echo $product->color_name; ?>
+	                                                                    <?php echo @$product->designer_name ? '<br /><cite class="small">'.$product->designer_name.'</cite>' : ''; ?>
+	                                                                    <?php echo @$product->category_names ? ' <cite class="small">('.end($product->category_names).')</cite>' : ''; ?>
+	                                                                </p>
+																	<a class="small" href="<?php echo site_url('admin/barcodes/print/single/index/'.$item->prod_sku.'/'.$size_label.'/'.$item->qty); ?>" target="_blank" style="color:black_;">
+																		<i class="fa fa-barcode"></i> View/Print Barcode
+																	</a>
 																</td>
-																<!-- Item Name -->
-																<td>
+																<!-- Item Name --
+																<td class="hide">
 																	<?php echo $item->prod_name; ?>
 																	<br />
 																	<?php
@@ -419,11 +437,11 @@
 																			jsbarcode-value="<?php echo $this->upc_barcodes->generate(); ?>"
 																			jsbarcode-textmargin="0"
 																			jsbarcode-width="1"
-																			jsbarcode-height="60"
+																			jsbarcode-height="50"
 																			jsbarcode-fontoptions="bold">
 																		</svg><br />
-																		<a class="small" href="<?php echo site_url('admin/barcodes/print/single/index/'.$item->prod_sku.'/'.$size_label.'/'.$item->qty); ?>" target="_blank">
-									                                        <i class="fa fa-print"></i> Print Barcode
+																		<a class="small" href="<?php echo site_url('admin/barcodes/print/single/index/'.$item->prod_sku.'/'.$size_label.'/'.$item->qty); ?>" target="_blank" style="color:black;">
+									                                        <i class="fa fa-barcode"></i> Print Barcode
 									                                    </a>
 																	</div>
 																		<?php
@@ -432,10 +450,8 @@
 																<!-- Prdo No -->
 																<td>
 																	<?php echo $item->prod_no; ?>
-																	<?php echo ($item->custom_order == '3' ? '<br /><em style="color:red;font-size:0.8em;">On Clearance</em>' : ''); ?>
+																	<?php echo $product->custom_order == '3' ? '<br /><em style="color:red;font-size:75%;">On Clearance</em>' : ''; ?>
 																</td>
-																<!-- Designer -->
-																<td> <?php echo $item->designer; ?> </td>
 																<!-- Size -->
 																<td class="text-center"> <?php echo $item->size; ?> </td>
 																<!-- Color -->
@@ -445,7 +461,7 @@
 																<!-- Unit Price -->
 																<td class="text-right">
 																	<?php if (
-																		$item->custom_order == '3'
+																		$product->custom_order == '3'
 																		&& (
 																			$item->unit_price != @$options['orig_price']
 																			&& $item->unit_price != $orig_price
@@ -453,12 +469,27 @@
 																	)
 																	{
 																		echo '<span style="text-decoration:line-through;">$ '.number_format((@$options['orig_price'] ?: $orig_price), 2).'</span>';
-																		echo '&nbsp;';
-																		echo '<span style="color:red;">$ '.number_format($item->unit_price, 2).'</span>';
 																	}
 																	else
 																	{
 																		echo '$ '.number_format($item->unit_price, 2);
+																	} ?>
+																</td>
+																<!-- Unit Price -->
+																<td class="text-right">
+																	<?php if (
+																		$product->custom_order == '3'
+																		&& (
+																			$item->unit_price != @$options['orig_price']
+																			&& $item->unit_price != $orig_price
+																		)
+																	)
+																	{
+																		echo '<span style="color:red;">$ '.number_format($item->unit_price, 2).'</span>';
+																	}
+																	else
+																	{
+																		echo '--';
 																	} ?>
 																</td>
 																<!-- Subtotal -->

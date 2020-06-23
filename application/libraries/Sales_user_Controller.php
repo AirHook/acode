@@ -27,7 +27,7 @@ class Sales_user_Controller extends MY_Controller {
 			$this->session->set_flashdata('error', 'session_lapsed');
 
 			// redirect to login page
-			redirect('account');
+			redirect('account', 'location');
 		}
 
 		/*****

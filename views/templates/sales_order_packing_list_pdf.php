@@ -307,7 +307,7 @@
 					}
 
 					$overall_qty += $this_size_qty;
-					$overall_total += $this_size_total;
+					$overall_total += @$this_size_total;
 				}
 
 				$i++;

@@ -361,7 +361,7 @@
 			                                        <span></span>
 			                                    </label>
 			                                </th>
-			                                <th style="width:90px;"> Order # </th>
+			                                <th style="width:110px;"> Order # </th>
 			                                <th style="width:70px;"> Order Date </th>
 			                                <th> Items </th>
 			                                <th style="width:40px;"> Order<br />Qty </th>
@@ -381,7 +381,11 @@
 											$i = 1;
 											foreach ($orders as $order)
 											{
+												// edit link
 												$edit_link = site_url($pre_link.'/orders/details/index/'.$order->order_id);
+
+												// order options
+												$order_options = json_decode($order->order_options, TRUE);
 
 												// for wholesale only site like tempoparis, show only wholesale orders
 												// for now, we use this condition to remove consuemr orders
@@ -404,7 +408,7 @@
 											<!-- Order# -->
 			                                <td>
 												<a href="<?php echo $edit_link; ?>">
-													<?php echo $order->order_id.'-'.strtoupper(substr(($order->designer_group == 'Mixed Designers' ? 'Shop 7th Avenue' : $order->designer_group),0,3)); ?>
+													<?php echo $order->order_id.'-'.strtoupper(substr(($order->designer_group == 'Mixed Designers' ? 'SHO' : $order->designer_group),0,3)); ?> <?php echo @$order_options['sales_order'] ? '| SO' : ''; ?>
 												</a>
 											</td>
 											<!-- Date -->

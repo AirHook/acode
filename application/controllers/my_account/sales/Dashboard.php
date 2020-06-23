@@ -20,15 +20,38 @@ class Dashboard extends Sales_user_Controller {
 		// generate the plugin scripts and css
 		$this->_create_plugin_scripts();
 
-		// load pertinent library/model/helpers
-		$this->load->library('sales_orders/sales_orders_list');
+		// adding these line to identify controlls for sales users
+		$des_slug = $this->sales_user_details->designer;
+		$designer_name = $this->sales_user_details->designer_name;
+		$list = 'ws'; // --> sales users is always working for their wholesale users
 
-		// get data
-		$this->data['orders'] = $this->sales_orders_list->select(
-			array(
-				'sales_orders.admin_sales_id' => $this->session->admin_sales_id
-			)
+		// load pertinent library/model/helpers
+		$this->load->library('users/wholesale_users_list');
+		$this->load->library('orders/orders_list');
+
+		// get the orders
+		// 0-new,1-complete,2-onhold,3-canclled,4-returned/refunded,5-shipment_pending,6-store_credit
+		$where_orders['status'] = '0';
+		$where_orders['tbl_order_log.c'] = 'ws';
+		$where_orders['tbluser_data_wholesale.admin_sales_email'] = $this->sales_user_details->email;
+		$this->data['orders'] = $this->orders_list->select(
+			$where_orders,
+			array(), // order_by
+			array('10'), // limit, offset
+			$designer_name // $having_des_group
 		);
+		$this->data['count_all_orders'] = $this->orders_list->count_all;
+
+		// get users
+		$where_users['tbluser_data_wholesale.reference_designer'] = $des_slug;
+		$where_users['tbluser_data_wholesale.is_active'] = '1';
+		$where_users['tbluser_data_wholesale.admin_sales_email'] = $this->sales_user_details->email;
+		$this->data['users'] = $this->wholesale_users_list->select(
+			$where_users,
+			array(),
+			array('5')
+		);
+		$this->data['count_all_users'] = $this->wholesale_users_list->count_all;
 
 		// breadcrumbs
 		// dashboard serves as home page so no need to set breadcrumbs

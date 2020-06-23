@@ -41,20 +41,55 @@
 												<div class="col-sm-8 checkout-summary-addresses clearfix">
 													<div class="row">
 														<div class="col-sm-12">
-															<h4> Order Review</h4>
+															<h4> <?php echo $this->session->user_role == 'wholesale' ? 'Inquiry' : 'Order'; ?> Review </h4>
 															<div class="well">
 
 																<h5> Payment Information <span class="small"> &nbsp; <a href="<?php echo site_url('checkout/payment'); ?>" style="color:black;">Edit</a></span></h5>
 
-																<div style="width:153px;height:24px;overflow:hidden;display:inline-block;">
+                                                                <?php
+                                                                if ($this->session->user_role == 'wholesale')
+                                                                {
+                                                                    switch ($this->session->ws_payment_options)
+                                                                    {
+                                                                        case '1':
+                                                                            echo 'Use my card on file.';
+                                                                        break;
+                                                                        case '2':
+                                                                            echo 'Add a card.<br />';
+                                                                        break;
+                                                                        case '3':
+                                                                            echo 'Send Paypal Invoice.';
+                                                                        break;
+                                                                        case '4':
+                                                                            echo 'Bill My Account.';
+                                                                        break;
+                                                                        case '5':
+                                                                            echo 'Send Wire Request.';
+                                                                        break;
+                                                                    }
+
+                                                                    if ($this->session->ws_payment_options == '2')
+                                                                    { ?>
+
+                                                                <div style="width:153px;height:24px;overflow:hidden;display:inline-block;">
 																	<img style="width:216px;height:24px;" src="<?php echo base_url(); ?>images/credit-card-graphic.gif" />
 																</div>
-                                                                <?php
-                                                                if ($this->session->user_cat == 'wholesale')
-                                                                {
-                                                                    echo '&nbsp; Account payment terms applicable.';
+
+                                                                        <?php
+                                                                        echo '&nbsp; xxxx-xxxx-xxxx-'.substr($this->session->flashdata('cc_number'), 12);
+                                                                    }
+                                                                    echo '<br />Account payment terms applicable.';
                                                                 }
-                                                                else echo '&nbsp; xxxx-xxxx-xxxx-'.substr($this->session->flashdata('cc_number'), 12); ?>
+                                                                else
+                                                                { ?>
+
+                                                                <div style="width:153px;height:24px;overflow:hidden;display:inline-block;">
+																	<img style="width:216px;height:24px;" src="<?php echo base_url(); ?>images/credit-card-graphic.gif" />
+																</div>
+
+                                                                    <?php
+                                                                    echo '&nbsp; xxxx-xxxx-xxxx-'.substr($this->session->flashdata('cc_number'), 12);
+                                                                } ?>
 															</div>
 														</div>
 
@@ -67,7 +102,7 @@
 
 													<div class="clearfix">
                                                         <div class="actions col-sm-3" style="float:right;margin-right:-15px;">
-															<a href="<?php echo site_url('checkout/submit'); ?>" class="btn dark btn-block" type="button"> Submit Order </a>
+															<a href="<?php echo site_url('checkout/submit'); ?>" class="btn dark btn-block" type="button"> Submit <?php echo $this->session->user_role == 'wholesale' ? 'Inquiry' : 'Order'; ?> </a>
                                                         </div>
 
 														<h4> Your Order <span class="small"> &nbsp; <a href="<?php echo site_url('cart'); ?>" style="color:black;">Edit</a></span></h4>
@@ -85,8 +120,9 @@
 																		<th> Items (<?php echo $this->cart->total_items(); ?>) </th>
 																		<th> Availability </th>
 																		<th> Quantity </th>
-																		<th class="text-right"> Unit Price </th>
-																		<th class="text-right"> Subtotal </th>
+                                                                        <th class="text-right"> Regular Price </th>
+                                                                        <th class="text-right"> Discounted Price </th>
+																		<th class="text-right"> Extended Price </th>
 																	</tr>
 																</thead>
 																<tbody>
@@ -148,7 +184,7 @@
 																			<?php if (@$items['options']['custom_order'] == '3')
 																			{ ?>
 																			<br />
-																			<span style="color:red;">On Clearance</span>
+																			<span style="color:red;">On Sale</span>
 																				<?php
 																			} ?>
 																		</td>
@@ -160,17 +196,15 @@
 																		<td>
 																			<?php echo $items['qty']; ?>
 																		</td>
-																		<?php
+                                                                        <?php
 																		/**********
-																		 * Unit Price
+																		 * Regular Price
 																		 */
 																		?>
 																		<td class="text-right">
                                                                             <?php if (@$items['options']['custom_order'] == '3')
 																			{
                                                                                 echo '<span style="text-decoration:line-through;">$ '.$this->cart->format_number(@$items['options']['orig_price']).'</span>';
-                                                                                echo '&nbsp;';
-                                                                                echo '<span style="color:red;">$ '.$this->cart->format_number($items['price']).'</span>';
 																			}
                                                                             else
                                                                             {
@@ -179,7 +213,22 @@
                                                                         </td>
                                                                         <?php
 																		/**********
-																		 * Subtotal
+																		 * Discounted Price
+																		 */
+																		?>
+																		<td class="text-right">
+                                                                            <?php if (@$items['options']['custom_order'] == '3')
+																			{
+                                                                                echo '<span style="color:red;">$ '.$this->cart->format_number($items['price']).'</span>';
+																			}
+                                                                            else
+                                                                            {
+                                                                                echo '--';
+                                                                            } ?>
+                                                                        </td>
+                                                                        <?php
+																		/**********
+																		 * Extended
 																		 */
 																		?>
 																		<td class="text-right">
@@ -253,7 +302,7 @@
                                                                 <?php
                                                                 if ($this->session->ny_tax)
                                                                 {
-                                                                    $review_nytax = $this->cart->total() * $this->webspace_details->options['ny_sales_tax'];
+                                                                    $review_nytax = $this->cart->total() * (@$this->webspace_details->options['ny_sales_tax'] ?: '0.08875');
                                                                 }
                                                                 else $review_nytax = 0;
 
@@ -267,7 +316,7 @@
 															</td>
 														</tr>
 														<tr>
-															<td><strong>Order Subtotal</strong></td>
+															<td><strong>Grand Total</strong></td>
 															<td class="text-right">
                                                                 <?php
                                                                 $review_total = $this->cart->total() + $fix_fee + $review_nytax;
@@ -279,7 +328,7 @@
 
 													<div class="row">
 														<div class="col-sm-6 pull-right">
-															<a href="<?php echo site_url('checkout/submit'); ?>" class="btn dark btn-block" type="button"> Submit Order </a>
+															<a href="<?php echo site_url('checkout/submit'); ?>" class="btn dark btn-block" type="button"> Submit <?php echo $this->session->user_role == 'wholesale' ? 'Inquiry' : 'Order'; ?> </a>
 														</div>
 													</div>
 

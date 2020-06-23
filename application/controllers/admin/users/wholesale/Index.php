@@ -31,6 +31,12 @@ class Index extends Admin_Controller {
 			$this->session->keep_flashdata('error');
 		}
 
+		// check for flash data
+		if ($this->session->flashdata('success'))
+		{
+			$this->session->keep_flashdata('success');
+		}
+
 		// send user to active list
 		redirect('admin/users/wholesale/active', 'location');
 

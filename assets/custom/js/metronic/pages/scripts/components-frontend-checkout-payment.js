@@ -13,7 +13,7 @@ var ComponentsScripts = function() {
 			errorElement: 'span', //default input error message container
 			errorClass: 'help-block help-block-error', // default input error message class
 			focusInvalid: false, // do not focus the last invalid input
-			ignore: "",  // validate all fields including form hidden input
+			ignore: ":not(:visible),:disabled,:hidden",  // validate all fields including form hidden input
 
 			// set your custom error message here
 			//messages: {
@@ -39,6 +39,9 @@ var ComponentsScripts = function() {
 					digits: true
 				},
 				agree_to_policy: {
+					required: true
+                },
+				ws_payment_options: {
 					required: true
 				}
 			},
@@ -107,13 +110,21 @@ var ComponentsScripts = function() {
 
     var handleScripts1 = function() {
 
+        $('[name="ws_payment_options"]').on('change', function(){
+            var value = $(this).val();
+            if (value == 2) {
+                $('.well.cc-info').show();
+            } else {
+                $('.well.cc-info').hide();
+            }
+        });
     }
 
     return {
         //main function to initiate the module
         init: function() {
             handleValidation1();
-            //handleScripts1();
+            handleScripts1();
         }
     };
 

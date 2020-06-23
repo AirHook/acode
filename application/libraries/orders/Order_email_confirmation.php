@@ -158,6 +158,16 @@ class Order_email_confirmation
 		$this->CI->email->subject($email_subject);
 		$this->CI->email->message($message);
 
+		if (ENVIRONMENT == 'development') // ---> used for development purposes
+		{
+			// we are unable to send out email in our dev environment
+			// so we check on the email template instead.
+			// just don't forget to comment these accordingly
+			echo $message;
+			echo '<br /><br />';
+			exit;
+		}
+
 		if ( ! $this->CI->email->send())
 		{
 			// set error message

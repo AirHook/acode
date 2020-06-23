@@ -27,10 +27,14 @@ class Update_stocks extends Admin_Controller {
 
 		// load pertinent library/model/helpers
 		$this->load->library('products/product_details');
-		$this->load->library('odoo');
 
 		// initialize certain properties
-		$this->product_details->initialize(array('tbl_product.prod_id'=>$prod_id));
+		$this->product_details->initialize(
+			array(
+				'tbl_product.prod_id' => $prod_id,
+				'tbl_stock.st_id' => $this->input->post('st_id')
+			)
+		);
 		$stocks_options = $this->product_details->stocks_options;
 
 		// set options last modified
@@ -41,21 +45,17 @@ class Update_stocks extends Admin_Controller {
 
 		// unset items
 		unset($post_ary['designer_slug']);
-
-		// update stock record
-		// lets remove primary color first
-		$DB->set('options', json_encode($stocks_options));
-		$DB->set($post_ary);
-		$DB->where('st_id', $this->input->post('st_id'));
-		$DB->update('tbl_stock');
-
-		// unset items
 		unset($post_ary['color_name']);
 		unset($post_ary['prod_no']);
 		unset($post_ary['prod_id']);
 
 		// update stock record
-		// lets remove primary color first
+		$DB->set('options', json_encode($stocks_options));
+		$DB->set($post_ary);
+		$DB->where('st_id', $this->input->post('st_id'));
+		$DB->update('tbl_stock');
+
+		// update physical stock record
 		$DB->set($post_ary);
 		$DB->where('st_id', $this->input->post('st_id'));
 		$DB->update('tbl_stock_physical');

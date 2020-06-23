@@ -48,66 +48,120 @@ class Index extends Frontend_Controller {
 		}
 		else
 		{
-			// authenticate user and return to login page if invalid
+			// set params
+			$params = array(
+				'email' => $this->input->post('email'), // ws,cs,sales,vendor
+				'password' => $this->input->post('password'), // ws,cs,sales,vendor
+				'reference_designer' => $this->webspace_details->slug, // ws,cs,sales,vendor
+			);
+
+			// authenticate user
+			$this_login = FALSE;
 			if ($this->webspace_details->options['site_type'] !== 'hub_site')
 			{
+				// check wholesale user
 				if (
-					! $this->wholesale_user_details->initialize(array(
-						'email' => $this->input->post('email'),
-						'pword' => $this->input->post('password'),
-						'reference_designer' => $this->webspace_details->slug
-					))
-					&& ! $this->consumer_user_details->initialize(array(
-						'email' => $this->input->post('email'),
-						'password' => $this->input->post('password'),
-						'reference_designer' => $this->webspace_details->slug
-					))
-					&& ! $this->sales_user_details->initialize(array(
-						'admin_sales_email' => $this->input->post('email'),
-						'admin_sales_password' => $this->input->post('password'),
-						'admin_sales_designer' => $this->webspace_details->slug
-					))
-					&& ! $this->vendor_user_details->initialize(array(
-						'vendor_email' => $this->input->post('email'),
-						'password' => $this->input->post('password'),
-						'reference_designer' => $this->webspace_details->slug
+					$this->wholesale_user_details->initialize(array(
+						'email' => $params['email'],
+						'pword' => $params['password'],
+						'reference_designer' => $params['reference_designer']
 					))
 				)
 				{
-					// set flash notice
-					$this->session->set_flashdata('error', 'invalid_credentials');
+					$this_login = 'ws';
+				}
 
-					// rediect back to sign in page
-					redirect('account', 'location');
+				// check consumer user
+				if (
+					$this->consumer_user_details->initialize(array(
+						'email' => $params['email'],
+						'password' => $params['password'],
+						'reference_designer' => $params['reference_designer']
+					))
+				)
+				{
+					$this_login = 'cs';
+				}
+
+				// check sales user
+				if (
+					$this->sales_user_details->initialize(array(
+						'admin_sales_email' => $params['email'],
+						'admin_sales_password' => $params['password'],
+						'admin_sales_designer' => $params['reference_designer']
+					))
+				)
+				{
+					$this_login = 'sales';
+				}
+
+				// check vendor user
+				if (
+					$this->vendor_user_details->initialize(array(
+						'vendor_email' => $params['email'],
+						'password' => $params['password'],
+						'reference_designer' => $params['reference_designer']
+					))
+				)
+				{
+					$this_login = 'vendor';
 				}
 			}
 			else
 			{
+				// check wholesale user
 				if (
-					! $this->wholesale_user_details->initialize(array(
-						'email' => $this->input->post('email'),
-						'pword' => $this->input->post('password')
-					))
-					&& ! $this->consumer_user_details->initialize(array(
-						'email' => $this->input->post('email'),
-						'password' => $this->input->post('password')
-					))
-					&& ! $this->sales_user_details->initialize(array(
-						'admin_sales_email' => $this->input->post('email'),
-						'admin_sales_password' => $this->input->post('password')
-					))
-					&& ! $this->vendor_user_details->initialize(array(
-						'vendor_email' => $this->input->post('email'),
-						'password' => $this->input->post('password')
+					$this->wholesale_user_details->initialize(array(
+						'email' => $params['email'],
+						'pword' => $params['password']
 					))
 				)
 				{
-					// set flash notice
-					$this->session->set_flashdata('error', 'invalid_credentials');
-
-					// rediect back to sign in page
-					redirect('account', 'location');
+					$this_login = 'ws';
 				}
+
+				// check consumer user
+				if (
+					$this->consumer_user_details->initialize(array(
+						'email' => $params['email'],
+						'password' => $params['password']
+					))
+				)
+				{
+					$this_login = 'cs';
+				}
+
+				// check sales user
+				if (
+					$this->sales_user_details->initialize(array(
+						'admin_sales_email' => $params['email'],
+						'admin_sales_password' => $params['password']
+					))
+				)
+				{
+					$this_login = 'sales';
+				}
+
+				// check vendor user
+				if (
+					$this->vendor_user_details->initialize(array(
+						'vendor_email' => $params['email'],
+						'password' => $params['password']
+					))
+				)
+				{
+					$this_login = 'vendor';
+				}
+			}
+
+			// if login is invalid on any user
+			if ($this_login === FALSE)
+			{
+				// set flash notice
+				$this->session->set_flashdata('error', 'invalid_credentials');
+
+				// rediect back to sign in page
+				redirect('account', 'location');
 			}
 
 			// user is now authenticated
@@ -130,8 +184,9 @@ class Index extends Frontend_Controller {
 
 			// let us set sessions
 			// and set the session lapse time if it has not been set
+			// and redirect user
 			$sestime = @time();
-			if ($this->wholesale_user_details->user_id)
+			if ($this_login == 'ws')
 			{
 				$this->wholesale_user_details->set_session();
 
@@ -139,57 +194,7 @@ class Index extends Frontend_Controller {
 				{
 					$this->session->set_userdata('ws_login_time', $sestime);
 				}
-			}
-			else if ($this->consumer_user_details->user_id)
-			{
-				$this->consumer_user_details->set_session();
 
-				if ( ! $this->session->userdata('cs_login_time'))
-				{
-					$this->session->set_userdata('cs_login_time', $sestime);
-				}
-			}
-			else if ($this->sales_user_details->admin_sales_id)
-			{
-				$this->sales_user_details->set_session();
-
-				if ( ! $this->session->userdata('admin_sales_login_time'))
-				{
-					$this->session->set_userdata('admin_sales_login_time', $sestime);
-				}
-			}
-			else if ($this->vendor_user_details->vendor_id)
-			{
-				$this->vendor_user_details->set_session();
-
-				if ( ! $this->session->userdata('vendor_login_time'))
-				{
-					$this->session->set_userdata('vendor_login_time', $sestime);
-				}
-			}
-			else
-			{
-				$this->wholesale_user_details->unset_session();
-				$this->consumer_user_details->unset_session();
-				$this->sales_user_details->unset_session();
-				$this->vendor_user_details->unset_session();
-			}
-
-			// redirect to sales user dashboard
-			if ($this->session->admin_sales_loggedin)
-			{
-				redirect('my_account/sales/dashboard', 'location');
-			}
-
-			// redirect to vendor user dashboard
-			if ($this->session->vendor_loggedin)
-			{
-				redirect('my_account/vendors/dashboard');
-			}
-
-			// record login details of wholesale user and notify people
-			if ($this->session->user_cat == 'wholesale')
-			{
 				// record login which starts the login session
 				$this->wholesale_user_details->record_login_detail();
 
@@ -223,11 +228,48 @@ class Index extends Frontend_Controller {
 				else
 				{
 					// default designer subcat icons page at hub site
-					redirect('my_account/wholesale/dashboard', 'location');
-
-					// default designer subcat icons page at hub site
 					//redirect('https://www.'.$this->webspace_details->parent_site().'/shop/designers/'.$this->webspace_details->slug.'.html', 'location');
+					redirect('shop/designers/'.$this->wholesale_user_details->reference_designer, 'location');
+					//redirect('my_account/wholesale/dashboard', 'location');
 				}
+			}
+			else if ($this_login == 'cs')
+			{
+				$this->consumer_user_details->set_session();
+
+				if ( ! $this->session->userdata('cs_login_time'))
+				{
+					$this->session->set_userdata('cs_login_time', $sestime);
+				}
+			}
+			else if ($this_login == 'sales')
+			{
+				$this->sales_user_details->set_session();
+
+				if ( ! $this->session->userdata('admin_sales_login_time'))
+				{
+					$this->session->set_userdata('admin_sales_login_time', $sestime);
+				}
+
+				redirect('my_account/sales/dashboard', 'location');
+			}
+			else if ($this_login == 'vendor')
+			{
+				$this->vendor_user_details->set_session();
+
+				if ( ! $this->session->userdata('vendor_login_time'))
+				{
+					$this->session->set_userdata('vendor_login_time', $sestime);
+				}
+
+				redirect('my_account/vendors/dashboard', 'location');
+			}
+			else
+			{
+				$this->wholesale_user_details->unset_session();
+				$this->consumer_user_details->unset_session();
+				//$this->sales_user_details->unset_session();
+				$this->vendor_user_details->unset_session();
 			}
 
 			// default process assumes user is a consumer

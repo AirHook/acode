@@ -108,11 +108,11 @@
                                 </div>
                                 <!-- Select Products -->
 								<div class="form-group form-group-badge">
-                                    <label class="control-label col-md-5">
+                                    <label class="control-label col-md-4">
                                         <span class="badge custom-badge pull-left step2 <?php echo (@$role == 'sales' ? $this->session->so_des_slug : $this->session->admin_so_des_slug) ? 'active' : ''; ?>"> 2 </span>
                                         <span class="badge-label"> Select / Search Products </span>
                                     </label>
-                                    <div class="col-md-7">
+                                    <div class="col-md-8">
                                         <cite class="help-block font-red" style="padding-top:3px;">
                                             Select From Options below
                                         </cite>
@@ -379,7 +379,7 @@
                                     <!-- /input-group -->
 
                                     <?php if ( ! @$products) { ?>
-                                    <h3 class="blank-grid-text <?php echo (@$role == 'sales' ? $this->session->so_des_slug : $this->session->admin_so_des_slug) ? 'display-none' : ''; ?>">
+                                    <h3 class="blank-grid-text <?php echo $this->session->admin_so_des_slug ? 'display-none' : ''; ?>">
                                         <em class="select-vendor">Select a designer...</em>
                                     </h3>
                                     <?php } ?>
@@ -538,9 +538,6 @@
                                     				$ribbon_color = ($product->publish == '0' OR $product->publish == '3' OR $product->view_status == 'N') ? 'danger' : 'info';
                                     				$tooltip = $product->publish == '3' ? 'Pending' : (($product->publish == '0' OR $product->view_status == 'N') ? 'Unpubished' : 'Private');
 
-                                                    // check if item is on sale
-                									$onsale = (@$product->clearance == '3' OR $product->custom_order == '3') ? TRUE : FALSE;
-
         											// due to showing of all colors in thumbs list, we now consider the color code
         											// we check if item has color_code. if it has only product number use the primary image instead
         											$checkbox_check = '';
@@ -553,8 +550,7 @@
 
         									<div class="thumb-tile image bg-blue-hoki <?php echo $classes; ?>" style="<?php echo $styles; ?>">
 
-        										<!--<a href="<?php echo $img_large; ?>" class="fancybox tooltips" data-original-title="Click to zoom">-->
-                                                <a href="javascript:;" class="package_items" data-item="<?php echo $product->prod_no.'_'.$product->color_code; ?>">
+        										<a href="<?php echo $img_large; ?>" class="fancybox tooltips" data-original-title="Click to zoom">
 
                                                     <?php if ($product->with_stocks == '0') { ?>
         											<div class="ribbon ribbon-shadow ribbon-round ribbon-border-dash ribbon-vertical-right ribbon-color-danger uppercase tooltips" data-placement="bottom" data-container="body" data-original-title="Pre Order" style="position:absolute;right:-3px;width:28px;padding:1em 0;">
@@ -575,13 +571,7 @@
         											<div class="tile-object">
         												<div class="name">
         													<?php echo $product->prod_no; ?> <br />
-        													<?php echo $product->color_name; ?> <br />
-                                                            <span style="<?php echo $onsale ? 'text-decoration:line-through;' : ''; ?>">
-                                                                $<?php echo $product->wholesale_price; ?>
-                                                            </span>
-                                                            <span style="color:pink;<?php echo $onsale ? '' : 'display:none;'; ?>">
-                                                                &nbsp;$<?php echo $product->wholesale_price_clearance; ?>
-                                                            </span>
+        													<?php echo $product->color_name; ?>
         												</div>
         											</div>
 
@@ -905,7 +895,7 @@
 
                                 <!-- BEGIN FORM =======================================================-->
                                 <?php echo form_open(
-                                    $url_pre.'/sales_orders/new_order',
+                                    $url_pre.'/sales_orders/create',
                                     array(
                                         'class' => 'form-horizontal',
                                         'id' => 'form-so_create_summary_review'
@@ -941,10 +931,6 @@
                                 <input type="hidden" name="so_number" value="<?php echo @$so_number; ?>" />
                                 <input type="hidden" name="so_date" value="<?php echo date('Y-m-d', time()); ?>" />
 
-                                <!-- indicates order is create via sales order create -->
-                                <input type="hidden" name="options[sales_order]" value="1" />
-                                <input type="hidden" name="c" value="ws" />
-
                                 <?php
                                 /***********
                                  * SO Number
@@ -952,32 +938,17 @@
                                 ?>
                                 <div class="col-sm-12 so-summary-number">
                                     <div class="row">
-                                        <div class="col-md-8 col-sm-12">
+                                        <div class="col-sm-12">
                                             <h3>
-                                                SALES ORDER #<?php echo $so_number; ?> <br />
+                                                SALES ORDER #<?php echo @$this->session->so_number ?: @$so_number; ?> <br />
                                                 <small> Date: <?php echo date('Y-m-d', time()); ?> </small>
                                             </h3>
-                                            <div class="row hide">
+                                            <div class="row">
                                                 <div class="col-xs-12 col-sm-6 col-md-4">
                                                     <div>
                                                         <input type="text" name="options[ref_so_no]" value="" class="form-control input-sm" />
                                                         <span class="help-block small">[Optional]: <cite>Reference manual SO#.</cite></span>
                                                     </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 col-sm-12">
-                                            <div class="row margin-top-20">
-                                                <div class="col-xs-5 col-sm-3 name small"> Role: </div>
-                                                <div class="col-xs-7 col-sm-9 value"> Wholesale </div>
-                                                <!-- DOC: remove 'hide' class to show -->
-                                                <div class="col-xs-5 col-sm-3 name small hide"> Payment: </div>
-                                                <div class="col-xs-7 col-sm-9 value hide">
-                                                    <select name="options[payment_method]" style="border:1px solid #c2cad8;">
-                                                        <option>Credit Card</option>
-                                                        <option>Money Transfer</option>
-                                                        <option>Check</option>
-                                                    </select>
                                                 </div>
                                             </div>
                                         </div>
@@ -1016,34 +987,7 @@
 
                                             <span id="user_id_error_container" class="help-block has-block-error has-error"></span>
 
-                                            <!-- DOC: remove 'hide' class to show -->
-                                            <div class="shipmethod hide">
-                                                <h5> SHIPPING METHOD </h5>
-                                                <p class="shipmethod-usa-only" style="margin-bottom:10px;">
-                                                    USA Only
-                                                    <?php
-                                                    if ($ship_methods)
-                                                    {
-                                                        foreach ($ship_methods as $shipmethod)
-                                                        { ?>
-
-                                                    <span style="display:table-row;">
-                                                        <input style="dispaly:table-cell;vertical-align:top;" value="<?php echo $shipmethod->ship_id; ?>" name="shipmethod" type="radio" <?php echo set_select('shipmethod', $shipmethod->ship_id); ?> data-amount="<?php echo $shipmethod->fix_fee; ?>" data-courier="<?php echo $shipmethod->courier; ?>" data-error-container="shipmethod_error_container" />
-                                                        <span class="small" style="display:table-cell;padding-left:5px;padding-top:3px;vertical-align:top;">
-                                                            <?php echo $shipmethod->ship_id.' - '.$shipmethod->courier.' ('.$shipmethod->fee.')'; ?>
-                                                        </span>
-                                                    </span>
-
-                                                            <?php
-                                                        }
-                                                    } ?>
-                                                </p>
-                                            </div>
-
-                                            <span id="shipmethod_error_container" class="help-block has-block-error has-error"></span>
-
                                         </div>
-
                                         <div class="col-sm-6">
 
                                             <h5> SHIP TO </h5>
@@ -1058,45 +1002,10 @@
                                                 ATTN: <?php echo @$store_details->fname ? $store_details->fname.' '.@$store_details->lname : 'Contact Name'; ?> <?php echo @$store_details->email ? '('.safe_mailto($store_details->email).')': '(email)'; ?>
                                             </p>
 
-                                            <!-- DOC: remove 'hide' class to show -->
-                                            <div class="shipmethod hide">
-                                                <h5> &nbsp </h5>
-                                                <p class="shipmethod-international">
-                                                    International
-                                                    <span style="display:table-row;">
-                                                        <input style="dispaly:table-cell;vertical-align:top;" value="0" name="shipmethod" type="radio" <?php echo set_select('shipmethod', '0'); ?> data-amount="<?php echo '0'; ?>" data-courier="DHL International (DHL rates apply)" data-error-container="shipmethod_error_container" />
-                                                        <span class="small" style="display:table-cell;padding-left:5px;padding-top:3px;vertical-align:top;">
-                                                            DHL - International
-                                                        </span>
-                                                    </span>
-                                                    <cite style="display:block;font-size:8px;line-height:10px;margin-top:5px;">Currently only DHL is used to ship for countries other than USA.</cite>
-                                                </p>
-                                            </div>
-
                                         </div>
 
-                                        <input type="hidden" name="user_id" value="<?php echo @$user_id; ?>" data-error-container="user_id_error_container" />
+                                        <input type="hidden" name="user_id" value="<?php echo $this->session->admin_so_user_id; ?>" data-error-container="user_id_error_container" />
 
-                                    </div>
-                                </div>
-
-                                <?php
-                                /***********
-                                 * Ship method
-                                 */
-                                ?>
-                                <div class="col-sm-12 m-grid m-grid-responsive-sm so-summary-options1">
-                                    <div class="m-grid-row">
-                                        <div class="m-grid-col">
-
-                                            <h6> Ship Method (optional): </h6>
-                                            <div class="form-group row">
-                                                <div class="col-md-6 col-sm-12">
-                                                    <input class="form-control form-control-inline" size="16" type="text" value="" name="options[shipmethod_text]" />
-                                                </div>
-                                            </div>
-
-                                        </div>
                                     </div>
                                 </div>
 
@@ -1106,15 +1015,16 @@
                                  */
                                 ?>
                                 <div class="col-sm-12 sales_user_details">
-                                    <p style="margin:10px 0px;">
+                                    <p>
                                         Sales Person: &nbsp;<?php echo @$author_name ?: 'In-House'; ?> (<?php echo safe_mailto(@$author_email ?: $this->webspace_details->info_email); ?>)
                                     </p>
-                                    <input type="hidden" name="author" value="<?php echo $author_id ?: '1'; ?>" /> <!-- defaults to '1' for In-House -->
+                                    <input type="hidden" name="author" value="1" /> <!-- defaults to '1' for In-House -->
+                                    <input type="hidden" name="c" value="1" /> <!-- 1-admin, 2-sales -->
                                 </div>
 
                                 <?php
                                 /***********
-                                 * Ref Checkout Number
+                                 * SO Options 1
                                  */
                                 ?>
                                 <div class="col-sm-12 m-grid m-grid-responsive-sm so-summary-options1">
@@ -1135,9 +1045,9 @@
                                 <?php
                                 /***********
                                  * SO Options 2
-                                 *
+                                 */
                                 ?>
-                                <div class="col-sm-12 m-grid m-grid-responsive-sm so-summary-options2 hide">
+                                <div class="col-sm-12 m-grid m-grid-responsive-sm so-summary-options2">
                                     <div class="m-grid-row">
                                         <div class="m-grid-col">
 
@@ -1182,7 +1092,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                <?php // */; ?>
 
                                 <?php
                                 /***********
@@ -1220,8 +1129,8 @@
                                                 .stock-select,
                                                 .size-select {
                                                     border: 0;
-                                                    font-size: 12px;
-                                                    width: 40px;
+                                                    font-size: 10px;
+                                                    width: 30px;
                                                    -webkit-appearance: none;
                                                     -moz-appearance: none;
                                                     appearance: none;
@@ -1237,26 +1146,21 @@
                                             <table class="table table-striped table-hover table-light " data-object_data='{"<?php echo $this->security->get_csrf_token_name(); ?>":"<?php echo $this->security->get_csrf_hash(); ?>"}'>
                                                 <thead>
                                                     <tr>
-                                                            <!--
-                                                            <th class="text-center hide" style="width:25px;vertical-align:bottom;"> Req'd </th>
-                                                            <th class="text-center hide" style="width:25px;vertical-align:bottom;"> Ship'd </th>
-                                                            <th class="text-center hide" style="width:25px;vertical-align:bottom;border-right:1px solid #F2F5F8;"> B.O. </th>
-                                                            -->
-                                                        <th style="vertical-align:bottom;"> Items (<span class="items_count"><?php echo $items_count; ?></span>) </th>
-                                                        <th style="vertical-align:bottom;"> Prod No </th>
-                                                        <th style="vertical-align:bottom;"> Size </th>
-                                                        <th style="vertical-align:bottom;"> Color </th>
-                                                        <th style="vertical-align:bottom;"> Qty </th>
-                                                        <th style="vertical-align:bottom;width:60px;border-left:1px solid #F2F5F8;" class="text-center">
-                                                            Regular<br />Price
+                                                        <th colspan="3" class="text-center" style="padding:unset;border-bottom:none;border-right:1px solid #F2F5F8;"> Qty </th>
+                                                        <th colspan="6" style="border-bottom:none;"></th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="text-center" style="width:25px;vertical-align:top;"> Req'd </th>
+                                                        <th class="text-center" style="width:25px;vertical-align:top;"> Ship'd </th>
+                                                        <th class="text-center" style="width:25px;vertical-align:top;border-right:1px solid #F2F5F8;"> B.O. </th>
+                                                        <th style="vertical-align:top;"> Items (<span class="items_count"><?php echo $items_count; ?></span>) </th>
+                                                        <th style="vertical-align:top;"> Desc </th>
+                                                        <th></th> <!-- Remove button -->
+                                                        <th style="vertical-align:top;width:60px;" class="text-right">
+                                                            Unit Price
                                                         </th>
-                                                        <th style="vertical-align:bottom;width:60px;border-right:1px solid #F2F5F8;" class="text-center">
-                                                            Discounted<br />Price
-                                                        </th>
-                                                            <!--
-                                                            <th style="vertical-align:bottom;width:50px;" class="text-right hide"> Disc </th>
-                                                            -->
-                                                        <th style="vertical-align:bottom;width:60px;" class="text-right"> Extended<br />Price </th>
+                                                        <th style="vertical-align:top;width:50px;" class="text-right"> Disc </th>
+                                                        <th style="vertical-align:top;width:60px;" class="text-right"> Extended </th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -1291,21 +1195,22 @@
                                                             // price can be...
                                                             // onsale price (retail_sale_price or wholesale_price_clearance)
                                                             // regular price (retail_price or wholesale_price)
-                                                            // new pricing scheme
-                                                            $orig_price =
-                                                                $role == 'sales'
-                                                                ? (@$product->wholesale_price ?: 0)
-                                                                : (@$product->retail_price ?: 0)
-                                                            ;
-                                                            $price =
-                                                                @$product->custom_order == '3'
-                                                                ? (
-                                                                    $role == 'sales'
+                                                            if (@$product->custom_order == '3')
+                                                            {
+                                                                $price =
+                                                                    $this->session->admin_so_user_cat == 'ws'
                                                                     ? (@$product->wholesale_price_clearance ?: 0)
                                                                     : (@$product->retail_sale_price ?: 0)
-                                                                )
-                                                                : $orig_price
-                                                            ;
+                                                                ;
+                                                            }
+                                                            else
+                                                            {
+                                                                $price =
+                                                                    $this->session->admin_so_user_cat == 'ws'
+                                                                    ? (@$product->wholesale_price ?: 0)
+                                                                    : (@$product->retail_price ?: 0)
+                                                                ;
+                                                            }
 
                                                             if ($product)
                                                             {
@@ -1390,35 +1295,36 @@
                                                          * Quantities
                                                          */
                                                         ?>
-                                                        <!--
-                                                        <td class="text-center hide" style="vertical-align:top;">
+                                                        <td class="text-center" style="vertical-align:top;">
                                                             <?php echo $qty[0]; ?>
                                                             <br />
                                                             <i class="fa fa-pencil small tooltips font-grey-silver modal-edit_quantity" data-original-title="Edit Qty" data-placement="bottom" data-item="<?php echo $item; ?>" data-size_label="<?php echo $size_label; ?>"></i>
                                                         </td>
-                                                        <td class="text-center hide" style="vertical-align:top;"><?php echo $qty[1]; ?></td>
-                                                        <td class="text-center hide" style="vertical-align:top;"><?php echo $qty[2]; ?></td>
-                                                        -->
+                                                        <td class="text-center" style="vertical-align:top;"><?php echo $qty[1]; ?></td>
+                                                        <td class="text-center" style="vertical-align:top;"><?php echo $qty[2]; ?></td>
 
                                                         <?php
                                                         /**********
-                                                         * Items' IMAGE and Descriptions
+                                                         * Item Number
                                                          */
                                                         ?>
                                                         <td style="vertical-align:top;">
-                                                            <!-- DOC: add 'pull-left' class to float left -->
-                                                            <a href="<?php echo $img_large ?: 'javascript:;'; ?>" class="<?php echo $img_large ? 'fancybox' : ''; ?>">
+                                                            <?php echo $prod_no; ?><br />
+                                                            <?php echo $color_name; ?><br />
+                                                            <?php echo 'Size '.$s; ?>
+                                                        </td>
+
+                                                        <?php
+                                                        /**********
+                                                         * IMAGE and Descriptions
+                                                         */
+                                                        ?>
+                                                        <td style="vertical-align:top;">
+                                                            <a href="<?php echo $img_large ?: 'javascript:;'; ?>" class="<?php echo $img_large ? 'fancybox' : ''; ?> pull-left">
                                                                 <img class="" src="<?php echo $img_front_new; ?>" alt="" style="width:60px;height:auto;" onerror="$(this).attr('src','<?php echo $this->config->item('PROD_IMG_URL'); ?>images/instylelnylogo_3.jpg');" />
                                                             </a>
-                                                            <button type="button" class="btn btn-link btn-xs summary-item-remove tooltips pull-right" data-original-title="Remove Item" data-item="<?php echo $item; ?>" data-prod_no="<?php echo $prod_no; ?>" data-size_label="<?php echo $size_label; ?>" style="margin-right:0px;position:relative;top:-5px;">
-                                                                <i class="fa fa-close small" style="color:#8896a0;"></i> <cite class="small hide">rem</cite>
-                                                            </button>
-                                                            <!-- DOC: remove 'hide' class to show -->
-                                                            <div class="shop-cart-item-details hide" style="margin-left:65px;">
+                                                            <div class="shop-cart-item-details" style="margin-left:65px;">
                                                                 <h4 style="margin:0px;">
-                                                                    <button type="button" class="btn btn-link btn-xs summary-item-remove tooltips pull-right" data-original-title="Remove Item" data-item="<?php echo $item; ?>" data-prod_no="<?php echo $prod_no; ?>" data-size_label="<?php echo $size_label; ?>" style="margin-right:0px;position:relative;top:-5px;">
-                                                                        <i class="fa fa-close small" style="color:#8896a0;"></i> <cite class="small hide">rem</cite>
-                                                                    </button>
                                                                     <?php echo $prod_no; ?>
                                                                 </h4>
                                                                 <p style="margin:0px;">
@@ -1441,70 +1347,31 @@
 
                                                         <?php
                                                         /**********
-                                                         * Prod No
+                                                         * Remove button
                                                          */
                                                         ?>
-                                                        <td style="vertical-align:top;">
-                                                            <?php echo $prod_no; ?>
-                                                            <?php echo $onsale ? '<br /><cite class="small font-red">On Sale</cite>' : ''; ?>
+                                                        <td class="text-right" style="vertical-align:top;">
+                                                            <button type="button" class="btn btn-link btn-xs summary-item-remove tooltips" data-original-title="Remove Item" data-item="<?php echo $item; ?>" data-prod_no="<?php echo $prod_no; ?>" data-size_label="<?php echo $size_label; ?>">
+                                                                <i class="fa fa-close" style="color:#8896a0;"></i> <cite class="small hide">rem</cite>
+                                                            </button>
                                                         </td>
 
                                                         <?php
                                                         /**********
-                                                         * Size
+                                                         * Unit Price
                                                          */
                                                         ?>
-                                                        <td style="vertical-align:top;text-align:center;">
-                                                            <?php echo $s; ?>
+                                                        <td style="vertical-align:top;" class="text-right unit-price-wrapper <?php echo $item.' '.$prod_no; ?>" data-item="<?php echo $item; ?>" data-prod_no="<?php echo $prod_no; ?>">
+                                                            $ <?php echo number_format($price, 2); ?>
                                                         </td>
 
                                                         <?php
                                                         /**********
-                                                         * Color
+                                                         * Discount
                                                          */
                                                         ?>
-                                                        <td style="vertical-align:top;">
-                                                            <?php echo $color_name; ?>
-                                                        </td>
-
-                                                        <?php
-                                                        /**********
-                                                         * Qty
-                                                         */
-                                                        ?>
-                                                        <td style="vertical-align:top;text-align:center;">
-                                                            <?php echo $qty[0] ?: $qty; ?>
-                                                        </td>
-
-                                                        <?php
-                                                        /**********
-                                                         * Reg Price
-                                                         */
-                                                        ?>
-                                                        <td style="vertical-align:top;<?php echo $orig_price == $price ?: 'text-decoration:line-through;'; ?>" class="text-right unit-price-wrapper <?php echo $item.' '.$prod_no; ?>" data-item="<?php echo $item; ?>" data-prod_no="<?php echo $prod_no; ?>">
-                                                            $ <?php echo number_format($orig_price, 2); ?>
-                                                        </td>
-
-                                                        <?php
-                                                        /**********
-                                                         * Discount - onsale/clearance
-                                                         */
-                                                        ?>
-                                                        <td style="vertical-align:top;<?php echo $orig_price == $price ?: 'color:red;'; ?>" class="text-right unit-price-wrapper <?php echo $item.' '.$prod_no; ?>" data-item="<?php echo $item; ?>" data-prod_no="<?php echo $prod_no; ?>">
-                                                            <?php echo $orig_price == $price ? '--' : '$ '.number_format($price, 2); ?>
-                                                        </td>
-
-                                                        <?php
-                                                        /**********
-                                                         * Discount - hiding editable discount cell
-                                                         */
-                                                        ?>
-                                                        <td style="vertical-align:top;" class="text-right discount-wrapper <?php echo $item.' '.$prod_no; ?> hide">
+                                                        <td style="vertical-align:top;" class="text-right discount-wrapper <?php echo $item.' '.$prod_no; ?>">
                                                             <?php
-                                                            // the $disc ($options['discount']) was inteded for putting discounts
-                                                            // on prices which is currently hidden as price is now using direct discounted amounts
-                                                            // like the retail onsale price and wholesale clearance price
-                                                            // keeping it here as discounts may be used again...
                                                             $disc = @$options['discount'] ?: 0;
                                                             if ($disc == '0') echo '---';
                                                             else echo number_format($disc, 2);
@@ -1537,8 +1404,8 @@
                                                             $i++;
                                                         } ?>
 
-                                                        <input type="hidden" class="hidden-overall_qty_" name="overall_qty" value="<?php echo $overall_qty; ?>" />
-                                                        <input type="hidden" class="hidden-overall_total_" name="overall_total" value="<?php echo $overall_total; ?>" />
+                                                        <input type="hidden" class="hidden-overall_qty" value="<?php echo $overall_qty; ?>" />
+                                                        <input type="hidden" class="hidden-overall_total" value="<?php echo $overall_total; ?>" />
 
                                                         <?php
                                                     } ?>
@@ -1866,27 +1733,23 @@
         													<div id="email_array_error"> </div>
         													<div class="mt-checkbox-list">
 
-        														<?php
-                                                                if (@$users)
-                                                                {
-                                                                    foreach ($users as $user)
-            														{
-                                                                        $checked =
-                                                                            @$user_id == $user->user_id
-                                                                            ? 'checked="checked"'
-                                                                            : ''
-                                                                        ;
-                                                                        ?>
+        														<?php foreach ($users as $user)
+        														{
+                                                                    $checked =
+                                                                        $this->session->admin_so_user_id == $user->user_id
+                                                                        ? 'checked="checked"'
+                                                                        : ''
+                                                                    ;
+                                                                    ?>
 
-                                                                    <label class="mt-checkbox mt-checkbox-outline">
-            															<?php echo ucwords($user->store_name); ?> <br />
-            															<?php echo ucwords(strtolower($user->firstname.' '.$user->lastname)).' <cite class="small">('.$user->email.')</cite> '; ?>
-                                                                        <input type="checkbox" class="send_to_current_user list" name="email[]" value="<?php echo $user->user_id; ?>" data-error-container="email_array_error" <?php echo $checked; ?> />
-                                                                        <span></span>
-                                                                    </label>
+                                                                <label class="mt-checkbox mt-checkbox-outline">
+        															<?php echo ucwords($user->store_name); ?> <br />
+        															<?php echo ucwords(strtolower($user->firstname.' '.$user->lastname)).' <cite class="small">('.$user->email.')</cite> '; ?>
+                                                                    <input type="checkbox" class="send_to_current_user list" name="email[]" value="<?php echo $user->user_id; ?>" data-error-container="email_array_error" <?php echo $checked; ?> />
+                                                                    <span></span>
+                                                                </label>
 
-            															<?php
-                                                                    }
+        															<?php
         														} ?>
 
                                                             </div>
@@ -1929,15 +1792,7 @@
                                             <div class="form-group">
                                                 <div class="btn-group btn-group-justified">
                                                     <a href="javascript:;" class="btn dark enter-user ws" data-user="ws"> WHOLESALE USER </a>
-
-                                                    <?php if ( ! $this->session->admin_sales_loggedin)
-                                                    { ?>
-
                                                     <a href="javascript:;" class="btn dark btn-outline enter-user cs" data-user="cs"> CONSUMER USER </a>
-
-                                                        <?php
-                                                    } ?>
-
                                                 </div>
                                             </div>
                                         </div>
@@ -2193,7 +2048,7 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn dark btn-outline modal-size_qty_cancel" data-dismiss="modal" tabindex="-1">Cancel</button>
-                                        <button type="submit" class="btn dark modal-size_qty_submit"> Add To Sales Order </button>
+                                        <button type="submit" class="btn dark modal-size_qty_submit"> Submit </button>
                                     </div>
 
                                     </form>

@@ -48,25 +48,22 @@
 <!-- BEGIN TOP NAVIGATION MENU -->
 <div class="top-menu">
 	<ul class="nav navbar-nav pull-right">
-		<li class="separator hide"> </li>
+		<li class="dropdown dropdown-user dropdown-dark">
+			<a href="<?php echo site_url('my_account/sales/dashboard'); ?>" class="dropdown-toggle">
+				<span class="username" style="font-weight:normal;"> Welcome, <?php echo @$this->sales_user_details->fname ?: 'Guest'; ?>! </span>
+			</a>
+		</li>
+		<li class="dropdown dropdown-user dropdown-dark">
+			<a href="javascript:;" class="dropdown-toggle disabled-link disable-target">
+				<span class="username" style="font-weight:normal;"> Profile </span>
+			</a>
+		</li>
 		<!-- BEGIN USER LOGIN DROPDOWN -->
 		<!-- DOC: Apply "dropdown-dark" class after below "dropdown-extended" to change the dropdown styte -->
 		<li class="dropdown dropdown-user dropdown-dark">
-			<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-				<span class="username username-hide-on-mobile"> Welcome, <?php echo @$this->sales_user_details->fname ?: 'Guest'; ?> </span>
-				<i class="fa fa-angle-down"></i>
-				<!-- DOC: Do not remove below empty space(&nbsp;) as its purposely used -->
-				<img alt="" class="img-circle hide" src="../assets/layouts/layout4/img/avatar9.jpg" /> </a>
-			<ul class="dropdown-menu dropdown-menu-default">
-				<li>
-					<a href="javascript:;" class="disabled-link disable-target">
-						<i class="icon-user"></i> My Profile </a>
-				</li>
-				<li>
-					<a href="<?php echo site_url('my_account/'.$role.'/logout'); ?>">
-						<i class="icon-key"></i> Log Out </a>
-				</li>
-			</ul>
+			<a href="<?php echo site_url('my_account/sales/logout'); ?>" class="dropdown-toggle">
+				<span class="username" style="font-weight:normal;"> Log Out </span>
+			</a>
 		</li>
 		<!-- END USER LOGIN DROPDOWN -->
 		<!-- BEGIN QUICK SIDEBAR TOGGLER -->

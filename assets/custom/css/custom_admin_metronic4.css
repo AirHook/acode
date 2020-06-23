@@ -62,17 +62,25 @@ body {
 .page-sidebar .page-sidebar-menu > li > a,
 .page-sidebar .page-sidebar-menu > li.active > a,
 .page-sidebar .page-sidebar-menu > li.open > a {
-    padding-left: 15px;
+    /*padding-left: 15px;*/
+    padding-left: 7px;
 }
 .page-sidebar .page-sidebar-menu .sub-menu > li > a,
 .page-sidebar .page-sidebar-menu .sub-menu > li.active > a,
 .page-sidebar .page-sidebar-menu .sub-menu > li.open > a {
-    padding-left: 22px;
+    /*padding-left: 22px;*/
+    padding-left: 7px;
 }
 .page-sidebar .page-sidebar-menu > li > a > .title,
 .page-sidebar .page-sidebar-menu .sub-menu > li > a > .title {
     font-size: 12px;
     color: #000000;
+}
+.page-sidebar .page-sidebar-menu > li.active > a {
+    font-size: 12px;
+}
+.page-sidebar .page-sidebar-menu > li.nav-item.with-heading > a > span.title {
+    font-weight: bold;
 }
 
 /***********

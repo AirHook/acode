@@ -25,14 +25,17 @@ class Logout extends MY_Controller {
 		// load pertinent library/model/helpers
 		$this->load->library('users/wholesale_user_details');
 		$this->load->library('users/consumer_user_details');
+		//$this->load->library('users/vendor_user_details');
 
 		// unset sessions
 		$this->wholesale_user_details->unset_session();
 		$this->consumer_user_details->unset_session();
+		//$this->vendor_user_details->unset_session();
 
 		// deinitialize classes
 		$this->wholesale_user_details->set_initial_state();
 		$this->consumer_user_details->set_initial_state();
+		//$this->vendor_user_details->set_initial_state();
 
 		// destroy any cart sessions
 		$this->cart->destroy();
@@ -45,7 +48,7 @@ class Logout extends MY_Controller {
 		else $this->session->set_flashdata('success', 'logout_successful');
 
 		// rediect back to sign in page
-		redirect('account');
+		redirect('account', 'location');
 	}
 
 	// ----------------------------------------------------------------------
