@@ -40,8 +40,15 @@ var ComponentsEditors = function () {
 
         // select action option buttons function
         $('.send-to-current-user').on('click', function(){
+            // set all buttons to default
             $('.select-send-options').css('background-color', '#2f353b');
-            $(this).css('background-color', '#696969');
+            $('.select-send-options').css('color', 'white');
+            $('.select-send-options').removeClass('btn-active');
+            // set this button to active
+            //$(this).css('background-color', '#696969');
+            $(this).css('background-color', '#E5E5E5');
+            $(this).css('color', 'black');
+            $(this).addClass('btn-active');
             $('[name="send_to"]').val('current_user');
             $('.send_to_new_user').hide();
             $('.send_to_current_user').show();
@@ -52,8 +59,15 @@ var ComponentsEditors = function () {
 
         // select action option buttons function
         $('.send-to-new-user').on('click', function(){
+            // set all buttons to default
             $('.select-send-options').css('background-color', '#2f353b');
-            $(this).css('background-color', '#696969');
+            $('.select-send-options').css('color', 'white');
+            $('.select-send-options').removeClass('btn-active');
+            // set this button to active
+            //$(this).css('background-color', '#696969');
+            $(this).css('background-color', '#E5E5E5');
+            $(this).css('color', 'black');
+            $(this).addClass('btn-active');
             $('[name="send_to"]').val('new_user');
             $('.send_to_current_user').hide();
             $('.send_to_new_user').fadeIn();
@@ -64,7 +78,18 @@ var ComponentsEditors = function () {
             $('#form-send_sales_package').trigger("reset");
         });
 
-
+        // apply hover effect
+        $('.select-send-options').hover(function(){
+            if (!$(this).hasClass('btn-active')) {
+                $(this).css('background-color', '#E5E5E5');
+                $(this).css('color', 'black');
+            }
+        },function(){
+            if (!$(this).hasClass('btn-active')) {
+                $(this).css('background-color', '#2f353b');
+                $(this).css('color', 'white');
+            }
+        });
 
 
         // load preset actions
@@ -514,6 +539,7 @@ var ComponentsEditors = function () {
         // submit form action
         $('.btn-send-sales-package').on('click', function(){
             var form = $('#form-send_sales_package');
+            //$('[name="send_to"]').val('current_user');
             if ($('[name="email[]"]:checked').length > 0){
                 var val;
                 var cnt = 1;
@@ -534,7 +560,7 @@ var ComponentsEditors = function () {
         // for more info visit the official plugin documentation:
 		// http://docs.jquery.com/Plugins/Validation
 
-		var form1 = $('#form-sa_create_summary_review');
+		var form1 = $('#form-send_sales_package');
 		var error1 = $('.alert-danger');
 		var success1 = $('.alert-success');
 
@@ -542,7 +568,7 @@ var ComponentsEditors = function () {
 			errorElement: 'span', //default input error message container
 			errorClass: 'help-block help-block-error', // default input error message class
 			focusInvalid: false, // do not focus the last invalid input
-			ignore: ":not(:visible),:disabled",  // validate all fields including form hidden input
+			ignore: ":not(:visible),:disabled,:hidden",  // validate all fields including form hidden input
 
 			// set your custom error message here
             /*
@@ -551,11 +577,36 @@ var ComponentsEditors = function () {
 			},
             */
 
-			rules: {
-				sales_package_name: {
+            rules: {
+				email: {
+					required: true,
+					email: true
+				},
+				firstname: {
 					required: true
 				},
-				email_subject: {
+				lastname: {
+					required: true
+				},
+				store_name: {
+					required: true
+				},
+				telephone: {
+					required: true
+				},
+				address1: {
+					required: true
+				},
+				city: {
+					required: true
+				},
+				state: {
+					required: true
+				},
+				country: {
+					required: true
+				},
+				zipcode: {
 					required: true
 				}
 			},

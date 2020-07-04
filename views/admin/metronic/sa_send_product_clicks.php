@@ -2,7 +2,10 @@
                     <div class="row body-content" data-object_data='{"<?php echo $this->security->get_csrf_token_name(); ?>":"<?php echo $this->security->get_csrf_hash(); ?>"}'>
 
                         <!-- BEGIN FORM =======================================================-->
-                        <?php echo form_open(
+                        <?php
+                        // the form tag is used for the UI only..
+                        // form is not being sent here
+                        echo form_open(
                             (@$role == 'sales' ? 'my_account/sales' : 'admin/campaigns').'/sales_package/send_product_clicks/send',
                             array(
                                 'class' => 'form-horizontal'
@@ -257,6 +260,10 @@
                             </div>
                         </div>
 
+                        <?php echo form_close(); ?>
+                        <!-- End FORM ===================================================================-->
+                        <!-- END FORM-->
+
                         <div class="col-md-4">
 
                             <div class="form-horizontal" role="form">
@@ -320,6 +327,20 @@
                             ?>
                             <div class="form-select-users-wrapper">
 
+                                <!-- BEGIN FORM-->
+                                <!-- FORM =======================================================================-->
+                                <?php echo form_open(
+                                    (@$role == 'sales' ? 'my_account/sales' : 'admin/campaigns').'/sales_package/send/sa/'.$sa_details->sales_package_id,
+                                    array(
+                                        'class' => 'form-horizontal',
+                                        'id' => 'form-send_sales_package'
+                                    )
+                                ); ?>
+
+                                <input type="hidden" name="sales_package_id" value="<?php echo $sa_details->sales_package_id; ?>" />
+                                <input type="hidden" name="send_to" value="" />
+                                <input type="hidden" name="sales_user" value="<?php echo $sales_user; ?>" />
+
                                 <?php
                                 /***********
                                  * Noification area
@@ -347,14 +368,7 @@
 									<div class="form-body selected-users-list-wrapper">
 										<span class="caption">Send to the following:</span>
 										<div class="mt-checkbox-list selected-users-list">
-											<!-- DOC: example child element --
-											<label class="mt-checkbox mt-checkbox-outline" style="font-size:0.9em;">
-												Rey Store -
-												Rey Millares <cite class="small">(rsbgm@rcpixel.com)</cite>
-												<input type="checkbox" class="send_to_current_user selected-list" name="email[]" value="rsbgm@rcpixel.com" checked />
-												<span></span>
-											</label>
-											-->
+
 											<?php if (@$ws_user_details)
 											{ ?>
 
@@ -379,10 +393,6 @@
                             </div>
 
                         </div>
-
-                        <?php echo form_close(); ?>
-                        <!-- End FORM ===================================================================-->
-                        <!-- END FORM-->
 
                     </div>
                     <!-- END PAGE CONTENT BODY -->

@@ -93,7 +93,7 @@ class Link extends Shop_Controller
 		 * Lets get the wholesale user details
 		 */
 		// check for logged in users and verify link user id
-		if ($this->session->user_loggedin && $this->session->user_cat === 'wholesale')
+		if ($this->session->user_loggedin && $this->session->user_role === 'wholesale')
 		{
 			if ($this->session->user_id != $wholesale_user_id)
 			{
@@ -124,7 +124,7 @@ class Link extends Shop_Controller
 			}
 		}
 
-		// auto sign in user is not already signed in
+		// auto sign in user if not already signed in
 		// do notifications where necessary
 		if ( ! $this->session->this_login_id)
 		{
@@ -162,6 +162,8 @@ class Link extends Shop_Controller
 		}
 
 		// if click 1 is set, check for same session login id
+		// if in different session already, sales package is already invalid
+		/* *
 		if (@$options[$wholesale_user_id][$tc] !== $this->session->this_login_id)
 		{
 			// unset any or old sales package sessions
@@ -173,6 +175,7 @@ class Link extends Shop_Controller
 			// nothing more to do...
 			redirect('account/request/sales_package/'.$sales_package_id);
 		}
+		// */
 
 		/****************
 		 * Notify admin and sales that user clicked on sales package
@@ -241,7 +244,7 @@ class Link extends Shop_Controller
 		$this->get_products();
 
 		// set data variables to pass to view file
-		$this->data['file'] 			= 'product_details_sa'; //'product_thumbs';
+		$this->data['file'] 			= 'product_thumbs_sa'; //'product_details_sa';
 		$this->data['view_pane']	 	= 'thumbs_list_sales_pacakge'; // used to indentify if sales package thumbs page
 		$this->data['view_pane_sql'] 	= @$this->products ?: @$this->suggested_products; //$products;
 		$this->data['left_nav'] 		= $this->browse_by;

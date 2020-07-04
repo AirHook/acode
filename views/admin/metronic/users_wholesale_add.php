@@ -69,6 +69,10 @@
                                 </div>
                             </div>
                             <hr /> <!--------------------------------->
+
+                            <?php if (@$role != 'sales')
+                            { ?>
+
                             <div class="form-group">
                                 <label class="control-label col-md-3">User Level
                                     <span class="required"> * </span>
@@ -127,7 +131,20 @@
                                     <cite class="help-block small"> By default, system sales admin is sales user associated. </cite>
                                 </div>
                             </div>
-                            <hr />
+                            <hr /> <!--------------------------------->
+
+                                <?php
+                            }
+                            else
+                            { ?>
+
+                            <input type="hidden" name="access_level" value="2" />
+                            <input type="hidden" name="reference_designer" value="<?php echo $this->sales_user_details->designer; ?>" />
+                            <input type="hidden" name="admin_sales_email" value="<?php echo $this->sales_user_details->email; ?>" />
+
+                                <?php
+                            } ?>
+
                             <div class="form-group">
                                 <label class="col-md-3 control-label">Primary Email
                                     <span class="required"> * </span>

@@ -106,6 +106,7 @@ var ComponentsEditors = function () {
             });
         };
 
+        // get thumbs for the left thumbs grid
         function getThumbs(objectData){
             var get_thumbs = $.ajax({
                 type:    "POST",
@@ -130,6 +131,7 @@ var ComponentsEditors = function () {
             });
         };
 
+        // set info to session (sa_name, sa_email_message, sa_email_subject)
         function setInfo(objectData){
             var set_info = $.ajax({
                 type:    "POST",
@@ -144,6 +146,7 @@ var ComponentsEditors = function () {
             });
         };
 
+        // set options to session - sa_options
         function setOptions(objectData){
             var set_options = $.ajax({
                 type:    "POST",
@@ -160,6 +163,27 @@ var ComponentsEditors = function () {
             });
         };
 
+        // get item to show on popup
+        function getItem(objectData){
+            var addrem = $.ajax({
+                type:    "POST",
+                url:     base_url + "my_account/sales/sales_package/get_item.html",
+                data:    objectData
+            });
+            addrem.done(function(data) {
+                // fill in modal
+                $('.modal-body-size_qty_info').html(data);
+                $('#modal-size_qty_info').modal('show');
+            });
+            addrem.fail(function(jqXHR, textStatus, errorThrown) {
+                $('#loading').modal('hide');
+                alert("Get Item Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
+                //$('#reloading').modal('show');
+                //location.reload();
+            });
+        };
+
+        // add items to package - sa_items, sa_mod_items
         function addRemItem(objectData){
             var addrem = $.ajax({
                 type:    "POST",
@@ -208,6 +232,7 @@ var ComponentsEditors = function () {
             });
         };
 
+        // set items into right side package items details box
         function setItems(objectData){
             var set_size_qty = $.ajax({
                 type:    "POST",
@@ -295,6 +320,32 @@ var ComponentsEditors = function () {
 
         // clicked on product grid view
         $('.thumb-tiles-wrapper').on('click', '.package_items', function() {
+            // new way of actions when selecting items from grid
+            // show a popup of the item with stock info
+            var objectData = object_data;
+            objectData.prod_no = $(this).data('item');
+            objectData.page = $(this).data('page');
+            // check if item is already selected
+            var selected = $(this).closest('.thumb-tile.image').hasClass('selected');
+            if (selected) {
+                var r = confirm('Item is already selected.\nDo you want to remove item?');
+                if (r) {
+                    objectData.action = 'rem_item';
+                    // uncheck thumb
+                    $('.thumb-tile.'+objectData.prod_no).removeClass('selected');
+                    // rem item...
+                    addRemItem(objectData);
+                } else {
+                    return;
+                }
+            } else {
+                // get item...
+                getItem(objectData);
+            }
+
+            // the old way of actions done when select an item from grid
+            // it adds item straight to the package
+            /* *
             var checked = $(this).prop('checked');
             var objectData = object_data;
             objectData.prod_no = $(this).data('item');
@@ -309,6 +360,24 @@ var ComponentsEditors = function () {
                 $('.thumb-tile.'+objectData.prod_no).removeClass('selected');
             }
             // get item...
+            addRemItem(objectData);
+            // */
+        });
+
+        // size and qty change at modal
+        $('#form-size_qty_select').submit(function(e){
+            // prevent form from submitting
+            e.preventDefault();
+            // call jquery loading on po table of items
+            $('.cart_basket_wrapper table tbody').loading();
+            // get the object data to pass to post url
+            var objectData = object_data;
+            objectData.prod_no = $('#size-select-prod_no').val();
+            objectData.page = $('#size-select-page').val();
+            objectData.action = 'add_item';
+            // hide this modal
+            $('#modal-size_qty_info').modal('hide');
+            // add item...
             addRemItem(objectData);
         });
 

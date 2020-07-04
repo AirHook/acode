@@ -768,8 +768,7 @@ class New_order extends Sales_user_Controller
 		$assets_url = base_url('assets/metronic');
 
 		/****************
-		 * page styles plugins inserted at <head>
-		 * after global mandatory styles, before theme global styles
+  		 * page plugins style sheets inserted at <head>
 		 */
 		$this->data['page_level_styles_plugins'] = '';
 
@@ -806,9 +805,9 @@ class New_order extends Sales_user_Controller
 		 */
 		$this->data['page_level_styles'] = '';
 
+
 		/****************
 		 * page js plugins inserted at <bottom>
-		 * after core plugins, before global scripts
 		 */
 		$this->data['page_level_plugins'] = '';
 

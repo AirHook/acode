@@ -132,13 +132,13 @@ class New_orders extends Sales_user_Controller {
 		// breadcrumbs
 		$this->data['page_breadcrumb'] = array(
 			'orders/new_orders' => 'Orders',
-			'new_orders' => 'New Orders'
+			'new_orders' => 'New Order Inquiries'
 		);
 
 		// set data variables...
 		$this->data['role'] = 'sales';
 		$this->data['file'] = 'orders_new_orders';
-		$this->data['page_title'] = 'New Orders';
+		$this->data['page_title'] = 'New Order Inquiries';
 		$this->data['page_description'] = 'Order Logs';
 
 		// load views...

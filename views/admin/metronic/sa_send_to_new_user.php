@@ -7,6 +7,7 @@
 										<input type="hidden" name="reference_designer" class="send_to_new_user" value="<?php echo @$this->sales_user_details->designer; ?>" />
 										<input type="hidden" name="admin_sales_email" class="send_to_new_user" value="<?php echo @$this->sales_user_details->email; ?>" />
 										<input type="hidden" name="admin_sales_id" class="send_to_new_user" value="<?php echo @$this->sales_user_details->admin_sales_id; ?>" />
+										<input type="hidden" name="access_level" value="2" />
 
 										<div class="form-group">
 											<label>Email<span class="required"> * </span>
@@ -88,7 +89,7 @@
 
 										<div class="form-group">
 											<div class="btn-set btn-set-send-sales-package display-none">
-			                                    <button type="button" class="btn-send-sales-package btn dark btn-lg btn-block <?php echo @$sa_details->sales_package_id ? 'mt-bootbox-existing' : 'mt-bootbox-new'; ?>">
+			                                    <button type="submit" class="btn-send-sales-package-new-user btn dark btn-lg btn-block <?php echo @$sa_details->sales_package_id ? 'mt-bootbox-existing' : 'mt-bootbox-new'; ?>">
 			                                        Send <?php echo @$linesheet_sending_only ? 'Linesheet' : 'Package'; ?>
 			                                    </button>
 			                                </div>

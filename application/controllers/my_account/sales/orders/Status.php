@@ -34,7 +34,7 @@ class Status extends Admin_Controller {
 			$this->session->set_flashdata('error', 'no_id_passed');
 
 			// redirect user
-			redirect($this->config->slash_item('admin_folder').'orders/new_orders');
+			redirect('my_account/sales/new_orders', 'location');
 		}
 
 		// connect to database
@@ -106,11 +106,11 @@ class Status extends Admin_Controller {
 		{
 			if ($referrer == 'details')
 			{
-				redirect('admin/orders/'.$referrer.'/index/'.$id, 'location');
+				redirect('my_account/sales/orders/'.$referrer.'/index/'.$id, 'location');
 			}
-			else redirect('admin/orders/'.$referrer, 'location');
+			else redirect('my_account/sales/orders/'.$referrer, 'location');
 		}
-		else redirect('admin/orders/new_orders', 'location');
+		else redirect('my_account/sales/orders/new_orders', 'location');
 	}
 
 	// --------------------------------------------------------------------

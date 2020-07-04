@@ -68,6 +68,10 @@ class Vendor_user_Controller extends MY_Controller {
 		$this->vendor_user_details->initialize(array(
 			'vendor_id' => $this->session->vendor_id
 		));
+
+		// set some global variables
+		// fname used to show on top black menu bar
+		$this->data['top_bar_welcome_name'] = $this->vendor_user_details->name;
     }
 	// --------------------------------------------------------------------
 }

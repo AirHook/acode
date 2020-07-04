@@ -15,7 +15,7 @@ var FormValidation = function () {
 			errorElement: 'span', //default input error message container
 			errorClass: 'help-block help-block-error', // default input error message class
 			focusInvalid: false, // do not focus the last invalid input
-			ignore: "",  // validate all fields including form hidden input
+			ignore: ":not(:visible),:disabled,:hidden",  // validate all fields including form hidden input
 
 			// set your custom error message here
 			//messages: {

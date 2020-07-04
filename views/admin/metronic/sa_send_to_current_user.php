@@ -1,4 +1,5 @@
-								<div class="send_to_current_user <?php echo @$ws_user_details ? '' : 'display-none'; ?>">
+								<!--<div class="send_to_current_user <?php echo @$ws_user_details ? '' : 'display-none'; ?>">-->
+								<div class="send_to_current_user">
 
 									<div class="form-body selected-users-list-wrapper <?php echo @$ws_user_details ? '' : 'display-none'; ?>">
 										<span class="caption">Send to the following <cite class="<?php echo @$ws_user_details ? 'hide' : ''; ?>">(maximum of 10 users per sending)</cite>:</span>
@@ -175,7 +176,7 @@
 										<hr />
 
 										<div class="form-group">
-											<div class="btn-set btn-set-send-sales-package display-none">
+											<div class="btn-set btn-set-send-sales-package hide">
 			                                    <button type="button" class="btn-send-sales-package btn dark btn-lg btn-block <?php echo @$sa_details->sales_package_id ? 'mt-bootbox-existing' : 'mt-bootbox-new'; ?>">
 			                                        Send <?php echo @$linesheet_sending_only ? 'Linesheet' : 'Package'; ?>
 			                                    </button>

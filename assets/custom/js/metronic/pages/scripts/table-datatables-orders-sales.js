@@ -1,11 +1,11 @@
 var TableDatatablesManaged = function () {
 
     var base_url = $('body').data('base_url');
-    var object_data = $('body').data('object_data');
+    var objectData = $('.page-file-wrapper').data('object_data');
 
     var initTable = function () {
 
-        var table = $('#tbl-users_wholesale');
+        var table = $('#tbl-orders');
 
         // begin wholesale users table
         table.dataTable({
@@ -41,16 +41,14 @@ var TableDatatablesManaged = function () {
             // So when dropdowns used the scrollable div should be removed.
             //"dom": "<'row'<'col-md-6 col-sm-12'l><'col-md-6 col-sm-12'f>r>t<'row'<'col-md-5 col-sm-12'i><'col-md-7 col-sm-12'p>>",
 
-            "deferRender": true, // improve speed for large data tables
-
             "bStateSave": false, // save datatable state(pagination, sort, etc) in cookie.
 
             "lengthMenu": [
-                [100, 500, 1000, 2500, -1],
-                [100, 500, 1000, 2500, "All"] // change per page values here
+                [25, 50, 100, 500], // , -1
+                [25, 50, 100, 500] // , "All" - change per page values here
             ],
             // set the initial value
-            "pageLength": 100,
+            "pageLength": 25,
             "pagingType": "bootstrap_full_number",
             "columnDefs": [
                 {  // set default column settings
@@ -59,7 +57,7 @@ var TableDatatablesManaged = function () {
                 },
                 {
                     "width": "30px",
-                    "targets": [0, 1]
+                    "targets": [1]
                 },
                 {
                     "searchable": false,
@@ -71,11 +69,11 @@ var TableDatatablesManaged = function () {
                 }
             ],
             "order": [
-                [8, "desc"]
+                //[8, "desc"]
             ] // set a column as a default sort by asc
         });
 
-        var tableWrapper = jQuery('#tbl-wholesale_users_wrapper');
+        var tableWrapper = jQuery('#tbl-orders_wrapper');
 
 		// header checkbox change function
 		// get the "data-set" attribute and look for each (look for all rows checkboxes)
@@ -90,7 +88,6 @@ var TableDatatablesManaged = function () {
 					// add other custom javascripts here...
 					$('#bulk_actions_select').prop("disabled", false);
 					$('#apply_bulk_actions').prop("disabled", false);
-					$('#heading_checkbox').prop("checked", true);
                 } else {
                     $(this).prop("checked", false);
                     $(this).parents('tr').removeClass("active");
@@ -98,7 +95,6 @@ var TableDatatablesManaged = function () {
 					$('#bulk_actions_select').prop("disabled", true);
 					$('#bulk_actions_select').selectpicker("val", "");
  					$('#apply_bulk_actions').prop("disabled", true);
-					$('#heading_checkbox').prop("checked", false);
                 }
 				$('#bulk_actions_select').selectpicker("refresh");
             });
@@ -119,7 +115,6 @@ var TableDatatablesManaged = function () {
 					$('#bulk_actions_select').selectpicker("val", "");
 					$('#bulk_actions_select').prop("disabled", true);
 					$('#apply_bulk_actions').prop("disabled", true);
-					$('#heading_checkbox').prop("checked", false);
 				}
 			}
 			$('#bulk_actions_select').selectpicker("refresh");
@@ -129,7 +124,7 @@ var TableDatatablesManaged = function () {
     // header checkbox change function
     // get the "data-set" attribute and look for each (look for all rows checkboxes)
     // if header checkbos is checked, check row checkboxes and set row as active
-    $('#tbl-users_wholesale_').find('.group-checkable').change(function () {
+    $('#tbl-orders_').find('.group-checkable').change(function () {
         var set = jQuery(this).attr("data-set");
         var checked = jQuery(this).is(":checked");
         jQuery(set).each(function () {
@@ -139,7 +134,6 @@ var TableDatatablesManaged = function () {
                 // add other custom javascripts here...
                 $('#bulk_actions_select').prop("disabled", false);
                 $('#apply_bulk_actions').prop("disabled", false);
-                $('#heading_checkbox').prop("checked", true);
             } else {
                 $(this).prop("checked", false);
                 $(this).parents('tr').removeClass("active");
@@ -147,14 +141,13 @@ var TableDatatablesManaged = function () {
                 $('#bulk_actions_select').prop("disabled", true);
                 $('#bulk_actions_select').selectpicker("val", "");
                 $('#apply_bulk_actions').prop("disabled", true);
-                $('#heading_checkbox').prop("checked", false);
             }
             $('#bulk_actions_select').selectpicker("refresh");
         });
     });
 
     // table row checkboxes change function
-    $('#tbl-users_wholesale_').on('change', 'tbody tr .checkboxes', function () {
+    $('#tbl-orders_').on('change', 'tbody tr .checkboxes', function () {
         $(this).parents('tr').toggleClass("active");
         // add other custom javascripts here...
         var checked = jQuery(this).is(":checked");
@@ -168,13 +161,13 @@ var TableDatatablesManaged = function () {
                 $('#bulk_actions_select').selectpicker("val", "");
                 $('#bulk_actions_select').prop("disabled", true);
                 $('#apply_bulk_actions').prop("disabled", true);
-                $('#heading_checkbox').prop("checked", false);
             }
         }
         $('#bulk_actions_select').selectpicker("refresh");
     });
-	// apply button scripts
-	$('#apply_bulk_actions').click(function(){
+
+    // apply button scripts
+    $('#apply_bulk_actions').click(function(){
 		var x = document.getElementById("bulk_actions_select").selectedIndex;
 		var y = document.getElementById("bulk_actions_select").options;
 		var z = y[x].value;
@@ -187,83 +180,8 @@ var TableDatatablesManaged = function () {
 		}
 	});
 
-    // activation popup send activation email option checkbox
-    $('.activate-user').on('click', '.send_activation_email', function(){
-        var parEl = $(this).closest('.activate-user');
-        var checked = $(this).prop('checked');
-        if (checked) {
-            parEl.find('.btn-send_activation_email').show();
-            parEl.find('.btn-not_send_activation_email').hide();
-        } else {
-            parEl.find('.btn-send_activation_email').hide();
-            parEl.find('.btn-not_send_activation_email').show();
-        }
-    });
-
-    // send activation email modal actions
-    $('.btn.send_activation_email').on('click', function(){
-        // lets get some data
-        var form1 = $('#form-send_activation_email');
-        var user_id = $(this).data('user_id');
-        var checked = $('[name="send_activation_email-'+user_id+'"]').prop('checked');
-        var url = $(this).data('url');
-        var message = $('[name="send_activation_email_message-'+user_id+'"]').val();
-        if (checked) {
-            $('[name="user_id"]').val(user_id);
-            $('[name="message"]').html(message);
-            form1.attr('action', url).submit();
-        }
-        // clear the textarea after
-        $('[name="send_activation_email_message"]').val('');
-        // finally close modal
-        $('.modal.send_activation_email').modal('hide');
-    });
-
-    // clear all items button action for sales resource pages using
-    // wholesale users list
-    $('.confirm-clear_all_items').click(function(){
-        $('#modal-clear_all_items').modal('hide');
-        $('#loading .modal-title').html('Clearing...');
-        $('#loading').modal('show');
-        // call the url using get method
-        $.get(base_url + "sales/sales_package/clear_all_items.html")
-        // reset items count inner html
-        $('.items_count').html('0');
-        // clear all summary items container
-        // and replay default no items notification
-        $('.summary-item-container').hide();
-        $('.cart_basket_wrapper .row .no-items-notification > h4').show();
-        $('.send-package-btn').hide();
-        // in thumbs page...
-        $('.thumb-tile').removeClass('selected');
-        $('.package_items').prop('checked', false);
-        // clear modal and end...
-        $('#loading').modal('hide');
-    });
-
-    // sales resource pages
-    // sales package sidebar nav actions
-    $('.sidebar-nav-sales-package').on('click', function(){
-        var items_count = $(this).closest('ul').data('items_count');
-        var link = $(this).data('link');
-        //alert(items_count);
-        if (items_count != '0') {
-            //$('#modal-items_on_cart .contiue-items_on_cart').attr('href', link);
-            $('#modal-items_on_cart').modal('show');
-            $('#modal-items_on_cart .continue-items_on_cart').click(function(){
-                // continue means to clear items on cart
-                $.get(base_url + "sales/sales_package/clear_all_items.html", function(data){
-					// we need to wait for ajax call response before continuing
-					// to alleviate session handling execution time error
-                    if (data == 'clear') window.location.href=link;
-				});
-            });
-        } else {
-            window.location.href=link;
-        }
-    });
-
     // apply filter by designer
+    // version 1 where filter is top of page
 	$('.apply_filer_by_designer').click(function(){
         var page_param = $(this).data('page_param');
 		var x = document.getElementById("filter_by_designer_select").selectedIndex;
@@ -275,12 +193,74 @@ var TableDatatablesManaged = function () {
 		} else {
             $('#loading').modal('show');
             if (z=='all'){
-                window.location.href = base_url + "admin/users/wholesale/" + page_param + ".html";
+                window.location.href = base_url + "my_account/sales/orders/" + page_param + ".html";
             }else{
-                window.location.href = base_url + "admin/users/wholesale/" + page_param + "/index/" + z + ".html";
+                window.location.href = base_url + "my_account/sales/orders/" + page_param + "/index/" + z + ".html";
             }
 		}
 	});
+    // version 2 using sidebar filter
+    $('.filter-options-field').change(function(){
+        // get filter values
+        var url;
+        var page_param = $('[name="page_param"]').val();
+        var des_slug = $('[name="des_slug"]').val();
+        var status = $('[name="status"]:checked').val();
+        // process values
+        // page_param will alwasy have a value
+        // therefore, let's initially set the url as
+        var pre_url = base_url + "my_account/sales/orders/" + page_param;
+        // first, check for status
+        if (status) {
+            if (!des_slug) des_slug = 'all';
+            url = pre_url + "/index/" + des_slug + "/" + status + ".html";
+        } else if (!des_slug || des_slug=='all') {
+            url = pre_url + ".html"
+        } else {
+            url = pre_url + "/index/" + des_slug + ".html"
+        }
+        // redirect page
+        $('#loading').modal('show');
+        window.location.href = url;
+	});
+
+    // order details sidebar filter
+    $('.filter-options-field-details').change(function(){
+        // set and get values
+        var status = $('[name="status"]:checked').val();
+        var order_id = $('[name="order_id"]').val();
+        var referrer = 'details';
+        // set url params - id, status, referrer
+        var url = base_url + "my_account/sales/orders/status/index/" + order_id + "/" + status + "/" + referrer + ".html";
+        // redirect page
+        $('#loading').modal('show');
+        window.location.href = url;
+	});
+
+    // resend order email confirmation
+    $('.btn-resend_email_confirmation').on('click', function(){
+        // show loading modal
+        $('#loading .modal-title').html('Sending...');
+        $('#loading').modal('show');
+        // get data
+        objectData.user_id = $(this).data('user_id');
+        objectData.order_id = $(this).data('order_id');
+        objectData.user_cat = $(this).data('user_cat');
+        var send = $.ajax({
+            type:    "POST",
+            url:     base_url + "my_account/sales/orders/send_order_email_confirmation.html",
+            data:    objectData
+        });
+        send.done(function(data) {
+            location.reload();
+        });
+        send.fail(function(jqXHR, textStatus, errorThrown) {
+            $('#loading').modal('hide');
+            alert("Get Store Details Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
+            //$('#reloading').modal('show');
+            //location.reload();
+        });
+    });
 
     return {
 

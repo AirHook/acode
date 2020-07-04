@@ -158,13 +158,38 @@ class Send_package extends Sales_user_Controller {
 		/* *
 		Array
 		(
-		    [date] => 2020-05-24
-			[sales_user] => Rey Millares
-		    [store_name] => Rey Store
-		    [email_subject] => Products of Interests
-		    [email_message] => Here are designs that are now available. Review them for your store.
-		    [files] =>
-		    [email] => rsbgm@rcpixel.com
+			[send_to] => current_user/new_user
+			[sales_package_id] => 12 // --> not present for sending not saved sales package
+			[sales_user] => rsbgm@rcpixel.com
+		    [reference_designer] => basixblacklabel
+		    [admin_sales_email] => rsbgm@rcpixel.com
+		    [admin_sales_id] => 90
+		    [access_level] => 2
+
+				//current_user
+				[email] => Array
+			        (
+			            [0] => rsbgm@rcpixel.com
+			        )
+
+				//new_user
+			    [email] => // new user input field
+
+			// empty for current_user
+		    [firstname] =>
+		    [lastname] =>
+		    [store_name] =>
+		    [fed_tax_id] =>
+		    [telephone] =>
+		    [address1] =>
+		    [address2] =>
+		    [city] =>
+		    [state] =>
+		    [country] =>
+		    [zipcode] =>
+
+			[emails] => // current user set to email (up to ten and comma separated), empty on new_user
+			[search_string] => // used for searching users from current list
 		)
 		// */
 		if ( ! $this->input->post())
@@ -197,13 +222,25 @@ class Send_package extends Sales_user_Controller {
 			redirect('admin/campaigns/sales_package', 'location');
 		}
 
+		// set emailtracker_id
+		$data['emailtracker_id'] =
+			$this->wholesale_user_details->user_id
+			.'wi0014t'
+			.time()
+		;
+
 		// lets set the hashed time code here so that the batched hold the same tc only
 		$tc = md5(@date('Y-m-d', time()));
 
 		$data['username'] = $this->input->post('store_name');
 		$data['email_message'] = $this->input->post('email_message');
 
-		$data['access_link'] = site_url('shop/'.$this->wholesale_user_details->reference_designer);
+		$data['access_link'] = site_url(
+			'sales_package/link/index/'
+			.'X/' // --> supposedly sales_package_id for saved sa via Sales_package_sending.php
+			.$this->wholesale_user_details->user_id.'/'
+			.$tc
+		);
 
 		$data['items'] = json_decode($this->session->product_clicks_sa_items, TRUE);
 		$data['email'] = $this->input->post('email');
@@ -211,14 +248,9 @@ class Send_package extends Sales_user_Controller {
 		$data['w_images'] = 'N';
 		$data['linesheets_only'] = 'N';
 		$data['sales_username'] = $this->input->post('sales_user');
-		$data['sales_ref_designer'] = $this->wholesale_user_details->reference_designer;
-
-		$data['access_link'] = site_url(
-			'sales_package/product_clicks/index/'
-			.$this->input->post('date').'/'
-			.$this->wholesale_user_details->user_id.'/'
-			.$tc
-		);
+		$data['sales_ref_designer'] = $this->wholesale_user_details->designer;
+		$data['reference_designer'] = $this->wholesale_user_details->reference_designer;
+		$data['logo'] = $this->config->item('PROD_IMG_URL').$this->wholesale_user_details->designer_logo;
 
 		$this->email->clear(TRUE);
 

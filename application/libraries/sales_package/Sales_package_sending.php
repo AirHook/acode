@@ -145,6 +145,13 @@ class Sales_package_sending
 				$this->error .= 'Invalid email address - "'.$email.'"<br />';
 			}
 
+			// set emailtracker_id
+			$data['emailtracker_id'] =
+				$this->CI->wholesale_user_details->user_id
+				.'wi0014t'
+				.time()
+			;
+
 			// lets prepare for the url hash tags for the session login of wholesale user
 			// clicks through the sales package
 			//$sa1 = md5($email);
@@ -173,6 +180,8 @@ class Sales_package_sending
 				$data['linesheets_only'] = $this->linesheets_only;
 				$data['sales_username'] = @$this->CI->sales_user_details->admin_sales_id ? ucwords(strtolower(trim($this->CI->sales_user_details->fname).' '.trim($this->CI->sales_user_details->lname))) : ucwords(strtolower(trim($this->CI->wholesale_user_details->admin_sales_user).' '.trim($this->CI->wholesale_user_details->admin_sales_lname)));
 				$data['sales_ref_designer'] = @$this->CI->sales_user_details->admin_sales_id ? $this->CI->sales_user_details->designer_name : $this->CI->wholesale_user_details->designer;
+				$data['reference_designer'] = @$this->CI->sales_user_details->admin_sales_id ? $this->CI->sales_user_details->designer : $this->CI->wholesale_user_details->reference_designer;
+				$data['logo'] = $this->CI->config->item('PROD_IMG_URL').$this->CI->wholesale_user_details->designer_logo;
 
 				$this->CI->email->clear(TRUE);
 

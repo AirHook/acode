@@ -45,12 +45,25 @@
 													<?php } ?>
 												</div>
 
-												<div class="col-sm-<?php echo $this->session->same_shipping_address === '0' ? '4' : '8'; ?> checkout-billing-addres">
+                                                <?php
+                                                // default (general public)
+                                                $b_add_col = $this->session->same_shipping_address === '0' ? '4' : '8';
+                                                $sh_add_display = $this->session->same_shipping_address === '0' ? '' : 'display-none';
+
+                                                // set to 2 columns for wholesale user editing shipping address
+                                                if ($this->session->user_loggedin && $this->session->user_role == 'wholesale')
+                                                {
+                                                    $b_add_col = '4';
+                                                    $sh_add_display = '';
+                                                }
+                                                ?>
+
+												<div class="col-sm-<?php echo $b_add_col; ?> checkout-billing-addres">
 
 													<?php $this->load->view('metronic/checkout_address_billing'); ?>
 
 												</div>
-												<div class="col-sm-4 checkout-shipping-address" style="<?php echo $this->session->same_shipping_address === '0' ? '' : 'display:none;'; ?>">
+												<div class="col-sm-4 checkout-shipping-address <?php echo $sh_add_display; ?>">
 
 													<?php $this->load->view('metronic/checkout_address_shipping'); ?>
 

@@ -97,102 +97,128 @@ class Address extends Frontend_Controller
 			//print_r($this->input->post());
 			//die();
 
-			// wholesale users doesn't go through this step
-
-			// save (or update if existing) the guest user onto database tbluser_data
-			// then set and get consumer_user_details
-			// continue with delivery options
-			if ( ! $this->consumer_user_details->initialize(array('email'=>$this->input->post('b_email'))))
+			// at first, wholesale users doesn't go through this step
+			// now, we allow them to be able to edit address per order for cases
+			// where ws has multiple stores, etc...
+			if (
+				$this->session->user_loggedin
+				&& $this->session->user_role == 'wholesale'
+			)
 			{
-				// insert new user
-				$data = array(
-					'email' 				=> $this->input->post('b_email'),
-					'password'				=> 'shop72018',
-					'firstname'				=> $this->input->post('b_firstname'),
-					'lastname'				=> $this->input->post('b_lastname'),
-					'telephone'				=> $this->input->post('b_phone'),
-					'address1'				=> $this->input->post('b_address1'),
-					'address2'				=> $this->input->post('b_address2'),
-					'country'				=> $this->input->post('b_country'),
-					'city'					=> $this->input->post('b_city'),
-					'state_province'		=> $this->input->post('b_state'),
-					'zip_postcode'			=> $this->input->post('b_zip'),
-					'how_hear_about'		=> '',
-					'receive_productupd'	=> '1',
-					'admin_sales_email'		=> $this->webspace_details->info_email,
-					'reference_designer'	=> 'shop7thavenue'
+				// this should only happen when they click on edit address
+				// and needed a different shipping address (for ws with multiple store destination)
+				// set addresses session data
+				$newdata = array(
+					'sh_email' 				=> ($this->input->post('sh_email') ?: $this->input->post('b_email')),
+					'sh_firstname'			=> ($this->input->post('sh_firstname') ?: $this->input->post('b_firstname')),
+					'sh_lastname'			=> ($this->input->post('sh_lastname') ?: $this->input->post('b_lastname')),
+					'sh_phone'				=> ($this->input->post('sh_phone') ?: $this->input->post('b_phone')),
+					'sh_address1'			=> ($this->input->post('sh_address1') ?: $this->input->post('b_address1')),
+					'sh_address2'			=> ($this->input->post('sh_address2') ?: $this->input->post('b_address2')),
+					'sh_country'			=> ($this->input->post('sh_country') ?: $this->input->post('b_country')),
+					'sh_city'				=> ($this->input->post('sh_city') ?: $this->input->post('b_city')),
+					'sh_state'				=> ($this->input->post('sh_state') ?: $this->input->post('b_state')),
+					'sh_zip'				=> ($this->input->post('sh_zip') ?: $this->input->post('b_zip'))
 				);
-				$this->DB->insert('tbluser_data', $data);
-
-				// add user to mailgun mailing list
-				// shop7 makes user also for Basix Black Label
-				$params['address'] = $this->input->post('b_email');
-				$params['fname'] = $this->input->post('b_firstname');
-				$params['lname'] = $this->input->post('b_lastname');
-				$params['description'] = 'Basix Black Label Consumer User';
-				$params['list_name'] = 'consumers@mg.shop7thavenue.com';
-				$params['vars'] = '{"designer":"Basix Black Label"}';
-				$this->load->library('mailgun/list_member_add', $params);
-				$res = $this->list_member_add->add();
+				$this->session->set_userdata($newdata);
 			}
 			else
 			{
-				// capture any changes to data by simply updating user data as is
-				$data = array(
-					'email' 				=> $this->input->post('b_email'),
-					//'password'				=> 'shop72018',
-					'firstname'				=> $this->input->post('b_firstname'),
-					'lastname'				=> $this->input->post('b_lastname'),
-					'telephone'				=> $this->input->post('b_phone'),
-					'address1'				=> $this->input->post('b_address1'),
-					'address2'				=> $this->input->post('b_address2'),
-					'country'				=> $this->input->post('b_country'),
-					'city'					=> $this->input->post('b_city'),
-					'state_province'		=> $this->input->post('b_state'),
-					'zip_postcode'			=> $this->input->post('b_zip'),
-					//'how_hear_about'		=> '',
-					//'receive_productupd'	=> '1',
-					//'admin_sales_email'		=> $this->webspace_details->into_email,
-					//'reference_designer'	=> 'shop7thavenue'
+				// save (or update if existing) the guest user onto database tbluser_data
+				// then set and get consumer_user_details
+				// continue with delivery options
+				if ( ! $this->consumer_user_details->initialize(array('email'=>$this->input->post('b_email'))))
+				{
+					// insert new user
+					$data = array(
+						'email' 				=> $this->input->post('b_email'),
+						'password'				=> 'shop72018',
+						'firstname'				=> $this->input->post('b_firstname'),
+						'lastname'				=> $this->input->post('b_lastname'),
+						'telephone'				=> $this->input->post('b_phone'),
+						'address1'				=> $this->input->post('b_address1'),
+						'address2'				=> $this->input->post('b_address2'),
+						'country'				=> $this->input->post('b_country'),
+						'city'					=> $this->input->post('b_city'),
+						'state_province'		=> $this->input->post('b_state'),
+						'zip_postcode'			=> $this->input->post('b_zip'),
+						'how_hear_about'		=> '',
+						'receive_productupd'	=> '1',
+						'admin_sales_email'		=> $this->webspace_details->info_email,
+						'reference_designer'	=> 'shop7thavenue'
+					);
+					$this->DB->insert('tbluser_data', $data);
+
+					// add user to mailgun mailing list
+					// shop7 makes user also for Basix Black Label
+					$params['address'] = $this->input->post('b_email');
+					$params['fname'] = $this->input->post('b_firstname');
+					$params['lname'] = $this->input->post('b_lastname');
+					$params['description'] = 'Basix Black Label Consumer User';
+					$params['list_name'] = 'consumers@mg.shop7thavenue.com';
+					$params['vars'] = '{"designer":"Basix Black Label"}';
+					$this->load->library('mailgun/list_member_add', $params);
+					$res = $this->list_member_add->add();
+				}
+				else
+				{
+					// capture any changes to data by simply updating user data as is
+					$data = array(
+						'email' 				=> $this->input->post('b_email'),
+						//'password'				=> 'shop72018',
+						'firstname'				=> $this->input->post('b_firstname'),
+						'lastname'				=> $this->input->post('b_lastname'),
+						'telephone'				=> $this->input->post('b_phone'),
+						'address1'				=> $this->input->post('b_address1'),
+						'address2'				=> $this->input->post('b_address2'),
+						'country'				=> $this->input->post('b_country'),
+						'city'					=> $this->input->post('b_city'),
+						'state_province'		=> $this->input->post('b_state'),
+						'zip_postcode'			=> $this->input->post('b_zip'),
+						//'how_hear_about'		=> '',
+						//'receive_productupd'	=> '1',
+						//'admin_sales_email'		=> $this->webspace_details->into_email,
+						//'reference_designer'	=> 'shop7thavenue'
+					);
+					$this->DB->where('email', $this->input->post('b_email'));
+					$this->DB->update('tbluser_data', $data);
+				}
+
+				// initialize user details
+				$this->consumer_user_details->initialize(array('email'=>$this->input->post('b_email')));
+				// set sessions
+				// but unset the user_loggedin session so as not to confuse system
+				$this->consumer_user_details->set_session();
+				unset($_SESSION['user_loggedin']);
+
+				// set addresses session data
+				$newdata = array(
+					'ny_tax' 				=> $this->input->post('ny_tax') ?: '0',
+					'same_shipping_address'	=> $this->input->post('same_shipping_address') ?: '0',
+					'b_email' 				=> $this->input->post('b_email'),
+					'b_firstname'			=> $this->input->post('b_firstname'),
+					'b_lastname'			=> $this->input->post('b_lastname'),
+					'b_phone'				=> $this->input->post('b_phone'),
+					'b_address1'			=> $this->input->post('b_address1'),
+					'b_address2'			=> $this->input->post('b_address2'),
+					'b_country'				=> $this->input->post('b_country'),
+					'b_city'				=> $this->input->post('b_city'),
+					'b_state'				=> $this->input->post('b_state'),
+					'b_zip'					=> $this->input->post('b_zip'),
+					'sh_email' 				=> ($this->input->post('same_shipping_address') ? $this->input->post('b_email') : ($this->input->post('sh_email') ?: $this->input->post('b_email'))),
+					'sh_firstname'			=> ($this->input->post('same_shipping_address') ? $this->input->post('b_firstname') : ($this->input->post('sh_firstname') ?: $this->input->post('b_firstname'))),
+					'sh_lastname'			=> ($this->input->post('same_shipping_address') ? $this->input->post('b_lastname') : ($this->input->post('sh_lastname') ?: $this->input->post('b_lastname'))),
+					'sh_phone'				=> ($this->input->post('same_shipping_address') ? $this->input->post('b_phone') : ($this->input->post('sh_phone') ?: $this->input->post('b_phone'))),
+					'sh_address1'			=> ($this->input->post('same_shipping_address') ? $this->input->post('b_address1') : ($this->input->post('sh_address1') ?: $this->input->post('b_address1'))),
+					'sh_address2'			=> ($this->input->post('same_shipping_address') ? $this->input->post('b_address2') : ($this->input->post('sh_address2') ?: $this->input->post('b_address2'))),
+					'sh_country'			=> ($this->input->post('same_shipping_address') ? $this->input->post('b_country') : ($this->input->post('sh_country') ?: $this->input->post('b_country'))),
+					'sh_city'				=> ($this->input->post('same_shipping_address') ? $this->input->post('b_city') : ($this->input->post('sh_city') ?: $this->input->post('b_city'))),
+					'sh_state'				=> ($this->input->post('same_shipping_address') ? $this->input->post('b_state') : ($this->input->post('sh_state') ?: $this->input->post('b_state'))),
+					'sh_zip'				=> ($this->input->post('same_shipping_address') ? $this->input->post('b_zip') : ($this->input->post('sh_zip') ?: $this->input->post('b_zip'))),
+					'agree_to_policy'		=> $this->input->post('agree_to_policy')
 				);
-				$this->DB->where('email', $this->input->post('b_email'));
-				$this->DB->update('tbluser_data', $data);
+				$this->session->set_userdata($newdata);
 			}
-
-			// initialize user details
-			$this->consumer_user_details->initialize(array('email'=>$this->input->post('b_email')));
-			// set sessions
-			// but unset the user_loggedin session so as not to confuse system
-			$this->consumer_user_details->set_session();
-			unset($_SESSION['user_loggedin']);
-
-			// set addresses session data
-			$newdata = array(
-				'ny_tax' 				=> $this->input->post('ny_tax') ?: '0',
-				'same_shipping_address'	=> $this->input->post('same_shipping_address') ?: '0',
-				'b_email' 				=> $this->input->post('b_email'),
-				'b_firstname'			=> $this->input->post('b_firstname'),
-				'b_lastname'			=> $this->input->post('b_lastname'),
-				'b_phone'				=> $this->input->post('b_phone'),
-				'b_address1'			=> $this->input->post('b_address1'),
-				'b_address2'			=> $this->input->post('b_address2'),
-				'b_country'				=> $this->input->post('b_country'),
-				'b_city'				=> $this->input->post('b_city'),
-				'b_state'				=> $this->input->post('b_state'),
-				'b_zip'					=> $this->input->post('b_zip'),
-				'sh_email' 				=> ($this->input->post('sh_email') ?: $this->input->post('b_email')),
-				'sh_firstname'			=> ($this->input->post('sh_firstname') ?: $this->input->post('b_firstname')),
-				'sh_lastname'			=> ($this->input->post('sh_lastname') ?: $this->input->post('b_lastname')),
-				'sh_phone'				=> ($this->input->post('sh_phone') ?: $this->input->post('b_phone')),
-				'sh_address1'			=> ($this->input->post('sh_address1') ?: $this->input->post('b_address1')),
-				'sh_address2'			=> ($this->input->post('sh_address2') ?: $this->input->post('b_address2')),
-				'sh_country'			=> ($this->input->post('sh_country') ?: $this->input->post('b_country')),
-				'sh_city'				=> ($this->input->post('sh_city') ?: $this->input->post('b_city')),
-				'sh_state'				=> ($this->input->post('sh_state') ?: $this->input->post('b_state')),
-				'sh_zip'				=> ($this->input->post('sh_zip') ?: $this->input->post('b_zip')),
-				'agree_to_policy'		=> $this->input->post('agree_to_policy')
-			);
-			$this->session->set_userdata($newdata);
 
 			redirect('checkout/delivery', 'location');
 		}

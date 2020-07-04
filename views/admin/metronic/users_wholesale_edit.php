@@ -70,7 +70,20 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="form-group">
+                                <div class="col-md-4 col-md-offset-3">
+                                    <label class="mt-checkbox mt-checkbox-outline">
+                                        <input type="checkbox" name="send_activation_email" value="1" /> Send user the Activation Email
+                                        <span></span>
+                                    </label>
+                                    <cite class="help-block small"> Check to send activation email to user on submit. </cite>
+                                </div>
+                            </div>
                             <hr /> <!--------------------------------->
+
+                            <?php if (@$role != 'sales')
+                            { ?>
+
                             <div class="form-group">
                                 <label class="control-label col-md-3">User Level
                                     <span class="required"> * </span>
@@ -102,6 +115,11 @@
                                         <?php } ?>
                                         <?php } ?>
                                     </select>
+                                    <?php if (@$role == 'sales' OR @$this->sales_user_details->access_level == '2')
+                                    { ?>
+                                    <input type="hidden" name="reference_designer" value="<?php echo $this->wholesale_user_details->reference_designer; ?>" />
+                                        <?php
+                                    } ?>
                                 </div>
                                 <?php if ( ! $this->wholesale_user_details->user_id) { ?>
                                 <cite class="help-block small"> By default, current site is reference designer. </cite>
@@ -120,12 +138,30 @@
                                         <?php } ?>
                                         <?php } ?>
                                     </select>
+                                    <?php if (@$role == 'sales' OR @$this->sales_user_details->access_level == '2')
+                                    { ?>
+                                    <input type="hidden" name="admin_sales_email" value="<?php echo $this->wholesale_user_details->admin_sales_email; ?>" />
+                                        <?php
+                                    } ?>
                                 </div>
                                 <?php if ( ! $this->wholesale_user_details->user_id) { ?>
                                 <cite class="help-block small"> By default, system sales admin is sales user associated. </cite>
                                 <?php } ?>
                             </div>
-                            <hr />
+                            <hr /> <!--------------------------------->
+
+                                <?php
+                            }
+                            else
+                            { ?>
+
+                            <input type="hidden" name="access_level" value="<?php echo $this->wholesale_user_details->access_level; ?>" />
+                            <input type="hidden" name="reference_designer" value="<?php echo $this->wholesale_user_details->reference_designer; ?>" />
+                            <input type="hidden" name="admin_sales_email" value="<?php echo $this->wholesale_user_details->admin_sales_email; ?>" />
+
+                                <?php
+                            } ?>
+
                             <div class="form-group">
                                 <label class="col-md-3 control-label">Primary Email
                                     <span class="required"> * </span>

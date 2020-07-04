@@ -496,9 +496,13 @@
 			                                        <i class="fa fa-eye font-dark"></i>
 			                                    </a>
 
-			                                    <?php if ($order->status == '0') { // for new orders ?>
+			                                    <?php if ($order->status == '0') // for new orders
+												{
+													if (@$role == 'sales' && @$this->sales_user_details->access_level == '2') $hide_approve = 'hide';
+													else $hide_approve = '';
+													?>
 			                                    <!-- Acknowledge -->
-			                                    <a data-toggle="modal" href="#acknowledge-<?php echo $order->order_id; ?>" class="tooltips" data-original-title="Acknowledge Order">
+			                                    <a data-toggle="modal" href="#acknowledge-<?php echo $order->order_id; ?>" class="tooltips <?php echo $hide_approve; ?>" data-original-title="Acknowledge Order">
 			                                        <i class="fa fa-check font-dark"></i>
 			                                    </a>
 												<?php } ?>
@@ -528,7 +532,7 @@
 			                                    </a>
 												<?php } ?>
 
-												<?php if ($this->webspace_details->options['site_type'] == 'hub_site_' OR $order->status == '3') { ?>
+												<?php if ($this->webspace_details->options['site_type'] == 'hub_site' && $order->status == '3') { ?>
 			                                    <!-- Delete -->
 			                                    <a data-toggle="modal" href="#delete-<?php echo $order->order_id; ?>" class="tooltips" data-original-title="Delete">
 			                                        <i class="fa fa-trash font-dark"></i>
@@ -546,7 +550,7 @@
 															<div class="modal-body"> Acknowledge Order? </div>
 															<div class="modal-footer">
 																<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-																<a href="<?php echo site_url($pre_link.'orders/status/index/'.$order->order_id.'/store_credit/'.$status); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+																<a href="<?php echo site_url($pre_link.'/orders/status/index/'.$order->order_id.'/store_credit/'.$status); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
 																	<span class="ladda-label">Confirm?</span>
 																	<span class="ladda-spinner"></span>
 																</a>
@@ -568,7 +572,7 @@
 															<div class="modal-body"> Acknowledge Order? </div>
 															<div class="modal-footer">
 																<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-																<a href="<?php echo site_url($pre_link.'orders/status/index/'.$order->order_id.'/acknowledge/'.$status); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+																<a href="<?php echo site_url($pre_link.'/orders/status/index/'.$order->order_id.'/acknowledge/'.$status); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
 																	<span class="ladda-label">Confirm?</span>
 																	<span class="ladda-spinner"></span>
 																</a>
@@ -590,7 +594,7 @@
 															<div class="modal-body"> Set order as PENDING? </div>
 															<div class="modal-footer">
 																<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-																<a href="<?php echo site_url($pre_link.'orders/status/index/'.$order->order_id.'/pending/'.$status); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+																<a href="<?php echo site_url($pre_link.'/orders/status/index/'.$order->order_id.'/pending/'.$status); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
 																	<span class="ladda-label">Confirm?</span>
 																	<span class="ladda-spinner"></span>
 																</a>
@@ -612,7 +616,7 @@
 															<div class="modal-body"> Set order as ON HOLD? </div>
 															<div class="modal-footer">
 																<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-																<a href="<?php echo site_url($pre_link.'orders/status/index/'.$order->order_id.'/on_hold/'.$status); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+																<a href="<?php echo site_url($pre_link.'/orders/status/index/'.$order->order_id.'/on_hold/'.$status); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
 																	<span class="ladda-label">Confirm?</span>
 																	<span class="ladda-spinner"></span>
 																</a>
@@ -634,7 +638,7 @@
 															<div class="modal-body"> Cancel Order? </div>
 															<div class="modal-footer">
 																<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-																<a href="<?php echo site_url($pre_link.'orders/status/index/'.$order->order_id.'/cancel/'.$status); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+																<a href="<?php echo site_url($pre_link.'/orders/status/index/'.$order->order_id.'/cancel/'.$status); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
 																	<span class="ladda-label">Confirm?</span>
 																	<span class="ladda-spinner"></span>
 																</a>
@@ -656,7 +660,7 @@
 															<div class="modal-body"> Set order as COMPLETE and SHIPPED? </div>
 															<div class="modal-footer">
 																<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-																<a href="<?php echo site_url($pre_link.'orders/status/index/'.$order->order_id.'/complete/'.$status); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+																<a href="<?php echo site_url($pre_link.'/orders/status/index/'.$order->order_id.'/complete/'.$status); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
 																	<span class="ladda-label">Confirm?</span>
 																	<span class="ladda-spinner"></span>
 																</a>
@@ -678,7 +682,7 @@
 															<div class="modal-body"> Set order as RETURNED? </div>
 															<div class="modal-footer">
 																<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-																<a href="<?php echo site_url($pre_link.'orders/status/index/'.$order->order_id.'/return/'.$status); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+																<a href="<?php echo site_url($pre_link.'/orders/status/index/'.$order->order_id.'/return/'.$status); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
 																	<span class="ladda-label">Confirm?</span>
 																	<span class="ladda-spinner"></span>
 																</a>
@@ -700,7 +704,7 @@
 															<div class="modal-body"> DELETE order? <br /> This cannot be undone! </div>
 															<div class="modal-footer">
 																<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-																<a href="<?php echo site_url($pre_link.'orders/delete/index/'.$order->order_id); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+																<a href="<?php echo site_url($pre_link.'/orders/delete/index/'.$order->order_id); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
 																	<span class="ladda-label">Confirm?</span>
 																	<span class="ladda-spinner"></span>
 																</a>

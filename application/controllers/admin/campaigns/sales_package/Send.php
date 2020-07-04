@@ -152,11 +152,23 @@ class Send extends Admin_Controller {
 		Array
 		(
 		    [sales_package_id] => 12
-		    [send_to] => current_user
-		    [reference_designer] =>
-		    [admin_sales_email] =>
-		    [admin_sales_id] =>
-		    [email] => // new user input field
+		    [send_to] => current_user/new_user
+			[sales_user] => rsbgm@rcpixel.com
+		    [reference_designer] => basixblacklabel
+		    [admin_sales_email] => rsbgm@rcpixel.com
+		    [admin_sales_id] => 90
+		    [access_level] => 2
+
+				//current_user
+				[email] => Array
+			        (
+			            [0] => rsbgm@rcpixel.com
+			        )
+
+				//new_user
+			    [email] => // new user input field
+
+			// empty for current_user
 		    [firstname] =>
 		    [lastname] =>
 		    [store_name] =>
@@ -168,7 +180,8 @@ class Send extends Admin_Controller {
 		    [state] =>
 		    [country] =>
 		    [zipcode] =>
-			[emails] => // current user set to email (up to ten and comma separated)
+
+			[emails] => // current user set to email (up to ten and comma separated), empty on new_user
 			[search_string] => // used for searching users from current list
 		)
 		// */

@@ -81,10 +81,37 @@ class Bulk_actions extends Admin_Controller {
 			}
 		}
 
+		// note in comments
+		$comments = 'Previously associated with '
+			.$this->admin_user_details->webspace_slug
+			.' under sales agent '
+			.$this->admin_user_details->email
+			.'<br />'
+		;
+
 		// update or delete items from database
 		if ($this->input->post('bulk_action') === 'del')
 		{
-			$DB->delete('tbluser_data_wholesale');
+			if (
+				$this->admin_user_detail->acess_level === '0'
+				OR $this->admin_user_detail->acess_level === '1'
+				OR $this->admin_user_detail->acess_level === '2'
+			)
+			{
+				// designer levels cannot delete users
+				// instead, remove designer association from user
+				$DB->set('admin_sales_id', NULL);
+				$DB->set('admin_sales_email', NULL);
+				$DB->set('reference_designer', NULL);
+				$DB->set('is_active', '0');
+				$DB->set('comments', $comments);
+
+				$DB->update('tbluser_data_wholesale');
+			}
+			else
+			{
+				$DB->delete('tbluser_data_wholesale');
+			}
 
 			// set flash data
 			$this->session->set_flashdata('success', 'delete');

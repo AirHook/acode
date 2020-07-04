@@ -12,21 +12,6 @@
                             <button class="close" data-close="alert"></button> You have some form errors. Please check below. </div>
                         <div class="alert alert-success display-hide">
                             <button class="close" data-close="alert"></button> Your form validation is successful! </div>
-                        <?php if ($this->session->flashdata('success') == 'add') { ?>
-                        <div class="alert alert-success auto-remove">
-                            <button class="close" data-close="alert"></button> New user added. Continue editing...
-                        </div>
-                        <?php } ?>
-                        <?php if ($this->session->flashdata('success') == 'acivation_email_sent') { ?>
-                        <div class="alert alert-success auto-remove">
-                            <button class="close" data-close="alert"></button> Activation Email Sent
-                        </div>
-                        <?php } ?>
-                        <?php if ($this->session->flashdata('success') == 'edit') { ?>
-                        <div class="alert alert-success auto-remove">
-                            <button class="close" data-close="alert"></button> User information updated...
-                        </div>
-                        <?php } ?>
                         <?php if (validation_errors()) { ?>
                         <div class="alert alert-danger">
                             <button class="close" data-close="alert"></button> <?php echo validation_errors(); ?>
@@ -434,24 +419,13 @@
                                     <a href="<?php echo $edit_link; ?>" class="tooltips" data-original-title="Edit">
                                         <i class="fa fa-pencil font-dark"></i>
                                     </a>
+
                                     <?php if ($user->is_active == '0' OR $user->is_active == '2') { ?>
                                     <!-- Activate -->
                                     <a data-toggle="modal" href="#activate-<?php echo $user->user_id; ?>" class="tooltips" data-original-title="Activate">
                                         <i class="fa fa-check font-dark"></i>
                                     </a>
                                     <?php } ?>
-                                    <?php if ($user->is_active == '0' OR $user->is_active == '1') { ?>
-                                    <!-- Suspend --
-                                    <a data-toggle="modal" href="#suspend-<?php echo $user->user_id; ?>" class="tooltips" data-original-title="Suspend">
-                                        <i class="fa fa-dot-circle-o font-dark"></i>
-                                    </a>
-                                    -->
-                                    <?php } ?>
-
-                                    <?php
-                                    // do not show to level 2 sales users
-                                    if (@$role != 'sales' OR @$this->sales_user_details->access_level == '2')
-                                    { ?>
 
                                     <?php if ($user->is_active == '1' OR $user->is_active == '2') { ?>
                                     <!-- Set Inactive -->
@@ -463,19 +437,22 @@
                                     <a data-toggle="modal" href="#delete-<?php echo $user->user_id; ?>" class="tooltips" data-original-title="Delete">
                                         <i class="fa fa-trash font-dark"></i>
                                     </a>
+
                                     <!-- Transfer User to Consumer -->
                                     <a data-toggle="modal" href="#transfer-<?php echo $user->user_id; ?>" class="tooltips <?php echo @$role == 'sales' ? 'hide' : ''; ?>" data-original-title="Transfer User to Consumer">
                                         <i class="fa fa-play-circle-o font-dark"></i>
                                     </a>
 
-                                        <?php
-                                    } ?>
+                                    <?php
+                                    // do not show to level 2 sales users
+                                    if (@$role != 'sales' OR @$this->sales_user_details->access_level != '2')
+                                    { ?>
 
                                     <!-- Send Activation Email --
                                     <a href="<?php echo site_url($pre_link.'/users/wholesale/send_activation_email/index/'.$user->user_id); ?>" onclick="$('#loading .modal-title').html('Sending activation email...');$('#loading').modal('show');" class="tooltips" data-original-title="Send Activation Email" <?php echo $i < 3 ? 'data-placement="bottom"' : '';?>>
                                         <i class="fa fa-envelope-o font-dark"></i>
                                     </a>-->
-                                    <!-- Send Activation Email -->
+                                    <!-- Send Activation Email | must not show on inactive list -->
                                     <a data-toggle="modal" href="#send_activation_email-<?php echo $user->user_id?>" class="tooltips" data-original-title="Send Activation Email" <?php echo $i < 3 ? 'data-placement="bottom"' : '';?>>
                                         <i class="fa fa-envelope-o font-dark"></i>
                                     </a>
@@ -483,6 +460,9 @@
                                     <a data-toggle="modal" href="#send_recent-<?php echo $user->user_id?>" class="tooltips" data-original-title="Send Recent Items Sales Package" <?php echo $i < 3 ? 'data-placement="bottom"' : '';?>>
                                         <i class="fa fa-dropbox font-dark"></i>
                                     </a>
+
+                                        <?php
+                                    } ?>
 
                                     <!-- SEND ACTIVATION EMAIL -->
                                     <div class="modal fade bs-modal-sm send_activation_email" id="send_activation_email-<?php echo $user->user_id?>" tabindex="-1" role="dialog" aria-hidden="true">
@@ -551,7 +531,7 @@
                                                 <div class="modal-body"> Are you sure you want to SUSPEND user? </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-                                                    <a href="<?php echo site_url($pre_link.'/users/wholesale/suspend/index/'.$user->user_id.'/'.$this->uri->segment(4)); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+                                                    <a href="<?php echo site_url($pre_link.'/users/wholesale/suspend/index/'.$user->user_id.'/'.(@$role == 'sales' ? $this->uri->segment(5) : $this->uri->segment(4))); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
                                                         <span class="ladda-label">Confirm?</span>
                                                         <span class="ladda-spinner"></span>
                                                     </a>
@@ -573,7 +553,7 @@
                                                 <div class="modal-body"> Are you sure you want to SET INACTIVE user? </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-                                                    <a href="<?php echo site_url($pre_link.'/users/wholesale/deactivate/index/'.$user->user_id.'/'.$this->uri->segment(4)); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+                                                    <a href="<?php echo site_url($pre_link.'/users/wholesale/deactivate/index/'.$user->user_id.'/'.(@$role == 'sales' ? $this->uri->segment(5) : $this->uri->segment(4))); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
                                                         <span class="ladda-label">Confirm?</span>
                                                         <span class="ladda-spinner"></span>
                                                     </a>
@@ -585,17 +565,24 @@
                                     </div>
                                     <!-- /.modal -->
                                     <!-- ITEM ACTIVATE -->
-                                    <div class="modal fade bs-modal-sm" id="activate-<?php echo $user->user_id?>" tabindex="-1" role="dialog" aria-hidden="true">
+                                    <div class="modal fade bs-modal-sm activate-user" id="activate-<?php echo $user->user_id?>" tabindex="-1" role="dialog" aria-hidden="true">
                                         <div class="modal-dialog modal-sm">
                                             <div class="modal-content">
                                                 <div class="modal-header">
                                                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                                    <h4 class="modal-title">Update User Info</h4>
+                                                    <h4 class="modal-title">Activate Wholesale User</h4>
                                                 </div>
-                                                <div class="modal-body"> ACTIVATE user? </div>
+                                                <div class="modal-body">
+                                                    ACTIVATE user? <br/>
+                                                    <input type="checkbox" class="send_activation_email" data-user_id="<?php echo $user->user_id?>" checked /> &nbsp; - &nbsp; This sends user id and password by email along with a link to browse and shop
+                                                </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-                                                    <a href="<?php echo site_url($pre_link.'/users/wholesale/activate/index/'.$user->user_id.'/'.$this->uri->segment(4)); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+                                                    <a href="<?php echo site_url($pre_link.'/users/wholesale/activate/index/'.$user->user_id.'/'.(@$role == 'sales' ? $this->uri->segment(5) : $this->uri->segment(4)).'/1'); ?>" type="button" class="btn green mt-ladda-btn ladda-button btn-send_activation_email" data-style="expand-left">
+                                                        <span class="ladda-label">Confirm?</span>
+                                                        <span class="ladda-spinner"></span>
+                                                    </a>
+                                                    <a href="<?php echo site_url($pre_link.'/users/wholesale/activate/index/'.$user->user_id.'/'.(@$role == 'sales' ? $this->uri->segment(5) : $this->uri->segment(4))); ?>" type="button" class="btn green mt-ladda-btn ladda-button btn-not_send_activation_email display-none" data-style="expand-left">
                                                         <span class="ladda-label">Confirm?</span>
                                                         <span class="ladda-spinner"></span>
                                                     </a>
@@ -617,7 +604,7 @@
                                                 <div class="modal-body"> DELETE user? <br /> This cannot be undone! </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-                                                    <a href="<?php echo site_url($pre_link.'/users/wholesale/delete/index/'.$user->user_id.'/'.$this->uri->segment(4)); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+                                                    <a href="<?php echo site_url($pre_link.'/users/wholesale/delete/index/'.$user->user_id.'/'.(@$role == 'sales' ? $this->uri->segment(5) : $this->uri->segment(4))); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
                                                         <span class="ladda-label">Confirm?</span>
                                                         <span class="ladda-spinner"></span>
                                                     </a>
@@ -639,7 +626,7 @@
                                                 <div class="modal-body"> Transferring user to consumer list. <br /> This cannot be undone! </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-                                                    <a href="<?php echo site_url($pre_link.'/users/wholesale/transfer/index/'.$user->user_id.'/'.$this->uri->segment(4)); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+                                                    <a href="<?php echo site_url($pre_link.'/users/wholesale/transfer/index/'.$user->user_id.'/'.(@$role == 'sales' ? $this->uri->segment(5) : $this->uri->segment(4))); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
                                                         <span class="ladda-label">Confirm?</span>
                                                         <span class="ladda-spinner"></span>
                                                     </a>

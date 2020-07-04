@@ -162,13 +162,6 @@ class Clearance extends Admin_Controller {
 		$where['tbl_stock.options NOT LIKE'] = '"clearance_consumer_only":"1"';
 
 		// get the products list and total count
-		$params['show_private'] = TRUE; // all items general public (Y) - N for private
-		$params['view_status'] = 'ALL'; // all items view status (Y, Y1, Y2, N)
-		$params['view_at_hub'] = TRUE; // all items general public at hub site
-		$params['view_at_satellite'] = TRUE; // all items publis at satellite site
-		$params['variant_publish'] = 'ALL'; // all items at variant level publish (view status)
-		$params['variant_view_at_hub'] = TRUE; // variant level public at hub site
-		$params['variant_view_at_satellite'] = TRUE; // varian level public at satellite site
 		$params['with_stocks'] = FALSE; // Show all with and without stocks
 		$params['group_products'] = TRUE; // group per product number or per variant
 		$params['special_sale'] = TRUE; // special sale items only

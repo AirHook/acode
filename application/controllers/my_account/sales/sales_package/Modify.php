@@ -71,12 +71,17 @@ class Modify extends Sales_user_Controller {
 				unset($_SESSION['sa_email_subject']); // used at view
 				unset($_SESSION['sa_email_message']); // used at view
 				unset($_SESSION['sa_options']);
-				// remove po mod details
-				unset($_SESSION['sa_mod_id']);
-				unset($_SESSION['sa_mod_items']);
-				unset($_SESSION['sa_mod_slug_segs']);
-				unset($_SESSION['sa_mod_options']);
-				unset($_SESSION['sa_mod_des_slug']);
+
+				// check for sa create session
+				if ( ! $this->session->sa_mod_items)
+				{
+					// remove po mod details
+					unset($_SESSION['sa_mod_id']);
+					unset($_SESSION['sa_mod_items']);
+					unset($_SESSION['sa_mod_slug_segs']);
+					unset($_SESSION['sa_mod_options']);
+					unset($_SESSION['sa_mod_des_slug']);
+				}
 			}
 
 			// capture package id being modified

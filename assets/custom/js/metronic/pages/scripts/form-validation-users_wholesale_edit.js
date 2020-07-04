@@ -15,7 +15,7 @@ var FormValidation = function () {
 			errorElement: 'span', //default input error message container
 			errorClass: 'help-block help-block-error', // default input error message class
 			focusInvalid: false, // do not focus the last invalid input
-			ignore: ":not(:visible),:disabled",  // validate all fields including form hidden input
+			ignore: ":not(:visible),:disabled,:hidden",  // validate all fields including form hidden input
 
 			// set your custom error message here
 			//messages: {
@@ -137,6 +137,17 @@ var FormValidation = function () {
             }
         });
     }
+
+    // send activation email check function
+    $('[name="send_activation_email"]').on('change', function(){
+        var checked = $(this).prop('checked');
+        var status = $('[name="is_active"]').val();
+        if (checked && status == '0') {
+            alert('Please set user status to ACTIVE'+'\n'+'in order to send activation email.');
+            $(this).prop('checked', false);
+            return;
+        }
+    });
 
     // sales resource pages
     // sales package sidebar nav actions

@@ -111,7 +111,7 @@
 
                                             <?php if ($this->webspace_details->slug != 'tempoparis') { ?>
                                             <br />
-                                            <span style="font-size:0.8em;line-height:24px;">
+                                            <span style="font-size:0.8em;line-height:24px;display:none;">
                                                 Can't see the images in this email? &nbsp;
                                                 <a href="<?php echo site_url('wholesale/activation_email/index/'.@$user_id); ?>" style="color:black;">
                                                     View in browser
@@ -182,7 +182,18 @@
 
                                                         	<br><br>
 
-                                                        	<a href="https://www.<?php echo @$this->webspace_details->site; ?>/wholesale/signin.html">
+                                                            <?php
+                                                            // using the thumbs package type link for the login page link as well
+                                                            // generalized accesslink
+                                                            $access_link =
+                                                                base_url()
+                                                                .'shop/womens_apparel.html?filter=&availability=instock'
+                                                                .'&act='.time()
+                                                                .'&ws='.(@$user_id ?: '6854')
+                                                            ;
+                                                            ?>
+
+                                                        	<a href="<?php echo $access_link; ?>">
                                                         		https://www.<?php echo @$this->webspace_details->site; ?>/wholesale/signin.html
                                                         	</a>
 

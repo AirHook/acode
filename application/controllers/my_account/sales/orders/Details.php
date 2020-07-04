@@ -148,7 +148,7 @@ class Details extends Sales_user_Controller {
 			';
 			// handle datatable
 			$this->data['page_level_scripts'].= '
-				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/table-datatables-orders.js" type="text/javascript"></script>
+				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/table-datatables-orders-sales.js" type="text/javascript"></script>
 			';
 	}
 

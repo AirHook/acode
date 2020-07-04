@@ -166,7 +166,7 @@
                         { ?>
                         <li class="nav-item <?php echo strpos($this->uri->uri_string(), 'admin/orders/new_orders') === FALSE ? '' : 'active'; ?>">
                             <a href="<?php echo site_url('admin/orders/new_orders'); ?>" class="nav-link ">
-                                <span class="title">New Orders</span>
+                                <span class="title">New Order Inquiries</span>
                             </a>
                         </li>
                         <li class="nav-item <?php echo strpos($this->uri->uri_string(), 'admin/orders/shipment_pending') === FALSE ? '' : 'active'; ?>">

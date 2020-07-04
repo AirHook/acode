@@ -51,7 +51,7 @@
 								color: #555;
 							}
 							.nav-tabs > li > a {
-								font-size: 12px;
+								font-size: 10px;
 							}
 							.nav-tabs > li > a:hover {
 								background-color: #333;

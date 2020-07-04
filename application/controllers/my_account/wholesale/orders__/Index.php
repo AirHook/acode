@@ -61,14 +61,14 @@ class Index extends Wholesale_user_Controller {
 
 		// set data variables...
 		$this->data['role'] = 'wholesale'; //userrole will be used for IF statements in template files
-		$this->data['file'] = 'orders'; // purchase_orders
+		$this->data['file'] = 'orders_new_orders'; // purchase_orders
 		$this->data['page_title'] = 'Wholesale Orders';
 		$this->data['page_description'] = 'List of Wholesale Orders';
 
 		// load views...
 		$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template_my_account/template', $this->data);
 	}
-	
+
 	// ----------------------------------------------------------------------
 
 	/**
@@ -108,7 +108,7 @@ class Index extends Wholesale_user_Controller {
 		$this->pagination->initialize($config);
 
 	}
-	
+
 	// ----------------------------------------------------------------------
 
 	/**

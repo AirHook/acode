@@ -1,3 +1,24 @@
+					<?php
+					// let's set the role for sales user my account
+					$pre_link =
+						@$role == 'sales'
+						? 'my_account/sales'
+						: 'admin'
+					;
+					// level 2 sales user cannot view/print packing list and barcodes
+					if (@$role == 'sales' && @$this->sales_user_details->access_level == '2')
+					{
+						$hide_packing_list = 'display-none';
+						$hide_barcdoes = 'display-none'; // also used at the items table print barcode link
+						$hide_resend_order_email = 'display-none';
+					}
+					else
+					{
+						$hide_packing_list = '';
+						$hide_barcdoes = '';
+						$hide_resend_order_email = '';
+					}
+					?>
 					<div class="m-grid m-grid-responsive-md page-file-wrapper" data-object_data='{"<?php echo $this->security->get_csrf_token_name(); ?>":"<?php echo $this->security->get_csrf_hash(); ?>"}'>
 						<div class="m-grid-row">
 
@@ -22,100 +43,107 @@
 
 							<div class="m-grid-col m-grid-col-md-2 filter-options margin-bottom-20" style="padding-right:15px;font-size:0.8em;">
 
-								<h4>Options</h4>
+								<h4>Status:</h4>
 
-								<div class="form-group">
-                                    <label>
-										Status
-									</label>
-                                    <div class="mt-radio-list" style="padding:0px;">
-
-										<?php if ($order_details->status == '1')
-										{ ?>
-
-										<label>
-											This order is closed and shipped. In case of return, please select return options below:
-										</label>
-										<label class="mt-radio mt-radio-outline"> Refunded
-                                            <input type="radio" class="filter-options-field-details" value="refunded" name="status" <?php echo @$this->order_details->status == '4' ? 'checked="checked"' : ''; ?>  />
-                                            <span></span>
-                                        </label>
-										<label class="mt-radio mt-radio-outline"> Store Credit
-                                            <input type="radio" class="filter-options-field-details" value="store_credit" name="status" <?php echo @$this->order_details->status == '6' ? 'checked="checked"' : ''; ?>  />
-                                            <span></span>
-                                        </label>
-
-											<?php
-										}
-										// for returned orders
-										else if ($order_details->status == '4')
-										{ ?>
-
-										<label class="mt-radio mt-radio-outline"> Refunded
-                                            <input type="radio" class="filter-options-field-details" value="refunded" name="status" <?php echo @$this->order_details->status == '4' ? 'checked="checked"' : ''; ?>  />
-                                            <span></span>
-                                        </label>
-
-											<?php
-										}
-										// for returned orders
-										else if ($order_details->status == '6')
-										{ ?>
-
-										<label class="mt-radio mt-radio-outline"> Store Credit
-                                            <input type="radio" class="filter-options-field-details" value="store_credit" name="status" <?php echo @$this->order_details->status == '6' ? 'checked="checked"' : ''; ?>  />
-                                            <span></span>
-                                        </label>
-
-											<?php
-										}
-										// all esle...
-										else
-										{
-											if ($order_details->status == '0')
-											{ ?>
-
-										<label class="mt-radio mt-radio-outline"> New Order
-                                            <input type="radio" class="filter-options-field-details" value="pending" name="status" <?php echo @$this->order_details->status == '0' ? 'checked="checked"' : ''; ?> />
-                                            <span></span>
-                                        </label>
-
-												<?php
-											} ?>
-
-										<label class="mt-radio mt-radio-outline"> Shipment Pending
-                                            <input type="radio" class="filter-options-field-details" value="acknowledge" name="status" <?php echo @$this->order_details->status == '5' ? 'checked="checked"' : ''; ?> />
-                                            <span></span>
-                                        </label>
-										<label class="mt-radio mt-radio-outline"> Complete / Shipped
-                                            <input type="radio" class="filter-options-field-details" value="complete" name="status" <?php echo @$this->order_details->status == '1' ? 'checked="checked"' : ''; ?> />
-                                            <span></span>
-                                        </label>
-                                        <label class="mt-radio mt-radio-outline"> Cancelled
-                                            <input type="radio" class="filter-options-field-details" value="cancel" name="status" <?php echo @$this->order_details->status == '3' ? 'checked="checked"' : ''; ?>  />
-                                            <span></span>
-                                        </label>
-
-											<?php
-										} ?>
-                                    </div>
-                                </div>
-
-								<?php if (@$this->order_details->sales_order_number) { ?>
-                                <label>
-									Ref. Sales Order #: &nbsp; <a href="javascript:;"> <?php echo $this->order_details->sales_order_number; ?> </a>
+								<label class="btn btn-default btn-block btn-sm margin-bottom-10" style="cursor:text;" onmouseover="$(this).css('background','none');">
+									<?php
+									// 0-new,1-complete,2-onhold,3-canclled,4-returned/refunded,5-shipment_pending,6-store_credit
+									switch ($order_details->status)
+									{
+										case '0':
+											echo 'NEW ORDER INQUIRY';
+											$txt = 'This inquiry is being checked for stock and accounting is generating an invoice.';
+										break;
+										case '5':
+											echo 'SHIPMENT PENDING';
+											$txt = 'This order has been paid and packing list is ready. Warehouse is processing and shipping.';
+										break;
+										case '1':
+											echo 'COMPLETE/SHIPPED';
+											$txt = 'This order has shipped and tracking is available';
+										break;
+										case '4':
+											echo 'REFUNDED';
+										break;
+										case '6':
+											echo 'STORE CREDIT';
+										break;
+										case '3':
+											echo 'CANCELLED';
+										break;
+									}
+									?>
 								</label>
-								<?php } ?>
 
-								<hr style="margin:5px 0 15px;" />
+								<cite class="small font-red"><?php echo $txt; ?></cite>
 
-								<a href="<?php echo site_url('admin/orders/view_packing_list/index/'.$this->order_details->order_id); ?>" class="btn grey-gallery btn-block btn-sm" target="_blank">
+								<hr style="margin:15px 0 15px;" />
+
+								<label>
+									Actions:
+								</label>
+
+								<?php if ($order_details->status == '0')
+								{
+									if (@$role == 'sales' && @$this->sales_user_details->access_level == '2') $hide_approve = 'hide';
+									else $hide_approve = '';
+									?>
+
+								<button href="#modal-shipment_pending" data-toggle="modal" class="btn grey-gallery btn-block btn-sm filter-options-field-details <?php echo $hide_approve; ?>" style="text-align:left;padding-left:20px;">
+									<i class="fa fa-check"></i>
+									Approve Order
+								</button>
+								<button href="#modal-cancel" data-toggle="modal" class="btn grey-gallery btn-block btn-sm filter-options-field-details" style="text-align:left;padding-left:20px;">
+									<i class="fa fa-ban"></i>
+									Cancel Order
+								</button>
+
+									<?php
+								} ?>
+
+								<?php if ($order_details->status == '5')
+								{ ?>
+
+								<button href="#modal-complete" data-toggle="modal" class="btn grey-gallery btn-block btn-sm filter-options-field-details" style="text-align:left;padding-left:20px;">
+									<i class="fa fa-check"></i>
+									Set Order as Shipped
+								</button>
+								<button href="#modal-cancel" data-toggle="modal" class="btn grey-gallery btn-block btn-sm filter-options-field-details" style="text-align:left;padding-left:20px;">
+									<i class="fa fa-ban"></i>
+									Cancel Order
+								</button>
+								<button href="#modal-store_credit" data-toggle="modal" class="btn grey-gallery btn-block btn-sm filter-options-field-details" style="text-align:left;padding-left:20px;">
+									<i class="fa fa-credit-card"></i>
+									Set as Store Credit
+								</button>
+
+									<?php
+								} ?>
+
+								<?php if ($order_details->status == '1')
+								{ ?>
+
+								<button href="#modal-refunded" data-toggle="modal" class="btn grey-gallery btn-block btn-sm filter-options-field-details" style="text-align:left;padding-left:20px;">
+									<i class="fa fa-undo"></i>
+									Set as Refunded
+								</button>
+								<button href="#modal-store_credit" data-toggle="modal" class="btn grey-gallery btn-block btn-sm filter-options-field-details" style="text-align:left;padding-left:20px;">
+									<i class="fa fa-credit-card"></i>
+									Set as Store Credit
+								</button>
+
+									<?php
+								} ?>
+
+								<hr style="margin:15px 0 15px;" />
+
+								<a href="<?php echo site_url('admin/orders/view_packing_list/index/'.$this->order_details->order_id); ?>" class="btn grey-gallery btn-block btn-sm <?php echo $hide_packing_list; ?>" target="_blank">
 									View/Print Packing List
 								</a>
-								<a href="<?php echo site_url('admin/barcodes/print/co/index/'.$this->order_details->order_id); ?>" class="btn grey-gallery btn-block btn-sm" target="_blank">
+								<a href="<?php echo site_url('admin/barcodes/print/co/index/'.$this->order_details->order_id); ?>" class="btn grey-gallery btn-block btn-sm <?php echo $hide_barcdoes; ?>" target="_blank">
 									View/Print Barcodes
 								</a>
-								<a href="javascript:;" class="btn grey-gallery btn-block btn-sm btn-resend_email_confirmation" data-user_id="<?php echo $this->order_details->user_id; ?>" data-order_id="<?php echo $this->order_details->order_id; ?>" data-user_cat="<?php echo $this->order_details->c; ?>">
+								<a href="javascript:;" class="btn grey-gallery btn-block btn-sm btn-resend_email_confirmation <?php echo $hide_resend_order_email; ?>" data-user_id="<?php echo $this->order_details->user_id; ?>" data-order_id="<?php echo $this->order_details->order_id; ?>" data-user_cat="<?php echo $this->order_details->c; ?>">
 									Resend Email Confirmation
 								</a>
 
@@ -123,7 +151,11 @@
 	                                <i class="fa fa-reply"></i> Back to Order logs
 								</a>
 
-								<?php if ($this->webspace_details->options['site_type'] == 'hub_site') { ?>
+								<?php if (
+									$this->webspace_details->options['site_type'] == 'hub_site'
+									&& @$this->sales_user_details->access_level != '2'
+								)
+								{ ?>
 								<br />
 								<a href="#modal-delete" data-toggle="modal">
 									<cite>Delete Order Permanently</cite>
@@ -262,7 +294,19 @@
 
 														<h4 style="display:inline-block;"> Ship Method: </h4>
 														&nbsp; &nbsp;
-														<?php echo @$this->order_details->courier ?: 'DHL Rates Apply'; ?>
+														<?php
+														if (@$order_details->courier == 'TBD')
+														{
+															// the TBD is taken only from Create Sales Order via sales user my account
+															// and the options['shipmethod_text']
+															echo @$order_details->options['shipmethod_text'] ?: $order_details->courier;
+														}
+														else
+														{
+															// this is normally used via the frontend checkout process
+															echo @$order_details->courier ?: 'TBD';
+														}
+														?>
 
 													</div>
 												</div>
@@ -399,7 +443,7 @@
 																	<div class="thumb-tiles pulll-left">
 																		<div class="thumb-tile image bg-blue-hoki">
 																			<div class="tile-body">
-																				<img class="" src="<?php echo (str_replace('_f2', '_f3', $item->image)); ?>" alt="">
+																				<img class="" src="<?php echo $this->config->item('PROD_IMG_URL').str_replace('_f2', '_f3', $item->image); ?>" alt="">
 																			</div>
 																			<div class="tile-object">
 																				<div class="name"> <?php echo $item->prod_no; ?> </div>
@@ -412,7 +456,7 @@
 	                                                                    <?php echo @$product->designer_name ? '<br /><cite class="small">'.$product->designer_name.'</cite>' : ''; ?>
 	                                                                    <?php echo @$product->category_names ? ' <cite class="small">('.end($product->category_names).')</cite>' : ''; ?>
 	                                                                </p>
-																	<a class="small" href="<?php echo site_url('admin/barcodes/print/single/index/'.$item->prod_sku.'/'.$size_label.'/'.$item->qty); ?>" target="_blank" style="color:black_;">
+																	<a class="small <?php echo $hide_barcdoes; ?>" href="<?php echo site_url('admin/barcodes/print/single/index/'.$item->prod_sku.'/'.$size_label.'/'.$item->qty); ?>" target="_blank" style="color:black_;">
 																		<i class="fa fa-barcode"></i> View/Print Barcode
 																	</a>
 																</td>
@@ -569,18 +613,18 @@
 			                    </div>
 			                    <!-- END PAGE CONTENT BODY -->
 
-								<!-- PENDING ITEM -->
-								<div class="modal fade bs-modal-sm" id="modal-pending" tabindex="-1" role="dialog" aria-hidden="true">
+								<!-- SET AS SHIPMENT PENDING -->
+								<div class="modal fade bs-modal-sm" id="modal-shipment_pending" tabindex="-1" role="dialog" aria-hidden="true">
 									<div class="modal-dialog modal-sm">
 										<div class="modal-content">
 											<div class="modal-header">
 												<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
 												<h4 class="modal-title">Status Update</h4>
 											</div>
-											<div class="modal-body"> Set order staus to PENDING! </div>
+											<div class="modal-body"> Confirm ACKNOWLEDGE order to shipment pending. </div>
 											<div class="modal-footer">
 												<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-												<a href="<?php echo site_url($this->config->slash_item('admin_folder').'orders/status/index/'.$this->order_details->order_id.'/pending'); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+												<a href="<?php echo site_url($pre_link.'/orders/status/index/'.$this->order_details->order_id.'/acknowledge/details'); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
 													<span class="ladda-label">Confirm?</span>
 													<span class="ladda-spinner"></span>
 												</a>
@@ -592,7 +636,7 @@
 								</div>
 								<!-- /.modal -->
 
-								<!-- COMPLETE ITEM -->
+								<!-- COMPLETE -->
 								<div class="modal fade bs-modal-sm" id="modal-complete" tabindex="-1" role="dialog" aria-hidden="true">
 									<div class="modal-dialog modal-sm">
 										<div class="modal-content">
@@ -600,33 +644,10 @@
 												<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
 												<h4 class="modal-title">Status Update</h4>
 											</div>
-											<div class="modal-body"> Set order staus to COMPLETE! </div>
+											<div class="modal-body"> Set order staus to COMPLETE/SHIPPED! </div>
 											<div class="modal-footer">
 												<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-												<a href="<?php echo site_url($this->config->slash_item('admin_folder').'orders/status/index/'.$this->order_details->order_id.'/complete'); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
-													<span class="ladda-label">Confirm?</span>
-													<span class="ladda-spinner"></span>
-												</a>
-											</div>
-										</div>
-										<!-- /.modal-content -->
-									</div>
-									<!-- /.modal-dialog -->
-								</div>
-								<!-- /.modal -->
-
-								<!-- ON HOLD ITEM -->
-								<div class="modal fade bs-modal-sm" id="modal-on_hold" tabindex="-1" role="dialog" aria-hidden="true">
-									<div class="modal-dialog modal-sm">
-										<div class="modal-content">
-											<div class="modal-header">
-												<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-												<h4 class="modal-title">Status Update</h4>
-											</div>
-											<div class="modal-body"> Set order staus to ON HOLD! </div>
-											<div class="modal-footer">
-												<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-												<a href="<?php echo site_url($this->config->slash_item('admin_folder').'orders/status/index/'.$this->order_details->order_id.'/on_hold'); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+												<a href="<?php echo site_url($pre_link.'/orders/status/index/'.$this->order_details->order_id.'/complete/details'); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
 													<span class="ladda-label">Confirm?</span>
 													<span class="ladda-spinner"></span>
 												</a>
@@ -649,7 +670,7 @@
 											<div class="modal-body"> CANCEL Order? </div>
 											<div class="modal-footer">
 												<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-												<a href="<?php echo site_url('admin/orders/status/index/'.$this->order_details->order_id.'/cancel'); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+												<a href="<?php echo site_url($pre_link.'/orders/status/index/'.$this->order_details->order_id.'/cancel/details'); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
 													<span class="ladda-label">Confirm?</span>
 													<span class="ladda-spinner"></span>
 												</a>
@@ -672,30 +693,7 @@
 											<div class="modal-body"> DELETE Order? <br /> This cannot be undone! </div>
 											<div class="modal-footer">
 												<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-												<a href="<?php echo site_url('admin/orders/delete/index/'.$this->order_details->order_id); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
-													<span class="ladda-label">Confirm?</span>
-													<span class="ladda-spinner"></span>
-												</a>
-											</div>
-										</div>
-										<!-- /.modal-content -->
-									</div>
-									<!-- /.modal-dialog -->
-								</div>
-								<!-- /.modal -->
-
-								<!-- RETURN FOR EXCHANGE ITEM -->
-								<div class="modal fade bs-modal-sm" id="modal-return_exchange" tabindex="-1" role="dialog" aria-hidden="true">
-									<div class="modal-dialog modal-sm">
-										<div class="modal-content">
-											<div class="modal-header">
-												<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-												<h4 class="modal-title">Return Item Remarks</h4>
-											</div>
-											<div class="modal-body"> Set order as "Items returned for EXCHANGE"! </div>
-											<div class="modal-footer">
-												<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-												<a href="<?php echo site_url($this->config->slash_item('admin_folder').'orders/returns/index/'.$this->order_details->order_id.'/exchange'); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+												<a href="<?php echo site_url($pre_link.'/orders/delete/index/'.$this->order_details->order_id); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
 													<span class="ladda-label">Confirm?</span>
 													<span class="ladda-spinner"></span>
 												</a>
@@ -708,7 +706,7 @@
 								<!-- /.modal -->
 
 								<!-- RETURN FOR STORE CREDIT ITEM -->
-								<div class="modal fade bs-modal-sm" id="modal-return_scredit" tabindex="-1" role="dialog" aria-hidden="true">
+								<div class="modal fade bs-modal-sm" id="modal-store_credit" tabindex="-1" role="dialog" aria-hidden="true">
 									<div class="modal-dialog modal-sm">
 										<div class="modal-content">
 											<div class="modal-header">
@@ -718,7 +716,7 @@
 											<div class="modal-body"> Set order as "Items returned for STORE CREDIT"! </div>
 											<div class="modal-footer">
 												<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-												<a href="<?php echo site_url($this->config->slash_item('admin_folder').'orders/returns/index/'.$this->order_details->order_id.'/scredit'); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+												<a href="<?php echo site_url($pre_link.'/orders/status/index/'.$this->order_details->order_id.'/store_credit/details'); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
 													<span class="ladda-label">Confirm?</span>
 													<span class="ladda-spinner"></span>
 												</a>
@@ -731,7 +729,7 @@
 								<!-- /.modal -->
 
 								<!-- RETURN FOR REFUND ITEM -->
-								<div class="modal fade bs-modal-sm" id="modal-return_refund" tabindex="-1" role="dialog" aria-hidden="true">
+								<div class="modal fade bs-modal-sm" id="modal-refunded" tabindex="-1" role="dialog" aria-hidden="true">
 									<div class="modal-dialog modal-sm">
 										<div class="modal-content">
 											<div class="modal-header">
@@ -741,7 +739,7 @@
 											<div class="modal-body"> Set order as "Items returned for REFUND"! </div>
 											<div class="modal-footer">
 												<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-												<a href="<?php echo site_url($this->config->slash_item('admin_folder').'orders/returns/index/'.$this->order_details->order_id.'/refund'); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+												<a href="<?php echo site_url($pre_link.'/orders/status/index/'.$this->order_details->order_id.'/refunded/details'); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
 													<span class="ladda-label">Confirm?</span>
 													<span class="ladda-spinner"></span>
 												</a>

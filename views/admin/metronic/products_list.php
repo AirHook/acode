@@ -211,20 +211,24 @@
 															?>
 
 													<tr class="odd gradeX" onmouseover="$(this).find('.hidden_first_edit_link').show();" onmouseout="$(this).find('.hidden_first_edit_link').hide();">
+														<!-- Counter -->
 														<td class="hidden-xs hidden-sm">
 															<?php echo $i; ?>
 														</td>
+														<!-- Checkbox -->
 														<td class="text-center">
 															<label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
 																<input type="checkbox" class="checkboxes" name="checkbox[]" value="<?php echo $product->prod_id; ?>" />
 																<span></span>
 															</label>
 														</td>
+														<!-- Seque -->
 														<td class="text-center seque">
                                                             <input type="text" class="form-control seque" name="seque" value="<?php echo $product->seque ?: 0; ?>" readonly="" style="width:50px;height:25px;font-size:10px;" data-prod_id="<?php echo $product->prod_id; ?>" />
 															<span class="seque-label" style="color:transparent;"><?php echo $product->seque ?: 0; ?></span>
 														</td>
-														<td class="text-center"> <!-- Images -->
+														<!-- Images -->
+														<td class="text-center">
 															<?php
 															/*********
 															 * Original thumb tile with image hover commented out
@@ -276,6 +280,7 @@
 																</div>
 															</div>
 														</td>
+														<!-- Status -->
 														<!-- DOC: Remove "disabled-link disable-target" classes to enable the element -->
 														<td <?php echo (($product->publish == '0' OR $product->publish == '3') && $product->view_status == 'N') ? 'class="disabled-link disable-target"': ''; ?>> <!-- Publish -->
 															<?php
@@ -324,16 +329,25 @@
 															</div>
 
 														</td>
+														<!-- Prod No -->
 														<td>
 															<a class="" href="<?php echo $edit_link; ?>">
-																<?php echo $product->prod_no; ?>
+																<?php
+																echo $product->prod_no;
+																if ($page_param == 'all' && @$product->clearance == '3')
+																{
+																	echo '<br /><cite class="small font-red"> On Sale </cite>';
+																}
+																if ($page_param == 'all' && @$product->clearance_consumer_only == '"1"')
+																{
+																	echo '<br /><cite class="small font-red"> Consumer Clearance </cite>';
+																}
+																?>
 															</a>
-															<br />
-															<small>
-																<a class="hidden_first_edit_link display-none" href="<?php echo $edit_link; ?>"><cite>edit</cite></a>
-															</small>
 														</td>
+														<!-- Designer -->
 														<td> <?php echo $product->designer; ?> </td>
+														<!-- Vendor Code -->
                                                         <td> <?php echo $product->vendor_code; ?> </td>
 
 														<!-- Actions -->

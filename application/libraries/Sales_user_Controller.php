@@ -62,12 +62,16 @@ class Sales_user_Controller extends MY_Controller {
 		}
 
 		/*****
-		 * ...now, since login session already exists, initialize class admin user details again
+		 * ...now, since login session already exists, initialize class sales user details again
 		 */
 		// initialize class admin user details
 		$this->data['admin_sales_details'] = $this->sales_user_details->initialize(array(
 			'admin_sales_id' => $this->session->admin_sales_id
 		));
+
+		// set some global variables
+		// fname used to show on top black menu bar
+		$this->data['top_bar_welcome_name'] = $this->sales_user_details->fname;
     }
 	// --------------------------------------------------------------------
 }

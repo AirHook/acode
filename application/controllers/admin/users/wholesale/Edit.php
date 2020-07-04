@@ -138,10 +138,11 @@ class Edit extends Admin_Controller {
 			// set necessary variables
 			//$post_ary['account_status'] = '1';
 			// process/add some variables
-			if ($post_ary['pword'] == '') unset($post_ary['pword']);
+			if (@$post_ary['pword'] == '') unset($post_ary['pword']);
 			// unset unneeded variables
 			unset($post_ary['passconf']);
 			unset($post_ary['change-password']);
+			unset($post_ary['send_activation_email']);
 
 			// since email2 to email6 are options only,
 			// we need to verify them if present
@@ -157,6 +158,33 @@ class Edit extends Admin_Controller {
 
 			// update csv
 			$this->_update_csv_file();
+
+			// do we send out activation email?
+			if ($this->input->post('send_activation_email') === '1')
+			{
+				// load and initialize wholesale activation email sending library
+				$this->load->library('users/wholesale_activation_email_sending');
+				$this->wholesale_activation_email_sending->initialize(
+					array(
+						'users' => array(
+							$this->input->post('email')
+						)
+					)
+				);
+
+				if ( ! $this->wholesale_activation_email_sending->send())
+				{
+					echo $this->wholesale_activation_email_sending->error;
+					$this->session->set_flashdata('error', 'error_sending_activation_email');
+					$this->session->set_flashdata('error_message', $this->wholesale_activation_email_sending->error);
+
+					// redirect user
+					redirect($this->config->slash_item('admin_folder').'users/wholesale/edit/index/'.$insert_id, 'location');
+				}
+
+				// set flash data
+				$this->session->set_flashdata('success', 'acivation_email_sent');
+			}
 
 			// set flash data
 			$this->session->set_flashdata('success', 'edit');

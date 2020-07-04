@@ -139,9 +139,9 @@ class Bulk_actions extends Admin_Controller {
 		// redirect user
 		if ($this->input->post('status'))
 		{
-			redirect('admin/orders/'.$this->input->post('status'), 'location');
+			redirect('my_account/sales/orders/'.$this->input->post('status'), 'location');
 		}
-		else redirect($this->config->slash_item('admin_folder').'orders', 'location');
+		else redirect('my_account/sales/orders/new_orders', 'location');
 	}
 
 	// --------------------------------------------------------------------

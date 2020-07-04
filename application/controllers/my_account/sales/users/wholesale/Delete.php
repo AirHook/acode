@@ -65,8 +65,11 @@ class Delete extends Sales_user_Controller {
 			.'<br />'
 		;
 
-		// delete item from records
+		// connect to database
 		$DB = $this->load->database('instyle', TRUE);
+
+		// all sales user cannot delete users
+		// instead, remove sales user association with user
 		$DB->set('admin_sales_id', NULL);
 		$DB->set('admin_sales_email', NULL);
 		$DB->set('reference_designer', NULL);

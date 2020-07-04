@@ -367,7 +367,7 @@ class Edit extends Admin_Controller {
 			{
 				if ($post_ary['publish'] == '2') // private
 				{
-					$post_to_color_ary['new_color_publish'] = '1';
+					$post_to_color_ary['new_color_publish'] = '2';
 					$post_to_color_ary['color_publish'] = 'N';
 				}
 				elseif ($post_ary['publish'] == '0') // unpublish

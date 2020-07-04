@@ -157,6 +157,9 @@ class Send_product_clicks extends Admin_Controller {
 	 */
 	public function send()
 	{
+		echo '<pre>';
+		print_r($this->input->post());
+		die();
 		// input post data
 		/* *
 		Array

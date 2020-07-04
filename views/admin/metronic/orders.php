@@ -404,8 +404,8 @@
 											</td>
 											<!-- Order Qty -->
 			                                <td> <?php echo $order->order_qty; ?> </td>
-											<!-- Purchase Amount -->
-			                                <td> <?php echo '$ '.number_format($order->order_amount, 2); ?> </td>
+											<!-- Order Amount -->
+			                                <td> <?php echo '$ '.number_format($order->amount, 2); ?> </td>
 											<!-- Customer Info -->
 			                                <td>
 												<?php

@@ -36,6 +36,7 @@ class Addrem extends MY_Controller {
 
 		// grab the post variable
 		$item = $this->input->post('prod_no');
+		$page = $this->input->post('page');
 
 		// set the items array
 		$items_array =

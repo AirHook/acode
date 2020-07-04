@@ -1,7 +1,7 @@
 											<style>
 											.admin_product_thumbs_sidebar .panel .panel-heading h4,
 											.admin_product_thumbs_sidebar .panel .panel-collapse li a {
-												font-size: 0.8em;
+												font-size: 0.7em;
 											}
 											/* *
 											.admin_product_thumbs_sidebar .panel .panel-collapse li {

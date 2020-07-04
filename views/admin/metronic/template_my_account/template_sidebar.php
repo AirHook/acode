@@ -14,7 +14,7 @@ if ($role=='sales')
 		</li>
 		<li class="nav-item <?php echo $this->uri->uri_string() == 'my_account/sales/orders/new_orders' ? 'active' : ''; ?>">
 			<a href="<?php echo site_url('my_account/sales/orders/new_orders'); ?>" class="nav-link ">
-				<span class="title">New Orders</span>
+				<span class="title">New Order Inquiries</span>
 			</a>
 		</li>
 		<li class="nav-item <?php echo $this->uri->uri_string() == 'my_account/sales/orders/shipment_pending' ? 'active' : ''; ?>">
@@ -42,11 +42,18 @@ if ($role=='sales')
 				<span class="title">Cancelled</span>
 			</a>
 		</li>
+
+		<?php if (@$this->sales_user_details->access_level != '2')
+		{ ?>
+
 		<li class="nav-item <?php echo $this->uri->uri_string() == 'my_account/sales/sales_orders/new_order' ? 'active' : ''; ?>">
 			<a href="<?php echo site_url('my_account/sales/sales_orders/new_order'); ?>" class="nav-link ">
 				<span class="title">Create New Sales Order</span>
 			</a>
 		</li>
+
+			<?php
+		}?>
 
 		<!-- =============-->
 		<?php

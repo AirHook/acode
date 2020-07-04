@@ -47,21 +47,35 @@
 
 <!-- BEGIN TOP NAVIGATION MENU -->
 <div class="top-menu">
+
+	<?php
+	// let's set the role for sales user my account
+	if (@$role == 'sales') $profile_pre_link = 'my_account/sales';
+	elseif (@$role == 'vendor') $profile_pre_link = 'my_account/vendors';
+	else 'admin';
+	?>
+
 	<ul class="nav navbar-nav pull-right">
 		<li class="dropdown dropdown-user dropdown-dark">
-			<a href="<?php echo site_url('my_account/sales/dashboard'); ?>" class="dropdown-toggle">
-				<span class="username" style="font-weight:normal;"> Welcome, <?php echo @$this->sales_user_details->fname ?: 'Guest'; ?>! </span>
+			<a href="<?php echo site_url($profile_pre_link.'/dashboard'); ?>" class="dropdown-toggle">
+				<?php
+				// since we are using the template for sales user and possibly vendor users,
+				// we use a common variable to show the name on the top bar
+				// put the varialbe at the controller library class
+				?>
+				<span class="username" style="font-weight:normal;"> Welcome, <?php echo @$top_bar_welcome_name ?: 'Guest'; ?>! </span>
 			</a>
 		</li>
 		<li class="dropdown dropdown-user dropdown-dark">
-			<a href="javascript:;" class="dropdown-toggle disabled-link disable-target">
+			<!--<a href="javascript:;" class="dropdown-toggle disabled-link disable-target">-->
+			<a href="<?php echo site_url($profile_pre_link.'/profile'); ?>" class="dropdown-toggle">
 				<span class="username" style="font-weight:normal;"> Profile </span>
 			</a>
 		</li>
 		<!-- BEGIN USER LOGIN DROPDOWN -->
 		<!-- DOC: Apply "dropdown-dark" class after below "dropdown-extended" to change the dropdown styte -->
 		<li class="dropdown dropdown-user dropdown-dark">
-			<a href="<?php echo site_url('my_account/sales/logout'); ?>" class="dropdown-toggle">
+			<a href="<?php echo site_url($profile_pre_link.'/logout'); ?>" class="dropdown-toggle">
 				<span class="username" style="font-weight:normal;"> Log Out </span>
 			</a>
 		</li>

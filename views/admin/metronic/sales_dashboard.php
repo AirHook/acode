@@ -95,7 +95,7 @@ $pre_link =
                                 ?>
                             </td>
                             <!-- Purchase Amount -->
-                            <td class="text-right"> <?php echo '$ '.number_format($order->order_amount, 2); ?> </td>
+                            <td class="text-right"> <?php echo '$ '.number_format($order->amount, 2); ?> </td>
                         </tr>
 
                                     <?php

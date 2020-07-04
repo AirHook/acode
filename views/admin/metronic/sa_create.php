@@ -1,3 +1,22 @@
+                    <?php
+                    // let's set the role for sales user my account
+                    $pre_link =
+                        @$role == 'sales'
+                        ? 'my_account/sales'
+                        : 'admin/campaigns'
+                    ;
+                    // hiding linesheet options for level 2 users
+					if (@$role == 'sales' && @$this->sales_user_details->access_level == '2')
+					{
+						$hide_attach_linesheets = 'display-none';
+						$hide_send_linesheets_only = 'display-none'; // also used at the items table print barcode link
+					}
+					else
+					{
+						$hide_attach_linesheets = '';
+						$hide_send_linesheets_only = '';
+					}
+                    ?>
                     <!-- BEGIN PAGE CONTENT BODY -->
                     <div class="row body-content" data-object_data='{"<?php echo $this->security->get_csrf_token_name(); ?>":"<?php echo $this->security->get_csrf_hash(); ?>"}'>
 
@@ -57,6 +76,21 @@
                                     .badge.custom-badge.done {
                                         background-color: grey;
                                         color: white;
+                                    }
+                                    .stock-select,
+                                    .size-select {
+                                        border: 0;
+                                        font-size: 12px;
+                                        width: 40px;
+                                       -webkit-appearance: none;
+                                        -moz-appearance: none;
+                                        appearance: none;
+                                    }
+                                    .stock-select:after,
+                                    .size-select:after {
+                                        content: "\f0dc";
+                                        font-family: FontAwesome;
+                                        color: #000;
                                     }
                                 </style>
 
@@ -528,7 +562,7 @@
         											$classes.= $style_no.' ';
         											$classes.= $batch.' ';
                                                     // set ribbon for PRIVATE & UNPUBLISH items
-                                                    $classes.= $product->publish != '1' ? 'mt-element-ribbon' : '';
+                                                    $classes.= $product->publish != '1' ? 'mt-element-ribbon ' : '';
 
         											// let set the css style...
         											$styles = $dont_display_thumb;
@@ -556,7 +590,8 @@
 
         									<div class="thumb-tile image bg-blue-hoki <?php echo $classes; ?>" style="<?php echo $styles; ?>">
 
-        										<a href="<?php echo $img_large; ?>" class="fancybox tooltips" data-original-title="Click to zoom">
+        										<!--<a href="<?php echo $img_large; ?>" class="fancybox tooltips" data-original-title="Click to zoom">-->
+                                                <a href="javascript:;" class="package_items" data-item="<?php echo $product->prod_no.'_'.$product->color_code; ?>" data-page="create">
 
         											<div class="corner"> </div>
         											<div class="check"> </div>
@@ -584,12 +619,12 @@
         										</a>
 
         										<div class="" style="color:red;font-size:1rem;">
-                                                    <!-- Plusbox
-                                                    <i class="fa fa-plus package_items <?php echo $product->prod_no.'_'.$product->color_code; ?>" style="position:relative;left:5px;background:#ddd;line-height:normal;padding:1px 2px;" data-item="<?php echo $product->prod_no.'_'.$product->color_code; ?>"></i>
-                                                    -->
-                                                    <!-- Checkbox -->
+                                                    <!-- Plusbox -->
+                                                    <i class="fa fa-plus package_items <?php echo $product->prod_no.'_'.$product->color_code; ?>" style="position:relative;left:5px;background:#ddd;line-height:normal;padding:1px 2px;" data-item="<?php echo $product->prod_no.'_'.$product->color_code; ?>" data-page="create"></i> &nbsp;
+                                                    <!-- Checkbox --
         											<input type="checkbox" class="package_items <?php echo $product->prod_no.'_'.$product->color_code; ?>" name="prod_no" value="<?php echo $product->prod_no.'_'.$product->color_code; ?>" <?php echo $checkbox_check; ?> data-page="create" data-item="<?php echo $product->prod_no.'_'.$product->color_code; ?>" /> &nbsp;
-                                                    <span class="text-uppercase" data-item="<?php echo $product->prod_no.'_'.$product->color_code; ?>"> Add to Sales Package </span>
+                                                    -->
+                                                    <span class="text-uppercase package_items" data-item="<?php echo $product->prod_no.'_'.$product->color_code; ?>" data-page="create"> Add to Package </span>
         										</div>
 
         									</div>
@@ -1006,7 +1041,7 @@
                                                             - Send with prices
                                                         </label>
                                                     </div>
-                                                    <div class="mt-radio-inline">
+                                                    <div class="mt-radio-inline <?php echo $hide_attach_linesheets; ?>">
                                                         <label class="mt-radio mt-radio-outline" style="margin-bottom:0px;">
                                                             <input id="w_images-Y" class="radio-options" type="radio" name="options[w_images]" data-option="w_images" value="Y" <?php echo (@$sa_options['w_images'] && $sa_options['w_images'] == 'Y') ? 'checked="checked"' : ''; ?>> Yes
                                                             <span></span>
@@ -1019,7 +1054,7 @@
                                                             - Attach Linesheets
                                                         </label>
                                                     </div>
-                                                    <div class="mt-radio-inline">
+                                                    <div class="mt-radio-inline <?php echo $hide_send_linesheets_only; ?>">
                                                         <label id="linesheets_only-Y" class="mt-radio mt-radio-outline" style="margin-bottom:0px;">
                                                             <input class="radio-options" type="radio" name="options[linesheets_only]" data-option="linesheets_only" value="Y" <?php echo (@$sa_options['linesheets_only'] && $sa_options['linesheets_only'] == 'Y') ? 'checked="checked"' : ''; ?>> Yes
                                                             <span></span>
@@ -1082,11 +1117,11 @@
                                     <div class="form-group form-group-badge clearfix" style="margin-bottom:0px;">
                                         <label class="control-label col-md-5">
                                             <span class="badge custom-badge pull-left step-save_and_send step4 <?php echo @$overall_qty ? 'active' : ''; ?>"> 4 </span>
-                                            <span class="badge-label"> Save and Send Sales Package </span>
+                                            <span class="badge-label"> Save and Send Package </span>
                                         </label>
                                         <div class="col-md-7">
                                             <cite class="help-block font-red" style="position:relative;top:-4px;">
-                                                Sales Pacakge will be saved and can be sent to existing or new user.
+                                                Package will be saved and can be sent to users.
                                             </cite>
                                         </div>
                                     </div>
@@ -1100,7 +1135,7 @@
                                             </label>
                                             <div class="col-md-7">
                                                 <cite class="help-block font-red" style="position:relative;top:-4px;">
-                                                    Sales Pacakge will be reset and all items cleared.
+                                                    Package will be cleared of items.
                                                 </cite>
                                             </div>
                                         </div>
@@ -1212,6 +1247,46 @@
                                         <button type="button" class="btn dark btn-outline" data-dismiss="modal" tabindex="-1">Cancel</button>
                                         <button type="button" class="btn dark submit-edit_item_prices" data-item="">Apply changes</button>
                                     </div>
+
+                                </div>
+                                <!-- /.modal-content -->
+                            </div>
+                            <!-- /.modal-dialog -->
+                        </div>
+                        <!-- /.modal -->
+
+                        <!-- ITEM SIZE AND QTY INFO -->
+                        <div class="modal fade" id="modal-size_qty_info" tabindex="-1" role="basic" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close hide" data-dismiss="modal" aria-hidden="true"></button>
+                                        <h4 class="modal-title"> Select Size and Quantity </h4>
+                                    </div>
+
+                                    <!-- BEGIN FORM =======================================================-->
+                                    <?php echo form_open(
+                                        $pre_link.'/sales_package/create',
+                                        array(
+                                            'class' => '',
+                                            'id' => 'form-size_qty_select'
+                                        )
+                                    ); ?>
+
+                                    <div class="modal-body" data-object_data='{"<?php echo $this->security->get_csrf_token_name(); ?>":"<?php echo $this->security->get_csrf_hash(); ?>"}'>
+
+                                        <div class="form modal-body-size_qty_info modal-body-cart_basket_wrapper margin-bottom-30">
+                                            <?php // item contents go in here... ?>
+                                        </div>
+
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn dark btn-outline modal-size_qty_cancel" data-dismiss="modal" tabindex="-1">Cancel</button>
+                                        <button type="submit" class="btn dark modal-size_qty_submit"> Add To Package </button>
+                                    </div>
+
+                                    </form>
+                                    <!-- END FORM =========================================================-->
 
                                 </div>
                                 <!-- /.modal-content -->

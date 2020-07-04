@@ -7,12 +7,23 @@
 
 															<p>
 															<?php
-															echo $this->consumer_user_details->fname.' '.$this->consumer_user_details->lname.'<br />';
+															if ($this->session->user_role == 'wholesale')
+															{
+																echo $this->wholesale_user_details->store_name.'<br />';
+															}
+															else
+															{
+																echo $this->session->b_firstname.' '.$this->session->b_lastname.'<br />';
+															}
 															echo $this->session->b_address1;
 															echo $this->session->b_address2 ? '<br />'.$this->session->b_address2.'<br />' : '<br />';
 															echo $this->session->b_city.($this->session->b_state != 'Other' ? ', '.$this->session->b_state.' ' : ' ').$this->session->b_zip.'<br />';
 															echo $this->session->b_country.'<br />';
 															echo $this->session->b_phone.'<br />';
+															if ($this->session->user_role == 'wholesale')
+															{
+																echo 'ATTN: '.$this->session->b_firstname.' '.$this->session->b_lastname.'<br />';
+															}
 															?>
 															</p>
 
@@ -23,12 +34,23 @@
 
 															<p>
 															<?php
-															echo $this->consumer_user_details->fname.' '.$this->consumer_user_details->lname.'<br />';
+															if ($this->session->user_role == 'wholesale')
+															{
+																echo $this->wholesale_user_details->store_name.'<br />';
+															}
+															else
+															{
+																echo $this->session->sh_firstname.' '.$this->session->sh_lastname.'<br />';
+															}
 															echo $this->session->sh_address1;
 															echo $this->session->sh_address2 ? '<br />'.$this->session->sh_address2.'<br />' : '<br />';
 															echo $this->session->sh_city.($this->session->sh_state != 'Other' ? ', '.$this->session->sh_state.' ' : ' ').$this->session->sh_zip.'<br />';
 															echo $this->session->sh_country.'<br />';
 															echo $this->session->sh_phone.'<br />';
+															if ($this->session->user_role == 'wholesale')
+															{
+																echo 'ATTN: '.$this->session->sh_firstname.' '.$this->session->sh_lastname.'<br />';
+															}
 															?>
 															</p>
 
@@ -45,12 +67,23 @@
 
 															<p>
 															<?php
-															echo $this->order_details->firstname.' '.$this->order_details->lastname.'<br />';
+															if ($this->session->user_role == 'wholesale')
+															{
+																echo $this->wholesale_user_details->store_name.'<br />';
+															}
+															else
+															{
+																echo $this->order_details->firstname.' '.$this->order_details->lastname.'<br />';
+															}
 															echo @$user->address1;
 															echo @$user->address2 ? '<br />'.$user->address2.'<br />' : '<br />';
 															echo @$user->city.(@$user->state != 'Other' ? ', '.@$user->state.' ' : ' ').@$user->zipcode.'<br />';
 															echo @$user->country.'<br />';
 															echo @$user->telephone.'<br />';
+															if ($this->session->user_role == 'wholesale')
+															{
+																echo 'ATTN: '.$this->order_details->firstname.' '.$this->order_details->lastname.'<br />';
+															}
 															?>
 															</p>
 
@@ -61,12 +94,23 @@
 
 															<p>
 															<?php
-															echo @$this->order_details->firstname.' '.$this->order_details->lastname.'<br />';
+															if ($this->session->user_role == 'wholesale')
+															{
+																echo $this->wholesale_user_details->store_name.'<br />';
+															}
+															else
+															{
+																echo @$this->order_details->firstname.' '.$this->order_details->lastname.'<br />';
+															}
 															echo @$this->order_details->ship_address1;
 															echo @$this->order_details->ship_address2 ? '<br />'.@$this->order_details->sh_address2.'<br />' : '<br />';
 															echo @$this->order_details->ship_city.(@$this->order_details->ship_state != 'Other' ? ', '.$this->order_details->ship_state.' ' : ' ').@$this->order_details->ship_zipcode.'<br />';
 															echo @$this->order_details->ship_country.'<br />';
 															echo @$this->order_details->telephone.'<br />';
+															if ($this->session->user_role == 'wholesale')
+															{
+																echo 'ATTN: '.$this->order_details->firstname.' '.$this->order_details->lastname.'<br />';
+															}
 															?>
 															</p>
 

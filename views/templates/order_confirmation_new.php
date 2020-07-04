@@ -108,7 +108,7 @@
 								<tr>
 									<td>
 										<strong>
-											<?php echo $this->order_details->c == 'ws' ? 'WHOLESALE ' : ''; ?>ORDER #<?php echo (@$order_details->order_id ?: '10301800').(@$order_details->options['sales_order'] ? ' '.$order_details->options['sales_order'] : ''); ?> <br />
+											<?php echo $this->order_details->c == 'ws' ? 'WHOLESALE ' : 'CONSUMER'; ?>ORDER #<?php echo (@$order_details->order_id ?: '10301800').(@$order_details->options['sales_order'] ? ' '.$order_details->options['sales_order'] : ''); ?> <br />
 											<small> Date: <?php echo @@$order_details->order_date ?: '2020-06-01'; ?> </small>
 										</strong>
 
@@ -204,7 +204,7 @@
 										else
 										{
 											// this is normally used via the frontend checkout process
-											echo @$order_details->courier ?: '';
+											echo @$order_details->courier ?: 'TBD';
 										}
 										?>
 									</td>
@@ -487,7 +487,7 @@
 											OR @$order_details->options['ws_payment_options'] == '2'
 										)
 										{
-											echo $order_details->options['ws_payment_options'] == '2' ? 'Add a card:<br />' : '';
+											echo @$order_details->options['ws_payment_options'] == '2' ? 'Add a card:<br />' : '';
 											?>
 
 										Card Type: <?php echo $this->session->flashdata('cc_type') ?: '<cite>Card type</cite>'; ?><br />

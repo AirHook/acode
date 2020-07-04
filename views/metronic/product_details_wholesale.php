@@ -193,8 +193,8 @@
 																{
 																	$this_color_image =
 																		$color->image_url_path
-																		? $this->config->item('PROD_IMG_URL').$color->media_path.$color->media_name.'_f3.jpg'
-																		: $this->config->item('PROD_IMG_URL').$img_path.'product_front/thumbs/'.$this->product_details->prod_no.'_'.$color->color_code.'_3.jpg'
+																		? $this->config->item('PROD_IMG_URL').$color->media_path.$color->media_name.'_f.jpg'
+																		: $this->config->item('PROD_IMG_URL').$img_path.'product_front/thumbs/'.$this->product_details->prod_no.'_'.$color->color_code.'_4.jpg'
 																	;
 																	?>
 
@@ -375,14 +375,14 @@
 																	//foreach ($get_color_list->result() as $color)
 																	foreach ($get_color_list as $color)
 																	{
-																		/*
+																		/* */
 																		// hide items with no stocks at all
 																		if ( ! $color->with_stocks)
 																		{
 																			$i++;
 																			continue;
 																		}
-																		*/
+																		// */
 
 																		/**********
 																		 * On regular pages, show only regular items
@@ -452,6 +452,14 @@
 															//foreach ($get_color_list->result() as $color)
 															foreach ($get_color_list as $color)
 															{
+                                                                /* */
+                                                                // hide items with no stocks at all
+                                                                if ( ! $color->with_stocks)
+                                                                {
+                                                                    continue;
+                                                                }
+                                                                // */
+
 																/**********
 																 * On regular pages, show only regular items
 																 */
@@ -617,6 +625,7 @@
                                                                     // assumptions: max # of sizes is 12 (ref: size mode 1)
                                                                     $count = count($size_names);
                                                                     $skey = 1;
+                                                                    $correcting_var = 0; // correcting variable to use on the size-qty row heading
                                                                     foreach ($size_names as $size_label => $size)
                                                                     {
                                                                         if (
@@ -626,16 +635,20 @@
                                                                         )
                                                                         {
                                                                             if (
-                                                                                $skey == 1
-                                                                                OR $skey == 5
-                                                                                OR $skey == 9
+                                                                                $correcting_var == 0
+                                                                                && (
+                                                                                    $skey == 1
+                                                                                    OR $skey == 5
+                                                                                    OR $skey == 9
+                                                                                )
                                                                             )
                                                                             {
+                                                                                // size-qty row heading
                                                                                 if ($skey == 5 OR $skey == 9) echo '</div>';
                                                                                 echo '
-                                                                                <div class="col-md-4">
+                                                                                <div class="col-md-4 '.$skey.'">
 
-                                                                                    <div class="row '.(($skey == 4 OR $skey == 8) ? 'hidden-xs hidden-sm' : '').'">
+                                                                                    <div class="row size-qty-heading '.(($skey == 4 OR $skey == 8) ? 'hidden-xs hidden-sm' : '').'">
                                                                                         <div class="col-xs-4">
                                                                                             <strong>SIZES:</strong>
                                                                                         </div>
@@ -669,7 +682,7 @@
                                                                             else $size_html = $size;
                                                                             ?>
 
-                                                                        <div class="row <?php echo $display_size; ?>" onmouseover="$(this).find('span.details.unavailable').show();" onmouseout="$(this).find('span.details.unavailable').hide();">
+                                                                        <div class="row size-qty-boxes <?php echo $correcting_var.' '.$skey.' '.$display_size; ?>" onmouseover="$(this).find('span.details.unavailable').show();" onmouseout="$(this).find('span.details.unavailable').hide();">
 
                                                                             <?php
                     														/**********
@@ -745,7 +758,19 @@
                                                                             <?php
                                                                         }
 
-                                                                        if ($display_size != 'hide') $skey++;
+                                                                        // if the first size's qty is 0, $key is not increased
+                                                                        // which causes the size-qty row heading repeat
+                                                                        if ($display_size != 'hide')
+                                                                        {
+                                                                            $skey++;
+                                                                            // always clear correcting variable
+                                                                            $correcting_var = 0;
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            // we add this line to check on it and use a correcting variable
+                                                                            $correcting_var = 1;
+                                                                        }
                                                                     }
 
                                                                     echo '</div>';

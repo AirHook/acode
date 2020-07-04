@@ -81,9 +81,19 @@ class Bulk_actions extends Sales_user_Controller {
 			}
 		}
 
+		// note in comments
+		$comments = 'Previously associated with '
+			.$this->sales_user_details->designer
+			.' under sales agent '
+			.$this->sales_user_details->email
+			.'<br />'
+		;
+
 		// update or delete items from database
 		if ($this->input->post('bulk_action') === 'del')
 		{
+			// all sales user cannot delete users
+			// instead, remove sales user association with user
 			$DB->set('admin_sales_id', NULL);
 			$DB->set('admin_sales_email', NULL);
 			$DB->set('reference_designer', NULL);

@@ -358,8 +358,8 @@ class Create extends Sales_user_Controller {
 		/****************
 		 * page style sheets inserted at <head>
 		 */
-		$this->data['page_level_styles'] = '
-		';
+		$this->data['page_level_styles'] = '';
+		
 
 		/****************
 		 * page plugins scripts inserted at <bottom>
@@ -375,6 +375,10 @@ class Create extends Sales_user_Controller {
 			$this->data['page_level_plugins'].= '
 				<script src="'.$assets_url.'/assets/global/plugins/select2/js/select2.full.min.js" type="text/javascript"></script>
 				<script src="'.$assets_url.'/assets/global/plugins/bootstrap-select/js/bootstrap-select.min.js" type="text/javascript"></script>
+			';
+			// bootbox
+			$this->data['page_level_plugins'].= '
+				<script src="'.$assets_url.'/assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
 			';
 			// form validation
 			$this->data['page_level_plugins'].= '

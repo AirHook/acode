@@ -217,17 +217,41 @@ class Shop_Controller extends Frontend_Controller {
 				$sort_by = array('seque'=>'asc', 'tbl_product.prod_no' => 'desc');
 		}
 
+        // set $where variable
+        $where = array();
+
         // check for sales package where conditions
         if ($this->sales_package_items)
         {
-            $where = array();
+            // set prod_no clause
+            $con_prod_no_ary = '';
 
             // capture items that uses style no along with prod_no
+            $in = 1;
             foreach ($this->sales_package_items as $style_no)
             {
                 $exp = explode('_', $style_no);
-                array_push($where, $exp[0]);
+                // used for Product_list.php class on where clause
+                // checking if numerically indexed and set to ->or_where() function
+                //array_push($where, $exp[0]);
+                // Unfortunately, above array is not suitable due to succeeding where clauses
+                // in which case, we separate each item instead
+
+                if ($in == 1)
+                {
+                    $con_prod_no_ary.= "tbl_product.prod_no LIKE '%".$exp[0]."%' ESCAPE '!'";
+                }
+                else
+                {
+                    $con_prod_no_ary.= " OR tbl_product.prod_no LIKE '%".$exp[0]."%' ESCAPE '!'";
+                }
+
+                $in++;
             }
+
+            // close condition clause
+            //$con_prod_no_ary.= '';
+            $where['condition'][] = $con_prod_no_ary;
         }
         else
         {
@@ -247,60 +271,83 @@ class Shop_Controller extends Frontend_Controller {
             }
         }
 
-        // show item conditions
-        // 1. wholesale users gets to see everything except on sale items
-        //      a. This is true for Basix
-        //      b. Not ture for Tempo
-        // 2. consumer to see items that has stock only
-        // 3. consumer gets to see on sale items
+        /** *
+         *
+        show item conditions
+        1. wholesale users gets to see everything except on sale items
+            a. This is true for Basix items
+            b. Not ture for Tempo items
+        2. consumer to see items that has stock only
+        3. consumer gets to see on sale items
+        4. consumer gets to see consumer clearance items
+        5. consumer does not see private items
+        overrides:
+        1. private items only show for help@basixblacklabel.com ws users
+        // */
         if (
-            $this->session->userdata('user_cat') != 'wholesale'
+            $this->session->userdata('user_role') != 'wholesale'
             && @$_GET['availability'] != 'onsale'
         )
         {
-            // commenting this custom where clause for future use...
-            //$condition = "(less_discount >= 695 OR (less_discount < 695 AND (tbl_product.size_mode = '1' AND (tbl_stock.size_0 > '0' OR tbl_stock.size_2 > '0' OR tbl_stock.size_4 > '0' OR tbl_stock.size_6 > '0' OR tbl_stock.size_8 > '0' OR tbl_stock.size_10 > '0' OR tbl_stock.size_12 > '0' OR tbl_stock.size_14 > '0' OR tbl_stock.size_16 > '0' OR tbl_stock.size_18 > '0' OR tbl_stock.size_20 > '0' OR tbl_stock.size_22 > '0') OR tbl_product.size_mode = '0' AND (tbl_stock.size_ss > '0' OR tbl_stock.size_sm > '0' OR tbl_stock.size_sl > '0' OR tbl_stock.size_sxl > '0' OR tbl_stock.size_sxxl > '0' OR tbl_stock.size_sxl1 > '0' OR tbl_stock.size_sxl2 > '0'))))";
-            //$where['condition'] = $condition;
+            $where_public = "(
+				tbl_product.publish = '1'
+				OR tbl_product.publish = '11'
+				OR tbl_product.publish = '12'
+			)";
+            $where['condition'][] = $where_public;
 
+            /*********
+        	 * Current custom conditions for consumers users
+        	 */
+            // only with stocks as of...
             $where['HAVING with_stocks'] = '1';
         }
         else if (
-            $this->session->userdata('user_cat') == 'wholesale'
+            $this->session->userdata('user_role') == 'wholesale'
             && @$_GET['availability'] == 'onsale'
         )
         {
-            // setting condition to prod_id = '0' make query result to zero
-            //$where['tbl_product.prod_id'] = '0';
-
-            // can only show non-basix items
+            // can only show non-basix onsale items
             $where['designer.url_structure !='] = 'basixblacklabel';
         }
-        else if ($this->session->userdata('user_cat') == 'wholesale')
+        else if ($this->session->userdata('user_role') == 'wholesale')
         {
-            // don't show clearance items
-            //$where['tbl_stock.custom_order !='] = '3';
-            $con_clearance = "(tbl_stock.custom_order != '3' OR (tbl_stock.custom_order = '3' AND designer.url_structure != 'basixblacklabel'))";
-            $where['condition'] = $con_clearance;
-
-            // don't show clearance cs only items
+            // clearance cs only items is not for wholesale users
             $con_clearance_cs_only = 'tbl_stock.options NOT LIKE \'%"clearance_consumer_only":"1"%\' ESCAPE \'!\'';
-            $where['condition'] = $con_clearance_cs_only;
+            $where['condition'][] = $con_clearance_cs_only;
+
+            /*********
+        	 * Current custom conditions for wholesale users
+        	 */
+            // don't show clearance items to wholesale
+            $con_clearance = "(tbl_stock.custom_order != '3' OR (tbl_stock.custom_order = '3' AND designer.url_structure != 'basixblacklabel'))";
+            $where['condition'][] = $con_clearance;
+
+            // special show private for ws users under help@basixblacklabel.com
+            if ($this->wholesale_user_details->admin_sales_email != 'help@basixblacklabel.com')
+            {
+                $where_public_only = "(
+    				tbl_product.publish = '1'
+    				OR tbl_product.publish = '11'
+    				OR tbl_product.publish = '12'
+    			)";
+                $where['condition'][] = $where_public_only;
+            }
         }
 
         // clearance_consumer_only option
         //$where['condition'] = '(tbl_stock.options IS NULL OR tbl_stock.options NOT LIKE \'%"clearance_consumer_only":"1"%\')';
 
 		// get the products list and total count based on parameters
-		$params['wholesale'] = $this->session->userdata('user_cat') == 'wholesale' ? TRUE : FALSE;
-		$params['show_private'] = $this->session->userdata('user_cat') == 'wholesale' ? TRUE : FALSE;
-		if ($this->webspace_details->options['site_type'] != 'hub_site') $params['view_at_hub'] = FALSE;
-		if ($this->webspace_details->options['site_type'] == 'hub_site') $params['view_at_satellite'] = FALSE;
-		// show items even without stocks at all
+		$params['wholesale'] = $this->session->userdata('user_role') == 'wholesale' ? TRUE : FALSE;
+        // list all variants
         $params['group_products'] = FALSE;
+		// show items with stocks only
+        // NOTE: this also depends on 'group_products' params
 		$params['with_stocks'] = $params['group_products'] ? FALSE : TRUE;
 		// set facet searching if needed
 		$params['facets'] = @$_GET ?: array();
-		// others
+		// user random listing for frontend 'all'/'womens_apparel' url segments
 		$params['random_seed'] =
 			(
 				$this->uri->segment(2) == 'all'
@@ -309,14 +356,21 @@ class Shop_Controller extends Frontend_Controller {
 			? TRUE
 			: FALSE
 		;
-		$params['random_seed'] = FALSE;
+        // set pagination condition
 		$params['pagination'] = $this->num;
+        // initialize and get product list
 		$this->load->library('products/products_list', $params);
 		$this->products = $this->products_list->select(
 			// where conditions
             $where,
 			// sorting conditions
-			($sort_by ?: array('seque'=>'asc', 'tbl_product.prod_no' => 'desc')),
+			(
+                $sort_by ?:
+                array(
+                    'seque'=>'asc',
+                    'tbl_product.prod_no' => 'desc'
+                )
+            ),
             // limits
 			($this->session->view_list_number ?: '')
 		);
@@ -358,8 +412,8 @@ class Shop_Controller extends Frontend_Controller {
 	public function get_suggested_products()
 	{
 		// get the products list and total count based on parameters
-		$pparams['wholesale'] = $this->session->userdata('user_cat') == 'wholesale' ? TRUE : FALSE;
-		$pparams['show_private'] = $this->session->userdata('user_cat') == 'wholesale' ? TRUE : FALSE;
+		$pparams['wholesale'] = $this->session->userdata('user_role') == 'wholesale' ? TRUE : FALSE;
+		$pparams['show_private'] = $this->session->userdata('user_role') == 'wholesale' ? TRUE : FALSE;
 		if ($this->webspace_details->options['site_type'] != 'hub_site') $pparams['view_at_hub'] = FALSE;
 		if ($this->webspace_details->options['site_type'] == 'hub_site') $pparams['view_at_satellite'] = FALSE;
 		// show items even without stocks at all

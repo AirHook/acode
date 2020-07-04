@@ -18,6 +18,13 @@ if ( ! defined('BASEPATH')) exit('ERROR: 404 Not Found');
  * Following are the initialization parameters:
 
 	$params['wholesale'] = FALSE; // set to TRUE for wholesale users
+	$params['show_private'] = FALSE; // don't show private items
+	$params['view_status'] = TRUE; // as per field tbl_product.view_status Y/N
+	$params['view_at_hub'] = TRUE; // as per field tbl_product.view_status Y1
+	$params['view_at_satellite'] = TRUE; // as per field tbl_product.view_status Y2
+	$params['variant_publish'] = TRUE; // as per field tbl_stock.color_publish Y/N
+	$params['variant_view_at_hub'] = TRUE; // as per field tbl_stock.color_publish Y1
+	$params['variant_view_at_satellite'] = TRUE; // as per field tbl_stock.color_publish Y2
 	$params['with_stocks'] = TRUE;
 	$params['group_products'] = FALSE;
 	$params['special_sale'] = FALSE;
@@ -25,16 +32,6 @@ if ( ! defined('BASEPATH')) exit('ERROR: 404 Not Found');
 	$params['random_seed'] = FALSE; // Repeateble Randomize Query Parameter (order by RAND(<value>))
 	$params['pagination'] = 0;
 	$params['active_designers'] = TRUE;
-
- *	// these params are for deprecation....
- *
- *	$params['show_private'] = FALSE; // don't show private items
- *	$params['view_status'] = TRUE; // as per field tbl_product.view_status Y/N
- *	$params['view_at_hub'] = TRUE; // as per field tbl_product.view_status Y1
- *	$params['view_at_satellite'] = TRUE; // as per field tbl_product.view_status Y2
- *	$params['variant_publish'] = TRUE; // as per field tbl_stock.color_publish Y/N
- *	$params['variant_view_at_hub'] = TRUE; // as per field tbl_stock.color_publish Y1
- *	$params['variant_view_at_satellite'] = TRUE; // as per field tbl_stock.color_publish Y2
 
  *
  * @package		CodeIgniter
@@ -439,31 +436,18 @@ class Products_list
 			if ($search_where)
 			{
 				$search_where = "(".ltrim($search_where, 'OR').")";
+				//$search_where.= ' AND tbl_stock.options NOT LIKE \'%"clearance_consumer_only":"1"%\'';
 				$this->DB->where($search_where);
 			}
 		}
 
-		/* *
 		// show public or both public and private
 		if ($this->show_private)
 		{
-			$where_private = "(
-				tbl_product.publish = '1'
-				OR tbl_product.publish = '11'
-				OR tbl_product.publish = '12'
-				OR tbl_product.publish = '2'
-			)";
+			$where_private = "(tbl_product.public = 'Y' OR tbl_product.public = 'N')";
 			$this->DB->where($where_private);
 		}
-		else
-		{
-			$where_public = "(
-				tbl_product.publish = '1'
-				OR tbl_product.publish = '11'
-				OR tbl_product.publish = '12'
-			)";
-			$this->DB->where($where_public);
-		}
+		else $this->DB->where('tbl_product.public', 'Y');
 
 		// view status
 		if ($this->view_status)
@@ -519,7 +503,6 @@ class Products_list
 			}
 		}
 		else $this->DB->where('tbl_stock.color_publish', 'N');
-		// */
 
 		// active designers
 		if ($this->active_designers)
@@ -568,10 +551,14 @@ class Products_list
 					if (in_array($size, $size_mode_1))
 					{
 						$facet_where .= " AND tbl_stock.size_".$size." != '0'";
+						//if ($key == 0) $this->DB->where('tbl_stock.size_'.$size.' !=', '0');
+						//else $this->DB->or_where('tbl_stock.size_'.$size.' !=', '0');
 					}
 					if (in_array($size, $size_mode_w_s))
 					{
 						$facet_where .= " AND tbl_stock.size_s".$size." != '0'";
+						//if ($key == 0) $this->DB->where('tbl_stock.size_s'.$size.' !=', '0');
+						//else $this->DB->or_where('tbl_stock.size_s'.$size.' !=', '0');
 					}
 				}
 				$faceted = TRUE;
@@ -583,6 +570,9 @@ class Products_list
 				foreach ($url_colors as $key => $color)
 				{
 					$facet_where .= " AND (tbl_stock.color_facets LIKE '%".$color."%' OR tbl_stock.color_name LIKE '%".$color."%')";
+					//$color_facet_filter = "(tbl_stock.color_facets LIKE '%".$color."%' OR tbl_stock.color_name LIKE '%".$color."%')";
+					//if ($key == 0) $this->DB->where($color_facet_filter);
+					//else $this->DB->or_where($color_facet_filter);
 				}
 				$faceted = TRUE;
 			}
@@ -593,6 +583,8 @@ class Products_list
 				foreach ($url_occassions as $key => $occassion)
 				{
 					$facet_where .= " AND tbl_product.events LIKE '%".$occassion."%'";
+					//if ($key == 0) $this->DB->like('tbl_product.events', $occassion, 'both');
+					//else $this->DB->or_like('tbl_product.events', $occassion, 'both');
 				}
 				$faceted = TRUE;
 			}
@@ -603,6 +595,8 @@ class Products_list
 				foreach ($url_styles as $key => $style)
 				{
 					$facet_where .= " AND tbl_product.styles LIKE '%".$style."%'";
+					//if ($key == 0) $this->DB->like('tbl_product.styles', $style, 'both');
+					//else $this->DB->or_like('tbl_product.styles', $style, 'both');
 				}
 				$faceted = TRUE;
 			}
@@ -613,6 +607,8 @@ class Products_list
 				foreach ($url_materials as $key => $material)
 				{
 					$facet_where .= " AND tbl_product.materials LIKE '%".$material."%'";
+					//if ($key == 0) $this->DB->like('tbl_product.materials', $material, 'both');
+					//else $this->DB->or_like('tbl_product.materials', $material, 'both');
 				}
 				$faceted = TRUE;
 			}
@@ -623,6 +619,8 @@ class Products_list
 				foreach ($url_trends as $key => $trend)
 				{
 					$facet_where .= " AND tbl_product.trends LIKE '%".$trend."%'";
+					//if ($key == 0) $this->DB->like('tbl_product.trends', $trend, 'both');
+					//else $this->DB->or_like('tbl_product.trends', $trend, 'both');
 				}
 				$faceted = TRUE;
 			}
@@ -633,6 +631,7 @@ class Products_list
 				{
 					case 'onsale':
 						$facet_where .= " AND tbl_stock.custom_order = '3'";
+						//$this->DB->where('tbl_stock.custom_order', '3');
 					break;
 
 					case 'preorder':
@@ -665,6 +664,7 @@ class Products_list
 					else $this->DB->order_by('tbl_product.catalogue_price', $this->facets['price']);
 				}
 				else $this->DB->order_by('net_price', $this->facets['price']); // as part of select column alias near line 700
+				//else $this->DB->order_by('tbl_product.less_discount', $this->facets['price']);
 			}
 
 			// filter products
@@ -687,8 +687,8 @@ class Products_list
 		}
 
 		// set limits if pagination is used
-		// set SQL_CALC_FOUND_ROWS if pagination is used
-		// $this->pagination is the actual page 1, 2, etc...
+		// set SQL_CALC_FOUND_ROWS
+		// $this->pagination is the page 1, 2, etc...
 		if ($this->pagination > 0)
 		{
 			// we use SQL_CALC_FOUND_ROWS to calculate for entire record set
@@ -705,12 +705,9 @@ class Products_list
 		$this->DB->select('tbl_product.categories');
 		$this->DB->select('tbl_product.seque');
 		$this->DB->select('tbl_product.options');
-		$this->DB->select('tbl_product.clearance');
 		// pricing
 		$this->DB->select('tbl_product.less_discount');	// retail
-		$this->DB->select('tbl_product.less_discount AS retail_price');	// retail (alias)
 		$this->DB->select('tbl_product.catalogue_price'); // on sale
-		$this->DB->select('tbl_product.catalogue_price AS on_sale_price'); // on sale (alias)
 		$this->DB->select('tbl_product.wholesale_price'); // wholesale
 		$this->DB->select('tbl_product.wholesale_price_clearance'); // clearance
 		// designer associations
@@ -735,10 +732,8 @@ class Products_list
 		$this->DB->select('tbl_stock.primary_color');
 		$this->DB->select('tbl_stock.options as color_options'); // alias as this may be in use already (for further review)
 		$this->DB->select('tbl_stock.options as stocks_options');
-		// identify if clearance_consumer_only json value is present
+		//$this->DB->select("JSON_EXTRACT(tbl_stock.options, '$.clearance_consumer_only')");
 		// referencing link: https://dev.mysql.com/doc/refman/5.7/en/json-search-functions.html
-		// some issue with server - #1305 - FUNCTION db_shopseven.JSON_EXTRACT does not exist
-		//$this->DB->select("JSON_EXTRACT(tbl_stock.options, '$.clearance_consumer_only') AS clearance_consumer_only");
 		$this->DB->select('
 			tbl_stock.size_ss, tbl_stock.size_sm, tbl_stock.size_sl, tbl_stock.size_sxl,
 			tbl_stock.size_sxxl, tbl_stock.size_sxl1, tbl_stock.size_sxl2,
@@ -820,8 +815,7 @@ class Products_list
 			END) AS subcat_folder
 		');
 
-		// price items alias
-		// needed for filtering price from lowest to highest or vice versa
+		// price items
 		if ($this->wholesale)
 		{
 			$this->DB->select('
@@ -843,15 +837,11 @@ class Products_list
 			');
 		}
 
-		// with_stocks alias
+		// with_stocks or none
 		$this->DB->select("
 			(CASE
 				WHEN
-					(tbl_product.size_mode = '1' AND (tbl_stock.size_0 > '0' OR tbl_stock.size_2 > '0' OR tbl_stock.size_4 > '0' OR tbl_stock.size_6 > '0' OR tbl_stock.size_8 > '0' OR tbl_stock.size_10 > '0' OR tbl_stock.size_12 > '0' OR tbl_stock.size_14 > '0' OR tbl_stock.size_16 > '0' OR tbl_stock.size_18 > '0' OR tbl_stock.size_20 > '0' OR tbl_stock.size_22 > '0'))
-					OR (tbl_product.size_mode = '0' AND (tbl_stock.size_ss > '0' OR tbl_stock.size_sm > '0' OR tbl_stock.size_sl > '0' OR tbl_stock.size_sxl > '0' OR tbl_stock.size_sxxl > '0' OR tbl_stock.size_sxl1 > '0' OR tbl_stock.size_sxl2 > '0'))
-					OR (tbl_product.size_mode = '2' AND (tbl_stock.size_sprepack1221 > '0'))
-					OR (tbl_product.size_mode = '3' AND (tbl_stock.size_ssm > '0' AND tbl_stock.size_sml > '0'))
-					OR (tbl_product.size_mode = '4' AND (tbl_stock.size_sonesizefitsall > '0'))
+					tbl_product.size_mode = '1' AND (tbl_stock.size_0 > '0' OR tbl_stock.size_2 > '0' OR tbl_stock.size_4 > '0' OR tbl_stock.size_6 > '0' OR tbl_stock.size_8 > '0' OR tbl_stock.size_10 > '0' OR tbl_stock.size_12 > '0' OR tbl_stock.size_14 > '0' OR tbl_stock.size_16 > '0' OR tbl_stock.size_18 > '0' OR tbl_stock.size_20 > '0' OR tbl_stock.size_22 > '0') OR tbl_product.size_mode = '0' AND (tbl_stock.size_ss > '0' OR tbl_stock.size_sm > '0' OR tbl_stock.size_sl > '0' OR tbl_stock.size_sxl > '0' OR tbl_stock.size_sxxl > '0' OR tbl_stock.size_sxl1 > '0' OR tbl_stock.size_sxl2 > '0')
 				THEN '1'
 				ELSE '0'
 			END) AS with_stocks
@@ -863,9 +853,7 @@ class Products_list
 		$this->DB->join('vendor_types', 'vendor_types.id = vendors.vendor_type_id', 'left');
 		$this->DB->join('categories c1', 'c1.category_id = tbl_product.cat_id', 'left');
 		$this->DB->join('categories c2', 'c2.category_id = tbl_product.subcat_id', 'left');
-		// user subquery to sort colors with primary as first
-		// NOTE: on un-grouped listing, primary color may be on consumer clearance and may not show
-		$this->DB->join('(SELECT * FROM tbl_stock ORDER BY primary_color DESC) as tbl_stock', 'tbl_stock.prod_no = tbl_product.prod_no', 'left');
+		$this->DB->join('tbl_stock', 'tbl_stock.prod_no = tbl_product.prod_no', 'left');
 		$this->DB->join('tbl_stock_onorder tso', 'tso.st_id = tbl_stock.st_id', 'left');
 		$this->DB->join('tbl_stock_physical tsp', 'tsp.st_id = tbl_stock.st_id', 'left');
 
@@ -897,7 +885,7 @@ class Products_list
 		// bestsellers, top rated, price and sale first... also, for 'shop all'
 		// and 'womens_apparel' we use RAND() funtion
 
-		// custom order by conditions
+		// set $order_by custom conditions
 		if ( ! empty($order_by))
 		{
 			foreach ($order_by as $key => $val)
@@ -910,17 +898,20 @@ class Products_list
 		}
 		else
 		{
-			// use random listing order where necessary
 			if ($this->random_seed)
 			{
 				$this->DB->order_by('RAND(8)');
 			}
-
-			// this sorts the list by newest to oldest
-			$this->DB->order_by('tbl_product.prod_id', 'desc');
-			// sorts alphabetically
-			$this->DB->order_by('tbl_product.prod_no', 'desc');
 		}
+
+		// this sorts the list by newest to oldest
+		//$this->DB->order_by('tbl_product.prod_date', 'desc');
+		$this->DB->order_by('tbl_product.prod_id', 'desc');
+		// sorts alphabetically
+		$this->DB->order_by('tbl_product.prod_no', 'desc');
+
+		// sorts the colors within the group
+		$this->DB->order_by('tbl_stock.primary_color', 'desc');
 
 		// limit <limits>, <offset>
 		if ($limit != '')
@@ -965,23 +956,19 @@ class Products_list
 			$this->count_all = $q['FOUND_ROWS()'];
 		}
 
-		if ($query)
+		if ($query->num_rows() == 0)
 		{
-			if ($query->num_rows() == 0)
-			{
-				// nothing more to do...
-				return FALSE;
-			}
-			else
-			{
-				$this->row_count = $query->num_rows();
-				$this->first_row = $query->first_row();
-
-				// return the object
-				return $query->result();
-			}
+			// nothing more to do...
+			return FALSE;
 		}
-		else return FALSE;
+		else
+		{
+			$this->row_count = $query->num_rows();
+			$this->first_row = $query->first_row();
+
+			// return the object
+			return $query->result();
+		}
 	}
 
 	// --------------------------------------------------------------------

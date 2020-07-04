@@ -2,7 +2,10 @@
                     <div class="row body-content" data-object_data='{"<?php echo $this->security->get_csrf_token_name(); ?>":"<?php echo $this->security->get_csrf_hash(); ?>"}'>
 
                         <!-- BEGIN FORM =======================================================-->
-                        <?php echo form_open(
+                        <?php
+                        // the form tag is used for the UI only..
+                        // form is not being sent here
+                        echo form_open(
                             (@$role == 'sales' ? 'my_account/sales' : 'admin/campaigns').'/sales_package/send_product_clicks/send',
                             array(
                                 'class' => 'form-horizontal'
@@ -257,6 +260,10 @@
                             </div>
                         </div>
 
+                        <?php echo form_close(); ?>
+                        <!-- End FORM ===================================================================-->
+                        <!-- END FORM-->
+
                         <div class="col-md-6">
 
                             <div class="form-horizontal" role="form">
@@ -339,6 +346,19 @@
                             ?>
                             <div class="form-select-users-wrapper">
 
+                                <!-- BEGIN FORM-->
+                                <!-- FORM =======================================================================-->
+                                <?php echo form_open(
+                                    (@$role == 'sales' ? 'my_account/sales' : 'admin/campaigns').'/sales_package/send_package/send',
+                                    array(
+                                        'class' => 'form-horizontal',
+                                        'id' => 'form-send_sales_package'
+                                    )
+                                ); ?>
+
+                                <input type="hidden" name="send_to" value="current_user" />
+                                <input type="hidden" name="sales_user" value="<?php echo $sales_user; ?>" />
+
                                 <?php
                                 /***********
                                  * Noification area
@@ -365,15 +385,15 @@
 
                                 <?php $this->load->view('admin/metronic/sa_send_to_current_user'); ?>
 
-                                <h3 class="notice-select-action"><cite>Select action...</cite></h3>
+                                <h3 class="notice-select-action hide"><cite>Select action...</cite></h3>
+
+                                <?php echo form_close(); ?>
+                                <!-- End FORM ===================================================================-->
+                                <!-- END FORM-->
 
                             </div>
 
                         </div>
-
-                        <?php echo form_close(); ?>
-                        <!-- End FORM ===================================================================-->
-                        <!-- END FORM-->
 
                     </div>
                     <!-- END PAGE CONTENT BODY -->

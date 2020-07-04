@@ -36,7 +36,7 @@ class Delete extends Admin_Controller {
 
 		// load pertinent library/model/helpers
 		$this->load->library('users/wholesale_user_details');
-		
+
 		// get and set item details for odoo and recent items
 		$this->wholesale_user_details->initialize(array('user_id'=>$id));
 
@@ -51,10 +51,38 @@ class Delete extends Admin_Controller {
 			'remove'
 		);
 
+		// note in comments
+		$comments = 'Previously associated with '
+			.$this->wholesale_user_details->designer
+			.' under sales agent '
+			.$this->wholesale_user_details->admin_sales_email
+			.'<br />'
+		;
+
 		// delete item from records
 		$DB = $this->load->database('instyle', TRUE);
-		$DB->where('user_id', $id);
-		$DB->delete('tbluser_data_wholesale');
+
+		if (
+			$this->admin_user_detail->acess_level === '0'
+			OR $this->admin_user_detail->acess_level === '1'
+			OR $this->admin_user_detail->acess_level === '2'
+		)
+		{
+			// designer levels cannot delete users
+			// instead, remove designer association from user
+			$DB->set('admin_sales_id', NULL);
+			$DB->set('admin_sales_email', NULL);
+			$DB->set('reference_designer', NULL);
+			$DB->set('is_active', '0');
+			$DB->set('comments', $comments);
+			$DB->where('user_id', $id);
+			$DB->update('tbluser_data_wholesale');
+		}
+		else
+		{
+			$DB->where('user_id', $id);
+			$DB->delete('tbluser_data_wholesale');
+		}
 
 		// set flash data
 		$this->session->set_flashdata('success', 'delete');

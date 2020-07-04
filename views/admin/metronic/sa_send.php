@@ -32,7 +32,10 @@
                                 </div>
 
                                 <!-- BEGIN FORM =======================================================-->
-                                <?php echo form_open(
+                                <?php
+                                // the form tag is used for the UI only..
+                                // form is not being sent here
+                                echo form_open(
                                     (@$role == 'sales' ? 'my_account/sales' : 'admin/campaigns').'/sales_package/send',
                                     array(
                                         'class' => 'form-horizontal'
@@ -148,7 +151,7 @@
 
                                     <div class="form-group">
                                         <div class="col-md-12">
-                                            <a href="javascript:;" class="btn dark btn-md select-send-options send-to-current-user col-md-4 <?php echo @$ws_user_details ? 'hide' : ''; ?>" style="font-size:0.9em;">
+                                            <a href="javascript:;" class="btn dark btn-md btn-active select-send-options send-to-current-user col-md-4 <?php echo @$ws_user_details ? 'hide' : ''; ?>" style="font-size:0.9em;background-color:#E5E5E5;color: black;">
                                                 Send To Existing User(s)
                                             </a>
                                             <a href="javascript:;" class="btn dark btn-md select-send-options send-to-new-user col-md-4 <?php echo @$ws_user_details ? 'hide' : ''; ?>" style="font-size:0.9em;">
@@ -188,7 +191,7 @@
                                 ); ?>
 
                                 <input type="hidden" name="sales_package_id" value="<?php echo $sa_details->sales_package_id; ?>" />
-                                <input type="hidden" name="send_to" value="" />
+                                <input type="hidden" name="send_to" value="current_user" />
                                 <input type="hidden" name="sales_user" value="<?php echo $sales_user; ?>" />
 
                                 <?php
@@ -217,7 +220,7 @@
 
                                 <?php $this->load->view('admin/metronic/sa_send_to_current_user'); ?>
 
-                                <h3 class="notice-select-action <?php echo @$ws_user_details ? 'hide' : ''; ?>"><cite>Select action...</cite></h3>
+                                <h3 class="notice-select-action <?php echo @$ws_user_details ? 'hide' : 'hide'; ?>"><cite>Select action...</cite></h3>
 
                                 <?php echo form_close(); ?>
                                 <!-- End FORM ===================================================================-->

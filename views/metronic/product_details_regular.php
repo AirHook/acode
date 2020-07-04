@@ -194,8 +194,8 @@
 																{
 																	$this_color_image =
 																		$color->image_url_path
-																		? $this->config->item('PROD_IMG_URL').$color->media_path.$color->media_name.'_f3.jpg'
-																		: $this->config->item('PROD_IMG_URL').$img_path.'product_front/thumbs/'.$this->product_details->prod_no.'_'.$color->color_code.'_3.jpg'
+																		? $this->config->item('PROD_IMG_URL').$color->media_path.$color->media_name.'_f.jpg'
+																		: $this->config->item('PROD_IMG_URL').$img_path.'product_front/thumbs/'.$this->product_details->prod_no.'_'.$color->color_code.'_4.jpg'
 																	;
 																	?>
 
