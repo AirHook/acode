@@ -205,6 +205,26 @@ class Index extends Frontend_Controller {
 
 					// notify admin
 					$this->wholesale_user_details->notify_admin_user_online();
+
+					// get the ws user options property
+					$options = $this->wholesale_user_details->options;
+
+					if ( ! isset($options['intro']))
+					{
+						// since it is the user's first time to click an activation email
+						// send the 2nd email introducing JT as main contact person
+						// using wholesale_user_details class
+						$this->wholesale_user_details->send_intro_email();
+
+						// set the [intro] = '1' true option indicating user now got intro letter
+						$this->wholesale_user_details->intro_sent_one(
+							$this->wholesale_user_details->user_id,
+							$this->wholesale_user_details->options
+						);
+
+						// reload options
+						$options = $this->wholesale_user_details->options;
+					}
 				}
 
 				// send user to hub if not already at hub

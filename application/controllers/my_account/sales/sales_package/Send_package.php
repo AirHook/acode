@@ -195,10 +195,10 @@ class Send_package extends Sales_user_Controller {
 		if ( ! $this->input->post())
 		{
 			// set flash data
-			$this->session->set_flashdata('error', 'no_id_passed');
+			$this->session->set_flashdata('error', 'no_input_post');
 
 			// redirect user
-			redirect('admin/campaigns/sales_package', 'location');
+			redirect('my_account/sales/sales_package/create', 'location');
 		}
 
 		// load pertinent library/model/helpers
@@ -209,17 +209,16 @@ class Send_package extends Sales_user_Controller {
 		/***********
 		 * Process Users
 		 */
-		// only one email
-		// and doing the sending in this class directly
+		// doing the sending in this class directly
 
 		// first, we double check if user is valid
 		if ( ! $this->wholesale_user_details->initialize(array('email'=>$this->input->post('email'))))
 		{
 			// set flash data
-			$this->session->set_flashdata('error', 'no_id_passed');
+			$this->session->set_flashdata('error', 'invalid_user');
 
 			// redirect user
-			redirect('admin/campaigns/sales_package', 'location');
+			redirect('my_account/sales/sales_package/create', 'location');
 		}
 
 		// set emailtracker_id
@@ -276,7 +275,7 @@ class Send_package extends Sales_user_Controller {
 			echo $message;
 			echo '<br />';
 			echo '<br />';
-			echo '<a href="'.site_url('admin/campaigns/sales_package').'">continue...</a>';
+			echo '<a href="'.site_url('my_account/sales/sales_package').'">continue...</a>';
 			$this->session->set_flashdata('success', 'send_product_clicks');
 			die();
 			// */
@@ -289,10 +288,10 @@ class Send_package extends Sales_user_Controller {
 			if ( ! $this->email->send())
 			{
 				// set flash data
-				$this->session->set_flashdata('error', 'no_id_passed');
+				$this->session->set_flashdata('error', 'sending_unsuccessful');
 
 				// redirect user
-				redirect('admin/campaigns/sales_package', 'location');
+				redirect('my_account/sales/sales_package/create', 'location');
 			}
 		}
 
@@ -300,7 +299,7 @@ class Send_package extends Sales_user_Controller {
 		$this->session->set_flashdata('success', 'send_product_clicks');
 
 		// send user back
-		redirect('admin/campaigns/sales_package', 'location');
+		redirect('my_account/sales/sales_package', 'location');
 	}
 
 	// ----------------------------------------------------------------------

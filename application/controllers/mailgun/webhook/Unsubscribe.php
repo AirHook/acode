@@ -53,12 +53,13 @@ class Unsubscribe extends MY_Controller {
 
 			// load pertinent library/model/helpers
 			$this->load->library('users/consumer_user_details');
+			$this->load->library('users/wholesale_user_details');
 
 			if ($this->consumer_user_details->initialize(array('email'=>$data['event-data']['recipient'])))
 			{
 				// set user to optout
 				$DB->set('receive_productupd', '0');
-				$DB->set('is_active', '3');
+				$DB->set('is_active', '3'); // optout
 				$DB->where('email', $data['event-data']['recipient']);
 				$DB->update('tbluser_data');
 
@@ -66,6 +67,36 @@ class Unsubscribe extends MY_Controller {
 				// only basix for now
 				$params['address'] = $data['event-data']['recipient'];
 				$params['list_name'] = 'consumers@mg.shop7thavenue.com';
+				$this->load->library('mailgun/list_member_delete', $params);
+				$res = $this->list_member_delete->delete();
+
+				echo 'Record updated - '.$DB->affected_rows().' affected rows.';
+				exit;
+			}
+			elseif ($this->wholesale_user_details->initialize(array('email'=>$data['event-data']['recipient'])))
+			{
+				// note in comments
+				$comments = 'Somehow unsubscribed at the carousel mailer. Previously associated with '
+					.$this->wholesale_user_details->designer
+					.' under sales agent '
+					.$this->wholesale_user_details->admin_sales_email
+					.'<br />'
+				;
+
+				// set user to optout
+				// disassociate with any sales and designers
+				$DB->set('is_active', '3'); // optout
+				$DB->set('admin_sales_id', NULL);
+				$DB->set('admin_sales_email', NULL);
+				$DB->set('reference_designer', NULL);
+				$DB->set('comments', $comments);
+				$DB->where('email', $data['event-data']['recipient']);
+				$DB->update('tbluser_data_wholesale');
+
+				// remove user from mailgun list
+				// only basix for now
+				$params['address'] = $data['event-data']['recipient'];
+				$params['list_name'] = 'wholesale_users@mg.shop7thavenue.com';
 				$this->load->library('mailgun/list_member_delete', $params);
 				$res = $this->list_member_delete->delete();
 

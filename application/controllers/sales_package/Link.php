@@ -46,8 +46,17 @@ class Link extends Shop_Controller
 			redirect(site_url(), 'location');
 		}
 
+		// some params to initialize for the class
+		$is_a_sales_package = TRUE; // this class is initially intended for saved sales packages
+
 		// validate url segments and if sales package id is correct
-		if (
+		if ($sales_package_id == 'X')
+		{
+			// this link is from the wholesale email carousel
+			// where package offer is not saved
+			$is_a_sales_package = FALSE;
+		}
+		else if (
 			! $tc
 			OR ! $sales_package_id
 			OR ! $wholesale_user_id
@@ -75,18 +84,21 @@ class Link extends Shop_Controller
 		$this->_create_plugin_scripts();
 
 		/****************
-		 * Lets get the sales pakage details
+		 * Lets get the sales package
 		 */
-		if ( ! $this->sales_package_details->initialize(array('sales_package_id'=>$sales_package_id)))
+		if ($is_a_sales_package)
 		{
-			// unset any or old sales package sessions
-			$this->_unset_sa_session();
+			if ( ! $this->sales_package_details->initialize(array('sales_package_id'=>$sales_package_id)))
+			{
+				// unset any or old sales package sessions
+				$this->_unset_sa_session();
 
-			// set flash notice
-			$this->session->set_flashdata('error', 'sales_package_invalid_link');
+				// set flash notice
+				$this->session->set_flashdata('error', 'sales_package_invalid_link');
 
-			// nothing more to do...
-			redirect('shop/categories');
+				// nothing more to do...
+				redirect('shop/categories');
+			}
 		}
 
 		/****************
@@ -95,7 +107,13 @@ class Link extends Shop_Controller
 		// check for logged in users and verify link user id
 		if ($this->session->user_loggedin && $this->session->user_role === 'wholesale')
 		{
-			if ($this->session->user_id != $wholesale_user_id)
+			if (
+				$this->session->user_id != $wholesale_user_id
+				OR (
+					$wholesale_user_id == '0'
+					&& $this->wholesale_user_details->email != $this->input->get('email')
+				)
+			)
 			{
 				// unset any or old sales package sessions
 				$this->_unset_sa_session();
@@ -106,12 +124,15 @@ class Link extends Shop_Controller
 				// nothing more to do...
 				redirect('account');
 			}
-			// logged in user and sa user id is valid, hence we already have
+			// logged in user and sa user id/or email is valid, hence we already have
 			// wholesale user details
 		}
 		else
 		{
-			if ( ! $this->wholesale_user_details->initialize(array('user_id'=>$wholesale_user_id)))
+			if (
+				! $this->wholesale_user_details->initialize(array('user_id'=>$wholesale_user_id))
+				&& ! $this->wholesale_user_details->initialize(array('email'=>$this->input->get('email')))
+			)
 			{
 				// unset any or old sales package sessions
 				$this->_unset_sa_session();
@@ -144,52 +165,59 @@ class Link extends Shop_Controller
 		 * Lets check for 1 click session
 		 */
 		// get the sales package options property
-		$options = $this->sales_package_details->options;
-
-		// if click 1 is not yet set, we set it
-		if ( ! isset($options[$wholesale_user_id][$tc]))
+		if ($is_a_sales_package)
 		{
-			// this only means it's the user's firt time to click the link
-			// set the [user_id][tc] = logid option indicating user now clicked on the link
-			$this->sales_package_details->click_one(
-				$wholesale_user_id,
-				$tc,
-				$this->session->this_login_id
-			);
-
-			// reload options
 			$options = $this->sales_package_details->options;
-		}
 
-		// if click 1 is set, check for same session login id
-		// if in different session already, sales package is already invalid
-		/* *
-		if (@$options[$wholesale_user_id][$tc] !== $this->session->this_login_id)
+			// if click 1 is not yet set, we set it
+			if ( ! isset($options[$wholesale_user_id][$tc]))
+			{
+				// this only means it's the user's firt time to click the link
+				// set the [user_id][tc] = logid option indicating user now clicked on the link
+				$this->sales_package_details->click_one(
+					$wholesale_user_id,
+					$tc,
+					$this->session->this_login_id
+				);
+
+				// reload options
+				$options = $this->sales_package_details->options;
+			}
+
+			// if click 1 is set, check for same session login id
+			// if in different session already, sales package is already invalid
+			/* *
+			if (@$options[$wholesale_user_id][$tc] !== $this->session->this_login_id)
+			{
+				// unset any or old sales package sessions
+				$this->_unset_sa_session();
+
+				// set flash notice
+				$this->session->set_flashdata('error', 'click_one_error');
+
+				// nothing more to do...
+				redirect('account/request/sales_package/'.$sales_package_id);
+			}
+			// */
+
+			/****************
+			 * Notify admin and sales that user clicked on sales package
+			 */
+			$this->_sa_click_notification();
+
+			// set the sales packages session
+			$this->sales_package_details->set_session();
+			$this->session->set_userdata('sales_package_tc', $tc);
+			$this->session->set_userdata('sales_package_link', json_encode($this->uri->segment_array()));
+			if ( ! $this->session->userdata('sales_package_items')) $this->session->set_userdata('sales_package_items', $this->sales_package_details->sales_package_items);
+
+			// we define the shop_controller sales_package_items properly
+			$this->sales_package_items = json_decode($this->sales_package_details->sales_package_items, TRUE);
+		}
+		else
 		{
-			// unset any or old sales package sessions
-			$this->_unset_sa_session();
-
-			// set flash notice
-			$this->session->set_flashdata('error', 'click_one_error');
-
-			// nothing more to do...
-			redirect('account/request/sales_package/'.$sales_package_id);
+			$this->sales_package_items = explode(',', $this->input->get('items_csv'));
 		}
-		// */
-
-		/****************
-		 * Notify admin and sales that user clicked on sales package
-		 */
-		$this->_sa_click_notification();
-
-		// set the sales packages session
-		$this->sales_package_details->set_session();
-		$this->session->set_userdata('sales_package_tc', $tc);
-		$this->session->set_userdata('sales_package_link', json_encode($this->uri->segment_array()));
-		if ( ! $this->session->userdata('sales_package_items')) $this->session->set_userdata('sales_package_items', $this->sales_package_details->sales_package_items);
-
-		// we define the shop_controller sales_package_items properly
-		$this->sales_package_items = json_decode($this->sales_package_details->sales_package_items, TRUE);
 
 		// there is another page visit recording with the entire url recorded
 		// holding this here for further evaluation

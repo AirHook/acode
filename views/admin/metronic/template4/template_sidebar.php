@@ -15,6 +15,7 @@
                             </a>
                         </li>
 
+                        <!-- =============-->
                         <li class="heading">
                             <h3 class="uppercase">Products</h3>
                         </li>
@@ -146,6 +147,7 @@
                             <?php
                         } ?>
 
+                        <!-- =============-->
                         <li class="heading">
                             <h3 class="uppercase">Orders</h3>
                         </li>
@@ -201,6 +203,8 @@
                         // available only on hub sites for now
                         if ($this->webspace_details->options['site_type'] == 'hub_site')
                         { ?>
+
+                        <!-- =============-->
                         <li class="heading">
                             <h3 class="uppercase">Sales</h3>
                         </li>
@@ -258,9 +262,11 @@
                                 </li>
                             </ul>
                         </li>
+
                             <?php
                         } ?>
 
+                        <!-- =============-->
                         <li class="heading">
                             <h3 class="uppercase">Users</h3>
                         </li>
@@ -365,6 +371,8 @@
                         // available only on hub sites for now
                         if ($this->webspace_details->options['site_type'] == 'hub_site')
                         { ?>
+
+                        <!-- =============-->
                         <li class="heading">
                             <h3 class="uppercase">Inventory</h3>
                         </li>
@@ -388,6 +396,7 @@
                                 <span class="title">Inventory Count By Barcode Scan</span>
                             </a>
                         </li>
+
                             <?php
                         } ?>
 
@@ -395,6 +404,8 @@
                         // available only on hub sites for now
                         if ($this->webspace_details->options['site_type'] == 'hub_site')
                         { ?>
+
+                        <!-- =============-->
                         <li class="heading">
                             <h3 class="uppercase">Production</h3>
                         </li>
@@ -404,6 +415,7 @@
                             </a>
                         </li>
 
+                        <!-- =============-->
                         <li class="heading">
                             <h3 class="uppercase">Accounting</h3>
                         </li>
@@ -412,9 +424,44 @@
                                 <span class="title">Accounting <cite class="small font-red-flamingo">(Under Construction)</cite></span>
                             </a>
                         </li>
+
                             <?php
                         } ?>
 
+                        <!-- =============-->
+                		<li class="heading">
+                			<h3 class="uppercase">Marketing</h3>
+                		</li>
+                		<li class="nav-item with-heading ">
+                			<a href="javascript:;" class="nav-link tooltips" data-original-title="Currently Under Construction" data-placement="right">
+                				<span class="title uppercase">Mailgun Emailing</span>
+                				<span class="arrow open"></span>
+                			</a>
+                			<ul class="sub-menu always-open">
+                				<li class="nav-item  ">
+                					<a href="javascript:;" class="nav-link tooltips" data-original-title="Currently Under Construction" data-placement="right">
+                						<span class="title">Consumer Special Sale Email Carousel</span>
+                					</a>
+                				</li>
+                				<li class="nav-item  ">
+                					<a href="javascript:;" class="nav-link tooltips" data-original-title="Currently Under Construction" data-placement="right">
+                						<span class="title">Wholesale Special Sale Email Carousel</span>
+                					</a>
+                				</li>
+                				<li class="nav-item  ">
+                					<a href="javascript:;" class="nav-link tooltips" data-original-title="Currently Under Construction" data-placement="right">
+                						<span class="title">Factory Email Carousel for New Products</span>
+                					</a>
+                				</li>
+                				<li class="nav-item  ">
+                					<a href="javascript:;" class="nav-link tooltips" data-original-title="Currently Under Construction" data-placement="right">
+                						<span class="title">Create Newsletter</span>
+                					</a>
+                				</li>
+                			</ul>
+                		</li>
+
+                        <!-- =============-->
                         <li class="heading">
                             <h3 class="uppercase">General</h3>
                         </li>
@@ -445,6 +492,7 @@
                             <?php
                         } ?>
 
+                        <!-- =============-->
                         <li class="heading">
                             <h3 class="uppercase">Tools</h3>
                         </li>
@@ -523,6 +571,7 @@
                                 </li>
                             </ul>
                         </li>
+                        <!-- DOC: Changing NEWSLETTER to MARKETING -- new menu items in a separate group and heading
                         <li class="nav-item with-heading ">
                             <a href="javascript:;" class="nav-link tooltips" data-original-title="Currently Under Construction" data-placement="right">
                                 <span class="title uppercase">Newsletter</span>
@@ -541,6 +590,7 @@
                                 </li>
                             </ul>
                         </li>
+                        -->
                             <?php
                         } ?>
                     </ul>

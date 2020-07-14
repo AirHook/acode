@@ -109,15 +109,6 @@
 
 										<td width="100%" height="92" align="center" style="font-family:Tahoma;font-size:12px;color:black;vertical-align:top;">
 
-                                            <?php if ($this->webspace_details->slug != 'tempoparis') { ?>
-                                            <br />
-                                            <span style="font-size:0.8em;line-height:24px;display:none;">
-                                                Can't see the images in this email? &nbsp;
-                                                <a href="<?php echo site_url('wholesale/activation_email/index/'.@$user_id); ?>" style="color:black;">
-                                                    View in browser
-                                                </a>
-                                            </span>
-                                            <?php } ?>
                                             <br />
 
                                             <img src="<?php echo base_url(); ?>assets/images/logo/logo-<?php echo @$reference_designer ?: 'shop7thavenue'; ?>.png" width="300" style="margin-top:10px;margin-bottom:5px;" />
@@ -787,6 +778,16 @@
                                                 <?php echo @$privacy_policy; ?>
                                             </div>
 
+                                            <?php if ($this->webspace_details->slug != 'tempoparis') { ?>
+                                            <br />
+                                            <span style="font-size:0.8em;line-height:24px;display:none;">
+                                                Can't see the images in this email? &nbsp;
+                                                <a href="<?php echo site_url('wholesale/activation_email/index/'.@$user_id); ?>" style="color:black;">
+                                                    View in browser
+                                                </a>
+                                            </span>
+                                            <?php } ?>
+                                            
 										</td>
 
 									</tr>

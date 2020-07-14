@@ -109,6 +109,28 @@ class Add extends Sales_user_Controller {
 			if ( ! $this->validate_email($post_ary['email5'])) unset($post_ary['email5']);
 			if ( ! $this->validate_email($post_ary['email6'])) unset($post_ary['email6']);
 
+			// if active, add user to mailgun list
+			if ($this->input->post('is_active') == '1')
+			{
+				// basix only for now
+				if ($this->input->post('reference_designer') == 'basixblacklabel')
+				{
+					// add user to mailgun list
+					// no need to validate email as these are stores
+					// force add users to mailgun
+					// use input fields to capture any updates
+					$params['address'] = $this->input->post('email');
+					$params['fname'] = $this->input->post('firstname');
+					$params['lname'] = $this->input->post('lastname');
+					$params['vars'] = '{"store_name":"'.$this->input->post('store_name').'"}';
+					$params['description'] = 'Wholesale User';
+					$params['list_name'] = 'wholesale_users@mg.shop7thavenue.com';
+					$this->load->library('mailgun/list_member_add', $params);
+					$res = $this->list_member_add->add();
+					$this->list_member_add->clear();
+				}
+			}
+
 			// connect and add record to database
 			$DB = $this->load->database('instyle', TRUE);
 			$query = $DB->insert('tbluser_data_wholesale', $post_ary);
@@ -130,11 +152,11 @@ class Add extends Sales_user_Controller {
 				if ( ! $this->wholesale_activation_email_sending->send())
 				{
 					echo $this->wholesale_activation_email_sending->error;
-					$this->session->set_flashdata('error', 'error_sending_activation_email');
+					$this->session->set_flashdata('error', 'added_but_error_sending_activation_email');
 					$this->session->set_flashdata('error_message', $this->wholesale_activation_email_sending->error);
 
 					// redirect user
-					redirect($this->config->slash_item('admin_folder').'users/wholesale/edit/index/'.$insert_id);
+					redirect('my_account/sales/users/wholesale/edit/index/'.$insert_id);
 				}
 
 			}
@@ -142,7 +164,7 @@ class Add extends Sales_user_Controller {
 			// set flash data
 			$this->session->set_flashdata('success', 'add');
 
-			redirect($this->config->slash_item('admin_folder').'users/wholesale/edit/index/'.$insert_id);
+			redirect('my_account/sales/users/wholesale/edit/index/'.$insert_id);
 		}
 	}
 

@@ -31,8 +31,19 @@ class Suspend extends Admin_Controller {
 			$this->session->set_flashdata('error', 'no_id_passed');
 
 			// redirect user
-			redirect('admin/users/wholesale/'.$page, 'location');
+			redirect('admin/users/wholesale'.($page != 'search' ? '/'.$page : ''), 'location');
 		}
+
+		// get and set item details for odoo and recent items
+		$this->load->library('users/wholesale_user_details');
+		$this->wholesale_user_details->initialize(array('user_id'=>$id));
+
+		// remove user from mailgun list
+		// only basix for now
+		$params['address'] = $this->wholesale_user_details->email;
+		$params['list_name'] = 'wholesale_users@mg.shop7thavenue.com';
+		$this->load->library('mailgun/list_member_delete', $params);
+		$res = $this->list_member_delete->delete();
 
 		// udpate record
 		$DB = $this->load->database('instyle', TRUE);
@@ -45,7 +56,7 @@ class Suspend extends Admin_Controller {
 		$this->session->set_flashdata('success', 'edit');
 
 		// redirect user
-		redirect('admin/users/wholesale/'.$page, 'location');
+		redirect('admin/users/wholesale'.($page != 'search' ? '/'.$page : ''), 'location');
 	}
 
 	// ----------------------------------------------------------------------

@@ -57,6 +57,12 @@ class Delete extends Sales_user_Controller {
 			'remove'
 		);
 
+		// remove user from mailgun list
+		$params['address'] = $this->wholesale_user_details->email;
+		$params['list_name'] = 'wholesale_users@mg.shop7thavenue.com';
+		$this->load->library('mailgun/list_member_delete', $params);
+		$res = $this->list_member_delete->delete();
+		
 		// note in comments
 		$comments = 'Previously associated with '
 			.$this->wholesale_user_details->designer

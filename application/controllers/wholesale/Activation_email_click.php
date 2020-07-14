@@ -108,6 +108,17 @@ class Activation_email_click extends Frontend_Controller
 				$this->wholesale_user_details->options
 			);
 
+			// since it is the user's first time to click an activation email
+			// send the 2nd email introducing JT as main contact person
+			// using wholesale_user_details class
+			$this->wholesale_user_details->send_intro_email();
+
+			// set the [intro] = '1' true option indicating user now got intro letter
+			$this->wholesale_user_details->intro_sent_one(
+				$wholesale_user_id,
+				$this->wholesale_user_details->options
+			);
+
 			// reload options
 			$options = $this->wholesale_user_details->options;
 		}

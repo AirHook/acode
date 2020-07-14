@@ -49,20 +49,21 @@ class Mailing_list extends MY_Controller {
 	/**
 	 * Index - default method
 	 *
-	 * Primary method to call when no other methods are found in url segment
-	 * This method simply lists all sales pacakges
+	 * Create a Mailing List via API
 	 *
 	 * @return	void
 	 */
 	public function index()
 	{
 		// set main email header params accordingly
-        $params['address'] = 'test@mg.shop7thavenue.com';
-        $params['description'] = 'Test Mailing List';
+        //$params['address'] = 'test@mg.shop7thavenue.com';
+        //$params['description'] = 'Test Mailing List';
 		//$params['address'] = 'consumers@mg.shop7thavenue.com';
         //$params['description'] = 'Consumer Users';
+		$params['address'] = 'wholesale_users@mg.shop7thavenue.com';
+        $params['description'] = 'Wholesale Users';
 
-		// let do the curl
+		// let do the curl to create a mailing with above params
         $csess = curl_init('https://api.mailgun.net/v3/lists');
 
         // set settings
@@ -279,6 +280,94 @@ class Mailing_list extends MY_Controller {
 	// ----------------------------------------------------------------------
 
 	/**
+	 * Add User member to mailing list
+	 * Or update mailing with current active wholesale users
+	 * Does not remove from mialgun list those that are not in server list
+	 *
+	 * @return	void
+	 */
+	public function add_wholesale_users()
+	{
+		// load pertinent library/model/helpers
+		$this->load->library('mailgun/validate_email');
+
+		//echo '250<br />';
+		//echo '250, 250<br />';
+		//echo '250, 500<br />';
+		//...
+		//echo '500, 17000<br />';
+
+		$this->DB->where('is_active', '1');
+		$this->DB->where('admin_sales_email', 'help@basixblacklabel.com');
+		$this->DB->where('reference_designer', 'basixblacklabel');
+		$this->DB->limit(250, 250); // 250, 250 ...
+		$query = $this->DB->get('tbluser_data_wholesale');
+
+		if ($query->num_rows() == 0)
+		{
+			// nothing more to do...
+			echo 'No records found.';
+			exit;
+		}
+		else
+		{
+			$undeliverable = array();
+			$users_ary = array();
+			foreach ($query->result() as $row)
+			{
+				// no need to validate email as these are stores
+				// force add users to mailgun
+				// set params to pass to mailgun on export
+				$user['subscribed'] = TRUE;
+				$user['description'] = 'Wholesale User';
+				$user['address'] = $row->email;
+				$user['name'] = ucwords($row->firstname.' '.$row->lastname);
+
+				array_push($users_ary, $user);
+			}
+
+			// set main email header params accordingly
+			$params['upsert'] = TRUE;
+			$params['members'] = json_encode($users_ary);
+
+			// set vars per user to be able to access it as %recipient.yourvars%
+			//$params['vars'] = '{"designer":"Basix Black Labe",...}'
+
+			// let do the curl
+			$csess = curl_init('https://api.mailgun.net/v3/lists/wholesale_users@mg.shop7thavenue.com/members.json');
+
+			// set settings
+			curl_setopt($csess, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+			curl_setopt($csess, CURLOPT_USERPWD, 'api:'.$this->key);
+			curl_setopt($csess, CURLOPT_POST, true);
+			curl_setopt($csess, CURLOPT_POSTFIELDS, $params);
+			curl_setopt($csess, CURLOPT_HEADER, false);
+			//curl_setopt($csess, CURLOPT_HTTPHEADER, array('Content-Type: multipart/form-data')); // used for attachments
+			curl_setopt($csess, CURLOPT_ENCODING, 'UTF-8');
+			curl_setopt($csess, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($csess, CURLOPT_SSL_VERIFYPEER, false);
+
+			// get response
+			$response = curl_exec($csess);
+
+			// close curl
+			curl_close($csess);
+
+			// convert to array
+			$results = json_decode($response, true);
+		}
+
+		echo '<pre>';
+		print_r($results);
+		echo '<br />';
+		print_r($undeliverable);
+		echo '<br />';
+		echo 'done';
+	}
+
+	// ----------------------------------------------------------------------
+
+	/**
 	 * Request to validate all emails of the mailing list
 	 *
 	 * @return	void
@@ -311,7 +400,7 @@ class Mailing_list extends MY_Controller {
 	public function validate_email($email = '')
 	{
 		// set list name
-		$email = 'xasdfs@asdlkjsad.com';
+		//$email = 'xasdfs@asdlkjsad.com';
 		//$email = 'rsbgm@rcpixel.com';
 
 		// set url
@@ -358,7 +447,7 @@ class Mailing_list extends MY_Controller {
 		    [risk] => high
 		)
 		return $results['result'];
-		*/
+		// */
 
 		echo '<pre>';
 		print_r($results);

@@ -52,6 +52,11 @@
                                     <button class="close" data-close="alert"></button> User information updated...
                                 </div>
                                 <?php } ?>
+                                <?php if ($this->session->flashdata('error') == 'added_but_error_sending_activation_email') { ?>
+                                <div class="alert alert-success auto-remove">
+                                    <button class="close" data-close="alert"></button> New USER added. Unfortunately, there was an error sending activaiton email.
+                                </div>
+                                <?php } ?>
                                 <?php if (validation_errors()) { ?>
                                 <div class="alert alert-danger">
                                     <button class="close" data-close="alert"></button> <?php echo validation_errors(); ?>

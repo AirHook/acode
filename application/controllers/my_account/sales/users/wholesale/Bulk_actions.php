@@ -63,13 +63,14 @@ class Bulk_actions extends Sales_user_Controller {
 			if ($key === 0) $DB->where('user_id', $id);
 			else $DB->or_where('user_id', $id);
 
-			// get and set item details for odoo and recent items
+			// get and set item details
 			$this->wholesale_user_details->initialize(array('user_id'=>$id));
 
 			// remove from recent items
 			// update recent list for edited vendor users
 			if ($this->input->post('bulk_action') === 'del')
 			{
+				// update recent items -> currently not used
 				$this->webspace_details->update_recent_users(
 					array(
 						'user_type' => 'wholesale_users',
@@ -79,13 +80,47 @@ class Bulk_actions extends Sales_user_Controller {
 					'remove'
 				);
 			}
+
+			if (
+				$this->input->post('bulk_action') == 'deac'
+				OR $this->input->post('bulk_action') == 'su'
+				OR $this->input->post('bulk_action') === 'del'
+			)
+			{
+				// remove user from mailgun list
+				// only basix for now
+				$params['address'] = $this->wholesale_user_details->email;
+				$params['list_name'] = 'wholesale_users@mg.shop7thavenue.com';
+				$this->load->library('mailgun/list_member_delete', $params);
+				$res = $this->list_member_delete->delete();
+			}
+
+			if ($this->input->post('bulk_action') == 'ac')
+			{
+				// basix only for now
+				if ($this->wholesale_user_details->reference_designer == 'basixblacklabel')
+				{
+					// add user to mailgun list
+					// no need to validate email as these are stores
+					// force add users to mailgun
+					$params['address'] = $this->wholesale_user_details->email;
+					$params['fname'] = $this->wholesale_user_details->fname;
+					$params['lname'] = $this->wholesale_user_details->lname;
+					$params['vars'] = '{"store_name":"'.$this->wholesale_user_details->store_name.'"}';
+					$params['description'] = 'Wholesale User';
+					$params['list_name'] = 'wholesale_users@mg.shop7thavenue.com';
+					$this->load->library('mailgun/list_member_add', $params);
+					$res = $this->list_member_add->add();
+					$this->list_member_add->clear();
+				}
+			}
 		}
 
 		// note in comments
 		$comments = 'Previously associated with '
-			.$this->sales_user_details->designer
+			.$this->wholesale_user_details->reference_designer
 			.' under sales agent '
-			.$this->sales_user_details->email
+			.$this->wholesale_user_details->admin_sales_email
 			.'<br />'
 		;
 
@@ -118,6 +153,54 @@ class Bulk_actions extends Sales_user_Controller {
 			redirect($this->agent->referrer(), 'location');
 		}
 		else redirect('my_account/sales/users/wholesale', 'location');
+	}
+
+	// ----------------------------------------------------------------------
+
+	/**
+	 * Request to validate all emails of the mailing list
+	 *
+	 * @return	void
+	 */
+	private function _add_user_to_mg($users_ary = array())
+	{
+		if (empty($users_ary))
+		{
+			// nothing more to do...
+			return FALSE;
+		}
+
+		// set main email header params accordingly
+		$params['upsert'] = TRUE;
+		$params['members'] = json_encode($users_ary);
+
+		// set vars per user to be able to access it as %recipient.yourvars%
+		//$params['vars'] = '{"designer":"Basix Black Labe",...}'
+
+		// let do the curl
+		$csess = curl_init('https://api.mailgun.net/v3/lists/wholesale_users@mg.shop7thavenue.com/members.json');
+
+		// set settings
+		curl_setopt($csess, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+		curl_setopt($csess, CURLOPT_USERPWD, 'api:'.$this->key);
+		curl_setopt($csess, CURLOPT_POST, true);
+		curl_setopt($csess, CURLOPT_POSTFIELDS, $params);
+		curl_setopt($csess, CURLOPT_HEADER, false);
+		//curl_setopt($csess, CURLOPT_HTTPHEADER, array('Content-Type: multipart/form-data')); // used for attachments
+		curl_setopt($csess, CURLOPT_ENCODING, 'UTF-8');
+		curl_setopt($csess, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($csess, CURLOPT_SSL_VERIFYPEER, false);
+
+		// get response
+		$response = curl_exec($csess);
+
+		// close curl
+		curl_close($csess);
+
+		// convert to array
+		$results = json_decode($response, true);
+
+		return $response;
 	}
 
 	// ----------------------------------------------------------------------

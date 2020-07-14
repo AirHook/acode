@@ -12,7 +12,7 @@ class Authenticated extends Frontend_Controller {
 	{
 		parent::__construct();
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -27,30 +27,36 @@ class Authenticated extends Frontend_Controller {
 			// nothing more to do...
 			// set flash data
 			$this->session->set_flashdata('error', 'no_id_passed');
-			
+
 			// redirect user
 			redirect($_SERVER['HTTP_REFERER']);
 		}
-		
+
 		// initialize wholesale user
 		$this->load->library('users/wholesale_user_details');
 		if ( ! $this->wholesale_user_details->initialize(array('user_id'=>$wholesale_user_id)))
 		{
 			// set flash notice
 			$this->session->set_flashdata('flashMsg', 'Invalid Credentials');
-			
+
 			// redirect user
 			redirect($_SERVER['HTTP_REFERER']);
 		}
-		
+
 		// set logged in session
 		$this->wholesale_user_details->set_session();
 		// update login details
 		$this->wholesale_user_details->record_login_detail();
-		
+
 		// notify admin user is online
-		$this->_notify_admin_user_online();
+		//$this->_notify_admin_user_online();
 		
+		// do notifications where necessary
+		// notify sales user
+		$this->wholesale_user_details->notify_sales_user_online();
+		// notify admin user is online
+		$this->wholesale_user_details->notify_admin_user_online();
+
 		// redirect to categories page
 		if (
 			$this->webspace_details->slug === 'tempoparis'
@@ -58,15 +64,15 @@ class Authenticated extends Frontend_Controller {
 				DOMAINNAME === 'tempoparis.com'
 				OR DOMAINNAME === 'tempo-paris.com'
 			)
-		) 
+		)
 		{
 			redirect('shop/categories');
 		}
 		else redirect(site_url('shop/designers/'.$this->wholesale_user_details->reference_designer), 'location');
 	}
-	
+
 	// ----------------------------------------------------------------------
-	
+
 	/**
 	 * Notify admin of user being online
 	 *
@@ -108,7 +114,7 @@ class Authenticated extends Frontend_Controller {
 			Click <u>here</u> to chat with user. <span style="color:red">[ Not yet available. ]</span>
 			<br />
 		';
-		
+
 		if (ENVIRONMENT == 'development') // ---> used for development purposes
 		{
 			// we are unable to send out email in our dev environment
@@ -116,7 +122,7 @@ class Authenticated extends Frontend_Controller {
 			// just don't forget to comment these accordingly
 			echo $email_message;
 			echo '<br /><br />';
-			
+
 			echo '<a href="'.site_url('shop/designers/'.$this->wholesale_user_details->reference_designer).'">Continue...</a>';
 			echo '<br /><br />';
 			exit;
@@ -126,27 +132,27 @@ class Authenticated extends Frontend_Controller {
 			// let's send the email
 			// load email library
 			$this->load->library('email');
-			
+
 			// notify admin
 			$this->email->clear();
-			
+
 			$this->email->from($this->wholesale_user_details->designer_info_email, $this->wholesale_user_details->designer);
 
 			$this->email->to($this->webspace_details->info_email);
-			
+
 			//$this->email->bcc($this->config->item('dev1_email')); // --> for debuggin purposes
-			
+
 			$this->email->subject('WHOLESALE USER IS ON LINE - '.strtoupper($this->webspace_details->name));
 			$this->email->message($email_message);
-			
+
 			// email class has a security error
 			// "idn_to_ascii(): INTL_IDNA_VARIANT_2003 is deprecated"
-			// using the '@' sign to supress this 
+			// using the '@' sign to supress this
 			// must resolve pending update of CI
 			@$this->email->send();
 		}
 	}
-	
+
 	// ----------------------------------------------------------------------
-	
+
 }

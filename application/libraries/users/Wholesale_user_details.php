@@ -676,7 +676,7 @@ class Wholesale_user_details
 		// begin send email requet to isntyle admin
 		$email_message = '
 			<br /><br />
-			Dear '.ucwords($this->admin_sales_user).',
+			Dear Admin,
 			<br /><br />
 			'.ucfirst($this->fname.' '.$this->lname).' is now online.<br />
 			Total logged in visits  - ( '.$this->total_visits().' ).
@@ -731,7 +731,11 @@ class Wholesale_user_details
 			// notify admin
 			$this->CI->email->clear();
 
+			//$this->CI->email->from($this->designer_info_email, $this->designer);
 			$this->CI->email->from($this->designer_info_email, $this->designer);
+
+			// user user email to reply to
+			$this->CI->email->reply_to($this->email, ucwords($this->fname.' '.$this->lname));
 
 			$this->CI->email->to($this->CI->webspace_details->info_email);
 
@@ -757,6 +761,9 @@ class Wholesale_user_details
 	 */
 	public function notify_sales_user_online()
 	{
+		// disabling notification to sales user
+		return FALSE;
+
 		// begin send email requet to isntyle admin
 		$email_message = '
 			<br /><br />
@@ -815,11 +822,136 @@ class Wholesale_user_details
 
 			$this->CI->email->from($this->designer_info_email, $this->designer);
 
+			// user user email to reply to
+			$this->CI->email->reply_to($this->email, ucwords($this->fname.' '.$this->lname));
+
 			$this->CI->email->to($this->admin_sales_email);
 
 			$this->CI->email->bcc($this->CI->config->item('dev1_email')); // --> for debuggin purposes
 
 			$this->CI->email->subject('WHOLESALE USER IS ON LINE - '.strtoupper($this->CI->webspace_details->name));
+			$this->CI->email->message($email_message);
+
+			// email class has a security error
+			// "idn_to_ascii(): INTL_IDNA_VARIANT_2003 is deprecated"
+			// using the '@' sign to supress this
+			// must resolve pending update of CI
+			@$this->CI->email->send();
+		}
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Act Click One Method
+	 *
+	 * @return	void
+	 */
+	public function intro_sent_one($user_id = '', $options = array())
+	{
+		if ($user_id == '')
+		{
+			// nothing more to do...
+			return FALSE;
+		}
+
+		// update data
+		if ( ! isset($options['intro'])) $options['intro'] = '1';
+
+		// update property
+		$this->options = $options;
+
+		// update recrods
+		$this->DB->set('options', json_encode($this->options));
+		$this->DB->where('user_id', $user_id);
+		$this->DB->update('tbluser_data_wholesale');
+
+		return $this;
+	}
+
+	// ----------------------------------------------------------------------
+
+	/**
+	 * Notify admin of user being online
+	 *
+	 * @return	void
+	 */
+	public function send_intro_email()
+	{
+		// begin send email requet to isntyle admin
+		$email_message = '
+			<br /><br />
+			Hi '.ucwords($this->fname.' '.$this->lname).',
+			<br /><br />
+			I am the Operations director for BASIX BLACK LABEL. <br />
+			I will be aiding you with on boarding for all your inquires.
+			<br /><br /><br />
+			EXISTING FEATURES OF WAREHOUSE PLATFORM
+			<br /><br /><br />
+			1: All items in stock with sizes and colors are posted every 24 hours.
+			<br /><br />
+			2: Place order inquiries as if you were shopping online and we send you verification in 24 hours.
+			<br /><br />
+			3: Your MY ACCOUNT dashboard lets you see all orders, check order status , track order and receive communication on each order.
+			<br /><br />
+			4: Bi-weekly email with 30 different products of IN STOCK items which saves you time of having to browse the whole site.
+			<br /><br /><br />
+			FUTURE UPGRADE FEATURES OF WAREHOUSE PLATFORM
+			<br /><br /><br />
+			1: We will post all new designs available for PRE ORDER with 12-14 week delivery window for SPRING / SUMMER 21 SEASON.
+			<br /><br />
+			2: We will resume accepting SPECIAL CUSTOM ORDERS on existing items.
+			<br /><br />
+			3: We will launch our  DROP SHIP program to help you sell more and ship faster.
+			<br /><br />
+			4: API will be made available to your IT staff to give you a DATA FEED of items from our site and use our photos.
+			<br /><br /><br />
+			Feel free to discover the new modern way to work with us.
+			<br /><br />
+			<br /><br />
+			Regards,
+			<br /><br /><br />
+			Joe Taveras <br />
+			Business Development Director
+			<br /><br />
+			Basix Black Label / Shop7thavenue <br />
+			315 West 39th Street <br />
+			New York, New York, 10018 <br />
+			212.840.0846 <br />
+			help@basixblacklabel.com <br />
+			<br />
+		';
+		// *** removing below line from above bottom space while it doesn't work
+		// Click <u>here</u> to chat with user. <span style="color:red">[ Not yet available. ]</span>
+
+		if (ENVIRONMENT == 'development') // ---> used for development purposes
+		{
+			// we are unable to send out email in our dev environment
+			// so we check on the email template instead.
+			// just don't forget to comment these accordingly
+			echo $email_message;
+			echo '<br /><br />';
+
+			exit;
+		}
+		else
+		{
+			// let's send the email
+			// load email library
+			$this->CI->load->library('email');
+
+			// notify admin
+			$this->CI->email->clear();
+
+			//$this->CI->email->from($this->designer_info_email, $this->designer);
+			$this->CI->email->from($this->designer_info_email, $this->designer);
+
+			$this->CI->email->to($this->email);
+			//$this->CI->email->to('help@basixblacklabel.com');
+
+			$this->CI->email->bcc('help@basixblacklabel.com'); // --> for debuggin purposes
+
+			$this->CI->email->subject("Basix Black Label Real Time Stock Platform");
 			$this->CI->email->message($email_message);
 
 			// email class has a security error

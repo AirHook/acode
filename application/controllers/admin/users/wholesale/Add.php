@@ -27,6 +27,7 @@ class Add extends Admin_Controller {
 
 		// load pertinent library/model/helpers
 		$this->load->helper('state_country');
+		$this->load->library('users/wholesale_user_details');
 		$this->load->library('users/sales_users_list');
 		$this->load->library('designers/designers_list');
 		$this->load->library('odoo');
@@ -83,6 +84,16 @@ class Add extends Admin_Controller {
 		}
 		else
 		{
+			if ($this->wholesale_user_details->initialize(array('email' => $this->input->post('email'))))
+			{
+				// user already exists
+				// set flash data
+				$this->session->set_flashdata('error', 'user_exists');
+
+				// redirect user
+				redirect('admin/users/wholesale/add', 'locagtion');
+			}
+
 			// insert record
 			$post_ary = $this->input->post();
 			// set necessary variables
@@ -102,6 +113,28 @@ class Add extends Admin_Controller {
 			if ( ! $this->validate_email($post_ary['email4'])) unset($post_ary['email4']);
 			if ( ! $this->validate_email($post_ary['email5'])) unset($post_ary['email5']);
 			if ( ! $this->validate_email($post_ary['email6'])) unset($post_ary['email6']);
+
+			// if active, add user to mailgun list
+			if ($this->input->post('is_active') == '1')
+			{
+				// basix only for now
+				if ($this->input->post('reference_designer') == 'basixblacklabel')
+				{
+					// add user to mailgun list
+					// no need to validate email as these are stores
+					// force add users to mailgun
+					// use input fields to capture any updates
+					$params['address'] = $this->input->post('email');
+					$params['fname'] = $this->input->post('firstname');
+					$params['lname'] = $this->input->post('lastname');
+					$params['vars'] = '{"store_name":"'.$this->input->post('store_name').'"}';
+					$params['description'] = 'Wholesale User';
+					$params['list_name'] = 'wholesale_users@mg.shop7thavenue.com';
+					$this->load->library('mailgun/list_member_add', $params);
+					$res = $this->list_member_add->add();
+					$this->list_member_add->clear();
+				}
+			}
 
 			// connect and add record to database
 			$DB = $this->load->database('instyle', TRUE);
@@ -124,7 +157,7 @@ class Add extends Admin_Controller {
 				if ( ! $this->wholesale_activation_email_sending->send())
 				{
 					echo $this->wholesale_activation_email_sending->error;
-					$this->session->set_flashdata('error', 'error_sending_activation_email');
+					$this->session->set_flashdata('error', 'added_but_error_sending_activation_email');
 					$this->session->set_flashdata('error_message', $this->wholesale_activation_email_sending->error);
 
 					// redirect user

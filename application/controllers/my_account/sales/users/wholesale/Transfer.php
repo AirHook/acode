@@ -32,7 +32,10 @@ class Transfer extends Sales_user_Controller {
 		{
 			$redirect = $this->agent->referrer();
 		}
-		else $redirect = 'admin/users/wholesale/'.$page;
+		else
+		{
+			$redirect = 'my_account/sales/users/wholesale'.($page != 'search' ? '/'.$page : '');
+		}
 
 		// check for params
 		if ( ! $id)
@@ -96,13 +99,35 @@ class Transfer extends Sales_user_Controller {
 			'options' => json_encode($this->wholesale_user_details->options)
 		);
 
-		// udpate record
+		// insert record
 		$DB = $this->load->database('instyle', TRUE);
 		$DB->insert('tbluser_data', $data);
+
+		if ($data['is_active'] == '1')
+		{
+			// add user to mailgun list
+			// no need to validate email as these are stores
+			// force add users to mailgun
+			// use input fields to capture any updates
+			$params['address'] = $data['is_active'];
+			$params['fname'] = $data['is_active'];
+			$params['lname'] = $data['is_active'];
+			$params['description'] = 'Consumer Users';
+			$params['list_name'] = 'consumers@mg.shop7thavenue.com';
+			$this->load->library('mailgun/list_member_add', $params);
+			$res = $this->list_member_add->add();
+			$this->list_member_add->clear();
+		}
 
 		// once transferred we need to remove user from wholesale list
 		$DB->where('user_id', $id);
 		$DB->delete('tbluser_data_wholesale');
+
+		// remove user from mailgun list
+		$params['address'] = $this->wholesale_user_details->email;
+		$params['list_name'] = 'wholesale_users@mg.shop7thavenue.com';
+		$this->load->library('mailgun/list_member_delete', $params);
+		$res = $this->list_member_delete->delete();
 
 		// set flash data
 		$this->session->set_flashdata('success', 'transfer');

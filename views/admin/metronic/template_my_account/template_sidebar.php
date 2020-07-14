@@ -128,6 +128,7 @@ if ($role=='sales')
 		<?php if ($this->sales_user_details->access_level == '0')
 		{ ?>
 
+		<!-- =============-->
 		<li class="heading">
 			<h3 class="uppercase">Purchase Orders</h3>
 		</li>
@@ -165,6 +166,8 @@ elseif ($role=='vendors')
 				</a>
 			</h3>
 		</li>
+
+		<!-- =============-->
 		<li class="heading">
 			<h3 class="uppercase">Products</h3>
 		</li>
@@ -186,6 +189,8 @@ elseif ($role=='vendors')
 				</li>
 			</ul>
 		</li>
+
+		<!-- =============-->
 		<li class="heading">
 			<h3 class="uppercase">Orders</h3>
 		</li>
@@ -213,6 +218,8 @@ else
 				<span class="title">Dashboard</span>
 			</a>
 		</li>
+
+		<!-- =============-->
 		<li class="heading">
 			<h3 class="uppercase">Products</h3>
 		</li>
@@ -323,6 +330,7 @@ else
 			<?php
 		} ?>
 
+		<!-- =============-->
 		<li class="heading">
 			<h3 class="uppercase">Orders</h3>
 		</li>
@@ -386,6 +394,7 @@ else
 			</ul>
 		</li>
 
+		<!-- =============-->
 		<li class="heading">
 			<h3 class="uppercase">Users</h3>
 		</li>
@@ -480,6 +489,7 @@ else
 			</ul>
 		</li>
 
+		<!-- =============-->
 		<li class="heading">
 			<h3 class="uppercase">Inventory</h3>
 		</li>
@@ -499,6 +509,7 @@ else
 			</a>
 		</li>
 
+		<!-- =============-->
 		<li class="heading">
 			<h3 class="uppercase">Others</h3>
 		</li>
@@ -513,6 +524,40 @@ else
 			</a>
 		</li>
 
+		<!-- =============-->
+		<li class="heading">
+			<h3 class="uppercase">Marketing</h3>
+		</li>
+		<li class="nav-item with-heading ">
+			<a href="javascript:;" class="nav-link tooltips" data-original-title="Currently Under Construction" data-placement="right">
+				<span class="title uppercase">Mailgun Emailing</span>
+				<span class="arrow open"></span>
+			</a>
+			<ul class="sub-menu always-open">
+				<li class="nav-item  ">
+					<a href="javascript:;" class="nav-link tooltips" data-original-title="Currently Under Construction" data-placement="right">
+						<span class="title">Consumer Special Sale Email Carousel</span>
+					</a>
+				</li>
+				<li class="nav-item  ">
+					<a href="javascript:;" class="nav-link tooltips" data-original-title="Currently Under Construction" data-placement="right">
+						<span class="title">Wholesale Special Sale Email Carousel</span>
+					</a>
+				</li>
+				<li class="nav-item  ">
+					<a href="javascript:;" class="nav-link tooltips" data-original-title="Currently Under Construction" data-placement="right">
+						<span class="title">Factory Email Carousel for New Products</span>
+					</a>
+				</li>
+				<li class="nav-item  ">
+					<a href="javascript:;" class="nav-link tooltips" data-original-title="Currently Under Construction" data-placement="right">
+						<span class="title">Create Newsletter</span>
+					</a>
+				</li>
+			</ul>
+		</li>
+
+		<!-- =============-->
 		<li class="heading">
 			<h3 class="uppercase">General</h3>
 		</li>
@@ -543,6 +588,7 @@ else
 			<?php
 		} ?>
 
+		<!-- =============-->
 		<li class="heading">
 			<h3 class="uppercase">Tools</h3>
 		</li>
@@ -618,6 +664,7 @@ else
 				</li>
 			</ul>
 		</li>
+		<!-- DOC: Changing NEWSLETTER to MARKETING -- new menu items in a separate group and heading
 		<li class="nav-item with-heading ">
 			<a href="javascript:;" class="nav-link tooltips" data-original-title="Currently Under Construction" data-placement="right">
 				<span class="title uppercase">Newsletter</span>
@@ -636,6 +683,7 @@ else
 				</li>
 			</ul>
 		</li>
+		-->
 	</ul>
 	<?php
 } ?>

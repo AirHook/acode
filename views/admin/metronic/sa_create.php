@@ -40,6 +40,21 @@
 										<button class="close" data-close="alert"></button> Item ADDED!
 									</div>
 									<?php } ?>
+                                    <?php if ($this->session->flashdata('error') == 'no_input_post') { ?>
+            						<div class="alert alert-danger auto-remove">
+            							<button class="close" data-close="alert"></button> An error occured with posting data. Please try again.
+            						</div>
+            						<?php } ?>
+                                    <?php if ($this->session->flashdata('error') == 'invalid_user') { ?>
+            						<div class="alert alert-danger auto-remove">
+            							<button class="close" data-close="alert"></button> Wholesale user is invalid. Please try again.
+            						</div>
+            						<?php } ?>
+                                    <?php if ($this->session->flashdata('error') == 'sending_unsuccessful') { ?>
+            						<div class="alert alert-danger auto-remove">
+            							<button class="close" data-close="alert"></button> Sales package was not sent. Please try again.
+            						</div>
+            						<?php } ?>
 									<?php if (validation_errors()) { ?>
 									<div class="alert alert-danger">
 										<button class="close" data-close="alert"></button> There was a problem with the form. Please check and try again. <br />

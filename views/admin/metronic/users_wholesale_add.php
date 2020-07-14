@@ -45,6 +45,11 @@
                                     <button class="close" data-close="alert"></button> There was an error sending the activation email.<br /><?php echo $this->session->flashdata('error_message'); ?>
                                 </div>
                                 <?php } ?>
+                                <?php if ($this->session->flashdata('error') == 'user_exists') { ?>
+                                <div class="alert alert-danger auto-remove">
+                                    <button class="close" data-close="alert"></button> Hmmm... The user email already exists. Please try again.
+                                </div>
+                                <?php } ?>
                             </div>
 
                             <div class="form-group">

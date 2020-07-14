@@ -219,7 +219,26 @@
                                                 <div class="cbp-item on-sale-general clearfix" style="height:345px;">
                                                     <a href="<?php echo $this->config->item('PROD_IMG_URL'); ?>shop/<?php echo $this->webspace_details->options['site_type'] == 'sat_site' ? $this->webspace_details->slug.'/' : ''; ?>womens_apparel.html?filter=&availability=onsale" <?php echo $this->webspace_details->options['site_type'] == 'sat_site' ? 'target="_blank"' : ''; ?> class="cbp-caption cbp-singlePageInline_" data-title="Womens Apparel<br>On Sale Items" rel="nofollow">
                                                         <div class="cbp-caption-defaultWrap">
+
+                                                            <?php if ($this->webspace_details->slug == 'basixblacklabel')
+                                                            {
+                                                                $clearance_label = 'Final Sale';
+                                                                ?>
+
+                                                            <img src="<?php echo base_url().'images/subcategory_icon/thumb/icon-final-sale.jpg'; ?>" alt="" />
+
+                                                                <?php
+                                                            }
+                                                            else
+                                                            {
+                                                                $clearance_label = 'Clearance Sale';
+                                                                ?>
+
                                                             <img src="<?php echo base_url().'images/subcategory_icon/thumb/sale-general.jpg'; ?>" alt="" />
+
+                                                                <?php
+                                                            } ?>
+
 														</div>
                                                         <div class="cbp-caption-activeWrap">
                                                             <div class="cbp-l-caption-alignLeft">
@@ -230,9 +249,9 @@
                                                             </div>
                                                         </div>
                                                     </a>
-                                                    <div class="cbp-l-grid-projects-title text-center hidden-xs hidden-sm hidden-md"> Clearance Sale </div>
+                                                    <div class="cbp-l-grid-projects-title text-center hidden-xs hidden-sm hidden-md"> <?php echo $clearance_label; ?> </div>
                                                     <div class="cbp-l-grid-projects-title text-center hidden-lg"> Womens Apparel </div>
-                                                    <div class="cbp-l-grid-projects-desc text-center hidden-lg"> Clearance Sale </div>
+                                                    <div class="cbp-l-grid-projects-desc text-center hidden-lg"> <?php echo $clearance_label; ?> </div>
                                                 </div>
 
                                                 <?php

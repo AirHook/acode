@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Special_sale_clearance extends MY_Controller {
+class Consumer_special_sale_email_carousel extends MY_Controller {
 
 	/**
 	 * Mailgun API Key
@@ -56,9 +56,28 @@ class Special_sale_clearance extends MY_Controller {
 	 */
 	public function index()
 	{
+		//echo 'Processing...<br />';
+		//echo 'Not done...';
+		//die();
+
+		// check if this carousel is turned on
+		$this->DB->where('config_name', 'consumer_special_sale_email_carousel');
+		$q1 = $this->DB->get('config');
+		$r1 = $q1->row();
+
+		if (isset($r1))
+		{
+			$carousel_switch = $r1->config_value;
+		}
+		else $carousel_switch = '0';
+
+		if ($carousel_switch == '0')
+		{
+			echo 'Nothing to process. Goodbye.';
+			exit;
+		}
+
 		echo 'Processing...<br />';
-		echo 'Not done...';
-		die();
 
 		// load pertinent library/model/helpers
 		$this->load->library('email');
@@ -79,28 +98,45 @@ class Special_sale_clearance extends MY_Controller {
 
 		$data['name'] = '';
 		$data['designer'] = '';
-		//$data['reference_designer'] = $this->CI->consumer_user_details->reference_designer ?: $this->CI->webspace_details->slug;
 
 		// grab template and infuse data and set message
-		//$template = 'consumer_special_sale_invite_mg1'; // send Feb 28, 2020
-		$template = 'consumer_special_sale_invite_mg2'; // send Mar 06, 2020, Mar 13, 2020, refresh list on mg3, refresh list on mg4
+		$template = 'consumer_special_sale_invite_mg2';
 		$message = $this->load->view('templates/'.$template, $data, TRUE);
+
+		// we need to rotate on a list of email subjects
+		// get record
+		$this->DB->where('config_name', 'special_sale_subjects');
+		$q1 = $this->DB->get('config');
+		$r1 = $q1->row();
+		$subjects = json_decode($r1->config_value, TRUE);
+
+		// check last used subject using index key
+		$this->DB->where('config_name', 'special_sale_subjects_key');
+		$q2 = $this->DB->get('config');
+		$r2 = $q2->row();
+		$last_rand_key = $r2->config_value;
+
+		// set new random key
+		while(in_array($rand_key = mt_rand(0, 11), array($last_rand_key)));
+
+		// save new random ket on record
+		$this->DB->set('config_value', $rand_key);
+		$this->DB->set('options', '');
+		$this->DB->where('config_name', 'special_sale_subjects_key');
+		$this->DB->update('config');
 
 		// load pertinent library/model/helpers
 		$this->load->library('mailgun/mailgun');
 
 		// set up properties
-		/* */
+		/* *
 		$this->mailgun->vars = array("designer" => "Basix Black Label", "des_slug" => "basixblacklabel");
 		$this->mailgun->o_tag = 'Consumer Special Sale Invite';
 		$this->mailgun->from = 'Basix Black Label <help@basixblacklabel.com>';
 		$this->mailgun->to = 'consumers@mg.shop7thavenue.com';
 		//$this->mailgun->cc = $this->webspace_details->info_email;
 		//$this->mailgun->bcc = $this->CI->config->item('dev1_email');
-		//$this->mailgun->subject = 'BASIX BLACK LABEL SPECIAL SALE'; // mg1 batch
-		//$this->mailgun->subject = 'BASIX NEW ARRIVALS ON CLEARANCE SALE'; // mg2
-		//$this->mailgun->subject = 'BASIX CLEARANCE SALE'; // mg3 using mg2 again refresh list
-		$this->mailgun->subject = 'CLEARANCE SALE ON BASIX ITEMS'; // mg4 using mg2 template refresh list as well
+		$this->mailgun->subject = $subjects[$rand_key];
 		$this->mailgun->message = $message;
 
 		if ( ! $this->mailgun->Send())
@@ -128,38 +164,73 @@ class Special_sale_clearance extends MY_Controller {
 	 */
 	private function _get_thumbs($str)
 	{
-		// load pertinent library/model/helpers
-		$this->load->library('products/products_list');
-
-		// primary item that is changed for the preset salespackages
-    	$params['facets'] = array('availability'=>$str);
-
-		// get the products list
-		$params['show_private'] = TRUE; // all items general public (Y) - N for private
-		$params['view_status'] = 'ALL'; // ALL items view status (Y, Y1, Y2, N)
-		$params['variant_publish'] = 'ALL'; // ALL variant level color publish (view status)
-		$params['group_products'] = FALSE; // group per product number or per variant
-		// show items even without stocks at all
-		$params['with_stocks'] = TRUE;	// FALSE for including no stock items
-		$params['group_products'] = FALSE; // FALSE for all variants
-		// others
-		$this->products_list->initialize($params);
-		$products = $this->products_list->select(
-			array(
-				'designer.url_structure' => 'basixblacklabel'
-			),
-			array( // order conditions
-				'seque' => 'asc',
-				'tbl_product.prod_no' => 'desc'
-			)
-		);
-
 		// get previous thumbs sent
 		$this->DB->select('config_value');
 		$this->DB->where('config_name', 'special_sale_thumbs_sent');
 		$q = $this->DB->get('config');
 		$row = $q->row();
 		$thumbs = ($row->config_value && ! is_null($row->config_value)) ? json_decode($row->config_value, TRUE) : array();
+		$number_of_items_previous_sent = count($thumbs);
+
+		if ($number_of_items_previous_sent > 0)
+		{
+			$thumbs_csv = "'".@implode("','", $thumbs)."'";
+			$where['condition'][] = "tbl_product.prod_no NOT IN (".$thumbs_csv.")";
+		}
+
+		// others
+		$where['designer.url_structure'] = 'basixblacklabel';
+
+		// primary param
+    	$params['facets'] = array('availability'=>$str);
+
+		// get the products list
+		// show items even without stocks at all
+		$params['with_stocks'] = TRUE;	// FALSE for including no stock items
+		$params['group_products'] = TRUE; // FALSE for all variants
+		// load and initialize class
+		$this->load->library('products/products_list');
+		$this->products_list->initialize($params);
+		$products = $this->products_list->select(
+			// where conditions
+			$where,
+			// sorting conditions
+			array(
+				'seque' => 'asc',
+				'tbl_product.prod_no' => 'desc'
+			)
+		);
+		$list_count = $this->products_list->row_count;
+
+		// this 'if' condition only means that we have used all items for sending
+		// thus, we need to reset the 'special_sale_thumbs_sent' to empty
+		if ($list_count == 0)
+		{
+			// reset $thumbs
+			$thumbs = array();
+
+			// reset $thumbs record
+			/* */
+			$this->DB->set('config_value', json_encode($thumbs));
+			$this->DB->set('options', '');
+			$this->DB->where('config_name', 'special_sale_thumbs_sent');
+			$this->DB->update('config');
+			// */
+
+			// redo query
+			$this->products_list->initialize($params);
+			$products = $this->products_list->select(
+				// where conditions
+				array(
+					'designer.url_structure' => 'basixblacklabel'
+				),
+				// sorting conditions
+				array(
+					'seque' => 'asc',
+					'tbl_product.prod_no' => 'desc'
+				)
+			);
+		}
 
 		// capture product numbers and set items array
 		if ($products)
@@ -185,6 +256,8 @@ class Special_sale_clearance extends MY_Controller {
 			$this->DB->where('config_name', 'special_sale_thumbs_sent');
 			$this->DB->update('config');
 			// */
+
+			echo 'Items total sent - '.count($thumbs).'<br />';
 
 			return $items_array;
 		}

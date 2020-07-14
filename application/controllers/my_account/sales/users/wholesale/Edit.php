@@ -58,6 +58,15 @@ class Edit extends Sales_user_Controller {
 		$this->load->library('designers/designers_list');
 		$this->load->library('form_validation');
 
+		// initialize properties
+		if ( ! $this->wholesale_user_details->initialize(array('user_id' => $id)))
+		{
+			// set flash data
+			$this->session->set_flashdata('error', 'user_not_found');
+
+			redirect($this->config->slash_item('admin_folder').'users/wholesale');
+		}
+
 		// set validation rules
 		$this->form_validation->set_rules('is_active', 'Status', 'trim|required');
 		$this->form_validation->set_rules('reference_designer', 'Reference Designer', 'trim|required');
@@ -84,15 +93,6 @@ class Edit extends Sales_user_Controller {
 
 		if ($this->form_validation->run() == FALSE)
 		{
-			// initialize properties
-			if ( ! $this->wholesale_user_details->initialize(array('user_id' => $id)))
-			{
-				// set flash data
-				$this->session->set_flashdata('error', 'user_not_found');
-
-				redirect($this->config->slash_item('admin_folder').'users/wholesale');
-			}
-
 			if ( ! $this->session->flashdata('clear_recent_wholesale'))
 			{
 				// update recent list for admin users edited
@@ -161,6 +161,41 @@ class Edit extends Sales_user_Controller {
 			if ( ! $this->validate_email($post_ary['email4'])) unset($post_ary['email4']);
 			if ( ! $this->validate_email($post_ary['email5'])) unset($post_ary['email5']);
 			if ( ! $this->validate_email($post_ary['email6'])) unset($post_ary['email6']);
+
+			// check if 'is_active' is changed before updating record
+			if ($this->input->post('is_active') != $this->wholesale_user_details->status)
+			{
+				if ($this->input->post('is_active') == '1')
+				{
+					// basix only for now
+					if ($this->input->post('reference_designer') == 'basixblacklabel')
+					{
+						// add user to mailgun list
+						// no need to validate email as these are stores
+						// force add users to mailgun
+						// use input fields to capture any updates
+						$params['address'] = $this->input->post('email');
+						$params['fname'] = $this->input->post('firstname');
+						$params['lname'] = $this->input->post('lastname');
+						$params['vars'] = '{"store_name":"'.$this->input->post('store_name').'"}';
+						$params['description'] = 'Wholesale User';
+						$params['list_name'] = 'wholesale_users@mg.shop7thavenue.com';
+						$this->load->library('mailgun/list_member_add', $params);
+						$res = $this->list_member_add->add();
+						$this->list_member_add->clear();
+					}
+				}
+
+				if ($this->input->post('is_active') == '0')
+				{
+					// remove user from mailgun list
+					// using old email record to be certain its the one at mailgun
+					$params['address'] = $this->wholesale_user_details->email;
+					$params['list_name'] = 'wholesale_users@mg.shop7thavenue.com';
+					$this->load->library('mailgun/list_member_delete', $params);
+					$res = $this->list_member_delete->delete();
+				}
+			}
 
 			// update record
 			$this->DB->where('user_id', $id);

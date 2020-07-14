@@ -80,6 +80,11 @@
 							<button class="close" data-close="alert"></button> Sales Package permanently removed from records.
 						</div>
 						<?php } ?>
+						<?php if ($this->session->flashdata('error') == 'no_input_post') { ?>
+						<div class="alert alert-danger auto-remove">
+							<button class="close" data-close="alert"></button> An error occured with posting data. Please try again.
+						</div>
+						<?php } ?>
 						<?php if ($this->session->flashdata('error') == 'no_id_passed') { ?>
 						<div class="alert alert-danger auto-remove">
 							<button class="close" data-close="alert"></button> An error occured. Please try again.
