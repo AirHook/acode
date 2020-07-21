@@ -271,6 +271,8 @@ class Index extends Frontend_Controller {
 					$this->session->set_userdata('admin_sales_login_time', $sestime);
 				}
 
+				$this->sales_user_details->notify_admin_sales_is_online();
+
 				redirect('my_account/sales/dashboard', 'location');
 			}
 			else if ($this_login == 'vendor')

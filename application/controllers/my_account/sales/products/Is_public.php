@@ -89,7 +89,7 @@ class Is_public extends Sales_user_Controller {
 		$params['variant_publish'] = 'ALL'; // all items at variant level publish (view status)
 		$params['variant_view_at_hub'] = TRUE; // variant level public at hub site
 		$params['variant_view_at_satellite'] = TRUE; // varian level public at satellite site
-		$params['with_stocks'] = FALSE; // Show all with and without stocks
+		$params['with_stocks'] = TRUE; // FALSE to show all with and without stocks
 		$params['group_products'] = FALSE; // group per product number or per variant
 		$params['special_sale'] = FALSE; // special sale items only
 		$params['pagination'] = $this->data['page']; // get all in one query
@@ -110,6 +110,12 @@ class Is_public extends Sales_user_Controller {
 
 		// need to show loading at start
 		$this->data['show_loading'] = FALSE;
+
+		// breadcrumbs
+		$this->data['page_breadcrumb'] = array(
+			'products' => 'Products',
+			'public' => 'Public'
+		);
 
 		// set data variables...
 		$this->data['role'] = 'sales';

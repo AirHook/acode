@@ -39,7 +39,7 @@ class View_wholesale_activation_email extends Frontend_Controller
 		$data['instock_products'] = $this->_get_thumbs('instock');
 
 		// load the view
-		$message = $this->load->view('templates/activation_email_v1', $data, TRUE);
+		$message = $this->load->view('templates/activation_email', $data, TRUE);
 
 		echo $message;
 	}

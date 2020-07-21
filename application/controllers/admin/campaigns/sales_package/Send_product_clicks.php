@@ -157,9 +157,6 @@ class Send_product_clicks extends Admin_Controller {
 	 */
 	public function send()
 	{
-		echo '<pre>';
-		print_r($this->input->post());
-		die();
 		// input post data
 		/* *
 		Array
@@ -167,6 +164,7 @@ class Send_product_clicks extends Admin_Controller {
 		    [date] => 2020-05-24
 			[sales_user] => Rey Millares
 		    [store_name] => Rey Store
+			[product_clicks] => ["D9503L","D8819L"]
 		    [email_subject] => Products of Interests
 		    [email_message] => Here are designs that are now available. Review them for your store.
 		    [files] =>
@@ -203,15 +201,17 @@ class Send_product_clicks extends Admin_Controller {
 			redirect('admin/campaigns/sales_package', 'location');
 		}
 
-		// lets set the hashed time code here so that the batched hold the same tc only
+		// lets set the hashed time code here so that the batches hold the same tc only
 		$tc = md5(@date('Y-m-d', time()));
 
 		$data['username'] = $this->input->post('store_name');
 		$data['email_message'] = $this->input->post('email_message');
 
-		$data['access_link'] = site_url('shop/'.$this->wholesale_user_details->reference_designer);
-
+		// the items
 		$data['items'] = json_decode($this->session->product_clicks_sa_items, TRUE);
+		$data['items_csv'] = implode(',', $data['items']);
+
+		// options
 		$data['email'] = $this->input->post('email');
 		$data['w_prices'] = 'Y';
 		$data['w_images'] = 'N';
@@ -226,6 +226,10 @@ class Send_product_clicks extends Admin_Controller {
 			.$tc
 		);
 
+		// grab template and infuse data and set message
+		$message = $this->load->view('templates/sales_package', $data, TRUE);
+
+		// start sending email
 		$this->email->clear(TRUE);
 
 		$this->email->from($this->input->post('sales_user'), $this->wholesale_user_details->admin_sales_email);
@@ -238,7 +242,6 @@ class Send_product_clicks extends Admin_Controller {
 		$this->email->to($this->input->post('email'));
 
 		// let's get the message
-		$message = $this->load->view('templates/sales_package', $data, TRUE);
 		$this->email->message($message);
 
 		if (ENVIRONMENT === 'development')

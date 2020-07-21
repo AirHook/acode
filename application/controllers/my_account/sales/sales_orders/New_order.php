@@ -141,7 +141,7 @@ class New_order extends Sales_user_Controller
 
 				// don't show clearance cs only items for level 2 users
 	            $con_clearance_cs_only = 'tbl_stock.options NOT LIKE \'%"clearance_consumer_only":"1"%\' ESCAPE \'!\'';
-	            $where_more['condition'] = $con_clearance_cs_only;
+	            $where_more['condition'][] = $con_clearance_cs_only;
 
 				// get the products list for the thumbs grid view
 				$params['show_private'] = TRUE; // all items general public (Y) - N for private

@@ -96,7 +96,7 @@ var ComponentsEditors = function () {
                 //var cat_crumbs = $('[name="cat_crumbs"]').val();
                 var cat_crumbs = $('.category_list.last').data('slug_segs_name');
                 $('.form-control.cat_crumbs').html(cat_crumbs);
-                if (!objectData.slugs_link) objectData.slugs_link = $('.category_list.last').data('slug_segs');
+                objectData.slugs_link = $('.category_list.last').data('slug_segs');
                 // get thumbs
                 getThumbs(objectData);
             });
@@ -158,6 +158,26 @@ var ComponentsEditors = function () {
             });
             set_options.fail(function(jqXHR, textStatus, errorThrown) {
                 alert("Set Info Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
+            });
+        };
+
+        // get item to show on popup
+        function getItem(objectData){
+            var addrem = $.ajax({
+                type:    "POST",
+                url:     base_url + "admin/campaigns/sales_package/get_item.html",
+                data:    objectData
+            });
+            addrem.done(function(data) {
+                // fill in modal
+                $('.modal-body-size_qty_info').html(data);
+                $('#modal-size_qty_info').modal('show');
+            });
+            addrem.fail(function(jqXHR, textStatus, errorThrown) {
+                $('#loading').modal('hide');
+                alert("Get Item Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
+                //$('#reloading').modal('show');
+                //location.reload();
             });
         };
 
@@ -236,6 +256,7 @@ var ComponentsEditors = function () {
         $('[name="des_slug"]').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
             var objectData = object_data;
             objectData.des_slug = $(this).val();
+            delete objectData.slugs_link;
             // set admin_sa_des_slug session variable
             $.get(base_url + "admin/campaigns/sales_package/set_des_slug_session/index/" + objectData.des_slug + ".html");
             // enable load preset dropdown
@@ -289,26 +310,51 @@ var ComponentsEditors = function () {
             $('#loading').modal('show');
             var objectData = object_data;
             objectData.slugs_link = $(this).data('slugs_link');
+            objectData.page = $(this).data('page');
             // get category tree
             getCategoryTree(objectData);
         });
 
         // clicked on product grid view
         $('.thumb-tiles-wrapper').on('click', '.package_items', function() {
-            var checked = $(this).prop('checked');
+            // new way of actions when selecting items from grid
+            // show a popup of the item with stock info
             var objectData = object_data;
             objectData.prod_no = $(this).data('item');
             objectData.page = $(this).data('page');
-            if (checked) {
-                objectData.action = 'add_item';
-                // check thumb
-                $('.thumb-tile.'+objectData.prod_no).addClass('selected');
+            // check if item is already selected
+            var selected = $(this).closest('.thumb-tile.image').hasClass('selected');
+            if (selected) {
+                var r = confirm('Item is already selected.\nDo you want to remove item?');
+                if (r) {
+                    objectData.action = 'rem_item';
+                    // uncheck thumb
+                    $('.thumb-tile.'+objectData.prod_no).removeClass('selected');
+                    // rem item...
+                    addRemItem(objectData);
+                } else {
+                    return;
+                }
             } else {
-                objectData.action = 'rem_item';
-                // check thumb
-                $('.thumb-tile.'+objectData.prod_no).removeClass('selected');
+                // get item...
+                getItem(objectData);
             }
-            // get item...
+        });
+
+        // size and qty change at modal
+        $('#form-size_qty_select').submit(function(e){
+            // prevent form from submitting
+            e.preventDefault();
+            // call jquery loading on po table of items
+            $('.cart_basket_wrapper table tbody').loading();
+            // get the object data to pass to post url
+            var objectData = object_data;
+            objectData.prod_no = $('#size-select-prod_no').val();
+            objectData.page = $('#size-select-page').val();
+            objectData.action = 'add_item';
+            // hide this modal
+            $('#modal-size_qty_info').modal('hide');
+            // add item...
             addRemItem(objectData);
         });
 

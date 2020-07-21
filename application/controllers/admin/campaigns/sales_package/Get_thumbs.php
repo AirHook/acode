@@ -88,18 +88,32 @@ class Get_thumbs extends Admin_Controller {
 		}
 		else $search_string = '';
 
+		// don't show clearance cs only items for non-super admin
+		if ($this->admin_user_details->access_level != '0')
+		{
+			$con_clearance_cs_only = 'tbl_stock.options NOT LIKE \'%"clearance_consumer_only":"1"%\' ESCAPE \'!\'';
+			$where_more['condition'][] = $con_clearance_cs_only;
+		}
+
 		// get the products list
 		$params['show_private'] = TRUE; // all items general public (Y) - N for private
-		$params['view_status'] = 'ALL'; // ALL items view status (Y, Y1, Y2, N)
-		$params['variant_publish'] = 'ALL'; // ALL variant level color publish (view status)
+		//$params['view_status'] = 'ALL'; // all items view status (Y, Y1, Y2, N)
+		//$params['view_at_hub'] = TRUE; // all items general public at hub site
+		//$params['view_at_satellite'] = TRUE; // all items publis at satellite site
+		//$params['variant_publish'] = 'ALL'; // all items at variant level publish (view status)
+		//$params['variant_view_at_hub'] = TRUE; // variant level public at hub site
+		//$params['variant_view_at_satellite'] = TRUE; // varian level public at satellite site
+
+		// level 2 users show only items with stocks
+		$params['with_stocks'] = TRUE; // TRUE shows instock items only
+
 		$params['group_products'] = FALSE; // group per product number or per variant
-		// show items even without stocks at all
-		$params['with_stocks'] = FALSE;
+		$params['special_sale'] = FALSE; // special sale items only
 		$this->load->library('products/products_list', $params);
 		$products = $this->products_list->select(
 			$where_more,
 			array( // order conditions
-				'seque' => 'desc',
+				'seque' => 'asc',
 				'tbl_product.prod_no' => 'desc'
 			)
 		);
@@ -161,15 +175,23 @@ class Get_thumbs extends Admin_Controller {
 					$checkbox_check = 'checked';
 				}
 
+				// check if item is on sale
+				$onsale = (@$product->clearance == '3' OR $product->custom_order == '3') ? TRUE : FALSE;
+
+				// get options if any
+				$color_options = json_decode($product->options, TRUE);
+
 				$html.= '<div class="thumb-tile image bg-blue-hoki '
 					.$classes
 					.'" style="'
 					.$styles
 					.'">'
 				;
-				$html.= '<a href="'
-					.$img_large
-					.'" class="fancybox tooltips" data-original-title="Click to zoom">'
+				$html.= '<a href="javascript:;" class="package_items" data-item="'
+					.$product->prod_no.'_'.$product->color_code
+					.'" data-page="'
+					.($page ?: 'create')
+					.'">'
 				;
 
 				if ($product->with_stocks == '0_')
@@ -200,22 +222,28 @@ class Get_thumbs extends Admin_Controller {
 					.$product->prod_no
 					.' <br />'
 					.$product->color_name
+					.' <br />'
+					.'<span style="'
+					.($onsale ? 'text-decoration:line-through;' : '')
+					.'">$'
+					.$product->wholesale_price
+					.'</span>'
+					.'<span style="color:pink;'
+					.($onsale ? '' : 'display:none;')
+					.'">&nbsp;$'
+					.$product->wholesale_price_clearance
+					.'</span>'
 					.'</div></div>'
 				;
 
 				$html.= '</a>';
 				$html.= '<div class="" style="color:red;font-size:1rem;">'
-					.'<input type="checkbox" class="package_items '
+					.'<i class="fa fa-plus package_items '
 					.$product->prod_no.'_'.$product->color_code
-					.'" name="prod_no" value="'
+					.'" style="position:relative;left:5px;background:#ddd;line-height:normal;padding:1px 2px;" data-item="'
 					.$product->prod_no.'_'.$product->color_code
-					.'" '
-					.$checkbox_check
-					.' data-page="'
-					.($page ?: 'create')
-					.'" data-item="'
-					.$product->prod_no.'_'.$product->color_code
-					.'" /> &nbsp;'
+					.'" data-page="create"></i> '
+					.'&nbsp;'
 					.'<span class="text-uppercase" data-item="'
 					.$product->prod_no.'_'.$product->color_code
 					.'"> Add to Package </span>'
@@ -229,7 +257,7 @@ class Get_thumbs extends Admin_Controller {
 		else
 		{
 			if (@$search_string) $txt1 = 'SEARCH DID NOT YIELD PRODUCT RESULTS...';
-			else $txt1 = 'NO PRODUCTS TO LOAD... '.$slug_segs;
+			else $txt1 = 'NO PRODUCTS TO LOAD...';
 			$html.= '<button class="btn default btn-block btn-lg" data-slug_segs="'.$slug_segs.'"> '.$txt1.' </button>';
 		}
 		$html.= '</div>';

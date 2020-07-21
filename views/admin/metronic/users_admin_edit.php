@@ -148,20 +148,6 @@
                                     <input name="lname" type="text" class="form-control" value="<?php echo $this->admin_user_details->lname; ?>" />
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label class="control-label col-md-3">Access Level
-                                    <span class="required"> * </span>
-                                </label>
-                                <div class="col-md-4">
-                                    <select class="form-control bs-select" name="access_level">
-                                        <option value="">Select...</option>
-                                        <option value="0" <?php echo $this->admin_user_details->access_level == '0' ? 'selected="selected"' : ''; ?>>0</option>
-                                        <option value="1" <?php echo $this->admin_user_details->access_level == '1' ? 'selected="selected"' : ''; ?>>1</option>
-                                        <option value="2" <?php echo $this->admin_user_details->access_level == '2' ? 'selected="selected"' : ''; ?>>2</option>
-                                    </select>
-                                    <span class="help-block font-red-mint"><cite> <?php echo form_error('access_level'); ?> </cite></span>
-                                </div>
-                            </div>
                             <hr />
                             <div class="form-group">
                                 <div class="col-md-offset-3 col-md-4">

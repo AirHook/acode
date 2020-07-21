@@ -76,8 +76,14 @@ class Details extends Frontend_Controller
 		)
 		{
 			// send user back to categories page on false
-			redirect('shop/categories');
+			redirect('shop/categories', 'location');
 		}
+
+		// there is an issue on phantom links where the product has not availabe
+		// stocks on all sizes but when link is browsed, the product details
+		// page is shown.  $this->product_details->with_stocks doesn't seem
+		// to address this issue. will need to put code here to redirect to
+		// home categories page with error='without_stocks'
 
 		// this next section of the program is necessary
 		// to be able to draw up a correct category breadcrumb
@@ -85,7 +91,7 @@ class Details extends Frontend_Controller
 		// number of current select product detail
 		$prod_list_seq = explode('of', $this->uri->segment(7));
 		$this->data['nth_prod'] = $prod_list_seq[0];
-		$this->data['total_products_in_list'] = $prod_list_seq[1];
+		$this->data['total_products_in_list'] = @$prod_list_seq[1] ?: 1;
 
 		// we then grab the query from the product list that referred to this product details page
 		// to get its categories for breadcrumbs purposes
@@ -168,7 +174,7 @@ class Details extends Frontend_Controller
 				. ($prod_list_seq[0] - 1).'of'.$prod_list_seq[1]					// some pagination identification
 			;
 		}
-		if ($prod_list_seq[0] < $prod_list_seq[1])
+		if ($prod_list_seq[0] < @$prod_list_seq[1])
 		{
 			// get product details
 			$next_row = $prev_qry->row($prod_list_seq[0]);

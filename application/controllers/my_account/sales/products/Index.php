@@ -23,7 +23,7 @@ class Index extends Sales_user_Controller {
 	public function index()
 	{
 		// defauls to all dresses under womens apparel
-		redirect('my_account/sales/products/all', 'location');
+		redirect('my_account/sales/products/instock', 'location');
 	}
 
 	// ----------------------------------------------------------------------

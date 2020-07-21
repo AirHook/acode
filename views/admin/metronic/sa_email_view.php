@@ -146,7 +146,7 @@
 									if (
 										@$product->clearance == '3'
 										OR $product->custom_order == '3'
-										OR $stocks_options['clearance_consumer_only'] == '1'
+										OR @$stocks_options['clearance_consumer_only'] == '1'
 										OR @$sa_options['e_prices'][$item]
 									)
 									{

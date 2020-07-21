@@ -197,7 +197,12 @@
 
                                                         	<br><br>
 
+                                                            <!--
                                                         	For Login Assistance or Tech Support, call us at <?php echo @$designer_phone ?: '212.840.0846'; ?>
+                                                            -->
+                                                            For Login Assistance or Tech Support, email us at <?php echo @$designer_info_email ?: 'help@shop7thavenue.com'; ?>
+
+                                                            <!-- ======= DOC: Hiding everything beyond this line
 
                                                         	<br><br>
                                                         	<br><br>
@@ -229,6 +234,8 @@
                                                         		All production orders take 14 weeks to produce from date of deposit
                                                         	</span>
                                                         	<?php } ?>
+
+                                                            ======= -->
 
                                                         </td>
                                                     </tr>
@@ -787,7 +794,7 @@
                                                 </a>
                                             </span>
                                             <?php } ?>
-                                            
+
 										</td>
 
 									</tr>

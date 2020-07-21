@@ -111,26 +111,27 @@ class Wholesale_special_sale_email_carousel extends MY_Controller {
 
 		// we need to rotate on a list of email subjects
 		// get record
-		$this->DB->where('config_name', 'special_sale_subjects');
+		$this->DB->where('config_name', 'wholesale_special_sale_subjects');
 		$q1 = $this->DB->get('config');
 		$r1 = $q1->row();
 		$subjects = json_decode($r1->config_value, TRUE);
 
 		// check last used subject using index key
-		$this->DB->where('config_name', 'special_sale_subjects_key');
+		$this->DB->where('config_name', 'wholesale_special_sale_subjects_key');
 		$q2 = $this->DB->get('config');
 		$r2 = $q2->row();
-		$last_rand_key = $r2->config_value;
-
-		// set new random key
-		while(in_array($rand_key = mt_rand(0, 11), array($last_rand_key)));
+		$subject_key = $r2->config_value == '3' ? 0 : $r2->config_value + 1;
 
 		// save new random ket on record
-		$this->DB->set('config_value', $rand_key);
-		$this->DB->set('options', '');
-		$this->DB->where('config_name', 'special_sale_subjects_key');
+		$this->DB->set('config_value', $subject_key);
+		$this->DB->set('options', NULL);
+		$this->DB->where('config_name', 'wholesale_special_sale_subjects_key');
 		$this->DB->update('config');
 
+		// subjects:
+		$subject = $subjects[$subject_key];
+
+		// start the email sending
 		// load pertinent library/model/helpers
 		$this->load->library('mailgun/mailgun');
 
@@ -146,7 +147,7 @@ class Wholesale_special_sale_email_carousel extends MY_Controller {
 		//$this->mailgun->cc = $this->webspace_details->info_email;
 		//$this->mailgun->bcc = $this->CI->config->item('dev1_email');
 		//$this->mailgun->subject = $subjects[$rand_key];
-		$this->mailgun->subject = 'BASIX BLACK LABEL FINAL SALE ON WHOLESALE ITEMS';
+		$this->mailgun->subject = $subject;
 		$this->mailgun->message = $message;
 
 		if ( ! $this->mailgun->Send())
@@ -231,7 +232,7 @@ class Wholesale_special_sale_email_carousel extends MY_Controller {
 			// reset $thumbs record
 			/* */
 			$this->DB->set('config_value', json_encode($thumbs));
-			$this->DB->set('options', '');
+			$this->DB->set('options', NULL);
 			$this->DB->where('config_name', 'wholesale_special_sale_thumbs_sent');
 			$this->DB->update('config');
 			// */

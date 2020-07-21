@@ -66,15 +66,16 @@
 						$url_pre = @$role == 'sales' ? 'my_account/sales' : 'admin';
 						?>
 
-						<ul class="nav nav-tabs">
-							<li class="<?php echo ($this->uri->segment(3) == 'all' OR $this->uri->segment(4) == 'all') ? 'active' : ''; ?>">
-								<a href="<?php echo site_url($url_pre.'/products/all'); ?>">
+						<ul class="nav nav-tabs ">
+							<li class="active">
+								<a href="javascript:;">
 									All Products
 								</a>
 							</li>
+							<!--
 							<li class="<?php echo ($this->uri->segment(3) == 'is_public'  OR $this->uri->segment(4) == 'is_public') ? 'active' : ''; ?>">
 								<a href="<?php echo site_url($url_pre.'/products/is_public'); ?>">
-									Public
+									Products
 								</a>
 							</li>
 							<li class="<?php echo ($this->uri->segment(3) == 'not_public' OR $this->uri->segment(4) == 'not_public') ? 'active' : ''; ?>">
@@ -97,6 +98,7 @@
 									In Stock
 								</a>
 							</li>
+							-->
 							<li class="<?php echo ($this->uri->segment(3) == 'onorder' OR $this->uri->segment(4) == 'onorder') ? 'active' : ''; ?>">
 								<a href="javascript:;" class="tooltips" data-original-title="Currently under construction">
 									On Order
@@ -107,24 +109,6 @@
 									By Vendor
 								</a>
 							</li>
-							<?php
-							// available only on hub sites for now
-							if (
-								$this->webspace_details->options['site_type'] == 'hub_site'
-								&& ! @$role
-							)
-							{ ?>
-							<li>
-								<a href="<?php echo site_url('admin/products/add'); ?>">
-									Add New Product <i class="fa fa-plus"></i>
-								</a>
-							</li>
-							<li>
-								<a href="<?php echo site_url('admin/products/add/multiple_upload_images'); ?>">
-									Add Multiple Products via Images <i class="fa fa-plus"></i>
-								</a>
-							</li>
-							<?php } ?>
 						</ul>
 
 						<br />
@@ -248,3 +232,44 @@
 						<!-- /.modal-dialog -->
 					</div>
 					<!-- END PAGE MODALS -->
+
+					<!-- ITEM SIZE AND QTY INFO -->
+					<div class="modal fade" id="modal-size_qty_info" tabindex="-1" role="basic" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+						<div class="modal-dialog modal-lg">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close hide" data-dismiss="modal" aria-hidden="true"></button>
+									<h4 class="modal-title"> Product Information </h4>
+								</div>
+
+								<!-- BEGIN FORM =======================================================-->
+								<?php echo form_open(
+									'',
+									array(
+										'class' => '',
+										'id' => 'form-size_qty_select'
+									)
+								); ?>
+
+								<input type="hidden" name="uri_string" value="<?php echo $this->uri->uri_string(); ?>" />
+
+								<div class="modal-body">
+
+									<div class="form modal-body-size_qty_info modal-body-cart_basket_wrapper margin-bottom-30">
+										<!-- // item contents go in here... -->
+									</div>
+
+								</div>
+								<div class="modal-footer ">
+									<button type="button" class="btn dark btn-outline modal-size_qty_cancel" data-dismiss="modal" tabindex="-1">Cancel</button>
+								</div>
+
+								</form>
+								<!-- END FORM =========================================================-->
+
+							</div>
+							<!-- /.modal-content -->
+						</div>
+						<!-- /.modal-dialog -->
+					</div>
+					<!-- /.modal -->

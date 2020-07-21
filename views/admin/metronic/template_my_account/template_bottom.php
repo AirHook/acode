@@ -40,15 +40,6 @@
                 {
                     $('#radio1003').attr('checked', 'checked');
                 });
-                // image hover effect
-				$(".img-a").hover(
-					function() {
-						$(this).stop().animate({"opacity": "0"}, "slow");
-					},
-					function() {
-						$(this).stop().animate({"opacity": "1"}, "slow");
-					}
-				);
                 // fix for header search magnifier icon
                 $('.page-header .admin_tobbar_search .submit').click(function(e){
                     e.preventDefault();
@@ -89,6 +80,15 @@
 				});
 			}, 11000);
             $(window).on('load',function(){
+                // image hover effect
+				$(".img-a").hover(
+					function() {
+						$(this).stop().animate({"opacity": "0"}, "slow");
+					},
+					function() {
+						$(this).stop().animate({"opacity": "1"}, "slow");
+					}
+				);
 				<?php
 				/*********
 				 * Launch different modals on page load

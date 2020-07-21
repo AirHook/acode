@@ -108,7 +108,7 @@
 								<tr>
 									<td>
 										<strong>
-											<?php echo $this->order_details->c == 'ws' ? 'WHOLESALE ' : 'CONSUMER'; ?>ORDER #<?php echo (@$order_details->order_id ?: '10301800').(@$order_details->options['sales_order'] ? ' '.$order_details->options['sales_order'] : ''); ?> <br />
+											<?php echo $this->order_details->c == 'ws' ? 'WHOLESALE ' : 'CONSUMER '; ?>ORDER #<?php echo (@$order_details->order_id ?: '10301800').(@$order_details->options['sales_order'] ? ' '.$order_details->options['sales_order'] : ''); ?> <br />
 											<small> Date: <?php echo @@$order_details->order_date ?: '2020-06-01'; ?> </small>
 										</strong>
 

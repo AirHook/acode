@@ -128,13 +128,25 @@
                                             if (@$designers)
                                             {
                                                 foreach ($designers as $designer)
-                                                { ?>
+                                                {
+                                                    if (@$role == 'sales')
+                                                    { ?>
 
-                                            <option value="<?php echo $designer->url_structure; ?>" data-subtext="<em><?php echo $designer->domain_name; ?></em>" data-des_slug="<?php echo $designer->url_structure; ?>" data-des_id="<?php echo $designer->des_id; ?>" <?php echo ($designer->url_structure === $this->session->admin_sa_des_slug OR $designer->url_structure === $this->session->sa_des_slug) ? 'selected="selected"' : ''; ?>>
+                                            <option value="<?php echo $designer->url_structure; ?>" data-subtext="<em><?php echo $designer->domain_name; ?></em>" data-des_slug="<?php echo $designer->url_structure; ?>" data-des_id="<?php echo $designer->des_id; ?>" <?php echo $designer->url_structure === $this->session->sa_des_slug ? 'selected="selected"' : ''; ?>>
                                                 <?php echo ucwords(strtolower($designer->designer)); ?>
                                             </option>
 
-                                                    <?php
+                                                        <?php
+                                                    }
+                                                    else
+                                                    { ?>
+
+                                            <option value="<?php echo $designer->url_structure; ?>" data-subtext="<em><?php echo $designer->domain_name; ?></em>" data-des_slug="<?php echo $designer->url_structure; ?>" data-des_id="<?php echo $designer->des_id; ?>" <?php echo $designer->url_structure === $this->session->admin_sa_des_slug ? 'selected="selected"' : ''; ?>>
+                                                <?php echo ucwords(strtolower($designer->designer)); ?>
+                                            </option>
+
+                                                        <?php
+                                                    }
                                                 }
                                             } ?>
                                         </select>
@@ -176,7 +188,8 @@
                                         <a href="javascript:;" class="btn dark btn-md select-product-options search-multiple-form col-md-4">
                                             Multi Style Search
                                         </a>
-                                        <a href="javascript:;" data-toggle="modal" data-modal-id="modal-unlisted_style_no" class="btn dark btn-md select-product-options_ add-unlisted-style-no col-md-4 tooltips" data-original-title="Under Construction">
+                                        <!-- DOC: Add data-modal-id="modal-unlisted_style_no" attribute to make the button work -->
+                                        <a href="javascript:;" data-toggle="modal" class="btn dark btn-md select-product-options_ add-unlisted-style-no col-md-4 tooltips" data-original-title="Under Construction">
                                             Add New Product
                                         </a>
                                     </div>

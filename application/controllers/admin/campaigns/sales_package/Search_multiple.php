@@ -46,6 +46,7 @@ class Search_multiple extends Admin_Controller {
 		// grab the input posts
 		$post_ary = $this->input->post();
 		$prod_no = array_map('strtoupper', array_filter($post_ary['style_ary']));
+		$page = $this->input->post('page');
 
 		/* *
 		$prod_no = array(
@@ -177,9 +178,11 @@ class Search_multiple extends Admin_Controller {
 					.$styles
 					.'">'
 				;
-				$html.= '<a href="'
-					.$img_large
-					.'" class="fancybox">'
+				$html.= '<a href="javascript:;" class="package_items" data-item="'
+					.$product->prod_no.'_'.$product->color_code
+					.'" data-page="'
+					.($page ?: 'create')
+					.'">'
 				;
 
 				$html.= '<div class="corner"></div><div class="check"> </div><div class="tile-body"><img class="img-b_ img-unveil" '
@@ -209,17 +212,15 @@ class Search_multiple extends Admin_Controller {
 
 				$html.= '</a>';
 				$html.= '<div class="" style="color:red;font-size:1rem;">'
-					.'<input type="checkbox" class="package_items '
+					.'<i class="fa fa-plus package_items '
 					.$product->prod_no.'_'.$product->color_code
-					.'" name="prod_no" value="'
+					.'" style="position:relative;left:5px;background:#ddd;line-height:normal;padding:1px 2px;" data-item="'
 					.$product->prod_no.'_'.$product->color_code
-					.'" '
-					.$checkbox_check
-					.' data-page="create" data-item="'
+					.'" data-page="create"></i> '
+					.'&nbsp;'
+					.'<span class="text-uppercase" data-item="'
 					.$product->prod_no.'_'.$product->color_code
-					.'" /> &nbsp; <span class="text-uppercase" data-item="'
-					.$product->prod_no.'_'.$product->color_code
-					.'"> Add to Sales Package </span>'
+					.'"> Add to Package </span>'
 					.'</div>'
 				;
 				$html.= '</div>';

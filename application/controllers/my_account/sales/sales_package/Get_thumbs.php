@@ -88,9 +88,9 @@ class Get_thumbs extends Sales_user_Controller {
 		}
 		else $search_string = '';
 
-		//$where_more['condition'] = 'tbl_stock.options NOT LIKE \'%"clearance_consumer_only":"1"%\'';
+		// sales user is not allowed to see cs clearance only items
 		$con_clearance_cs_only = 'tbl_stock.options NOT LIKE \'%"clearance_consumer_only":"1"%\' ESCAPE \'!\'';
-		$where_more['condition'] = $con_clearance_cs_only;
+		$where_more['condition'][] = $con_clearance_cs_only;
 
 		// get the products list
 		$params['show_private'] = TRUE; // all items general public (Y) - N for private
@@ -184,9 +184,11 @@ class Get_thumbs extends Sales_user_Controller {
 					.$styles
 					.'">'
 				;
-				$html.= '<a href="'
-					.$img_large
-					.'" class="fancybox tooltips" data-original-title="Click to zoom">'
+				$html.= '<a href="javascript:;" class="package_items" data-item="'
+					.$product->prod_no.'_'.$product->color_code
+					.'" data-page="'
+					.($page ?: 'create')
+					.'">'
 				;
 
 				if ($product->with_stocks == '0_')
@@ -233,17 +235,12 @@ class Get_thumbs extends Sales_user_Controller {
 
 				$html.= '</a>';
 				$html.= '<div class="" style="color:red;font-size:1rem;">'
-					.'<input type="checkbox" class="package_items '
+					.'<i class="fa fa-plus package_items '
 					.$product->prod_no.'_'.$product->color_code
-					.'" name="prod_no" value="'
+					.'" style="position:relative;left:5px;background:#ddd;line-height:normal;padding:1px 2px;" data-item="'
 					.$product->prod_no.'_'.$product->color_code
-					.'" '
-					.$checkbox_check
-					.' data-page="'
-					.($page ?: 'create')
-					.'" data-item="'
-					.$product->prod_no.'_'.$product->color_code
-					.'" /> &nbsp;'
+					.'" data-page="create"></i> '
+					.'&nbsp;'
 					.'<span class="text-uppercase" data-item="'
 					.$product->prod_no.'_'.$product->color_code
 					.'"> Add to Package </span>'

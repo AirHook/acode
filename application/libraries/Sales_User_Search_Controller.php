@@ -84,7 +84,7 @@ class Sales_User_Search_Controller extends Sales_user_Controller {
         $params['view_status'] = 'ALL';
         $params['variant_publish'] = 'ALL';
 		// show items even without stocks at all
-		$params['with_stocks'] = FALSE;
+		$params['with_stocks'] = TRUE;
 		$params['group_products'] = FALSE;
 		// others
 		$params['pagination'] = $this->num;

@@ -16,6 +16,11 @@
 												<strong>Ooops!</strong>&nbsp; Something went wrong. Please try again.
 											</div>
 											<?php } ?>
+                                            <?php if ($this->session->flashdata('error') == 'without_stocks') { ?>
+											<div class="alert alert-danger auto-remove">
+												<strong>Ooops!</strong>&nbsp; Hmmm... The product seems to be not available at this time.
+											</div>
+											<?php } ?>
 										</div>
 
 										<div class="row hidden-sm hidden-md hidden-lg hidden-xs">

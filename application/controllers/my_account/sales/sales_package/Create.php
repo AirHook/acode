@@ -45,7 +45,7 @@ class Create extends Sales_user_Controller {
 
 		if ($this->form_validation->run() == FALSE)
 		{
-			// let's ensure that there are no admin session for sa mod
+			// let's ensure that there are no mod session for sa
 			if (
 				$this->session->sa_mod_items
 				OR $this->session->sa_mod_des_slug
@@ -59,7 +59,7 @@ class Create extends Sales_user_Controller {
 				unset($_SESSION['sa_mod_options']);
 				unset($_SESSION['sa_mod_des_slug']);
 
-				// check for sa create session
+				// set create session where necessary
 				if ( ! $this->session->sa_items)
 				{
 					// unset all session and send to create page
@@ -160,8 +160,10 @@ class Create extends Sales_user_Controller {
 				$params['special_sale'] = FALSE; // special sale items only
 				$this->load->library('products/products_list', $params);
 				$this->data['products'] = $this->products_list->select(
+					// where conditions
 					$where_more,
-					array( // order conditions
+					// sorting conditions
+					array(
 						'seque' => 'asc',
 						'tbl_product.prod_no' => 'desc'
 					)

@@ -47,7 +47,7 @@
 											line-height: 20px;
 											/*overflow: hidden;*/	/* to show the checkbox at bottom */
                                             border: 4px solid transparent;
-                                            margin: 0 10px 80px 0; /* from 10 to 30 add margin to bottom */
+                                            margin: 0 10px 10px 0; /* from 10 to 30 add margin to bottom */
 										}
 										.thumb-tiles .thumb-tile.image .tile-body {
 											padding: 0 !important;
@@ -100,6 +100,21 @@
 											position: absolute;
 											left: 0;
 											top: 0;
+										}
+										.stock-select,
+										.size-select {
+											border: 0;
+											font-size: 12px;
+											width: 40px;
+										   -webkit-appearance: none;
+											-moz-appearance: none;
+											appearance: none;
+										}
+										.stock-select:after,
+										.size-select:after {
+											content: "\f0dc";
+											font-family: FontAwesome;
+											color: #000;
 										}
 									</style>
 
@@ -185,11 +200,18 @@
 	        												$classes.= 'selected';
 	        												$checkbox_check = 'checked';
 	        											}
+
+														// check if item is on sale
+	                									$onsale = (@$product->clearance == '3' OR $product->custom_order == '3') ? TRUE : FALSE;
+
+	                                                    // get options if any
+	                                                    $color_options = json_decode($product->color_options, TRUE);
 	        											?>
 
 	        									<div class="thumb-tile image bg-blue-hoki <?php echo $classes; ?>" style="<?php echo $styles; ?>">
 
-	        										<a href="<?php echo $img_large; ?>" class="fancybox " data-original-title="Click to zoom">
+													<!--<a href="<?php echo $img_large; ?>" class="fancybox " data-original-title="Click to zoom">-->
+	                                                <a href="javascript:;" class="package_items" data-item="<?php echo $product->prod_no.'_'.$product->color_code; ?>" data-page="create">
 
 	                                                    <?php if ($product->with_stocks == '0') { ?>
 	        											<div class="ribbon ribbon-shadow ribbon-round ribbon-border-dash ribbon-vertical-right ribbon-color-danger uppercase tooltips" data-placement="bottom" data-container="body" data-original-title="Pre Order" style="position:absolute;right:-3px;width:28px;padding:1em 0;">
@@ -210,21 +232,27 @@
 	        											<div class="tile-object">
 	        												<div class="name">
 	        													<?php echo $product->prod_no; ?> <br />
-	        													<?php echo $product->color_name; ?>
+	        													<?php echo $product->color_name; ?> <br />
+																<span style="<?php echo $onsale ? 'text-decoration:line-through;' : ''; ?>">
+	                                                                $<?php echo $product->wholesale_price; ?>
+	                                                            </span>
+	                                                            <span style="color:pink;<?php echo $onsale ? '' : 'display:none;'; ?>">
+	                                                                &nbsp;$<?php echo $product->wholesale_price_clearance; ?>
+	                                                            </span>
 	        												</div>
 	        											</div>
 
 	        										</a>
 
-	        										<div class="" style="color:red;font-size:1rem;">
+	        										<div class="hide" style="color:red;font-size:1rem;">
 	                                                    <i class="fa fa-plus package_items so <?php echo $product->prod_no.'_'.$product->color_code; ?>" style="background:#ddd;line-height:normal;padding:1px 2px;margin-right:3px;" data-item="<?php echo $product->prod_no.'_'.$product->color_code; ?>"></i>
 	                                                    <span class="text-uppercase package_items" data-item="<?php echo $product->prod_no.'_'.$product->color_code; ?>"> Create Sales Order </span>
 	        										</div>
-													<div class="" style="color:red;font-size:1rem;">
+													<div class="hide" style="color:red;font-size:1rem;">
 	                                                    <i class="fa fa-plus package_items po <?php echo $product->prod_no.'_'.$product->color_code; ?>" style="background:#ddd;line-height:normal;padding:1px 2px;margin-right:3px;" data-item="<?php echo $product->prod_no.'_'.$product->color_code; ?>"></i>
 	                                                    <span class="text-uppercase package_items" data-item="<?php echo $product->prod_no.'_'.$product->color_code; ?>"> Create Purchase Order </span>
 	        										</div>
-													<div class="" style="color:red;font-size:1rem;">
+													<div class="hide" style="color:red;font-size:1rem;">
 	                                                    <i class="fa fa-plus package_items sa <?php echo $product->prod_no.'_'.$product->color_code; ?>" style="background:#ddd;line-height:normal;padding:1px 2px;margin-right:3px;" data-item="<?php echo $product->prod_no.'_'.$product->color_code; ?>"></i>
 	                                                    <span class="text-uppercase package_items" data-item="<?php echo $product->prod_no.'_'.$product->color_code; ?>"> Create Sales Package </span>
 	        										</div>

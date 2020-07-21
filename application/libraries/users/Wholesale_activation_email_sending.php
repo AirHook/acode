@@ -154,6 +154,7 @@ class Wholesale_activation_email_sending
 			$data['designer_address1'] = $this->CI->wholesale_user_details->designer_address1;
 			$data['designer_address2'] = $this->CI->wholesale_user_details->designer_address2;
 			$data['designer_phone'] = $this->CI->wholesale_user_details->designer_phone;
+			$data['designer_info_email'] = $this->CI->wholesale_user_details->designer_info_email;
 			$data['custom_message'] = $this->custom_message;
 			$data['ws_access_level'] = $this->CI->wholesale_user_details->access_level;
 

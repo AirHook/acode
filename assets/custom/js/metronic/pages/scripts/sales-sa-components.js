@@ -260,6 +260,7 @@ var ComponentsEditors = function () {
         $('[name="des_slug"]').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
             var objectData = object_data;
             objectData.des_slug = $(this).val();
+            delete objectData.slugs_link;
             // set admin_sa_des_slug session variable
             $.get(base_url + "my_account/sales/sales_package/set_des_slug_session/index/" + objectData.des_slug + ".html");
             // enable load preset dropdown
@@ -342,26 +343,6 @@ var ComponentsEditors = function () {
                 // get item...
                 getItem(objectData);
             }
-
-            // the old way of actions done when select an item from grid
-            // it adds item straight to the package
-            /* *
-            var checked = $(this).prop('checked');
-            var objectData = object_data;
-            objectData.prod_no = $(this).data('item');
-            objectData.page = $(this).data('page');
-            if (checked) {
-                objectData.action = 'add_item';
-                // check thumb
-                $('.thumb-tile.'+objectData.prod_no).addClass('selected');
-            } else {
-                objectData.action = 'rem_item';
-                // check thumb
-                $('.thumb-tile.'+objectData.prod_no).removeClass('selected');
-            }
-            // get item...
-            addRemItem(objectData);
-            // */
         });
 
         // size and qty change at modal

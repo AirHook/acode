@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Unpublished extends Sales_user_Controller {
+class Instock extends Sales_user_Controller {
 
 	/**
 	 * Constructor
@@ -48,7 +48,7 @@ class Unpublished extends Sales_user_Controller {
 		if (empty($url_segs))
 		{
 			// defauls to all dresses under womens apparel
-			redirect('my_account/sales/products/unpublished/index/womens_apparel');
+			redirect('my_account/sales/products/instock/index/womens_apparel');
 		}
 
 		// set category pre link
@@ -78,9 +78,6 @@ class Unpublished extends Sales_user_Controller {
 		// there will always be one des_slug on sales product listing
 		$where['designer.url_structure'] = $this->sales_user_details->designer;
 
-		$where['tbl_product.publish'] = '0';
-		$where['tbl_product.view_status'] = 'N';
-
 		// get the products list for the thumbs grid view
 		$params['show_private'] = TRUE; // all items general public (Y) - N for private
 		$params['view_status'] = 'ALL'; // all items view status (Y, Y1, Y2, N)
@@ -89,7 +86,7 @@ class Unpublished extends Sales_user_Controller {
 		$params['variant_publish'] = 'ALL'; // all items at variant level publish (view status)
 		$params['variant_view_at_hub'] = TRUE; // variant level public at hub site
 		$params['variant_view_at_satellite'] = TRUE; // varian level public at satellite site
-		$params['with_stocks'] = FALSE; // Show all with and without stocks
+		$params['with_stocks'] = TRUE; // Show all with and without stocks
 		$params['group_products'] = FALSE; // group per product number or per variant
 		$params['special_sale'] = FALSE; // special sale items only
 		$params['pagination'] = $this->data['page']; // get all in one query
@@ -111,6 +108,12 @@ class Unpublished extends Sales_user_Controller {
 		// need to show loading at start
 		$this->data['show_loading'] = FALSE;
 
+		// breadcrumbs
+		$this->data['page_breadcrumb'] = array(
+			'products' => 'Products',
+			'in_stock' => 'In Stock'
+		);
+
 		// set data variables...
 		$this->data['role'] = 'sales';
 		$this->data['file'] = 'sales_products';
@@ -118,125 +121,7 @@ class Unpublished extends Sales_user_Controller {
 		$this->data['page_description'] = 'List of products';
 
 		// load views...
-		$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template_my_account/template', $this->data);
-
-
-
-
-		// set category pre link
-		/* *
-		$this->data['pre_link'] = implode('/', array_diff($uri_string, $url_segs));
-
-		// set some variables
-		$this->data['page'] = is_numeric(end($url_segs)) ? end($url_segs) : 1;
-		$this->data['limit'] = 100;
-		$this->data['offset'] = $this->data['page'] == '' ? 0 : ($this->data['page'] * 100) - 100;
-
-		// get some data
-		$des_where['designer.url_structure'] = $this->sales_user_details->designer ?: '';
-		$this->data['designers'] = $this->designers_list->select($des_where);
-		$this->data['view_as'] = 'sales_products_grid'; // products_grid, products_list -> default to grid for sales
-		$this->data['order_by'] = $this->session->userdata('order_by') ?: 'prod_date';
-
-		// for categories, we check conditions of site type
-		if ($this->webspace_details->options['site_type'] == 'hub_site')
-		{
-			$this->data['categories'] = $this->categories_tree->treelist(
-				array(
-					'with_products' => TRUE,
-					'd_url_structure' => $this->sales_user_details->designer // used by my_account sales
-				)
-			);
-		}
-		else
-		{
-			$this->data['categories'] = $this->categories_tree->treelist(
-				array(
-					'with_products' => TRUE,
-					'd_url_structure' => $this->webspace_details->slug
-				)
-			);
-		}
-		$this->data['number_of_categories'] = $this->categories_tree->row_count;
-
-		// get the last segment which will serve as the category_slug in reference for the product list
-		if (count($url_segs) > 0)
-		{
-			// we need to check if browsing by designer/category through the first segment
-			$first_seg = $url_segs[0];
-			if ($this->designer_details->initialize(array('designer.url_structure'=>$first_seg)))
-			{
-				// use first segment designer_slug if present
-				$this->data['active_designer'] = $this->designer_details->slug;
-				// and set sessiong accordingly
-				$this->session->set_userdata('active_designer', $this->designer_details->slug);
-			}
-			else
-			{
-				// check for session first, otherwise, go browse by category only
-				$this->data['active_designer'] =
-					$this->webspace_details->options['site_type'] == 'hub_site'
-					? FALSE
-					: $this->webspace_details->slug
-				;
-				unset($_SESSION['active_designer']);
-			}
-
-			// last segment as category slug
-			$this->data['active_category'] =
-				is_numeric(end($url_segs))
-				? $this->data['url_segs'][count($this->data['url_segs']) - 2]
-				: end($url_segs)
-			;
-		}
-		else
-		{
-			// defauls to all dresses under womens apparel
-			redirect('my_account/sales/products/all/index/womens_apparel');
-		}
-
-		// get respective active category ID for use on product list where condition
-		$category_id = $this->categories_tree->get_id($this->data['active_category']);
-
-		// set product list where condition
-		if ($this->data['active_designer'] !== FALSE)
-		{
-			$where['designer.url_structure'] = $this->data['active_designer'];
-			if ($category_id)
-			{
-				$where['tbl_product.categories LIKE'] = $category_id; // of last segment category
-			}
-		}
-		else $where['tbl_product.categories LIKE'] = $category_id;
-
-		// get the products list and total count
-		$params['show_private'] = TRUE; // all items general public (Y) - N for private
-		$params['view_status'] = 'ALL'; // all items view status (Y, Y1, Y2, N)
-		$params['view_at_hub'] = TRUE; // all items general public at hub site
-		$params['view_at_satellite'] = TRUE; // all items publis at satellite site
-		$params['variant_publish'] = 'ALL'; // all items at variant level publish (view status)
-		$params['variant_view_at_hub'] = TRUE; // variant level public at hub site
-		$params['variant_view_at_satellite'] = TRUE; // varian level public at satellite site
-		$params['with_stocks'] = FALSE; // Show all with and without stocks
-		$params['group_products'] = TRUE; // group per product number or per variant
-		$params['special_sale'] = FALSE; // special sale items only
-		$params['pagination'] = $this->data['page']; // get all in one query
-		$this->load->library('products/products_list', $params);
-		$this->data['products'] = $this->products_list->select(
-			$where,
-			array( // order conditions
-				'seque'=>'asc'
-			),
-			$this->data['limit']
-		);
-		$this->data['count_all'] = $this->products_list->count_all;
-		$this->data['products_count'] = $this->products_list->row_count;
-		// */
-
-
-
-
-
+		$this->load->view('admin'.($this->config->slash_item('admin_template') ?: 'metronic/').'template_my_account/template', $this->data);
 	}
 
 	// ----------------------------------------------------------------------

@@ -1,6 +1,7 @@
 var TableDatatablesManaged = function () {
 
-	var base_url = window.location.origin;
+	var base_url = $('body').data('base_url');
+	var object_data = $('body').data('object_data');
 
     var initTable = function () {
 
@@ -173,6 +174,58 @@ var TableDatatablesManaged = function () {
 		window.location.href=base_url + '/Websites/acode/' + "admin/products/publish/index/"+st+"/"+prod_id+".html";
 	});
 
+	// sales my account functions
+	// clicked on product grid view
+	$('.thumb-tiles').on('click', '.package_items', function() {
+		var objectData = object_data;
+		objectData.prod_no = $(this).data('item');
+		// get item...
+		getItem(objectData);
+	});
+
+	// get item to show on popup
+	function getItem(objectData){
+		var addrem = $.ajax({
+			type:    "POST",
+			url:     base_url + "my_account/sales/products/get_item.html",
+			data:    objectData
+		});
+		addrem.done(function(data) {
+			// fill in modal
+			$('.modal-body-size_qty_info').html(data);
+			$('#modal-size_qty_info').modal('show');
+		});
+		addrem.fail(function(jqXHR, textStatus, errorThrown) {
+			$('#loading').modal('hide');
+			alert("Get Item Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
+			//$('#reloading').modal('show');
+			//location.reload();
+		});
+	};
+
+	// add to sales package button
+	$('#form-size_qty_select').on('click', '.btn-add_to_sa', function(){
+		$('#form-size_qty_select').attr('action', base_url + 'my_account/sales/products/add_to_sa.html');
+		$('#form-size_qty_select').submit();
+	});
+
+	// add to sales package button
+	$('#form-size_qty_select').on('click', '.btn-add_to_so', function(){
+		// check sizes and quantities
+		var size_qty = 0;
+		$('.size-select').each(function(){
+			if ($(this).val() != 0){
+				size_qty = size_qty + $(this).val();
+			}
+		});
+		if (size_qty > 0) {
+			$('#form-size_qty_select').attr('action', base_url + 'my_account/sales/products/add_to_so.html');
+			$('#form-size_qty_select').submit();
+		} else {
+			alert('Please select one size with qty greater than zero.');
+		}
+	});
+	
     return {
 
         //main function to initiate the module

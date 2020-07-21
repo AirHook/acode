@@ -15,6 +15,7 @@
                         <input type="hidden" name="date" value="<?php echo @$date; ?>" />
                         <input type="hidden" name="sales_user" value="<?php echo @$sales_user; ?>" />
                         <input type="hidden" name="store_name" value="<?php echo @$ws_user_details->store_name; ?>" />
+                        <input type="hidden" name="product_clicks" value='<?php echo json_encode($sa_items); ?>' />
 
                         <div class="col col-md-8" style="border:1px solid #ccc;min-height:500px;">
                             <div class="row">
@@ -59,7 +60,7 @@
                                             <label class="col-md-3 control-label">Email Subject
                                             </label>
                                             <div class="col-md-8">
-                                                <input type="text" name="email_subject" class="form-control input-sa_info clear-readonly" value="Products of Interests" />
+                                                <input type="text" name="email_subject" class="form-control input-sa_info clear-readonly" value="Products of Interests" readonly />
                                             </div>
                                         </div>
                                         <div class="form-group">
@@ -260,10 +261,6 @@
                             </div>
                         </div>
 
-                        <?php echo form_close(); ?>
-                        <!-- End FORM ===================================================================-->
-                        <!-- END FORM-->
-
                         <div class="col-md-4">
 
                             <div class="form-horizontal" role="form">
@@ -327,20 +324,6 @@
                             ?>
                             <div class="form-select-users-wrapper">
 
-                                <!-- BEGIN FORM-->
-                                <!-- FORM =======================================================================-->
-                                <?php echo form_open(
-                                    (@$role == 'sales' ? 'my_account/sales' : 'admin/campaigns').'/sales_package/send/sa/'.$sa_details->sales_package_id,
-                                    array(
-                                        'class' => 'form-horizontal',
-                                        'id' => 'form-send_sales_package'
-                                    )
-                                ); ?>
-
-                                <input type="hidden" name="sales_package_id" value="<?php echo $sa_details->sales_package_id; ?>" />
-                                <input type="hidden" name="send_to" value="" />
-                                <input type="hidden" name="sales_user" value="<?php echo $sales_user; ?>" />
-
                                 <?php
                                 /***********
                                  * Noification area
@@ -393,6 +376,10 @@
                             </div>
 
                         </div>
+
+                        <?php echo form_close(); ?>
+                        <!-- End FORM ===================================================================-->
+                        <!-- END FORM-->
 
                     </div>
                     <!-- END PAGE CONTENT BODY -->

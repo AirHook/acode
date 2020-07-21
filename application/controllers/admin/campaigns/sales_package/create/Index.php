@@ -45,24 +45,33 @@ class Index extends Admin_Controller {
 
 		if ($this->form_validation->run() == FALSE)
 		{
-			// let's ensure that there are no admin session for sa mod
-			if ($this->session->admin_sa_mod_items)
+			// let's ensure that there are no mod session for sa
+			if (
+				$this->session->admin_sa_mod_items
+				OR $this->session->admin_sa_mod_des_slug
+				OR $this->session->admin_sa_mod_slug_segs
+			)
 			{
-				// new po admin createa ccess
-				unset($_SESSION['admin_sa_id']);
-				unset($_SESSION['admin_sa_des_slug']);
-				unset($_SESSION['admin_sa_slug_segs']);
-				unset($_SESSION['admin_sa_items']);
-				unset($_SESSION['admin_sa_name']); // used at view
-				unset($_SESSION['admin_sa_email_subject']); // used at view
-				unset($_SESSION['admin_sa_email_message']); // used at view
-				unset($_SESSION['admin_sa_options']);
-				// remove po mod details
+				// first, remove sa modify details
 				unset($_SESSION['admin_sa_mod_id']);
 				unset($_SESSION['admin_sa_mod_items']);
 				unset($_SESSION['admin_sa_mod_slug_segs']);
 				unset($_SESSION['admin_sa_mod_options']);
 				unset($_SESSION['admin_sa_mod_des_slug']);
+
+				// set create session where necessary
+				if ( ! $this->session->sa_items)
+				{
+					// unset all session and send to create page
+					unset($_SESSION['admin_sa_id']);
+					unset($_SESSION['admin_sa_des_slug']);
+					unset($_SESSION['admin_sa_slug_segs']);
+					unset($_SESSION['admin_sa_items']);
+					unset($_SESSION['admin_sa_name']); // used at view
+					unset($_SESSION['admin_sa_email_subject']); // used at view
+					unset($_SESSION['admin_sa_email_message']); // used at view
+					unset($_SESSION['admin_sa_options']);
+				}
 			}
 
 			// get color list
@@ -73,25 +82,28 @@ class Index extends Admin_Controller {
 			// and get the designers list for the category list
 			// - general admin shows all designer category tree
 			// - satellite and stand-alone sites defaults to it's designer category tree
-			// - sales users default to it's reference designer category tree
+			// - sales users now have their own admin panel
 			if (
 				$this->webspace_details->options['site_type'] == 'sat_site'
 				OR $this->webspace_details->options['site_type'] == 'sal_site'
-				OR $this->session->sales_loggedin
+				//OR $this->session->admin_sales_loggedin
 			)
 			{
 				$this->data['select_designer'] = FALSE;
 				$des_slug = @$this->sales_user_details->designer ?: $this->webspace_details->slug;
+				$this->session->admin_sa_des_slug = $des_slug;
+
+				$this->designers_list->initialize(array('with_products'=>TRUE));
 				$this->data['designers'] = $this->designers_list->select(
 					array(
 						'url_structure' => $des_slug
 					)
 				);
-				$this->session->admin_sa_des_slug = $des_slug;
 			}
 			else
 			{
 				$this->data['select_designer'] = TRUE;
+
 				$this->designers_list->initialize(array('with_products'=>TRUE));
 				$this->data['designers'] = $this->designers_list->select();
 			}
@@ -118,7 +130,7 @@ class Index extends Admin_Controller {
 				$this->data['max_level'] = $this->categories_tree->max_category_level;
 				$this->data['primary_subcat'] = $this->categories_tree->get_primary_subcat($this->session->admin_sa_des_slug);
 
-				// get last category slug if slug_segs is present
+				// get last category slug
 				if ($this->session->admin_sa_slug_segs)
 				{
 					$this->data['slug_segs'] = json_decode($this->session->admin_sa_slug_segs, TRUE);
@@ -135,32 +147,39 @@ class Index extends Admin_Controller {
 				$where_more['designer.url_structure'] = $designer_slug;
 				$where_more['tbl_product.categories LIKE'] = $category_id;
 
-				// show published items only (public and private)
-				$con_published = 'tbl_product.publish = \'1\' OR tbl_product.publish = \'11\' OR tbl_product.publish = \'12\' OR tbl_product.publish = \'2\'';
-				$where_more['condition'] = $con_published;
-
-				// sales user show item conditions
-		        // 1. sales users gets to see everything except"
+				// sales package show item conditions
+				// 1. 	super admin (0) gets to see everything but with stocks
+				//		note: cannot send items without stocks at the moment
+				// 2.	desginer admin (1) gest to see evrything but with stocks
+		        // 3. 	sales users gets to see everything except
 		        // 		preorder items
 		        // 		esp not clearance cs items
-				// super admin gets to see everything
 				// but right now, sales packages are for the following:
 				//		instock items
 				//		on sale items
 
-				// don't show clearance cs only items
-				$con_clearance_cs_only = 'tbl_stock.options NOT LIKE \'%"clearance_consumer_only":"1"%\' ESCAPE \'!\'';
-				$where_more['condition'] = $con_clearance_cs_only;
+				// show published items only (public and private)
+				//$con_published = '(tbl_product.publish = \'1\' OR tbl_product.publish = \'11\' OR tbl_product.publish = \'12\' OR tbl_product.publish = \'2\')';
+				//$where_more['condition'][] = $con_published;
+
+				// don't show clearance cs only items for non-super admin
+				if ($this->admin_user_details->access_level != '0')
+				{
+					$con_clearance_cs_only = 'tbl_stock.options NOT LIKE \'%"clearance_consumer_only":"1"%\' ESCAPE \'!\'';
+					$where_more['condition'][] = $con_clearance_cs_only;
+				}
 
 				// get the products list for the thumbs grid view
 				$params['show_private'] = TRUE; // all items general public (Y) - N for private
-				$params['view_status'] = 'ALL'; // all items view status (Y, Y1, Y2, N)
-				$params['view_at_hub'] = TRUE; // all items general public at hub site
-				$params['view_at_satellite'] = TRUE; // all items publis at satellite site
-				$params['variant_publish'] = 'ALL'; // all items at variant level publish (view status)
-				$params['variant_view_at_hub'] = TRUE; // variant level public at hub site
-				$params['variant_view_at_satellite'] = TRUE; // varian level public at satellite site
-				$params['with_stocks'] = TRUE; // Show all with and without stocks
+				//$params['view_status'] = 'ALL'; // all items view status (Y, Y1, Y2, N)
+				//$params['view_at_hub'] = TRUE; // all items general public at hub site
+				//$params['view_at_satellite'] = TRUE; // all items publis at satellite site
+				//$params['variant_publish'] = 'ALL'; // all items at variant level publish (view status)
+				//$params['variant_view_at_hub'] = TRUE; // variant level public at hub site
+				//$params['variant_view_at_satellite'] = TRUE; // varian level public at satellite site
+
+				$params['with_stocks'] = TRUE; // TRUE shows instock items only
+
 				$params['group_products'] = FALSE; // group per product number or per variant
 				$params['special_sale'] = FALSE; // special sale items only
 				$this->load->library('products/products_list', $params);
@@ -174,6 +193,8 @@ class Index extends Admin_Controller {
 					)
 				);
 				$this->data['products_count'] = $this->products_list->row_count;
+				//echo $this->products_list->last_query;
+				//die();
 			}
 
 			/*****
@@ -218,6 +239,7 @@ class Index extends Admin_Controller {
 			$this->data['search_string'] = FALSE;
 
 			// set data variables...
+			$this->data['role'] = 'admin';
 			$this->data['file'] = 'sa_create';
 			$this->data['page_title'] = 'Sales Package';
 			$this->data['page_description'] = 'Create Sales Packages';

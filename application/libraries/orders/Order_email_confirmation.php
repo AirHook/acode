@@ -154,6 +154,10 @@ class Order_email_confirmation
 		$this->CI->email->from($this->CI->webspace_details->info_email, $this->CI->webspace_details->name);
 
 		$this->CI->email->to($user_details->email);
+		//$this->CI->email->to('help@shop7thavenue.com');
+		//$this->CI->email->cc('rsbgm@rcpixel.com');
+		//$this->CI->email->bcc('rsbgm@rcpixel.com');
+		//$this->CI->email->to('rsbgm@instylenewyork.com');
 
 		$this->CI->email->subject($email_subject);
 		$this->CI->email->message($message);

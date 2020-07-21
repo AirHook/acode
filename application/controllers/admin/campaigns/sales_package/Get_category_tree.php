@@ -34,6 +34,7 @@ class Get_category_tree extends MY_Controller {
 			//$this->session->set_userdata('admin_sa_slug_segs', $this->input->post('slugs_link'));
 		}
 		else $slug_segs = array();
+		$page = $this->input->post('page') ?: 'create';
 
 		// load pertinent library/model/helpers
 		$this->load->library('designers/designers_list');
@@ -77,7 +78,7 @@ class Get_category_tree extends MY_Controller {
 		?>
 
 			<li class="<?php echo $active; ?> designer-level" data-slug="<?php echo $designer_details->url_structure; ?>">
-				<a href="javascript:;" data-des_slug="<?php echo $designer_details->url_structure; ?>" style="font-size:0.8em;" data-slugs_link="<?php echo implode('/', $slugs_link); ?>">
+				<a href="javascript:;" data-des_slug="<?php echo $designer_details->url_structure; ?>" style="font-size:0.8em;" data-slugs_link="<?php echo implode('/', $slugs_link); ?>" data-page="<?php echo $page; ?>">
 					<?php echo $designer_details->designer; ?>
 				</a>
 			</li>

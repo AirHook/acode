@@ -10,6 +10,43 @@ if ($role=='sales')
 
 		<!-- =============-->
 		<li class="heading">
+			<h3 class="uppercase">Products</h3>
+		</li>
+		<li class="nav-item with-heading <?php echo $this->uri->segment(3) == 'products' ? 'active' : ''; ?>">
+			<!--<a href="<?php echo site_url('my_account/sales/products'); ?>" class="nav-link ">-->
+			<a href="javascript:;" class="nav-link ">
+				<span class="title uppercase">All Products</span>
+				<span class="arrow <?php echo $this->uri->segment(3) == 'products' ? 'open' : 'open'; ?>"></span>
+			</a>
+			<ul class="sub-menu always-open">
+				<!--
+				<li class="nav-item  <?php echo $this->uri->segment(4) == 'is_public' ? 'active open' : ''; ?>">
+					<!--<a href="<?php echo site_url('my_account/sales/products/is_public'); ?>" class="nav-link  ">--
+					<a href="javascript:;" class="nav-link tooltips" data-original-title="Currently Under Construction" data-placement="right">
+						<span class="title">Products</span>
+					</a>
+				</li>
+				-->
+				<li class="nav-item  <?php echo $this->uri->segment(4) == 'instock' ? 'active open' : ''; ?>">
+					<a href="<?php echo site_url('my_account/sales/products/instock'); ?>" class="nav-link  ">
+						<span class="title">Products</span>
+					</a>
+				</li>
+				<li class="nav-item  ">
+					<a href="javascript:;" class="nav-link tooltips" data-original-title="Currently Under Construction" data-placement="right">
+						<span class="title">On Order <cite class="small font-red-flamingo">(Under Construction)</cite></span>
+					</a>
+				</li>
+				<li class="nav-item  ">
+					<a href="javascript:;" class="nav-link tooltips" data-original-title="Currently Under Construction" data-placement="right">
+						<span class="title">By Vendor <cite class="small font-red-flamingo">(Under Construction)</cite></span>
+					</a>
+				</li>
+			</ul>
+		</li>
+
+		<!-- =============-->
+		<li class="heading">
 			<h3 class="uppercase">Orders</h3>
 		</li>
 		<li class="nav-item <?php echo $this->uri->uri_string() == 'my_account/sales/orders/new_orders' ? 'active' : ''; ?>">
@@ -42,18 +79,11 @@ if ($role=='sales')
 				<span class="title">Cancelled</span>
 			</a>
 		</li>
-
-		<?php if (@$this->sales_user_details->access_level != '2')
-		{ ?>
-
 		<li class="nav-item <?php echo $this->uri->uri_string() == 'my_account/sales/sales_orders/new_order' ? 'active' : ''; ?>">
 			<a href="<?php echo site_url('my_account/sales/sales_orders/new_order'); ?>" class="nav-link ">
 				<span class="title">Create New Sales Order</span>
 			</a>
 		</li>
-
-			<?php
-		}?>
 
 		<!-- =============-->
 		<?php
@@ -145,6 +175,17 @@ if ($role=='sales')
 
 			<?php
 		} ?>
+
+		<!-- =============-->
+		<li class="heading">
+			<h3 class="uppercase">Inventory</h3>
+		</li>
+		<li class="nav-item <?php echo strpos($this->uri->uri_string(), 'admin/inventory/available') === FALSE ? '' : 'active'; ?>">
+			<!--<a href="<?php echo site_url('admin/inventory/available'); ?>" class="nav-link ">-->
+			<a href="javascript:;" class="nav-link tooltips" data-original-title="Currently Under Construction" data-placement="right">
+				<span class="title">Available Stocks</span>
+			</a>
+		</li>
 
 	</ul>
 	<?php

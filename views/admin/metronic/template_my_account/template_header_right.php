@@ -4,14 +4,14 @@
 <form class="search-form search-form-expanded " action="page_general_search_2.html" method="GET">
 <!-- FORM =======================================================================-->
 <?php echo form_open(
-	'my_account/sales/search',
+	'my_account/sales/products/search',
 	array(
 		'method'=>'POST',
-		'class'=>'search-form search-form-expanded hide'
+		'class'=>'search-form search-form-expanded '
 	)
 ); ?>
 	<div class="input-group">
-		<input type="text" class="form-control input-sm search_by_style" placeholder="Search..." name="style_no">
+		<input type="text" class="form-control input-sm search_by_style__" placeholder="Search..." name="style_no">
 		<span class="input-group-btn">
 			<a href="javascript:;" class="btn submit">
 				<i class="icon-magnifier"></i>

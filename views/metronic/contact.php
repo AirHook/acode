@@ -33,7 +33,7 @@
 														<?php echo form_open('contact'); ?>
 
 															<div class="form-group">
-                                                                <input type="text" placeholder="Frist Name" class="form-control input-md" name="fname" value="<?php echo set_value('fname'); ?>" required="required" />
+                                                                <input type="text" placeholder="First Name" class="form-control input-md" name="fname" value="<?php echo set_value('fname'); ?>" required="required" />
 																<?php echo form_error('fname', '<cite class="help-block text-danger">', '</cite>'); ?>
 															</div>
 															<div class="form-group">

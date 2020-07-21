@@ -129,7 +129,7 @@ class Consumer_special_sale_email_carousel extends MY_Controller {
 		$this->load->library('mailgun/mailgun');
 
 		// set up properties
-		/* *
+		/* */
 		$this->mailgun->vars = array("designer" => "Basix Black Label", "des_slug" => "basixblacklabel");
 		$this->mailgun->o_tag = 'Consumer Special Sale Invite';
 		$this->mailgun->from = 'Basix Black Label <help@basixblacklabel.com>';

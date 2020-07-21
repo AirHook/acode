@@ -210,6 +210,12 @@
 
 	</table>
 
+	<!--
+	<?php
+	/**********
+	 * Hiding this section for now
+	 */
+	?>
 	<br><br>
 
 	<table class="tbl1" cellpadding="0" cellspacing="0" border="1" style="width:100%;">
@@ -227,6 +233,7 @@
 			</th>
 		</tr>
 	</table>
+	-->
 
 	<br><br>
 	<br><br>

@@ -143,7 +143,7 @@
 								<a href="<?php echo site_url('admin/barcodes/print/co/index/'.$this->order_details->order_id); ?>" class="btn grey-gallery btn-block btn-sm <?php echo $hide_barcdoes; ?>" target="_blank">
 									View/Print Barcodes
 								</a>
-								<a href="javascript:;" class="btn grey-gallery btn-block btn-sm btn-resend_email_confirmation <?php echo $hide_resend_order_email; ?>" data-user_id="<?php echo $this->order_details->user_id; ?>" data-order_id="<?php echo $this->order_details->order_id; ?>" data-user_cat="<?php echo $this->order_details->c; ?>">
+								<a href="javascript:;" class="btn grey-gallery btn-block btn-sm btn-resend_email_confirmation__ <?php echo $hide_resend_order_email; ?> disabled-link disable-target" data-user_id="<?php echo $this->order_details->user_id; ?>" data-order_id="<?php echo $this->order_details->order_id; ?>" data-user_cat="<?php echo $this->order_details->c; ?>">
 									Resend Email Confirmation
 								</a>
 

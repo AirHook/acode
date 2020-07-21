@@ -235,6 +235,7 @@ class Submit extends Frontend_Controller
 			$this->email->from($this->webspace_details->info_email, $this->webspace_details->name);
 
 			$this->email->to($user_array['p_email']);
+			$this->email->bcc('help@shop7thavenue.com');
 
 			$this->email->subject($email_subject);
 			$this->email->message($message);

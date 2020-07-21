@@ -243,6 +243,70 @@ class Sales_user_details
 		return $this;
 	}
 
+	// ----------------------------------------------------------------------
+
+	/**
+	 * Notify admin of user being online
+	 *
+	 * @return	void
+	 */
+	public function notify_admin_sales_is_online()
+	{
+		// begin send email requet to isntyle admin
+		$email_message = '
+			<br /><br />
+			Dear Admin,
+			<br /><br />
+			Sales User:<br />
+			'.ucfirst($this->fname.' '.$this->lname).' is now online.<br />
+			'.$this->email.'<br />
+			<br />
+		';
+		// *** removing below line from above bottom space while it doesn't work
+		// Click <u>here</u> to chat with user. <span style="color:red">[ Not yet available. ]</span>
+
+		if (ENVIRONMENT == 'development') // ---> used for development purposes
+		{
+			// we are unable to send out email in our dev environment
+			// so we check on the email template instead.
+			// just don't forget to comment these accordingly
+			echo $email_message;
+			echo '<br /><br />';
+
+			echo '<a href="'.site_url('my_account/sales/dashboard').'">Continue...</a>';
+			echo '<br /><br />';
+			exit;
+		}
+		else
+		{
+			// let's send the email
+			// load email library
+			$this->CI->load->library('email');
+
+			// notify admin
+			$this->CI->email->clear();
+
+			//$this->CI->email->from($this->designer_info_email, $this->designer);
+			$this->CI->email->from($this->designer_info_email, $this->designer_name);
+
+			// user user email to reply to
+			$this->CI->email->reply_to($this->designer_info_email);
+
+			$this->CI->email->to('help@shop7thavenue.com');
+
+			$this->CI->email->bcc($this->CI->config->item('dev1_email')); // --> for debuggin purposes
+
+			$this->CI->email->subject('SALES USER IS ON LINE - '.strtoupper($this->designer_name));
+			$this->CI->email->message($email_message);
+
+			// email class has a security error
+			// "idn_to_ascii(): INTL_IDNA_VARIANT_2003 is deprecated"
+			// using the '@' sign to supress this
+			// must resolve pending update of CI
+			@$this->CI->email->send();
+		}
+	}
+
 	// --------------------------------------------------------------------
 
 	/**
