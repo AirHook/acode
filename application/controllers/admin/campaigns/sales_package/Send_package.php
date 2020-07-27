@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Send_product_clicks extends Admin_Controller {
+class Send_package extends Admin_Controller {
 
 	/**
 	 * Constructor
@@ -22,130 +22,136 @@ class Send_product_clicks extends Admin_Controller {
 	 */
 	public function index()
 	{
-		if ( ! $this->input->get('date') OR ! $this->input->get('user'))
+		// let's ensure that there are no mod session for sa
+		if (
+			$this->session->admin_sa_mod_items
+			OR $this->session->admin_sa_mod_des_slug
+			OR $this->session->admin_sa_mod_slug_segs
+		)
 		{
-			// nothing more to do...
-			// set flash data
-			$this->session->set_flashdata('error', 'no_id_passed');
+			// first, remove sa modify details
+			unset($_SESSION['admin_sa_mod_id']);
+			unset($_SESSION['admin_sa_mod_items']);
+			unset($_SESSION['admin_sa_mod_slug_segs']);
+			unset($_SESSION['admin_sa_mod_options']);
+			unset($_SESSION['admin_sa_mod_des_slug']);
 
-			// redirect user
-			redirect($this->config->slash_item('admin_folder').'campaigns/sales_package', 'location');
+			// set create session where necessary
+			if ( ! $this->session->admin_sa_items)
+			{
+				// unset all session and send to create page
+				unset($_SESSION['admin_sa_id']);
+				unset($_SESSION['admin_sa_des_slug']);
+				unset($_SESSION['admin_sa_slug_segs']);
+				unset($_SESSION['admin_sa_items']);
+				unset($_SESSION['admin_sa_name']); // used at view
+				unset($_SESSION['admin_sa_email_subject']); // used at view
+				unset($_SESSION['admin_sa_email_message']); // used at view
+				unset($_SESSION['admin_sa_options']);
+
+				// set session flashdata
+				$this->session->set_flashdata('error', 'no_id_passed');
+
+				// redirect user
+				redirect('admin/campaigns/sales_package/create', 'location');
+			}
 		}
+
+		/***********
+		 * Process the input data
+		 */
+		//  session data
+		/* *
+		$_SESSION['date_create'] = $this->input->post('date_create');
+		$_SESSION['last_modified'] = $this->input->post('last_modified');
+		$_SESSION['sa_name'] = $this->input->post('sales_package_name');
+		$_SESSION['sa_email_subject'] = $this->input->post('email_subject');
+		$_SESSION['sa_email_message'] = $this->input->post('email_message');
+		$_SESSION['sa_options'] = json_encode($this->input->post('options'));
+		// other needed items from session
+		[sales_package_items] -> sa_items
+		// */
 
 		// generate the plugin scripts and css
 		$this->_create_plugin_scripts();
 
 		// load pertinent library/model/helpers
+		$this->load->helpers('state_country');
 		$this->load->library('products/product_details');
-
-		// connect to database for use by model
-		$DB = $this->load->database('instyle', TRUE);
-
-		// get user details manually
-		$DB->query('SET SESSION group_concat_max_len = 1000000');
-		$DB->select('GROUP_CONCAT(tbl_login_detail_wholesale.logindata) AS logindata');
-		$DB->select('tbluser_data_wholesale.*');
-		$DB->select('
-			tbladmin_sales.admin_sales_id,
-			tbladmin_sales.admin_sales_user,
-			tbladmin_sales.admin_sales_lname
-		');
-		$DB->from('tbl_login_detail_wholesale');
-		$DB->join(
-			'tbluser_data_wholesale',
-			'tbluser_data_wholesale.email = tbl_login_detail_wholesale.email',
-			'left'
-		);
-		$DB->join(
-			'tbladmin_sales',
-			'tbladmin_sales.admin_sales_email = tbluser_data_wholesale.admin_sales_email',
-			'left'
-		);
-		$DB->where('tbl_login_detail_wholesale.create_date', $this->input->get('date'));
-		$DB->where('tbl_login_detail_wholesale.email', $this->input->get('user'));
-		$q1 = $DB->get();
-
-		//echo $DB->last_query(); die();
-
-		$user_details = $q1->row();
+		$this->load->library('users/wholesale_users_list');
+		$this->load->library('users/sales_user_details');
 
 		// set some data
-		$this->data['date'] = $this->input->get('date');
-		$this->data['ws_user_details'] = $user_details;
-		$this->data['sales_user'] = ucwords(strtolower($user_details->admin_sales_user.' '.$user_details->admin_sales_lname));
+		$this->data['date_create'] = $this->session->date_create;
+		$this->data['last_modified'] = $this->session->last_modified;
+		$this->data['sa_name'] = $this->session->admin_sa_name;
+		$this->data['sa_email_subject'] = $this->session->admin_sa_email_subject;
+		$this->data['sa_email_message'] = $this->session->admin_sa_email_message;
+		$this->data['sa_options'] = json_decode($this->session->admin_sa_options, TRUE);
 
-		// sample combined & not combined product cliks array:
-		/* *
-		Array
-		{
-			[product_clicks] => Array
-		        (
-		            [5706P] => Array
-		                (
-		                    [0] => 1
-		                    [1] => 1
-		                )
+		$this->data['sa_items'] = json_decode($this->session->admin_sa_items, TRUE);
 
-		            [5565N] => Array
-		                (
-		                    [0] => 1
-		                    [1] => 1
-		                )
+		// this is super admin
+		// sales user is the default sales user of the site
+		// get default sales user
+		$sales_user_details = $this->sales_user_details->initialize(
+			array(
+				// default is webspace info email
+				// however, we need to create a condition for when a designer
+				// admin logs in on satellite sites
+				// and the designger/owner will be the default sales user
+				// like in the case of davi of basix and raffi of tempo
+				'admin_sales_email' => $this->webspace_details->info_email
+			)
+		);
+		$this->data['sales_user'] = $sales_user_details->admin_sales_id;
+		$this->data['author_name'] = $sales_user_details->fname.' '.$sales_user_details->lname;
+		$this->data['author'] = $this->data['author_name'];
+		$this->data['author_email'] = $sales_user_details->email;
+		$this->data['author_id'] = $sales_user_details->admin_sales_id;
 
-		            [1384N] => 1
-		            [1154V] => 1
-		            [4444P] => 1
-		            [2546K] => 1
-		            [8141F] => 1
-		            [8488A] => 1
-		            [1381A] => 1
-		        )
-		}
-		// */
+		// get user list data
+		// limits and per page
+		$per_page = 20;
+		$limit = $per_page > 0 ? array($per_page) : array();
+		// where clauses
+		$where['tbluser_data_wholesale.is_active'] = '1';
+		$this->data['users'] = $this->wholesale_users_list->select(
+			$where, // where
+			array( // order by
+				'tbluser_data_wholesale.store_name' => 'asc'
+			),
+			$limit
+		);
+		//$this->data['user_id'] = '';
+		$this->data['users_per_page'] = $per_page;
+		$this->data['total_users'] = $this->wholesale_users_list->count_all;
+		$this->data['number_of_pages'] =
+			$per_page > 0
+			? ceil($this->data['total_users'] / $this->data['users_per_page'])
+			: $this->data['total_users']
+		;
+		// by default
+		$this->data['page'] = '1';
 
-		// decode and combine $logindata into one array
-		// usual contents of $logindata are: 'active_time', 'page_visist', 'product_clicks'
-		// then, get the 'product_clicks'
-		$json_str = str_replace('},{', '}|{', $user_details->logindata);
-		$json_arys = explode('|', $json_str);
-		$logindata = array();
-		foreach ($json_arys as $json)
-		{
-			// merge all arrays within the json data
-			$temp_ary = json_decode($json, TRUE);
-			$logindata = is_array($temp_ary) ? array_merge_recursive($logindata, $temp_ary) : array_merge_recursive($logindata);
-		}
+		// need to show loading at start
+		$this->data['show_loading'] = FALSE;
+		$this->data['search'] = FALSE;
 
-		// set 'product_clicks' array
-		$this->data['sa_items'] = array();
-		if ( ! empty(@$logindata['product_clicks']))
-		{
-			foreach ($logindata['product_clicks'] as $key => $val)
-			{
-				if ( ! is_int($key) OR ! in_array($key, $this->data['sa_items']))
-				{
-					array_push($this->data['sa_items'], $key);
-				}
-			}
-		}
-
-		// this usualy doesn't happen but if product clicks array is empty...
-		if (empty($this->data['sa_items']))
-		{
-			echo 'Something went wrong.<br />Sorry for the inconvenience.<br />Checkout our website instead <a href="'.site_url().'">here</a>.';
-			exit;
-		}
-
-		// save sa_items into session for the send process
-		$this->session->product_clicks_admin_sa_items = json_encode($this->data['sa_items']);
+		// breadcrumbs
+		$this->data['page_breadcrumb'] = array(
+			'sales_package' => 'Sales Packages',
+			'send' => 'Send'
+		);
 
 		// set data variables...
-		$this->data['file'] = 'sa_send_product_clicks';
+		$this->data['role'] = 'admin';
+		$this->data['file'] = 'sa_send_package'; //'sa_send';
 		$this->data['page_title'] = 'Sales Package Sending';
 		$this->data['page_description'] = 'Send Sales Packages To Users';
 
 		// load views...
-		$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template/template', $this->data);
+		$this->load->view('admin/metronic/template/template', $this->data);
 	}
 
 	// ----------------------------------------------------------------------
@@ -161,23 +167,47 @@ class Send_product_clicks extends Admin_Controller {
 		/* *
 		Array
 		(
-		    [date] => 2020-05-24
-			[sales_user] => Rey Millares
-		    [store_name] => Rey Store
-			[product_clicks] => ["D9503L","D8819L"]
-		    [email_subject] => Products of Interests
-		    [email_message] => Here are designs that are now available. Review them for your store.
-		    [files] =>
-		    [email] => rsbgm@rcpixel.com
+			[send_to] => current_user/new_user
+			[sales_package_id] => 12 // --> not present for sending not saved sales package
+			[sales_user] => rsbgm@rcpixel.com
+		    [reference_designer] => basixblacklabel
+		    [admin_sales_email] => rsbgm@rcpixel.com
+		    [admin_sales_id] => 90
+		    [access_level] => 2
+
+				//current_user
+				[email] => Array
+			        (
+			            [0] => rsbgm@rcpixel.com
+			        )
+
+				//new_user
+			    [email] => // new user input field
+
+			// empty for current_user
+		    [firstname] =>
+		    [lastname] =>
+		    [store_name] =>
+		    [fed_tax_id] =>
+		    [telephone] =>
+		    [address1] =>
+		    [address2] =>
+		    [city] =>
+		    [state] =>
+		    [country] =>
+		    [zipcode] =>
+
+			[emails] => // current user set to email (up to ten and comma separated), empty on new_user
+			[search_string] => // used for searching users from current list
 		)
 		// */
 		if ( ! $this->input->post())
 		{
 			// set flash data
-			$this->session->set_flashdata('error', 'no_id_passed');
+			$this->session->set_flashdata('error', 'no_input_post');
 
 			// redirect user
-			redirect('admin/campaigns/sales_package', 'location');
+			redirect('my_account/sales/sales_package/create', 'location');
 		}
 
 		// load pertinent library/model/helpers
@@ -188,48 +218,48 @@ class Send_product_clicks extends Admin_Controller {
 		/***********
 		 * Process Users
 		 */
-		// only one email
-		// and doing the sending in this class directly
+		// doing the sending in this class directly
 
 		// first, we double check if user is valid
 		if ( ! $this->wholesale_user_details->initialize(array('email'=>$this->input->post('email'))))
 		{
 			// set flash data
-			$this->session->set_flashdata('error', 'no_id_passed');
+			$this->session->set_flashdata('error', 'invalid_user');
 
 			// redirect user
-			redirect('admin/campaigns/sales_package', 'location');
+			redirect('my_account/sales/sales_package/create', 'location');
 		}
 
-		// lets set the hashed time code here so that the batches hold the same tc only
+		// set emailtracker_id
+		$data['emailtracker_id'] =
+			$this->wholesale_user_details->user_id
+			.'wi0014t'
+			.time()
+		;
+
+		// lets set the hashed time code here so that the batched hold the same tc only
 		$tc = md5(@date('Y-m-d', time()));
 
 		$data['username'] = $this->input->post('store_name');
 		$data['email_message'] = $this->input->post('email_message');
 
-		// the items
-		$data['items'] = json_decode($this->session->product_clicks_sa_items, TRUE);
-		$data['items_csv'] = implode(',', $data['items']);
+		$data['access_link'] = site_url(
+			'sales_package/link/index/'
+			.'X/' // --> supposedly sales_package_id for saved sa via Sales_package_sending.php
+			.$this->wholesale_user_details->user_id.'/'
+			.$tc
+		);
 
-		// options
+		$data['items'] = json_decode($this->session->product_clicks_sa_items, TRUE);
 		$data['email'] = $this->input->post('email');
 		$data['w_prices'] = 'Y';
 		$data['w_images'] = 'N';
 		$data['linesheets_only'] = 'N';
 		$data['sales_username'] = $this->input->post('sales_user');
-		$data['sales_ref_designer'] = $this->wholesale_user_details->reference_designer;
+		$data['sales_ref_designer'] = $this->wholesale_user_details->designer;
+		$data['reference_designer'] = $this->wholesale_user_details->reference_designer;
+		$data['logo'] = $this->config->item('PROD_IMG_URL').$this->wholesale_user_details->designer_logo;
 
-		$data['access_link'] = site_url(
-			'sales_package/product_clicks/index/'
-			.$this->input->post('date').'/'
-			.$this->wholesale_user_details->user_id.'/'
-			.$tc
-		);
-
-		// grab template and infuse data and set message
-		$message = $this->load->view('templates/sales_package', $data, TRUE);
-
-		// start sending email
 		$this->email->clear(TRUE);
 
 		$this->email->from($this->input->post('sales_user'), $this->wholesale_user_details->admin_sales_email);
@@ -242,6 +272,7 @@ class Send_product_clicks extends Admin_Controller {
 		$this->email->to($this->input->post('email'));
 
 		// let's get the message
+		$message = $this->load->view('templates/sales_package', $data, TRUE);
 		$this->email->message($message);
 
 		if (ENVIRONMENT === 'development')
@@ -253,7 +284,7 @@ class Send_product_clicks extends Admin_Controller {
 			echo $message;
 			echo '<br />';
 			echo '<br />';
-			echo '<a href="'.site_url('admin/campaigns/sales_package').'">continue...</a>';
+			echo '<a href="'.site_url('my_account/sales/sales_package').'">continue...</a>';
 			$this->session->set_flashdata('success', 'send_product_clicks');
 			die();
 			// */
@@ -266,10 +297,10 @@ class Send_product_clicks extends Admin_Controller {
 			if ( ! $this->email->send())
 			{
 				// set flash data
-				$this->session->set_flashdata('error', 'no_id_passed');
+				$this->session->set_flashdata('error', 'sending_unsuccessful');
 
 				// redirect user
-				redirect('admin/campaigns/sales_package', 'location');
+				redirect('my_account/sales/sales_package/create', 'location');
 			}
 		}
 
@@ -277,7 +308,7 @@ class Send_product_clicks extends Admin_Controller {
 		$this->session->set_flashdata('success', 'send_product_clicks');
 
 		// send user back
-		redirect('admin/campaigns/sales_package', 'location');
+		redirect('my_account/sales/sales_package', 'location');
 	}
 
 	// ----------------------------------------------------------------------

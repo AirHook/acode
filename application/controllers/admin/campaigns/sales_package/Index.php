@@ -61,8 +61,8 @@ class Index extends Admin_Controller {
 		}
 		$this->data['packages'] = $this->sales_package_list->select($where);
 
-
 		// set data variables...
+		$this->data['role'] = 'admin';
 		$this->data['file'] = 'sa_list';
 		$this->data['page_title'] = 'Sales Package';
 		$this->data['page_description'] = 'List of Sales Packages';

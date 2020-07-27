@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Send_product_clicks extends Admin_Controller {
+class Send_product_clicks extends Sales_user_Controller {
 
 	/**
 	 * Constructor
@@ -29,7 +29,7 @@ class Send_product_clicks extends Admin_Controller {
 			$this->session->set_flashdata('error', 'no_id_passed');
 
 			// redirect user
-			redirect($this->config->slash_item('admin_folder').'campaigns/sales_package', 'location');
+			redirect('my_account/sales/sales_package', 'location');
 		}
 
 		// generate the plugin scripts and css
@@ -137,15 +137,26 @@ class Send_product_clicks extends Admin_Controller {
 		}
 
 		// save sa_items into session for the send process
-		$this->session->product_clicks_admin_sa_items = json_encode($this->data['sa_items']);
+		$this->session->product_clicks_sa_items = json_encode($this->data['sa_items']);
+
+		// need to show loading at start
+		$this->data['show_loading'] = @$this->data['products_count'] > 0 ? TRUE : FALSE;
+		$this->data['search'] = FALSE;
+
+		// breadcrumbs
+		$this->data['page_breadcrumb'] = array(
+			'sales_package' => 'Sales Packages',
+			'create' => 'Product Clicks'
+		);
 
 		// set data variables...
+		$this->data['role'] = 'sales';
 		$this->data['file'] = 'sa_send_product_clicks';
 		$this->data['page_title'] = 'Sales Package Sending';
 		$this->data['page_description'] = 'Send Sales Packages To Users';
 
 		// load views...
-		$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template/template', $this->data);
+		$this->load->view('admin/metronic/template_my_account/template', $this->data);
 	}
 
 	// ----------------------------------------------------------------------
@@ -177,7 +188,7 @@ class Send_product_clicks extends Admin_Controller {
 			$this->session->set_flashdata('error', 'no_id_passed');
 
 			// redirect user
-			redirect('admin/campaigns/sales_package', 'location');
+			redirect('my_account/sales/sales_package', 'location');
 		}
 
 		// load pertinent library/model/helpers
@@ -198,7 +209,7 @@ class Send_product_clicks extends Admin_Controller {
 			$this->session->set_flashdata('error', 'no_id_passed');
 
 			// redirect user
-			redirect('admin/campaigns/sales_package', 'location');
+			redirect('my_account/sales/sales_package', 'location');
 		}
 
 		// lets set the hashed time code here so that the batches hold the same tc only
@@ -253,7 +264,7 @@ class Send_product_clicks extends Admin_Controller {
 			echo $message;
 			echo '<br />';
 			echo '<br />';
-			echo '<a href="'.site_url('admin/campaigns/sales_package').'">continue...</a>';
+			echo '<a href="'.site_url('my_account/sales/sales_package').'">continue...</a>';
 			$this->session->set_flashdata('success', 'send_product_clicks');
 			die();
 			// */
@@ -269,7 +280,7 @@ class Send_product_clicks extends Admin_Controller {
 				$this->session->set_flashdata('error', 'no_id_passed');
 
 				// redirect user
-				redirect('admin/campaigns/sales_package', 'location');
+				redirect('my_account/sales/sales_package', 'location');
 			}
 		}
 
@@ -277,7 +288,7 @@ class Send_product_clicks extends Admin_Controller {
 		$this->session->set_flashdata('success', 'send_product_clicks');
 
 		// send user back
-		redirect('admin/campaigns/sales_package', 'location');
+		redirect('my_account/sales/sales_package', 'location');
 	}
 
 	// ----------------------------------------------------------------------

@@ -1,5 +1,5 @@
 <?php
-if ($role=='sales')
+if (@$role == 'sales')
 { ?>
 	<ul class="page-sidebar-menu   " data-keep-expanded="true" data-auto-scroll="true" data-slide-speed="200">
 		<li class="nav-item start uppercase <?php echo $this->uri->segment(3) == 'dashboard' ? 'active' : ''; ?>">

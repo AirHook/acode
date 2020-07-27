@@ -2,7 +2,7 @@
 // let's set the role for sales user my account
 if (@$role == 'sales') $logo_pre_link = 'my_account/sales';
 elseif (@$role == 'vendor') $logo_pre_link = 'my_account/vendors';
-else 'admin';
+else $logo_pre_link = 'admin';
 ?>
 <a href="<?php echo site_url($logo_pre_link.'/dashboard'); ?>">
 	<?php if (@$this->webspace_details->options['logo_light'])

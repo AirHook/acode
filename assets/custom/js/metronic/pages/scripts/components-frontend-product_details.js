@@ -65,7 +65,7 @@ var ProductDetailsComponentsScripts = function() {
             // get some data attributes
             var size = $(this).data('dsize');
             var size_key = $(this).data('size_key');
-            if ($('select[name="qty['+size_key+']"]').val() > 0){
+            if ($(this).val() != '0'){
                 // toggle bg shade on size box
                 $('a[data-size_key="'+size_key+'"]').addClass('a-bg-color');
                 // set input value

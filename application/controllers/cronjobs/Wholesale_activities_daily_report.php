@@ -84,8 +84,15 @@ class Wholesale_activities_daily_report extends MY_Controller {
 
 						$this->email->from($this->webspace_details->info_email, $this->webspace_details->name);
 
-						$this->email->to($this->webspace_details->info_email);
-
+						if ($sales_user->admin_sales_designer == 'tempoparis')
+						{
+							$this->email->to($this->webspace_details->info_email);
+						}
+						else
+						{
+							$this->email->to($sales_user->admin_sales_email);
+							$this->email->cc($this->webspace_details->info_email);
+						}
 						$this->email->bcc($this->config->item('dev1_email'));
 
 						$this->email->subject($this->webspace_details->name.' - Daily Wholesale Activity');
@@ -156,7 +163,6 @@ class Wholesale_activities_daily_report extends MY_Controller {
 			$this->email->from($this->webspace_details->info_email, $this->webspace_details->name);
 
 			$this->email->to($this->webspace_details->info_email);
-
 			$this->email->bcc($this->config->item('dev1_email'));
 
 			$this->email->subject($this->webspace_details->name.' - Daily General Wholesale Activity');

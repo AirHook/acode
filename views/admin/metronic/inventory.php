@@ -1,3 +1,11 @@
+                                        <?php
+                                        // let's set the role for sales user my account
+                                        $pre_link =
+                                            @$role == 'sales'
+                                            ? 'my_account/sales'
+                                            : 'admin'
+                                        ;
+                                        ?>
                                         <!-- BEGIN PAGE CONTENT BODY -->
                                         <div class="row physical_inventory">
 
@@ -17,7 +25,13 @@
 
                                                     <!-- BEGIN FORM-->
                                                     <!-- FORM =======================================================================-->
-                                                    <?php echo form_open('admin/inventory/'.$inv_prefix, array('class'=>'form-horizontal', 'id'=>'form-wholesale_users_search_email')); ?>
+                                                    <?php echo form_open(
+                                                        $pre_link.'/inventory/'.$inv_prefix,
+                                                        array(
+                                                            'class'=>'form-horizontal',
+                                                            'id'=>'form-wholesale_users_search_email'
+                                                        )
+                                                    ); ?>
 
                                                     <div class="input-group">
                                                         <input class="form-control" placeholder="Search for STYLE#..." name="search_string" type="text" style="text-transform:uppercase;">
@@ -30,7 +44,7 @@
                                                     <!-- End FORM =======================================================================-->
                                                     <!-- END FORM-->
 
-                                                    <cite class="help-block small">Search entire record</cite>
+                                                    <cite class="help-block small <?php echo @$role == 'sales' ? 'hide' : ''; ?>">Search entire record</cite>
 
                                                 </div>
 
@@ -44,7 +58,16 @@
 
                                             <!-- BEGIN PRODUCT INVENTORY SIDEBAR -->
                                             <div class="col col-md-3">
-                                                <?php $this->load->view($this->config->slash_item('admin_folder').''.($this->config->slash_item('admin_template') ?: 'metronic/').'inventory_sidebar', $this->data); ?>
+                                                <?php
+                                                if (@$role == 'sales')
+                                                {
+                                                    $this->load->view('admin/metronic/inventory_sidebar_sales_user', $this->data);
+                                                }
+                                                else
+                                                {
+                                                    $this->load->view('admin/metronic/inventory_sidebar', $this->data);
+                                                }
+                                                ?>
                                             </div>
                                             <!-- END PRODUCT INVENTORY SIDEBAR -->
 

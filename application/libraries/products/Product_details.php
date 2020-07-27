@@ -106,6 +106,7 @@ class Product_details
 	 * @var	string/array
 	 */
 	public $publish = '';
+	public $new_color_publish = '';
 
 	/**
 	 * Pending - if publish date is in future
@@ -239,6 +240,7 @@ class Product_details
 	 *
 	 * @var	int
 	 */
+	public $with_stocks = '';
 	// AVAILABLE STOCK
 	// size mode 0
 	public $size_ss = 0;
@@ -415,7 +417,10 @@ class Product_details
 		$this->DB->select('designer.designer AS designer_name, designer.url_structure AS d_url_structure, designer.size_chart');
 		$this->DB->select('tblcolor.color_name, tblcolor.color_code');
 		$this->DB->select('vendors.vendor_id, vendors.vendor_name, vendors.vendor_code');
-		$this->DB->select('tbl_stock.st_id, tbl_stock.custom_order, tbl_stock.image_url_path, tbl_stock.options as stocks_options');
+		$this->DB->select(
+			'tbl_stock.st_id, tbl_stock.custom_order, tbl_stock.image_url_path,
+			tbl_stock.options as stocks_options, tbl_stock.new_color_publish'
+		);
 		$this->DB->select('media_path, media_name, upload_version');
 		$this->DB->select('
 			tbl_stock.size_ss, tbl_stock.size_sm, tbl_stock.size_sl, tbl_stock.size_sxl,
@@ -459,6 +464,26 @@ class Product_details
 			tsp.size_ssm AS physical_ssm, tsp.size_sml AS physical_sml,
 			tsp.size_sonesizefitsall AS physical_sonesizefitsall
 		');
+		// with_stocks alias
+		$this->DB->select("
+			(CASE
+				WHEN
+					tbl_stock.size_0 > '0'
+					OR tbl_stock.size_2 > '0'
+					OR tbl_stock.size_4 > '0'
+					OR tbl_stock.size_6 > '0'
+					OR tbl_stock.size_8 > '0'
+					OR tbl_stock.size_10 > '0'
+					OR tbl_stock.size_12 > '0'
+					OR tbl_stock.size_14 > '0'
+					OR tbl_stock.size_16 > '0'
+					OR tbl_stock.size_18 > '0'
+					OR tbl_stock.size_20 > '0'
+					OR tbl_stock.size_22 > '0'
+				THEN '1'
+				ELSE '0'
+			END) AS with_stocks
+		");
 		$this->DB->select('
 			(CASE
 				WHEN designer.url_structure = "basix-black-label" THEN "basixblacklabel"
@@ -587,6 +612,7 @@ class Product_details
 
 			// 0-unpublish, 1-publish (11-hub, 12-satellite), 2-private
 			$this->publish = $row->publish;
+			$this->new_color_publish = $row->new_color_publish;
 
 			$this->pending = $row->pending;
 
@@ -630,6 +656,8 @@ class Product_details
 			$this->subcat_name = $row->subcat_name;
 			$this->sc_url_structure = $row->sc_url_structure;
 			$this->sc_folder = $row->sc_folder;
+
+			$this->with_stocks = $row->with_stocks;
 
 			// color variant data if such
 			// AVAILABLE SIZES

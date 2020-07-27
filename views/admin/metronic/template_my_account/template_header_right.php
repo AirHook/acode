@@ -52,7 +52,7 @@
 	// let's set the role for sales user my account
 	if (@$role == 'sales') $profile_pre_link = 'my_account/sales';
 	elseif (@$role == 'vendor') $profile_pre_link = 'my_account/vendors';
-	else 'admin';
+	else $profile_pre_link = 'admin';
 	?>
 
 	<ul class="nav navbar-nav pull-right">

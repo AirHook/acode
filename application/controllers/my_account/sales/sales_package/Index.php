@@ -34,11 +34,7 @@ class Index extends Sales_user_Controller {
 		$this->load->library('products/product_details');
 
 		// get designer list for the dropdown filter
-		$this->designers_list->initialize(
-			array(
-				'with_products'=>TRUE
-			)
-		);
+		$this->designers_list->initialize(array('with_products'=>TRUE));
 		$this->data['designers'] = $this->designers_list->select(
 			array(
 				'url_structure' => $this->sales_user_details->designer // used by my_account sales
@@ -55,18 +51,17 @@ class Index extends Sales_user_Controller {
 
 		// check for $des_slug
 		$this->data['des_slug'] = '';
-		if ($des_slug = $this->sales_user_details->designer)
+		if ($des_slug == $this->sales_user_details->designer)
 		{
 			$where['sales_packages.options LIKE'] = '%'.$des_slug.'%';
 			$this->data['des_slug'] = $des_slug;
 		}
 
-		// get the list
+		// hub site or not, this is a sales user login controller
+		$where['sales_packages.sales_user'] = $this->sales_user_details->admin_sales_id;
 		$where['sales_package_id >'] = '2';
-		if (@$this->webspace_details->options['site_type'] != 'hub_site')
-		{
-			$where['tbladmin_sales.admin_sales_designer'] = $this->sales_user_details->designer ?: @$this->webspace_details->slug;
-		}
+
+		// get the list
 		$this->data['packages'] = $this->sales_package_list->select($where);
 
 		// need to show loading at start

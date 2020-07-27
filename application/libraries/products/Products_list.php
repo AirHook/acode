@@ -346,7 +346,10 @@ class Products_list
 								// custom setting to indicate that $key is a query phrase in itself
 								elseif ($key === 'condition')
 								{
-									$this->DB->where($val);
+									foreach ($where['condition'] as $this_where_clause)
+									{
+										$this->DB->where($this_where_clause);
+									}
 								}
 								// for search on multiple prod_no using 'prod_no' as key to identify the array of prod_no
 								elseif ($key === 'prod_no')

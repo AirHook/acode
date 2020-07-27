@@ -70,9 +70,18 @@
                                             if (@$designers)
                                             {
                                                 foreach ($designers as $designer)
-                                                { ?>
+                                                {
+                                                    if (@$rolw == 'sales')
+                                                    {
+                                                        $selected = $designer->url_structure == $this->session->so_des_slug ? 'selected="selected"' : '';
+                                                    }
+                                                    else
+                                                    {
+                                                        $selected = $designer->url_structure == $this->session->admin_so_des_slug ? 'selected="selected"' : '';
+                                                    }
+                                                    ?>
 
-                                            <option value="<?php echo $designer->url_structure; ?>" data-subtext="<em><?php echo $designer->domain_name; ?></em>" data-des_slug="<?php echo $designer->url_structure; ?>" data-des_id="<?php echo $designer->des_id; ?>" <?php echo ($designer->url_structure == $this->session->admin_so_des_slug OR $designer->url_structure == $this->session->sa_des_slug OR $designer->url_structure == @$des_slug) ? 'selected="selected"' : ''; ?>>
+                                            <option value="<?php echo $designer->url_structure; ?>" data-subtext="<em><?php echo $designer->domain_name; ?></em>" data-des_slug="<?php echo $designer->url_structure; ?>" data-des_id="<?php echo $designer->des_id; ?>" <?php echo $selected; ?>>
                                                 <?php echo ucwords(strtolower($designer->designer)); ?>
                                             </option>
 
@@ -121,14 +130,14 @@
                                 <!-- Action Buttons -->
                                 <div class="form-group">
                                     <div class="col-md-12">
-                                        <a href="javascript:;" class="btn dark btn-md select-product-options thumbs-grid-view col-md-4" style="<?php echo (@$role == 'sales' ? $this->session->so_des_slug : $this->session->admin_so_des_slug) ? 'background-color:#696969;' : ''; ?>" data-original-title="Select a designer first">
+                                        <a href="javascript:;" class="btn dark btn-md select-product-options thumbs-grid-view col-md-6" style="<?php echo (@$role == 'sales' ? $this->session->so_des_slug : $this->session->admin_so_des_slug) ? 'background-color:#696969;' : ''; ?>" data-original-title="Select a designer first">
                                             Select From Thumbnails
                                         </a>
-                                        <a href="javascript:;" class="btn dark btn-md select-product-options search-multiple-form col-md-4" data-original-title="Select a designer first">
+                                        <a href="javascript:;" class="btn dark btn-md select-product-options search-multiple-form col-md-6" data-original-title="Select a designer first">
                                             Multi Style Search
                                         </a>
                                         <!-- DOC: Add data-modal-id="modal-unlisted_style_no" attribute to make the button work -->
-                                        <a href="javascript:;" data-toggle="modal" class="btn dark btn-md select-product-options_ add-unlisted-style-no col-md-4 tooltips" data-original-title="Under Construction">
+                                        <a href="javascript:;" data-toggle="modal" class="btn dark btn-md select-product-options_ add-unlisted-style-no col-md-4 tooltips hide" data-original-title="Under Construction">
                                             Add New Product
                                         </a>
                                     </div>
@@ -1292,19 +1301,12 @@
                                                             // price can be...
                                                             // onsale price (retail_sale_price or wholesale_price_clearance)
                                                             // regular price (retail_price or wholesale_price)
+                                                            // sales order is for wholeasle users only
                                                             // new pricing scheme
-                                                            $orig_price =
-                                                                $role == 'sales'
-                                                                ? (@$product->wholesale_price ?: 0)
-                                                                : (@$product->retail_price ?: 0)
-                                                            ;
+                                                            $orig_price = @$product->wholesale_price ?: 0;
                                                             $price =
                                                                 @$product->custom_order == '3'
-                                                                ? (
-                                                                    $role == 'sales'
-                                                                    ? (@$product->wholesale_price_clearance ?: 0)
-                                                                    : (@$product->retail_sale_price ?: 0)
-                                                                )
+                                                                ? (@$product->wholesale_price_clearance ?: 0)
                                                                 : $orig_price
                                                             ;
 

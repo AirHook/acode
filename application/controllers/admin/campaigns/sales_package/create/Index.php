@@ -60,7 +60,7 @@ class Index extends Admin_Controller {
 				unset($_SESSION['admin_sa_mod_des_slug']);
 
 				// set create session where necessary
-				if ( ! $this->session->sa_items)
+				if ( ! $this->session->admin_sa_items)
 				{
 					// unset all session and send to create page
 					unset($_SESSION['admin_sa_id']);
@@ -71,6 +71,12 @@ class Index extends Admin_Controller {
 					unset($_SESSION['admin_sa_email_subject']); // used at view
 					unset($_SESSION['admin_sa_email_message']); // used at view
 					unset($_SESSION['admin_sa_options']);
+
+					// set session flashdata
+					$this->session->set_flashdata('error', 'no_id_passed');
+
+					// redirect user
+					redirect('admin/campaigns/sales_package/create', 'location');
 				}
 			}
 
@@ -277,50 +283,65 @@ class Index extends Admin_Controller {
 			            [1] => 036_GREY1
 			            [2] => 045_TAUP1
 			        )
+				[save_sales_package] => 1
 			)
 			// other needed items
 			[sales_package_items] -> sa_items
 			// */
 
-			echo 'Processing...';
+			if ($this->input->post('save_sales_package'))
+			{
+				// connect to database
+				$DB = $this->load->database('instyle', TRUE);
 
-			// connect to database
-			$DB = $this->load->database('instyle', TRUE);
+				// grab post data and process some of them to accomodate database
+				$post_ary = $this->input->post();
+				$post_ary['options']['des_slug'] = $this->session->admin_sa_des_slug; // additional data
+				$post_ary['options'] = json_encode($post_ary['options']);
 
-			// grab post data and process some of them to accomodate database
-			$post_ary = $this->input->post();
-			$post_ary['options']['des_slug'] = $this->session->admin_sa_des_slug; // additional data
-			$post_ary['options'] = json_encode($post_ary['options']);
+				// additional items to set
 
-			// additional items to set
+				// remove variables not needed
+				unset($post_ary['files']);
+				unset($post_ary['prod_no']);
 
-			// remove variables not needed
-			unset($post_ary['files']);
-			unset($post_ary['prod_no']);
+				// set sales package items
+				$post_ary['sales_package_items'] = $this->session->admin_sa_items;
 
-			// set sales package items
-			$post_ary['sales_package_items'] = $this->session->admin_sa_items;
+				// update records
+				$DB->set($post_ary);
+				$q = $DB->insert('sales_packages');
+				$insert_id = $DB->insert_id();
 
-			// update records
-			$DB->set($post_ary);
-			$q = $DB->insert('sales_packages');
-			$insert_id = $DB->insert_id();
+				// unset create sessions
+				unset($_SESSION['admin_sa_id']);
+				unset($_SESSION['admin_sa_des_slug']);
+				unset($_SESSION['admin_sa_slug_segs']);
+				unset($_SESSION['admin_sa_items']);
+				unset($_SESSION['admin_sa_name']); // used at view
+				unset($_SESSION['admin_sa_email_subject']); // used at view
+				unset($_SESSION['admin_sa_email_message']); // used at view
+				unset($_SESSION['admin_sa_options']);
 
-			// unset create sessions
-			unset($_SESSION['admin_sa_id']);
-			unset($_SESSION['admin_sa_des_slug']);
-			unset($_SESSION['admin_sa_slug_segs']);
-			unset($_SESSION['admin_sa_items']);
-			unset($_SESSION['admin_sa_name']); // used at view
-			unset($_SESSION['admin_sa_email_subject']); // used at view
-			unset($_SESSION['admin_sa_email_message']); // used at view
-			unset($_SESSION['admin_sa_options']);
+				// set flash data
+				$this->session->set_flashdata('success', 'add');
 
-			// set flash data
-			$this->session->set_flashdata('success', 'add');
+				// redirect user
+				redirect('admin/campaigns/sales_package/send/index/'.$insert_id);
+			}
+			else
+			{
+				// we shall make additional session data
+				$_SESSION['date_create'] = $this->input->post('date_create');
+				$_SESSION['last_modified'] = $this->input->post('last_modified');
+				$_SESSION['sa_name'] = $this->input->post('sales_package_name');
+				$_SESSION['sa_email_subject'] = $this->input->post('email_subject');
+				$_SESSION['sa_email_message'] = $this->input->post('email_message');
+				$_SESSION['sa_options'] = json_encode($this->input->post('options'));
 
-			// redirect user
-			redirect($this->config->slash_item('admin_folder').'campaigns/sales_package/send/index/'.$insert_id);
+				// redirect user
+				redirect('admin/campaigns/sales_package/send_package', 'location');
+			}
 		}
 	}
 

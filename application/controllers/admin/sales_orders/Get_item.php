@@ -81,14 +81,20 @@ class Get_item extends Admin_Controller {
 
 		if ($product)
 		{
-			$image_new = $product->media_path.$style_no.'_f3.jpg';
-			$img_front_new = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_f3.jpg';
+			$image_new = $product->media_path.$style_no.'_f.jpg';
+			$img_front_new = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_f.jpg';
 			$img_linesheet = $this->config->item('PROD_IMG_URL').$product->media_path.$style_no.'_linesheet.jpg';
 			$size_mode = $product->size_mode;
 			$color_name = $product->color_name;
 
 			// take any existing product's size mode
 			$temp_size_mode = $product->size_mode;
+
+			// price
+			$price = $product->wholesale_price;
+			$sale_price = $product->wholesale_price_clearance;
+			$line_thru = $product->custom_order == '3' ? 'text-decoration:line-through;' : '';
+			$hide_sale_price = $product->custom_order == '3' ? '' : 'hide';
 		}
 		else
 		{
@@ -103,6 +109,9 @@ class Get_item extends Admin_Controller {
 		$size_names = $this->size_names->get_size_names($size_mode);
 		// = $iodd&1 ? '' : 'odd';
 
+		$html.= '<input type="hidden" id="size-select-prod_no" name="size-select-prod_no" value="'.$item.'" />';
+		$html.= '<input type="hidden" id="size-select-page" name="size-select-page" value="create" />';
+
 		$html.= '<div class="item-container clearfix '
 			//.$odd_class
 			.'" style="padding:5px;"><div class="pull-right"><button type="button" class="btn btn-link btn-xs summary-item-remove-btn tooltips font-grey-cascade hide" data-original-title="Remove" data-page="create" data-item="'
@@ -113,20 +122,27 @@ class Get_item extends Admin_Controller {
 			.(@$img_linesheet ? 'fancybox' : '')
 			.' pull-left"><img class="" src="'
 			.$img_front_new
-			.'" alt="" style="width:70px;height:auto;" onerror="$(this).attr(\'src\',\''
+			.'" alt="" style="width:340px;height:510px;" onerror="$(this).attr(\'src\',\''
 			.$this->config->item('PROD_IMG_URL')
-			.'images/instylelnylogo_3.jpg\');" /></a><div class="modal-shop-cart-item-details" style="margin-left:80px;"><h5 style="margin:0px;">'
+			.'images/instylelnylogo_3.jpg\');" /></a><div class="modal-shop-cart-item-details" style="margin-left:350px;"><h5 style="margin:0px;">'
 			.$item
 			.'</h5><h6 style="margin:0px;"><span style="color:#999;">Product#: '
 			.$prod_no
 			.'</span><br />Color: &nbsp; '
 			.$color_name
-			.'</h6><div class="size-and-qty-wrapper">'
+			.'<br style="margin-bottom:10px;" />'
+			.'PRICE: $ <span style="'.$line_thru.'">'.number_format($price, 2).'</span> &nbsp; <span class="'.$hide_sale_price.' font-red-flamingo">[ON SALE] $ '.number_format($sale_price, 2).'</span>'
+			.'</h6><br />'
 		;
+
+		$html.= '<div class="size-and-qty-wrapper">AVAILABLE STOCK<br />';
 
 		//$this_size_qty = 0;
 		foreach ($size_names as $size_label => $s)
 		{
+			// level 2 users, do not show zero stock sizes
+			if ($product->$size_label === '0') continue;
+
 			$qty = 0;
 				//isset($size_qty[$size_label])
 				//? $size_qty[$size_label]
@@ -134,9 +150,43 @@ class Get_item extends Admin_Controller {
 			//;
 			//$this_size_qty += $qty;
 
+			/**********
+			 * Available Qty
+			 */
 			if ($s != 'XL1' && $s != 'XL2')
 			{
-				$html.= '<div style="display:inline-block;font-size:0.6em;">size '
+				$html.= '<div style="display:inline-block;font-size:85%;">size '
+					.$s
+					.' <br /><select class="stock-select" style="border:1px solid #ccc;" disabled>'
+					.'<option>'
+					.$product->$size_label
+					.'</option></select></div>';
+			}
+		}
+
+		$html.= '</div><br /><br />';
+
+		$html.= '<div class="size-and-qty-wrapper">SELECT SIZES AND QUANTITIES AND ADD TO SALES ORDER<br /><cite class="small hide">NOTE: Items with no stock are PRE-ORDER and should be sent in separate orders to customer and factory.<br /><br /></cite>';
+
+		//$this_size_qty = 0;
+		foreach ($size_names as $size_label => $s)
+		{
+			// level 2 users, do not show zero stock sizes
+			//if ($product->$size_label === '0') continue;
+
+			$qty = 0;
+				//isset($size_qty[$size_label])
+				//? $size_qty[$size_label]
+				//: 0
+			//;
+			//$this_size_qty += $qty;
+
+			/**********
+			 * Select Size Qty
+			 */
+			if ($s != 'XL1' && $s != 'XL2')
+			{
+				$html.= '<div style="display:inline-block;font-size:85%;">size '
 					.$s
 					.' <br /><select name="'
 					.$size_label
@@ -147,7 +197,8 @@ class Get_item extends Admin_Controller {
 					.'">'
 				;
 
-				for ($i=0;$i<31;$i++)
+				// show only max qty equivalent to available stock
+				for ($i=0;$i<=$product->$size_label;$i++)
 				{
 					$html.= '<option value="'.$i.'" '.($i == $qty ? 'selected' : '').'>'.$i.'</option>';
 				}
@@ -157,7 +208,9 @@ class Get_item extends Admin_Controller {
 			}
 		}
 
-		$html.= '</div></div></div>';
+		$html.= '</div>';
+
+		$html.= '</div></div>';
 
 		if ($html) echo $html;
 		else {

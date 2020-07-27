@@ -155,6 +155,9 @@ class Get_thumbs extends Admin_Controller {
 				$ribbon_color = ($product->publish == '0' OR $product->publish == '3' OR $product->view_status == 'N') ? 'danger' : 'info';
 				$tooltip = $product->publish == '3' ? 'Pending' : (($product->publish == '0' OR $product->view_status == 'N') ? 'Unpubished' : 'Private');
 
+				// check if item is on sale
+				$onsale = (@$product->clearance == '3' OR $product->custom_order == '3') ? TRUE : FALSE;
+
 				// due to showing of all colors in thumbs list, we now consider the color code
 				// we check if item has color_code. if it has only product number use the primary image instead
 				$checkbox_check = '';
@@ -170,10 +173,13 @@ class Get_thumbs extends Admin_Controller {
 					.$styles
 					.'">'
 				;
-				$html.= '<a href="'
-					.$img_large
-					.'" class="fancybox tooltips" data-original-title="Click to zoom">'
-				;
+				//$html.= '<a href="'
+				//	.$img_large
+				//	.'" class="fancybox tooltips" data-original-title="Click to zoom">'
+				//;
+				$html.= '<a href="javascript:;" class="package_items" data-item="'
+					.$product->prod_no.'_'.$product->color_code
+					.'">';
 
 				if ($product->with_stocks == '0')
 				{
@@ -203,6 +209,15 @@ class Get_thumbs extends Admin_Controller {
 					.$product->prod_no
 					.' <br />'
 					.$product->color_name
+					.'<span style="'
+					.$onsale ? 'text-decoration:line-through;' : ''
+					.'">$'
+					.$product->wholesale_price
+					.'</span><span style="color:pink;'
+					.$onsale ? '' : 'display:none;'
+					.'">&nbsp;$'
+					.$product->wholesale_price_clearance
+					.'</span>'
 					.'</div></div>'
 				;
 

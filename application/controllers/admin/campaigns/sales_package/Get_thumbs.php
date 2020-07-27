@@ -202,21 +202,21 @@ class Get_thumbs extends Admin_Controller {
 					;
 				}
 
-				$html.= '<div class="corner"></div><div class="check"> </div><div class="tile-body"><img class="img-b_ img-unveil" '
+				$html.= '<div class="corner"></div><div class="check"> </div><div class="tile-body"><img class="img-b img-unveil" '
 					.(
 						$unveil
 						? 'data-src="'.($product->primary_img ? $img_back_new : $img_back_pre.$image).'"'
 						: 'src="'.($product->primary_img ? $img_back_new : $img_back_pre.$image).'"'
 					)
-					.' alt=""><img class="img-a_ img-unveil" '
+					.' alt=""><img class="img-a img-unveil" '
 					.(
 						$unveil
 						? 'data-src="'.($product->primary_img ? $img_front_new : $img_front_pre.$image).'"'
 						: 'src="'.($product->primary_img ? $img_front_new : $img_front_pre.$image).'"'
 					)
-					.' alt=""><noscript><img class="img-b_" src="'
+					.' alt=""><noscript><img class="img-b" src="'
 					.($product->primary_img ? $img_back_new : $img_back_pre.$image)
-					.'" alt=""><img class="img-a_" src="'
+					.'" alt=""><img class="img-a" src="'
 					.($product->primary_img ? $img_front_new : $img_front_pre.$image)
 					.'" alt=""></noscript></div><div class="tile-object"><div class="name">'
 					.$product->prod_no

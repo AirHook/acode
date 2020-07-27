@@ -555,7 +555,7 @@ class New_order extends Sales_user_Controller
 			// let's start email sending
 			/* */
 			$email_subject = $this->webspace_details->name.' Product Order'.($this->input->post('c') == 'ws' ? ' - Wholesale' : '');
-			$message = $this->load->view('templates/order_confirmation', @$email_data, TRUE);
+			$message = $this->load->view('templates/order_confirmation_new', @$email_data, TRUE);
 
 				/**********
 				 * New Order Confirmation Layout

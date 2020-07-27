@@ -320,7 +320,7 @@
 
                                     <div class="form-group">
                                         <div class="col-md-12">
-                                            <a href="javascript:;" class="btn dark btn-md select-send-options send-to-current-user col-md-4" style="font-size:0.9em;">
+                                            <a href="javascript:;" class="btn dark btn-md select-send-options send-to-current-user col-md-4 btn-active" style="font-size:0.9em;background-color:#E5E5E5;color:black;">
                                                 Send To Existing User(s)
                                             </a>
                                             <a href="javascript:;" class="btn dark btn-md select-send-options send-to-new-user col-md-4" style="font-size:0.9em;">

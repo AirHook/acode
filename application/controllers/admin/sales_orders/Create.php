@@ -31,10 +31,13 @@ class Create extends Admin_Controller
 		$this->_create_plugin_scripts();
 
 		// load pertinent library/model/helpers
+		$this->load->model('shipping_methods');
 		$this->load->helper('state_country_helper');
 		$this->load->helper('metronic/create_category_treelist');
 		$this->load->library('form_validation');
-		$this->load->library('sales_orders/sales_orders_list');
+		//$this->load->library('sales_orders/sales_orders_list');
+		$this->load->library('orders/orders_list');
+		$this->load->library('orders/order_details');
 		$this->load->library('designers/designers_list');
 		$this->load->library('users/wholesale_users_list');
 		$this->load->library('users/wholesale_user_details');
@@ -50,6 +53,11 @@ class Create extends Admin_Controller
 
 		if ($this->form_validation->run() == FALSE)
 		{
+			// sales orders are checkout orders made by sales or admin for the wholesale users' call in or PO
+			// anticipation for consumer is just a catch all thing
+			// series of communications between sales/admin and wholesale user tend to
+			// make changes to SO, ergo, modify SO may be needed
+
 			// let's ensure that there are no admin session for so mod
 			if ($this->session->admin_so_mod_items)
 			{
@@ -63,15 +71,18 @@ class Create extends Admin_Controller
 			}
 
 			// remove po mod details on page reloads
-			// must always start a new session even if refreshed only
 			unset($_SESSION['admin_so_mod_so_id']);
 			unset($_SESSION['admin_so_mod_items']);
 
 			// get color list for the add product not in list
 			$this->data['colors'] = $this->color_list->select();
 
+			// shipping methods
+			$this->data['ship_methods'] = $this->shipping_methods->get_methods();
+
 			// get ws user list for the select store button
 			// NOTE: consider sales resource login
+			// super admin lists all ws users
 			$this->data['users'] = $this->wholesale_users_list->select();
 
 			// select designer on/off
@@ -82,7 +93,6 @@ class Create extends Admin_Controller
 			if (
 				$this->webspace_details->options['site_type'] == 'sat_site'
 				OR $this->webspace_details->options['site_type'] == 'sal_site'
-				OR $this->session->sales_loggedin
 			)
 			{
 				$this->data['select_designer'] = FALSE;
@@ -143,13 +153,15 @@ class Create extends Admin_Controller
 
 				// get the products list for the thumbs grid view
 				$params['show_private'] = TRUE; // all items general public (Y) - N for private
-				$params['view_status'] = 'ALL'; // all items view status (Y, Y1, Y2, N)
-				$params['view_at_hub'] = TRUE; // all items general public at hub site
-				$params['view_at_satellite'] = TRUE; // all items publis at satellite site
-				$params['variant_publish'] = 'ALL'; // all items at variant level publish (view status)
-				$params['variant_view_at_hub'] = TRUE; // variant level public at hub site
-				$params['variant_view_at_satellite'] = TRUE; // varian level public at satellite site
-				$params['with_stocks'] = FALSE; // Show all with and without stocks
+				//$params['view_status'] = 'ALL'; // all items view status (Y, Y1, Y2, N)
+				//$params['view_at_hub'] = TRUE; // all items general public at hub site
+				//$params['view_at_satellite'] = TRUE; // all items publis at satellite site
+				//$params['variant_publish'] = 'ALL'; // all items at variant level publish (view status)
+				//$params['variant_view_at_hub'] = TRUE; // variant level public at hub site
+				//$params['variant_view_at_satellite'] = TRUE; // varian level public at satellite site
+
+				$params['with_stocks'] = TRUE; // TRUE shows instock items only
+
 				$params['group_products'] = FALSE; // group per product number or per variant
 				$params['special_sale'] = FALSE; // special sale items only
 				$this->load->library('products/products_list', $params);
@@ -179,11 +191,15 @@ class Create extends Admin_Controller
 			// check for user id session to fill out bill to/ship to address
 			if ($this->session->admin_so_user_id)
 			{
-				if ($this->session->admin_so_user_cat == 'ws')
+				// let's put session data into variables so we can user at frontend admin panel
+				$this->data['user_id'] = $this->session->admin_so_user_id;
+				$this->data['user_cat'] = $this->session->admin_so_user_cat;
+
+				if ($this->data['user_cat'] == 'ws')
 				{
 					$this->data['store_details'] = $this->wholesale_user_details->initialize(
 						array(
-							'user_id' => $this->session->admin_so_user_id
+							'user_id' => $this->data['user_id']
 						)
 					);
 				}
@@ -191,14 +207,19 @@ class Create extends Admin_Controller
 				{
 					$this->data['store_details'] = $this->consumer_user_details->initialize(
 						array(
-							'user_id' => $this->session->admin_so_user_id
+							'user_id' => $this->data['user_id']
 						)
 					);
 				}
 			}
+			else
+			{
+				// initial state since this controller is for sales orders are usually for the wholesale user
+				$this->data['user_cat'] = 'ws';
+			}
 
-			// set po number
-			$this->data['so_number'] = $this->sales_orders_list->max_so_number() + 1;
+			// set so number (based on checkout order number but " | SO")
+			$this->data['so_number'] = $this->orders_list->max_order_number() + 1;
 			for($c = strlen($this->data['so_number']);$c < 6;$c++)
 			{
 				$this->data['so_number'] = '0'.$this->data['so_number'];
@@ -252,6 +273,7 @@ class Create extends Admin_Controller
 			$this->data['show_loading'] = TRUE;
 			$this->data['search_string'] = FALSE;
 
+			$this->data['role'] = 'admin';
 			$this->data['file'] = 'so_create';
 			$this->data['page_title'] = 'Sales Order Create';
 			$this->data['page_description'] = 'Create a Sales Order';

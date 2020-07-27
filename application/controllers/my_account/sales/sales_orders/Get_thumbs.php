@@ -89,7 +89,7 @@ class Get_thumbs extends Sales_user_Controller {
 
 		// don't show clearance cs only items for level 2 users
 		$con_clearance_cs_only = 'tbl_stock.options NOT LIKE \'%"clearance_consumer_only":"1"%\' ESCAPE \'!\'';
-		$where_more['condition'] = $con_clearance_cs_only;
+		$where_more['condition'][] = $con_clearance_cs_only;
 
 		// get the products list
 		$params['show_private'] = TRUE; // all items general public (Y) - N for private
@@ -162,6 +162,9 @@ class Get_thumbs extends Sales_user_Controller {
 				$ribbon_color = ($product->publish == '0' OR $product->publish == '3' OR $product->view_status == 'N') ? 'danger' : 'info';
 				$tooltip = $product->publish == '3' ? 'Pending' : (($product->publish == '0' OR $product->view_status == 'N') ? 'Unpubished' : 'Private');
 
+				// check if item is on sale
+				$onsale = (@$product->clearance == '3' OR $product->custom_order == '3') ? TRUE : FALSE;
+
 				// due to showing of all colors in thumbs list, we now consider the color code
 				// we check if item has color_code. if it has only product number use the primary image instead
 				$checkbox_check = '';
@@ -210,6 +213,15 @@ class Get_thumbs extends Sales_user_Controller {
 					.$product->prod_no
 					.' <br />'
 					.$product->color_name
+					.'<span style="'
+					.$onsale ? 'text-decoration:line-through;' : ''
+					.'">$'
+					.$product->wholesale_price
+					.'</span><span style="color:pink;'
+					.$onsale ? '' : 'display:none;'
+					.'">&nbsp;$'
+					.$product->wholesale_price_clearance
+					.'</span>'
 					.'</div></div>'
 				;
 

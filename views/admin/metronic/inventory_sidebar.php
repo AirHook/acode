@@ -23,20 +23,22 @@
 																<ul class="list-unstyled nested-nav ">
 
 																	<?php
-																	foreach ($designers as $designer)
+																	if (@$designers)
 																	{
-																		// for each of all designers...
-																		// show the designer label, then the designer subcats
-																		if (
-																			(
-																				$designer->url_structure !== 'instylenewyork'
-																				OR $designer->url_structure !== 'shop7thavenue'
-																			)
-																			&& $designer->with_products == '1'
-																		)
+																		foreach ($designers as $designer)
 																		{
-																			$des_active = in_array($designer->url_structure, $url_segs) ? 'active': '';
-																			?>
+																			// for each of all designers...
+																			// show the designer label, then the designer subcats
+																			if (
+																				(
+																					$designer->url_structure !== 'instylenewyork'
+																					OR $designer->url_structure !== 'shop7thavenue'
+																				)
+																				&& $designer->with_products == '1'
+																			)
+																			{
+																				$des_active = in_array($designer->url_structure, $url_segs) ? 'active': '';
+																				?>
 
 																	<li class="designer_list <?php echo $designer->des_id; ?>" data-des_id="<?php echo $designer->des_id; ?>" data-designer_slug="<?php echo $designer->url_structure; ?>" data-designer_name="<?php echo $designer->designer; ?>">
 																		<a href="<?php echo site_url('admin/inventory/'.$this->uri->segment(3).'/index/'.$designer->url_structure); ?>" style="<?php echo $this->uri->uri_string() == 'admin/inventory/'.$this->uri->segment(3).'/index/'.$designer->url_structure ? 'color:#23527c;text-decoration:underline;' : ''; ?>">
@@ -54,6 +56,12 @@
 																			?>
 
 																			<!-- BEGIN LIST UNSTYLED -->
+																			<?php
+																			/**********
+																			 * Do category tree
+																			 */
+																			?>
+
 																			<?php
 																			/**********
 																			 * Let us use a metronic helper to load category tree
@@ -74,7 +82,8 @@
 
 																	</li>
 
-																		<?php
+																			<?php
+																			}
 																		}
 																	} ?>
 

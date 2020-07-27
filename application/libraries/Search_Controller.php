@@ -105,29 +105,36 @@ class Search_Controller extends Frontend_Controller {
         // 3. consumer gets to see on sale items
         /* */
         if (
-            $this->session->userdata('user_cat') != 'wholesale'
+            $this->session->userdata('user_role') != 'wholesale'
             && @$_GET['availability'] != 'onsale'
         )
         {
-            //$where['HAVING with_stocks'] = '1';
+            $where_public = "(
+                tbl_product.publish = '1'
+                OR tbl_product.publish = '11'
+                OR tbl_product.publish = '12'
+            )";
+            $where['condition'][] = $where_public;
+
+            $where['HAVING with_stocks'] = '1';
         }
         else if (
-            $this->session->userdata('user_cat') == 'wholesale'
+            $this->session->userdata('user_role') == 'wholesale'
             && @$_GET['availability'] == 'onsale'
         )
         {
             // can only show non-basix items
             $where['designer.url_structure !='] = 'basixblacklabel';
         }
-        else if ($this->session->userdata('user_cat') == 'wholesale')
+        else if ($this->session->userdata('user_role') == 'wholesale')
         {
             // don't show clearance items
             $con_clearance = "(tbl_stock.custom_order != '3' OR (tbl_stock.custom_order = '3' AND designer.url_structure != 'basixblacklabel'))";
-            $where['condition'] = $con_clearance;
+            $where['condition'][] = $con_clearance;
 
             // don't show clearance cs only items
             $con_clearance_cs_only = 'tbl_stock.options NOT LIKE \'%"clearance_consumer_only":"1"%\' ESCAPE \'!\'';
-            $where['condition'] = $con_clearance_cs_only;
+            $where['condition'][] = $con_clearance_cs_only;
         }
         // */
 

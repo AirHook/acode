@@ -883,7 +883,7 @@ class Wholesale_user_details
 			<br /><br />
 			Hi '.ucwords($this->fname.' '.$this->lname).',
 			<br /><br />
-			I am the Operations director for BASIX BLACK LABEL. <br />
+			I am the Operations director for BASIX BLACK LABEL / SHOP 7TH AVENUE <br />
 			I will be aiding you with on boarding for all your inquires.
 			<br /><br /><br />
 			EXISTING FEATURES OF WAREHOUSE PLATFORM

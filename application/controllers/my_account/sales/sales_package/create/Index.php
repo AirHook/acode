@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Create extends Sales_user_Controller {
+class Index extends Sales_user_Controller {
 
 	/**
 	 * Constructor

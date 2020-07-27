@@ -324,6 +324,31 @@ var ComponentsEditors = function () {
         });
 
         // size and qty change at modal
+        $('#form-size_qty_select').submit(function(e){
+            // prevent form from submitting
+            e.preventDefault();
+            // call jquery loading on po table of items
+            $('.cart_basket_wrapper table tbody').loading();
+            // get the object data to pass to post url
+            var objectData = object_data;
+            objectData.prod_no = $('#size-select-prod_no').val();
+            objectData.page = $('#size-select-page').val();
+            // get the sizes and quantities
+            var size_qty = {};
+            $('.size-select').each(function(){
+                if ($(this).val() != 0){
+                    size_qty[$(this).prop('name')] = $(this).val();
+                }
+            });
+            objectData.size_qty = size_qty;
+            // hide this modal
+            $('#modal-size_qty').modal('hide');
+            // add item...
+            addRemItem(objectData);
+        });
+
+        // size and qty change at modal
+        /*
         $('.modal-body-cart_basket_wrapper').on('change', '.size-select', function(){
             // call jquery loading on po table of items
             $('.cart_basket_wrapper table tbody').loading();
@@ -338,6 +363,7 @@ var ComponentsEditors = function () {
             // add item...
             addRemItem(objectData);
         });
+        */
 
         // remove item at summary view
         $('.cart_basket_wrapper table tbody').on('click', '.summary-item-remove', function(){

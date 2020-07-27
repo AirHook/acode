@@ -110,10 +110,14 @@ class Product_clicks extends Shop_Controller
 			$this->wholesale_user_details->set_session();
 			// record login details
 			$this->wholesale_user_details->record_login_detail();
-			// notify sales user
-			//$this->wholesale_user_details->notify_sales_user_online();
-			// notify admin user is online
-			//$this->wholesale_user_details->notify_admin_user_online();
+
+			if (ENVIRONMENT !== 'development')
+			{
+				// notify sales user
+				$this->wholesale_user_details->notify_sales_user_online();
+				// notify admin user is online
+				$this->wholesale_user_details->notify_admin_user_online();
+			}
 		}
 		// */
 

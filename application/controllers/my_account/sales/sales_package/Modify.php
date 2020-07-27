@@ -81,6 +81,12 @@ class Modify extends Sales_user_Controller {
 					unset($_SESSION['sa_mod_slug_segs']);
 					unset($_SESSION['sa_mod_options']);
 					unset($_SESSION['sa_mod_des_slug']);
+
+					// set session flashdata
+					$this->session->set_flashdata('error', 'no_id_passed');
+
+					// redirect user
+					redirect('my_account/sales/sales_package/create', 'location');
 				}
 			}
 

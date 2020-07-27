@@ -84,6 +84,22 @@ class Details extends Frontend_Controller
 		// page is shown.  $this->product_details->with_stocks doesn't seem
 		// to address this issue. will need to put code here to redirect to
 		// home categories page with error='without_stocks'
+		if (
+			! $this->product_details->with_stocks
+			OR $this->product_details->publish == '0'
+			OR $this->product_details->new_color_publish == '0'
+		)
+		{
+			// set session
+			$this->session->set_flashdata('error', 'without_stocks');
+
+			// send user back to categories page on false
+			if (@$this->webspace_details->options['site_type'] == 'hub_site')
+			{
+				redirect('shop/categories', 'location');
+			}
+			else redirect(site_url(), 'location');
+		}
 
 		// this next section of the program is necessary
 		// to be able to draw up a correct category breadcrumb
@@ -566,7 +582,7 @@ class Details extends Frontend_Controller
 			';
 			// handle scripts
 			$this->data['page_level_scripts'].= '
-				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/components-frontend-product_details.js" type="text/javascript"></script>
+				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/components-frontend-product_details.js?z='.time().'" type="text/javascript"></script>
 			';
 	}
 

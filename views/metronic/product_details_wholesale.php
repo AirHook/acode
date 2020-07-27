@@ -577,6 +577,10 @@
 
 																<input type="hidden" name="size_mode" value="<?php echo $this->product_details->size_mode; ?>" />
 
+                                                                <p>
+                                                                    Item in (2) brackets indicate quantity on hand. To add items to your order inquiry, drop the quantity and select number of units for that size
+                                                                </p>
+
                                                                 <div class="product_details_wholesale row clearfix" style="margin-bottom:5px;">
 
                                                                     <style>
@@ -736,7 +740,7 @@
                                                                                 <div class="row">
                                                                                     <div class="col-md-10 product-form__qty <?php echo $this->wholesale_user_details->access_level == 2 ? '' : 'tooltips'; ?>" <?php echo $qty ? 'data-original-title="Max in-stock qty is '.$qty.'"' : ''; ?>>
                                                                                         <select class="bs-select form-control product_details-qty_box input-sm" name="qty[<?php echo $skey; ?>]" data-size="6" data-max_qty="<?php echo $qty; ?>" data-dsize="<?php echo $size; ?>" data-size_key="<?php echo $skey; ?>">
-                                                                                            <option class="opt_zeroval">0</option>
+                                                                                            <option class="opt_zeroval" value="0">0</option>
                                                                                             <?php
                                                                                             //$this_qty = 30; //$qty ?: 30;
                                                                                             if ($this->wholesale_user_details->access_level == 2)
