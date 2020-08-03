@@ -83,7 +83,7 @@ class Submit extends Frontend_Controller
 		// use the logged order data to poppulate the email confirmation
 		// to use the designer setting
 		// initialize order details
-		$email_data = $this->order_details->initialize(array('tbl_order_log.order_log_id'=>$order_log_id));
+		//$email_data = $this->order_details->initialize(array('tbl_order_log.order_log_id'=>$order_log_id));
 
 		// we will just use the flashdata session directly on the view file
 		// to show the cc details...
@@ -112,8 +112,8 @@ class Submit extends Frontend_Controller
 		//$email_data['grand_total'] = $this->cart->total() + $email_data['add_ny_sales_tax'] + $email_data['shipping_fee'];
 
 		// let's start email sending
-		$email_subject = $this->webspace_details->name.' Product Order'.($this->session->user_cat == 'wholesale' ? ' - Wholesale' : '');
-		$message = $this->load->view('templates/order_confirmation', $email_data, TRUE);
+		//$email_subject = $this->webspace_details->name.' Product Order'.($this->session->user_cat == 'wholesale' ? ' - Wholesale' : '');
+		//$message = $this->load->view('templates/order_confirmation', $email_data, TRUE);
 
 			/**********
 			 * New Order Confirmation Layout
@@ -181,6 +181,11 @@ class Submit extends Frontend_Controller
 				$this->data['logo'] = $this->config->item('PROD_IMG_URL').$this->designer_details->logo;
 			}
 
+			// set email subject
+			$email_subject = $this->data['company_name'].' - Product Order'.($user_role == 'ws' ? ' - Wholesale' : '');
+
+			// load the view
+			$message = $this->load->view('templates/order_confirmation_new', $this->data, TRUE);
 
 		if (ENVIRONMENT == 'development') // ---> used for development purposes
 		{
@@ -188,13 +193,13 @@ class Submit extends Frontend_Controller
 			// so we check on the email template instead.
 			// just don't forget to comment these accordingly
 
-			// load the view
+			// load the view (user copy)
 			$message = $this->load->view('templates/order_confirmation_new', $this->data, TRUE);
 
 			echo $message;
 			echo '<br /><br />';
 
-			// load the view
+			// load the view (admin copy)
 			$this->data['sending_to_admin'] = TRUE; //$this->order_details->c == 'ws' ? FALSE : TRUE;
 			$message = $this->load->view('templates/order_confirmation_new', $this->data, TRUE);
 
@@ -223,14 +228,8 @@ class Submit extends Frontend_Controller
 
 			$sendby = @$this->webspace_details->options['email_send_by'] ?: 'default'; // options: mailgun, default (CI native emailer)
 
-			// set email subject
-			$email_subject = $this->data['company_name'].' - Product Order'.($user_role == 'ws' ? ' - Wholesale' : '');
-
 			// --> send to user
 			$this->email->clear();
-
-			// load the view
-			$message = $this->load->view('templates/order_confirmation_new', $this->data, TRUE);
 
 			$this->email->from($this->webspace_details->info_email, $this->webspace_details->name);
 

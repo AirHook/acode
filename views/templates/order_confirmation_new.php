@@ -178,7 +178,7 @@
 							<?php if (@$order_details->options['sales_order'])
 							{ ?>
 
-							<strong> Ordered by: </strong> <?php echo @$author->author_name ?: ''; ?> <?php echo $po_details->author_email ? '('.$po_details->author_email.')' : ''; ?>
+							<strong> Ordered by: </strong> <?php echo @$author->author_name ?: ''; ?> <?php echo @$po_details->author_email ? '('.@$po_details->author_email.')' : ''; ?>
 							<br><br>
 
 								<?php
@@ -545,7 +545,7 @@
 										if ($order_details->c == 'ws')
 										{
 											//$delivery_notice = 'Your order inquiry was received and will be researched for availability on product.';
-											$delivery_notice = 'THIS IS NOT A CONFIRMATION OF ORDER ACCEPTANCE. YOUR SALES REPRESENTATIVE WILL CONTACT YOU TO FINALIZE YOUR ORDER AND SEND YOU A FORMAL INVOICE.';
+											$delivery_notice = '<span style="color:red;">THIS IS NOT A CONFIRMATION OF ORDER ACCEPTANCE. YOUR SALES REPRESENTATIVE WILL CONTACT YOU TO FINALIZE YOUR ORDER AND SEND YOU A FORMAL INVOICE.</span>';
 										}
 										else
 										{

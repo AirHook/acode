@@ -35,11 +35,12 @@ class Send_product_clicks extends Sales_user_Controller {
 		// generate the plugin scripts and css
 		$this->_create_plugin_scripts();
 
-		// load pertinent library/model/helpers
-		$this->load->library('products/product_details');
-
 		// connect to database for use by model
 		$DB = $this->load->database('instyle', TRUE);
+
+		// load pertinent library/model/helpers
+		$this->load->library('products/product_details');
+		$this->load->library('users/wholesale_user_details');
 
 		// get user details manually
 		$DB->query('SET SESSION group_concat_max_len = 1000000');
@@ -68,6 +69,17 @@ class Send_product_clicks extends Sales_user_Controller {
 		//echo $DB->last_query(); die();
 
 		$user_details = $q1->row();
+
+		// check if user is for the sales user list
+		if ($user_details->admin_sales_email != $this->sales_user_details->email)
+		{
+			// nothing more to do...
+			// set flash data
+			$this->session->set_flashdata('error', 'no_id_passed');
+
+			// redirect user
+			redirect('my_account/sales/sales_package', 'location');
+		}
 
 		// set some data
 		$this->data['date'] = $this->input->get('date');

@@ -172,6 +172,17 @@ class Frontend_Controller extends MY_Controller {
 				redirect(site_url('account'), 'location');
 			}
 
+			// global catch all for inactive users
+			// in case the user login session holds and the user is already inactive
+			if ($this->wholesale_user_details->status != '1')
+			{
+				// set flash notice
+				$this->session->set_flashdata('error', 'status_inactive');
+
+				// send to request for activation page
+				redirect('account/request/activation', 'location');
+			}
+
 			// NOTE: login details are recorded on a per page visits and product clicks
 			// Thus, $this->wholesale_user_details->update_login_detail is called on
 			// controllers and page controllers

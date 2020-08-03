@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Get_vendors_list extends Admin_Controller {
+class Get_vendors_list extends MY_Controller {
 
 	/**
 	 * Constructor

@@ -49,14 +49,29 @@ class New_order extends Sales_user_Controller
 
 		// set validation rules
 		$this->form_validation->set_rules('user_id', 'Store Data', 'trim|required');
-		//$this->form_validation->set_rules('shipmethod', 'Shipping Method', 'trim|required');
 
 		if ($this->form_validation->run() == FALSE)
 		{
 			// sales orders are checkout orders made by sales or admin for the wholesale users' call in or PO
 			// anticipation for consumer is just a catch all thing
-			// orders (sales or checkout) can no longer be modified
-			// it is either confirmed or cancelled
+			// series of communications between sales/admin and wholesale user tend to
+			// make changes to SO, ergo, modify SO may be needed
+
+			// let's ensure that there are no admin session for so mod
+			if ($this->session->admin_so_mod_items)
+			{
+				// new po admin access
+				unset($_SESSION['so_user_id']); // store or consumer and 0 for manual input
+				unset($_SESSION['so_user_cat']); // ws, cs
+				unset($_SESSION['so_des_slug']);
+				unset($_SESSION['so_slug_segs']);
+				unset($_SESSION['so_dely_date']);
+				unset($_SESSION['so_items']);
+			}
+
+			// remove po mod details on page reloads
+			unset($_SESSION['so_mod_so_id']);
+			unset($_SESSION['so_mod_items']);
 
 			// get color list for the add product not in list
 			$this->data['colors'] = $this->color_list->select();
@@ -65,7 +80,8 @@ class New_order extends Sales_user_Controller
 			$this->data['ship_methods'] = $this->shipping_methods->get_methods();
 
 			// get ws user list for the select store button
-			// NOTE: consider sales resource login
+			// this is sales user my_account
+			// consider sales resource login
 			$this->data['users'] = $this->wholesale_users_list->select(
 				array(
 					'tbluser_data_wholesale.admin_sales_email' => $this->sales_user_details->email
@@ -77,27 +93,14 @@ class New_order extends Sales_user_Controller
 			// - general admin shows all designer category tree
 			// - satellite and stand-alone sites defaults to it's designer category tree
 			// - sales users default to it's reference designer category tree
-			if (
-				$this->webspace_details->options['site_type'] == 'sat_site'
-				OR $this->webspace_details->options['site_type'] == 'sal_site'
-				OR $this->session->admin_sales_loggedin
-			)
-			{
-				$this->data['select_designer'] = FALSE;
-				$this->data['des_slug'] = @$this->sales_user_details->designer ?: $this->webspace_details->slug;
-				$this->data['designers'] = $this->designers_list->select(
-					array(
-						'url_structure' => $this->data['des_slug']
-					)
-				);
-				$this->session->so_des_slug = $this->data['des_slug'];
-			}
-			else
-			{
-				$this->data['select_designer'] = TRUE;
-				$this->designers_list->initialize(array('with_products'=>TRUE));
-				$this->data['designers'] = $this->designers_list->select();
-			}
+			$this->data['select_designer'] = FALSE;
+			$this->data['des_slug'] = $this->sales_user_details->designer;
+			$this->data['designers'] = $this->designers_list->select(
+				array(
+					'url_structure' => $this->data['des_slug']
+				)
+			);
+			$this->session->so_des_slug = $this->data['des_slug'];
 
 			// get some data if a designer has been previously selected
 			if ($this->session->so_des_slug)
@@ -152,8 +155,7 @@ class New_order extends Sales_user_Controller
 				//$params['variant_view_at_hub'] = TRUE; // variant level public at hub site
 				//$params['variant_view_at_satellite'] = TRUE; // varian level public at satellite site
 
-				// level 2 users show only items with stocks
-				$params['with_stocks'] = TRUE; // TRUE shows instock items only
+				$params['with_stocks'] = TRUE; // level 2 users show only items with stocks
 
 				$params['group_products'] = FALSE; // group per product number or per variant
 				$params['special_sale'] = FALSE; // special sale items only
@@ -281,16 +283,6 @@ class New_order extends Sales_user_Controller
 		}
 		else
 		{
-			if ( ! $this->session->so_items)
-			{
-				// nothing more to do...
-				// set flash data
-				$this->session->set_flashdata('error', 'no_id_passed');
-
-				// redirect user
-				redirect('my_account/sales/orders', 'location');
-			}
-
 			/***********
 			 * Process the input data
 			 */
@@ -298,22 +290,22 @@ class New_order extends Sales_user_Controller
 			/* *
 			Array
 			(
-			    [so_number] => 10302249 -----> not needed as this will be set before insertion to db
-			    [so_date] => 2020-06-11 -----> not needed as this will be set before insertion to db
+			    [so_number] => 10302436 -----> not needed as this will be set before insertion to db
+			    [so_date] => 2020-07-29 -----> not needed as this will be set before insertion to db
 			    [options] => Array
 			        (
 			            [sales_order] => 1
 			            [ref_so_no] =>
 			            [payment_method] => Credit Card
+			            [shipmethod_text] =>
 			            [ref_checkout_no] =>
 			        )
 			    [c] => ws
-			    [shipmethod] => 0
 			    [user_id] => 14519
-			    [author] => 90 -----> defaults to '1' for admin
-			    [subtotal] => 490 -----> last item's subtotal
-				[overall_qty] => 5
-			    [overall_total] => 710
+			    [author] => 90
+			    [subtotal] => 975
+			    [overall_qty] => 3
+			    [overall_total] => 975
 			    [remarks] =>
 			    [files] =>
 			)
@@ -359,7 +351,7 @@ class New_order extends Sales_user_Controller
 			}
 			else
 			{
-				$courier = 'TBD';
+				$courier = '';
 				$shipping_fee = 0;
 			}
 
@@ -417,6 +409,9 @@ class New_order extends Sales_user_Controller
 				// 'status' defaults to '0' for new orders or pending orders
 			);
 
+			/***********
+			 * Save it to the database
+			 */
 			// connect to database
 			$DB = $this->load->database('instyle', TRUE);
 			$DB->insert('tbl_order_log', $log_data);
@@ -432,7 +427,9 @@ class New_order extends Sales_user_Controller
 			$i = 1;
 			foreach ($so_items as $item => $size_qty)
 			{
-				// --> the items sample: {"D9776L_RED1":{"size_4":["1",0,"1"]},"D9998L_BLAC1":{"size_2":["2",0,"2"]}}
+				// --> the items sample:
+				// NOTE: each $item may have several sizes within $size_qty
+				// {"D9776L_RED1":{"size_4":["1",0,"1"]},"D9998L_BLAC1":{"size_2":["2",0,"2"]},"D9750L_BLAC1":{"size_10":["2",0,"2"],"size_12":["2",0,"2"],"size_14":["2",0,"2"]}}
 
 				// just a catch all error suppression
 				if ( ! $item) continue;
@@ -472,147 +469,164 @@ class New_order extends Sales_user_Controller
 				;
 
 				// image src
-				$img_front_new = $this->config->item('PROD_IMG_URL').$product->media_path.$item.'_f3.jpg';
+				$img_front_new = $product->media_path.$item.'_f3.jpg';
 
-				// get size names
-				$size_label = array_key_first($size_qty);
-				$size_names = $this->size_names->get_size_names($product->size_mode);
-				$size = $size_names[$size_label];
-				$qty = $size_qty[$size_label][0];
-
-				// for calculate]ion of available stocks
-				if ($product->$size_label == '0')
-				{
-					// preorder
-					$preorder = TRUE;
-					$partial_stock = FALSE;
-					$custom_order = '1';
-				}
-				elseif ($size_qty[$size_label][0] <= $product->$size_label)
-				{
-					// instock
-					$preorder = FALSE;
-					$partial_stock = FALSE;
-					$custom_order = '0';
-				}
-				elseif ($size_qty[$size_label][0] > $product->$size_label)
-				{
-					// partial
-					$preorder = TRUE;
-					$partial_stock = TRUE;
-					$custom_order = '4'; // --> new for partial stock, not recognized yet
-				}
-				else
-				{
-					$preorder = FALSE;
-					$partial_stock = FALSE;
-					$custom_order = $product->custom_order;
+				// a polyfill to the php function 'array_key_first' which is not
+				// available on versions prior to PHP 7.3.0
+				if ( ! function_exists('array_key_first')) {
+				    function array_key_first(array $arr) {
+				        foreach($arr as $key => $unused) {
+				            return $key;
+				        }
+				        return NULL;
+				    }
 				}
 
-				// override other customer order code if on sale
-				if ($product->custom_order == '3') $custom_order = '3';
+				foreach ($size_qty as $size_label => $qtys)
+				{
+					// NOTE: $qtys come in 3's - ["1",0,"1"] reqd, shipd, bal
 
-				// insert cart/order details to order log detail
-				$log_detail_data = array(
-					'order_log_id'			=> $order_log_id,
-					'transaction_code'		=> $random_code, // for deprecation
-					'image'					=> $img_front_new,
-					'prod_sku'				=> $item,
-					'prod_no'				=> $prod_no,
-					'prod_name'				=> $product->prod_name,
-					'color'					=> $color_name,
-					'size'					=> $size,
-					'designer'				=> $product->designer_name,
-					'qty'					=> $qty,
-					'unit_price'			=> $price,
-					'subtotal'				=> $this->input->post('overall_total'),
-					// custom_order = 0-instock, 1-preorer, 3-instock/clearance
-					'custom_order'			=> $custom_order,
-					'options'				=> json_encode(
-												array(
-													'orig_price' => $orig_price
+					// get size names
+					$size_label = array_key_first($size_qty);
+					$size_names = $this->size_names->get_size_names($product->size_mode);
+					$size = $size_names[$size_label];
+					$qty = $size_qty[$size_label][0];
+
+					// for calculate]ion of available stocks
+					if ($product->$size_label == '0')
+					{
+						// preorder
+						$preorder = TRUE;
+						$partial_stock = FALSE;
+						$custom_order = '1';
+					}
+					elseif ($size_qty[$size_label][0] <= $product->$size_label)
+					{
+						// instock
+						$preorder = FALSE;
+						$partial_stock = FALSE;
+						$custom_order = '0';
+					}
+					elseif ($size_qty[$size_label][0] > $product->$size_label)
+					{
+						// partial
+						$preorder = TRUE;
+						$partial_stock = TRUE;
+						$custom_order = '4'; // --> new for partial stock, not recognized yet
+					}
+					else
+					{
+						$preorder = FALSE;
+						$partial_stock = FALSE;
+						$custom_order = $product->custom_order;
+					}
+
+					// override other customer order code if on sale
+					if ($product->custom_order == '3') $custom_order = '3';
+
+					// insert cart/order details to order log detail
+					$log_detail_data = array(
+						'order_log_id'			=> $order_log_id,
+						'transaction_code'		=> $random_code, // for deprecation
+						'image'					=> $img_front_new,
+						'prod_sku'				=> $item,
+						'prod_no'				=> $prod_no,
+						'prod_name'				=> $product->prod_name,
+						'color'					=> $color_name,
+						'size'					=> $size,
+						'designer'				=> $product->designer_name,
+						'qty'					=> $qty,
+						'unit_price'			=> $price,
+						'subtotal'				=> $this->input->post('overall_total'),
+						// custom_order = 0-instock, 1-preorer, 3-instock/clearance
+						'custom_order'			=> $custom_order,
+						'options'				=> json_encode(
+													array(
+														'orig_price' => $orig_price
+													)
 												)
-											)
-				);
-				$DB->insert('tbl_order_log_details', $log_detail_data);
+					);
+					$DB->insert('tbl_order_log_details', $log_detail_data);
 
-				// process inventory by deducting from available and putting to onorder unless preorder
-				// items needed are prod_no, color_code, size, qty
-				if ($custom_order != '1')
-				{
-					$this->load->library('inventory/update_stocks');
-					$config['prod_sku'] = $item;
-					$config['size'] = $size;
-					$config['qty'] = $qty;
-					$config['order_id'] = $order_log_id;
-					$this->update_stocks->initialize($config);
-					$this->update_stocks->reserve();
+					// process inventory by deducting from available and putting to onorder unless preorder
+					// items needed are prod_no, color_code, size, qty
+					if ($custom_order != '1')
+					{
+						$this->load->library('inventory/update_stocks');
+						$config['prod_sku'] = $item;
+						$config['size'] = $size;
+						$config['qty'] = $qty;
+						$config['order_id'] = $order_log_id;
+						$this->update_stocks->initialize($config);
+						$this->update_stocks->reserve();
+					}
+
+					$i++;
 				}
-
-				$i++;
 			}
 
-			// let's start email sending
-			/* */
-			$email_subject = $this->webspace_details->name.' Product Order'.($this->input->post('c') == 'ws' ? ' - Wholesale' : '');
-			$message = $this->load->view('templates/order_confirmation_new', @$email_data, TRUE);
+			/**********
+			 * New Order Confirmation Layout
+			 * Uses most of the above items but needs to add a few things to make the new
+			 * HTML layout work
+			 * - this overrides above order details, email subject, and html message
+			*/
+			// initialize...
+			$this->data['order_details'] = $this->order_details->initialize(array('tbl_order_log.order_log_id'=>$order_log_id));
 
-				/**********
-				 * New Order Confirmation Layout
-				 * Uses most of the above items but needs to add a few things to make the new
-				 * HTML layout work
-				 * - this overrides above order details, email subject, and html message
-				*/
-				// initialize...
-				$this->data['order_details'] = $this->order_details->initialize(array('tbl_order_log.order_log_id'=>$order_log_id));
+			// get user_id and role and designer group
+			$user_role = $this->data['order_details']->c;
+			$user_id = $this->data['order_details']->user_id;
+			$designer_group = $this->data['order_details']->designer_group;
+			$designer_slug = $this->data['order_details']->designer_slug;
 
-				// get user_id and role and designer group
-				$user_role = $this->data['order_details']->c;
-				$user_id = $this->data['order_details']->user_id;
-				$designer_group = $this->data['order_details']->designer_group;
-				$designer_slug = $this->data['order_details']->designer_slug;
+			// initialize user details based on above initialization
+			$this->data['user_details'] = $user_details;
 
-				// initialize user details based on above initialization
-				$this->data['user_details'] = $user_details;
+			// set company details via order designer
+			if ($designer_group == 'Mixed Designers')
+			{
+				$this->data['company_name'] = $this->webspace_details->name;
+				$this->data['company_address1'] = $this->webspace_details->address1;
+				$this->data['company_address2'] = $this->webspace_details->address2;
+				$this->data['company_city'] = $this->webspace_details->city;
+				$this->data['company_state'] = $this->webspace_details->state;
+				$this->data['company_zipcode'] = $this->webspace_details->zipcode;
+				$this->data['company_country'] = $this->webspace_details->country;
+				$this->data['company_telephone'] = $this->webspace_details->phone;
+				$info_email = $this->webspace_details->info_email;
+				$this->data['logo'] =
+					@$this->webspace_details->options['logo']
+					? $this->config->item('PROD_IMG_URL').$this->webspace_details->options['logo']
+					: $this->config->item('PROD_IMG_URL').'assets/images/logo/logo-shop7thavenue.png'
+				;
+			}
+			else
+			{
+				// initialize class
+				$this->designer_details->initialize(
+					array(
+						'url_structure' => $designer_slug
+					)
+				);
 
-				// set company details via order designer
-				if ($designer_group == 'Mixed Designers')
-				{
-					$this->data['company_name'] = $this->webspace_details->name;
-					$this->data['company_address1'] = $this->webspace_details->address1;
-					$this->data['company_address2'] = $this->webspace_details->address2;
-					$this->data['company_city'] = $this->webspace_details->city;
-					$this->data['company_state'] = $this->webspace_details->state;
-					$this->data['company_zipcode'] = $this->webspace_details->zipcode;
-					$this->data['company_country'] = $this->webspace_details->country;
-					$this->data['company_telephone'] = $this->webspace_details->phone;
-					$info_email = $this->webspace_details->info_email;
-					$this->data['logo'] =
-						@$this->webspace_details->options['logo']
-						? $this->config->item('PROD_IMG_URL').$this->webspace_details->options['logo']
-						: $this->config->item('PROD_IMG_URL').'assets/images/logo/logo-shop7thavenue.png'
-					;
-				}
-				else
-				{
-					// initialize class
-					$this->designer_details->initialize(
-						array(
-							'url_structure' => $designer_slug
-						)
-					);
+				$this->data['company_name'] = $this->webspace_details->name.' / '.$this->designer_details->designer;
+				$this->data['company_address1'] = $this->designer_details->address1;
+				$this->data['company_address2'] = $this->designer_details->address2;
+				$this->data['company_city'] = $this->designer_details->city;
+				$this->data['company_state'] = $this->designer_details->state;
+				$this->data['company_zipcode'] = $this->designer_details->zipcode;
+				$this->data['company_country'] = $this->designer_details->country;
+				$this->data['company_telephone'] = $this->designer_details->phone;
+				$info_email = $this->designer_details->info_email;
+				$this->data['logo'] = $this->config->item('PROD_IMG_URL').$this->designer_details->logo;
+			}
 
-					$this->data['company_name'] = $this->designer_details->designer;
-					$this->data['company_address1'] = $this->designer_details->address1;
-					$this->data['company_address2'] = $this->designer_details->address2;
-					$this->data['company_city'] = $this->designer_details->city;
-					$this->data['company_state'] = $this->designer_details->state;
-					$this->data['company_zipcode'] = $this->designer_details->zipcode;
-					$this->data['company_country'] = $this->designer_details->country;
-					$this->data['company_telephone'] = $this->designer_details->phone;
-					$info_email = $this->designer_details->info_email;
-					$this->data['logo'] = $this->config->item('PROD_IMG_URL').$this->designer_details->logo;
-				}
+			// set email subject
+			$email_subject = $this->data['company_name'].' - Product Order'.($user_role == 'ws' ? ' - Wholesale' : '');
+
+			// load the view
+			$message = $this->load->view('templates/order_confirmation_new', $this->data, TRUE);
 
 			if (ENVIRONMENT == 'development') // ---> used for development purposes
 			{
@@ -631,7 +645,7 @@ class New_order extends Sales_user_Controller
 				);
 				$this->session->unset_userdata($data);
 
-				echo '<a href="'.site_url('checkout/receipt/index/'.$order_log_id).'">Continue...</a>';
+				echo '<a href="'.site_url('my_account/sales/orders/details/index/'.$order_log_id).'">Continue...</a>';
 				echo '<br /><br />';
 				exit;
 			}
@@ -644,18 +658,12 @@ class New_order extends Sales_user_Controller
 
 				$sendby = @$this->webspace_details->options['email_send_by'] ?: 'default'; // options: mailgun, default (CI native emailer)
 
-				// set email subject
-				$email_subject = $this->sales_user_details->designer_name.' - Product Order'.($user_role == 'ws' ? ' - Wholesale' : '');
-
-				// --> send to user
+				// start email sending
 				$this->email->clear();
-
-				// load the view
-				$message = $this->load->view('templates/order_confirmation_new', $this->data, TRUE);
 
 				$this->email->from($this->webspace_details->info_email, $this->webspace_details->name);
 
-				$this->email->to($user_array['p_email']);
+				$this->email->to($user_details->email);
 
 				$this->email->subject($email_subject);
 				$this->email->message($message);
@@ -671,7 +679,7 @@ class New_order extends Sales_user_Controller
 					{
 						// capturing error but the error message it not captured from MG class
 						// the return info is still a bug to fix
-						$error = 'Unable to MG send to - "'.$email.'"<br />';
+						$error = 'Unable to MG send to - "'.$user_details->email.'"<br />';
 						$error .= '-'.$this->mailgun->error_message;
 					}
 
@@ -685,7 +693,7 @@ class New_order extends Sales_user_Controller
 					// must resolve pending update of CI
 					if ( ! @$this->email->send())
 					{
-						$error = 'Unable to CI send to - "'.$email.'"<br />';
+						$error = 'Unable to CI send to - "'.$user_details->email.'"<br />';
 					}
 				}
 				//$this->email->send();
@@ -698,7 +706,7 @@ class New_order extends Sales_user_Controller
 				$message = $this->load->view('templates/order_confirmation_new', $this->data, TRUE);
 
 				$this->email->from($this->webspace_details->info_email, $this->webspace_details->name);
-				$this->email->reply_to($user_array['p_email']);
+				$this->email->reply_to($user_details->email);
 
 				// copies
 				$shop7 = $this->webspace_details->info_email == 'help@shop7thavenue.com' ? '' : ', help@shop7thavenue.com';
@@ -722,7 +730,7 @@ class New_order extends Sales_user_Controller
 					{
 						// capturing error but the error message it not captured from MG class
 						// the return info is still a bug to fix
-						$error = 'Unable to MG send to - "'.$email.'"<br />';
+						$error = 'Unable to MG send to - "admin"<br />';
 						$error .= '-'.$this->mailgun->error_message;
 					}
 
@@ -736,7 +744,7 @@ class New_order extends Sales_user_Controller
 					// must resolve pending update of CI
 					if ( ! @$this->email->send())
 					{
-						$error = 'Unable to CI send to - "'.$email.'"<br />';
+						$error = 'Unable to CI send to - "admin"<br />';
 					}
 				}
 				//$this->email->send();
@@ -745,8 +753,14 @@ class New_order extends Sales_user_Controller
 
 			// unset some session variables
 			unset($_SESSION['so_user_id']); // remove remembered ws user
+			unset($_SESSION['so_user_cat']); // ws, cs
 			unset($_SESSION['so_des_slug']); // remove des_slug
+			unset($_SESSION['so_slug_segs']);
+			unset($_SESSION['so_dely_date']);
 			unset($_SESSION['so_items']); // remove the items
+			// remove po mod details on page reloads
+			unset($_SESSION['so_mod_so_id']);
+			unset($_SESSION['so_mod_items']);
 
 			// set flash data
 			$this->session->set_flashdata('success', 'add');

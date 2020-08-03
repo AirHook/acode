@@ -64,12 +64,15 @@
 										break;
 										case '4':
 											echo 'REFUNDED';
+											$txt = 'This order is returned/cancelled on refund';
 										break;
 										case '6':
 											echo 'STORE CREDIT';
+											$txt = 'This order is returned/cancelled on store credit';
 										break;
 										case '3':
 											echo 'CANCELLED';
+											$txt = 'This order is cancelled';
 										break;
 									}
 									?>
@@ -502,7 +505,7 @@
 																<td class="text-center"> <?php echo $item->color; ?> </td>
 																<!-- Qty -->
 																<td class="text-center"> <?php echo $item->qty; ?> </td>
-																<!-- Unit Price -->
+																<!-- Reg Price -->
 																<td class="text-right">
 																	<?php if (
 																		$product->custom_order == '3'
@@ -519,7 +522,7 @@
 																		echo '$ '.number_format($item->unit_price, 2);
 																	} ?>
 																</td>
-																<!-- Unit Price -->
+																<!-- Disc Price -->
 																<td class="text-right">
 																	<?php if (
 																		$product->custom_order == '3'
@@ -536,8 +539,13 @@
 																		echo '--';
 																	} ?>
 																</td>
-																<!-- Subtotal -->
-																<td class="text-right"> <?php echo '$'.number_format($item->subtotal, 2); ?> </td>
+																<!-- Extended -->
+																<td class="text-right">
+																	<?php
+																	$this_size_total = $item->unit_price * $item->qty;
+																	echo $this_size_total ? '$ '.number_format($this_size_total, 2) : '$0.00';
+																	?>
+																</td>
 															</tr>
 
 																	<?php
@@ -562,7 +570,7 @@
 													<div class="col-md-6">
 														<p class="block">Remarks/Comments:</p>
 														<p>
-															<?php echo @$this->order_details->comments; ?>
+															<?php echo @$this->order_details->remarks; ?>
 														</p>
 													</div>
 													<div class="col-md-6">

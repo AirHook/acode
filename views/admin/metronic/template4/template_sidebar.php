@@ -196,6 +196,11 @@
                                 <span class="title">Cancelled</span>
                             </a>
                         </li>
+                        <li class="nav-item  <?php echo $this->uri->uri_string() == 'admin/sales_orders/create' ? 'active open' : ''; ?>">
+                            <a href="<?php echo site_url('admin/sales_orders/create'); ?>" class="nav-link  ">
+                                <span class="title">Create New Sales Order</span>
+                            </a>
+                        </li>
                             <?php
                         } ?>
 
@@ -226,7 +231,8 @@
                                 </li>
                             </ul>
                         </li>
-                        <li class="nav-item with-heading <?php echo $this->uri->segment(2) == 'sales_orders' ? 'active' : ''; ?>">
+                        <!--
+                        <li class="nav-item with-heading <?php echo $this->uri->segment(2) == 'sales_orders' ? 'active' : ''; ?> hide">
                             <a href="<?php echo site_url('admin/sales_orders'); ?>" class="nav-link ">
                                 <span class="title uppercase">Sales Order Manager</span>
                                 <span class="arrow <?php echo $this->uri->segment(2) == 'sales_orders' ? 'open' : 'open'; ?>"></span>
@@ -244,6 +250,7 @@
                                 </li>
                             </ul>
                         </li>
+                        -->
                         <li class="nav-item with-heading <?php echo $this->uri->segment(2) == 'purchase_orders' ? 'active' : ''; ?>">
                             <a href="<?php echo site_url('admin/purchase_orders'); ?>" class="nav-link ">
                                 <span class="title uppercase">Purchase Order Manager</span>

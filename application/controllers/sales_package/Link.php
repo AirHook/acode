@@ -111,7 +111,7 @@ class Link extends Shop_Controller
 				$this->session->user_id != $wholesale_user_id
 				OR (
 					$wholesale_user_id == '0'
-					&& $this->wholesale_user_details->email != $this->input->get('email')
+					&& @$this->wholesale_user_details->email != $this->input->get('email')
 				)
 			)
 			{
@@ -122,13 +122,13 @@ class Link extends Shop_Controller
 				$this->session->set_flashdata('error', 'sa_diff_user_loggedin');
 
 				// nothing more to do...
-				redirect('account');
+				redirect('account', 'location');
 			}
-			// logged in user and sa user id/or email is valid, hence we already have
-			// wholesale user details
 		}
 		else
 		{
+			// logged in user and sa user id/or email is valid, hence we already have
+			// wholesale user details
 			if (
 				! $this->wholesale_user_details->initialize(array('user_id'=>$wholesale_user_id))
 				&& ! $this->wholesale_user_details->initialize(array('email'=>$this->input->get('email')))
@@ -141,8 +141,18 @@ class Link extends Shop_Controller
 				$this->session->set_flashdata('error', 'invalid_credentials');
 
 				// nothing more to do...
-				redirect('account');
+				redirect('account', 'location');
 			}
+		}
+
+		// global catch all for inactive wholeslae users
+		if (@$this->wholesale_user_details->status != '1')
+		{
+			// set flash notice
+			$this->session->set_flashdata('error', 'status_inactive');
+
+			// send to request for activation page
+			redirect('account/request/activation', 'location');
 		}
 
 		// auto sign in user if not already signed in
@@ -150,15 +160,19 @@ class Link extends Shop_Controller
 		if ( ! $this->session->this_login_id)
 		{
 			// auto activate user if he clicks on the sales package
-			if ($this->wholesale_user_details->status != '1') $this->wholesale_user_details->activate_user();
+			//if ($this->wholesale_user_details->status != '1') $this->wholesale_user_details->activate_user();
 			// set wholesale user session
 			$this->wholesale_user_details->set_session();
 			// record login details
 			$this->wholesale_user_details->record_login_detail();
-			// notify sales user
-			$this->wholesale_user_details->notify_sales_user_online();
-			// notify admin user is online
-			$this->wholesale_user_details->notify_admin_user_online();
+
+			if (ENVIRONMENT !== 'development')
+			{
+				// notify sales user
+				$this->wholesale_user_details->notify_sales_user_online();
+				// notify admin user is online
+				$this->wholesale_user_details->notify_admin_user_online();
+			}
 		}
 
 		/****************

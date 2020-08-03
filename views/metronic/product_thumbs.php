@@ -155,6 +155,7 @@
 
                                                                 if (@$size_array)
                                                                 { ?>
+                                                            <!-- SIZES -->
                                                             <div class="m-grid-col m-grid-col-left" style="padding-right:7px;">
                                                                 <div class="form-group mobile-thumbs-filter">
 
@@ -166,8 +167,15 @@
                                                                         <?php if (@$_GET['style'] AND $_GET['style'] !== 'all'): ?>
                                                                         <input type="hidden" name="style" value="<?php echo $_GET['style']; ?>" />
                                                                         <?php endif; ?>
-                                                                        <?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
+                                                                        <?php if (@$occassion_array && $this->webspace_details->slug != 'tempoparis') : ?>
+                                                                            <?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
                                                                         <input type="hidden" name="occassion" value="<?php echo $_GET['occassion']; ?>" />
+                                                                            <?php endif; ?>
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$seasons_array && $this->webspace_details->slug == 'tempoparis') : ?>
+                                                                            <?php if (@$_GET['season'] AND $_GET['season'] !== 'all'): ?>
+                                                                        <input type="hidden" name="season" value="<?php echo $_GET['season']; ?>" />
+                                                                            <?php endif; ?>
                                                                         <?php endif; ?>
                                                                         <?php if (@$_GET['price'] AND $_GET['price'] !== 'default'): ?>
                                                                         <input type="hidden" name="price" value="<?php echo $_GET['price']; ?>" />
@@ -213,6 +221,7 @@
                                                                 <?php
                                                                 if (@$styles_array)
                                                                 { ?>
+                                                            <!-- STYLES -->
                                                             <div class="m-grid-col m-grid-col-left" style="padding-right:7px;">
                                                                 <div class="form-group mobile-thumbs-filter">
 
@@ -224,8 +233,15 @@
                                                                         <?php if (@$_GET['color'] AND $_GET['color'] !== 'all'): ?>
                                                                         <input type="hidden" name="color" value="<?php echo $_GET['color']; ?>" />
                                                                         <?php endif; ?>
-                                                                        <?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
+                                                                        <?php if (@$occassion_array && $this->webspace_details->slug != 'tempoparis') : ?>
+                                                                            <?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
                                                                         <input type="hidden" name="occassion" value="<?php echo $_GET['occassion']; ?>" />
+                                                                            <?php endif; ?>
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$seasons_array && $this->webspace_details->slug == 'tempoparis') : ?>
+                                                                            <?php if (@$_GET['season'] AND $_GET['season'] !== 'all'): ?>
+                                                                        <input type="hidden" name="season" value="<?php echo $_GET['season']; ?>" />
+                                                                            <?php endif; ?>
                                                                         <?php endif; ?>
                                                                         <?php if (@$_GET['price'] AND $_GET['price'] !== 'default'): ?>
                                                                         <input type="hidden" name="price" value="<?php echo $_GET['price']; ?>" />
@@ -268,6 +284,7 @@
                                                                     <?php
                                                                 } ?>
 
+                                                            <!-- PRICE -->
                                                             <div class="m-grid-col m-grid-col-left" style="padding-right:7px;">
                                                                 <div class="form-group mobile-thumbs-filter">
 
@@ -282,8 +299,15 @@
                                                                         <?php if (@$_GET['style'] AND $_GET['style'] !== 'all'): ?>
                                                                         <input type="hidden" name="style" value="<?php echo $_GET['style']; ?>" />
                                                                         <?php endif; ?>
-                                                                        <?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
+                                                                        <?php if (@$occassion_array && $this->webspace_details->slug != 'tempoparis') : ?>
+                                                                            <?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
                                                                         <input type="hidden" name="occassion" value="<?php echo $_GET['occassion']; ?>" />
+                                                                            <?php endif; ?>
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$seasons_array && $this->webspace_details->slug == 'tempoparis') : ?>
+                                                                            <?php if (@$_GET['season'] AND $_GET['season'] !== 'all'): ?>
+                                                                        <input type="hidden" name="season" value="<?php echo $_GET['season']; ?>" />
+                                                                            <?php endif; ?>
                                                                         <?php endif; ?>
                                                                         <?php if (@$_GET['availability'] AND $_GET['availability'] !== 'all'): ?>
                                                                         <input type="hidden" name="availability" value="<?php echo $_GET['availability']; ?>" />
@@ -319,6 +343,7 @@
                                                                 <?php
                                                                 if (@$color_array)
                                                                 { ?>
+                                                            <!-- COLORS -->
                                                             <div class="m-grid-col m-grid-col-left" style="padding-right:7px;">
                                                                 <div class="form-group mobile-thumbs-filter">
 
@@ -330,8 +355,15 @@
                                                                         <?php if (@$_GET['style'] AND $_GET['style'] !== 'all'): ?>
                                                                         <input type="hidden" name="style" value="<?php echo $_GET['style']; ?>" />
                                                                         <?php endif; ?>
-                                                                        <?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
+                                                                        <?php if (@$occassion_array && $this->webspace_details->slug != 'tempoparis') : ?>
+                                                                            <?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
                                                                         <input type="hidden" name="occassion" value="<?php echo $_GET['occassion']; ?>" />
+                                                                            <?php endif; ?>
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$seasons_array && $this->webspace_details->slug == 'tempoparis') : ?>
+                                                                            <?php if (@$_GET['season'] AND $_GET['season'] !== 'all'): ?>
+                                                                        <input type="hidden" name="season" value="<?php echo $_GET['season']; ?>" />
+                                                                            <?php endif; ?>
                                                                         <?php endif; ?>
                                                                         <?php if (@$_GET['price'] AND $_GET['price'] !== 'default'): ?>
                                                                         <input type="hidden" name="price" value="<?php echo $_GET['price']; ?>" />
@@ -375,8 +407,9 @@
                                                                 } ?>
 
                                                                 <?php
-                                                                if (@$occassion_array)
+                                                                if (@$occassion_array && $this->webspace_details->slug != 'tempoparis')
                                                                 { ?>
+                                                            <!-- OCCASSIONS -->
                                                             <div class="m-grid-col m-grid-col-left" style="padding-right:7px;">
                                                                 <div class="form-group mobile-thumbs-filter">
 
@@ -432,6 +465,66 @@
                                                                     <?php
                                                                 } ?>
 
+                                                                <?php
+                                                                if (@$seasons_array && $this->webspace_details->slug == 'tempoparis')
+                                                                { ?>
+                                                            <!-- SEASONS -->
+                                                            <div class="m-grid-col m-grid-col-left" style="padding-right:7px;">
+                                                                <div class="form-group mobile-thumbs-filter">
+
+                                                                    <form action="" method="GET">
+
+                                                                        <?php if (@$_GET['size'] AND $_GET['size'] !== 'all'): ?>
+                                                                        <input type="hidden" name="size" value="<?php echo $_GET['size']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['color'] AND $_GET['color'] !== 'all'): ?>
+                                                                        <input type="hidden" name="color" value="<?php echo $_GET['color']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['style'] AND $_GET['style'] !== 'all'): ?>
+                                                                        <input type="hidden" name="style" value="<?php echo $_GET['style']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['price'] AND $_GET['price'] !== 'default'): ?>
+                                                                        <input type="hidden" name="price" value="<?php echo $_GET['price']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['availability'] AND $_GET['availability'] !== 'all'): ?>
+                                                                        <input type="hidden" name="availability" value="<?php echo $_GET['availability']; ?>" />
+                                                                        <?php endif; ?>
+
+                                                                        <input type="hidden" class="this-filter" name="season" value="<?php echo @$_GET['season']; ?>" />
+
+                                                                        <select class="form-control bs-select input-sm select-mobile-thumbs-filter" style="<?php echo @$_GET['season'] ? $bg_color : ''; ?>" id="season-filter-desktop-top" <?php echo @$_GET['season'] ? 'data-style="btn dark"' : ''; ?>>
+
+                                                                            <?php if (@$_GET['season']) { ?>
+                                                                            <option value="all">All</option>
+                                                                            <?php } else { ?>
+                                                                            <option>SEASONS</option>
+                                                                            <?php } ?>
+
+                                                                            <?php
+                                                                            foreach($seasons_array as $season)
+                                                                            {
+                                                                                if (@$_GET['season'] && $_GET['season'] == $season)
+                                                                                {
+                                                                                    $seasons_selected = 'selected="selected"';
+                                                                                }
+                                                                                else $seasons_selected = '';
+                                                                                ?>
+
+                                                                            <option value="<?php echo $season; ?>" <?php echo $seasons_selected; ?>><?php echo ucfirst($season); ?></option>
+
+                                                                                <?php
+                                                                            } ?>
+
+                                                                        </select>
+
+                                                                    </form>
+
+                                                                </div>
+                                                            </div>
+                                                                    <?php
+                                                                } ?>
+
+                                                            <!-- AVAILABILITY -->
                                                             <div class="m-grid-col m-grid-col-left">
                                                                 <div class="form-group mobile-thumbs-filter">
 
@@ -446,8 +539,15 @@
                                                                         <?php if (@$_GET['style'] AND $_GET['style'] !== 'all'): ?>
                                                                         <input type="hidden" name="style" value="<?php echo $_GET['style']; ?>" />
                                                                         <?php endif; ?>
-                                                                        <?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
+                                                                        <?php if (@$occassion_array && $this->webspace_details->slug != 'tempoparis') : ?>
+                                                                            <?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
                                                                         <input type="hidden" name="occassion" value="<?php echo $_GET['occassion']; ?>" />
+                                                                            <?php endif; ?>
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$seasons_array && $this->webspace_details->slug == 'tempoparis') : ?>
+                                                                            <?php if (@$_GET['season'] AND $_GET['season'] !== 'all'): ?>
+                                                                        <input type="hidden" name="season" value="<?php echo $_GET['season']; ?>" />
+                                                                            <?php endif; ?>
                                                                         <?php endif; ?>
                                                                         <?php if (@$_GET['price'] AND $_GET['price'] !== 'default'): ?>
                                                                         <input type="hidden" name="price" value="<?php echo $_GET['price']; ?>" />
@@ -607,6 +707,7 @@
 
                                                                             if (@$size_array)
                                                                             { ?>
+                                                                            <!-- SIZE -->
                                                                             <div class="form-group mobile-thumbs-filter">
 
                                                                                 <form action="" method="GET">
@@ -617,9 +718,16 @@
                                                                                     <?php if (@$_GET['style'] AND $_GET['style'] !== 'all'): ?>
                                         											<input type="hidden" name="style" value="<?php echo $_GET['style']; ?>" />
                                         											<?php endif; ?>
-                                        											<?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
-                                        											<input type="hidden" name="occassion" value="<?php echo $_GET['occassion']; ?>" />
-                                        											<?php endif; ?>
+                                                                                    <?php if (@$occassion_array && $this->webspace_details->slug != 'tempoparis') : ?>
+                                                                                        <?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
+                                                                                    <input type="hidden" name="occassion" value="<?php echo $_GET['occassion']; ?>" />
+                                                                                        <?php endif; ?>
+                                                                                    <?php endif; ?>
+                                                                                    <?php if (@$seasons_array && $this->webspace_details->slug == 'tempoparis') : ?>
+                                                                                        <?php if (@$_GET['season'] AND $_GET['season'] !== 'all'): ?>
+                                                                                    <input type="hidden" name="season" value="<?php echo $_GET['season']; ?>" />
+                                                                                        <?php endif; ?>
+                                                                                    <?php endif; ?>
                                         											<?php if (@$_GET['price'] AND $_GET['price'] !== 'default'): ?>
                                         											<input type="hidden" name="price" value="<?php echo $_GET['price']; ?>" />
                                         											<?php endif; ?>
@@ -662,6 +770,7 @@
                                                                             <?php
                                                                             if (@$styles_array)
                                                                             { ?>
+                                                                            <!-- STYLES -->
                                                                             <div class="form-group mobile-thumbs-filter">
 
                                                                                 <form action="" method="GET">
@@ -672,9 +781,16 @@
                                         											<?php if (@$_GET['color'] AND $_GET['color'] !== 'all'): ?>
                                         											<input type="hidden" name="color" value="<?php echo $_GET['color']; ?>" />
                                         											<?php endif; ?>
-                                        											<?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
-                                        											<input type="hidden" name="occassion" value="<?php echo $_GET['occassion']; ?>" />
-                                        											<?php endif; ?>
+                                                                                    <?php if (@$occassion_array && $this->webspace_details->slug != 'tempoparis') : ?>
+                                                                                        <?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
+                                                                                    <input type="hidden" name="occassion" value="<?php echo $_GET['occassion']; ?>" />
+                                                                                        <?php endif; ?>
+                                                                                    <?php endif; ?>
+                                                                                    <?php if (@$seasons_array && $this->webspace_details->slug == 'tempoparis') : ?>
+                                                                                        <?php if (@$_GET['season'] AND $_GET['season'] !== 'all'): ?>
+                                                                                    <input type="hidden" name="season" value="<?php echo $_GET['season']; ?>" />
+                                                                                        <?php endif; ?>
+                                                                                    <?php endif; ?>
                                         											<?php if (@$_GET['price'] AND $_GET['price'] !== 'default'): ?>
                                         											<input type="hidden" name="price" value="<?php echo $_GET['price']; ?>" />
                                         											<?php endif; ?>
@@ -714,6 +830,7 @@
                                                                             </div>
                                                                                 <?php
                                                                             } ?>
+                                                                            <!-- PRICE -->
                                                                             <div class="form-group mobile-thumbs-filter">
 
                                                                                 <form action="" method="GET">
@@ -727,9 +844,16 @@
                                                                                     <?php if (@$_GET['style'] AND $_GET['style'] !== 'all'): ?>
                                         											<input type="hidden" name="style" value="<?php echo $_GET['style']; ?>" />
                                         											<?php endif; ?>
-                                        											<?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
-                                        											<input type="hidden" name="occassion" value="<?php echo $_GET['occassion']; ?>" />
-                                        											<?php endif; ?>
+                                                                                    <?php if (@$occassion_array && $this->webspace_details->slug != 'tempoparis') : ?>
+                                                                                        <?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
+                                                                                    <input type="hidden" name="occassion" value="<?php echo $_GET['occassion']; ?>" />
+                                                                                        <?php endif; ?>
+                                                                                    <?php endif; ?>
+                                                                                    <?php if (@$seasons_array && $this->webspace_details->slug == 'tempoparis') : ?>
+                                                                                        <?php if (@$_GET['season'] AND $_GET['season'] !== 'all'): ?>
+                                                                                    <input type="hidden" name="season" value="<?php echo $_GET['season']; ?>" />
+                                                                                        <?php endif; ?>
+                                                                                    <?php endif; ?>
                                                                                     <?php if (@$_GET['availability'] AND $_GET['availability'] !== 'all'): ?>
                                         											<input type="hidden" name="availability" value="<?php echo $_GET['availability']; ?>" />
                                         											<?php endif; ?>
@@ -772,6 +896,7 @@
                                                                             <?php
                                                                             if (@$color_array)
                                                                             { ?>
+                                                                            <!-- COLORS -->
                                                                             <div class="form-group mobile-thumbs-filter">
 
                                                                                 <form action="" method="GET">
@@ -782,9 +907,16 @@
                                                                                     <?php if (@$_GET['style'] AND $_GET['style'] !== 'all'): ?>
                                         											<input type="hidden" name="style" value="<?php echo $_GET['style']; ?>" />
                                         											<?php endif; ?>
-                                        											<?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
-                                        											<input type="hidden" name="occassion" value="<?php echo $_GET['occassion']; ?>" />
-                                        											<?php endif; ?>
+                                                                                    <?php if (@$occassion_array && $this->webspace_details->slug != 'tempoparis') : ?>
+                                                                                        <?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
+                                                                                    <input type="hidden" name="occassion" value="<?php echo $_GET['occassion']; ?>" />
+                                                                                        <?php endif; ?>
+                                                                                    <?php endif; ?>
+                                                                                    <?php if (@$seasons_array && $this->webspace_details->slug == 'tempoparis') : ?>
+                                                                                        <?php if (@$_GET['season'] AND $_GET['season'] !== 'all'): ?>
+                                                                                    <input type="hidden" name="season" value="<?php echo $_GET['season']; ?>" />
+                                                                                        <?php endif; ?>
+                                                                                    <?php endif; ?>
                                                                                     <?php if (@$_GET['price'] AND $_GET['price'] !== 'default'): ?>
                                         											<input type="hidden" name="price" value="<?php echo $_GET['price']; ?>" />
                                         											<?php endif; ?>
@@ -825,8 +957,9 @@
                                                                                 <?php
                                                                             } ?>
                                                                             <?php
-                                                                            if (@$occassion_array)
+                                                                            if (@$occassion_array && $this->webspace_details->slug != 'tempoparis')
                                                                             { ?>
+                                                                            <!-- OCCASSIONS -->
                                                                             <div class="form-group mobile-thumbs-filter">
 
                                                                                 <form action="" method="GET">
@@ -879,6 +1012,10 @@
                                                                             </div>
                                                                                 <?php
                                                                             } ?>
+                                                                            <?php
+                                                                            if (@$seasons_array && $this->webspace_details->slug == 'tempoparis')
+                                                                            { ?>
+                                                                            <!-- SEASONS -->
                                                                             <div class="form-group mobile-thumbs-filter">
 
                                                                                 <form action="" method="GET">
@@ -892,9 +1029,69 @@
                                                                                     <?php if (@$_GET['style'] AND $_GET['style'] !== 'all'): ?>
                                         											<input type="hidden" name="style" value="<?php echo $_GET['style']; ?>" />
                                         											<?php endif; ?>
-                                                                                    <?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
-                                        											<input type="hidden" name="occassion" value="<?php echo $_GET['occassion']; ?>" />
+                                        											<?php if (@$_GET['price'] AND $_GET['price'] !== 'default'): ?>
+                                        											<input type="hidden" name="price" value="<?php echo $_GET['price']; ?>" />
                                         											<?php endif; ?>
+                                                                                    <?php if (@$_GET['availability'] AND $_GET['availability'] !== 'all'): ?>
+                                        											<input type="hidden" name="availability" value="<?php echo $_GET['availability']; ?>" />
+                                        											<?php endif; ?>
+
+                                                                                    <input type="hidden" class="this-filter" name="season" value="<?php echo @$_GET['season']; ?>" />
+
+                                                                                    <select class="form-control input-sm select-mobile-thumbs-filter" style="<?php echo @$_GET['season'] ? $bg_color : ''; ?>" id="season-filter-mobile-top">
+
+                                                                                        <?php if (@$_GET['season']) { ?>
+                                                                                        <option value="all">All</option>
+                                                                                        <?php } else { ?>
+                                                                                        <option>SEASONS</option>
+                                                                                        <?php } ?>
+
+                                                                                        <?php
+                                    													foreach($seasons_array as $season)
+                                    													{
+                                    														if (@$_GET['season'] && $_GET['season'] == $season)
+                                    														{
+                                    															$seasons_selected = 'selected="selected"';
+                                    														}
+                                    														else $seasons_selected = '';
+                                    														?>
+
+                                                                                        <option value="<?php echo $season; ?>" <?php echo $seasons_selected; ?>><?php echo ucfirst($season); ?></option>
+
+                                                                                            <?php
+                                        												} ?>
+
+                                                                                    </select>
+
+                                                                                </form>
+
+                                                                            </div>
+                                                                                <?php
+                                                                            } ?>
+                                                                            <!-- AVAILABILITY -->
+                                                                            <div class="form-group mobile-thumbs-filter">
+
+                                                                                <form action="" method="GET">
+
+                                                                                    <?php if (@$_GET['size'] AND $_GET['size'] !== 'all'): ?>
+                                        											<input type="hidden" name="size" value="<?php echo $_GET['size']; ?>" />
+                                        											<?php endif; ?>
+                                        											<?php if (@$_GET['color'] AND $_GET['color'] !== 'all'): ?>
+                                        											<input type="hidden" name="color" value="<?php echo $_GET['color']; ?>" />
+                                        											<?php endif; ?>
+                                                                                    <?php if (@$_GET['style'] AND $_GET['style'] !== 'all'): ?>
+                                        											<input type="hidden" name="style" value="<?php echo $_GET['style']; ?>" />
+                                        											<?php endif; ?>
+                                                                                    <?php if (@$occassion_array && $this->webspace_details->slug != 'tempoparis') : ?>
+                                                                                        <?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
+                                                                                    <input type="hidden" name="occassion" value="<?php echo $_GET['occassion']; ?>" />
+                                                                                        <?php endif; ?>
+                                                                                    <?php endif; ?>
+                                                                                    <?php if (@$seasons_array && $this->webspace_details->slug == 'tempoparis') : ?>
+                                                                                        <?php if (@$_GET['season'] AND $_GET['season'] !== 'all'): ?>
+                                                                                    <input type="hidden" name="season" value="<?php echo $_GET['season']; ?>" />
+                                                                                        <?php endif; ?>
+                                                                                    <?php endif; ?>
                                         											<?php if (@$_GET['price'] AND $_GET['price'] !== 'default'): ?>
                                         											<input type="hidden" name="price" value="<?php echo $_GET['price']; ?>" />
                                         											<?php endif; ?>
@@ -1366,6 +1563,7 @@
 
                                                                             if (@$size_array)
                                                                             { ?>
+                                                                            <!-- SIZE -->
                                                                             <div class="form-group mobile-thumbs-filter">
 
                                                                                 <form action="" method="GET">
@@ -1376,9 +1574,16 @@
                                                                                     <?php if (@$_GET['style'] AND $_GET['style'] !== 'all'): ?>
                                         											<input type="hidden" name="style" value="<?php echo $_GET['style']; ?>" />
                                         											<?php endif; ?>
-                                        											<?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
-                                        											<input type="hidden" name="occassion" value="<?php echo $_GET['occassion']; ?>" />
-                                        											<?php endif; ?>
+                                                                                    <?php if (@$occassion_array && $this->webspace_details->slug != 'tempoparis') : ?>
+                                                                                        <?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
+                                                                                    <input type="hidden" name="occassion" value="<?php echo $_GET['occassion']; ?>" />
+                                                                                        <?php endif; ?>
+                                                                                    <?php endif; ?>
+                                                                                    <?php if (@$seasons_array && $this->webspace_details->slug == 'tempoparis') : ?>
+                                                                                        <?php if (@$_GET['season'] AND $_GET['season'] !== 'all'): ?>
+                                                                                    <input type="hidden" name="season" value="<?php echo $_GET['season']; ?>" />
+                                                                                        <?php endif; ?>
+                                                                                    <?php endif; ?>
                                         											<?php if (@$_GET['price'] AND $_GET['price'] !== 'default'): ?>
                                         											<input type="hidden" name="price" value="<?php echo $_GET['price']; ?>" />
                                         											<?php endif; ?>
@@ -1421,6 +1626,7 @@
                                                                             <?php
                                                                             if (@$styles_array)
                                                                             { ?>
+                                                                            <!-- STYLES -->
                                                                             <div class="form-group mobile-thumbs-filter">
 
                                                                                 <form action="" method="GET">
@@ -1431,9 +1637,16 @@
                                         											<?php if (@$_GET['color'] AND $_GET['color'] !== 'all'): ?>
                                         											<input type="hidden" name="color" value="<?php echo $_GET['color']; ?>" />
                                         											<?php endif; ?>
-                                        											<?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
-                                        											<input type="hidden" name="occassion" value="<?php echo $_GET['occassion']; ?>" />
-                                        											<?php endif; ?>
+                                                                                    <?php if (@$occassion_array && $this->webspace_details->slug != 'tempoparis') : ?>
+                                                                                        <?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
+                                                                                    <input type="hidden" name="occassion" value="<?php echo $_GET['occassion']; ?>" />
+                                                                                        <?php endif; ?>
+                                                                                    <?php endif; ?>
+                                                                                    <?php if (@$seasons_array && $this->webspace_details->slug == 'tempoparis') : ?>
+                                                                                        <?php if (@$_GET['season'] AND $_GET['season'] !== 'all'): ?>
+                                                                                    <input type="hidden" name="season" value="<?php echo $_GET['season']; ?>" />
+                                                                                        <?php endif; ?>
+                                                                                    <?php endif; ?>
                                         											<?php if (@$_GET['price'] AND $_GET['price'] !== 'default'): ?>
                                         											<input type="hidden" name="price" value="<?php echo $_GET['price']; ?>" />
                                         											<?php endif; ?>
@@ -1473,6 +1686,7 @@
                                                                             </div>
                                                                                 <?php
                                                                             } ?>
+                                                                            <!-- PRICE -->
                                                                             <div class="form-group mobile-thumbs-filter">
 
                                                                                 <form action="" method="GET">
@@ -1486,9 +1700,16 @@
                                                                                     <?php if (@$_GET['style'] AND $_GET['style'] !== 'all'): ?>
                                         											<input type="hidden" name="style" value="<?php echo $_GET['style']; ?>" />
                                         											<?php endif; ?>
-                                        											<?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
-                                        											<input type="hidden" name="occassion" value="<?php echo $_GET['occassion']; ?>" />
-                                        											<?php endif; ?>
+                                                                                    <?php if (@$occassion_array && $this->webspace_details->slug != 'tempoparis') : ?>
+                                                                                        <?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
+                                                                                    <input type="hidden" name="occassion" value="<?php echo $_GET['occassion']; ?>" />
+                                                                                        <?php endif; ?>
+                                                                                    <?php endif; ?>
+                                                                                    <?php if (@$seasons_array && $this->webspace_details->slug == 'tempoparis') : ?>
+                                                                                        <?php if (@$_GET['season'] AND $_GET['season'] !== 'all'): ?>
+                                                                                    <input type="hidden" name="season" value="<?php echo $_GET['season']; ?>" />
+                                                                                        <?php endif; ?>
+                                                                                    <?php endif; ?>
                                                                                     <?php if (@$_GET['availability'] AND $_GET['availability'] !== 'all'): ?>
                                         											<input type="hidden" name="availability" value="<?php echo $_GET['availability']; ?>" />
                                         											<?php endif; ?>
@@ -1531,6 +1752,7 @@
                                                                             <?php
                                                                             if (@$color_array)
                                                                             { ?>
+                                                                            <!-- COLORS -->
                                                                             <div class="form-group mobile-thumbs-filter">
 
                                                                                 <form action="" method="GET">
@@ -1541,9 +1763,16 @@
                                                                                     <?php if (@$_GET['style'] AND $_GET['style'] !== 'all'): ?>
                                         											<input type="hidden" name="style" value="<?php echo $_GET['style']; ?>" />
                                         											<?php endif; ?>
-                                        											<?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
-                                        											<input type="hidden" name="occassion" value="<?php echo $_GET['occassion']; ?>" />
-                                        											<?php endif; ?>
+                                                                                    <?php if (@$occassion_array && $this->webspace_details->slug != 'tempoparis') : ?>
+                                                                                        <?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
+                                                                                    <input type="hidden" name="occassion" value="<?php echo $_GET['occassion']; ?>" />
+                                                                                        <?php endif; ?>
+                                                                                    <?php endif; ?>
+                                                                                    <?php if (@$seasons_array && $this->webspace_details->slug == 'tempoparis') : ?>
+                                                                                        <?php if (@$_GET['season'] AND $_GET['season'] !== 'all'): ?>
+                                                                                    <input type="hidden" name="season" value="<?php echo $_GET['season']; ?>" />
+                                                                                        <?php endif; ?>
+                                                                                    <?php endif; ?>
                                                                                     <?php if (@$_GET['price'] AND $_GET['price'] !== 'default'): ?>
                                         											<input type="hidden" name="price" value="<?php echo $_GET['price']; ?>" />
                                         											<?php endif; ?>
@@ -1584,8 +1813,9 @@
                                                                                 <?php
                                                                             } ?>
                                                                             <?php
-                                                                            if (@$occassion_array)
+                                                                            if (@$occassion_array && $this->webspace_details->slug != 'tempoparis')
                                                                             { ?>
+                                                                            <!-- OCCASSIONS -->
                                                                             <div class="form-group mobile-thumbs-filter">
 
                                                                                 <form action="" method="GET">
@@ -1638,6 +1868,10 @@
                                                                             </div>
                                                                                 <?php
                                                                             } ?>
+                                                                            <?php
+                                                                            if (@$seasons_array && $this->webspace_details->slug == 'tempoparis')
+                                                                            { ?>
+                                                                            <!-- SEASONS -->
                                                                             <div class="form-group mobile-thumbs-filter">
 
                                                                                 <form action="" method="GET">
@@ -1651,9 +1885,69 @@
                                                                                     <?php if (@$_GET['style'] AND $_GET['style'] !== 'all'): ?>
                                         											<input type="hidden" name="style" value="<?php echo $_GET['style']; ?>" />
                                         											<?php endif; ?>
-                                                                                    <?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
-                                        											<input type="hidden" name="occassion" value="<?php echo $_GET['occassion']; ?>" />
+                                        											<?php if (@$_GET['price'] AND $_GET['price'] !== 'default'): ?>
+                                        											<input type="hidden" name="price" value="<?php echo $_GET['price']; ?>" />
                                         											<?php endif; ?>
+                                                                                    <?php if (@$_GET['availability'] AND $_GET['availability'] !== 'all'): ?>
+                                        											<input type="hidden" name="availability" value="<?php echo $_GET['availability']; ?>" />
+                                        											<?php endif; ?>
+
+                                                                                    <input type="hidden" class="this-filter" name="season" value="<?php echo @$_GET['season']; ?>" />
+
+                                                                                    <select class="form-control input-sm select-mobile-thumbs-filter" style="<?php echo @$_GET['season'] ? $bg_color : ''; ?>" id="season-filter-mobile-bottom">
+
+                                                                                        <?php if (@$_GET['season']) { ?>
+                                                                                        <option value="all">All</option>
+                                                                                        <?php } else { ?>
+                                                                                        <option>SEASONS</option>
+                                                                                        <?php } ?>
+
+                                                                                        <?php
+                                    													foreach($seasons_array as $season)
+                                    													{
+                                    														if (@$_GET['season'] && $_GET['season'] == $season)
+                                    														{
+                                    															$seasons_selected = 'selected="selected"';
+                                    														}
+                                    														else $seasons_selected = '';
+                                    														?>
+
+                                                                                        <option value="<?php echo $season; ?>" <?php echo $seasons_selected; ?>><?php echo ucfirst($season); ?></option>
+
+                                                                                            <?php
+                                        												} ?>
+
+                                                                                    </select>
+
+                                                                                </form>
+
+                                                                            </div>
+                                                                                <?php
+                                                                            } ?>
+                                                                            <!-- AVAILABILITY -->
+                                                                            <div class="form-group mobile-thumbs-filter">
+
+                                                                                <form action="" method="GET">
+
+                                                                                    <?php if (@$_GET['size'] AND $_GET['size'] !== 'all'): ?>
+                                        											<input type="hidden" name="size" value="<?php echo $_GET['size']; ?>" />
+                                        											<?php endif; ?>
+                                        											<?php if (@$_GET['color'] AND $_GET['color'] !== 'all'): ?>
+                                        											<input type="hidden" name="color" value="<?php echo $_GET['color']; ?>" />
+                                        											<?php endif; ?>
+                                                                                    <?php if (@$_GET['style'] AND $_GET['style'] !== 'all'): ?>
+                                        											<input type="hidden" name="style" value="<?php echo $_GET['style']; ?>" />
+                                        											<?php endif; ?>
+                                                                                    <?php if (@$occassion_array && $this->webspace_details->slug != 'tempoparis') : ?>
+                                                                                        <?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
+                                                                                    <input type="hidden" name="occassion" value="<?php echo $_GET['occassion']; ?>" />
+                                                                                        <?php endif; ?>
+                                                                                    <?php endif; ?>
+                                                                                    <?php if (@$seasons_array && $this->webspace_details->slug == 'tempoparis') : ?>
+                                                                                        <?php if (@$_GET['season'] AND $_GET['season'] !== 'all'): ?>
+                                                                                    <input type="hidden" name="season" value="<?php echo $_GET['season']; ?>" />
+                                                                                        <?php endif; ?>
+                                                                                    <?php endif; ?>
                                         											<?php if (@$_GET['price'] AND $_GET['price'] !== 'default'): ?>
                                         											<input type="hidden" name="price" value="<?php echo $_GET['price']; ?>" />
                                         											<?php endif; ?>
@@ -1729,6 +2023,7 @@
 
                                                                 if (@$size_array)
                                                                 { ?>
+                                                            <!-- SIZE -->
                                                             <div class="m-grid-col m-grid-col-left" style="padding-right:7px;">
                                                                 <div class="form-group mobile-thumbs-filter">
 
@@ -1740,8 +2035,15 @@
                                                                         <?php if (@$_GET['style'] AND $_GET['style'] !== 'all'): ?>
                                                                         <input type="hidden" name="style" value="<?php echo $_GET['style']; ?>" />
                                                                         <?php endif; ?>
-                                                                        <?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
+                                                                        <?php if (@$occassion_array && $this->webspace_details->slug != 'tempoparis') : ?>
+                                                                            <?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
                                                                         <input type="hidden" name="occassion" value="<?php echo $_GET['occassion']; ?>" />
+                                                                            <?php endif; ?>
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$seasons_array && $this->webspace_details->slug == 'tempoparis') : ?>
+                                                                            <?php if (@$_GET['season'] AND $_GET['season'] !== 'all'): ?>
+                                                                        <input type="hidden" name="season" value="<?php echo $_GET['season']; ?>" />
+                                                                            <?php endif; ?>
                                                                         <?php endif; ?>
                                                                         <?php if (@$_GET['price'] AND $_GET['price'] !== 'default'): ?>
                                                                         <input type="hidden" name="price" value="<?php echo $_GET['price']; ?>" />
@@ -1787,6 +2089,7 @@
                                                                 <?php
                                                                 if (@$styles_array)
                                                                 { ?>
+                                                            <!-- STYLES -->
                                                             <div class="m-grid-col m-grid-col-left" style="padding-right:7px;">
                                                                 <div class="form-group mobile-thumbs-filter">
 
@@ -1798,8 +2101,15 @@
                                                                         <?php if (@$_GET['color'] AND $_GET['color'] !== 'all'): ?>
                                                                         <input type="hidden" name="color" value="<?php echo $_GET['color']; ?>" />
                                                                         <?php endif; ?>
-                                                                        <?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
+                                                                        <?php if (@$occassion_array && $this->webspace_details->slug != 'tempoparis') : ?>
+                                                                            <?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
                                                                         <input type="hidden" name="occassion" value="<?php echo $_GET['occassion']; ?>" />
+                                                                            <?php endif; ?>
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$seasons_array && $this->webspace_details->slug == 'tempoparis') : ?>
+                                                                            <?php if (@$_GET['season'] AND $_GET['season'] !== 'all'): ?>
+                                                                        <input type="hidden" name="season" value="<?php echo $_GET['season']; ?>" />
+                                                                            <?php endif; ?>
                                                                         <?php endif; ?>
                                                                         <?php if (@$_GET['price'] AND $_GET['price'] !== 'default'): ?>
                                                                         <input type="hidden" name="price" value="<?php echo $_GET['price']; ?>" />
@@ -1842,6 +2152,7 @@
                                                                     <?php
                                                                 } ?>
 
+                                                            <!-- PRICE -->
                                                             <div class="m-grid-col m-grid-col-left" style="padding-right:7px;">
                                                                 <div class="form-group mobile-thumbs-filter">
 
@@ -1856,8 +2167,15 @@
                                                                         <?php if (@$_GET['style'] AND $_GET['style'] !== 'all'): ?>
                                                                         <input type="hidden" name="style" value="<?php echo $_GET['style']; ?>" />
                                                                         <?php endif; ?>
-                                                                        <?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
+                                                                        <?php if (@$occassion_array && $this->webspace_details->slug != 'tempoparis') : ?>
+                                                                            <?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
                                                                         <input type="hidden" name="occassion" value="<?php echo $_GET['occassion']; ?>" />
+                                                                            <?php endif; ?>
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$seasons_array && $this->webspace_details->slug == 'tempoparis') : ?>
+                                                                            <?php if (@$_GET['season'] AND $_GET['season'] !== 'all'): ?>
+                                                                        <input type="hidden" name="season" value="<?php echo $_GET['season']; ?>" />
+                                                                            <?php endif; ?>
                                                                         <?php endif; ?>
                                                                         <?php if (@$_GET['availability'] AND $_GET['availability'] !== 'all'): ?>
                                                                         <input type="hidden" name="availability" value="<?php echo $_GET['availability']; ?>" />
@@ -1893,6 +2211,7 @@
                                                                 <?php
                                                                 if (@$color_array)
                                                                 { ?>
+                                                            <!-- COLORS -->
                                                             <div class="m-grid-col m-grid-col-left" style="padding-right:7px;">
                                                                 <div class="form-group mobile-thumbs-filter">
 
@@ -1904,8 +2223,15 @@
                                                                         <?php if (@$_GET['style'] AND $_GET['style'] !== 'all'): ?>
                                                                         <input type="hidden" name="style" value="<?php echo $_GET['style']; ?>" />
                                                                         <?php endif; ?>
-                                                                        <?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
+                                                                        <?php if (@$occassion_array && $this->webspace_details->slug != 'tempoparis') : ?>
+                                                                            <?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
                                                                         <input type="hidden" name="occassion" value="<?php echo $_GET['occassion']; ?>" />
+                                                                            <?php endif; ?>
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$seasons_array && $this->webspace_details->slug == 'tempoparis') : ?>
+                                                                            <?php if (@$_GET['season'] AND $_GET['season'] !== 'all'): ?>
+                                                                        <input type="hidden" name="season" value="<?php echo $_GET['season']; ?>" />
+                                                                            <?php endif; ?>
                                                                         <?php endif; ?>
                                                                         <?php if (@$_GET['price'] AND $_GET['price'] !== 'default'): ?>
                                                                         <input type="hidden" name="price" value="<?php echo $_GET['price']; ?>" />
@@ -1949,8 +2275,9 @@
                                                                 } ?>
 
                                                                 <?php
-                                                                if (@$occassion_array)
+                                                                if (@$occassion_array && $this->webspace_details->slug != 'tempoparis')
                                                                 { ?>
+                                                            <!-- OCCASSIONS -->
                                                             <div class="m-grid-col m-grid-col-left" style="padding-right:7px;">
                                                                 <div class="form-group mobile-thumbs-filter">
 
@@ -2006,6 +2333,65 @@
                                                                     <?php
                                                                 } ?>
 
+                                                                <?php
+                                                                if (@$seasons_array && $this->webspace_details->slug == 'tempoparis')
+                                                                { ?>
+                                                            <div class="m-grid-col m-grid-col-left" style="padding-right:7px;">
+                                                                <div class="form-group mobile-thumbs-filter">
+
+                                                                    <form action="" method="GET">
+
+                                                                        <?php if (@$_GET['size'] AND $_GET['size'] !== 'all'): ?>
+                                                                        <input type="hidden" name="size" value="<?php echo $_GET['size']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['color'] AND $_GET['color'] !== 'all'): ?>
+                                                                        <input type="hidden" name="color" value="<?php echo $_GET['color']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['style'] AND $_GET['style'] !== 'all'): ?>
+                                                                        <input type="hidden" name="style" value="<?php echo $_GET['style']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['price'] AND $_GET['price'] !== 'default'): ?>
+                                                                        <input type="hidden" name="price" value="<?php echo $_GET['price']; ?>" />
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$_GET['availability'] AND $_GET['availability'] !== 'all'): ?>
+                                                                        <input type="hidden" name="availability" value="<?php echo $_GET['availability']; ?>" />
+                                                                        <?php endif; ?>
+
+                                                                        <input type="hidden" class="this-filter" name="season" value="<?php echo @$_GET['season']; ?>" />
+
+                                                                        <select class="form-control bs-select input-sm select-mobile-thumbs-filter" style="<?php echo @$_GET['season'] ? $bg_color : ''; ?>" id="season-filter-desktop-bottom" <?php echo @$_GET['season'] ? 'data-style="btn dark"' : ''; ?>>
+
+                                                                            <?php if (@$_GET['season']) { ?>
+                                                                            <option value="all">All</option>
+                                                                            <?php } else { ?>
+                                                                            <option>SEASONS</option>
+                                                                            <?php } ?>
+
+                                                                            <?php
+                                                                            foreach($seasons_array as $season)
+                                                                            {
+                                                                                if (@$_GET['season'] && $_GET['season'] == $season)
+                                                                                {
+                                                                                    $seasons_selected = 'selected="selected"';
+                                                                                }
+                                                                                else $seasons_selected = '';
+                                                                                ?>
+
+                                                                            <option value="<?php echo $season; ?>" <?php echo $seasons_selected; ?>><?php echo ucfirst($season); ?></option>
+
+                                                                                <?php
+                                                                            } ?>
+
+                                                                        </select>
+
+                                                                    </form>
+
+                                                                </div>
+                                                            </div>
+                                                                    <?php
+                                                                } ?>
+
+                                                            <!-- AVAILABILITY -->
                                                             <div class="m-grid-col m-grid-col-left">
                                                                 <div class="form-group mobile-thumbs-filter">
 
@@ -2020,8 +2406,15 @@
                                                                         <?php if (@$_GET['style'] AND $_GET['style'] !== 'all'): ?>
                                                                         <input type="hidden" name="style" value="<?php echo $_GET['style']; ?>" />
                                                                         <?php endif; ?>
-                                                                        <?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
+                                                                        <?php if (@$occassion_array && $this->webspace_details->slug != 'tempoparis') : ?>
+                                                                            <?php if (@$_GET['occassion'] AND $_GET['occassion'] !== 'all'): ?>
                                                                         <input type="hidden" name="occassion" value="<?php echo $_GET['occassion']; ?>" />
+                                                                            <?php endif; ?>
+                                                                        <?php endif; ?>
+                                                                        <?php if (@$seasons_array && $this->webspace_details->slug == 'tempoparis') : ?>
+                                                                            <?php if (@$_GET['season'] AND $_GET['season'] !== 'all'): ?>
+                                                                        <input type="hidden" name="season" value="<?php echo $_GET['season']; ?>" />
+                                                                            <?php endif; ?>
                                                                         <?php endif; ?>
                                                                         <?php if (@$_GET['price'] AND $_GET['price'] !== 'default'): ?>
                                                                         <input type="hidden" name="price" value="<?php echo $_GET['price']; ?>" />

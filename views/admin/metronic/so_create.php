@@ -501,7 +501,7 @@
                                     <div class="thumb-tiles-wrapper margin-top-20 <?php echo @$des_subcats ? '' : 'display-none'; ?>" data-row-count="<?php echo @$products_count; ?>" data-object_data='{"<?php echo $this->security->get_csrf_token_name(); ?>":"<?php echo $this->security->get_csrf_hash(); ?>"}'>
 
         								<?php if ($search_string) { ?>
-        	                            <h1><small><em>Search results for:</em></small> "<?php echo $search_string; ?>"</h1>
+        	                            <h1 style="word-wrap:break-word;"><small><em>Search results for:</em></small> "<?php echo $search_string; ?>"</h1>
         	                            <br />
         	                            <?php } ?>
 
@@ -915,7 +915,7 @@
 
                                 <!-- BEGIN FORM =======================================================-->
                                 <?php echo form_open(
-                                    $url_pre.'/sales_orders/new_order',
+                                    $url_pre.'/sales_orders/'.($role == 'sales' ? 'new_order' : 'create'),
                                     array(
                                         'class' => 'form-horizontal',
                                         'id' => 'form-so_create_summary_review'
@@ -1017,7 +1017,7 @@
                                             <p class="customer-billing-address">
                                                 <?php echo @$store_details->store_name ?: 'CUSTOMER NAME'; ?> <br />
                                                 <?php echo @$store_details->address1 ?: 'Address1'; ?> <br />
-                                                <?php echo @$store_details->address2 ? $store_details->address2.'<br />' : 'Address2<br />'; ?>
+                                                <?php echo @$store_details->address2 ? $store_details->address2.'<br />' : (@$store_details->store_name ? '' : 'Address2<br />'); ?>
                                                 <?php echo @$store_details->city ?: 'City'; ?>, <?php echo @$store_details->state ?: 'State'; ?> <br />
                                                 <?php echo @$store_details->country ?: 'Country'; ?> <br />
                                                 <?php echo @$store_details->telephone ?: 'Telephone'; ?> <br />
@@ -1061,7 +1061,7 @@
                                             <p class="customer-shipping-address">
                                                 <?php echo @$store_details->store_name ?: 'CUSTOMER NAME'; ?> <br />
                                                 <?php echo @$store_details->address1 ?: 'Address1'; ?> <br />
-                                                <?php echo @$store_details->address2 ? $store_details->address2.'<br />' : 'Address2<br />'; ?>
+                                                <?php echo @$store_details->address2 ? $store_details->address2.'<br />' : (@$store_details->store_name ? '' : 'Address2<br />'); ?>
                                                 <?php echo @$store_details->city ?: 'City'; ?>, <?php echo @$store_details->state ?: 'State'; ?> <br />
                                                 <?php echo @$store_details->country ?: 'Country'; ?> <br />
                                                 <?php echo @$store_details->telephone ?: 'Telephone'; ?> <br />
@@ -1855,19 +1855,56 @@
 
         										<h4> <cite>CURRENT USERS:</cite> </h4>
 
-                                                <div class="alert alert-warning hide">
+                                                <div class="alert alert-warning display-none">
         											<button class="close" data-close="alert"></button>
         											Select only one user
         										</div>
 
+                                                <div class="row">
+        				                            <div class="col-md-9 margin-bottom-10">
+
+        				                                <!-- BEGIN FORM-->
+        				                                <!-- FORM =======================================================================-->
+        				                                <?php
+                                                        //echo form_open(
+                                                            //$url_pre.'/sales_orders/search_current_user',
+                                                            //array(
+                                                            //    'class'=>'form-horizontal',
+                                                            //    'id'=>'form-wholesale_user_list_search'
+                                                            //)
+                                                        //);
+                                                        ?>
+
+        				                                <div class="input-group">
+        				                                    <input class="form-control select-user-search" placeholder="Search for Email or Store Name..." name="search_string" type="text" data-role="<?php echo @$role ?: ''; ?>" />
+        				                                    <span class="input-group-btn">
+        				                                        <button class="btn-search-current-user btn dark uppercase bold" type="button">Search</button>
+        				                                    </span>
+        													<span class="input-group-btn">
+        				                                        <button class="btn-reset-search-current-user btn default uppercase bold tooltips" data-original-title="Reset list" type="button" data-end_cur="<?php echo @$number_of_pages; ?>"><i class="fa fa-refresh"></i></button>
+        				                                    </span>
+        				                                </div>
+
+        				                                <!--</form>
+        				                                <!-- End FORM =======================================================================-->
+        				                                <!-- END FORM-->
+
+        				                            </div>
+        				                        </div>
+
         										<div class="form-group">
+
+                                                    <h4 class="caption search display-none">
+        												Search result for: "<strong class="search_string"></strong>"
+        											</h4>
+
         											<label>My Users:<span class="required"> * </span>
         											</label>
         											<div class="form-control height-auto">
         												<div class="scroller" style="height:300px;" data-always-visible="1">
 
         													<div id="email_array_error"> </div>
-        													<div class="mt-checkbox-list">
+        													<div class="mt-checkbox-list select-users-list">
 
         														<?php
                                                                 if (@$users)
@@ -1881,12 +1918,12 @@
                                                                         ;
                                                                         ?>
 
-                                                                    <label class="mt-checkbox mt-checkbox-outline">
-            															<?php echo ucwords($user->store_name); ?> <br />
-            															<?php echo ucwords(strtolower($user->firstname.' '.$user->lastname)).' <cite class="small">('.$user->email.')</cite> '; ?>
-                                                                        <input type="checkbox" class="send_to_current_user list" name="email[]" value="<?php echo $user->user_id; ?>" data-error-container="email_array_error" <?php echo $checked; ?> />
-                                                                        <span></span>
-                                                                    </label>
+                                                                <label class="mt-checkbox mt-checkbox-outline">
+        															<?php echo ucwords($user->store_name); ?> <br />
+        															<?php echo ucwords(strtolower($user->firstname.' '.$user->lastname)).' <cite class="small">('.$user->email.')</cite> '; ?>
+                                                                    <input type="checkbox" class="send_to_current_user list" name="email[]" value="<?php echo $user->user_id; ?>" data-error-container="email_array_error" <?php echo $checked; ?> />
+                                                                    <span></span>
+                                                                </label>
 
             															<?php
                                                                     }

@@ -29,17 +29,18 @@ class Send_product_clicks extends Admin_Controller {
 			$this->session->set_flashdata('error', 'no_id_passed');
 
 			// redirect user
-			redirect($this->config->slash_item('admin_folder').'campaigns/sales_package', 'location');
+			redirect('admin/campaigns/sales_package', 'location');
 		}
 
 		// generate the plugin scripts and css
 		$this->_create_plugin_scripts();
 
-		// load pertinent library/model/helpers
-		$this->load->library('products/product_details');
-
 		// connect to database for use by model
 		$DB = $this->load->database('instyle', TRUE);
+
+		// load pertinent library/model/helpers
+		$this->load->library('products/product_details');
+		$this->load->library('users/wholesale_user_details');
 
 		// get user details manually
 		$DB->query('SET SESSION group_concat_max_len = 1000000');
@@ -68,6 +69,20 @@ class Send_product_clicks extends Admin_Controller {
 		//echo $DB->last_query(); die();
 
 		$user_details = $q1->row();
+
+		// if not hub site, check if user is for the sat_site list
+		if (@$this->webspace_details->options['site_type'] != 'hub_site')
+		{
+			if ($user_details->reference_designer != $this->webspace_details->slug)
+			{
+				// nothing more to do...
+				// set flash data
+				$this->session->set_flashdata('error', 'no_id_passed');
+
+				// redirect user
+				redirect('admin/campaigns/sales_package', 'location');
+			}
+		}
 
 		// set some data
 		$this->data['date'] = $this->input->get('date');

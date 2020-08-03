@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Get_store_details extends Admin_Controller {
+class Get_store_details extends MY_Controller {
 
 	/**
 	 * Constructor
@@ -26,13 +26,6 @@ class Get_store_details extends Admin_Controller {
 	public function index()
 	{
 		$this->output->enable_profiler(FALSE);
-
-		if ( ! $this->input->post('so_store_id'))
-		{
-			// nothing more to do...
-			echo '';
-			exit;
-		}
 
 		// grab the post variable
 		//$designer = 'basixblacklabel';
@@ -69,6 +62,26 @@ class Get_store_details extends Admin_Controller {
 			// set session
 			$this->session->set_userdata('admin_so_user_id', $so_store_id);
 			$this->session->set_userdata('admin_so_user_cat', 'ws');
+		}
+		else
+		{
+			$html.= 'CUSTOMER NAME'
+				.'<br />'
+				.'Address1'
+				.'<br />'
+				.'Address2'
+				.'<br />'
+				.'City, State'
+				.'<br />'
+				.'Country'
+				.'<br />'
+				.'Telephone'
+				.'<br />ATTN: Contact Name (email)'
+			;
+
+			// set session
+			$this->session->unset_userdata('admin_so_user_id');
+			$this->session->unset_userdata('admin_so_user_cat');
 		}
 
 		echo $html;

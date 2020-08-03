@@ -51,7 +51,7 @@
                         if ($s == 'XL1' OR $s == 'XL2') continue;
                         $exp = explode('_', $size_label);
                         $inv_size_label = $inv_prefix.end($exp);
-                        echo '<td>'.$product->$inv_size_label.'</td>';
+                        echo '<td>'..$inv_size_label.' '.$product->$inv_size_label.'</td>';
                     }
                     ?>
 

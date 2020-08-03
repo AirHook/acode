@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Get_item extends Admin_Controller {
+class Get_item extends MY_Controller {
 
 	/**
 	 * Constructor
@@ -172,7 +172,7 @@ class Get_item extends Admin_Controller {
 		foreach ($size_names as $size_label => $s)
 		{
 			// level 2 users, do not show zero stock sizes
-			//if ($product->$size_label === '0') continue;
+			if ($product->$size_label === '0') continue;
 
 			$qty = 0;
 				//isset($size_qty[$size_label])

@@ -99,13 +99,23 @@ class Product_clicks extends Shop_Controller
 			}
 		}
 
+		// global catch all for inactive wholeslae users
+		if (@$this->wholesale_user_details->status != '1')
+		{
+			// set flash notice
+			$this->session->set_flashdata('error', 'status_inactive');
+
+			// send to request for activation page
+			redirect('account/request/activation', 'location');
+		}
+
 		// auto sign in user is not already signed in
 		// do notifications where necessary
 		/* */
 		if ( ! $this->session->this_login_id)
 		{
 			// auto activate user if he clicks on the sales package
-			if ($this->wholesale_user_details->status != '1') $this->wholesale_user_details->activate_user();
+			//if ($this->wholesale_user_details->status != '1') $this->wholesale_user_details->activate_user();
 			// set wholesale user session
 			$this->wholesale_user_details->set_session();
 			// record login details

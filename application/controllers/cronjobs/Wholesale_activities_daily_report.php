@@ -31,17 +31,26 @@ class Wholesale_activities_daily_report extends MY_Controller {
 	 *
 	 * @return	void
 	 */
-	public function index()
+	public function index($date = '', $test = '')
 	{
 		// for debuggin purposes, set $test to TRUE;
-		$test = FALSE;
+		$test = $test ?: '0';
 
 		// for manual purposes, set dat here or leave it '' empty..
-		if (ENVIRONMENT == 'development' OR $test === TRUE)
+		if (ENVIRONMENT == 'development' OR $test === '1')
 		{
-			$this->data['date'] = date('Y-m-d', time()); // today
+			$this->data['date'] =
+				$date
+				?: date('Y-m-d', time()) // today
+			;
 		}
-		else $this->data['date'] = date('Y-m-d', @time()-86400); // yesterday
+		else
+		{
+			$this->data['date'] =
+				$date
+				?: date('Y-m-d', @time()-86400)  // default is yesterday
+			;
+		}
 
 		// load pertinent library/model/helpers
 		$this->load->model('get_wholesale_login_details');
@@ -66,7 +75,7 @@ class Wholesale_activities_daily_report extends MY_Controller {
 				// let send out sales user wholesale user activity report only if there is activity
 				if ($loggedin_users)
 				{
-					if (ENVIRONMENT == 'development' OR $test === TRUE) // ---> used for development purposes
+					if (ENVIRONMENT == 'development' OR $test === '1') // ---> used for development purposes
 					{
 						// we are unable to send out email in our dev environment
 						// so we check on the email template instead.
@@ -116,7 +125,7 @@ class Wholesale_activities_daily_report extends MY_Controller {
 				}
 				else
 				{
-					if (ENVIRONMENT == 'development' OR $test === TRUE) // ---> used for development purposes
+					if (ENVIRONMENT == 'development' OR $test === '1') // ---> used for development purposes
 					{
 						// we are unable to send out email in our dev environment
 						// so we check on the email template instead.
@@ -140,7 +149,7 @@ class Wholesale_activities_daily_report extends MY_Controller {
 		// save the view file as message
 		$message = $this->load->view('templates/daily_wholesale_activities_report_general', $this->data, TRUE);
 
-		if (ENVIRONMENT == 'development' OR $test === TRUE) // ---> used for development purposes
+		if (ENVIRONMENT == 'development' OR $test === '1') // ---> used for development purposes
 		{
 			// we are unable to send out email in our dev environment
 			// so we check on the email template instead.

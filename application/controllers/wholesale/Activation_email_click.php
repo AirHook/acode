@@ -77,6 +77,16 @@ class Activation_email_click extends Frontend_Controller
 			}
 		}
 
+		// global catch all for inactive wholeslae users
+		if (@$this->wholesale_user_details->status != '1')
+		{
+			// set flash notice
+			$this->session->set_flashdata('error', 'status_inactive');
+
+			// send to request for activation page
+			redirect('account/request/activation', 'location');
+		}
+
 		// auto sign in user is not already signed in
 		// set a boolean param for new or exisiting login
 		$new_login = FALSE;

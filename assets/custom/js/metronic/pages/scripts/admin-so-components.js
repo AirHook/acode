@@ -299,20 +299,130 @@ var ComponentsEditors = function () {
         });
 
         // select store modal actions
-        $('[name="email[]"]').on('change', function(){
+        $('.select-users-list').on('change', '[name="email[]"]', function(){
             // call jquery loading on po table of items
             $(this).closest('.form-control').loading();
             // a fix on overlay being covered by modal on modals
             $('.loading-overlay').css('z-index', 100000);
-            // check/uncheck boxes
-            $(".send_to_current_user").not(this).prop('checked', false);
-            // get data
-            var objectData = $(this).closest('.modal-content').data('object_data');
-            objectData.so_store_id = $(this).val();
-            // set input element accordingly
-            $('[name="user_id"]').val(objectData.so_store_id);
+            // set data
+            var objectData = object_data;
+            // everything starts unchecked
+            if ($(this).is(':checked')) {
+                // uncheck the rest of the list
+                $(".send_to_current_user").not(this).prop('checked', false);
+                // get data
+                objectData.so_store_id = $(this).val();
+                // set input element accordingly
+                $('[name="user_id"]').val(objectData.so_store_id);
+            } else {
+                // reset input element accordingly
+                $('[name="user_id"]').val('');
+                // remove objectData property
+                delete(objectData.so_store_id);
+            }
             // call function
             getStoreDetails(objectData);
+        });
+
+        // scroll to selected element where necessary
+        $('#modal-select_store').on('shown.bs.modal', function(){
+            $('.scroller').scrollTop(0);
+            var scrollPos;
+            $('[name="email[]"]').each(function(){
+                // get checked element
+                if ($(this).is(':checked')) {
+                    // get elements position relative to container
+                    // position() refers to immediate parent element
+                    // we have to go up the DOM step by step
+                    scrollPos = $(this).parents('label').position().top;
+                }
+            });
+            $('.scroller').animate({
+                scrollTop: scrollPos - 30
+            }, 800);
+        });
+
+        // search current user
+        $('.btn-search-current-user').on('click', function(){
+            // call jquery loading on options section
+            $('.select-users-list').loading();
+            // process data
+            var thisUrl;
+            var role = $('[name="search_string"]').data('role');
+            var search_string = $('[name="search_string"]').val();
+            if (search_string != '') {
+                if (role == 'sales') {
+                    thisUrl = base_url + "my_account/sales/sales_orders/search_current_user.html"
+                } else {
+                    thisUrl = base_url + "admin/sales_orders/search_current_user.html";
+                }
+                objectData = object_data;
+                objectData.search_string = search_string;
+                var search_current_users = $.ajax({
+                    type:    "POST",
+                    url:     thisUrl,
+                    data:    objectData
+                });
+                search_current_users.done(function(data){
+                    if (data != 'error'){
+                        // show caption search
+                        $('.caption.search > .search_string').html(search_string);
+                        $('.caption.search').show();
+                        // update user list
+                        $('.select-users-list').hide();
+                        $('.select-users-list').html('');
+                        $('.select-users-list').html(data);
+                        $('.select-users-list').fadeIn();
+                    }
+                });
+                search_current_users.fail(function(jqXHR, textStatus, errorThrown) {
+                    $('#loading').modal('hide');
+                    alert("Search Current User Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
+                    //$('#reloading').modal('show');
+                    //location.reload();
+                });
+            } else {
+                alert('Please type keywords to search.');
+            }
+            // stop jquery loading
+            $('.select-users-list').loading('stop');
+        });
+
+        // reset search user button
+        $('.btn-reset-search-current-user').on('click', function(){
+            $('.select-users-list').fadeOut();
+            // get original list
+            // process data
+            var thisUrl;
+            var role = $('[name="search_string"]').data('role');
+            if (role == 'sales') {
+                thisUrl = base_url + "my_account/sales/sales_orders/get_stores_list.html"
+            } else {
+                thisUrl = base_url + "admin/sales_orders/get_stores_list.html";
+            }
+            var get_stores_list = $.ajax({
+                type:    "GET",
+                url:     thisUrl
+            });
+            get_stores_list.done(function(data){
+                if (data != 'error'){
+                    // update user list
+                    $('.select-users-list').html('');
+                    $('.select-users-list').html(data);
+                    $('.select-users-list').fadeIn();
+                }
+                $('#modal-select_store').trigger('shown.bs.modal');
+            });
+            get_stores_list.fail(function(jqXHR, textStatus, errorThrown) {
+                $('#loading').modal('hide');
+                alert("Get Stores List Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
+                //$('#reloading').modal('show');
+                //location.reload();
+            });
+            // reset caption search
+            $('.caption.search').hide();
+            $('.caption.search > .search_string').html('');
+            $('[name="search_string"]').val('');
         });
 
         // clicked on product grid view
@@ -340,7 +450,12 @@ var ComponentsEditors = function () {
                     size_qty[$(this).prop('name')] = $(this).val();
                 }
             });
-            objectData.size_qty = size_qty;
+            if ($.isEmptyObject(size_qty)){
+                alert('Please select size and quantity...');
+                return;
+            }else{
+                objectData.size_qty = size_qty;
+            }
             // hide this modal
             $('#modal-size_qty').modal('hide');
             // add item...

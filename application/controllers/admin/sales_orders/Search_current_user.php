@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Get_stores_list extends Sales_user_Controller {
+class Search_current_user extends MY_Controller {
 
 	/**
 	 * Constructor
@@ -25,23 +25,45 @@ class Get_stores_list extends Sales_user_Controller {
 	 */
 	public function index()
 	{
-		$this->output->enable_profiler(FALSE);
+		if ( ! $this->input->post())
+		{
+			// nothing more to do...
+			echo 'error';
+			exit;
+		}
 
 		// load pertinent library/model/helpers
 		$this->load->library('users/wholesale_users_list');
 
-		// get the list
-		// this is logged in sales user
-		$stores = $this->wholesale_users_list->select(
-			array(
-				'tbluser_data_wholesale.admin_sales_email' => $this->sales_user_details->email
-			)
+		// set customer where clause for the search
+		$custom_where = "(
+			tbluser_data_wholesale.store_name LIKE '%".$this->input->post('search_string')."%'
+			OR tbluser_data_wholesale.email LIKE '%".$this->input->post('search_string')."%'
+		)";
+
+		// get data
+		// where clauses
+		$where['tbluser_data_wholesale.is_active'] = '1';
+
+		// but we need to filter this on a per site type
+		if ($this->webspace_details->options['site_type'] != 'hub_site')
+		{
+			$where['tbluser_data_wholesale.reference_designer'] = $this->webspace_details->slug;
+		}
+
+		$users = $this->wholesale_users_list->select(
+			$where, // where
+			array( // order by
+				'tbluser_data_wholesale.store_name' => 'asc'
+			),
+			array(), // limit
+			$custom_where // custom where
 		);
 
 		$html = '';
-		if ($stores)
+		if ($users)
 		{
-			foreach ($stores as $user)
+			foreach ($users as $user)
 			{
 				$checked =
 					$this->session->admin_so_user_id == $user->user_id
@@ -65,8 +87,16 @@ class Get_stores_list extends Sales_user_Controller {
 				;
 			}
 		}
-		else $html = 'false';
+		else
+		{
+			$html.=
+				'<label class="mt-checkbox mt-checkbox-outline">'
+				.'No records found.'
+				.'</label>'
+			;
+		}
 
+		// end
 		echo $html;
 		exit;
 	}

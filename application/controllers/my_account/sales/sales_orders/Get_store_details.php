@@ -27,13 +27,6 @@ class Get_store_details extends Sales_user_Controller {
 	{
 		$this->output->enable_profiler(FALSE);
 
-		if ( ! $this->input->post('so_store_id'))
-		{
-			// nothing more to do...
-			echo '';
-			exit;
-		}
-
 		// grab the post variable
 		//$designer = 'basixblacklabel';
 		$so_store_id = $this->input->post('so_store_id');
@@ -69,6 +62,26 @@ class Get_store_details extends Sales_user_Controller {
 			// set session
 			$this->session->set_userdata('so_user_id', $so_store_id);
 			$this->session->set_userdata('so_user_cat', 'ws');
+		}
+		else
+		{
+			$html.= 'CUSTOMER NAME'
+				.'<br />'
+				.'Address1'
+				.'<br />'
+				.'Address2'
+				.'<br />'
+				.'City, State'
+				.'<br />'
+				.'Country'
+				.'<br />'
+				.'Telephone'
+				.'<br />ATTN: Contact Name (email)'
+			;
+
+			// set session
+			$this->session->unset_userdata('so_user_id');
+			$this->session->unset_userdata('so_user_cat');
 		}
 
 		echo $html;

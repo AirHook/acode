@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Get_thumbs extends Admin_Controller {
+class Get_thumbs extends MY_Controller {
 
 	/**
 	 * Constructor
@@ -89,13 +89,15 @@ class Get_thumbs extends Admin_Controller {
 
 		// get the products list
 		$params['show_private'] = TRUE; // all items general public (Y) - N for private
-		$params['view_status'] = 'ALL'; // ALL items view status (Y, Y1, Y2, N)
-		$params['view_at_hub'] = TRUE; // all items general public at hub site
-		$params['view_at_satellite'] = TRUE; // all items publis at satellite site
-		$params['variant_publish'] = 'ALL'; // ALL variant level color publish (view status)
-		$params['variant_view_at_hub'] = TRUE; // variant level public at hub site
-		$params['variant_view_at_satellite'] = TRUE; // varian level public at satellite site
-		$params['with_stocks'] = FALSE;
+		//$params['view_status'] = 'ALL'; // ALL items view status (Y, Y1, Y2, N)
+		//$params['view_at_hub'] = TRUE; // all items general public at hub site
+		//$params['view_at_satellite'] = TRUE; // all items publis at satellite site
+		//$params['variant_publish'] = 'ALL'; // ALL variant level color publish (view status)
+		//$params['variant_view_at_hub'] = TRUE; // variant level public at hub site
+		//$params['variant_view_at_satellite'] = TRUE; // varian level public at satellite site
+
+		$params['with_stocks'] = TRUE;
+
 		$params['group_products'] = FALSE; // group per product number or per variant
 		$params['special_sale'] = FALSE; // special sale items only
 		$this->load->library('products/products_list', $params);
@@ -183,38 +185,37 @@ class Get_thumbs extends Admin_Controller {
 
 				if ($product->with_stocks == '0')
 				{
-					$html.= '<div class="ribbon ribbon-shadow ribbon-round ribbon-border-dash ribbon-vertical-right ribbon-color-danger uppercase tooltips" data-placement="bottom" data-container="body" data-original-title="Pre Order" style="position:absolute;right:-3px;width:28px;padding:1em 0;">
-						<i class="fa fa-ban"></i>
-					</div>'
+					$html.= '<div class="ribbon ribbon-shadow ribbon-round ribbon-border-dash ribbon-vertical-right ribbon-color-danger uppercase tooltips" data-placement="bottom" data-container="body" data-original-title="Pre Order" style="position:absolute;right:-3px;width:28px;padding:1em 0;"><i class="fa fa-ban"></i></div>'
 					;
 				}
 
-				$html.= '<div class="corner"></div><div class="check"> </div><div class="tile-body"><img class="img-b_ img-unveil" '
+				$html.= '<div class="corner"></div><div class="check"> </div><div class="tile-body"><img class="img-b img-unveil" '
 					.(
 						$unveil
 						? 'data-src="'.($product->primary_img ? $img_back_new : $img_back_pre.$image).'"'
 						: 'src="'.($product->primary_img ? $img_back_new : $img_back_pre.$image).'"'
 					)
-					.' alt=""><img class="img-a_ img-unveil" '
+					.' alt=""><img class="img-a img-unveil" '
 					.(
 						$unveil
 						? 'data-src="'.($product->primary_img ? $img_front_new : $img_front_pre.$image).'"'
 						: 'src="'.($product->primary_img ? $img_front_new : $img_front_pre.$image).'"'
 					)
-					.' alt=""><noscript><img class="img-b_" src="'
+					.' alt=""><noscript><img class="img-b" src="'
 					.($product->primary_img ? $img_back_new : $img_back_pre.$image)
-					.'" alt=""><img class="img-a_" src="'
+					.'" alt=""><img class="img-a" src="'
 					.($product->primary_img ? $img_front_new : $img_front_pre.$image)
 					.'" alt=""></noscript></div><div class="tile-object"><div class="name">'
 					.$product->prod_no
 					.' <br />'
 					.$product->color_name
+					.' <br />'
 					.'<span style="'
-					.$onsale ? 'text-decoration:line-through;' : ''
+					.($onsale ? 'text-decoration:line-through;' : '')
 					.'">$'
 					.$product->wholesale_price
 					.'</span><span style="color:pink;'
-					.$onsale ? '' : 'display:none;'
+					.($onsale ? '' : 'display:none;')
 					.'">&nbsp;$'
 					.$product->wholesale_price_clearance
 					.'</span>'
@@ -222,6 +223,7 @@ class Get_thumbs extends Admin_Controller {
 				;
 
 				$html.= '</a>';
+
 				$html.= '<div class="" style="color:red;font-size:1rem;"><i class="fa fa-plus package_items '
 					.$product->prod_no.'_'.$product->color_code
 					.'>" style="background:#ddd;line-height:normal;padding:1px 2px;margin-right:3px;" data-item="'

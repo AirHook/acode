@@ -187,38 +187,37 @@ class Get_thumbs extends Sales_user_Controller {
 
 				if ($product->with_stocks == '0')
 				{
-					$html.= '<div class="ribbon ribbon-shadow ribbon-round ribbon-border-dash ribbon-vertical-right ribbon-color-danger uppercase tooltips" data-placement="bottom" data-container="body" data-original-title="Pre Order" style="position:absolute;right:-3px;width:28px;padding:1em 0;">
-						<i class="fa fa-ban"></i>
-					</div>'
+					$html.= '<div class="ribbon ribbon-shadow ribbon-round ribbon-border-dash ribbon-vertical-right ribbon-color-danger uppercase tooltips" data-placement="bottom" data-container="body" data-original-title="Pre Order" style="position:absolute;right:-3px;width:28px;padding:1em 0;"><i class="fa fa-ban"></i></div>'
 					;
 				}
 
-				$html.= '<div class="corner"></div><div class="check"> </div><div class="tile-body"><img class="img-b_ img-unveil" '
+				$html.= '<div class="corner"></div><div class="check"> </div><div class="tile-body"><img class="img-b img-unveil" '
 					.(
 						$unveil
 						? 'data-src="'.($product->primary_img ? $img_back_new : $img_back_pre.$image).'"'
 						: 'src="'.($product->primary_img ? $img_back_new : $img_back_pre.$image).'"'
 					)
-					.' alt=""><img class="img-a_ img-unveil" '
+					.' alt=""><img class="img-a img-unveil" '
 					.(
 						$unveil
 						? 'data-src="'.($product->primary_img ? $img_front_new : $img_front_pre.$image).'"'
 						: 'src="'.($product->primary_img ? $img_front_new : $img_front_pre.$image).'"'
 					)
-					.' alt=""><noscript><img class="img-b_" src="'
+					.' alt=""><noscript><img class="img-b" src="'
 					.($product->primary_img ? $img_back_new : $img_back_pre.$image)
-					.'" alt=""><img class="img-a_" src="'
+					.'" alt=""><img class="img-a" src="'
 					.($product->primary_img ? $img_front_new : $img_front_pre.$image)
 					.'" alt=""></noscript></div><div class="tile-object"><div class="name">'
 					.$product->prod_no
 					.' <br />'
 					.$product->color_name
+					.' <br />'
 					.'<span style="'
-					.$onsale ? 'text-decoration:line-through;' : ''
+					.($onsale ? 'text-decoration:line-through;' : '')
 					.'">$'
 					.$product->wholesale_price
 					.'</span><span style="color:pink;'
-					.$onsale ? '' : 'display:none;'
+					.($onsale ? '' : 'display:none;')
 					.'">&nbsp;$'
 					.$product->wholesale_price_clearance
 					.'</span>'

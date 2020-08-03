@@ -348,7 +348,12 @@ var ComponentsEditors = function () {
                     size_qty[$(this).prop('name')] = $(this).val();
                 }
             });
-            objectData.size_qty = size_qty;
+            if ($.isEmptyObject(size_qty)){
+                alert('Please select size and quantity...');
+                return;
+            }else{
+                objectData.size_qty = size_qty;
+            }
             // hide this modal
             $('#modal-size_qty').modal('hide');
             // add item...
