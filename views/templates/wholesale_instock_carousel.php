@@ -161,7 +161,7 @@
                 									// set image paths
                                                     // get style no
                                                     $style_no = $product->prod_no.'_'.$product->color_code;
-                									// the new way relating records with media library
+                                                    // the new way relating records with media library
                 									$new_pre_url =
                 										$this->config->item('PROD_IMG_URL')
                 										.$product->media_path

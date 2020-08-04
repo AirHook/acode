@@ -94,7 +94,14 @@ class Consumer_special_sale_email_carousel extends MY_Controller {
 		);
 
 		// let's get some thumbs
+		// returned as items in an array (<prod_no>_<color_code>)
+		// currently equivalent to https://www.shop7thavenue.com/shop/basixblacklabel/womens_apparel/dresses.html?filter=&availability=onsale
 		$data['onsale_products'] = $this->_get_thumbs('onsale');
+		// record proudct into a csv format for use on url
+		$data['items_csv'] = implode(',', $data['onsale_products']);
+
+		// lets set the hashed time code used for the access_link so that the batch holds the same tc only
+		$data['tc'] = md5(@date('Y-m-d', time()));
 
 		$data['name'] = '';
 		$data['designer'] = '';
@@ -105,6 +112,7 @@ class Consumer_special_sale_email_carousel extends MY_Controller {
 
 		// we need to rotate on a list of email subjects
 		// get record
+		/* */
 		$this->DB->where('config_name', 'special_sale_subjects');
 		$q1 = $this->DB->get('config');
 		$r1 = $q1->row();
@@ -124,6 +132,7 @@ class Consumer_special_sale_email_carousel extends MY_Controller {
 		$this->DB->set('options', '');
 		$this->DB->where('config_name', 'special_sale_subjects_key');
 		$this->DB->update('config');
+		// */
 
 		// load pertinent library/model/helpers
 		$this->load->library('mailgun/mailgun');
@@ -133,7 +142,10 @@ class Consumer_special_sale_email_carousel extends MY_Controller {
 		$this->mailgun->vars = array("designer" => "Basix Black Label", "des_slug" => "basixblacklabel");
 		$this->mailgun->o_tag = 'Consumer Special Sale Invite';
 		$this->mailgun->from = 'Basix Black Label <help@basixblacklabel.com>';
+
+		//$this->mailgun->to = 'test@mg.shop7thavenue.com';
 		$this->mailgun->to = 'consumers@mg.shop7thavenue.com';
+
 		//$this->mailgun->cc = $this->webspace_details->info_email;
 		//$this->mailgun->bcc = $this->CI->config->item('dev1_email');
 		$this->mailgun->subject = $subjects[$rand_key];
@@ -256,8 +268,6 @@ class Consumer_special_sale_email_carousel extends MY_Controller {
 			$this->DB->where('config_name', 'special_sale_thumbs_sent');
 			$this->DB->update('config');
 			// */
-
-			echo 'Items total sent - '.count($thumbs).'<br />';
 
 			return $items_array;
 		}

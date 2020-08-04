@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Set_des_slug_session extends Admin_Controller {
+class Set_des_slug_session extends MY_Controller {
 
 	/**
 	 * Constructor

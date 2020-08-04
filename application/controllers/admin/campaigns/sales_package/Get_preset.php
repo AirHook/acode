@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Get_preset extends Admin_Controller {
+class Get_preset extends MY_Controller {
 
 	/**
 	 * Constructor

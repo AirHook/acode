@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Get_store_details extends Sales_user_Controller {
+class Get_store_details extends MY_Controller {
 
 	/**
 	 * Constructor

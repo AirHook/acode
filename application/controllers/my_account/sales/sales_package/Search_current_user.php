@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Search_current_user extends Sales_user_Controller {
+class Search_current_user extends MY_Controller {
 
 	/**
 	 * Constructor

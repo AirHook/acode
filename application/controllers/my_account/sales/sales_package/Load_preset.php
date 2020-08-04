@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Load_preset extends Sales_user_Controller {
+class Load_preset extends MY_Controller {
 
 	/**
 	 * Constructor

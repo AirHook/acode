@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Search_multiple extends Sales_user_Controller {
+class Search_multiple extends MY_Controller {
 
 	/**
 	 * Propery post array checked

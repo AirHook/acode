@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class View_pdf extends CI_Controller
+class View_pdf extends MY_Controller
 {
 	/**
 	 * Constructor

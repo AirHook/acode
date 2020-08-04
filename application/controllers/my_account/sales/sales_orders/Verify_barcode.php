@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Verify_barcode extends Sales_user_Controller {
+class Verify_barcode extends MY_Controller {
 
 	/**
 	 * Constructor

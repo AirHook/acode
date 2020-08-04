@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Reset_search_current_user extends Admin_Controller {
+class Reset_search_current_user extends MY_Controller {
 
 	/**
 	 * Constructor

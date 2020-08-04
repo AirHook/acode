@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Get_thumbs extends Sales_user_Controller {
+class Get_thumbs extends MY_Controller {
 
 	/**
 	 * Constructor

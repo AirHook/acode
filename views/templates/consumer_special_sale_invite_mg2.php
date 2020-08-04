@@ -98,7 +98,7 @@
 								<table width="100%" border="0" cellspacing="0" cellpadding="0">
 									<tr>
 										<td class="h2" style="color: #153643; font-family: sans-serif; padding: 0 0 15px 0; font-size: 24px; line-height: 28px; font-weight: bold;">
-											Hello %recipient_fname%,
+											Hello %recipient_name%,
 										</td>
 									</tr>
 									<tr>
@@ -176,7 +176,8 @@
                                                         .'&item='
                                                         .$style_no
                                                     ;
-                                                    $access_link = base_url().'shop/basixblacklabel/womens_apparel/dresses.html?filter=&availability=onsale'
+                                                    //$access_link = base_url().'shop/basixblacklabel/womens_apparel/dresses.html?filter=&availability=onsale';
+                                                    $access_link = base_url().'sales_package/link_cs/index/X/0/'.$tc.'.html?email=%recipient_email%&items_csv='.$items_csv;
                 									?>
 
                 								<td align="center" style="width:33%;vertical-align:top;padding-bottom:10px;" data-item="<?php echo $item; ?>">

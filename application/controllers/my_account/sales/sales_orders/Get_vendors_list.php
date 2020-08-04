@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Get_vendors_list extends Sales_user_Controller {
+class Get_vendors_list extends MY_Controller {
 
 	/**
 	 * Constructor

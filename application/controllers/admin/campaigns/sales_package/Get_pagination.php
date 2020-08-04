@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Get_pagination extends Admin_Controller {
+class Get_pagination extends MY_Controller {
 
 	/**
 	 * Constructor

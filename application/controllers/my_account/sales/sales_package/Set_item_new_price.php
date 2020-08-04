@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Set_item_new_price extends Sales_user_Controller {
+class Set_item_new_price extends MY_Controller {
 
 	/**
 	 * Constructor

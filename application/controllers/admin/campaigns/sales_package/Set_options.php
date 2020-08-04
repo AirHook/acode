@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Set_options extends Admin_Controller {
+class Set_options extends MY_Controller {
 
 	/**
 	 * Constructor

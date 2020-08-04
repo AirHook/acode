@@ -97,9 +97,10 @@ class Wholesale_special_sale_email_carousel extends MY_Controller {
 		// returned as items in an array (<prod_no>_<color_code>)
 		// currently equivalent to https://www.shop7thavenue.com/shop/basixblacklabel/womens_apparel.html
 		$data['onsale_products'] = $this->_get_thumbs('instock');
+		// record proudct into a csv format for use on url
 		$data['items_csv'] = implode(',', $data['onsale_products']);
 
-		// lets set the hashed time code used for the access_link so that the batched hold the same tc only
+		// lets set the hashed time code used for the access_link so that the batch holds the same tc only
 		$data['tc'] = md5(@date('Y-m-d', time()));
 
 		$data['name'] = '';
@@ -120,7 +121,7 @@ class Wholesale_special_sale_email_carousel extends MY_Controller {
 		$this->DB->where('config_name', 'wholesale_special_sale_subjects_key');
 		$q2 = $this->DB->get('config');
 		$r2 = $q2->row();
-		$subject_key = $r2->config_value == '3' ? 0 : $r2->config_value + 1;
+		$subject_key = $r2->config_value >= '3' ? 0 : $r2->config_value + 1;
 
 		// save new random ket on record
 		$this->DB->set('config_value', $subject_key);
@@ -146,7 +147,6 @@ class Wholesale_special_sale_email_carousel extends MY_Controller {
 
 		//$this->mailgun->cc = $this->webspace_details->info_email;
 		//$this->mailgun->bcc = $this->CI->config->item('dev1_email');
-		//$this->mailgun->subject = $subjects[$rand_key];
 		$this->mailgun->subject = $subject;
 		$this->mailgun->message = $message;
 
