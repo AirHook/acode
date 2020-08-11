@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Reset extends Admin_Controller {
+class Reset_billto_shipto extends Admin_Controller {
 
 	/**
 	 * Constructor
@@ -27,11 +27,6 @@ class Reset extends Admin_Controller {
 	{
 		// reset sessions
 		unset($_SESSION['admin_so_user_id']); // store or consumer and 0 for manual input
-		unset($_SESSION['admin_so_user_cat']); // ws, cs
-		unset($_SESSION['admin_so_des_slug']);
-		unset($_SESSION['admin_so_slug_segs']);
-		unset($_SESSION['admin_so_dely_date']);
-		unset($_SESSION['admin_so_items']);
 		unset($_SESSION['admin_so_ship_to']); // 1 - use same address, 2 - enter manual info
 		unset($_SESSION['admin_so_sh_store_name']);
 		unset($_SESSION['admin_so_sh_fname']);
@@ -44,9 +39,6 @@ class Reset extends Admin_Controller {
 		unset($_SESSION['admin_so_sh_country']);
 		unset($_SESSION['admin_so_sh_zipcode']);
 		unset($_SESSION['admin_so_sh_telephone']);
-		// remove po mod details
-		unset($_SESSION['admin_so_mod_so_id']);
-		unset($_SESSION['admin_so_mod_items']);
 
 		// redirect user
 		redirect('admin/sales_orders/create', 'location');

@@ -27,12 +27,28 @@ class Get_store_details extends MY_Controller {
 	{
 		$this->output->enable_profiler(FALSE);
 
+		// load pertinent library/model/helpers
+		$this->load->library('users/wholesale_user_details');
+		$this->load->library('users/admin_user_details');
+
+		// get admin login details
+		if ($this->session->admin_loggedin)
+		{
+			$this->admin_user_details->initialize(
+				array(
+					'admin_id' => $this->session->admin_id
+				)
+			);
+		}
+		else
+		{
+			echo 'loggedout';
+			exit;
+		}
+
 		// grab the post variable
 		//$designer = 'basixblacklabel';
 		$so_store_id = $this->input->post('so_store_id');
-
-		// load pertinent library/model/helpers
-		$this->load->library('users/wholesale_user_details');
 
 		// get data
 		$store_details = $this->wholesale_user_details->initialize(

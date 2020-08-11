@@ -4,6 +4,12 @@
                     ?>
 
                     <div class="row">
+
+                        <?php
+                        /***********
+                         * Left Section
+                         */
+                        ?>
                         <div class="col col-md-6 form-horizontal" role="form">
 
 							<div class="form-body" data-object_data='{"<?php echo $this->security->get_csrf_token_name(); ?>":"<?php echo $this->security->get_csrf_hash(); ?>"}'>
@@ -1002,7 +1008,7 @@
                                 <div class="col-sm-12 po-summary-addresses margin-top-30">
                                     <div class="row">
 
-                                        <div class="col-sm-12">
+                                        <div class="col-sm-12 hide">
                                             <em class="small">Bill To / Ship To Options:</em>
                                             &nbsp;
                                             <a href="#modal-select_store" data-toggle="modal" class="btn btn-xs grey-gallery" type="button">Select Store</a>
@@ -1014,17 +1020,20 @@
 
                                             <h5> BILL TO </h5>
 
-                                            <p class="customer-billing-address">
+                                            <p class="bill-to-options <?php echo @$user_id ? 'display-none' : ''; ?>">
+                                                <a href="#modal-select_store" data-toggle="modal" class="btn btn-xs grey-gallery" type="button" style="margin-bottom:5px;">Select Store</a> <br />
+                                                <a href="#modal-enter_manual_info" data-toggle="modal" class="btn btn-xs grey-gallery" type="button" style="margin-bottom:5px;">Enter Manual Info</a>
+                                            </p>
+
+                                            <p class="customer-billing-address <?php echo @$user_id ? '' : 'display-none'; ?>">
                                                 <?php echo @$store_details->store_name ?: 'CUSTOMER NAME'; ?> <br />
                                                 <?php echo @$store_details->address1 ?: 'Address1'; ?> <br />
                                                 <?php echo @$store_details->address2 ? $store_details->address2.'<br />' : (@$store_details->store_name ? '' : 'Address2<br />'); ?>
                                                 <?php echo @$store_details->city ?: 'City'; ?>, <?php echo @$store_details->state ?: 'State'; ?> <br />
                                                 <?php echo @$store_details->country ?: 'Country'; ?> <br />
                                                 <?php echo @$store_details->telephone ?: 'Telephone'; ?> <br />
-                                                ATTN: <?php echo @$store_details->fname ? $store_details->fname.' '.@$store_details->lname : 'Contact Name'; ?> <?php echo @$store_details->email ? '('.safe_mailto($store_details->email).')': '(email)'; ?>
+                                                ATTN: <?php echo @$store_details->fname ? $store_details->fname.' '.@$store_details->lname : 'Contact Name'; ?> <?php echo @$store_details->email ? '('.$store_details->email.')': '(email)'; ?>
                                             </p>
-
-                                            <span id="user_id_error_container" class="help-block has-block-error has-error"></span>
 
                                             <!-- DOC: remove 'hide' class to show -->
                                             <div class="shipmethod hide">
@@ -1050,6 +1059,10 @@
                                                 </p>
                                             </div>
 
+                                            <a href="<?php echo site_url('admin/sales_orders/reset_billto_shipto'); ?>" class="btn btn-xs grey-gallery btn-reset-billto-shipto <?php echo @$user_id ? '' : 'display-none'; ?>" type="button" style="margin-bottom:5px;">Reset "Bill To / Ship To" addresses</a>
+
+                                            <input type="hidden" name="user_id" value="<?php echo @$user_id; ?>" data-error-container="user_id_error_container" />
+                                            <span id="user_id_error_container" class="help-block has-block-error has-error"></span>
                                             <span id="shipmethod_error_container" class="help-block has-block-error has-error"></span>
 
                                         </div>
@@ -1058,14 +1071,19 @@
 
                                             <h5> SHIP TO </h5>
 
-                                            <p class="customer-shipping-address">
-                                                <?php echo @$store_details->store_name ?: 'CUSTOMER NAME'; ?> <br />
-                                                <?php echo @$store_details->address1 ?: 'Address1'; ?> <br />
-                                                <?php echo @$store_details->address2 ? $store_details->address2.'<br />' : (@$store_details->store_name ? '' : 'Address2<br />'); ?>
-                                                <?php echo @$store_details->city ?: 'City'; ?>, <?php echo @$store_details->state ?: 'State'; ?> <br />
-                                                <?php echo @$store_details->country ?: 'Country'; ?> <br />
-                                                <?php echo @$store_details->telephone ?: 'Telephone'; ?> <br />
-                                                ATTN: <?php echo @$store_details->fname ? $store_details->fname.' '.@$store_details->lname : 'Contact Name'; ?> <?php echo @$store_details->email ? '('.safe_mailto($store_details->email).')': '(email)'; ?>
+                                            <p class="ship-to-options <?php echo (@$user_id) ? (@$ship_to ? 'display-none' : '') : 'display-none'; ?>">
+                                                <button class="btn btn-xs grey-gallery btn-use_same_bill_to_address" type="button" style="margin-bottom:5px;">Use same as "Bill To" address</button> <br />
+                                                <a href="#modal-enter_different_ship_to_address" data-toggle="modal" class="btn btn-xs grey-gallery" type="button" style="margin-bottom:5px;">Enter different "Ship To" address</a>
+                                            </p>
+
+                                            <p class="customer-shipping-address <?php echo @$ship_to ? '' : 'display-none'; ?>">
+                                                <?php echo $sh_store_name ?: (@$store_details->store_name ?: 'CUSTOMER NAME'); ?> <br />
+                                                <?php echo $sh_address1 ?: (@$store_details->address1 ?: 'Address1'); ?> <br />
+                                                <?php echo $sh_address2 ?: (@$store_details->address2 ? $store_details->address2.'<br />' : ''); ?>
+                                                <?php echo $sh_city ?: (@$store_details->city ?: 'City'); ?>, <?php echo $sh_state ?: (@$store_details->state ?: 'State'); ?> <br />
+                                                <?php echo $sh_country ?: (@$store_details->country ?: 'Country'); ?> <br />
+                                                <?php echo $sh_telephone ?: (@$store_details->telephone ?: 'Telephone'); ?> <br />
+                                                ATTN: <?php echo $sh_fname ? $sh_fname.' '.$sh_lname : (@$store_details->fname ? $store_details->fname.' '.@$store_details->lname : 'Contact Name'); ?> <?php echo $sh_email ? '('.$sh_email.')' : (@$store_details->email ? '('.$store_details->email.')': '(email)'); ?>
                                             </p>
 
                                             <!-- DOC: remove 'hide' class to show -->
@@ -1083,9 +1101,12 @@
                                                 </p>
                                             </div>
 
-                                        </div>
+                                            <!-- DOC: 1 - use same address, 2 - enter manual info, data fed by jquery -->
+                                            <input type="hidden" name="ship_to" value="<?php echo @$ship_to ?: ''; ?>" data-error-container="ship_to_error_container" />
+                                            <input type="hidden" name="test_id" value="" data-error-container="ship_to_error_container" />
+                                            <span id="ship_to_error_container" class="help-block has-block-error has-error"></span>
 
-                                        <input type="hidden" name="user_id" value="<?php echo @$user_id; ?>" data-error-container="user_id_error_container" />
+                                        </div>
 
                                     </div>
                                 </div>
@@ -1954,7 +1975,7 @@
                         </div>
                         <!-- /.modal -->
 
-                        <!-- ENTER MANUAL INFO -->
+                        <!-- ENTER MANUAL INFO FOR STORE -->
                         <div id="modal-enter_manual_info" class="modal fade bs-modal-md in" tabindex="-1" role="dialog" aria-hidden="true">
                             <div class="modal-dialog modal-md">
                                 <div class="modal-content" data-object_data='{"<?php echo $this->security->get_csrf_token_name(); ?>":"<?php echo $this->security->get_csrf_hash(); ?>"}'>
@@ -1973,7 +1994,7 @@
                                                     <?php if ( ! $this->session->admin_sales_loggedin)
                                                     { ?>
 
-                                                    <a href="javascript:;" class="btn dark btn-outline enter-user cs" data-user="cs"> CONSUMER USER </a>
+                                                    <a href="javascript:;" class="btn dark btn-outline enter-user cs hide" data-user="cs"> CONSUMER USER </a>
 
                                                         <?php
                                                     } ?>
@@ -2003,9 +2024,9 @@
                                                 <h4> <cite>NEW WHOLESALE USER:</cite> </h4>
 
                                                 <input type="hidden" name="user_cat" value="ws" />
-        										<input type="hidden" name="reference_designer" class="send_to_new_user" value="<?php echo @$this->sales_user_details->designer ?: $this->webspace_details->slug; ?>" />
-        										<input type="hidden" name="admin_sales_email" class="send_to_new_user" value="<?php echo @$this->sales_user_details->email ?: $this->webspace_details->info_email; ?>" />
-        										<input type="hidden" name="admin_sales_id" class="send_to_new_user" value="<?php echo @$this->sales_user_details->admin_sales_id ?: '1'; ?>" />
+        										<input type="hidden" name="reference_designer" class="send_to_new_user" value="<?php echo $this->webspace_details->slug; ?>" />
+        										<input type="hidden" name="admin_sales_email" class="send_to_new_user" value="<?php echo $this->webspace_details->info_email; ?>" />
+        										<input type="hidden" name="admin_sales_id" class="send_to_new_user" value="1" />
 
         										<div class="form-group">
         											<label>Email<span class="required"> * </span>
@@ -2095,7 +2116,7 @@
                                             <?php echo form_open(
                                                 $url_pre.'/sales_orders/add_new_user',
                                                 array(
-                                                    'class' => 'enter-user-form cs clearfix display-none',
+                                                    'class' => 'enter-user-form cs clearfix hide',
                                                     'id' => 'form-so_add_new_user_cs'
                                                 )
                                             ); ?>
@@ -2187,6 +2208,140 @@
         										<hr />
 
                                                 <button type="submit" class="btn dark enter-user-manually pull-right" data-user_cat="cs">Submit</button>
+        									</div>
+
+                                            </form>
+                                            <!-- END FORM =========================================================-->
+
+                                        </div>
+
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn dark btn-outline" data-dismiss="modal" tabindex="-1">Cancel</button>
+                                    </div>
+
+                                </div>
+                                <!-- /.modal-content -->
+                            </div>
+                            <!-- /.modal-dialog -->
+                        </div>
+                        <!-- /.modal -->
+
+                        <!-- ENTER DIFFERENT SHIP TO ADDRESS -->
+                        <div id="modal-enter_different_ship_to_address" class="modal fade bs-modal-md in" tabindex="-1" role="dialog" aria-hidden="true">
+                            <div class="modal-dialog modal-md">
+                                <div class="modal-content">
+
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                        <h4 class="modal-title">Edit Different Ship To Address</h4>
+                                    </div>
+                                    <div class="modal-body clearfix">
+
+                                        <div class="send_to_new_user form-body">
+
+                                            <!-- BEGIN FORM =======================================================-->
+                                            <?php echo form_open(
+                                                $url_pre.'/sales_orders/diff_ship_to',
+                                                array(
+                                                    'class' => 'enter-user-form ws clearfix',
+                                                    'id' => 'form-so_diif_ship_to'
+                                                )
+                                            ); ?>
+
+                                            <div class="alert alert-danger display-none" data-test="test">
+                                                <button class="close" data-close="alert"></button> You have some form errors. Please check below. </div>
+                                            <div class="alert alert-success display-none">
+                                                <button class="close" data-close="alert"></button> Your form validation is successful! </div>
+
+        									<div class="form-body">
+
+                                                <h4> <cite>NEW SHIP TO ADDRESS:</cite> </h4>
+
+        										<div class="form-group">
+        											<label>Email<span class="required"> * </span>
+        											</label>
+        											<div class="input-group">
+        												<span class="input-group-addon">
+        													<i class="fa fa-envelope"></i>
+        												</span>
+        												<input type="email" name="sh_email" class="form-control send_to_new_user" value="<?php echo set_value('sh_email'); ?>" />
+        											</div>
+        										</div>
+        										<div class="form-group">
+        											<label>First Name<span class="required"> * </span>
+        											</label>
+        											<input name="sh_fname" type="text" class="form-control send_to_new_user" value="<?php echo set_value('sh_fname'); ?>" />
+        										</div>
+        										<div class="form-group">
+        											<label>Last Name<span class="required"> * </span>
+        											</label>
+        											<input name="sh_lname" type="text" class="form-control send_to_new_user" value="<?php echo set_value('sh_lname'); ?>" />
+        										</div>
+        										<div class="form-group">
+        											<label>Store Name<span class="required"> * </span>
+        											</label>
+        											<input name="sh_store_name" type="text" class="form-control send_to_new_user" value="<?php echo set_value('sh_store_name'); ?>" />
+        										</div>
+        										<div class="form-group">
+        											<label>Fed Tax ID
+        											</label>
+        											<input name="sh_fed_tax_id" type="text" class="form-control send_to_new_user" value="<?php echo set_value('sh_fed_tax_id'); ?>" />
+        										</div>
+        										<div class="form-group">
+        											<label>Telephone<span class="required"> * </span>
+        											</label>
+        											<input name="sh_telephone" type="text" class="form-control send_to_new_user" value="<?php echo set_value('sh_telephone'); ?>" />
+        										</div>
+        										<div class="form-group">
+        											<label>Address 1<span class="required"> * </span>
+        											</label>
+        											<input name="sh_address1" type="text" class="form-control send_to_new_user" value="<?php echo set_value('sh_address1'); ?>" />
+        										</div>
+        										<div class="form-group">
+        											<label>Address 2
+        											</label>
+        											<input name="sh_address2" type="text" class="form-control send_to_new_user" value="<?php echo set_value('sh_address2'); ?>" />
+        										</div>
+        										<div class="form-group">
+        											<label>City<span class="required"> * </span>
+        											</label>
+        											<input name="sh_city" type="text" class="form-control send_to_new_user" value="<?php echo set_value('sh_city'); ?>" />
+        										</div>
+        										<div class="form-group">
+        											<label>State<span class="required"> * </span>
+        											</label>
+        											<select class="form-control bs-select send_to_new_user" name="sh_state" data-live-search="true" data-size="8">
+        												<option class="option-placeholder" value="">Select...</option>
+        												<?php foreach (list_states() as $state) { ?>
+        												<option value="<?php echo $state->state_name; ?>" <?php echo set_select('sh_state', $state->state_name); ?>><?php echo $state->state_name; ?></option>
+        												<?php } ?>
+        											</select>
+        										</div>
+        										<div class="form-group">
+        											<label>Country<span class="required"> * </span>
+        											</label>
+        											<select class="form-control bs-select send_to_new_user" name="sh_country" data-live-search="true" data-size="8">
+        												<option class="option-placeholder" value="">Select...</option>
+        												<?php foreach (list_countries() as $country) { ?>
+        												<option value="<?php echo $country->countries_name; ?>" <?php echo set_select('sh_country', $country->countries_name); ?>><?php echo $country->countries_name; ?></option>
+        												<?php } ?>
+        											</select>
+        										</div>
+        										<div class="form-group">
+        											<label>Zip Code<span class="required"> * </span>
+        											</label>
+        											<input name="sh_zipcode" type="text" class="form-control send_to_new_user" value="<?php echo set_value('sh_zipcode'); ?>" />
+        										</div>
+
+                                                <div class="alert alert-danger display-none" data-test="test">
+                                                    <button class="close" data-close="alert"></button> You have some form errors. Please check below. </div>
+                                                <div class="alert alert-success display-none">
+                                                    <button class="close" data-close="alert"></button> Your form validation is successful! </div>
+
+        										<hr />
+
+                                                <button type="submit" class="btn dark enter-different-ship-to pull-right" data-user_cat="ws">Submit</button>
         									</div>
 
                                             </form>

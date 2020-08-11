@@ -781,7 +781,13 @@
                                             }
                                             </style>
 
-                                            <div class="policy" style="widt:100%;text-align:left;">
+                                            <?php
+                                            /***********
+                                             * Privacy Policy
+                                             * no need to show to wholesale users
+                                             */
+                                            ?>
+                                            <div class="policy" style="widt:100%;text-align:left;display:none;">
                                                 <?php echo @$privacy_policy; ?>
                                             </div>
 

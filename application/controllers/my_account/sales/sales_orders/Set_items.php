@@ -27,6 +27,26 @@ class Set_items extends MY_Controller {
 	{
 		$this->output->enable_profiler(FALSE);
 
+		// load pertinent library/model/helpers
+		$this->load->library('products/product_details');
+		$this->load->library('products/size_names');
+		$this->load->library('users/sales_user_details');
+
+		// get sales user login details
+		if ($this->session->admin_sales_loggedin)
+		{
+			$this->sales_user_details->initialize(
+				array(
+					'admin_sales_id' => $this->session->admin_sales_id
+				)
+			);
+		}
+		else
+		{
+			echo 'loggedout';
+			exit;
+		}
+
 		// set the items array
 		$items_array =
 			$this->session->so_items
@@ -35,10 +55,6 @@ class Set_items extends MY_Controller {
 		;
 
 		// set the cart items
-		// load pertinent library/model/helpers
-		$this->load->library('products/product_details');
-		$this->load->library('products/size_names');
-
 		// iterate through the $items_array and generate HTML
 		$html = '';
 		$overall_qty = 0;

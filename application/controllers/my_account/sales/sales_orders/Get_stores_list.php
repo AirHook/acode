@@ -29,6 +29,22 @@ class Get_stores_list extends MY_Controller {
 
 		// load pertinent library/model/helpers
 		$this->load->library('users/wholesale_users_list');
+		$this->load->library('users/sales_user_details');
+
+		// get sales user login details
+		if ($this->session->admin_sales_loggedin)
+		{
+			$this->sales_user_details->initialize(
+				array(
+					'admin_sales_id' => $this->session->admin_sales_id
+				)
+			);
+		}
+		else
+		{
+			echo 'loggedout';
+			exit;
+		}
 
 		// get the list
 		// this is logged in sales user

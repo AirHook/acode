@@ -28,14 +28,14 @@ class Add_new_user extends MY_Controller {
 		$this->output->enable_profiler(FALSE);
 
 		// load pertinent library/model/helpers
-		$this->load->library('users/admin_user_details');
+		$this->load->library('users/sales_user_details');
 
-		// get admin login details
-		if ($this->session->admin_loggedin)
+		// get sales user login details
+		if ($this->session->admin_sales_loggedin)
 		{
-			$this->admin_user_details->initialize(
+			$this->sales_user_details->initialize(
 				array(
-					'admin_id' => $this->session->admin_id
+					'admin_sales_id' => $this->session->admin_sales_id
 				)
 			);
 		}
@@ -117,8 +117,8 @@ class Add_new_user extends MY_Controller {
 		;
 
 		// set session
-		$this->session->set_userdata('admin_so_user_id', $insert_id);
-		$this->session->set_userdata('admin_so_user_cat', $user_cat);
+		$this->session->set_userdata('so_user_id', $insert_id);
+		$this->session->set_userdata('so_user_cat', $user_cat);
 
 		echo $html;
 		exit;

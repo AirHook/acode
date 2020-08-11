@@ -27,6 +27,25 @@ class Get_vendors_list extends MY_Controller {
 	{
 		$this->output->enable_profiler(FALSE);
 
+		// load pertinent library/model/helpers
+		$this->load->library('users/vendor_users_list');
+		$this->load->library('users/sales_user_details');
+
+		// get sales user login details
+		if ($this->session->admin_sales_loggedin)
+		{
+			$this->sales_user_details->initialize(
+				array(
+					'admin_sales_id' => $this->session->admin_sales_id
+				)
+			);
+		}
+		else
+		{
+			echo 'loggedout';
+			exit;
+		}
+
 		if ( ! $this->input->post('designer'))
 		{
 			// nothing more to do...
@@ -39,9 +58,6 @@ class Get_vendors_list extends MY_Controller {
 
 		// set session
 		$this->session->set_userdata('so_des_slug', $designer);
-
-		// load pertinent library/model/helpers
-		$this->load->library('users/vendor_users_list');
 
 		// get the list
 		$vendors = $this->vendor_users_list->select(

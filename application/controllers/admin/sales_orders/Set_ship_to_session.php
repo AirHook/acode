@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Set_des_slug_session extends MY_Controller {
+class Set_ship_to_session extends MY_Controller {
 
 	/**
 	 * Constructor
@@ -16,14 +16,12 @@ class Set_des_slug_session extends MY_Controller {
 	// ----------------------------------------------------------------------
 
 	/**
-	 * Index - Set As Default
+	 * Index - Defailt Method
 	 *
-	 * Sets selected sales package as default sales package for the Send Sales Package
-	 * button on the Wholesale User list actions column
 	 *
 	 * @return	void
 	 */
-	public function index($slug = '')
+	public function index($ship_to = '')
 	{
 		$this->output->enable_profiler(FALSE);
 
@@ -45,18 +43,15 @@ class Set_des_slug_session extends MY_Controller {
 			exit;
 		}
 
-		if ( ! $slug)
-		{
-			// nothing more to do...
-			echo 'error';
-			exit;
-		}
-
 		// set session
-		$this->session->admin_so_des_slug = $slug;
+		if ($ship_to == '1' OR $ship_to == '2')
+		{
+			// 1 - use same address, 2 - enter manual info, data fed by ajax call
+			$this->session->admin_so_ship_to = $ship_to;
+			echo 'success';
+		}
+		else echo 'error';
 
-		// return
-		echo 'success';
 		exit;
 	}
 

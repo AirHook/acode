@@ -255,7 +255,7 @@ class Wholesale_activation_email_sending
 				'seque' => 'asc',
 				'tbl_product.prod_no' => 'desc'
 			),
-			12
+			30
 		);
 
 		// capture product numbers and set items array

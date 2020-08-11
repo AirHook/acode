@@ -67,6 +67,19 @@ class Create extends Admin_Controller
 				unset($_SESSION['admin_so_slug_segs']);
 				unset($_SESSION['admin_so_dely_date']);
 				unset($_SESSION['admin_so_items']);
+
+				unset($_SESSION['admin_so_ship_to']); // 1 - use same address, 2 - enter manual info
+				unset($_SESSION['admin_so_sh_store_name']);
+				unset($_SESSION['admin_so_sh_fname']);
+				unset($_SESSION['admin_so_sh_lname']);
+				unset($_SESSION['admin_so_sh_email']);
+				unset($_SESSION['admin_so_sh_address1']);
+				unset($_SESSION['admin_so_sh_address2']);
+				unset($_SESSION['admin_so_sh_city']);
+				unset($_SESSION['admin_so_sh_state']);
+				unset($_SESSION['admin_so_sh_country']);
+				unset($_SESSION['admin_so_sh_zipcode']);
+				unset($_SESSION['admin_so_sh_telephone']);
 			}
 
 			// remove po mod details on page reloads
@@ -221,6 +234,42 @@ class Create extends Admin_Controller
 						)
 					);
 				}
+
+				// check for "ship to" address session
+				if ($this->session->admin_so_ship_to == '1')
+				{
+					$array = array(
+						'admin_so_sh_store_name' => $this->data['store_details']->store_name,
+						'admin_so_sh_fname' => $this->data['store_details']->fname,
+						'admin_so_sh_lname' => $this->data['store_details']->lname,
+						'admin_so_sh_email' => $this->data['store_details']->email,
+						'admin_so_sh_address1' => $this->data['store_details']->address1,
+						'admin_so_sh_address2' => $this->data['store_details']->address2,
+						'admin_so_sh_city' => $this->data['store_details']->city,
+						'admin_so_sh_state' => $this->data['store_details']->state,
+						'admin_so_sh_country' => $this->data['store_details']->country,
+						'admin_so_sh_zipcode' => $this->data['store_details']->zipcode,
+						'admin_so_sh_telephone' => $this->data['store_details']->telephone
+					);
+					$this->session->set_userdata($array);
+
+					$this->data['sh_store_name'] = $this->data['store_details']->store_name;
+					$this->data['sh_fname'] = $this->data['store_details']->fname;
+					$this->data['sh_lname'] = $this->data['store_details']->lname;
+					$this->data['sh_email'] = $this->data['store_details']->email;
+					$this->data['sh_address1'] = $this->data['store_details']->address1;
+					$this->data['sh_address2'] = $this->data['store_details']->address2;
+					$this->data['sh_city'] = $this->data['store_details']->city;
+					$this->data['sh_state'] = $this->data['store_details']->state;
+					$this->data['sh_country'] = $this->data['store_details']->count;
+					$this->data['sh_zipcode'] = $this->data['store_details']->zipcode;
+					$this->data['sh_telephone'] = $this->data['store_details']->telephone;
+				}
+
+				if ($this->session->admin_so_ship_to)
+				{
+					$this->data['ship_to'] = $this->session->admin_so_ship_to;
+				}
 			}
 			else
 			{
@@ -366,8 +415,6 @@ class Create extends Admin_Controller
 			// log order
 			// insert user and shipping data to tbl_order_log
 			$log_data = array(
-				'user_id'			=> $this->input->post('user_id'),
-				'c'					=> $this->input->post('c'),
 				'date_ordered'		=> @date('d, F Y - h:i', time()), // --> for depracation
 				'order_date'		=> time(), // --> replaces 'date_ordered' using timestamp
 
@@ -375,18 +422,23 @@ class Create extends Admin_Controller
 				'shipping_fee'		=> $shipping_fee,
 				'amount'			=> $this->input->post('overall_total'),
 
-				'store_name'		=> @$user_details->store_name,
-				'firstname'			=> $user_details->fname,
-				'lastname'			=> $user_details->lname,
-				'email'				=> $user_details->email,
-				'telephone'			=> $user_details->telephone,
+				// essentially the user details
+				'user_id'			=> $this->input->post('user_id'),
+				'c'					=> $this->input->post('c'),
 
-				'ship_address1'		=> $user_details->address1,
-				'ship_address2'		=> $user_details->address2,
-				'ship_country'		=> $user_details->country,
-				'ship_state'		=> $user_details->state,
-				'ship_city'			=> $user_details->city,
-				'ship_zipcode'		=> $user_details->zipcode,
+				// this data here is for when there is different ship to address
+				'store_name'		=> ($this->session->admin_so_sh_store_name ?: @$user_details->store_name),
+				'firstname'			=> ($this->session->admin_so_sh_fname ?: $user_details->fname),
+				'lastname'			=> ($this->session->admin_so_sh_lname ?: $user_details->lname),
+				'email'				=> ($this->session->admin_so_sh_email ?: $user_details->email),
+				'telephone'			=> ($this->session->admin_so_sh_telephone ?: $user_details->telephone),
+
+				'ship_address1'		=> ($this->session->admin_so_sh_address1 ?: $user_details->address1),
+				'ship_address2'		=> ($this->session->admin_so_sh_address2 ?: $user_details->address2),
+				'ship_country'		=> ($this->session->admin_so_sh_country ?: $user_details->country),
+				'ship_state'		=> ($this->session->admin_so_sh_state ?: $user_details->state),
+				'ship_city'			=> ($this->session->admin_so_sh_city ?: $user_details->city),
+				'ship_zipcode'		=> ($this->session->admin_so_sh_zipcode ?: $user_details->zipcode),
 
 				'webspace_id'		=> $this->webspace_details->id,
 
@@ -556,7 +608,7 @@ class Create extends Admin_Controller
 			$designer_group = $this->data['order_details']->designer_group;
 			$designer_slug = $this->data['order_details']->designer_slug;
 
-			// initialize user details
+			// re-initialize user details
 			if ($user_role == 'ws')
 			{
 				// wholesale
@@ -745,6 +797,18 @@ class Create extends Admin_Controller
 			unset($_SESSION['admin_so_slug_segs']);
 			unset($_SESSION['admin_so_dely_date']);
 			unset($_SESSION['admin_so_items']);
+			unset($_SESSION['admin_so_ship_to']); // 1 - use same address, 2 - enter manual info
+			unset($_SESSION['admin_so_sh_store_name']);
+			unset($_SESSION['admin_so_sh_fname']);
+			unset($_SESSION['admin_so_sh_lname']);
+			unset($_SESSION['admin_so_sh_email']);
+			unset($_SESSION['admin_so_sh_address1']);
+			unset($_SESSION['admin_so_sh_address2']);
+			unset($_SESSION['admin_so_sh_city']);
+			unset($_SESSION['admin_so_sh_state']);
+			unset($_SESSION['admin_so_sh_country']);
+			unset($_SESSION['admin_so_sh_zipcode']);
+			unset($_SESSION['admin_so_sh_telephone']);
 			// remove po mod details
 			unset($_SESSION['admin_so_mod_so_id']);
 			unset($_SESSION['admin_so_mod_items']);
@@ -874,7 +938,7 @@ class Create extends Admin_Controller
 			';
 			// handle form validation, datepickers, and scripts
 			$this->data['page_level_scripts'].= '
-				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/admin-so-components.js" type="text/javascript"></script>
+				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/admin-so-components.js?z='.time().'" type="text/javascript"></script>
 			';
 	}
 

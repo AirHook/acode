@@ -27,6 +27,24 @@ class Set_des_slug_session extends MY_Controller {
 	{
 		$this->output->enable_profiler(FALSE);
 
+		// load pertinent library/model/helpers
+		$this->load->library('users/sales_user_details');
+
+		// get sales user login details
+		if ($this->session->admin_sales_loggedin)
+		{
+			$this->sales_user_details->initialize(
+				array(
+					'admin_sales_id' => $this->session->admin_sales_id
+				)
+			);
+		}
+		else
+		{
+			echo 'loggedout';
+			exit;
+		}
+
 		if ( ! $slug)
 		{
 			// nothing more to do...

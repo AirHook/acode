@@ -27,6 +27,25 @@ class Get_thumbs extends MY_Controller {
 	{
 		$this->output->enable_profiler(FALSE);
 
+		// load pertinent library/model/helpers
+		$this->load->library('categories/categories_tree');
+		$this->load->library('users/sales_user_details');
+
+		// get sales user login details
+		if ($this->session->admin_sales_loggedin)
+		{
+			$this->sales_user_details->initialize(
+				array(
+					'admin_sales_id' => $this->session->admin_sales_id
+				)
+			);
+		}
+		else
+		{
+			echo 'loggedout';
+			exit;
+		}
+
 		if ( ! $this->input->post())
 		{
 			// nothing more to do...
@@ -54,9 +73,6 @@ class Get_thumbs extends MY_Controller {
 		$where_more = array();
 		if ($slug_segs)
 		{
-			// load pertinent library/model/helpers
-			$this->load->library('categories/categories_tree');
-
 			// get last category slug
 			$the_slugs = explode('/', $slug_segs);
 			$category_slug = end($the_slugs);

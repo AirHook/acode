@@ -27,6 +27,26 @@ class Get_item extends MY_Controller {
 	{
 		$this->output->enable_profiler(FALSE);
 
+		// load pertinent library/model/helpers
+		$this->load->library('products/product_details');
+		$this->load->library('products/size_names');
+		$this->load->library('users/sales_user_details');
+
+		// get sales user login details
+		if ($this->session->admin_sales_loggedin)
+		{
+			$this->sales_user_details->initialize(
+				array(
+					'admin_sales_id' => $this->session->admin_sales_id
+				)
+			);
+		}
+		else
+		{
+			echo 'loggedout';
+			exit;
+		}
+
 		if ( ! $this->input->post())
 		{
 			// nothing more to do...
@@ -42,10 +62,6 @@ class Get_item extends MY_Controller {
 		{
 			$st_id = ltrim($barcode[6].$barcode[7].$barcode[8].$barcode[9], '0');
 		}
-
-		// load pertinent library/model/helpers
-		$this->load->library('products/product_details');
-		$this->load->library('products/size_names');
 
 		// process data and set HTML
 		$html = '';

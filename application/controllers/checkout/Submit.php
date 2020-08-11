@@ -122,7 +122,13 @@ class Submit extends Frontend_Controller
 			 * - this overrides above order details, email subject, and html message
 			*/
 			// initialize...
-			$this->data['order_details'] = $this->order_details->initialize(array('tbl_order_log.order_log_id'=>$order_log_id));
+			$this->data['order_details'] =
+				$this->order_details->initialize(
+					array(
+						'tbl_order_log.order_log_id'=>$order_log_id
+					)
+				)
+			;
 
 			// get user_id and role and designer group
 			$user_role = $this->data['order_details']->c;
@@ -134,12 +140,24 @@ class Submit extends Frontend_Controller
 			if ($user_role == 'ws')
 			{
 				// wholesale
-				$this->data['user_details'] = $this->wholesale_user_details->initialize(array('user_id'=>$user_id));
+				$this->data['user_details'] =
+					$this->wholesale_user_details->initialize(
+						array(
+							'user_id'=>$user_id
+						)
+					)
+				;
 			}
 			else
 			{
 				// consumer
-				$this->data['user_details'] = $this->consumer_user_details->initialize(array('user_id'=>$user_id));
+				$this->data['user_details'] =
+					$this->consumer_user_details->initialize(
+						array(
+							'user_id'=>$user_id
+						)
+					)
+				;
 			}
 
 			// set company details via order designer

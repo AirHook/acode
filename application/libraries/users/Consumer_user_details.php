@@ -33,6 +33,8 @@ class Consumer_user_details
 	public $store_name = '';		// company
 	public $fname = '';
 	public $lname = '';
+	public $firstname = '';			// alias
+	public $lastname = '';			// alias
 
 	public $address1 = '';
 	public $address2 = '';
@@ -209,6 +211,8 @@ class Consumer_user_details
 			$this->store_name = $row->company;
 			$this->fname = $row->firstname;
 			$this->lname = $row->lastname;
+			$this->firstname = $row->firstname;
+			$this->lastname = $row->lastname;
 
 			$this->address1 = $row->address1;
 			$this->address2 = $row->address2;
@@ -446,6 +450,8 @@ class Consumer_user_details
 		$this->store_name = '';
 		$this->fname = '';
 		$this->lname = '';
+		$this->firstname = '';
+		$this->lastname = '';
 
 		$this->address1 = '';
 		$this->address2 = '';

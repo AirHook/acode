@@ -29,6 +29,22 @@ class Get_stores_list extends MY_Controller {
 
 		// load pertinent library/model/helpers
 		$this->load->library('users/wholesale_users_list');
+		$this->load->library('users/admin_user_details');
+
+		// get admin login details
+		if ($this->session->admin_loggedin)
+		{
+			$this->admin_user_details->initialize(
+				array(
+					'admin_id' => $this->session->admin_id
+				)
+			);
+		}
+		else
+		{
+			echo 'loggedout';
+			exit;
+		}
 
 		// get the list
 		// super admin lists all ws users

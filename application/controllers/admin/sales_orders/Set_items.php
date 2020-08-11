@@ -27,6 +27,24 @@ class Set_items extends MY_Controller {
 	{
 		$this->output->enable_profiler(FALSE);
 
+		// load pertinent library/model/helpers
+		$this->load->library('users/admin_user_details');
+
+		// get admin login details
+		if ($this->session->admin_loggedin)
+		{
+			$this->admin_user_details->initialize(
+				array(
+					'admin_id' => $this->session->admin_id
+				)
+			);
+		}
+		else
+		{
+			echo 'loggedout';
+			exit;
+		}
+
 		// set the items array
 		$items_array =
 			$this->session->admin_so_items

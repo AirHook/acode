@@ -67,6 +67,19 @@ class New_order extends Sales_user_Controller
 				unset($_SESSION['so_slug_segs']);
 				unset($_SESSION['so_dely_date']);
 				unset($_SESSION['so_items']);
+
+				unset($_SESSION['so_ship_to']); // 1 - use same address, 2 - enter manual info
+				unset($_SESSION['so_sh_store_name']);
+				unset($_SESSION['so_sh_fname']);
+				unset($_SESSION['so_sh_lname']);
+				unset($_SESSION['so_sh_email']);
+				unset($_SESSION['so_sh_address1']);
+				unset($_SESSION['so_sh_address2']);
+				unset($_SESSION['so_sh_city']);
+				unset($_SESSION['so_sh_state']);
+				unset($_SESSION['so_sh_country']);
+				unset($_SESSION['so_sh_zipcode']);
+				unset($_SESSION['so_sh_telephone']);
 			}
 
 			// remove po mod details on page reloads
@@ -205,6 +218,42 @@ class New_order extends Sales_user_Controller
 							'user_id' => $this->data['user_id']
 						)
 					);
+				}
+
+				// check for "ship to" address session
+				if ($this->session->so_ship_to == '1')
+				{
+					$array = array(
+						'so_sh_store_name' => $this->data['store_details']->store_name,
+						'so_sh_fname' => $this->data['store_details']->fname,
+						'so_sh_lname' => $this->data['store_details']->lname,
+						'so_sh_email' => $this->data['store_details']->email,
+						'so_sh_address1' => $this->data['store_details']->address1,
+						'so_sh_address2' => $this->data['store_details']->address2,
+						'so_sh_city' => $this->data['store_details']->city,
+						'so_sh_state' => $this->data['store_details']->state,
+						'so_sh_country' => $this->data['store_details']->country,
+						'so_sh_zipcode' => $this->data['store_details']->zipcode,
+						'so_sh_telephone' => $this->data['store_details']->telephone
+					);
+					$this->session->set_userdata($array);
+
+					$this->data['sh_store_name'] = $this->data['store_details']->store_name;
+					$this->data['sh_fname'] = $this->data['store_details']->fname;
+					$this->data['sh_lname'] = $this->data['store_details']->lname;
+					$this->data['sh_email'] = $this->data['store_details']->email;
+					$this->data['sh_address1'] = $this->data['store_details']->address1;
+					$this->data['sh_address2'] = $this->data['store_details']->address2;
+					$this->data['sh_city'] = $this->data['store_details']->city;
+					$this->data['sh_state'] = $this->data['store_details']->state;
+					$this->data['sh_country'] = $this->data['store_details']->count;
+					$this->data['sh_zipcode'] = $this->data['store_details']->zipcode;
+					$this->data['sh_telephone'] = $this->data['store_details']->telephone;
+				}
+
+				if ($this->session->so_ship_to)
+				{
+					$this->data['ship_to'] = $this->session->so_ship_to;
 				}
 			}
 			else
@@ -380,8 +429,6 @@ class New_order extends Sales_user_Controller
 
 			// insert user and shipping data to order log
 			$log_data = array(
-				'user_id'			=> $this->input->post('user_id'),
-				'c'					=> $this->input->post('c'),
 				'date_ordered'		=> @date('d, F Y - h:i',time()), // --> for depracation
 				'order_date'		=> time(), // --> replaces 'date_ordered'
 
@@ -389,22 +436,28 @@ class New_order extends Sales_user_Controller
 				'shipping_fee'		=> $shipping_fee,
 				'amount'			=> $this->input->post('overall_total'),
 
-				'store_name'		=> $user_details->store_name,
-				'firstname'			=> $user_details->fname,
-				'lastname'			=> $user_details->lname,
-				'email'				=> $user_details->email,
-				'telephone'			=> $user_details->telephone,
+				// essentially the user details
+				'user_id'			=> $this->input->post('user_id'),
+				'c'					=> $this->input->post('c'),
 
-				'ship_address1'		=> $user_details->address1,
-				'ship_address2'		=> $user_details->address2,
-				'ship_country'		=> $user_details->country,
-				'ship_state'		=> $user_details->state,
-				'ship_city'			=> $user_details->city,
-				'ship_zipcode'		=> $user_details->zipcode,
+				// this data here is for when there is different ship to address
+				'store_name'		=> ($this->session->so_sh_store_name ?: $user_details->store_name),
+				'firstname'			=> ($this->session->so_sh_fname ?: $user_details->fname),
+				'lastname'			=> ($this->session->so_sh_lname ?: $user_details->lname),
+				'email'				=> ($this->session->so_sh_email ?: $user_details->email),
+				'telephone'			=> ($this->session->so_sh_telephone ?: $user_details->telephone),
+
+				'ship_address1'		=> ($this->session->so_sh_address1 ?: $user_details->address1),
+				'ship_address2'		=> ($this->session->so_sh_address2 ?: $user_details->address2),
+				'ship_country'		=> ($this->session->so_sh_country ?: $user_details->country),
+				'ship_state'		=> ($this->session->so_sh_state ?: $user_details->state),
+				'ship_city'			=> ($this->session->so_sh_city ?: $user_details->city),
+				'ship_zipcode'		=> ($this->session->so_sh_zipcode ?: $user_details->zipcode),
 
 				'webspace_id'		=> $this->sales_user_details->webspace_id,
 
 				'agree_policy'		=> NULL,
+				'remarks'			=> ($this->input->post('remarks') ?: ''),
 				'options'			=> json_encode($options)
 				// 'status' defaults to '0' for new orders or pending orders
 			);
@@ -418,6 +471,7 @@ class New_order extends Sales_user_Controller
 			$order_log_id = $DB->insert_id();
 			//$order_log_id = '12341234';
 
+			// for depracation
 			$this->load->helper('string');
 			$random_code = strtoupper(random_string('alnum', 16)); // ----> randon_string() - a CI string helper function.
 
@@ -468,29 +522,17 @@ class New_order extends Sales_user_Controller
 					: $orig_price
 				;
 
-				// image src
+				// image src - relative path
 				$img_front_new = $product->media_path.$item.'_f3.jpg';
-
-				// a polyfill to the php function 'array_key_first' which is not
-				// available on versions prior to PHP 7.3.0
-				if ( ! function_exists('array_key_first')) {
-				    function array_key_first(array $arr) {
-				        foreach($arr as $key => $unused) {
-				            return $key;
-				        }
-				        return NULL;
-				    }
-				}
 
 				foreach ($size_qty as $size_label => $qtys)
 				{
 					// NOTE: $qtys come in 3's - ["1",0,"1"] reqd, shipd, bal
 
 					// get size names
-					$size_label = array_key_first($size_qty);
 					$size_names = $this->size_names->get_size_names($product->size_mode);
 					$size = $size_names[$size_label];
-					$qty = $size_qty[$size_label][0];
+					$qty = $qtys[0]; // we only need the reqd
 
 					// for calculate]ion of available stocks
 					if ($product->$size_label == '0')
@@ -550,7 +592,7 @@ class New_order extends Sales_user_Controller
 
 					// process inventory by deducting from available and putting to onorder unless preorder
 					// items needed are prod_no, color_code, size, qty
-					if ($custom_order != '1')
+					if ($custom_order != '1' && $custom_order != '4')
 					{
 						$this->load->library('inventory/update_stocks');
 						$config['prod_sku'] = $item;
@@ -580,8 +622,17 @@ class New_order extends Sales_user_Controller
 			$designer_group = $this->data['order_details']->designer_group;
 			$designer_slug = $this->data['order_details']->designer_slug;
 
-			// initialize user details based on above initialization
-			$this->data['user_details'] = $user_details;
+			// re-initialize user details
+			if ($user_role == 'ws')
+			{
+				// wholesale
+				$this->data['user_details'] = $this->wholesale_user_details->initialize(array('user_id'=>$user_id));
+			}
+			else
+			{
+				// consumer
+				$this->data['user_details'] = $this->consumer_user_details->initialize(array('user_id'=>$user_id));
+			}
 
 			// set company details via order designer
 			if ($designer_group == 'Mixed Designers')
@@ -663,7 +714,8 @@ class New_order extends Sales_user_Controller
 
 				$this->email->from($this->webspace_details->info_email, $this->webspace_details->name);
 
-				$this->email->to($user_details->email);
+				$this->email->to($this->data['user_details']->email);
+				//$this->email->to('rsbgm@rcpixel.com');
 
 				$this->email->subject($email_subject);
 				$this->email->message($message);
@@ -671,7 +723,7 @@ class New_order extends Sales_user_Controller
 				if ($sendby == 'mailgun')
 				{
 					$this->mailgun->from = $this->webspace_details->name.' <'.$this->webspace_details->info_email.'>';
-					$this->mailgun->to = $user_array['p_email'];
+					$this->mailgun->to = $this->data['user_details']->email;
 					$this->mailgun->subject = $email_subject;
 					$this->mailgun->message = $message;
 
@@ -679,7 +731,7 @@ class New_order extends Sales_user_Controller
 					{
 						// capturing error but the error message it not captured from MG class
 						// the return info is still a bug to fix
-						$error = 'Unable to MG send to - "'.$user_details->email.'"<br />';
+						$error = 'Unable to MG send to - "'.$this->data['user_details']->email.'"<br />';
 						$error .= '-'.$this->mailgun->error_message;
 					}
 
@@ -693,7 +745,7 @@ class New_order extends Sales_user_Controller
 					// must resolve pending update of CI
 					if ( ! @$this->email->send())
 					{
-						$error = 'Unable to CI send to - "'.$user_details->email.'"<br />';
+						$error = 'Unable to CI send to - "'.$this->data['user_details']->email.'"<br />';
 					}
 				}
 				//$this->email->send();
@@ -706,7 +758,7 @@ class New_order extends Sales_user_Controller
 				$message = $this->load->view('templates/order_confirmation_new', $this->data, TRUE);
 
 				$this->email->from($this->webspace_details->info_email, $this->webspace_details->name);
-				$this->email->reply_to($user_details->email);
+				$this->email->reply_to($this->data['user_details']->email);
 
 				// copies
 				$shop7 = $this->webspace_details->info_email == 'help@shop7thavenue.com' ? '' : ', help@shop7thavenue.com';
@@ -758,6 +810,18 @@ class New_order extends Sales_user_Controller
 			unset($_SESSION['so_slug_segs']);
 			unset($_SESSION['so_dely_date']);
 			unset($_SESSION['so_items']); // remove the items
+			unset($_SESSION['so_ship_to']); // 1 - use same address, 2 - enter manual info
+			unset($_SESSION['so_sh_store_name']);
+			unset($_SESSION['so_sh_fname']);
+			unset($_SESSION['so_sh_lname']);
+			unset($_SESSION['so_sh_email']);
+			unset($_SESSION['so_sh_address1']);
+			unset($_SESSION['so_sh_address2']);
+			unset($_SESSION['so_sh_city']);
+			unset($_SESSION['so_sh_state']);
+			unset($_SESSION['so_sh_country']);
+			unset($_SESSION['so_sh_zipcode']);
+			unset($_SESSION['so_sh_telephone']);
 			// remove po mod details on page reloads
 			unset($_SESSION['so_mod_so_id']);
 			unset($_SESSION['so_mod_items']);

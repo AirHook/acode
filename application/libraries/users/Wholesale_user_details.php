@@ -50,6 +50,8 @@ class Wholesale_user_details
 	public $website = '';
 	public $fname = '';
 	public $lname = '';
+	public $firstname = '';			// alias
+	public $lastname = '';			// alias
 
 	public $fed_tax_id = '';
 
@@ -274,6 +276,8 @@ class Wholesale_user_details
 			$this->website = $row->website;
 			$this->fname = $row->firstname;
 			$this->lname = $row->lastname;
+			$this->firstname = $row->firstname;
+			$this->lastname = $row->lastname;
 
 			$this->fed_tax_id = $row->fed_tax_id;
 
@@ -986,6 +990,8 @@ class Wholesale_user_details
 		$this->website = '';
 		$this->fname = '';
 		$this->lname = '';
+		$this->firstname = '';
+		$this->lastname = '';
 
 		$this->fed_tax_id = '';
 

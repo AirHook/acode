@@ -27,6 +27,25 @@ class Verify_barcode extends MY_Controller {
 	{
 		$this->output->enable_profiler(FALSE);
 
+		// load pertinent library/model/helpers
+		$this->load->library('products/product_details');
+		$this->load->library('users/admin_user_details');
+
+		// get admin login details
+		if ($this->session->admin_loggedin)
+		{
+			$this->admin_user_details->initialize(
+				array(
+					'admin_id' => $this->session->admin_id
+				)
+			);
+		}
+		else
+		{
+			echo 'loggedout';
+			exit;
+		}
+
 		if ( ! $this->input->post())
 		{
 			// nothing more to do...
@@ -45,9 +64,6 @@ class Verify_barcode extends MY_Controller {
 			{
 				// check and get stock id
 				$st_id = $this->upc_barcodes->st_id;
-
-				// load pertinent library/model/helpers
-				$this->load->library('products/product_details');
 
 				// get details
 				$product = $this->product_details->initialize(

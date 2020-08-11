@@ -26,6 +26,25 @@ class Load_preset extends MY_Controller {
 	{
 		$this->output->enable_profiler(FALSE);
 
+		// load pertinent library/model/helpers
+		$this->load->library('sales_package/sales_package_details');
+		$this->load->library('users/admin_user_details');
+
+		// get admin login details
+		if ($this->session->admin_loggedin)
+		{
+			$this->admin_user_details->initialize(
+				array(
+					'admin_id' => $this->session->admin_id
+				)
+			);
+		}
+		else
+		{
+			echo 'loggedout';
+			exit;
+		}
+
 		if ( ! $this->input->post())
 		{
 			// nothing more to do...
@@ -36,9 +55,6 @@ class Load_preset extends MY_Controller {
 		// grab the post variable
 		//$preset = 'instock';
 		$preset = $this->input->post('preset');
-
-		// load pertinent library/model/helpers
-		$this->load->library('sales_package/sales_package_details');
 
 		// if sales package preset is present on sales user options, use it
 

@@ -26,6 +26,25 @@ class Get_preset extends MY_Controller {
 	{
 		$this->output->enable_profiler(FALSE);
 
+		// load pertinent library/model/helpers
+		$this->load->library('categories/categories_tree');
+		$this->load->library('users/admin_user_details');
+
+		// get admin login details
+		if ($this->session->admin_loggedin)
+		{
+			$this->admin_user_details->initialize(
+				array(
+					'admin_id' => $this->session->admin_id
+				)
+			);
+		}
+		else
+		{
+			echo 'loggedout';
+			exit;
+		}
+
 		if ( ! $this->input->post())
 		{
 			// nothing more to do...
@@ -36,9 +55,6 @@ class Get_preset extends MY_Controller {
 		// grab the post variable
 		//$des_slug = 'basixblacklabel';
 		$des_slug = $this->input->post('des_slug');
-
-		// load pertinent library/model/helpers
-		$this->load->library('categories/categories_tree');
 
 		// get the designer category tree
 		$this->data['des_subcats'] = $this->categories_tree->treelist(

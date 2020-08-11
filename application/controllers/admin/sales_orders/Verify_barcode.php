@@ -27,6 +27,25 @@ class Verify_barcode extends MY_Controller {
 	{
 		$this->output->enable_profiler(FALSE);
 
+		// load pertinent library/model/helpers
+		$this->load->library('users/admin_user_details');
+
+		// get admin login details
+		if ($this->session->admin_loggedin)
+		{
+			$this->admin_user_details->initialize(
+				array(
+					'admin_id' => $this->session->admin_id
+				)
+			);
+		}
+		else
+		{
+			$data = array('status'=>'loggedout');
+			echo json_encode($data);
+			exit;
+		}
+
 		if ( ! $this->input->post())
 		{
 			// nothing more to do...

@@ -92,7 +92,7 @@
 								 */
 								?>
 								<tr>
-									<td style="text-align:center;padding-bottom:30px;">
+									<td colspan="2" style="text-align:center;padding-bottom:30px;">
 
 										<?php
 										$logo =
@@ -102,7 +102,7 @@
 
 										if (
 											@$order_details->options['sales_order']
-											&& $order_details->designer_group != 'Mixed Designers'
+											&& $order_details->designer_group == 'Mixed Designers'
 										)
 										{ ?>
 
@@ -123,20 +123,34 @@
 
 									</td>
 								</tr>
+
+								<?php
+								/***********
+								 * Letter Head
+								 */
+								?>
 								<tr>
-									<td>
+									<td width="50%" valign="top" style="vertical-align:top;padding-bottom:10px;font-family:sans-serif;font-size:10px;">
 										<strong>
-											<?php echo $order_details->c == 'ws' ? 'WHOLESALE ORDER INQUIRY' : 'CONSUMER ORDER'; ?> #<?php echo (@$order_details->order_id ?: '10301800').(@$order_details->options['sales_order'] ? ' '.$order_details->options['sales_order'] : ''); ?> <br />
-											<small> Date: <?php echo @@$order_details->order_date ?: '2020-06-01'; ?> </small>
+											<?php echo $this->webspace_details->name; ?>
 										</strong>
-
-										<br /><br />
-
-										<?php echo @$company_name ?: 'D&amp;I Fashion Group'; ?> <br />
-										<?php echo @$company_address1 ? $company_address1.' '.@$company_address2: '230 West 38th Street'; ?> <br />
-										<?php echo @$company_city ? $company_city.', '.@@$company_state.' '.@$company_zipcode: 'New York, NY 10018'; ?> <br />
-										<?php echo @$company_country ?: 'United States'; ?> <br />
-										<?php echo @$company_telephone ?: '212.840.0846'; ?>
+										<br />
+										<?php echo $this->webspace_details->address1; ?> <br />
+										<?php echo $this->webspace_details->address2 ? $this->webspace_details->address2.'<br />' : ''; ?>
+										<?php echo $this->webspace_details->city.', '.$this->webspace_details->state.' '.$this->webspace_details->zipcode; ?> <br />
+										<?php echo $this->webspace_details->country; ?> <br />
+										<?php echo $this->webspace_details->phone; ?> <br />
+									</td>
+									<td width="50%" valign="top" style="vertical-align:top;padding-bottom:10px;font-family:sans-serif;font-size:10px;">
+										<strong>
+											INVOICE #<?php echo (@$order_details->invoice_id ?: '97104'); ?>
+										</strong>
+										<br />
+										<small>
+											Customer: #<?php echo @$order_details->user_id ?: '--'; ?>
+											<br />
+											Date: <?php echo date('F j, Y', strtotime(@$order_details->order_date)) ?: '2020-06-01'; ?>
+										</small>
 									</td>
 								</tr>
 							</table>
@@ -151,9 +165,9 @@
 							 * Address Details
 							 */
 							?>
-							<table align="left" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;vertical-align:top;">
+							<table align="left" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;vertical-align:top;margin-bottom:20px;">
 								<tr>
-									<td width="50%" valign="top" style="vertical-align:top;padding-bottom:10px;">
+									<td width="50%" valign="top" style="vertical-align:top;padding-bottom:10px;font-family:sans-serif;font-size:10px;">
 
 										<strong> Bill To </strong>
 
@@ -179,7 +193,7 @@
 										ATTN: <?php echo @$user_details->fname ? $user_details->fname.' '.@$user_details->lname : 'Your Name'; ?> <?php echo @$user_details->email ? '('.$user_details->email.')' : '(your-email@domain.com)'; ?>
 
 									</td>
-									<td width="50%" valign="top" style="vertical-align:top;padding-bottom:10px;">
+									<td width="50%" valign="top" style="vertical-align:top;padding-bottom:10px;font-family:sans-serif;font-size:10px;">
 
 										<strong> Ship To </strong>
 
@@ -198,28 +212,12 @@
 								</tr>
 							</table>
 
-							<br><br>
-
-							<?php
-							/***********
-							 * Author
-							 */
-							?>
-							<?php if (@$order_details->options['sales_order'])
-							{ ?>
-
-							<strong> Ordered by: </strong> <?php echo @$author->author_name ?: ''; ?> <?php echo @$po_details->author_email ? '('.@$po_details->author_email.')' : ''; ?>
-							<br><br>
-
-								<?php
-							} ?>
-
 							<?php
 							/***********
 							 * Ship Method
 							 */
 							?>
-							<table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;margin:20px 0px;">
+							<table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;margin-bottom:10px;font-family:sans-serif;font-size:10px;">
 								<tr>
 									<td>
 										<strong> Ship Method: </strong>
@@ -248,7 +246,7 @@
 							if ($this->order_details->c == 'ws')
 							{ ?>
 
-							<table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;margin:20px 0px;">
+							<table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;margin:10px 0 20px;font-family:sans-serif;font-size:10px;">
 								<tr>
 									<td>
 										<strong> Assigned Sales Representative: </strong>
@@ -268,26 +266,25 @@
 							 * Order Details
 							 */
 							?>
-							<table cellpadding="0" cellspacing="0" style="width:100%;">
+							<table cellpadding="0" cellspacing="0" style="width:100%;border:1px solid #ccc;">
 
 								<thead>
-									<tr style="background-color:#e9edef;">
-										<th align="left" style="padding:0px 5px 8px;">
-											Items (<?php echo @$order_items ? count($order_items) : '0'; ?>) Details
+									<tr style="background-color:#e9edef;font-family:sans-serif;font-size:10px;">
+										<th align="center" style="width:7%;vertical-align:bottom;padding:5px;border-right:1px solid #ccc;border-bottom:1px solid #ccc;"> Qty<br />Reqd </th>
+										<th align="center" style="width:7%;vertical-align:bottom;padding:5px;border-right:1px solid #ccc;border-bottom:1px solid #ccc;"> Qty<br />Shipd </th>
+										<th align="center" style="width:7%;vertical-align:bottom;padding:5px;border-right:1px solid #ccc;border-bottom:1px solid #ccc;"> Qty<br />Bal </th>
+										<th align="left" style="width:12%;vertical-align:bottom;padding:5px;border-bottom:1px solid #ccc;">
+											Item No.
 										</th>
-										<th align="left" style="padding:0 5px 8px;"> Prod No </th>
-										<th align="center" style="padding:0 5px 8px;"> Size </th>
-										<th align="left" style="padding:0 5px 8px;"> Color </th>
-										<th align="center" style="padding:0 5px 8px;"> Qty </th>
-										<th align="center" style="width:12%;padding:0 5px 8px;border-left:1px solid #ccc;"> Regular<br />Price </th>
-										<th align="center" style="width:12%;padding:0 5px 8px;border-right:1px solid #ccc;"> Discounted<br />Price </th>
-										<th align="right" style="width:12%;padding:0 5px 8px;"> Extended<br />Price </th>
+										<th align="left" style="vertical-align:bottom;padding:5px;border-bottom:1px solid #ccc;"> Description </th>
+										<th align="right" style="width:12%;vertical-align:bottom;padding:5px;border-left:1px solid #ccc;border-bottom:1px solid #ccc;"> Regular<br />Price </th>
+										<th align="right" style="width:12%;vertical-align:bottom;padding:5px;border-right:1px solid #ccc;border-bottom:1px solid #ccc;"> Discounted<br />Price </th>
+										<th align="right" style="width:12%;vertical-align:bottom;padding:5px;border-bottom:1px solid #ccc;"> Extended<br />Price </th>
 									</tr>
 								</thead>
 
 								<tbody>
-									<tr><td colspan="8" style="border-bottom:1px solid #ccc;"> <td></tr>
-									<tr><td colspan="8" style="height:10px;"> <td></tr>
+									<tr><td colspan="8" style="height:20px;"> <td></tr>
 
 										<?php
 										if (@$order_details->order_items)
@@ -338,12 +335,16 @@
 												$options = $item->options ? json_decode($item->options, TRUE) : array();
 												?>
 
-									<tr>
+									<tr style="font-family:sans-serif;font-size:10px;">
+
+										<td align="center" style="vertical-align:top;"> <?php echo $item->qty; ?> </td>
+										<td align="center" style="vertical-align:top;"> <?php echo @$item->shipped ?: '0'; ?> </td>
+										<td align="center" style="vertical-align:top;"> <?php echo $item->qty; ?> </td>
 
 										<?php
 										/**********
 										 * IMAGE and info
-										 */
+										 *
 										?>
 										<td style="vertical-align:top;padding:0 5px 20px 0">
 											<a href="javascript:;" style="float:left;">
@@ -371,22 +372,22 @@
 										?>
 										<td style="vertical-align:top;padding:0 5px;">
 											<?php echo $item->prod_no; ?>
+										</td>
+
+										<?php
+										/**********
+										 * Description Size
+										 */
+										?>
+										<td style="vertical-align:top;padding:0 5px 10px;">
+											<?php echo 'Size: '.$item->size; ?>, <?php echo $item->color; ?>
 											<?php echo $item->custom_order == '3' ? '<br /><em style="color:red;font-size:75%;">On Sale</em>' : ''; ?>
 										</td>
 
 										<?php
 										/**********
-										 * Size
-										 */
-										?>
-										<td align="center" style="vertical-align:top;padding:0 5px;">
-											<?php echo $item->size; ?>
-										</td>
-
-										<?php
-										/**********
 										 * Color
-										 */
+										 *
 										?>
 										<td align="left" style="vertical-align:top;padding:0 5px;">
 											<?php echo $item->color; ?>
@@ -395,7 +396,7 @@
 										<?php
 										/**********
 										 * Qty
-										 */
+										 *
 										?>
 										<td align="center" style="vertical-align:top;padding:0 5px;">
 											<?php echo $item->qty; ?>
@@ -424,7 +425,7 @@
 										 * Extended
 										 */
 										?>
-										<td align="right" style="vertical-align:top;padding:0 0 0 5px;">
+										<td align="right" style="vertical-align:top;padding:0 5px;">
 											<?php
 											$this_size_total = $price * $item->qty;
 											echo $this_size_total ? '$ '.number_format($this_size_total, 2) : '$0.00';
@@ -443,17 +444,17 @@
 									<tr><td colspan="8" style="height:10px;border-bottom:1px solid #ccc;"> <td></tr>
 									<tr><td colspan="8" style="height:20px;"> <td></tr>
 
-									<tr>
-										<td colspan="5" rowspan="5" align="left" style="vertical-align:top;">
+									<tr style="font-family:sans-serif;font-size:10px;">
+										<td colspan="5" rowspan="5" align="left" style="vertical-align:top;padding-left:5px;">
 											Remarks/Instructions:<br /><br />
 										</td>
 										<td colspan="2" align="right" style="vertical-align:top;height:24px;"> Sub Total </td>
-										<td align="right" style="vertical-align:top;height:24px;">
+										<td align="right" style="vertical-align:top;height:24px;padding-right:5px;">
 											<?php echo @$overall_total ? '$ '.number_format($overall_total, 2) : '$ 0.00'; ?>
 										</td>
 									</tr>
 
-									<tr>
+									<tr style="font-family:sans-serif;font-size:10px;">
 										<td colspan="2" align="right" style="vertical-align:top;height:24px;">
 											Shipping &amp; Handling
 											<?php
@@ -463,20 +464,21 @@
 											}
 											?>
 										</td>
-										<td align="right" style="vertical-align:top;height:24px;">
+										<td align="right" style="vertical-align:top;height:24px;padding-right:5px;">
 											<?php echo @$order_details->shipping_fee != '0' ? '$ '.number_format($order_details->shipping_fee, 2) : '--'; ?>
 										</td>
 									</tr>
 
-									<tr><td colspan="3" style="height:10px;border-bottom:1px solid #ccc;"> <td></tr>
-									<tr><td colspan="3" style="height:10px;"> <td></tr>
+									<tr><td colspan="3" style="height:10px;border-bottom:1px solid #ccc;"> </td></tr>
+									<tr><td colspan="3" style="height:10px;"> </td></tr>
 
-									<tr>
+									<tr style="font-family:sans-serif;font-size:10px;">
 										<td colspan="2" align="right" style="vertical-align:top;height:24px;font-weight:bold;"> Grand Total </td>
-										<td align="right" style="vertical-align:top;height:24px;font-weight:bold;">
+										<td align="right" style="vertical-align:top;height:24px;font-weight:bold;padding-right:5px;">
 											$ <?php echo @number_format(($overall_total + $order_details->shipping_fee), 2); ?>
 										</td>
 									</tr>
+
 								</tbody>
 
 							</table>
@@ -485,79 +487,7 @@
 
 						</td>
 					</tr>
-					<tr>
-						<td>
 
-							<?php
-							// payment details shows for consumer users orders
-							// and wholesale user 'add a card' option
-							// for 'send to admin' copy
-							if (@$sending_to_admin)
-							{ ?>
-
-							<table align="left" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;margin:30px 0px 20px;">
-
-								<?php
-								/***********
-								 * Payment Details
-								 */
-								?>
-								<tr>
-									<td>
-										<strong>
-											Payment Details:
-										</strong>
-
-										<br /><br />
-
-										<?php
-										if (
-											$order_details->c == 'cs'
-											OR $order_details->c == 'guest'
-											OR @$order_details->options['ws_payment_options'] == '2'
-										)
-										{
-											echo @$order_details->options['ws_payment_options'] == '2' ? 'Add a card:<br />' : '';
-											?>
-
-										Card Type: <?php echo $this->session->flashdata('cc_type') ?: '<cite>Card type</cite>'; ?><br />
-										Card Holder: <?php echo @$user_details->fname ? $user_details->fname.' '.@$user_details->lname : '<cite>Card holder name</cite>'; ?><br />
-										Card Number: <?php echo $this->session->flashdata('cc_number') ?: '<cite>Card number of user</cite>'; ?><br />
-										Expiration: <?php echo ($this->session->flashdata('cc_expmo').'/'.$this->session->flashdata('cc_expyy')) ?: '<cite>Card expiry date</cite>'; ?><br />
-										CSC: <?php echo $this->session->flashdata('cc_code') ?: '<cite>CSC</cite>'; ?>
-
-											<?php
-										}
-										else
-										{
-											// this options will always be present for ws order inquiries hence forth
-											switch (@$order_details->options['ws_payment_options'])
-											{
-												case '1':
-													echo 'Use my card on file.';
-												break;
-												case '3':
-													echo 'Send Paypal Invoice.';
-												break;
-												case '4':
-													echo 'Bill My Account.';
-												break;
-												case '5':
-													echo 'Send Wire Request.';
-												break;
-											}
-										}
-										?>
-
-									</td>
-								</tr>
-							</table>
-
-								<?php
-							} ?>
-
-						</td>
-					</tr>
 					<tr>
 						<td>
 
@@ -569,45 +499,11 @@
 							<table align="left" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;margin:30px 0px 20px;">
 
 								<tr>
-									<td style="text-align:center;padding-bottom:10px;">
-
-										<?php
-										if ($order_details->c == 'ws')
-										{
-											//$delivery_notice = 'Your order inquiry was received and will be researched for availability on product.';
-											$delivery_notice = '<span style="color:red;">THIS IS NOT A CONFIRMATION OF ORDER ACCEPTANCE. YOUR SALES REPRESENTATIVE WILL CONTACT YOU TO FINALIZE YOUR ORDER AND SEND YOU A FORMAL INVOICE.</span>';
-										}
-										else
-										{
-											if (@$custom_order)
-											{
-												$delivery_notice = 'You have a Custom Order item in your order. Delivery is approximately 14-16 weeks from order.';
-											}
-											else
-											{
-												$delivery_notice = 'Your order was received and will be researched for availability on product.';
-											}
-										}
-										if ($order_details->shipping_fee === '0')
-										{ ?>
-
-										<span style="font-size:85%;">
-											<sup>*</sup>NOTE: <?php echo $delivery_notice; ?>
-										</span>
-
-											<?php
-										}
-										?>
-
-									</td>
-								</tr>
-
-								<tr>
 									<td>
-										<table width="630" align="center" style="border-top:1px solid black;">
+										<table width="630" align="center" style="border-top:1px solid #ccc;">
 											<tr>
 												<td width="630" align="center">
-													<font color="#333333" style="font-family:Tahoma;font-size:10px;">
+													<font color="#333333" style="font-family:sans-serif;font-size:10px;">
 														<?php echo $this->webspace_details->name; ?>
 														<?php echo $this->webspace_details->address1; ?>
 														<?php echo $this->webspace_details->address2; ?>
@@ -615,18 +511,6 @@
 													</font>
 												</td>
 											</tr>
-											<?php
-											if ($this->session->userdata('user_cat') !== 'wholesale')
-											{ ?>
-											<tr>
-												<td width="630" align="center">
-													<font color="#333333" style="font-family:Tahoma;font-size:10px;">
-														Purchaser agrees to abide by the <?php echo $this->webspace_details->slug; ?>.com <a href="http://www.<?php echo $this->webspace_details->slug; ?>.com/return_policy.html">Return Policy</a>.
-													</font>
-												</td>
-											</tr>
-												<?php
-											} ?>
 										</table>
 									</td>
 								</tr>

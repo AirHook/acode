@@ -37,6 +37,7 @@ class Update_seque extends Admin_Controller {
 		$this->output->enable_profiler(FALSE);
 
 		// update record
+		$this->DB->set('last_modified', time());
 		$this->DB->set('seque', $new_seque);
 		$this->DB->where('prod_id', $prod_id);
 		$q = $this->DB->update('tbl_product');

@@ -267,14 +267,14 @@
 
 														<h4> Billing Address </h4>
 
-														<?php echo $this->order_details->store_name ?: $this->order_details->firstname.' '.$this->order_details->lastname; ?>
-														<br> <?php echo $this->order_details->ship_address1; ?>
-														<?php echo $this->order_details->ship_address2 ? '<br>'.$this->order_details->ship_address2 : ''; ?>
-														<br> <?php echo $this->order_details->ship_city; ?>
-														<br> <?php echo $this->order_details->ship_zipcode.' '.$this->order_details->ship_state; ?>
-														<br> <?php echo $this->order_details->ship_country; ?>
-														<?php echo $this->order_details->telephone ? '<br >T: '.$this->order_details->telephone : ''; ?>
-														<br> ATTN: <?php echo $this->order_details->firstname.' '.$this->order_details->lastname; ?> <?php echo '<cite class="small">('.$this->order_details->email.')</cite>'; ?>
+														<?php echo @$user_details->store_name ?: $user_details->firstname.' '.$user_details->lastname; ?>
+														<br> <?php echo $user_details->address1; ?>
+														<?php echo $user_details->address2 ? '<br>'.$user_details->address2 : ''; ?>
+														<br> <?php echo $user_details->city; ?>
+														<br> <?php echo $user_details->zipcode.' '.$user_details->state; ?>
+														<br> <?php echo $user_details->country; ?>
+														<?php echo $user_details->telephone ? '<br >T: '.$user_details->telephone : ''; ?>
+														<br> ATTN: <?php echo $user_details->firstname.' '.$user_details->lastname; ?> <?php echo '<cite class="small">('.$user_details->email.')</cite>'; ?>
 
 													</div>
 													<div class="col-md-6 col-sm-12">
