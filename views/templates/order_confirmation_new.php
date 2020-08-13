@@ -329,13 +329,20 @@
 												$size_names = $this->size_names->get_size_names($product->size_mode);
 												$size_label = array_search($size, $size_names);
 
-												// set original price in case options['orig_price'] is not set
-												// set $price
-												$orig_price = $this->order_details->c == 'ws' ? $product->wholesale_price : $product->retail_price;
-												$price = $item->unit_price;
-
 												// get items options
 												$options = $item->options ? json_decode($item->options, TRUE) : array();
+
+												// set original price in case options['orig_price'] is not set
+												// set $price
+												$orig_price =
+													@$options['orig_price']
+													?: (
+														$this->order_details->c == 'ws'
+														? $product->wholesale_price
+														: $product->retail_price
+													)
+												;
+												$price = $item->unit_price;
 												?>
 
 									<tr>
@@ -444,7 +451,7 @@
 									<tr><td colspan="8" style="height:20px;"> <td></tr>
 
 									<tr>
-										<td colspan="5" rowspan="5" align="left" style="vertical-align:top;">
+										<td colspan="5" rowspan="6" align="left" style="vertical-align:top;">
 											Remarks/Instructions:<br /><br />
 										</td>
 										<td colspan="2" align="right" style="vertical-align:top;height:24px;"> Sub Total </td>
@@ -452,6 +459,23 @@
 											<?php echo @$overall_total ? '$ '.number_format($overall_total, 2) : '$ 0.00'; ?>
 										</td>
 									</tr>
+
+									<?php if (@$order_details->options['discount'])
+									{
+										$discount = $overall_total * ($order_details->options['discount'] / 100);
+										?>
+
+									<!-- Discount -->
+									<tr>
+										<td colspan="2" align="right" style="vertical-align:top;height:24px;">Discount @<?php echo $discount; ?>%</td>
+										<td align="right" style="vertical-align:top;height:24px;">
+											($ <?php echo number_format($discount, 2); ?>)
+										</td>
+									</tr>
+
+										<?php
+									}
+									else $discount = 0; ?>
 
 									<tr>
 										<td colspan="2" align="right" style="vertical-align:top;height:24px;">
@@ -474,7 +498,7 @@
 									<tr>
 										<td colspan="2" align="right" style="vertical-align:top;height:24px;font-weight:bold;"> Grand Total </td>
 										<td align="right" style="vertical-align:top;height:24px;font-weight:bold;">
-											$ <?php echo @number_format(($overall_total + $order_details->shipping_fee), 2); ?>
+											$ <?php echo @number_format((($overall_total - $discount) + $order_details->shipping_fee), 2); ?>
 										</td>
 									</tr>
 								</tbody>

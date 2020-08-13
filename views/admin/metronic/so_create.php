@@ -1077,13 +1077,13 @@
                                             </p>
 
                                             <p class="customer-shipping-address <?php echo @$ship_to ? '' : 'display-none'; ?>">
-                                                <?php echo $sh_store_name ?: (@$store_details->store_name ?: 'CUSTOMER NAME'); ?> <br />
-                                                <?php echo $sh_address1 ?: (@$store_details->address1 ?: 'Address1'); ?> <br />
-                                                <?php echo $sh_address2 ?: (@$store_details->address2 ? $store_details->address2.'<br />' : ''); ?>
-                                                <?php echo $sh_city ?: (@$store_details->city ?: 'City'); ?>, <?php echo $sh_state ?: (@$store_details->state ?: 'State'); ?> <br />
-                                                <?php echo $sh_country ?: (@$store_details->country ?: 'Country'); ?> <br />
-                                                <?php echo $sh_telephone ?: (@$store_details->telephone ?: 'Telephone'); ?> <br />
-                                                ATTN: <?php echo $sh_fname ? $sh_fname.' '.$sh_lname : (@$store_details->fname ? $store_details->fname.' '.@$store_details->lname : 'Contact Name'); ?> <?php echo $sh_email ? '('.$sh_email.')' : (@$store_details->email ? '('.$store_details->email.')': '(email)'); ?>
+                                                <?php echo @$sh_store_name ?: (@$store_details->store_name ?: 'CUSTOMER NAME'); ?> <br />
+                                                <?php echo @$sh_address1 ?: (@$store_details->address1 ?: 'Address1'); ?> <br />
+                                                <?php echo @$sh_address2 ?: (@$store_details->address2 ? $store_details->address2.'<br />' : ''); ?>
+                                                <?php echo @$sh_city ?: (@$store_details->city ?: 'City'); ?>, <?php echo @$sh_state ?: (@$store_details->state ?: 'State'); ?> <br />
+                                                <?php echo @$sh_country ?: (@$store_details->country ?: 'Country'); ?> <br />
+                                                <?php echo @$sh_telephone ?: (@$store_details->telephone ?: 'Telephone'); ?> <br />
+                                                ATTN: <?php echo @$sh_fname ? $sh_fname.' '.@$sh_lname : (@$store_details->fname ? $store_details->fname.' '.@$store_details->lname : 'Contact Name'); ?> <?php echo @$sh_email ? '('.$sh_email.')' : (@$store_details->email ? '('.$store_details->email.')': '(email)'); ?>
                                             </p>
 
                                             <!-- DOC: remove 'hide' class to show -->

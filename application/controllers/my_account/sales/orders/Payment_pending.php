@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Shipment_pending extends Admin_Controller {
+class Payment_pending extends Sales_user_Controller {
 
 	/**
 	 * Constructor
@@ -28,6 +28,10 @@ class Shipment_pending extends Admin_Controller {
 		// generate the plugin scripts and css
 		$this->_create_plugin_scripts();
 
+		// adding these line to identify controlls for sales users
+		$des_slug = $this->sales_user_details->designer;
+		$list = 'ws'; // --> sales users is always working for their wholesale users
+
 		// load pertinent library/model/helpers
 		$this->load->library('orders/orders_list');
 		$this->load->library('designers/designer_details');
@@ -35,7 +39,11 @@ class Shipment_pending extends Admin_Controller {
 
 		// get designer list for the dropdown filter
 		$this->designers_list->initialize(array('with_products'=>TRUE));
-		$this->data['designers'] = $this->designers_list->select();
+		$this->data['designers'] = $this->designers_list->select(
+			array(
+				'url_structure' => $this->sales_user_details->designer
+			)
+		);
 
 		// set some variables
 		// we need a real variable to process some calculations
@@ -81,8 +89,13 @@ class Shipment_pending extends Admin_Controller {
 			}
 			else $where['tbl_order_log.c'] = $list;
 		}
-		// 0-new,1-complete,2-onhold,3-canclled,4-returned/refunded,5-shipment_pending,6-store_credit
-		$where['status'] = '5';
+		// 0-new,1-complete,2-onhold,3-canclled,4-returned/refunded,5-shipment_pending,6-store_credit,7-payment_pending
+		$where['status'] = '7';
+		// list orders of ws users under the sales user for level 2
+		if ($this->sales_user_details->access_level == '2')
+		{
+			$where['tbluser_data_wholesale.admin_sales_email'] = $this->sales_user_details->email;
+		}
 		// check for date ranges in uri query strings
 		$this->data['from_date'] = @$_GET['from_date'] ?: '';
 		$this->data['to_date'] = @$_GET['to_date'] ?: '';
@@ -103,6 +116,8 @@ class Shipment_pending extends Admin_Controller {
 		);
 		$this->data['count_all'] = $this->orders_list->count_all;
 
+		//echo $this->orders_list->last_query; die();
+
 		// other data
 		$this->data['list'] = $list;
 		$this->data['status'] = 'shipment_pending';
@@ -114,13 +129,20 @@ class Shipment_pending extends Admin_Controller {
 		$this->data['show_loading'] = FALSE;
 		$this->data['search'] = FALSE;
 
+		// breadcrumbs
+		$this->data['page_breadcrumb'] = array(
+			'orders/shipment_pending' => 'Orders',
+			'shipment_pending' => 'Payment Pending'
+		);
+
 		// set data variables...
+		$this->data['role'] = 'sales';
 		$this->data['file'] = 'orders_new_orders';
-		$this->data['page_title'] = 'Shipment Pending';
+		$this->data['page_title'] = 'Shipmnet Pending';
 		$this->data['page_description'] = 'Order Logs';
 
 		// load views...
-		$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template/template', $this->data);
+		$this->load->view('admin/metronic/template_my_account/template', $this->data);
 	}
 
 	// ----------------------------------------------------------------------

@@ -54,6 +54,11 @@ if (@$role == 'sales')
 				<span class="title">New Order Inquiries</span>
 			</a>
 		</li>
+		<li class="nav-item <?php echo $this->uri->uri_string() == 'my_account/sales/orders/payment_pending' ? 'active' : ''; ?>">
+			<a href="<?php echo site_url('my_account/sales/orders/payment_pending'); ?>" class="nav-link ">
+				<span class="title">Payment Pending</span>
+			</a>
+		</li>
 		<li class="nav-item <?php echo $this->uri->uri_string() == 'my_account/sales/orders/shipment_pending' ? 'active' : ''; ?>">
 			<a href="<?php echo site_url('my_account/sales/orders/shipment_pending'); ?>" class="nav-link ">
 				<span class="title">Shipment Pending</span>

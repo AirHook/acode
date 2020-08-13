@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Shipment_pending extends Admin_Controller {
+class Payment_pending extends Admin_Controller {
 
 	/**
 	 * Constructor
@@ -81,8 +81,8 @@ class Shipment_pending extends Admin_Controller {
 			}
 			else $where['tbl_order_log.c'] = $list;
 		}
-		// 0-new,1-complete,2-onhold,3-canclled,4-returned/refunded,5-shipment_pending,6-store_credit
-		$where['status'] = '5';
+		// 0-new,1-complete,2-onhold,3-canclled,4-returned/refunded,5-shipment_pending,6-store_credit,7-payment_pending
+		$where['status'] = '7';
 		// check for date ranges in uri query strings
 		$this->data['from_date'] = @$_GET['from_date'] ?: '';
 		$this->data['to_date'] = @$_GET['to_date'] ?: '';
@@ -116,7 +116,7 @@ class Shipment_pending extends Admin_Controller {
 
 		// set data variables...
 		$this->data['file'] = 'orders_new_orders';
-		$this->data['page_title'] = 'Shipment Pending';
+		$this->data['page_title'] = 'Payment Pending';
 		$this->data['page_description'] = 'Order Logs';
 
 		// load views...

@@ -126,14 +126,35 @@ class Order_email_confirmation
 		$this->CI->load->library('products/size_names');
 		$this->CI->load->library('designers/designer_details');
 
-		// initialize user
-		if ($this->user_cat == 'ws')
+		// get order details
+		$this->data['order_details'] =
+			$this->CI->order_details->initialize(
+				array(
+					'tbl_order_log.order_log_id' => $this->order_id
+				)
+			)
+		;
+
+		// based on order details, get user details
+		if ($this->data['order_details']->c == 'ws')
 		{
-			$this->data['user_details'] = $this->CI->wholesale_user_details->initialize(array('user_id'=>$this->user_id));
+			$this->data['user_details'] =
+				$this->CI->wholesale_user_details->initialize(
+					array(
+						'user_id' => $this->user_id
+					)
+				)
+			;
 		}
 		else
 		{
-			$this->data['user_details'] = $this->CI->consumer_user_details->initialize(array('user_id'=>$this->user_id));
+			$this->data['user_details'] =
+				$this->CI->consumer_user_details->initialize(
+					array(
+						'user_id' => $this->user_id
+					)
+				)
+			;
 		}
 
 		// catch error for FALSE resulting user details (no user is found on list)
@@ -145,9 +166,6 @@ class Order_email_confirmation
 
 			return FALSE;
 		}
-
-		// get order details
-		$this->data['order_details'] = $this->CI->order_details->initialize(array('tbl_order_log.order_log_id'=>$this->order_id));
 
 		// set company details via order designer
 		$designer_group = $this->data['order_details']->designer_group;

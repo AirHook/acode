@@ -32,7 +32,7 @@ class Details extends Admin_Controller {
 			$this->session->set_flashdata('error', 'no_id_passed');
 
 			// redirect user
-			redirect($this->config->slash_item('admin_folder').'orders');
+			redirect('admin/orders', 'location');
 		}
 
 		// generate the plugin scripts and css
@@ -81,6 +81,7 @@ class Details extends Admin_Controller {
 		$this->data['status'] = $this->order_details->status_text;
 
 		// set data variables...
+		$this->data['role'] = 'admin';
 		$this->data['file'] = 'orders_details';
 		$this->data['page_title'] = 'Order Details';
 		$this->data['page_description'] = 'Details of the order transaction';

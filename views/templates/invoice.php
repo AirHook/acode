@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>Order Confirmation Email | New</title>
+	<title>Invoice | PDF</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
 	<!--
@@ -326,13 +326,20 @@
 												$size_names = $this->size_names->get_size_names($product->size_mode);
 												$size_label = array_search($size, $size_names);
 
-												// set original price in case options['orig_price'] is not set
-												// set $price
-												$orig_price = $this->order_details->c == 'ws' ? $product->wholesale_price : $product->retail_price;
-												$price = $item->unit_price;
-
 												// get items options
 												$options = $item->options ? json_decode($item->options, TRUE) : array();
+
+												// set original price in case options['orig_price'] is not set
+												// set $price
+												$orig_price =
+													@$options['orig_price']
+													?: (
+														$this->order_details->c == 'ws'
+														? $product->wholesale_price
+														: $product->retail_price
+													)
+												;
+												$price = $item->unit_price;
 												?>
 
 									<tr style="font-family:sans-serif;font-size:10px;">
@@ -386,24 +393,6 @@
 
 										<?php
 										/**********
-										 * Color
-										 *
-										?>
-										<td align="left" style="vertical-align:top;padding:0 5px;">
-											<?php echo $item->color; ?>
-										</td>
-
-										<?php
-										/**********
-										 * Qty
-										 *
-										?>
-										<td align="center" style="vertical-align:top;padding:0 5px;">
-											<?php echo $item->qty; ?>
-										</td>
-
-										<?php
-										/**********
 										 * Unit Regular Price
 										 */
 										?>
@@ -445,7 +434,7 @@
 									<tr><td colspan="8" style="height:20px;"> <td></tr>
 
 									<tr style="font-family:sans-serif;font-size:10px;">
-										<td colspan="5" rowspan="5" align="left" style="vertical-align:top;padding-left:5px;">
+										<td colspan="5" rowspan="6" align="left" style="vertical-align:top;padding-left:5px;">
 											Remarks/Instructions:<br /><br />
 										</td>
 										<td colspan="2" align="right" style="vertical-align:top;height:24px;"> Sub Total </td>
@@ -453,6 +442,23 @@
 											<?php echo @$overall_total ? '$ '.number_format($overall_total, 2) : '$ 0.00'; ?>
 										</td>
 									</tr>
+
+									<?php if (@$order_details->options['discount'])
+									{
+										$discount = $overall_total * ($order_details->options['discount'] / 100);
+										?>
+
+									<!-- Discount -->
+									<tr>
+										<td colspan="2" align="right" style="vertical-align:top;height:24px;">Discount @<?php echo $discount; ?>%</td>
+										<td align="right" style="vertical-align:top;height:24px;padding-right:5px;">
+											($ <?php echo number_format($discount, 2); ?>)
+										</td>
+									</tr>
+
+										<?php
+									}
+									else $discount = 0; ?>
 
 									<tr style="font-family:sans-serif;font-size:10px;">
 										<td colspan="2" align="right" style="vertical-align:top;height:24px;">
@@ -475,7 +481,7 @@
 									<tr style="font-family:sans-serif;font-size:10px;">
 										<td colspan="2" align="right" style="vertical-align:top;height:24px;font-weight:bold;"> Grand Total </td>
 										<td align="right" style="vertical-align:top;height:24px;font-weight:bold;padding-right:5px;">
-											$ <?php echo @number_format(($overall_total + $order_details->shipping_fee), 2); ?>
+											$ <?php echo @number_format((($overall_total - $discount) + $order_details->shipping_fee), 2); ?>
 										</td>
 									</tr>
 

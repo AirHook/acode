@@ -19,7 +19,7 @@
 						$hide_resend_order_email = '';
 					}
 					?>
-					<div class="m-grid m-grid-responsive-md page-file-wrapper" data-object_data='{"<?php echo $this->security->get_csrf_token_name(); ?>":"<?php echo $this->security->get_csrf_hash(); ?>"}'>
+					<div class="m-grid m-grid-responsive-md page-file-wrapper" data-object_data='{"<?php echo $this->security->get_csrf_token_name(); ?>":"<?php echo $this->security->get_csrf_hash(); ?>"}' data-role="<?php echo @$role ?: 'admin';?>">
 						<div class="m-grid-row">
 
 							<style>
@@ -41,38 +41,47 @@
 								}
 							</style>
 
+							<?php
+							/*********
+							 * Action Sidebar
+							 */
+							?>
 							<div class="m-grid-col m-grid-col-md-2 filter-options margin-bottom-20" style="padding-right:15px;font-size:0.8em;">
 
 								<h4>Status:</h4>
 
 								<label class="btn btn-default btn-block btn-sm margin-bottom-10" style="cursor:text;" onmouseover="$(this).css('background','none');">
 									<?php
-									// 0-new,1-complete,2-onhold,3-canclled,4-returned/refunded,5-shipment_pending,6-store_credit
+									// 0-new,1-complete,2-onhold,3-canclled,4-returned/refunded,5-shipment_pending,6-store_credit,7-payment_pending
 									switch ($order_details->status)
 									{
 										case '0':
 											echo 'NEW ORDER INQUIRY';
 											$txt = 'This inquiry is being checked for stock and accounting is generating an invoice.';
 										break;
+										case '1':
+											echo 'COMPLETE/SHIPPED';
+											$txt = 'This order has shipped and tracking is available.';
+										break;
+										case '3':
+											echo 'CANCELLED';
+											$txt = 'This order is cancelled.';
+										break;
+										case '4':
+											echo 'REFUNDED';
+											$txt = 'This order is returned/cancelled on refund.';
+										break;
 										case '5':
 											echo 'SHIPMENT PENDING';
 											$txt = 'This order has been paid and packing list is ready. Warehouse is processing and shipping.';
 										break;
-										case '1':
-											echo 'COMPLETE/SHIPPED';
-											$txt = 'This order has shipped and tracking is available';
-										break;
-										case '4':
-											echo 'REFUNDED';
-											$txt = 'This order is returned/cancelled on refund';
-										break;
 										case '6':
 											echo 'STORE CREDIT';
-											$txt = 'This order is returned/cancelled on store credit';
+											$txt = 'This order is returned/cancelled on store credit.';
 										break;
-										case '3':
-											echo 'CANCELLED';
-											$txt = 'This order is cancelled';
+										case '7':
+											echo 'PAYMENT PENDING';
+											$txt = 'This order is awaiting payment from costumer.';
 										break;
 									}
 									?>
@@ -92,14 +101,18 @@
 									else $hide_approve = '';
 									?>
 
-								<button href="#modal-shipment_pending" data-toggle="modal" class="btn grey-gallery btn-block btn-sm filter-options-field-details <?php echo $hide_approve; ?>" style="text-align:left;padding-left:20px;">
+								<button href="#modal-payment_pending" data-toggle="modal" class="btn grey-gallery btn-block btn-sm filter-options-field-details <?php echo $hide_approve; ?>" style="text-align:left;padding-left:10px;">
 									<i class="fa fa-check"></i>
-									Approve Order
+									Set as Pending Payment
 								</button>
-								<button href="#modal-cancel" data-toggle="modal" class="btn grey-gallery btn-block btn-sm filter-options-field-details" style="text-align:left;padding-left:20px;">
+								<button href="#modal-cancel" data-toggle="modal" class="btn grey-gallery btn-block btn-sm filter-options-field-details" style="text-align:left;padding-left:10px;">
 									<i class="fa fa-ban"></i>
 									Cancel Order
 								</button>
+								<a href="<?php echo site_url($pre_link.'/orders/modify/index/'.$this->order_details->order_id); ?>" class="btn grey-gallery btn-block btn-sm filter-options-field-details" style="text-align:left;padding-left:10px;">
+									<i class="fa fa-pencil"></i>
+									Modify Order
+								</a>
 
 									<?php
 								} ?>
@@ -140,14 +153,24 @@
 
 								<hr style="margin:15px 0 15px;" />
 
-								<a href="<?php echo site_url('admin/orders/view_packing_list/index/'.$this->order_details->order_id); ?>" class="btn grey-gallery btn-block btn-sm <?php echo $hide_packing_list; ?>" target="_blank">
+								<label>
+									Options:
+								</label>
+
+								<a href="<?php echo site_url($pre_link.'/orders/view_invoice/index/'.$this->order_details->order_id); ?>" class="btn grey-gallery btn-block btn-sm <?php echo $hide_packing_list; ?>" target="_blank">
+									View/Print Invoice
+								</a>
+								<a href="<?php echo site_url($pre_link.'/orders/view_packing_list/index/'.$this->order_details->order_id); ?>" class="btn grey-gallery btn-block btn-sm <?php echo $hide_packing_list; ?>" target="_blank">
 									View/Print Packing List
 								</a>
-								<a href="<?php echo site_url('admin/barcodes/print/co/index/'.$this->order_details->order_id); ?>" class="btn grey-gallery btn-block btn-sm <?php echo $hide_barcdoes; ?>" target="_blank">
+								<a href="<?php echo site_url($pre_link.'/barcodes/print/co/index/'.$this->order_details->order_id); ?>" class="btn grey-gallery btn-block btn-sm <?php echo $hide_barcdoes; ?>" target="_blank">
 									View/Print Barcodes
 								</a>
-								<a href="javascript:;" class="btn grey-gallery btn-block btn-sm btn-resend_email_confirmation__ <?php echo $hide_resend_order_email; ?> disabled-link disable-target" data-user_id="<?php echo $this->order_details->user_id; ?>" data-order_id="<?php echo $this->order_details->order_id; ?>" data-user_cat="<?php echo $this->order_details->c; ?>">
+								<a href="javascript:;" class="btn grey-gallery btn-block btn-sm btn-resend_email_confirmation <?php echo $hide_resend_order_email; ?>" data-user_id="<?php echo $this->order_details->user_id; ?>" data-order_id="<?php echo $this->order_details->order_id; ?>" data-user_cat="<?php echo $this->order_details->c; ?>">
 									Resend Email Confirmation
+								</a>
+								<a href="javascript:;" class="btn grey-gallery btn-block btn-sm btn-send_invoice_to_user <?php echo $hide_resend_order_email; ?> disabled-link disable-target" data-user_id="<?php echo $this->order_details->user_id; ?>" data-order_id="<?php echo $this->order_details->order_id; ?>" data-user_cat="<?php echo $this->order_details->c; ?>">
+									Send Invoice To User
 								</a>
 
 	                            <a class="btn btn-secondary-outline btn-sm btn-block" href="<?php echo site_url('admin/orders/'.$status); ?>">
@@ -166,6 +189,12 @@
 								<?php } ?>
 
 							</div>
+
+							<?php
+							/*********
+							 * Order Details
+							 */
+							?>
 							<div class="m-grid-col m-grid-col-md-10">
 
 			                    <!-- BEGIN PAGE CONTENT BODY -->
@@ -223,7 +252,7 @@
 
 												<div class="caption">
 													<i class="icon-settings font-dark"></i>
-													<span class="caption-subject font-dark sbold uppercase"> Order #<?php echo $this->order_details->order_id.'-'.strtoupper(substr(($this->order_details->designer_group == 'Mixed Designers' ? 'SHO' : $this->order_details->designer_group),0,3)); ?> <?php echo @$this->order_details->options['sales_order'] ? '| SO' : ''; ?>
+													<span class="caption-subject font-dark sbold uppercase"> Order Inquiry #<?php echo $this->order_details->order_id.'-'.strtoupper(substr(($this->order_details->designer_group == 'Mixed Designers' ? 'SHO' : $this->order_details->designer_group),0,3)); ?> <?php echo @$this->order_details->options['sales_order'] ? '| SO' : ''; ?>
 														<span class="hidden-xs">| <?php echo $this->order_details->order_date; ?> </span>
 													</span>
 												</div>
@@ -239,13 +268,13 @@
 											<div class="portlet-body">
 												<div class="row">
 													<div class="col-md-6 col-sm-12">
-														<h3>
+														<h4>
 					                                        <strong>
-																ORDER #<?php echo $this->order_details->order_id.'-'.strtoupper(substr(($this->order_details->designer_group == 'Mixed Designers' ? 'SHO' : $this->order_details->designer_group),0,3)); ?> <?php echo @$this->order_details->options['sales_order'] ? '| SO' : ''; ?>
+																ORDER INQUIRY #<?php echo $this->order_details->order_id.'-'.strtoupper(substr(($this->order_details->designer_group == 'Mixed Designers' ? 'SHO' : $this->order_details->designer_group),0,3)); ?> <?php echo @$this->order_details->options['sales_order'] ? '| SO' : ''; ?>
 															</strong>
 															<br />
 					                                        <small> Date: <?php echo $this->order_details->order_date; ?> </small>
-					                                    </h3>
+					                                    </h4>
 					                                    <h4>
 					                                        <?php echo @$this->order_details->options['ref_checkout_no'] ? 'Reference Sale Order #: '.@$this->order_details->options['ref_checkout_no'] : ''; ?>
 					                                    </h4>
@@ -255,10 +284,23 @@
 													</div>
 													<div class="col-md-6 col-sm-12">
 														<div class="row static-info">
+															<div class="col-xs-5 col-sm-4 name"> Designer: </div>
+															<div class="col-xs-7 col-sm-8 value"> <?php echo $this->order_details->designer_group; ?> </div>
+															<div class="col-xs-5 col-sm-4 name"> Customer: </div>
+															<div class="col-xs-7 col-sm-8 value">
+																<?php echo (@$user_details->store_name ?: $user_details->firstname.' '.$user_details->lastname).' (#'.$this->order_details->user_id.')'; ?>
+															</div>
 															<div class="col-xs-5 col-sm-4 name"> Role: </div>
 															<div class="col-xs-7 col-sm-8 value"> <?php echo ($this->order_details->c == 'guest' OR $this->order_details->c == 'cs') ? 'Retail' : 'Wholesale'; ?> </div>
 															<div class="col-xs-5 col-sm-4 name"> Payment Info: </div>
-															<div class="col-xs-7 col-sm-8 value"> Credit Card </div>
+															<div class="col-xs-7 col-sm-8 value">
+																<select name="payment_info">
+																	<option value="">Select...</option>
+																	<option value="cc">Credit Card</option>
+																	<option value="pp">Paypal</option>
+																	<option value="wt">Wire Transfer</option>
+																</select>
+															</div>
 														</div>
 													</div>
 												</div>
@@ -405,7 +447,7 @@
 																<th class="text-center"> Qty </th>
 																<th class="text-right" style="width:70px;"> Regular Price </th>
 																<th class="text-right" style="width:70px;"> Discounted Price </th>
-																<th class="text-right" style="width:70px;"> Extended </th>
+																<th class="text-right" style="width:70px;"> Extended Price </th>
 															</tr>
 														</thead>
 														<tbody>
@@ -413,6 +455,7 @@
 															<?php
 															if ($this->order_details->items())
 															{
+																$overall_total = 0;
 																$i = 1;
 																foreach ($this->order_details->items() as $item)
 																{
@@ -430,11 +473,19 @@
 																	$size_names = $this->size_names->get_size_names($product->size_mode);
 																	$size_label = array_search($size, $size_names);
 
-																	// set original price in case options['orig_price'] is not set
-																	$orig_price = $this->order_details->c == 'ws' ? $product->wholesale_price : $product->retail_price;
-
 																	// get items options
 																	$options = $item->options ? json_decode($item->options, TRUE) : array();
+
+																	// set original price in case options['orig_price'] is not set
+																	$orig_price =
+																		@$options['orig_price']
+																		?: (
+																			$this->order_details->c == 'ws'
+																			? $product->wholesale_price
+																			: $product->retail_price
+																		)
+																	;
+																	$price = $item->unit_price;
 																	?>
 
 															<tr class="odd gradeX" onmouseover="$(this).find('.hidden_first_edit_link').show();" onmouseout="$(this).find('.hidden_first_edit_link').hide();">
@@ -549,6 +600,7 @@
 															</tr>
 
 																	<?php
+																	$overall_total += $this_size_total;
 																	$i++;
 																}
 															}
@@ -576,10 +628,30 @@
 													<div class="col-md-6">
 
 														<table class="table table-condensed">
+															<!-- Order Amount -->
 															<tr>
 																<td>Subtotal</td>
-																<td class="text-right">$ <?php echo number_format($this->order_details->order_amount, 2); ?></td>
+																<td class="text-right">$ <?php echo number_format($overall_total, 2); ?></td>
 															</tr>
+															<?php if (@$this->order_details->options['discount'])
+															{
+																$discount = $overall_total * ($this->order_details->options['discount'] / 100);
+																?>
+															<!-- Discount -->
+															<tr>
+																<td>Discount</td>
+																<td class="text-right">
+																	@<?php echo $discount; ?>% &nbsp; &nbsp;
+																	($ <?php echo number_format($discount, 2); ?>)
+																</td>
+															</tr>
+																<?php
+															}
+															else
+															{
+																$discount = 0;
+															} ?>
+															<!-- Shipping & Handling -->
 															<tr>
 																<td>Shipping &amp; Handling</td>
 																<td class="text-right">
@@ -602,7 +674,7 @@
 															<tr>
 																<td><strong>Order Subtotal</strong></td>
 																<td class="text-right">
-																	$ <?php echo number_format(($this->order_details->order_amount + $this->order_details->shipping_fee + $sales_tax), 2); ?>
+																	$ <?php echo number_format((($overall_total - $discount) + $this->order_details->shipping_fee + $sales_tax), 2); ?>
 																</td>
 															</tr>
 														</table>
@@ -620,6 +692,28 @@
 
 			                    </div>
 			                    <!-- END PAGE CONTENT BODY -->
+
+								<!-- SET AS PAYMENT PENDING -->
+								<div class="modal fade bs-modal-sm" id="modal-payment_pending" tabindex="-1" role="dialog" aria-hidden="true">
+									<div class="modal-dialog modal-sm">
+										<div class="modal-content">
+											<div class="modal-header">
+												<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+												<h4 class="modal-title">Status Update</h4>
+											</div>
+											<div class="modal-body"> Confirm setting order to PAYMENT PENDING. </div>
+											<div class="modal-footer">
+												<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
+												<a href="<?php echo site_url($pre_link.'/orders/status/index/'.$this->order_details->order_id.'/payment_pending/details'); ?>" type="button" class="btn dark">
+													Confirm?
+												</a>
+											</div>
+										</div>
+										<!-- /.modal-content -->
+									</div>
+									<!-- /.modal-dialog -->
+								</div>
+								<!-- /.modal -->
 
 								<!-- SET AS SHIPMENT PENDING -->
 								<div class="modal fade bs-modal-sm" id="modal-shipment_pending" tabindex="-1" role="dialog" aria-hidden="true">

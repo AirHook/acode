@@ -2,6 +2,15 @@ var TableDatatablesManaged = function () {
 
     var base_url = $('body').data('base_url');
     var objectData = $('.page-file-wrapper').data('object_data');
+    var role = $('.page-file-wrapper').data('role');
+
+    var role_link = function () {
+        if (role == 'sales') {
+            return 'my_account/sales';
+        } else {
+            return 'admin';
+        }
+    };
 
     var initTable = function () {
 
@@ -193,9 +202,9 @@ var TableDatatablesManaged = function () {
 		} else {
             $('#loading').modal('show');
             if (z=='all'){
-                window.location.href = base_url + "admin/orders/" + page_param + ".html";
+                window.location.href = base_url + role_link + "/orders/" + page_param + ".html";
             }else{
-                window.location.href = base_url + "admin/orders/" + page_param + "/index/" + z + ".html";
+                window.location.href = base_url + role_link + "/orders/" + page_param + "/index/" + z + ".html";
             }
 		}
 	});
@@ -209,7 +218,7 @@ var TableDatatablesManaged = function () {
         // process values
         // page_param will alwasy have a value
         // therefore, let's initially set the url as
-        var pre_url = base_url + "admin/orders/" + page_param;
+        var pre_url = base_url + role_link + "/orders/" + page_param;
         // first, check for status
         if (status) {
             if (!des_slug) des_slug = 'all';
@@ -231,7 +240,7 @@ var TableDatatablesManaged = function () {
         var order_id = $('[name="order_id"]').val();
         var referrer = 'details';
         // set url params - id, status, referrer
-        var url = base_url + "admin/orders/status/index/" + order_id + "/" + status + "/" + referrer + ".html";
+        var url = base_url + role_link + "/orders/status/index/" + order_id + "/" + status + "/" + referrer + ".html";
         // redirect page
         $('#loading').modal('show');
         window.location.href = url;
@@ -248,7 +257,7 @@ var TableDatatablesManaged = function () {
         objectData.user_cat = $(this).data('user_cat');
         var send = $.ajax({
             type:    "POST",
-            url:     base_url + "admin/orders/send_order_email_confirmation.html",
+            url:     base_url + role_link + "/orders/send_order_email_confirmation.html",
             data:    objectData
         });
         send.done(function(data) {
@@ -256,7 +265,7 @@ var TableDatatablesManaged = function () {
         });
         send.fail(function(jqXHR, textStatus, errorThrown) {
             $('#loading').modal('hide');
-            alert("Get Store Details Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
+            alert("Send Order Email Confirmation Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
             //$('#reloading').modal('show');
             //location.reload();
         });

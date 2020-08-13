@@ -43,9 +43,12 @@ class Status extends Admin_Controller {
 		// set db data
 		switch ($status)
 		{
-			// 0-new,1-complete,2-onhold,3-canclled,4-returned/refunded,5-shipment_pending,6-store_credit
+			// 0-new,1-complete,2-onhold,3-canclled,4-returned/refunded,5-shipment_pending,6-store_credit,7-payment_pending
 			case 'pending':
 				$DB->set('status', '0');
+			break;
+			case 'complete':
+				$DB->set('status', '1');
 			break;
 			case 'on_hold':
 			case 'onhold':
@@ -59,18 +62,18 @@ class Status extends Admin_Controller {
 				$DB->set('status', '4');
 			break;
 			case 'acknowledge':
+			case 'shipment_pending':
 				$DB->set('status', '5');
 			break;
 			case 'store_credit':
 				$DB->set('status', '6');
 			break;
-			case 'complete':
-				$DB->set('status', '1');
+			case 'payment_pending':
+				$DB->set('status', '7');
 			break;
 		}
 
 		// update records
-		$DB->set('remarks', '0');
 		$DB->where('order_log_id', $id);
 		$DB->update('tbl_order_log');
 
@@ -88,6 +91,7 @@ class Status extends Admin_Controller {
 					$this->_return_stocks($id, $status);
 				break;
 				case 'acknowledge':
+				case 'shipment_pending':
 					// send order acknowledgement email
 					$this->_send_order_acknowledgement($id);
 				break;

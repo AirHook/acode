@@ -6,6 +6,100 @@
 						: 'admin'
 					;
 					?>
+
+					<?php
+					/**********
+					 * Tabs Tooolbar
+					 */
+					?>
+                    <div class="table-toolbar" style="margin-bottom:0px;">
+
+						<style>
+							.nav > li > a {
+								padding: 8px 15px;
+								background-color: #eee;
+								color: #555;
+							}
+							.nav-tabs > li > a {
+								font-size: 10px;
+							}
+							.nav-tabs > li > a:hover {
+								background-color: #333;
+								color: #eee;
+							}
+						</style>
+
+						<?php
+						/**********
+						 * This allows user of tabs for admin and sales users
+						 */
+						if (@$role)
+						{
+							switch ($role)
+							{
+								case 'sales':
+									$link_prefix = 'my_account/sales';
+								break;
+
+								default:
+									$link_prefix = 'admin';
+							}
+						}
+						else $link_prefix = 'admin';
+						?>
+
+						<ul class="nav nav-tabs">
+							<li class="nav-items <?php echo strpos($this->uri->uri_string(), 'admin/orders/new_orders') === FALSE ? '' : 'active'; ?>">
+								<a href="<?php echo site_url($pre_link.'/orders/new_orders'); ?>">
+									New Order Inquiries
+								</a>
+							</li>
+							<li class="nav-items <?php echo strpos($this->uri->uri_string(), 'admin/orders/payment_pending') === FALSE ? '' : 'active'; ?>">
+								<a href="<?php echo site_url($pre_link.'/orders/payment_pending'); ?>">
+									Payment Pending
+								</a>
+							</li>
+							<li class="nav-items <?php echo strpos($this->uri->uri_string(), 'admin/orders/shipment_pending') === FALSE ? '' : 'active'; ?>">
+								<a href="<?php echo site_url($pre_link.'/orders/shipment_pending'); ?>">
+									Shipmnet Pending
+								</a>
+							</li>
+							<li class="nav-items <?php echo strpos($this->uri->uri_string(), 'admin/orders/shipped') === FALSE ? '' : 'active'; ?>">
+								<a href="<?php echo site_url($pre_link.'/orders/shipped'); ?>">
+									Shipped
+								</a>
+							</li>
+							<li class="nav-items <?php echo strpos($this->uri->uri_string(), 'admin/orders/store_credit') === FALSE ? '' : 'active'; ?>">
+								<a href="<?php echo site_url($pre_link.'/orders/store_credit'); ?>">
+									Store Credit
+								</a>
+							</li>
+							<li class="nav-items <?php echo strpos($this->uri->uri_string(), 'admin/orders/refunded') === FALSE ? '' : 'active'; ?>">
+								<a href="<?php echo site_url($pre_link.'/orders/refunded'); ?>">
+									Refunded
+								</a>
+							</li>
+							<li class="nav-items <?php echo strpos($this->uri->uri_string(), 'admin/orders/cancelled') === FALSE ? '' : 'active'; ?>">
+								<a href="<?php echo site_url($pre_link.'/orders/cancelled'); ?>">
+									Cancelled
+								</a>
+							</li>
+							<li>
+								<a href="<?php echo site_url($pre_link.'/sales_orders/'.(@$role == 'sales' ? 'new_orders' : 'create')); ?>">
+									Create New Sales Order <i class="fa fa-plus"></i>
+								</a>
+							</li>
+						</ul>
+
+						<br />
+
+						<?php if (@$search) { ?>
+                        <h1><small><em>Search results for:</em></small> "<?php echo @$search_string; ?>"</h1>
+                        <br />
+                        <?php } ?>
+
+					</div>
+
 					<div class="m-grid page-file-wrapper" data-object_data='{"<?php echo $this->security->get_csrf_token_name(); ?>":"<?php echo $this->security->get_csrf_hash(); ?>"}'>
 						<div class="m-grid-row">
 

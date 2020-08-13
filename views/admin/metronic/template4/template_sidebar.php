@@ -171,6 +171,11 @@
                                 <span class="title">New Order Inquiries</span>
                             </a>
                         </li>
+                        <li class="nav-item <?php echo strpos($this->uri->uri_string(), 'admin/orders/payment_pending') === FALSE ? '' : 'active'; ?>">
+                            <a href="<?php echo site_url('admin/orders/payment_pending'); ?>" class="nav-link ">
+                                <span class="title">Payment Pending</span>
+                            </a>
+                        </li>
                         <li class="nav-item <?php echo strpos($this->uri->uri_string(), 'admin/orders/shipment_pending') === FALSE ? '' : 'active'; ?>">
                             <a href="<?php echo site_url('admin/orders/shipment_pending'); ?>" class="nav-link ">
                                 <span class="title">Shipment Pending</span>
