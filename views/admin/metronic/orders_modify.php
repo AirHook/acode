@@ -124,7 +124,7 @@
 										<?php } ?>
 										<?php if ($this->session->flashdata('success') == 'edit') { ?>
 										<div class="alert alert-success auto-remove">
-											<button class="close" data-close="alert"></button> Order status updated...
+											<button class="close" data-close="alert"></button> Order information updated...
 										</div>
 										<?php } ?>
 										<?php if ($this->session->flashdata('error') == 'no_id_passed') { ?>
@@ -245,6 +245,9 @@
 															echo @$order_details->courier ?: 'TBD';
 														}
 														?>
+														<a href="#modal-edit_ship_method" data-toggle="modal" class="btn btn-xs grey-gallery hide" style="font-size:50%;">
+															Edit Ship Method
+														</a>
 
 													</div>
 												</div>
@@ -530,7 +533,7 @@
 																	<a href="#modal-add_discount" data-toggle="modal" class="btn btn-xs grey-gallery" style="font-size:80%;">
 																		Edit/Remove Discount
 																	</a>
-																	@<?php echo $discount; ?>% &nbsp; &nbsp;
+																	<?php echo $order_details->options['discount'] ? '@'.$order_details->options['discount'].'%' : ''; ?> &nbsp; &nbsp;
 																	($ <?php echo number_format($discount, 2); ?>)
 																</td>
 															</tr>
@@ -543,6 +546,9 @@
 															<tr>
 																<td>Shipping &amp; Handling</td>
 																<td class="text-right">
+																	<a href="#modal-edit_shipping_fee" data-toggle="modal" class="btn btn-xs grey-gallery" style="font-size:80%;">
+																		Edit Shipping Fee
+																	</a>
 																	<?php echo '$ '.number_format($order_details->shipping_fee, 2); ?>
 																</td>
 															</tr>
@@ -1189,6 +1195,53 @@
 		                                        <button type="button" class="btn dark btn-outline" data-dismiss="modal" tabindex="-1">Cancel</button>
 		                                        <button type="submit" class="btn dark submit-add_discount">Submit</button>
 		                                    </div>
+
+											</form>
+											<!-- END FORM =========================================================-->
+
+		                                </div>
+		                                <!-- /.modal-content -->
+		                            </div>
+		                            <!-- /.modal-dialog -->
+		                        </div>
+		                        <!-- /.modal -->
+
+								<!-- EDIT SHIPPING FEE -->
+		                        <div id="modal-edit_shipping_fee" class="modal fade bs-modal-sm in" tabindex="-1" role="dialog" aria-hidden="true">
+		                            <div class="modal-dialog modal-sm">
+		                                <div class="modal-content">
+
+											<!-- BEGIN FORM =======================================================-->
+											<?php echo form_open(
+												$pre_link.'/orders/modify/edit_shipping_fee/'.$order_details->order_id,
+												array(
+													'class' => 'enter-user-form ws clearfix',
+													'id' => 'form-edit_user_details'
+												)
+											); ?>
+
+		                                    <div class="modal-header">
+		                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+		                                        <h4 class="modal-title">Edit Shipping</h4>
+		                                    </div>
+		                                    <div class="modal-body">
+
+		                                        <div class="form-group clearfix">
+		                                            <label class="control-label col-md-7">Enter Shipping Fee
+		                                            </label>
+		                                            <div class="col-md-5">
+		                                                <input type="text" name="shipping_fee" class="form-control input-sm" value="<?php echo $order_details->shipping_fee; ?>" />
+		                                            </div>
+		                                        </div>
+
+		                                    </div>
+		                                    <div class="modal-footer">
+		                                        <button type="button" class="btn dark btn-outline" data-dismiss="modal" tabindex="-1">Cancel</button>
+		                                        <button type="submit" class="btn dark submit-edit_shipping_fee">Submit</button>
+		                                    </div>
+
+											</form>
+											<!-- END FORM =========================================================-->
 
 		                                </div>
 		                                <!-- /.modal-content -->

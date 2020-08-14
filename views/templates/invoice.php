@@ -77,6 +77,32 @@
 			<td>
 				<table align="center" border="0" cellpadding="0" cellspacing="0" width="625px" style="border-collapse: collapse;">
 					<tr>
+						<td bgcolor="#f9ece6" style="padding:10px;">
+
+							<table width="100%" style="background:white;">
+								<tbody>
+									<tr>
+										<td style="padding:30px 50px;font-family:Arial;font-size:12px;color:black;font-family:sans-serif;font-size:10px;">
+
+											Hello <?php echo @$user_details->fname.' '.@$user_details->lname; ?>
+											<br /><br />
+											Enclosed and attached is the invoice for your order #<?php echo $order_details->order_id; ?>.<br />
+											Please let us know your option for payment by clicking on the link below:
+											<br /><br />
+											<a href="javascript:;">PAYMENT OPTIONS</a>
+											<br /><br />
+											<br /><br />
+											Thanks and best regards.
+
+										</td>
+									</tr>
+
+								</tbody>
+							</table>
+
+						</td>
+					</tr>
+					<tr>
 						<td>
 
 							<?php
@@ -449,8 +475,10 @@
 										?>
 
 									<!-- Discount -->
-									<tr>
-										<td colspan="2" align="right" style="vertical-align:top;height:24px;">Discount @<?php echo $discount; ?>%</td>
+									<tr style="font-family:sans-serif;font-size:10px;">
+										<td colspan="2" align="right" style="vertical-align:top;height:24px;">
+											Discount <?php echo @$order_details->options['discount'] ? '@'.$order_details->options['discount'].'%' : ''; ?>
+										</td>
 										<td align="right" style="vertical-align:top;height:24px;padding-right:5px;">
 											($ <?php echo number_format($discount, 2); ?>)
 										</td>

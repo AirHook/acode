@@ -104,6 +104,13 @@ class Order_details
 	 */
 	public $webspace_id = '';
 
+	/**
+	 * Invoice ID - invoice number
+	 *
+	 * @var	string
+	 */
+	public $invoice_id = '';
+
 
 	/**
 	 * DB Reference
@@ -269,6 +276,7 @@ class Order_details
 
 			$this->options = ($row->order_options && $row->order_options != '') ? json_decode($row->order_options , TRUE) : array();
 			$this->webspace_id = $row->webspace_id;
+			$this->invoice_id = $row->invoice_id;
 
 			// get items
 			$this->designers = $row->designer_group;
@@ -319,6 +327,22 @@ class Order_details
 			// return the object
 			return $query->result();
 		}
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Max Invoice Id
+	 *
+	 * @return	object/boolean false
+	 */
+	public function max_invoice_id()
+	{
+		$this->DB->select_max('invoice_id');
+		$query = $this->DB->get('tbl_order_log');
+		$row = $query->row();
+		if ($row) return $row->invoice_id;
+		else return FALSE;
 	}
 
 	// --------------------------------------------------------------------

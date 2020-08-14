@@ -123,7 +123,7 @@
 
 									</td>
 								</tr>
-								<tr>
+								<tr style="font-family:sans-serif;font-size:10px;">
 									<td>
 										<strong>
 											<?php echo $order_details->c == 'ws' ? 'WHOLESALE ORDER INQUIRY' : 'CONSUMER ORDER'; ?> #<?php echo (@$order_details->order_id ?: '10301800').(@$order_details->options['sales_order'] ? ' '.$order_details->options['sales_order'] : ''); ?> <br />
@@ -144,7 +144,7 @@
 						</td>
 					</tr>
 					<tr>
-						<td>
+						<td style="font-family:sans-serif;font-size:10px;">
 
 							<?php
 							/***********
@@ -152,7 +152,7 @@
 							 */
 							?>
 							<table align="left" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;vertical-align:top;">
-								<tr>
+								<tr style="font-family:sans-serif;font-size:10px;">
 									<td width="50%" valign="top" style="vertical-align:top;padding-bottom:10px;">
 
 										<strong> Bill To </strong>
@@ -220,7 +220,7 @@
 							 */
 							?>
 							<table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;margin:20px 0px;">
-								<tr>
+								<tr style="font-family:sans-serif;font-size:10px;">
 									<td>
 										<strong> Ship Method: </strong>
 										&nbsp;
@@ -249,7 +249,7 @@
 							{ ?>
 
 							<table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;margin:20px 0px;">
-								<tr>
+								<tr style="font-family:sans-serif;font-size:10px;">
 									<td>
 										<strong> Assigned Sales Representative: </strong>
 										&nbsp;
@@ -271,7 +271,7 @@
 							<table cellpadding="0" cellspacing="0" style="width:100%;">
 
 								<thead>
-									<tr style="background-color:#e9edef;">
+									<tr style="background-color:#e9edef;font-family:sans-serif;font-size:10px;">
 										<th align="left" style="padding:0px 5px 8px;">
 											Items (<?php echo @$order_items ? count($order_items) : '0'; ?>) Details
 										</th>
@@ -345,7 +345,7 @@
 												$price = $item->unit_price;
 												?>
 
-									<tr>
+									<tr style="font-family:sans-serif;font-size:10px;">
 
 										<?php
 										/**********
@@ -450,7 +450,7 @@
 									<tr><td colspan="8" style="height:10px;border-bottom:1px solid #ccc;"> <td></tr>
 									<tr><td colspan="8" style="height:20px;"> <td></tr>
 
-									<tr>
+									<tr style="font-family:sans-serif;font-size:10px;">
 										<td colspan="5" rowspan="6" align="left" style="vertical-align:top;">
 											Remarks/Instructions:<br /><br />
 										</td>
@@ -466,8 +466,8 @@
 										?>
 
 									<!-- Discount -->
-									<tr>
-										<td colspan="2" align="right" style="vertical-align:top;height:24px;">Discount @<?php echo $discount; ?>%</td>
+									<tr style="font-family:sans-serif;font-size:10px;">
+										<td colspan="2" align="right" style="vertical-align:top;height:24px;">Discount <?php echo @$order_details->options['discount'] ? '@'.$order_details->options['discount'].'%' : ''; ?></td>
 										<td align="right" style="vertical-align:top;height:24px;">
 											($ <?php echo number_format($discount, 2); ?>)
 										</td>
@@ -477,7 +477,7 @@
 									}
 									else $discount = 0; ?>
 
-									<tr>
+									<tr style="font-family:sans-serif;font-size:10px;">
 										<td colspan="2" align="right" style="vertical-align:top;height:24px;">
 											Shipping &amp; Handling
 											<?php
@@ -495,7 +495,7 @@
 									<tr><td colspan="3" style="height:10px;border-bottom:1px solid #ccc;"> <td></tr>
 									<tr><td colspan="3" style="height:10px;"> <td></tr>
 
-									<tr>
+									<tr style="font-family:sans-serif;font-size:10px;">
 										<td colspan="2" align="right" style="vertical-align:top;height:24px;font-weight:bold;"> Grand Total </td>
 										<td align="right" style="vertical-align:top;height:24px;font-weight:bold;">
 											$ <?php echo @number_format((($overall_total - $discount) + $order_details->shipping_fee), 2); ?>
@@ -526,7 +526,7 @@
 								 * Payment Details
 								 */
 								?>
-								<tr>
+								<tr style="font-family:sans-serif;font-size:10px;">
 									<td>
 										<strong>
 											Payment Details:
@@ -592,7 +592,7 @@
 							?>
 							<table align="left" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;margin:30px 0px 20px;">
 
-								<tr>
+								<tr style="font-family:sans-serif;font-size:10px;">
 									<td style="text-align:center;padding-bottom:10px;">
 
 										<?php
@@ -626,7 +626,7 @@
 									</td>
 								</tr>
 
-								<tr>
+								<tr style="font-family:sans-serif;font-size:10px;">
 									<td>
 										<table width="630" align="center" style="border-top:1px solid black;">
 											<tr>

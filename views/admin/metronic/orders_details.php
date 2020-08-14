@@ -169,7 +169,7 @@
 								<a href="javascript:;" class="btn grey-gallery btn-block btn-sm btn-resend_email_confirmation <?php echo $hide_resend_order_email; ?>" data-user_id="<?php echo $this->order_details->user_id; ?>" data-order_id="<?php echo $this->order_details->order_id; ?>" data-user_cat="<?php echo $this->order_details->c; ?>">
 									Resend Email Confirmation
 								</a>
-								<a href="javascript:;" class="btn grey-gallery btn-block btn-sm btn-send_invoice_to_user <?php echo $hide_resend_order_email; ?> disabled-link disable-target" data-user_id="<?php echo $this->order_details->user_id; ?>" data-order_id="<?php echo $this->order_details->order_id; ?>" data-user_cat="<?php echo $this->order_details->c; ?>">
+								<a href="#modal-send_invoice_to_user" data-toggle="modal" class="btn grey-gallery btn-block btn-sm">
 									Send Invoice To User
 								</a>
 
@@ -231,6 +231,11 @@
 										<?php if ($this->session->flashdata('success') == 'edit') { ?>
 										<div class="alert alert-success auto-remove">
 											<button class="close" data-close="alert"></button> Order status updated...
+										</div>
+										<?php } ?>
+										<?php if ($this->session->flashdata('success') == 'invoice_sent') { ?>
+										<div class="alert alert-success auto-remove">
+											<button class="close" data-close="alert"></button> Order invoice sent to user.
 										</div>
 										<?php } ?>
 										<?php if ($this->session->flashdata('error') == 'no_id_passed') { ?>
@@ -641,7 +646,7 @@
 															<tr>
 																<td>Discount</td>
 																<td class="text-right">
-																	@<?php echo $discount; ?>% &nbsp; &nbsp;
+																	<?php echo @$this->order_details->options['discount'] ? '@'.$this->order_details->options['discount'].'%' : ''; ?> &nbsp; &nbsp;
 																	($ <?php echo number_format($discount, 2); ?>)
 																</td>
 															</tr>
@@ -897,6 +902,40 @@
 									<!-- /.modal-dialog -->
 								</div>
 								<!-- /.modal -->
+
+								<!-- SEND INVOICE TO USER -->
+			                	<div id="modal-send_invoice_to_user" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+			                		<div class="modal-dialog modal-sm">
+			                			<div class="modal-content">
+
+											<!-- BEGIN FORM =======================================================-->
+											<?php echo form_open(
+												$pre_link.'/orders/send_invoice/index/'.$order_details->order_id,
+												array(
+													'class' => 'enter-user-form ws clearfix',
+													'id' => 'form-send_invoice_to_user'
+												)
+											); ?>
+
+			                				<div class="modal-header">
+			                					<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+			                					<h4 class="modal-title">Send Invoice To User</h4>
+			                				</div>
+											<div class="modal-body"> Sending invoice to user via email. </div>
+			                				<div class="modal-footer">
+			                					<button type="button" class="btn dark btn-outline" data-dismiss="modal" tabindex="-1">Close</button>
+			                					<button type="submit" class="btn dark submit-send_invoice_to_user">Confirm?</button>
+			                				</div>
+
+											</form>
+											<!-- END FORM =========================================================-->
+
+			                			</div>
+			                			<!-- /.modal-content -->
+			                		</div>
+			                		<!-- /.modal-dialog -->
+			                	</div>
+			                	<!-- /.modal -->
 
 							</div>
 						</div>

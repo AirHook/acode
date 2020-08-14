@@ -4,7 +4,7 @@
  *
  *
  */
-class View_invoice extends Sales_user_Controller
+class Send_invoice extends Sales_user_Controller
 {
 	/**
 	 * DB Object
@@ -109,20 +109,67 @@ class View_invoice extends Sales_user_Controller
 		// load the view
 		$html = $this->load->view('templates/invoice', $this->data, TRUE);
 
+		/**
+		 * Create PDF
+		 */
 		// load pertinent library/model/helpers
-		$this->load->library('m_pdf');
+ 		$this->load->library('m_pdf');
+		$this->load->library('email');
 
-		// generate pdf
-		$this->m_pdf->pdf->WriteHTML($html);
+ 		// generate pdf
+ 		$this->m_pdf->pdf->WriteHTML($html);
 
-		// set filename and file path
-		$pdf_file_path = 'assets/pdf/pdf_invoice.pdf';
+ 		// set filename and file path
+ 		$pdf_file_path = 'assets/pdf/pdf_invoice.pdf';
 
 		// download it "D" - download, "I" - inline, "F" - local file, "S" - string
-		$this->m_pdf->pdf->Output(); // output to browser
-		//$this->m_pdf->pdf->Output($pdf_file_path, "F");
+		//$this->m_pdf->pdf->Output(); // output to browser
+		$this->m_pdf->pdf->Output($pdf_file_path, "F");
 
-		exit;
+		/**
+		 * Send the email
+		 */
+		// let start composing the email
+		$email_subject = $this->webspace_details->name.' Order Invoice #'.$this->data['order_details']->invoice_id;
+
+		$this->email->from($this->webspace_details->info_email, $this->webspace_details->name);
+
+		$this->email->to($this->data['user_details']->email);
+		$this->email->bcc('help@shop7thavenue.com');
+		//$this->email->to('rsbgm@rcpixel.com');
+
+		$this->email->attach(base_url().$pdf_file_path);
+		$this->email->subject($email_subject);
+		$this->email->message($html);
+
+		if (ENVIRONMENT == 'development') // ---> used for development purposes
+		{
+			// we are unable to send out email in our dev environment
+			// so we check on the email template instead.
+			// just don't forget to comment these accordingly
+			echo 'SUBJECT: '.$email_subject;
+			echo '<br /><br />';
+			echo $html;
+			echo '<br /><br />';
+			echo '<a href="'.site_url('my_account/sales/orders/details/index/'.$order_id).'">Continue...</a>';
+			exit;
+		}
+		else
+		{
+			if ( ! $this->email->send())
+			{
+				// set error message
+				$this->error = 'Unable to CI send to - "'.$user_details->email.'"<br />';
+
+				return FALSE;
+			}
+		}
+
+		// set flash data
+		$this->session->set_flashdata('success', 'invoice_sent');
+
+		// redirect user
+		redirect('my_account/sales/orders/details/index/'.$order_id, 'location');
 	}
 
 	// --------------------------------------------------------------------

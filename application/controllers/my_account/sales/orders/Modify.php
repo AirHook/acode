@@ -140,7 +140,7 @@ class Modify extends Sales_user_Controller {
 		// update records
 		$this->DB->set($post_ary);
 		$this->DB->where('user_id', $this->input->post('user_id'));
-		$this->DB->update('tbluser_data_wholesale', $post_ary);
+		$this->DB->update('tbluser_data_wholesale');
 
 		// return to modify order page
 		redirect('my_account/sales/orders/modify/index/'.$order_id, 'location');

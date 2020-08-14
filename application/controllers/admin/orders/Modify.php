@@ -130,7 +130,10 @@ class Modify extends Admin_Controller {
 		// update records
 		$this->DB->set($post_ary);
 		$this->DB->where('user_id', $this->input->post('user_id'));
-		$this->DB->update('tbluser_data_wholesale', $post_ary);
+		$this->DB->update('tbluser_data_wholesale');
+
+		// set flash data
+		$this->session->set_flashdata('success', 'edit');
 
 		// return to modify order page
 		redirect('admin/orders/modify/index/'.$order_id, 'location');
@@ -162,6 +165,9 @@ class Modify extends Admin_Controller {
 		$this->DB->set($post_ary);
 		$this->DB->where('order_log_id', $order_id);
 		$this->DB->update('tbl_order_log');
+
+		// set flash data
+		$this->session->set_flashdata('success', 'edit');
 
 		// return to modify order page
 		redirect('admin/orders/modify/index/'.$order_id, 'location');
@@ -197,6 +203,9 @@ class Modify extends Admin_Controller {
 		$this->DB->where('user_id', $this->input->post('user_id'));
 		$this->DB->update('tbluser_data');
 
+		// set flash data
+		$this->session->set_flashdata('success', 'edit');
+
 		// return to modify order page
 		redirect('admin/orders/modify/index/'.$order_id, 'location');
 	}
@@ -223,6 +232,9 @@ class Modify extends Admin_Controller {
 		// update records
 		$this->DB->where('order_log_detail_id', $this->input->post('order_log_detail_id'));
 		$this->DB->delete('tbl_order_log_details');
+
+		// set flash data
+		$this->session->set_flashdata('success', 'edit');
 
 		// return to modify order page
 		redirect('admin/orders/modify/index/'.$order_id, 'location');
@@ -252,6 +264,9 @@ class Modify extends Admin_Controller {
 		$this->DB->where('order_log_detail_id', $this->input->post('order_log_detail_id'));
 		$this->DB->update('tbl_order_log_details');
 
+		// set flash data
+		$this->session->set_flashdata('success', 'edit');
+
 		// return to modify order page
 		redirect('admin/orders/modify/index/'.$order_id, 'location');
 	}
@@ -280,6 +295,9 @@ class Modify extends Admin_Controller {
 		$this->DB->where('order_log_detail_id', $this->input->post('order_log_detail_id'));
 		$this->DB->update('tbl_order_log_details');
 
+		// set flash data
+		$this->session->set_flashdata('success', 'edit');
+
 		// return to modify order page
 		redirect('admin/orders/modify/index/'.$order_id, 'location');
 	}
@@ -307,6 +325,9 @@ class Modify extends Admin_Controller {
 		$this->DB->set('remarks', $this->input->post('remarks'));
 		$this->DB->where('order_log_id', $order_id);
 		$this->DB->update('tbl_order_log');
+
+		// set flash data
+		$this->session->set_flashdata('success', 'edit');
 
 		// return to modify order page
 		redirect('admin/orders/modify/index/'.$order_id, 'location');
@@ -357,6 +378,40 @@ class Modify extends Admin_Controller {
 		$this->DB->set('options', json_encode($options));
 		$this->DB->where('order_log_id', $order_id);
 		$this->DB->update('tbl_order_log');
+
+		// set flash data
+		$this->session->set_flashdata('success', 'edit');
+
+		// return to modify order page
+		redirect('admin/orders/modify/index/'.$order_id, 'location');
+	}
+
+	// ----------------------------------------------------------------------
+
+	/**
+	 * PUBLIC - Edit Order Ship To Address
+	 *
+	 * @return	void
+	 */
+	public function edit_shipping_fee($order_id = '')
+	{
+		if ( ! $order_id)
+		{
+			// nothing more to do...
+			// set flash data
+			$this->session->set_flashdata('error', 'no_id_passed');
+
+			// redirect user
+			redirect('admin/orders/modify/index/'.$order_id, 'location');
+		}
+
+		// update records
+		$this->DB->set('shipping_fee', $this->input->post('shipping_fee'));
+		$this->DB->where('order_log_id', $order_id);
+		$this->DB->update('tbl_order_log');
+
+		// set flash data
+		$this->session->set_flashdata('success', 'edit');
 
 		// return to modify order page
 		redirect('admin/orders/modify/index/'.$order_id, 'location');
