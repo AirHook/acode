@@ -7,10 +7,11 @@
 										 */
 										?>
 										<div class="notifcations">
-											<!-- DOC: Apply/remove class "hide" to show/hide element -->
-											<div class="note note-info hide">
-												<p> A black page template with a minimal dependency assets to use as a base for any custom page you create. </p>
+                                            <?php if ($this->session->flashdata('error') == 'sales_package_invalid_link') { ?>
+											<div class="alert alert-danger">
+												The link is not valid.
 											</div>
+											<?php } ?>
 											<?php if ($this->session->flashdata('error') == 'no_id_passed') { ?>
 											<div class="alert alert-danger auto-remove">
 												<strong>Ooops!</strong>&nbsp; Something went wrong. Please try again.
@@ -21,12 +22,6 @@
 												<strong>Ooops!</strong>&nbsp; Hmmm... The product seems to be not available at this time.
 											</div>
 											<?php } ?>
-										</div>
-
-										<div class="row hidden-sm hidden-md hidden-lg hidden-xs">
-											<div class="col-xs-12 text-center">
-												<img src="<?php echo base_url(); ?>assets/images/icons/shop7 emblem.png" style="width:100%;" />
-											</div>
 										</div>
 
                                         <div class="portfolio-content portfolio-3 margin-top-30">

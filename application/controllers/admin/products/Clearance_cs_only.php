@@ -84,7 +84,6 @@ class Clearance_cs_only extends Admin_Controller {
 		}
 		$this->data['number_of_categories'] = $this->categories_tree->row_count;
 
-
 		// get the last segment which will serve as the category_slug in reference for the product list
 		if (count($url_segs) > 0)
 		{
@@ -168,11 +167,14 @@ class Clearance_cs_only extends Admin_Controller {
 		$params['pagination'] = $this->data['page']; // get all in one query
 		$this->load->library('products/products_list', $params);
 		$this->data['products'] = $this->products_list->select(
+			// where conditions
 			$where,
-			array( // order conditions
+			// sorting conditions
+			array(
 				'seque' => 'asc',
 				'tbl_product.prod_no' => 'desc'
 			),
+			// limits
 			$this->data['limit']
 		);
 		$this->data['count_all'] = $this->products_list->count_all;
@@ -239,7 +241,7 @@ class Clearance_cs_only extends Admin_Controller {
 		$config['cur_tag_open'] = '<li class="active"><a href="javascript:;">';
 		$config['cur_tag_close'] = '</a></li>';
 		$config['first_link'] = '<i class="fa fa-angle-double-left"></i>';
-		$config['first_url'] = site_url('admin/products/clearance/index/womens_apparel');
+		$config['first_url'] = site_url(implode('/',$uri_string));
 		$config['first_tag_open'] = '<li>';
 		$config['first_tag_close'] = '</li>';
 		$config['last_link'] = '<i class="fa fa-angle-double-right"></i>';

@@ -26,6 +26,11 @@
 
                                         <div class="portfolio-content portfolio-3 margin-top-30">
 
+                                            <?php
+    										/***********
+    										 *	Portfolio Grid Nav // currently hidden
+    										 */
+    										?>
 											<!-- DOC: Apply/remove class "hide" to show/hide element -->
                                             <div class="clearfix hide">
 												<!-- DOC: Apply/remove class "hide" to show/hide element -->
@@ -76,6 +81,11 @@
                                                 </div>
                                             </div>
 
+                                            <?php
+    										/***********
+    										 *	Portfolio Grid
+    										 */
+    										?>
                                             <div id="js-grid-lightbox-gallery" class="cbp">
 
 												<?php
@@ -85,9 +95,6 @@
 												{
 													// let's get the correct icon image
 													// grab linked designers and respective icon images and descriptions
-													//$linked_designers = explode(',', $category->d_url_structure);
-													//$icon_images = explode(',', $category->icon_image);
-													//$descriptions = explode('|', $category->description);
 													$ld = json_decode($category->d_url_structure , TRUE);
 													$linked_designers =
 														json_last_error() === JSON_ERROR_NONE
