@@ -52,6 +52,7 @@ class View_invoice extends Admin_Controller
 		$this->load->library('products/product_details');
 		$this->load->library('orders/order_details');
 		$this->load->library('products/size_names');
+		$this->load->library('m_pdf');
 
 		// get order details
 		$this->data['order_details'] =
@@ -103,20 +104,42 @@ class View_invoice extends Admin_Controller
 		}
 
 		// other data
+		$this->data['view_params'] = 'invoice_pdf';
 		$this->data['status'] = $this->order_details->status_text;
-		$this->data['order_items'] = $this->order_details->items();
+		//$this->data['order_items'] = $this->order_details->items();
 
-		// load the view
-		$html = $this->load->view('templates/invoice', $this->data, TRUE);
+		$i = 1;
+		foreach ($this->order_details->items() as $designer => $items)
+		{
+			// set the order items
+			$this->data['order_items'] = $items;
 
-		// load pertinent library/model/helpers
-		$this->load->library('m_pdf');
+			// we need to get the size mode
+			foreach ($items as $item)
+			{
+				$des_options = json_decode($item->webspace_options, TRUE);
+				break;
+			}
+			$this->data['size_mode'] = $des_options['size_mode'];
+			$this->data['size_names'] = $this->size_names->get_size_names($des_options['size_mode']);
+			$this->data['designer'] = $designer;
 
-		// generate pdf
-		$this->m_pdf->pdf->WriteHTML($html);
+			// load the view
+			$html = $this->load->view('templates/invoice', $this->data, TRUE);
 
-		// set filename and file path
-		$pdf_file_path = 'assets/pdf/pdf_invoice.pdf';
+			if ($i > 1)
+			{
+				$this->m_pdf->pdf->WriteHTML('<pagebreak>');
+			}
+
+			// generate pdf
+			$this->m_pdf->pdf->WriteHTML($html);
+
+			// set filename and file path
+			$pdf_file_path = 'assets/pdf/pdf_invoice_'.$designer.'.pdf';
+
+			$i++;
+		}
 
 		// download it "D" - download, "I" - inline, "F" - local file, "S" - string
 		$this->m_pdf->pdf->Output(); // output to browser

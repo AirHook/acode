@@ -156,11 +156,11 @@ class Orders_list
 					(SELECT COUNT(DISTINCT tbl_order_log_details.designer)
 					FROM tbl_order_log_details
 					WHERE tbl_order_log_details.order_log_id = tbl_order_log.order_log_id) = "1"
-					THEN tbl_order_log_details.designer
+				THEN tbl_order_log_details.designer
 				ELSE "Mixed Designers"
 			END) AS designer_group
 		');
-		// 0-new,1-complete,2-onhold,3-canclled,4-returned/refunded,5-shipment_pending,6-store_credit
+		// 0-new,1-complete,2-onhold,3-canclled,4-returned/refunded,5-shipment_pending,6-store_credit,7-payment_pending
 		$this->DB->select('
 			(CASE
 				WHEN status = "0" THEN "new_orders"
@@ -170,6 +170,7 @@ class Orders_list
 				WHEN status = "4" THEN "refunded"
 				WHEN status = "5" THEN "shipment_pending"
 				WHEN status = "6" THEN "store_credit"
+				WHEN status = "7" THEN "payment_pending"
 				ELSE "new_orders"
 			END) AS status_text
 		');

@@ -59,9 +59,9 @@ class Order_details
 	 *
 	 * @var	string/array
 	 */
-	public $designers = '';
-	public $designer_group = '';
-	public $designer_slug = '';
+	public $designers = array(); // collection of designers for mixed designers or the specific designer
+	public $designer_group = ''; // "Mixed Designers" or the specific designer
+	public $designer_slug = ''; // webspace slug or the specific designer slug
 	public $agree_policy = '';
 
 	/**
@@ -179,6 +179,7 @@ class Order_details
 		$this->DB->select('COUNT(qty) AS number_of_orders');
 		$this->DB->select('SUM(qty) AS order_qty');
 		$this->DB->select('SUM(subtotal) AS order_amount');
+		// combine all designers into one propery comma separated, or just a single designer
 		$this->DB->select('GROUP_CONCAT(DISTINCT CONCAT(tbl_order_log_details.designer)) AS designers');
 		$this->DB->select('tbl_order_log.order_log_id AS order_id');
 		$this->DB->select('tbl_order_log_details.*');
@@ -188,7 +189,7 @@ class Order_details
 					(SELECT COUNT(DISTINCT tbl_order_log_details.designer)
 					FROM tbl_order_log_details
 					WHERE tbl_order_log_details.order_log_id = tbl_order_log.order_log_id) = "1"
-					THEN tbl_order_log_details.designer
+				THEN tbl_order_log_details.designer
 				ELSE "Mixed Designers"
 			END) AS designer_group
 		');
@@ -202,7 +203,7 @@ class Order_details
 				ELSE "'.$this->CI->webspace_details->slug.'"
 			END) AS designer_slug
 		');
-		// 0-new,1-complete,2-onhold,3-canclled,4-returned/refunded,5-shipment_pending,6-store_credit
+		// 0-new,1-complete,2-onhold,3-canclled,4-returned/refunded,5-shipment_pending,6-store_credit,7-payment_pending
 		$this->DB->select('
 			(CASE
 				WHEN status = "0" THEN "new_orders"
@@ -212,6 +213,7 @@ class Order_details
 				WHEN status = "4" THEN "refunded"
 				WHEN status = "5" THEN "shipment_pending"
 				WHEN status = "6" THEN "store_credit"
+				WHEN status = "7" THEN "payment_pending"
 				ELSE "new_orders"
 			END) AS status_text
 		');
@@ -279,7 +281,7 @@ class Order_details
 			$this->invoice_id = $row->invoice_id;
 
 			// get items
-			$this->designers = $row->designer_group;
+			$this->designers = explode(',', $row->designers);
 			$this->designer_group = $row->designer_group;
 			$this->designer_slug = $row->designer_slug;
 			$qry2 = $this->DB->get_where('tbl_order_log_details', array('order_log_id'=>$row->order_id));
@@ -299,8 +301,10 @@ class Order_details
 
 	/**
 	 * Order items
+	 * This is used for when the order has mixed designers and we need
+	 * to separate each designer items, e.g., for inoicing
 	 *
-	 * @return	object/boolean false
+	 * @return	array/boolean false
 	 */
 	public function items()
 	{
@@ -310,23 +314,22 @@ class Order_details
 			return FALSE;
 		}
 
-		// get record
-		$this->DB->order_by('order_log_detail_id', 'asc');
-		$this->DB->where('tbl_order_log_details.order_log_id', $this->order_id);
-		$query = $this->DB->get('tbl_order_log_details');
-
-		//echo $this->DB->last_query(); die('<br />DIED');
-
-		if ($query->num_rows() == 0)
+		// check if mixed designers
+		$array = array();
+		foreach ($this->designers as $designer)
 		{
-			// since there is no record, return false...
-			return FALSE;
+			// get record
+			$this->DB->join('designer', 'designer.designer = tbl_order_log_details.designer', 'left');
+			$this->DB->join('webspaces', 'webspaces.webspace_slug = designer.url_structure', 'left');
+			$this->DB->where('tbl_order_log_details.order_log_id', $this->order_id);
+			$this->DB->where('tbl_order_log_details.designer', $designer);
+			$this->DB->group_by('order_log_detail_id');
+			$this->DB->order_by('order_log_detail_id', 'asc');
+			$query = $this->DB->get('tbl_order_log_details');
+			$array[$designer] = $query->result();
 		}
-		else
-		{
-			// return the object
-			return $query->result();
-		}
+
+		return (object) $array;
 	}
 
 	// --------------------------------------------------------------------

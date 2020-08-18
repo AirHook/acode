@@ -42,11 +42,11 @@ class Frontend_Controller extends MY_Controller {
 			? array(
 				'd_url_structure' => $this->webspace_details->slug,
 				'view_status' => '1',
-				'with_designer_products' => TRUE
+				'with_products' => TRUE
 			)
 			: array(
 				'view_status' => '1',
-				'with_designer_products' => TRUE
+				'with_products' => TRUE
 			)
 		;
 		$this->data['categories'] = $this->categories_tree->treelist(

@@ -38,6 +38,7 @@ class Invoice extends MY_Controller
 		$this->load->library('products/product_details');
 		$this->load->library('orders/order_details');
 		$this->load->library('products/size_names');
+		$this->load->library('m_pdf');
 
 		// get order details
 		$this->data['order_details'] =
@@ -71,13 +72,32 @@ class Invoice extends MY_Controller
 		}
 
 		// other data
+		$this->data['view_params'] = 'invoice_email';
 		$this->data['status'] = $this->order_details->status_text;
-		$this->data['order_items'] = $this->order_details->items();
+		//$this->data['order_items'] = $this->order_details->items();
 
-		// load the view
-		$message = $this->load->view('templates/invoice', $this->data, TRUE);
+		foreach ($this->order_details->items() as $designer => $items)
+		{
+			// set the order items
+			$this->data['order_items'] = $items;
 
-		echo $message;
+			// we need to get the size mode and size names array
+			foreach ($items as $item)
+			{
+				$des_options = json_decode($item->webspace_options, TRUE);
+				break;
+			}
+			$this->data['size_mode'] = $des_options['size_mode'];
+			$this->data['size_names'] = $this->size_names->get_size_names($des_options['size_mode']);
+			$this->data['designer'] = $designer;
+
+			// load the view
+			$message = $this->load->view('templates/invoice', $this->data, TRUE);
+
+			echo $message;
+		}
+
+		exit;
 	}
 
 	// --------------------------------------------------------------------

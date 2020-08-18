@@ -458,11 +458,11 @@
 														<tbody>
 
 															<?php
-															if ($this->order_details->items())
+															if ($this->order_details->order_items)
 															{
 																$overall_total = 0;
 																$i = 1;
-																foreach ($this->order_details->items() as $item)
+																foreach ($this->order_details->order_items as $item)
 																{
 																	// get product details
 	                                                                $exp = explode('_', $item->prod_sku);
