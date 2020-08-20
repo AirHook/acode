@@ -37,18 +37,18 @@
 		<?php
 		if($role=="wholesale") {
 			if ($this->webspace_details->slug !== 'tempoparis') { ?>
-			<li class="<?php echo $this->uri->segment(4) == 'pending' ? 'active' : ''; ?>">
-				<a href="<?php echo site_url('my_account/'.$role.'/orders/pending'); ?>">
-					Pending Orders
+			<li class="nav-items <?php echo strpos($this->uri->uri_string(), 'my_account/'.$role.'/orders/payment_pending') === FALSE ? '' : 'active'; ?>">
+				<a href="<?php echo site_url('my_account/'.$role.'/orders/payment_pending'); ?>">
+					Payment Pending
 				</a>
 			</li>
-			<li class="<?php echo $this->uri->segment(4) == 'onhold' ? 'active' : ''; ?>">
-				<a href="<?php echo site_url('my_account/'.$role.'/orders/onhold'); ?>">
-					On Hold Orders
+			<li class="nav-items <?php echo strpos($this->uri->uri_string(), 'my_account/'.$role.'/orders/shipment_pending') === FALSE ? '' : 'active'; ?>">
+				<a href="<?php echo site_url('my_account/'.$role.'/orders/shipment_pending'); ?>">
+					Shipment Pending
 				</a>
 			</li>
-			<li class="<?php echo $this->uri->segment(4) == 'completed' ? 'active' : ''; ?>">
-				<a href="<?php echo site_url('my_account/'.$role.'/orders/completed'); ?>">
+			<li class="nav-items <?php echo strpos($this->uri->uri_string(), 'my_account/'.$role.'/orders/shipped') === FALSE ? '' : 'active'; ?>">
+				<a href="<?php echo site_url('my_account/'.$role.'/orders/shipped'); ?>">
 					Completed Orders
 				</a>
 			</li>
@@ -92,7 +92,7 @@
 		position: relative;
 	}
 </style>
-<table class="table table-striped table-bordered table-hover table-checkable order-column" id="tbl-orders_" data-orders_count="<?php echo $this->orders_list->row_count; ?>">
+<table class="table table-striped table-bordered table-hover table-checkable order-column" id="tbl-orders__" data-orders_count="<?php echo $this->orders_list->row_count; ?>">
 	<thead>
 		<tr>
 			<th class="hidden-xs hidden-sm" style="width:30px"> <!-- counter --> </th>
@@ -107,7 +107,7 @@
 			<th class="hide"> Transaction #<br /><small><cite>(click to view details)</cite></small> </th>
 			<th> Items </th>
 			<th> Order<br />Qty </th>
-			<th> Purchase<br />Amount </th>
+			<th> Order<br />Amount </th>
 			<!--th> Customer &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </th>
 			<th style="width:100px;"> Role </th-->
 			<th style="width:130px;"> Status </th>
@@ -121,7 +121,7 @@
 			$i = 1;
 			foreach ($orders as $order)
 			{
-				$edit_link = site_url('my_account/'.$role.'/orders/details/'.$order->order_id);
+				$edit_link = site_url('my_account/'.$role.'/orders/details/index/'.$order->order_id);
 
 				// for '.$role.' only site like tempoparis, show only '.$role.' orders
 				// for now, we use this condition to remove consuemr orders

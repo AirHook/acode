@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Index extends Wholesale_user_Controller {
+class Shipment_pending extends Wholesale_user_Controller {
 
 	/**
 	 * Constructor
@@ -41,6 +41,9 @@ class Index extends Wholesale_user_Controller {
 
 		// get data
 		$where['tbl_order_log.c'] = 'ws';
+		$where['tbl_order_log.user_id'] = $this->session->user_id;
+		// 0-new,1-complete,2-onhold,3-canclled,4-returned/refunded,5-shipment_pending,6-store_credit,7-payment_pending
+		$where['tbl_order_log.status'] = '5';
 		if (@$this->webspace_details->options['site_type'] != 'hub_site')
 		{
 			$where['tbl_order_log.webspace_id'] = @$this->webspace_details->id;
@@ -61,12 +64,12 @@ class Index extends Wholesale_user_Controller {
 
 		// set data variables...
 		$this->data['role'] = 'wholesale'; //userrole will be used for IF statements in template files
-		$this->data['file'] = 'orders_new_orders'; // purchase_orders
+		$this->data['file'] = '../my_account/orders'; // using frontend gui
 		$this->data['page_title'] = 'Wholesale Orders';
 		$this->data['page_description'] = 'List of Wholesale Orders';
 
 		// load views...
-		$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template_my_account/template', $this->data);
+		$this->load->view('metronic/template/template', $this->data);
 	}
 
 	// ----------------------------------------------------------------------

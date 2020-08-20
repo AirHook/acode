@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Orders extends Wholesale_user_Controller {
+class Index extends Wholesale_user_Controller {
 
 	/**
 	 * Constructor
@@ -41,7 +41,7 @@ class Orders extends Wholesale_user_Controller {
 
 		// get data
 		$where['tbl_order_log.c'] = 'ws';
-		$where['tbl_order_log.user_id'] = $this->session->userdata['user_id'];
+		$where['tbl_order_log.user_id'] = $this->session->user_id;
 		if (@$this->webspace_details->options['site_type'] != 'hub_site')
 		{
 			$where['tbl_order_log.webspace_id'] = @$this->webspace_details->id;
@@ -62,187 +62,14 @@ class Orders extends Wholesale_user_Controller {
 
 		// set data variables...
 		$this->data['role'] = 'wholesale'; //userrole will be used for IF statements in template files
-		$this->data['file'] = '../my_account/orders'; // purchase_orders
+		$this->data['file'] = '../my_account/orders'; // using frontend gui
 		$this->data['page_title'] = 'Wholesale Orders';
 		$this->data['page_description'] = 'List of Wholesale Orders';
 
 		// load views...
 		$this->load->view('metronic/template/template', $this->data);
 	}
-	
-	// ----------------------------------------------------------------------
 
-	/**
-	 * Pending - pending orders
-	 *
-	 * Primary method to call when no other methods are found in url segment
-	 * This method simply lists all sales pacakges
-	 *
-	 * @return	void
-	 */
-	public function pending()
-	{
-		// generate the plugin scripts and css
-		$this->_create_plugin_scripts();
-
-		// load pertinent library/model/helpers
-		$this->load->library('orders/orders_list');
-
-		// set some variables
-		// we need a real variable to process some calculations
-		$url_segs = explode('/', $this->uri->uri_string());
-		$this->data['page'] = is_numeric(end($url_segs)) ? end($url_segs) : 1;
-		$this->data['limit'] = 100;
-		$this->data['offset'] = $this->data['page'] == '' ? 0 : ($this->data['page'] * 100) - 100;
-		$this->orders_list->pagination = $this->data['page'];
-
-		// get data
-		$where['tbl_order_log.c'] = 'ws'; //wholesale orders only
-		$where['tbl_order_log.user_id'] = $this->session->userdata['user_id'];
-		$where['tbl_order_log.status'] = 0; //completed status
-		if (@$this->webspace_details->options['site_type'] != 'hub_site')
-		{
-			$where['tbl_order_log.webspace_id'] = @$this->webspace_details->id;
-		}
-		$this->data['orders'] = $this->orders_list->select(
-			$where,
-			array(), // order_by
-			array($this->data['limit'], $this->data['offset']) // limit
-		);
-		$this->data['count_all'] = $this->orders_list->count_all;
-
-		// enable pagination
-		$this->_set_pagination($this->data['count_all'], $this->data['limit']);
-
-		// need to show loading at start
-		$this->data['show_loading'] = FALSE;
-		$this->data['search'] = FALSE;
-
-		// set data variables...
-		$this->data['role'] = 'wholesale'; //userrole will be used for IF statements in template files
-		$this->data['file'] = '../my_account/orders'; // purchase_orders
-		$this->data['page_title'] = 'Wholesale Orders';
-		$this->data['page_description'] = 'List of Wholesale Orders';
-
-		// load views...
-		$this->load->view('metronic/template/template', $this->data);
-	}
-		
-	// ----------------------------------------------------------------------
-
-	/**
-	 * Completed - completed orders
-	 *
-	 * Primary method to call when no other methods are found in url segment
-	 * This method simply lists all sales pacakges
-	 *
-	 * @return	void
-	 */
-	public function completed()
-	{
-		// generate the plugin scripts and css
-		$this->_create_plugin_scripts();
-
-		// load pertinent library/model/helpers
-		$this->load->library('orders/orders_list');
-
-		// set some variables
-		// we need a real variable to process some calculations
-		$url_segs = explode('/', $this->uri->uri_string());
-		$this->data['page'] = is_numeric(end($url_segs)) ? end($url_segs) : 1;
-		$this->data['limit'] = 100;
-		$this->data['offset'] = $this->data['page'] == '' ? 0 : ($this->data['page'] * 100) - 100;
-		$this->orders_list->pagination = $this->data['page'];
-
-		// get data
-		$where['tbl_order_log.c'] = 'ws'; //wholesale orders only
-		$where['tbl_order_log.user_id'] = $this->session->userdata['user_id'];
-		$where['tbl_order_log.status'] = 1; //completed status
-		if (@$this->webspace_details->options['site_type'] != 'hub_site')
-		{
-			$where['tbl_order_log.webspace_id'] = @$this->webspace_details->id;
-		}
-		$this->data['orders'] = $this->orders_list->select(
-			$where,
-			array(), // order_by
-			array($this->data['limit'], $this->data['offset']) // limit
-		);
-		$this->data['count_all'] = $this->orders_list->count_all;
-
-		// enable pagination
-		$this->_set_pagination($this->data['count_all'], $this->data['limit']);
-
-		// need to show loading at start
-		$this->data['show_loading'] = FALSE;
-		$this->data['search'] = FALSE;
-
-		// set data variables...
-		$this->data['role'] = 'wholesale'; //userrole will be used for IF statements in template files
-		$this->data['file'] = '../my_account/orders'; // purchase_orders
-		$this->data['page_title'] = 'Wholesale Orders';
-		$this->data['page_description'] = 'List of Wholesale Orders';
-
-		// load views...
-		$this->load->view('metronic/template/template', $this->data);
-	}
-		
-	// ----------------------------------------------------------------------
-
-	/**
-	 * On Hold - onhold orders
-	 *
-	 * Primary method to call when no other methods are found in url segment
-	 * This method simply lists all sales pacakges
-	 *
-	 * @return	void
-	 */
-	public function onhold()
-	{
-		// generate the plugin scripts and css
-		$this->_create_plugin_scripts();
-
-		// load pertinent library/model/helpers
-		$this->load->library('orders/orders_list');
-
-		// set some variables
-		// we need a real variable to process some calculations
-		$url_segs = explode('/', $this->uri->uri_string());
-		$this->data['page'] = is_numeric(end($url_segs)) ? end($url_segs) : 1;
-		$this->data['limit'] = 100;
-		$this->data['offset'] = $this->data['page'] == '' ? 0 : ($this->data['page'] * 100) - 100;
-		$this->orders_list->pagination = $this->data['page'];
-
-		// get data
-		$where['tbl_order_log.c'] = 'ws'; //wholesale orders only
-		$where['tbl_order_log.user_id'] = $this->session->userdata['user_id'];
-		$where['tbl_order_log.status'] = 2; //on hold status
-		if (@$this->webspace_details->options['site_type'] != 'hub_site')
-		{
-			$where['tbl_order_log.webspace_id'] = @$this->webspace_details->id;
-		}
-		$this->data['orders'] = $this->orders_list->select(
-			$where,
-			array(), // order_by
-			array($this->data['limit'], $this->data['offset']) // limit
-		);
-		$this->data['count_all'] = $this->orders_list->count_all;
-
-		// enable pagination
-		$this->_set_pagination($this->data['count_all'], $this->data['limit']);
-
-		// need to show loading at start
-		$this->data['show_loading'] = FALSE;
-		$this->data['search'] = FALSE;
-
-		// set data variables...
-		$this->data['role'] = 'wholesale'; //userrole will be used for IF statements in template files
-		$this->data['file'] = '../my_account/orders'; // purchase_orders
-		$this->data['page_title'] = 'Wholesale Orders';
-		$this->data['page_description'] = 'List of Wholesale Orders';
-
-		// load views...
-		$this->load->view('metronic/template/template', $this->data);
-	}
 	// ----------------------------------------------------------------------
 
 	/**
@@ -259,31 +86,31 @@ class Orders extends Wholesale_user_Controller {
 			// nothing more to do...
 			// set flash data
 			$this->session->set_flashdata('error', 'no_id_passed');
-			
+
 			// redirect user
 			redirect($this->config->slash_item('admin_folder').'orders');
 		}
-		
+
 		// generate the plugin scripts and css
 		$this->_create_plugin_scripts();
-		
+
 		// load pertinent library/model/helpers
 		$this->load->library('products/product_details');
 		$this->load->library('orders/order_details');
-		
+
 		// initialize...
 		$this->order_details->initialize(array('tbl_order_log.order_log_id'=>$id));
-		
+
 		// set data variables...
 		$this->data['role'] = 'wholesale'; //userrole will be used for IF statements in template files
 		$this->data['file'] = '../my_account/orders_details';
 		$this->data['page_title'] = 'Order Details';
 		$this->data['page_description'] = 'Details of the order transaction';
-		
+
 		// load views...
 		$this->load->view('metronic/template/template', $this->data);
 	}
-	
+
 	// ----------------------------------------------------------------------
 
 	/**
@@ -323,7 +150,7 @@ class Orders extends Wholesale_user_Controller {
 		$this->pagination->initialize($config);
 
 	}
-	
+
 	// ----------------------------------------------------------------------
 
 	/**

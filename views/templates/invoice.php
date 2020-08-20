@@ -96,7 +96,7 @@
 											Enclosed and attached is the invoice for your order #<?php echo $order_details->order_id; ?>.<br />
 											Please let us know your option for payment by clicking on the link below:
 											<br /><br />
-											<a href="javascript:;">PAYMENT OPTIONS</a>
+											<a href="<?php echo @$access_link ?: 'javascript:;'; ?>">PAYMENT OPTIONS</a>
 											<br /><br />
 											<br /><br />
 											Thanks and best regards.

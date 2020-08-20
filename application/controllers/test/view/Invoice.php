@@ -76,6 +76,14 @@ class Invoice extends MY_Controller
 		$this->data['status'] = $this->order_details->status_text;
 		//$this->data['order_items'] = $this->order_details->items();
 
+		// create access link to payment options
+		$this->data['access_link'] = site_url(
+			'my_account/wholesale/orders/link/index/'
+			.$order_id.'/'
+			.$this->data['order_details']->user_id.'/'
+			.md5(@date('Y-m-d', time()))	// $ts = md5 hashed timestamp
+		);
+
 		foreach ($this->order_details->items() as $designer => $items)
 		{
 			// set the order items
