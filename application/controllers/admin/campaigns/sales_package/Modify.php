@@ -207,7 +207,10 @@ class Modify extends Admin_Controller {
 			$this->data['products_count'] = $this->products_list->row_count;
 
 			// author
-			if ($this->sales_package_details->sales_user == '1')
+			if (
+				$this->sales_package_details->sales_user == '1'
+				OR $this->sales_package_details->author == 'admin'
+			)
 			{
 				$this->data['author_name'] = 'In-House';
 				$this->data['author'] = 'admin'; // admin/system

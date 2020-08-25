@@ -45,20 +45,27 @@ class Index extends Admin_Controller {
 		$this->data['offset'] = $this->data['page'] == '' ? 0 : ($this->data['page'] * 100) - 100;
 		//$this->orders_list->pagination = $this->data['page'];
 
-		// check for $des_slug
+		// check for site type, and des_slug, and other data
 		$this->data['des_slug'] = '';
-		if ($des_slug)
+		if (
+			$this->webspace_details->options['site_type'] == 'sat_site'
+			OR $this->webspace_details->options['site_type'] == 'sal_site'
+		)
 		{
-			$where['sales_packages.options LIKE'] = '%'.$des_slug.'%';
-			$this->data['des_slug'] = $des_slug;
+			$this->data['des_slug'] = @$this->sales_user_details->designer ?: $this->webspace_details->slug;
+			$where['sales_packages.options LIKE'] = '%'.$this->data['des_slug'].'%';
 		}
+		else
+		{
+			if ($des_slug)
+			{
+				$where['sales_packages.options LIKE'] = '%'.$des_slug.'%';
+				$this->data['des_slug'] = $des_slug;
+			}
+		}
+		$where['sales_package_id >'] = '2';
 
 		// get the list
-		$where['sales_package_id >'] = '2';
-		if (@$this->webspace_details->options['site_type'] != 'hub_site')
-		{
-			$where['tbladmin_sales.admin_sales_designer'] = @$this->webspace_details->slug;
-		}
 		$this->data['packages'] = $this->sales_package_list->select($where);
 
 		// set data variables...

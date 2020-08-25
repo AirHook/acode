@@ -54,6 +54,7 @@
                                 <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
                                     <span class="username username-hide-on-mobile"> Welcome, <?php echo @$this->admin_user_details->username; ?> </span>
                                     <i class="fa fa-angle-down"></i>
+                                </a>
                                 <ul class="dropdown-menu dropdown-menu-default">
                                     <li>
                                         <a href="javascript:;" class="disabled-link disable-target">

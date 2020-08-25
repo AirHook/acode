@@ -229,14 +229,13 @@
                             </a>
                             <ul class="sub-menu always-open">
                                 <li class="nav-item  <?php echo $this->uri->uri_string() == 'admin/campaigns/sales_package' ? 'active open' : ''; ?>">
-                                    <a href="javascript:;" class="nav-link disabled-link disable-target">
-                                    <!--<a href="<?php echo site_url('admin/campaigns/sales_package'); ?>" class="nav-link  ">-->
+                                    <a href="<?php echo site_url('admin/campaigns/sales_package'); ?>" class="nav-link  ">
                                         <span class="title">List Sales Packages</span>
                                     </a>
                                 </li>
                                 <li class="nav-item  <?php echo $this->uri->uri_string() == 'admin/campaigns/sales_package/create' ? 'active open' : ''; ?>">
-                                    <a href="javascript:;" class="nav-link disabled-link disable-target">
-                                    <!--<a href="<?php echo site_url('admin/campaigns/sales_package/create'); ?>" class="nav-link  ">-->
+                                    <!--<a href="javascript:;" class="nav-link disabled-link disable-target">-->
+                                    <a href="<?php echo site_url('admin/campaigns/sales_package/create'); ?>" class="nav-link  ">
                                         <span class="title">Create Sales Package</span>
                                     </a>
                                 </li>

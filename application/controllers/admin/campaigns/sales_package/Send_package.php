@@ -48,12 +48,6 @@ class Send_package extends Admin_Controller {
 				unset($_SESSION['admin_sa_email_subject']); // used at view
 				unset($_SESSION['admin_sa_email_message']); // used at view
 				unset($_SESSION['admin_sa_options']);
-
-				// set session flashdata
-				$this->session->set_flashdata('error', 'no_id_passed');
-
-				// redirect user
-				redirect('admin/campaigns/sales_package/create', 'location');
 			}
 		}
 

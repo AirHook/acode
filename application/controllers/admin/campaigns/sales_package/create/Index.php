@@ -71,12 +71,6 @@ class Index extends Admin_Controller {
 					unset($_SESSION['admin_sa_email_subject']); // used at view
 					unset($_SESSION['admin_sa_email_message']); // used at view
 					unset($_SESSION['admin_sa_options']);
-
-					// set session flashdata
-					$this->session->set_flashdata('error', 'no_id_passed');
-
-					// redirect user
-					redirect('admin/campaigns/sales_package/create', 'location');
 				}
 			}
 
@@ -304,6 +298,7 @@ class Index extends Admin_Controller {
 				// remove variables not needed
 				unset($post_ary['files']);
 				unset($post_ary['prod_no']);
+				unset($post_ary['save_sales_package']);
 
 				// set sales package items
 				$post_ary['sales_package_items'] = $this->session->admin_sa_items;
@@ -334,10 +329,10 @@ class Index extends Admin_Controller {
 				// we shall make additional session data
 				$_SESSION['date_create'] = $this->input->post('date_create');
 				$_SESSION['last_modified'] = $this->input->post('last_modified');
-				$_SESSION['sa_name'] = $this->input->post('sales_package_name');
-				$_SESSION['sa_email_subject'] = $this->input->post('email_subject');
-				$_SESSION['sa_email_message'] = $this->input->post('email_message');
-				$_SESSION['sa_options'] = json_encode($this->input->post('options'));
+				$_SESSION['admin_sa_name'] = $this->input->post('sales_package_name');
+				$_SESSION['admin_sa_email_subject'] = $this->input->post('email_subject');
+				$_SESSION['admin_sa_email_message'] = $this->input->post('email_message');
+				$_SESSION['admin_sa_options'] = json_encode($this->input->post('options'));
 
 				// redirect user
 				redirect('admin/campaigns/sales_package/send_package', 'location');

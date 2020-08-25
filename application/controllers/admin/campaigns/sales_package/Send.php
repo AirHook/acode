@@ -69,9 +69,12 @@ class Send extends Admin_Controller {
 		);
 
 		// author
-		if ($this->sales_package_details->sales_user == '1')
+		if (
+			$this->sales_package_details->sales_user == '1'
+			OR $this->sales_package_details->author == 'admin'
+		)
 		{
-			$this->data['author_name'] = $this->webspace_details->name;
+			$this->data['author_name'] = 'In-House';
 			$this->data['author'] = 'admin'; // admin/system
 			$this->data['author_email'] = $this->webspace_details->info_email;
 			$this->data['author_id'] = $this->session->admin_id;
@@ -130,6 +133,7 @@ class Send extends Admin_Controller {
 		$this->data['search_string'] = FALSE;
 
 		// set data variables...
+		$this->data['role'] = 'admin';
 		$this->data['file'] = 'sa_send';
 		$this->data['page_title'] = 'Sales Package Sending';
 		$this->data['page_description'] = 'Send Sales Packages To Users';
@@ -153,10 +157,10 @@ class Send extends Admin_Controller {
 		(
 		    [sales_package_id] => 12
 		    [send_to] => current_user/new_user
-			[sales_user] => rsbgm@rcpixel.com
-		    [reference_designer] => basixblacklabel
-		    [admin_sales_email] => rsbgm@rcpixel.com
-		    [admin_sales_id] => 90
+			[sales_user] => rsbgm@rcpixel.com 			// not available on modify from admin
+		    [reference_designer] => basixblacklabel 	// not available on modify from admin
+		    [admin_sales_email] => rsbgm@rcpixel.com	// not available on modify from admin
+		    [admin_sales_id] => 90 						// not available on modify from admin
 		    [access_level] => 2
 
 				//current_user
@@ -223,11 +227,12 @@ class Send extends Admin_Controller {
 				'country' => $this->input->post('country'),
 				'zipcode' => $this->input->post('zipcode'),
 				'create_date' => date('Y-m-d', time()),
-				'admin_sales_id' => $this->input->post('admin_sales_id'),
-				'admin_sales_email' => $this->input->post('admin_sales_email'),
-				'reference_designer' => $this->input->post('ereference_designermail')
+				'admin_sales_id' => ($this->input->post('admin_sales_id') ?: NULL),
+				'admin_sales_email' => ($this->input->post('admin_sales_email') ?: $this->webspace_details->info_email),
+				'reference_designer' => ($this->input->post('reference_designer') ?: @$this->sales_package_details->options['des_slug'])
 			);
-			$this->DB->insert('tbluser_data_wholesale', $post_user);
+			$DB = $this->load->database('instyle', TRUE);
+			$DB->insert('tbluser_data_wholesale', $post_user);
 			$users = array($this->input->post('email'));
 		}
 		//else $users = $this->input->post('email');

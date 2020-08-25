@@ -586,6 +586,7 @@ var ComponentsEditors = function () {
 		var form1 = $('#form-sa_create_summary_review');
 		var error1 = $('.alert-danger');
 		var success1 = $('.alert-success');
+        var errorNoItems = $('.alert-danger.alert-no-items');
 
 		form1.validate({
 			errorElement: 'span', //default input error message container
@@ -645,9 +646,15 @@ var ComponentsEditors = function () {
 
 			submitHandler: function (form) {
 
-				//success1.show();
-				error1.hide();
-                form.submit();
+                // let us check if there are selected items already
+                var itemsCount = $('#items_count').val();
+                if (itemsCount){
+                    errorNoItems.show();
+                }else{
+                    //success1.show();
+    				error1.hide();
+                    form.submit();
+                }
 			}
 		});
 

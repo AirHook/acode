@@ -471,7 +471,7 @@
                                 <td class="hidden-xs hidden-sm">
 									<?php if ($package->sales_package_id == '1' OR $package->sales_package_id == '2') { ?>
 									<small class="text-info"> <cite> system generated </cite></small>
-									<?php } else if ($package->sales_user == '1') { ?>
+									<?php } else if ($package->sales_user == '1' OR $package->author == 'admin') { ?>
 									<small class="text-info"> <cite> admin </cite></small>
 									<?php } else { ?>
                                     <?php echo ucwords($package->admin_sales_user.' '.$package->admin_sales_lname); ?> - <small class="text-info"> <cite> sales </cite></small>

@@ -185,9 +185,11 @@ class Sales_package_sending
 
 				$this->CI->email->clear(TRUE);
 
-				$this->CI->email->from((@$this->CI->sales_user_details->email ?: $this->CI->wholesale_user_details->designer_info_email), (@$this->CI->sales_user_details->designer_name ?: $this->CI->wholesale_user_details->designer));
+				$from = (@$this->CI->sales_user_details->email ?: $this->CI->wholesale_user_details->designer_info_email).', '.(@$this->CI->sales_user_details->designer_name ?: $this->CI->wholesale_user_details->designer);
+				$this->CI->email->from($from);
 				$this->CI->email->reply_to((@$this->CI->sales_user_details->email ?: $this->CI->wholesale_user_details->designer_info_email));
 				//$this->CI->email->cc($this->CI->config->item('info_email'));
+				//$this->CI->email->bcc($this->CI->config->item('info_email').', help@shop7thavenue.com');
 				$this->CI->email->bcc($this->CI->config->item('info_email').', '.$this->CI->config->item('dev1_email').', help@shop7thavenue.com');
 
 				$this->CI->email->subject($this->CI->sales_package_details->email_subject);
@@ -224,11 +226,16 @@ class Sales_package_sending
 				{
 					// set flashdata
 					//$this->CI->session->set_flashdata('success', 'pacakge_sent'); return TRUE;
+					$this->CI->session->set_flashdata('success', 'sa_email_sent');
 
 					/* */
-					if (@$this->CI->data['sales_theme'] == 'roden2') $this->CI->session->set_flashdata('success', 'sales_package_sent');
-					else $this->CI->session->set_flashdata('success', 'pacakge_sent');
 					echo 'Email batch - '.@$batch.'<br />';
+					echo $this->CI->session->flashdata('success').'<br />';
+					echo '<br />';
+					echo 'FROM: '.$from.'<br />';
+					echo 'TO: '.$this->CI->wholesale_user_details->email.'<br />';
+					echo 'SUBJECT: '.$this->CI->sales_package_details->email_subject.'<br />';
+					echo '<br />';
 					echo $message;
 					echo '<br />';
 					echo '<br />';
@@ -237,7 +244,7 @@ class Sales_package_sending
 						if ($this->CI->data['sales_theme'] == 'roden2') echo '<a href="'.site_url('sales/view/index/'.$this->sales_package_id).'">continue...</a>';
 						if ($this->CI->data['sales_theme'] == 'default') echo '<a href="'.site_url('sales/sent').'">continue...</a>';
 					}
-					else echo '<a href="'.($this->CI->uri->segment(2) === 'sales' ? site_url('my_account/sales/sales_package') : site_url($this->CI->config->slash_item('admin_folder').'campaigns/sales_package')).'">continue...</a>';
+					else echo '<a href="'.($this->CI->uri->segment(2) === 'sales' ? site_url('my_account/sales/sales_package') : site_url('admin/campaigns/sales_package/send/index/'.$this->sales_package_id)).'">continue...</a>';
 					echo '<br />';
 					echo '<br />';
 					die();
@@ -257,9 +264,6 @@ class Sales_package_sending
 		}
 
 		$this->CI->email->clear(TRUE);
-
-		// set flashdata
-		$this->CI->session->set_flashdata('success', 'pacakge_sent');
 
 		return TRUE;
 	}

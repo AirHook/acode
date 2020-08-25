@@ -977,6 +977,8 @@
                                         <button class="close" data-close="alert"></button> You have some form errors. Please check below. </div>
                                     <div class="alert alert-success display-hide">
                                         <button class="close" data-close="alert"></button> Your form validation is successful! </div>
+                                    <div class="alert alert-danger alert-no-items display-hide" data-test="test">
+                                        <button class="close" data-close="alert"></button> You have NOT selected any items for the Sales Packge. Please select now. </div>
                                     <?php if (validation_errors()) { ?>
                                     <div class="alert alert-danger">
                                         <button class="close" data-close="alert"></button> <?php echo validation_errors(); ?>
@@ -1134,6 +1136,8 @@
                                         </label>
                                     </div>
                                     <button type="submit" class="btn dark">Send Sales Package</button>
+                                    <div class="alert alert-danger alert-no-items display-hide margin-top-20" data-test="test">
+                                        <button class="close" data-close="alert"></button> You have NOT selected any items for the Sales Packge. Please select now. </div>
                                 </div>
 
                                 </form>
