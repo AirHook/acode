@@ -31,7 +31,7 @@
 
 						<?php
 						/**********
-						 * This allows user of tabs for admin and sales users
+						 * This allows use of tabs for admin and sales users with correct links url
 						 */
 						if (@$role)
 						{
@@ -46,9 +46,15 @@
 							}
 						}
 						else $link_prefix = 'admin';
+
+						$hide_tabs =
+							$this->webspace_details->slug == 'tempoparis'
+							? 'hide'
+							: ''
+						;
 						?>
 
-						<ul class="nav nav-tabs">
+						<ul class="nav nav-tabs <?php echo $hide_tabs; ?>">
 							<li class="nav-items <?php echo strpos($this->uri->uri_string(), 'admin/orders/new_orders') === FALSE ? '' : 'active'; ?>">
 								<a href="<?php echo site_url($pre_link.'/orders/new_orders'); ?>">
 									New Order Inquiries
@@ -590,7 +596,10 @@
 			                                        <i class="fa fa-eye font-dark"></i>
 			                                    </a>
 
-			                                    <?php if ($order->status == '0') // for new orders
+			                                    <?php
+												// for new orders
+												// and not tempo
+												if ($order->status == '0' && $this->webspace_details->slug != 'tempoparis')
 												{
 													if (@$role == 'sales' && @$this->sales_user_details->access_level == '2') $hide_approve = 'hide';
 													else $hide_approve = '';
@@ -601,7 +610,7 @@
 			                                    </a>
 												<?php } ?>
 
-												<?php if ($order->status == '5') { ?>
+												<?php if ($order->status == '5' OR $this->webspace_details->slug == 'tempoparis') { ?>
 												<!-- Complete -->
 			                                    <a data-toggle="modal" href="#complete-<?php echo $order->order_id; ?>" class="tooltips" data-original-title="Complete Order">
 			                                        <i class="fa fa-check font-dark"></i>

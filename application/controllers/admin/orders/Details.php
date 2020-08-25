@@ -55,6 +55,19 @@ class Details extends Admin_Controller {
 			)
 		;
 
+		if (@$this->webspace_details->options['site_type'] != 'hub_site')
+		{
+			if ($this->webspace_details->id != $this->order_details->webspace_id)
+			{
+				// nothing more to do...
+				// set flash data
+				$this->session->set_flashdata('error', 'no_id_passed');
+
+				// redirect user
+				redirect('admin/orders/all', 'location');
+			}
+		}
+
 		// based on order details, get user details
 		if ($this->data['order_details']->c == 'ws')
 		{

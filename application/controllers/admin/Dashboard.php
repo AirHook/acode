@@ -14,16 +14,47 @@ class Dashboard extends Admin_Controller {
 	{
 		// generate the plugin scripts and css
 		$this->_create_plugin_scripts();
+
+		// load pertinent library/model/helpers
+		$this->load->library('users/wholesale_users_list');
+		$this->load->library('orders/orders_list');
+
+		// get the orders
+		$where = array();
+		$having_des_group = FALSE;
+		if (@$this->webspace_details->options['site_type'] == 'sal_site')
+		{
+			$where_orders['tbl_order_log.webspace_id'] = @$this->webspace_details->id;
+		}
+		elseif ($this->webspace_details->options['site_type'] == 'sat_site')
+		{
+			$having_des_group = $this->webspace_details->name;
+		}
+		// 0-new,1-complete,2-onhold,3-canclled,4-returned/refunded,5-shipment_pending,6-store_credit,7-payment_pending
+		$where_orders['status'] = '0';
+		$this->data['orders'] = $this->orders_list->select(
+			$where_orders,
+			array(), // order_by
+			array('10'), // limit, offset
+			$having_des_group // $having_des_group
+		);
+		$this->data['count_all_orders'] = $this->orders_list->count_all;
+
+		// get users
+		if (@$this->webspace_details->options['site_type'] != 'hub_site')
+		{
+			$where_users['tbluser_data_wholesale.reference_designer'] = @$this->webspace_details->slug;
+		}
+		$where_users['tbluser_data_wholesale.is_active'] = '1';
+		$this->data['users'] = $this->wholesale_users_list->select(
+			$where_users,
+			array(),
+			array('5')
+		);
+		$this->data['count_all_users'] = $this->wholesale_users_list->count_all;
+
 		// set data variables...
-		$this->load->library('purchase_orders/purchase_orders_list');
-		$this->load->library('sales_orders/sales_orders_list');
-
-		//$this->data['purchase_orders'] = $this->purchase_orders_list->select(array(), '10');
-		//$this->data['sale_orders'] = $this->sales_orders_list->select(array(), '10');
-		//$this->data['sale_orders_length'] = $this->sales_orders_list->select();
-		//$this->data['purchase_orders_length'] = $this->purchase_orders_list->select();
-		// echo '<pre>',print_r($this->data['orders']),'</pre>';exit();
-
+		$this->data['role'] = 'admin';
 		$this->data['file'] = 'dashboard';
 		$this->data['page_title'] = 'Dashboard';
 		$this->data['page_description'] = 'A summary of recent activities';

@@ -49,22 +49,21 @@ class Search extends Admin_Controller {
 
 		// process main search string
 		$search_string = $this->input->post('search_string');
-		$where['tbl_order_log.order_log_id LIKE'] = '%'.$search_string.'%';
-		$where['OR tbl_order_log.firstname LIKE'] = '%'.$search_string.'%';
-		$where['OR tbl_order_log.lastname LIKE'] = '%'.$search_string.'%';
-		$where['OR tbl_order_log.store_name LIKE'] = '%'.$search_string.'%';
-		// check for string separation and process each separate word
+		$search_where = '(';
+		$search_where.= "tbl_order_log.order_log_id LIKE '%".$search_string."%'";
+		$search_where.= " OR tbl_order_log.firstname LIKE '%".$search_string."%'";
+		$search_where.= " OR tbl_order_log.lastname LIKE '%".$search_string."%'";
+		$search_where.= " OR tbl_order_log.store_name LIKE '%".$search_string."%'";
 		$exp_search_string = explode(' ', $search_string);
-		if (count($exp_search_string) > 1)
+		foreach ($exp_search_string as $string)
 		{
-			foreach ($exp_search_string as $string)
-			{
-				$where['OR tbl_order_log.order_log_id LIKE'] = '%'.$string.'%';
-				$where['OR tbl_order_log.firstname LIKE'] = '%'.$string.'%';
-				$where['OR tbl_order_log.lastname LIKE'] = '%'.$string.'%';
-				$where['OR tbl_order_log.store_name LIKE'] = '%'.$string.'%';
-			}
+			$search_where.= " OR tbl_order_log.order_log_id LIKE '%".$string."%'";
+			$search_where.= " OR tbl_order_log.firstname LIKE '%".$string."%'";
+			$search_where.= " OR tbl_order_log.lastname LIKE '%".$string."%'";
+			$search_where.= " OR tbl_order_log.store_name LIKE '%".$string."%'";
 		}
+		$search_where.= ')';
+		$where['condition'] = $search_where;
 
 		// get data
 		$having_des_group = FALSE;
@@ -90,6 +89,7 @@ class Search extends Admin_Controller {
 		$this->data['search_string'] = $this->input->post('search_string');
 
 		// set data variables...
+		$this->data['role'] = 'admin';
 		$this->data['file'] = 'orders_new_orders';
 		$this->data['page_title'] = 'Order Logs';
 		$this->data['page_description'] = 'List of orders';

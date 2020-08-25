@@ -169,6 +169,7 @@
 								<a href="javascript:;" class="btn grey-gallery btn-block btn-sm btn-resend_email_confirmation <?php echo $hide_resend_order_email; ?>" data-user_id="<?php echo $this->order_details->user_id; ?>" data-order_id="<?php echo $this->order_details->order_id; ?>" data-user_cat="<?php echo $this->order_details->c; ?>">
 									Resend Email Confirmation
 								</a>
+								<!--<a href="javascript:;" class="nav-link disabled-link disable-target">-->
 								<a href="#modal-send_invoice_to_user" data-toggle="modal" class="btn grey-gallery btn-block btn-sm">
 									Send Invoice To User
 								</a>

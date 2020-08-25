@@ -166,14 +166,20 @@
 											<table width="630">
 												<tbody>
 
+                                                    <?php if ($this->webspace_details->slug != 'tempoparis')
+                                                    { ?>
+
                                                     <tr>
 														<td colspan="2" height="35" bgcolor="#767676" background="http://www.<?php echo $this->webspace_details->slug; ?>.com/images/newsletter/bar_bg.jpg">
 															<font color="#ffffff" style="font-family:Tahoma;font-size:12px;">
                                                                 &nbsp;<b>DESIGNER:</b>
-                                                                <?php echo $designers; ?>
+                                                                <?php echo @$designers; ?>
                                                             </font>
 														</td>
 													</tr>
+
+                                                        <?php
+                                                    }?>
 
 													<tr>
 														<td colspan="2" height="35" bgcolor="#767676" background="http://www.<?php echo $this->webspace_details->slug; ?>.com/images/newsletter/bar_bg.jpg">

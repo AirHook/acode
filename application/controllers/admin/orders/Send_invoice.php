@@ -142,9 +142,9 @@ class Send_invoice extends Admin_Controller
 
 		$this->email->from($this->webspace_details->info_email, $this->webspace_details->name);
 
-		//$this->email->to($this->data['user_details']->email);
-		//$this->email->bcc('help@shop7thavenue.com');
-		$this->email->to('rsbgm@rcpixel.com');
+		$this->email->to($this->data['user_details']->email);
+		$this->email->bcc('help@shop7thavenue.com');
+		//$this->email->to('rsbgm@rcpixel.com');
 
 		$this->email->attach(base_url().$pdf_file_path);
 		$this->email->subject($email_subject);

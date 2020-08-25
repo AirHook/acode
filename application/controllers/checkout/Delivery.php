@@ -162,14 +162,14 @@ class Delivery extends Frontend_Controller
 
 			// we need to put back the payment page for wholesale
 			// and ask them for their options
-			/* *
+			/* */
 			if ($this->session->user_role == 'wholesale')
 			{
 				redirect('checkout/review');
 			}
 			else redirect('checkout/payment');
 			// */
-			redirect('checkout/payment', 'location');
+			//redirect('checkout/payment', 'location');
 		}
 	}
 

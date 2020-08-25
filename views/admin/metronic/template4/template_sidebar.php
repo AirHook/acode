@@ -155,9 +155,14 @@
                         // available only for tempoparis
                         if ($this->webspace_details->slug == 'tempoparis')
                         { ?>
-                        <li class="nav-item with-heading <?php echo $this->uri->uri_string() == 'admin/orders' ? 'active' : ''; ?> ">
-                            <a href="<?php echo site_url('admin/orders'); ?>" class="nav-link ">
+                        <li class="nav-item <?php echo strpos($this->uri->uri_string(), 'admin/orders/new_orders') === FALSE ? '' : 'active'; ?>">
+                            <a href="<?php echo site_url('admin/orders/new_orders'); ?>" class="nav-link ">
                                 <span class="title">Order Logs</span>
+                            </a>
+                        </li>
+                        <li class="nav-item <?php echo strpos($this->uri->uri_string(), 'admin/orders/shipped') === FALSE ? '' : 'active'; ?>">
+                            <a href="<?php echo site_url('admin/orders/shipped'); ?>" class="nav-link ">
+                                <span class="title">Shipped</span>
                             </a>
                         </li>
                             <?php
@@ -211,9 +216,8 @@
 
                         <?php
                         // available only on hub sites for now
-                        if ($this->webspace_details->options['site_type'] == 'hub_site')
+                        if ($this->webspace_details->options['site_type'] == 'hub_site' OR $this->webspace_details->slug = 'tempoparis')
                         { ?>
-
                         <!-- =============-->
                         <li class="heading">
                             <h3 class="uppercase">Sales</h3>
@@ -225,17 +229,26 @@
                             </a>
                             <ul class="sub-menu always-open">
                                 <li class="nav-item  <?php echo $this->uri->uri_string() == 'admin/campaigns/sales_package' ? 'active open' : ''; ?>">
-                                    <a href="<?php echo site_url('admin/campaigns/sales_package'); ?>" class="nav-link  ">
+                                    <a href="javascript:;" class="nav-link disabled-link disable-target">
+                                    <!--<a href="<?php echo site_url('admin/campaigns/sales_package'); ?>" class="nav-link  ">-->
                                         <span class="title">List Sales Packages</span>
                                     </a>
                                 </li>
                                 <li class="nav-item  <?php echo $this->uri->uri_string() == 'admin/campaigns/sales_package/create' ? 'active open' : ''; ?>">
-                                    <a href="<?php echo site_url('admin/campaigns/sales_package/create'); ?>" class="nav-link  ">
+                                    <a href="javascript:;" class="nav-link disabled-link disable-target">
+                                    <!--<a href="<?php echo site_url('admin/campaigns/sales_package/create'); ?>" class="nav-link  ">-->
                                         <span class="title">Create Sales Package</span>
                                     </a>
                                 </li>
                             </ul>
                         </li>
+                            <?php
+                        } ?>
+
+                        <?php
+                        // available only on hub sites for now
+                        if ($this->webspace_details->options['site_type'] == 'hub_site')
+                        { ?>
                         <!--
                         <li class="nav-item with-heading <?php echo $this->uri->segment(2) == 'sales_orders' ? 'active' : ''; ?> hide">
                             <a href="<?php echo site_url('admin/sales_orders'); ?>" class="nav-link ">
@@ -437,9 +450,6 @@
                             </a>
                         </li>
 
-                            <?php
-                        } ?>
-
                         <!-- =============-->
                 		<li class="heading">
                 			<h3 class="uppercase">Marketing</h3>
@@ -473,6 +483,9 @@
                 			</ul>
                 		</li>
 
+                            <?php
+                        } ?>
+
                         <!-- =============-->
                         <li class="heading">
                             <h3 class="uppercase">General</h3>
@@ -501,8 +514,6 @@
                                 <span class="title">Admin Change Password</span>
                             </a>
                         </li>
-                            <?php
-                        } ?>
 
                         <!-- =============-->
                         <li class="heading">
@@ -513,10 +524,6 @@
                                 <span class="title">Documentation</span>
                             </a>
                         </li>
-                        <?php
-                        // available only on hub sites for now
-                        if ($this->webspace_details->options['site_type'] == 'hub_site')
-                        { ?>
                         <li class="nav-item <?php echo $this->uri->uri_string() == 'admin/accounts' ? 'active' : ''; ?>">
                             <a href="<?php echo site_url('admin/accounts'); ?>" class="nav-link ">
                                 <span class="title">Accounts</span>

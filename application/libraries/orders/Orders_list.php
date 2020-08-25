@@ -108,15 +108,22 @@ class Orders_list
 		{
 			foreach ($where as $key => $val)
 			{
-				if ($val !== '')
+				if ($key == 'condition')
 				{
-					// OR is usually for a simple OR conditioin
-					if (strpos($key, 'OR ') !== FALSE)
+					$this->DB->where($val);
+				}
+				else
+				{
+					if ($val !== '')
 					{
-						$key = ltrim($key, 'OR ');
-						$this->DB->or_where($key, $val);
+						// OR is usually for a simple OR conditioin
+						if (strpos($key, 'OR ') !== FALSE)
+						{
+							$key = ltrim(trim($key), 'OR ');
+							$this->DB->or_where($key, $val);
+						}
+						else $this->DB->where($key, $val);
 					}
-					else $this->DB->where($key, $val);
 				}
 			}
 		}

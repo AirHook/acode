@@ -23,6 +23,11 @@
 							<button class="close" data-close="alert"></button> Sales Package information updated.
 						</div>
 						<?php } ?>
+						<?php if ($this->session->flashdata('success') == 'pacakge_sent') { ?>
+						<div class="alert alert-success auto-remove">
+							<button class="close" data-close="alert"></button> Sales Package sent.
+						</div>
+						<?php } ?>
 						<?php if ($this->session->flashdata('success') == 'delete') { ?>
 						<div class="alert alert-success auto-remove">
 							<button class="close" data-close="alert"></button> Sales Package permanently removed from records.

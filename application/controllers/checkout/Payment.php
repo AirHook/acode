@@ -103,7 +103,10 @@ class Payment extends Frontend_Controller
 		}
 		else
 		{
-			if ($this->session->user_role == 'wholesale')
+			if (
+				$this->session->user_role == 'wholesale'
+				&& $this->input->post('ws_payment_options')
+			)
 			{
 				// check for options
 				$this->session->set_userdata('ws_payment_options', $this->input->post('ws_payment_options'));

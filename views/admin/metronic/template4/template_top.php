@@ -29,7 +29,7 @@
         <!-- END THEME LAYOUT STYLES -->
         <!-- BEGIN GLOBAL CUSTOM STYLES -->
         <link href="<?php echo base_url('assets/custom'); ?>/css/custom.css" rel="stylesheet" type="text/css" />
-        <link href="<?php echo base_url('assets/custom'); ?>/css/custom_admin_metronic4.css" rel="stylesheet" type="text/css" />
+        <link href="<?php echo base_url('assets/custom'); ?>/css/custom_admin_metronic4.css?z=<?php echo time(); ?>" rel="stylesheet" type="text/css" />
 		<link href="<?php echo base_url('assets/custom'); ?>/css/loading-modal.css" rel="stylesheet" type="text/css" />
         <!-- END GLOBAL CUSTOM STYLES -->
         <link rel="shortcut icon" href="<?php echo base_url(); ?>favicon.ico" />

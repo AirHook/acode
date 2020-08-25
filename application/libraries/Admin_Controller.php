@@ -44,7 +44,7 @@ class Admin_Controller extends MY_Controller {
 			$this->session->set_flashdata('login_info', 'You must be logged in to access page.');
 
 			// redirect to login page
-			redirect($this->config->slash_item('admin_folder').'login');
+			redirect($this->config->slash_item('admin_folder').'login', 'location');
 		}
 
 		/*****
@@ -76,16 +76,32 @@ class Admin_Controller extends MY_Controller {
 			$this->session->set_flashdata('login_info', 'Please login again.');
 
 			// send user back to login page
-			redirect($this->config->slash_item('admin_folder').'login');
+			redirect($this->config->slash_item('admin_folder').'login', 'location');
 		}
 
 		/*****
 		 * ...now, since login session already exists, initialize class admin user details again
+		 * for global use
 		 */
 		// initialize class admin user details
 		$this->admin_user_details->initialize(array(
 			'admin_id' => $this->session->userdata('admin_id')
 		));
+
+		/*****
+		 * check admin inactive status
+		 */
+		if ($this->admin_user_details->status != '1')
+		{
+			// unset admin session
+			$this->admin_user_details->unset_session();
+
+			// set flash message
+			$this->session->set_flashdata('invalid', TRUE);
+
+			// redirect login page
+			redirect($this->config->slash_item('admin_folder').'login', 'location');
+		}
 
 		/*****
 		 * some redirect functions to differentiate what is hub site admin and satellite site admin

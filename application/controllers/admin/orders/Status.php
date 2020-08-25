@@ -147,7 +147,7 @@ class Status extends Admin_Controller {
 		// get order details to get the items ordered
 		$order = $this->order_details->initialize(array('tbl_order_log.order_log_id'=>$order_id));
 
-		foreach ($order->items() as $item)
+		foreach ($order->order_items as $item)
 		{
 			// process inventory by removing from onorder and physical
 			// items needed are prod_no, color_code, size, qty
@@ -223,7 +223,7 @@ class Status extends Admin_Controller {
 		// get order details to get the items ordered
 		$order = $this->order_details->initialize(array('tbl_order_log.order_log_id'=>$order_id));
 
-		foreach ($order->items() as $item)
+		foreach ($order->order_items as $item)
 		{
 			// process inventory by removing from onorder and physical
 			// items needed are prod_no, color_code, size, qty

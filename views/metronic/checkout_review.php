@@ -47,7 +47,7 @@
 																<h5> Payment Information <span class="small"> &nbsp; <a href="<?php echo site_url('checkout/payment'); ?>" style="color:black;">Edit</a></span></h5>
 
                                                                 <?php
-                                                                if ($this->session->user_role == 'wholesale')
+                                                                if ($this->session->user_role == 'wholesale_')
                                                                 {
                                                                     switch ($this->session->ws_payment_options)
                                                                     {
