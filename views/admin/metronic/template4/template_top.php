@@ -1,5 +1,5 @@
         <meta charset="utf-8" />
-        <title>INSTYLE SHOP7TH</title>
+        <title><?php echo $this->webspace_details->name.' | Admin Panel'; ?></title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta content="width=device-width, initial-scale=1" name="viewport" />
         <meta content="Preview page of Metronic Admin Theme #4 for blank page layout" name="description" />

@@ -263,7 +263,7 @@
 						-->
                         <?php if (
                             @$instock_products
-                            && $this->webspace_details->slug != 'temopparis'
+                            //&& $this->webspace_details->slug != 'temopparis'
                         )
                         { ?>
 						<tr>
@@ -432,7 +432,7 @@
 						-->
                         <?php if (
                             @$preorder_products
-                            && $this->webspace_details->slug != 'temopparis'
+                            && $this->webspace_details->slug != 'tempoparis'
                             && $ws_access_level != '2'
                         )
                         { ?>
@@ -587,7 +587,7 @@
 						-->
                         <?php if (
                             @$onsale_products
-                            && $this->webspace_details->slug != 'temopparis'
+                            && $this->webspace_details->slug != 'tempoparis'
                         )
                         { ?>
 						<tr>

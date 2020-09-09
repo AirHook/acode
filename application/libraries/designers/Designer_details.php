@@ -262,8 +262,8 @@ class Designer_details
 			$this->with_products = $row->with_products;
 
 			// using designer info or account info
-			$this->address1 = $row->address1;
-			$this->address2 = $row->address2;
+			$this->address1 = $row->designer_address1;
+			$this->address2 = $row->designer_address2;
 			$this->city = $row->city;
 			$this->state = $row->state;
 			$this->zipcode = $row->zip;

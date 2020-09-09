@@ -333,6 +333,35 @@ class Wholesale_user_details
 	// --------------------------------------------------------------------
 
 	/**
+	 * User Options (Alias)
+	 *
+	 *		['intro']
+	 *			-> indicates JT's intro letter sent by count value or zero
+	 *		['emailtrack'][0010][$ts] = no of times opened
+	 *			-> indicates an email whose type [0010] with unique timestamp
+	 *			[$ts] has been opened whose value equals number of times opened
+	 *			0010 - activation
+	 *			0011 - onsale []['rotation of prod_ids']
+	 *			0012 - instock [][]
+	 *			0013 - general [][]
+	 * 			0014 - sales package [sp_ids]
+	 *			0015 - special sale invite
+	 *			0016 - product email
+	 *			0017 - vendor po
+	 *		['product_cliks'][$ts] = login_id
+	 *			-> key as timestamp (possibly hashed using md5)
+	 *			-> value = login_id (login details id)
+	 *
+	 * @return	array
+	 */
+	public function options()
+	{
+		return $this->options;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
 	 * Forcefully activate current user
 	 *
 	 * A short method to force activation of a user like in a case where user
@@ -516,16 +545,16 @@ class Wholesale_user_details
 	 *
 	 * @return	void
 	 */
-	public function act_click_one($user_id = '', $tc = '', $id = '', $options = array())
+	public function act_click_one($user_id = '', $ts = '', $id = '', $options = array())
 	{
-		if ($user_id == '' OR $tc == '' OR $id =='')
+		if ($user_id == '' OR $ts == '' OR $id =='')
 		{
 			// nothing more to do...
 			return FALSE;
 		}
 
 		// update property
-		if ( ! isset($options['act'][$tc])) $options['act'][$tc] = $id;
+		if ( ! isset($options['act'][$ts])) $options['act'][$ts] = $id;
 
 		$this->options = $options;
 
@@ -743,7 +772,7 @@ class Wholesale_user_details
 
 			$this->CI->email->to($this->CI->webspace_details->info_email);
 
-			$this->CI->email->bcc($this->CI->config->item('dev1_email')); // --> for debuggin purposes
+			$this->CI->email->bcc('help@shop7thavenue.com'); // --> for debuggin purposes
 
 			$this->CI->email->subject('WHOLESALE USER IS ON LINE - '.strtoupper($this->CI->webspace_details->name));
 			$this->CI->email->message($email_message);
@@ -847,7 +876,12 @@ class Wholesale_user_details
 	// --------------------------------------------------------------------
 
 	/**
-	 * Act Click One Method
+	 * Intro Sent One Method
+	 *
+	 * This set's the option where the user has been sent JT's operations
+	 * position once.
+	 *
+	 * This method is access via Class Activation_email_click().
 	 *
 	 * @return	void
 	 */
@@ -887,7 +921,7 @@ class Wholesale_user_details
 			<br /><br />
 			Hi '.ucwords($this->fname.' '.$this->lname).',
 			<br /><br />
-			I am the Operations director for BASIX BLACK LABEL / SHOP 7TH AVENUE <br />
+			I am the '.$this->designer.' Help Desk. <br />
 			I will be aiding you with on boarding for all your inquires.
 			<br /><br /><br />
 			EXISTING FEATURES OF WAREHOUSE PLATFORM
@@ -896,7 +930,7 @@ class Wholesale_user_details
 			<br /><br />
 			2: Place order inquiries as if you were shopping online and we send you verification in 24 hours.
 			<br /><br />
-			3: Your MY ACCOUNT dashboard lets you see all orders, check order status , track order and receive communication on each order.
+			3: Your MY ACCOUNT dashboard lets you see all orders, check order status, track order, and receive communication on each order.
 			<br /><br />
 			4: Bi-weekly email with 30 different products of IN STOCK items which saves you time of having to browse the whole site.
 			<br /><br /><br />
@@ -904,25 +938,21 @@ class Wholesale_user_details
 			<br /><br /><br />
 			1: We will post all new designs available for PRE ORDER with 12-14 week delivery window for SPRING / SUMMER 21 SEASON.
 			<br /><br />
-			2: We will resume accepting SPECIAL CUSTOM ORDERS on existing items.
+			2: We will launch our DROP SHIP program to help you sell more and ship faster.
 			<br /><br />
-			3: We will launch our  DROP SHIP program to help you sell more and ship faster.
-			<br /><br />
-			4: API will be made available to your IT staff to give you a DATA FEED of items from our site and use our photos.
+			3: API will be made available to your IT staff to give you a DATA FEED of items from our site and use our photos.
 			<br /><br /><br />
 			Feel free to discover the new modern way to work with us.
 			<br /><br />
 			<br /><br />
 			Regards,
 			<br /><br /><br />
-			Joe Taveras <br />
-			Business Development Director
+			Help Desk
 			<br /><br />
-			Basix Black Label / Shop7thavenue <br />
-			315 West 39th Street <br />
-			New York, New York, 10018 <br />
-			212.840.0846 <br />
-			help@basixblacklabel.com <br />
+			'.$this->designer.' <br />
+			'.$this->designer_address1.' <br />
+			'.($this->designer_address2 ? $this->designer_address2.'<br />' : '').'
+			'.$this->designer_phone.' <br />
 			<br />
 		';
 		// *** removing below line from above bottom space while it doesn't work
@@ -953,9 +983,9 @@ class Wholesale_user_details
 			$this->CI->email->to($this->email);
 			//$this->CI->email->to('help@basixblacklabel.com');
 
-			$this->CI->email->bcc('help@basixblacklabel.com'); // --> for debuggin purposes
+			$this->CI->email->bcc('help@shop7thavenue.com'); // --> for debuggin purposes
 
-			$this->CI->email->subject("Basix Black Label Real Time Stock Platform");
+			$this->CI->email->subject($this->designer." Real Time Stock Platform");
 			$this->CI->email->message($email_message);
 
 			// email class has a security error

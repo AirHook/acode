@@ -62,9 +62,9 @@ class Search_current_user extends MY_Controller {
 		// get data
 		// where clauses
 		$where['tbluser_data_wholesale.is_active'] = '1';
-		if ($this->session->admin_sales_loggedin)
+		if (@$this->webspace_details->options['site_type'] != 'hub_site')
 		{
-			$where['tbluser_data_wholesale.admin_sales_email'] = $this->sales_user_details->email;
+			$where['tbluser_data_wholesale.reference_designer'] = $this->webspace_details->slug;
 		}
 		$users = $this->wholesale_users_list->select(
 			$where, // where

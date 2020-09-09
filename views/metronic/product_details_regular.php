@@ -299,7 +299,8 @@
                                                             }
 															elseif (
                                                                 $this->product_details->custom_order === '3'
-                                                                OR @$this->product_details->stocks_options['clearance_consumer_only'] == '1'
+                                                                OR @$this->product_details->stocks_options['clearance_consumer_only'] == '1__'
+                                                                OR $this->session->flashdata('cs_how_to_order') == 'show_sale_price'
                                                             )
                                                             {
     															/**********

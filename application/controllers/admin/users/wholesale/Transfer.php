@@ -108,7 +108,6 @@ class Transfer extends Admin_Controller {
 			// add user to mailgun list
 			// no need to validate email as these are stores
 			// force add users to mailgun
-			// use input fields to capture any updates
 			$params['address'] = $data['is_active'];
 			$params['fname'] = $data['is_active'];
 			$params['lname'] = $data['is_active'];
@@ -123,11 +122,27 @@ class Transfer extends Admin_Controller {
 		$DB->where('user_id', $id);
 		$DB->delete('tbluser_data_wholesale');
 
-		// remove user from mailgun list
-		$params['address'] = $this->wholesale_user_details->email;
-		$params['list_name'] = 'wholesale_users@mg.shop7thavenue.com';
-		$this->load->library('mailgun/list_member_delete', $params);
-		$res = $this->list_member_delete->delete();
+		// get list name for mailgun udpate on all status
+		switch ($this->wholesale_user_details->reference_designer)
+		{
+			case 'tempoparis':
+				$list_name = 'ws_tempo@mg.shop7thavenue.com';
+			break;
+			case 'basixblacklabel':
+				$list_name = 'wholesale_users@mg.shop7thavenue.com';
+			break;
+			default:
+				$list_name = '';
+		}
+
+		if ($list_name)
+		{
+			// remove user from mailgun list
+			$params['address'] = $this->wholesale_user_details->email;
+			$params['list_name'] = $list_name;
+			$this->load->library('mailgun/list_member_delete', $params);
+			$res = $this->list_member_delete->delete();
+		}
 
 		// set flash data
 		$this->session->set_flashdata('success', 'transfer');

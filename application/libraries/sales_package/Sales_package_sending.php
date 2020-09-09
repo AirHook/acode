@@ -181,7 +181,12 @@ class Sales_package_sending
 				$data['sales_username'] = @$this->CI->sales_user_details->admin_sales_id ? ucwords(strtolower(trim($this->CI->sales_user_details->fname).' '.trim($this->CI->sales_user_details->lname))) : ucwords(strtolower(trim($this->CI->wholesale_user_details->admin_sales_user).' '.trim($this->CI->wholesale_user_details->admin_sales_lname)));
 				$data['sales_ref_designer'] = @$this->CI->sales_user_details->admin_sales_id ? $this->CI->sales_user_details->designer_name : $this->CI->wholesale_user_details->designer;
 				$data['reference_designer'] = @$this->CI->sales_user_details->admin_sales_id ? $this->CI->sales_user_details->designer : $this->CI->wholesale_user_details->reference_designer;
-				$data['logo'] = $this->CI->config->item('PROD_IMG_URL').$this->CI->wholesale_user_details->designer_logo;
+
+				// let's get the logo based on...
+				// 1. which site created the sales package
+				// 1. hub site (user designer) or webspace
+				// 2. sat site (includes sales user my account) or webspace for that matter
+				$data['logo'] = $this->CI->config->item('PROD_IMG_URL').$this->CI->sales_package_details->designer_logo;
 
 				$this->CI->email->clear(TRUE);
 

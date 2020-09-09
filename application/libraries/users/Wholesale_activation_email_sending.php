@@ -232,11 +232,17 @@ class Wholesale_activation_email_sending
 		// primary item that is changed for the preset salespackages
     	$params['facets'] = array('availability'=>$str);
 
+		// set category_id
+		if ($this->CI->wholesale_user_details->reference_designer == 'tempoparis')
+		{
+			$category = '199';
+		}
+		else $category = '195';
+
 		// get the products list
 		$params['show_private'] = TRUE; // all items general public (Y) - N for private
 		$params['view_status'] = 'ALL'; // ALL items view status (Y, Y1, Y2, N)
 		$params['variant_publish'] = 'ALL'; // ALL variant level color publish (view status)
-		$params['group_products'] = FALSE; // group per product number or per variant
 		// show items even without stocks at all
 		$params['with_stocks'] = $params == 'instock' ? TRUE : FALSE;
 		$params['group_products'] = TRUE;
@@ -249,7 +255,7 @@ class Wholesale_activation_email_sending
 					? 'basixblacklabel'
 					: $this->CI->wholesale_user_details->reference_designer
 				),
-				'tbl_product.categories LIKE' => '195'	// evening dresses for activation email
+				'tbl_product.categories LIKE' => $category	// evening dresses for activation email
 			),
 			array( // order conditions
 				'seque' => 'asc',

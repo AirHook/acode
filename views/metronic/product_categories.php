@@ -215,7 +215,7 @@
                                                 <div class="cbp-item on-sale-general clearfix" style="height:345px;">
                                                     <a href="<?php echo site_url('shop/womens_apparel'); ?>?filter=&availability=onsale" class="cbp-caption cbp-singlePageInline_" data-title="Womens Apparel<br>On Sale Items" rel="nofollow">
                                                         <div class="cbp-caption-defaultWrap">
-                                                            <img src="<?php echo base_url().'images/subcategory_icon/thumb/special_sale_icon.jpg'; ?>" alt="" />
+                                                            <img src="<?php echo base_url().'images/subcategory_icon/thumb/sale_icon.jpg'; ?>" alt="" />
 														</div>
                                                         <div class="cbp-caption-activeWrap">
                                                             <div class="cbp-l-caption-alignLeft">

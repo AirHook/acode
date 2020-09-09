@@ -58,21 +58,24 @@ class Modify extends Admin_Controller {
 			// let's ensure that there are no admin session for sa create
 			if ($this->session->admin_sa_items)
 			{
-				// new po admin createa ccess
+				// new admin create details
 				unset($_SESSION['admin_sa_id']);
-				unset($_SESSION['admin_sa_des_slug']);
+				unset($_SESSION['admin_sa_des_slug']); // session for designer drop down for hub sites
+				unset($_SESSION['admin_sa_designers']); // hub site mixed designer case
 				unset($_SESSION['admin_sa_slug_segs']);
 				unset($_SESSION['admin_sa_items']);
 				unset($_SESSION['admin_sa_name']); // used at view
 				unset($_SESSION['admin_sa_email_subject']); // used at view
 				unset($_SESSION['admin_sa_email_message']); // used at view
 				unset($_SESSION['admin_sa_options']);
-				// remove po mod details
+
+				// remove mod details
 				unset($_SESSION['admin_sa_mod_id']);
 				unset($_SESSION['admin_sa_mod_items']);
 				unset($_SESSION['admin_sa_mod_slug_segs']);
 				unset($_SESSION['admin_sa_mod_options']);
-				unset($_SESSION['admin_sa_mod_des_slug']);
+				unset($_SESSION['admin_sa_mod_des_slug']); // session for designer drop down for hub sites
+				unset($_SESSION['admin_sa_mod_designers']); // hub site mixed designer case
 			}
 
 			// capture package id being modified
@@ -188,13 +191,15 @@ class Modify extends Admin_Controller {
 
 			// get the products list for the thumbs grid view
 			$params['show_private'] = TRUE; // all items general public (Y) - N for private
-			$params['view_status'] = 'ALL'; // all items view status (Y, Y1, Y2, N)
-			$params['view_at_hub'] = TRUE; // all items general public at hub site
-			$params['view_at_satellite'] = TRUE; // all items publis at satellite site
-			$params['variant_publish'] = 'ALL'; // all items at variant level publish (view status)
-			$params['variant_view_at_hub'] = TRUE; // variant level public at hub site
-			$params['variant_view_at_satellite'] = TRUE; // varian level public at satellite site
+			//$params['view_status'] = 'ALL'; // all items view status (Y, Y1, Y2, N)
+			//$params['view_at_hub'] = TRUE; // all items general public at hub site
+			//$params['view_at_satellite'] = TRUE; // all items publis at satellite site
+			//$params['variant_publish'] = 'ALL'; // all items at variant level publish (view status)
+			//$params['variant_view_at_hub'] = TRUE; // variant level public at hub site
+			//$params['variant_view_at_satellite'] = TRUE; // varian level public at satellite site
+
 			$params['with_stocks'] = FALSE; // Show all with and without stocks
+
 			$params['group_products'] = FALSE; // group per product number or per variant
 			$params['special_sale'] = FALSE; // special sale items only
 			$this->load->library('products/products_list', $params);
@@ -236,6 +241,7 @@ class Modify extends Admin_Controller {
 			$this->data['search_string'] = FALSE;
 
 			// set data variables...
+			$this->data['role'] = 'admin';
 			$this->data['file'] = 'sa_modify';
 			$this->data['page_title'] = 'Sales Package Edit';
 			$this->data['page_description'] = 'Modify Sales Packages';
@@ -283,7 +289,12 @@ class Modify extends Admin_Controller {
 
 			// grab post data and process some of them to accomodate database
 			$post_ary = $this->input->post();
-			$post_ary['options']['des_slug'] = $this->session->admin_sa_mod_des_slug; // additional data
+			// in case a sales user is the one who created the package
+			//$post_ary['options']['admin_sales_designer'] = @$this->sales_user_details->desginer;
+			// des_slug can only be true for single designer packages
+			// des_slug cannot be used as reference designer where the package was created
+			$post_ary['options']['des_slug'] = $this->session->admin_sa_mod_des_slug;
+			$post_ary['options']['designers'] = $this->session->admin_sa_mod_designers;
 			$post_ary['options'] = json_encode($post_ary['options']);
 
 			// remove variables not needed
@@ -306,7 +317,7 @@ class Modify extends Admin_Controller {
 			$this->session->set_flashdata('success', 'edit');
 
 			// redirect user
-			redirect($this->config->slash_item('admin_folder').'campaigns/sales_package/send/index/'.$id);
+			redirect('admin/campaigns/sales_package/send/index/'.$id, 'location');
 		}
 	}
 

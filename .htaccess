@@ -7,7 +7,7 @@ DirectoryIndex index.php
 
 # This allows you to redirect your entire website to any other domain
 # In case of emergencies
-# Just comment it out to reactivate site
+# Just comment it out to reactivate site (302-temporary, 301-permanent)
 # Redirect 302 / http://www.domainname.com/
 
 ### re-direct non-www to www

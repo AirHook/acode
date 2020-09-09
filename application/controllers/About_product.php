@@ -183,58 +183,7 @@ class About_product extends Frontend_Controller {
 		}
 
 		// ---> to the hub site
-		$backurl = $backdomain.$backurl_path;
-
-		/*
-		| ------------------------------------------------------------------------------
-		| Create the HTML email content
-		*/
-		$email_message = '
-			<div style="font-family: arial,sans-serif;">
-				<br />
-				An inquiry generated from:
-				<table width="650" border="0" cellspacing="0" cellpadding="5">
-					<tr style="background-color:'.($this->webspace_details->slug == 'basixbridal' ? '#e0b2aa;' : 'black;').'">
-						<td>
-							<img src="'.base_url().'assets/roden_assets/images/logo-'.$this->webspace_details->slug.'.png" alt="'.$this->webspace_details->name.'" style="border:none;margin:2px;width:292px;" width="292" />
-						</td>
-						<td align="right">
-							<a href='.$backurl.' style="color:red;text-decoration:none;vertical-align:middle;font-family:Arial;font-size:10px;">CLICK PHOTO TO SEE PRICING AND ORDER OPTIONS</a>
-						</td>
-					</tr>
-					<tr>
-						<td width="340" style="border: 1px solid #efefef;">'
-							.anchor(
-								$backurl,
-								img(
-									array(
-										'src'=>$imahe,
-										'style'=>'border:none;',
-										'alt'=>'CLICK HERE TO VIEW AND ORDER',
-										'title'=>'CLICK HERE TO VIEW AND ORDER'
-									)
-								)
-							)
-						.'</td>
-						<td bgcolor="'.($this->webspace_details->slug == 'basixbridal' ? '#f8ede9' : '#efefef').'" valign="top" style="font-family:Arial;font-size:14px;">
-							<p>Style Number: '.$prod_no.'</p>
-							<p>Dress Size: '.$dress_size.'</p>
-							<p>Name: '.$name.'</p>
-							<p>Email Address: '.$email.'</p>
-							<p>Send me offers on clearance items: '.($opt_type == '1' ? 'YES' : 'NO').'</p>
-							<p>I am a: '.$u_type.'</p>
-							<p>Message or Comments: '.$message.'</p>
-						</td>
-					</tr>
-				</table>
-				<br />
-				<table width="650" border="0" cellsapcing="0" cellpadding="0">
-					<tr><td>
-						<img src="'.base_url().'images/basix_size_chart-web.jpg" alt="'.$this->webspace_details->name.' Size Chart" style="border:none;" width="600" />
-					</td></tr>
-				</table>
-			</div>
-		';
+		$backurl = $backdomain.$backurl_path
 
 		// break name into 2 parts
 		$name_exp = explode(' ', trim($name));
@@ -266,6 +215,62 @@ class About_product extends Frontend_Controller {
 		);
 		$query_string = http_build_query($query_string_ary);
 
+		// ---> PATCH
+		// Sept 7, 2020 -> using the redirect to hub site 'about_product' controller
+		// with query string as the access link to the HOW TO ORDER email
+		$access_link = $this->config->slash_item('PROD_IMG_URL').'about_product/validate.html?'.$query_string
+
+		/*
+		| ------------------------------------------------------------------------------
+		| Create the HTML email content
+		*/
+		$email_message = '
+			<div style="font-family: arial,sans-serif;">
+				<br />
+				An inquiry generated from:
+				<table width="650" border="0" cellspacing="0" cellpadding="5">
+					<tr style="background-color:'.($this->webspace_details->slug == 'basixbridal' ? '#e0b2aa;' : 'black;').'">
+						<td>
+							<img src="'.base_url().'assets/roden_assets/images/logo-'.$this->webspace_details->slug.'.png" alt="'.$this->webspace_details->name.'" style="border:none;margin:2px;width:292px;" width="292" />
+						</td>
+						<td align="right">
+							<a href='.$access_link.' style="color:red;text-decoration:none;vertical-align:middle;font-family:Arial;font-size:10px;">CLICK PHOTO TO SEE PRICING AND ORDER OPTIONS</a>
+						</td>
+					</tr>
+					<tr>
+						<td width="340" style="border: 1px solid #efefef;">'
+							.anchor(
+								$access_link,
+								img(
+									array(
+										'src'=>$imahe,
+										'style'=>'border:none;',
+										'alt'=>'CLICK HERE TO VIEW AND ORDER',
+										'title'=>'CLICK HERE TO VIEW AND ORDER'
+									)
+								)
+							)
+						.'</td>
+						<td bgcolor="'.($this->webspace_details->slug == 'basixbridal' ? '#f8ede9' : '#efefef').'" valign="top" style="font-family:Arial;font-size:14px;">
+							<p>Style Number: '.$prod_no.'</p>
+							<p>Dress Size: '.$dress_size.'</p>
+							<p>Name: '.$name.'</p>
+							<p>Email Address: '.$email.'</p>
+							<p>Send me offers on clearance items: '.($opt_type == '1' ? 'YES' : 'NO').'</p>
+							<p>I am a: '.$u_type.'</p>
+							<p>Message or Comments: '.$message.'</p>
+						</td>
+					</tr>
+				</table>
+				<br />
+				<table width="650" border="0" cellsapcing="0" cellpadding="0">
+					<tr><td>
+						<img src="'.base_url().'images/basix_size_chart-web.jpg" alt="'.$this->webspace_details->name.' Size Chart" style="border:none;" width="600" />
+					</td></tr>
+				</table>
+			</div>
+		';
+
 		/*
 		| ------------------------------------------------------------------------------
 		| Initiate email class and set headers
@@ -296,9 +301,8 @@ class About_product extends Frontend_Controller {
 			$this->email->reply_to($email);
 
 			$this->email->to($this->webspace_details->info_email);
-			$this->email->cc($email, 'help@instylenewyork.com');
-
-			//$this->email->bcc($this->config->item('dev1_email')); // --> for debugging purposes
+			$this->email->cc($email.', help@instylenewyork.com, help@shop7thavenue.com');
+			$this->email->bcc($this->config->item('dev1_email')); // --> for debugging purposes
 
 			$this->email->subject(strtoupper($this->webspace_details->name).' ORDER INQUIRY RESPONSE: STYLE NUMBER: '.$prod_no);
 			$this->email->message($email_message);
@@ -698,14 +702,18 @@ class About_product extends Frontend_Controller {
 				$this->DB->where('email', $this->input->get('user_email'));
 				$this->DB->update('tbluser_data');
 
-				if ($this->input->get('site_referrer') == 'basixblacklabel' && $this->input->get('opt_type') == '1')
+				if ($this->input->get('opt_type') == '1')
 				{
 					$params['address'] = $this->input->get('user_email');
 					$params['fname'] = $this->input->get('user_fname');
 					$params['lname'] = $this->input->get('user_lname');
-					$params['description'] = 'Basix Black Label Consumer User';
+					$params_vars = array(
+						'designer' => $this->consumer_user_details->designer,
+						'designer_slug' => $this->consumer_user_details->reference_designer
+					);
+					$params['vars'] = json_encode($params_vars);
+					$params['description'] = 'Consumer User';
 					$params['list_name'] = 'consumers@mg.shop7thavenue.com';
-					$params['vars'] = '{"designer":"Basix Black Label"}';
 					$this->load->library('mailgun/list_member_add', $params);
 					$this->list_member_add->add();
 				}
@@ -736,6 +744,11 @@ class About_product extends Frontend_Controller {
 		// lets process the user (add to recors where necessary)
 		if ($this->input->get('type') == 'Consumer') $this->_add_inquiring_consumer();
 		if ($this->input->get('type') == 'Store') $this->_add_inquiring_wholesale();
+
+		// ---> PATCH
+		// Sept 7, 2020 -> for consumers, we set a flash session to enable
+		// showing discount prices on first land
+		$this->session->set_flashdata('cs_how_to_order', 'show_sale_price');
 
 		// redirect to product details page here at hub site
 		//redirect('shop/details/'.$this->input->get('url'), 'location');

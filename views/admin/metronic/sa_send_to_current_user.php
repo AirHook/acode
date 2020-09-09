@@ -34,31 +34,33 @@
 
 									<div class="form-body col-md-12 <?php echo @$ws_user_details ? 'hide' : ''; ?>">
 
-										<h5> <cite>MY CURRENT ACTIVE USERS:</cite> <span class="font-red-flamingo"> * </span></h5>
+										<h5 class="form-group"> <cite>MY CURRENT ACTIVE USERS:</cite> <span class="font-red-flamingo"> * </span></h5>
 
 										<?php if (@$total_users > @$users_per_page) { ?>
-										<div class="row">
-				                            <div class="col-md-9 margin-bottom-5">
+										<div class="form-group">
+											<div class="row">
+					                            <div class="col-md-9 margin-bottom-5">
 
-				                                <!-- BEGIN FORM-->
-				                                <!-- FORM =======================================================================-->
-				                                <?php //echo form_open('admin/users/wholesale/search', array('class'=>'form-horizontal', 'id'=>'form-wholesale_users_search_email')); ?>
+					                                <!-- BEGIN FORM-->
+					                                <!-- FORM =======================================================================-->
+					                                <?php //echo form_open('admin/users/wholesale/search', array('class'=>'form-horizontal', 'id'=>'form-wholesale_users_search_email')); ?>
 
-				                                <div class="input-group">
-				                                    <input class="form-control select-user-search" placeholder="Search for Email or Store Name..." name="search_string" type="text" data-per_page="<?php echo @$users_per_page; ?>" data-total_users="<?php echo @$total_users; ?>" data-role="<?php echo @$role ?: ''; ?>" />
-				                                    <span class="input-group-btn">
-				                                        <button class="btn-search-current-user btn dark uppercase bold" type="button">Search</button>
-				                                    </span>
-													<span class="input-group-btn">
-				                                        <button class="btn-reset-search-current-user btn default uppercase bold tooltips" data-original-title="Reset list" type="button" data-end_cur="<?php echo $number_of_pages; ?>"><i class="fa fa-refresh"></i></button>
-				                                    </span>
-				                                </div>
+					                                <div class="input-group">
+					                                    <input class="form-control select-user-search" placeholder="Search for Email or Store Name..." name="search_string" type="text" data-per_page="<?php echo @$users_per_page; ?>" data-total_users="<?php echo @$total_users; ?>" data-role="<?php echo @$role ?: ''; ?>" />
+					                                    <span class="input-group-btn">
+					                                        <button class="btn-search-current-user btn dark uppercase bold" type="button">Search</button>
+					                                    </span>
+														<span class="input-group-btn">
+					                                        <button class="btn-reset-search-current-user btn default uppercase bold tooltips" data-original-title="Reset list" type="button" data-end_cur="<?php echo $number_of_pages; ?>"><i class="fa fa-refresh"></i></button>
+					                                    </span>
+					                                </div>
 
-				                                <!--</form>
-				                                <!-- End FORM =======================================================================-->
-				                                <!-- END FORM-->
+					                                <!--</form>
+					                                <!-- End FORM =======================================================================-->
+					                                <!-- END FORM-->
 
-				                            </div>
+					                            </div>
+											</div>
 				                        </div>
 										<?php } ?>
 
@@ -77,61 +79,63 @@
 											}
 										</style>
 
-										<div class="sa-send current-users toolbar clearfix " style="margin:10px 0px 5px;">
+										<div class="form-group" style="margin-bottom:0px;">
+											<div class="sa-send current-users toolbar clearfix " style="margin-top:10px;margin-bottom:5px;">
 
-											<span class="caption search display-none">
-												Search result for: "<span class="search_string"></span>"
-											</span>
+												<span class="caption search display-none">
+													Search result for: "<span class="search_string"></span>"
+												</span>
 
-											<span class="caption showing">
-												Showing <span class="pagination-caption-showing"><?php echo ($page * $users_per_page) - ($users_per_page - 1); ?></span> to <span class="pagination-caption-per-page"><?php echo $total_users > $users_per_page ? $users_per_page : $total_users; ?></span> of <span class="pagination-caption-total_users"><?php echo $total_users; ?></span>
-											</span>
+												<span class="caption showing">
+													Showing <span class="pagination-caption-showing"><?php echo ($page * $users_per_page) - ($users_per_page - 1); ?></span> to <span class="pagination-caption-per-page"><?php echo $total_users > $users_per_page ? $users_per_page : $total_users; ?></span> of <span class="pagination-caption-total_users"><?php echo $total_users; ?></span>
+												</span>
 
-											<ul class="pagination pagination-xs pull-right" data-per_page="<?php echo $users_per_page; ?>" data-total_users="<?php echo $total_users; ?>" data-end_cur="<?php echo $number_of_pages; ?>">
+												<ul class="pagination pagination-xs pull-right" data-per_page="<?php echo $users_per_page; ?>" data-total_users="<?php echo $total_users; ?>" data-end_cur="<?php echo $number_of_pages; ?>">
 
-												<?php if ($total_users > $users_per_page)
-												{
-													// show only a max of 5 pagination links
-													$in = $number_of_pages < 6 ? $number_of_pages : 6;
-													?>
+													<?php if ($total_users > $users_per_page)
+													{
+														// show only a max of 5 pagination links
+														$in = $number_of_pages < 6 ? $number_of_pages : 6;
+														?>
 
-												<li class="first-page hide">
-													<a href="javascript:;" data-cur_page="1">
-														<i class="fa fa-angle-double-left"></i>
-													</a>
-												</li>
+													<li class="first-page hide">
+														<a href="javascript:;" data-cur_page="1">
+															<i class="fa fa-angle-double-left"></i>
+														</a>
+													</li>
 
-												<li class="prev-page hide">
-													<a href="javascript:;" data-cur_page="">
-														<i class="fa fa-angle-left"></i>
-													</a>
-												</li>
+													<li class="prev-page hide">
+														<a href="javascript:;" data-cur_page="">
+															<i class="fa fa-angle-left"></i>
+														</a>
+													</li>
 
-													<?php
-													for($i=1;$i<$in;$i++)
-													{ ?>
-												<li class="page-number <?php echo $i == 1 ? 'page-one active' : ''; ?>">
-													<a href="javascript:;" data-cur_page="<?php echo $i; ?>"> <?php echo $i; ?> </a>
-												</li>
+														<?php
+														for($i=1;$i<$in;$i++)
+														{ ?>
+													<li class="page-number <?php echo $i == 1 ? 'page-one active' : ''; ?>">
+														<a href="javascript:;" data-cur_page="<?php echo $i; ?>"> <?php echo $i; ?> </a>
+													</li>
+															<?php
+														} ?>
+
+													<li class="next-page <?php echo $number_of_pages > 1 ? '' : 'display-none'; ?>">
+														<a href="javascript:;" data-cur_page="2">
+															<i class="fa fa-angle-right"></i>
+														</a>
+													</li>
+
+													<li class="last-page <?php echo $number_of_pages > $in ? '' : 'display-none'; ?>">
+														<a href="javascript:;" data-cur_page="<?php echo $number_of_pages; ?>">
+															<i class="fa fa-angle-double-right"></i>
+														</a>
+													</li>
 														<?php
 													} ?>
 
-												<li class="next-page <?php echo $number_of_pages > 1 ? '' : 'display-none'; ?>">
-													<a href="javascript:;" data-cur_page="2">
-														<i class="fa fa-angle-right"></i>
-													</a>
-												</li>
+												</ul>
 
-												<li class="last-page <?php echo $number_of_pages > $in ? '' : 'display-none'; ?>">
-													<a href="javascript:;" data-cur_page="<?php echo $number_of_pages; ?>">
-														<i class="fa fa-angle-double-right"></i>
-													</a>
-												</li>
-													<?php
-												} ?>
-
-											</ul>
-
+											</div>
 										</div>
 
 										<div class="form-group">
@@ -173,15 +177,7 @@
 
 										</div>
 
-										<hr />
-
-										<div class="form-group">
-											<div class="btn-set btn-set-send-sales-package hide">
-			                                    <button type="button" class="btn-send-sales-package btn dark btn-lg btn-block <?php echo @$sa_details->sales_package_id ? 'mt-bootbox-existing' : 'mt-bootbox-new'; ?>">
-			                                        Send <?php echo @$linesheet_sending_only ? 'Linesheet' : 'Package'; ?>
-			                                    </button>
-			                                </div>
-										</div>
+										<hr class="form-group" />
 
 									</div>
 

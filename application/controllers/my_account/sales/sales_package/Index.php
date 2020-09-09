@@ -32,6 +32,7 @@ class Index extends Sales_user_Controller {
 		$this->load->library('designers/designers_list');
 		$this->load->library('sales_package/sales_package_list');
 		$this->load->library('products/product_details');
+		$this->load->library('users/wholesale_users_list');
 
 		// get designer list for the dropdown filter
 		$this->designers_list->initialize(array('with_products'=>TRUE));
@@ -49,7 +50,7 @@ class Index extends Sales_user_Controller {
 		$this->data['offset'] = $this->data['page'] == '' ? 0 : ($this->data['page'] * 100) - 100;
 		//$this->orders_list->pagination = $this->data['page'];
 
-		// check for $des_slug
+		// check for site type, and des_slug, and other data
 		$this->data['des_slug'] = '';
 		if ($des_slug == $this->sales_user_details->designer)
 		{
@@ -59,10 +60,33 @@ class Index extends Sales_user_Controller {
 
 		// hub site or not, this is a sales user login controller
 		$where['sales_packages.sales_user'] = $this->sales_user_details->admin_sales_id;
+		$where['sales_packages.webspace_id'] = $this->webspace_details->id;
 		$where['sales_package_id >'] = '2';
 
 		// get the list
 		$this->data['packages'] = $this->sales_package_list->select($where);
+
+		// active user list
+		$per_page = 300;
+		// where clauses
+		$where2['tbluser_data_wholesale.is_active'] = '1';
+		$where2['tbluser_data_wholesale.admin_sales_email'] = $this->sales_user_details->email;
+		$where2['tbluser_data_wholesale.reference_designer'] = $this->sales_user_details->designer;
+		$this->data['users'] = $this->wholesale_users_list->select(
+			$where2, // where
+			array( // order by
+				'tbluser_data_wholesale.store_name' => 'asc'
+			),
+			array($per_page)
+		);
+		//$this->data['user_id'] = '';
+		$this->data['users_per_page'] = $per_page;
+		$this->data['total_users'] = $this->wholesale_users_list->count_all;
+		$this->data['number_of_pages'] =
+			$per_page > 0
+			? ceil($this->data['total_users'] / $this->data['users_per_page'])
+			: $this->data['total_users']
+		;
 
 		// need to show loading at start
 		$this->data['show_loading'] = FALSE;

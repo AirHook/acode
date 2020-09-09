@@ -1374,7 +1374,8 @@
                                                                                     $stocks_options = json_decode($thumb->stocks_options, TRUE);
                                                                                     if (
                                                                                         $thumb->custom_order === '3'
-                                                                                        OR @$stocks_options['clearance_consumer_only'] == '1'
+                                                                                        // do not show clearance price on public view
+                                                                                        OR @$stocks_options['clearance_consumer_only'] == '1__'
                                                                                     )
                                                                                     {
                                                                                         $line_thru = 'text-decoration:line-through;';

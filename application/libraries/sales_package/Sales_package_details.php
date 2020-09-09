@@ -73,6 +73,15 @@ class Sales_package_details
 	public $email_message = '';
 
 	/**
+	 * Designer details
+	 *
+	 * @var	array
+	 */
+	public $designer_name = '';
+	public $designer_slug = '';
+	public $designer_logo = '';
+
+	/**
 	 * Selected items for the sales package
 	 *
 	 * @var	array
@@ -180,6 +189,7 @@ class Sales_package_details
 
 		// get recrods
 		$this->DB->where($params);
+		$this->DB->join('designer', 'designer.webspace_id = sales_packages.webspace_id', 'left');
 		$query = $this->DB->get('sales_packages');
 
 		$row = $query->row();
@@ -197,6 +207,12 @@ class Sales_package_details
 			$this->date_create = $row->date_create;
 			$this->date_create_ts = $row->date_create;
 			$this->last_modified = $row->last_modified;
+
+			// designer details
+			$this->designer_name = $row->designer;
+			$this->designer_slug = $row->url_structure;
+			$this->designer_logo = $row->logo; // full path and filename used in current admin add/edit designer
+
 			// the items
 			$this->sales_package_items = $row->sales_package_items;
 			$this->items = $row->sales_package_items != '' ? json_decode($row->sales_package_items , TRUE) : array();

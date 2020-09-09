@@ -29,7 +29,7 @@ class Send extends Admin_Controller {
 			$this->session->set_flashdata('error', 'no_id_passed');
 
 			// redirect user
-			redirect($this->config->slash_item('admin_folder').'campaigns/sales_package');
+			redirect('admin/campaigns/sales_package', 'location');
 		}
 
 		// generate the plugin scripts and css
@@ -68,6 +68,12 @@ class Send extends Admin_Controller {
 			)
 		);
 
+		// set some data for the email view
+		$this->data['username'] = ucwords(strtolower(trim($this->wholesale_user_details->fname).' '.trim($this->wholesale_user_details->lname)));
+		$this->data['email_message'] = $this->sales_package_details->email_message;
+		$this->data['access_link'] = 'javascript:;';
+		$this->data['items'] = $this->sales_package_details->items;
+
 		// author
 		if (
 			$this->sales_package_details->sales_user == '1'
@@ -100,7 +106,7 @@ class Send extends Admin_Controller {
 
 		// get data
 		// limits and per page
-		$per_page = 20;
+		$per_page = 300;
 		$limit = $per_page > 0 ? array($per_page) : array();
 
 		// active user list
@@ -156,7 +162,7 @@ class Send extends Admin_Controller {
 		Array
 		(
 		    [sales_package_id] => 12
-		    [send_to] => current_user/new_user
+		    [send_to] => current_user / new_user / all_users
 			[sales_user] => rsbgm@rcpixel.com 			// not available on modify from admin
 		    [reference_designer] => basixblacklabel 	// not available on modify from admin
 		    [admin_sales_email] => rsbgm@rcpixel.com	// not available on modify from admin
@@ -187,6 +193,9 @@ class Send extends Admin_Controller {
 
 			[emails] => // current user set to email (up to ten and comma separated), empty on new_user
 			[search_string] => // used for searching users from current list
+
+			[active_users]
+			[inactive_users]
 		)
 		// */
 		if ( ! $this->input->post())
@@ -211,6 +220,9 @@ class Send extends Admin_Controller {
 		 */
 		if ($this->input->post('send_to') === 'new_user')
 		{
+			// connect to database
+			$DB = $this->load->database('instyle', TRUE);
+
 			// add user to wholesale list and set user array
 			$post_user = array(
 				'email' => $this->input->post('email'),
@@ -231,11 +243,13 @@ class Send extends Admin_Controller {
 				'admin_sales_email' => ($this->input->post('admin_sales_email') ?: $this->webspace_details->info_email),
 				'reference_designer' => ($this->input->post('reference_designer') ?: @$this->sales_package_details->options['des_slug'])
 			);
-			$DB = $this->load->database('instyle', TRUE);
 			$DB->insert('tbluser_data_wholesale', $post_user);
 			$users = array($this->input->post('email'));
 		}
-		//else $users = $this->input->post('email');
+		else if ($this->input->post('send_to') === 'all_users')
+		{
+			// code to send to all users...
+		}
 		else
 		{
 			// latest current user email processing

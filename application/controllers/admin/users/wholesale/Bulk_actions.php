@@ -59,6 +59,19 @@ class Bulk_actions extends Admin_Controller {
 		// iterate through the selected checkboxes and where clause
 		foreach ($this->input->post('checkbox') as $key => $id)
 		{
+			// get list name for mailgun udpate on all status
+			switch ($this->wholesale_user_details->reference_designer)
+			{
+				case 'tempoparis':
+					$list_name = 'ws_tempo@mg.shop7thavenue.com';
+				break;
+				case 'basixblacklabel':
+					$list_name = 'wholesale_users@mg.shop7thavenue.com';
+				break;
+				default:
+					$list_name = '';
+			}
+
 			// set database query clauses
 			if ($key === 0) $DB->where('user_id', $id);
 			else $DB->or_where('user_id', $id);
@@ -81,38 +94,43 @@ class Bulk_actions extends Admin_Controller {
 				);
 			}
 
+			// mailgun items
 			if (
-				$this->input->post('bulk_action') == 'deac'
-				OR $this->input->post('bulk_action') == 'su'
-				OR $this->input->post('bulk_action') === 'del'
+				$list_name &&
+				(
+					$this->input->post('bulk_action') == 'deac'
+					OR $this->input->post('bulk_action') == 'su'
+					OR $this->input->post('bulk_action') === 'del'
+				)
 			)
 			{
 				// remove user from mailgun list
-				// only basix for now
 				$params['address'] = $this->wholesale_user_details->email;
-				$params['list_name'] = 'wholesale_users@mg.shop7thavenue.com';
+				$params['list_name'] = $list_name;
 				$this->load->library('mailgun/list_member_delete', $params);
 				$res = $this->list_member_delete->delete();
 			}
 
-			if ($this->input->post('bulk_action') == 'ac')
+			// mailgun items
+			if ($list_name && $this->input->post('bulk_action') == 'ac')
 			{
-				// basix only for now
-				if ($this->wholesale_user_details->reference_designer == 'basixblacklabel')
-				{
-					// add user to mailgun list
-					// no need to validate email as these are stores
-					// force add users to mailgun
-					$params['address'] = $this->wholesale_user_details->email;
-					$params['fname'] = $this->wholesale_user_details->fname;
-					$params['lname'] = $this->wholesale_user_details->lname;
-					$params['vars'] = '{"store_name":"'.$this->wholesale_user_details->store_name.'"}';
-					$params['description'] = 'Wholesale User';
-					$params['list_name'] = 'wholesale_users@mg.shop7thavenue.com';
-					$this->load->library('mailgun/list_member_add', $params);
-					$res = $this->list_member_add->add();
-					$this->list_member_add->clear();
-				}
+				// add user to mailgun list
+				// no need to validate email as these are stores
+				// force add users to mailgun
+				$params['address'] = $this->wholesale_user_details->email;
+				$params['fname'] = $this->wholesale_user_details->fname;
+				$params['lname'] = $this->wholesale_user_details->lname;
+				$params_vars = array(
+					'designer' => $this->wholesale_user_details->designer,
+					'designer_slug' => $this->wholesale_user_details->reference_designer,
+					'store_name' => $this->wholesale_user_details->store_name
+				);
+				$params['vars'] = json_encode($params_vars);
+				$params['description'] = 'Wholesale User';
+				$params['list_name'] = $list_name;
+				$this->load->library('mailgun/list_member_add', $params);
+				$res = $this->list_member_add->add();
+				$this->list_member_add->clear();
 			}
 		}
 

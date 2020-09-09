@@ -645,7 +645,7 @@
                                             && $this->session->user_cat != 'wholesale'
                                         )
                                         {
-                                            $link_label = $this->webspace_details->slug == 'basixblacklabel' ? 'Final Sale' : 'Clearance';
+                                            $link_label = $this->webspace_details->slug == 'basixblacklabel' ? 'Sale' : 'Clearance';
                                             ?>
 
                                         <li aria-haspopup="true" class="menu-dropdown classic-menu-dropdown">

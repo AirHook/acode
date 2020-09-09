@@ -222,10 +222,11 @@
 
                                                             <?php if ($this->webspace_details->slug == 'basixblacklabel')
                                                             {
-                                                                $clearance_label = 'Final Sale';
+                                                                $clearance_label = 'Sale';
                                                                 ?>
 
-                                                            <img src="<?php echo base_url().'images/subcategory_icon/thumb/icon-final-sale.jpg'; ?>" alt="" />
+                                                            <!--<img src="<?php echo base_url().'images/subcategory_icon/thumb/icon-final-sale.jpg'; ?>" alt="" />-->
+                                                            <img src="<?php echo base_url().'images/subcategory_icon/thumb/sale_icon.jpg'; ?>" alt="" />
 
                                                                 <?php
                                                             }

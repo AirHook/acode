@@ -117,26 +117,45 @@ class Add extends Admin_Controller {
 			// if active, add user to mailgun list
 			if ($this->input->post('is_active') == '1')
 			{
-				// basix only for now
-				if ($this->input->post('reference_designer') == 'basixblacklabel')
+				// add user to mailgun list
+				// no need to validate email as these are stores
+				// force add users to mailgun
+				// use input fields to capture any updates
+				switch ($this->input->post('reference_designer'))
 				{
-					// add user to mailgun list
-					// no need to validate email as these are stores
-					// force add users to mailgun
-					// use input fields to capture any updates
+					case 'tempoparis':
+						$list_name = 'ws_tempo@mg.shop7thavenue.com';
+						$designer_name = 'Tempo Paris';
+					break;
+					case 'basixblacklabel':
+						$list_name = 'wholesale_users@mg.shop7thavenue.com';
+						$designer_name = 'Basix Black Label';
+					break;
+					default:
+						$list_name = '';
+						$designer_name = '';
+				}
+
+				if ($list_name)
+				{
 					$params['address'] = $this->input->post('email');
 					$params['fname'] = $this->input->post('firstname');
 					$params['lname'] = $this->input->post('lastname');
-					$params['vars'] = '{"store_name":"'.$this->input->post('store_name').'"}';
+					$params_vars = array(
+						'designer' => $designer_name,
+						'designer_slug' => $this->input->post('reference_designer'),
+						'store_name' => $this->input->post('store_name')
+					);
+					$params['vars'] = json_encode($params_vars);
 					$params['description'] = 'Wholesale User';
-					$params['list_name'] = 'wholesale_users@mg.shop7thavenue.com';
+					$params['list_name'] = $list_name;
 					$this->load->library('mailgun/list_member_add', $params);
 					$res = $this->list_member_add->add();
 					$this->list_member_add->clear();
 				}
 			}
 
-			// connect and add record to database
+			// add record to database
 			$DB = $this->load->database('instyle', TRUE);
 			$query = $DB->insert('tbluser_data_wholesale', $post_ary);
 			$insert_id = $DB->insert_id();

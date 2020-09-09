@@ -164,9 +164,12 @@
                         <div class="row">
 
 							<div class="col-lg-3 col-md-4">
-								<select class="bs-select form-control bs-select" id="bulk_actions_select" name="bulk_action" disabled>
+								<select class="bs-select form-control bs-select" id="bulk_actions_select" name="bulk_action" disabled data-show-subtext="true">
 									<option value="" selected="selected">Bulk Actions</option>
 									<option value="del">Permanently Delete</option>
+									<option value="send_to_current_user" disabled data-subtext="(not avaialable)">Send to Existing User/s</option>
+									<option value="send_to_new_user" disabled data-subtext="(not avaialable)">Send to New Users</option>
+									<option value="send_to_all_suers" disabled data-subtext="(not avaialable)">Send to All Users</option>
 								</select>
 							</div>
 							<button class="btn green hidden-sm hidden-xs" id="apply_bulk_actions" data-toggle="modal" href="#confirm_bulk_actions" disabled> Apply </button>
@@ -589,6 +592,31 @@
 									<h4 class="modal-title">Delete!</h4>
 								</div>
 								<div class="modal-body"> Delete (multiple) items? <br /> This cannot be undone! </div>
+								<div class="modal-footer">
+									<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
+									<a href="javascript:$('#form-sales_package_list_bulk_action').submit();" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+										<span class="ladda-label">Confirm?</span>
+										<span class="ladda-spinner"></span>
+									</a>
+								</div>
+							</div>
+							<!-- /.modal-content -->
+						</div>
+						<!-- /.modal-dialog -->
+					</div>
+					<!-- /.modal -->
+
+					<!-- CONFIRM BULK SEND TO EXISTING USER ACTION -->
+					<div class="modal fade bs-modal-md" id="confirm_bulk_actions-send_to_current_user" tabindex="-1" role="dialog" aria-hidden="true">
+						<div class="modal-dialog modal-md">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+									<h4 class="modal-title">Send To Exiting User</h4>
+								</div>
+								<div class="modal-body">
+									<?php $this->load->view('admin/metronic/sa_send_to_current_user'); ?>
+								</div>
 								<div class="modal-footer">
 									<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
 									<a href="javascript:$('#form-sales_package_list_bulk_action').submit();" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">

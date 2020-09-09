@@ -57,14 +57,16 @@ class Index extends Sales_user_Controller {
 				unset($_SESSION['sa_mod_items']);
 				unset($_SESSION['sa_mod_slug_segs']);
 				unset($_SESSION['sa_mod_options']);
-				unset($_SESSION['sa_mod_des_slug']);
+				unset($_SESSION['sa_mod_des_slug']); // session for designer drop down for hub sites
+				unset($_SESSION['sa_mod_designers']); // hub site mixed designer case
 
 				// set create session where necessary
 				if ( ! $this->session->sa_items)
 				{
 					// unset all session and send to create page
 					unset($_SESSION['sa_id']);
-					unset($_SESSION['sa_des_slug']);
+					unset($_SESSION['sa_des_slug']); // session for designer drop down for hub sites
+					unset($_SESSION['sa_designers']); // hub site mixed designer case
 					unset($_SESSION['sa_slug_segs']);
 					unset($_SESSION['sa_items']);
 					unset($_SESSION['sa_name']); // used at view
@@ -83,25 +85,11 @@ class Index extends Sales_user_Controller {
 			// - general admin shows all designer category tree
 			// - satellite and stand-alone sites defaults to it's designer category tree
 			// - sales users default to it's reference designer category tree
-			if (
-				$this->webspace_details->options['site_type'] == 'sat_site'
-				OR $this->webspace_details->options['site_type'] == 'sal_site'
-				OR $this->session->admin_sales_loggedin
-			)
-			{
-				$this->data['select_designer'] = FALSE;
-				$des_slug = @$this->sales_user_details->designer ?: $this->webspace_details->slug;
-				$this->session->sa_des_slug = $des_slug;
-			}
-			else
-			{
-				$this->data['select_designer'] = TRUE;
-			}
-			$this->designers_list->initialize(
-				array(
-					'with_products'=>TRUE
-				)
-			);
+			// NOTE: this controller is for sales users only hence the shortcut
+			// also, presumption is sales users are dedicated to one designer at the moment
+			$this->data['select_designer'] = FALSE;
+			$des_slug = @$this->sales_user_details->designer ?: $this->webspace_details->slug;
+			$this->session->sa_des_slug = $des_slug;
 			$this->data['designers'] = $this->designers_list->select(
 				array(
 					'url_structure' => $this->sales_user_details->designer // used by my_account sales
@@ -128,21 +116,42 @@ class Index extends Sales_user_Controller {
 				);
 				$this->data['row_count'] = $this->categories_tree->row_count;
 				$this->data['max_level'] = $this->categories_tree->max_category_level;
+				$this->data['primary_subcat'] = $this->categories_tree->get_primary_subcat($this->session->sa_des_slug);
 
-				// get last category slug if slug_segs is present for page reloads
-				// get category slug for sales user page on first page load because
-				// sales user has a default designer already...
-				$this->data['slug_segs'] = json_decode($this->session->sa_slug_segs, TRUE);
-				$category_slug = @end($this->data['slug_segs']) ?: $this->categories_tree->get_primary_category($this->sales_user_details->designer);
-				$category_id = $this->categories_tree->get_id($category_slug);
-				$designer_slug = @reset($this->data['slug_segs']) ?: $this->sales_user_details->designer;
+				// get last category slug
+				if ($this->session->sa_slug_segs)
+				{
+					$this->data['slug_segs'] = json_decode($this->session->sa_slug_segs, TRUE);
+					$category_slug = end($this->data['slug_segs']);
+					$category_id = $this->categories_tree->get_id($category_slug);
+					$designer_slug = reset($this->data['slug_segs']);
+				}
+				else
+				{
+					$designer_slug = $this->session->sa_des_slug;
+					$category_id = $this->categories_tree->get_id($this->data['primary_subcat']);
+				}
 
 				$where_more['designer.url_structure'] = $designer_slug;
 				$where_more['tbl_product.categories LIKE'] = $category_id;
 
+				// sales package show item conditions
+				// 1. 	super admin (0) gets to see everything but with stocks
+				//		note: cannot send items without stocks at the moment
+				// 2.	desginer admin (1) gest to see evrything but with stocks
+		        // 3. 	sales users gets to see everything except
+		        // 		preorder items
+		        // 		esp not clearance cs items
+				// but right now, sales packages are for the following:
+				//		instock items
+				//		on sale items
+
 				// don't show clearance cs only items for level 2 users
-	            $con_clearance_cs_only = 'tbl_stock.options NOT LIKE \'%"clearance_consumer_only":"1"%\' ESCAPE \'!\'';
-	            $where_more['condition'][] = $con_clearance_cs_only;
+				if ($this->sales_user_details->access_level == '2')
+				{
+					$con_clearance_cs_only = 'tbl_stock.options NOT LIKE \'%"clearance_consumer_only":"1"%\' ESCAPE \'!\'';
+		            $where_more['condition'][] = $con_clearance_cs_only;
+				}
 
 				// get the products list for the thumbs grid view
 				$params['show_private'] = TRUE; // all items general public (Y) - N for private
@@ -153,7 +162,6 @@ class Index extends Sales_user_Controller {
 				//$params['variant_view_at_hub'] = TRUE; // variant level public at hub site
 				//$params['variant_view_at_satellite'] = TRUE; // varian level public at satellite site
 
-				// level 2 users show only items with stocks
 				$params['with_stocks'] = TRUE; // TRUE shows instock items only
 
 				$params['group_products'] = FALSE; // group per product number or per variant
@@ -242,7 +250,8 @@ class Index extends Sales_user_Controller {
 						[w_images] => N
 						[linesheets_only] => N
 					)
-				[sales_user] => 1
+
+				[sales_user] => 1	// sales user id, defaults to 1 for admin
 				[author] => admin
 				[prod_no] => Array
 					(
@@ -261,12 +270,18 @@ class Index extends Sales_user_Controller {
 				// connect to database
 				$DB = $this->load->database('instyle', TRUE);
 
-				// grab post data and process some of them to accomodate database
+				// grab post data and process some other options data
 				$post_ary = $this->input->post();
+				// in case a sales user is the one who created the package
+				$post_ary['options']['admin_sales_designer'] = @$this->sales_user_details->desginer;
+				// des_slug can only be true for single designer packages
+				// des_slug cannot be used as reference designer where the package was created
 				$post_ary['options']['des_slug'] = $this->session->sa_des_slug; // additional data
+				$post_ary['options']['designers'] = $this->session->sa_designers;
 				$post_ary['options'] = json_encode($post_ary['options']);
 
 				// additional items to set
+				$post_ary['webspace_id'] = $this->webspace_details->id; // where the package was created
 
 				// remove variables not needed
 				unset($post_ary['files']);

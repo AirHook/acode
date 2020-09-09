@@ -57,14 +57,16 @@ class Index extends Admin_Controller {
 				unset($_SESSION['admin_sa_mod_items']);
 				unset($_SESSION['admin_sa_mod_slug_segs']);
 				unset($_SESSION['admin_sa_mod_options']);
-				unset($_SESSION['admin_sa_mod_des_slug']);
+				unset($_SESSION['admin_sa_mod_des_slug']); // session for designer drop down for hub sites
+				unset($_SESSION['admin_sa_mod_designers']); // hub site mixed designer case
 
 				// set create session where necessary
 				if ( ! $this->session->admin_sa_items)
 				{
 					// unset all session and send to create page
 					unset($_SESSION['admin_sa_id']);
-					unset($_SESSION['admin_sa_des_slug']);
+					unset($_SESSION['admin_sa_des_slug']); // session for designer drop down for hub sites
+					unset($_SESSION['admin_sa_designers']); // hub site mixed designer case
 					unset($_SESSION['admin_sa_slug_segs']);
 					unset($_SESSION['admin_sa_items']);
 					unset($_SESSION['admin_sa_name']); // used at view
@@ -86,12 +88,16 @@ class Index extends Admin_Controller {
 			if (
 				$this->webspace_details->options['site_type'] == 'sat_site'
 				OR $this->webspace_details->options['site_type'] == 'sal_site'
-				//OR $this->session->admin_sales_loggedin
 			)
 			{
 				$this->data['select_designer'] = FALSE;
 				$des_slug = @$this->sales_user_details->designer ?: $this->webspace_details->slug;
+
+				// set active designer slug and designer list
+				// this obviously wont change anymore since this condition is for
+				// sat or sal sites, and list will always be one designer
 				$this->session->admin_sa_des_slug = $des_slug;
+				$this->session->admin_sa_designers = array($des_slug);
 
 				$this->designers_list->initialize(array('with_products'=>TRUE));
 				$this->data['designers'] = $this->designers_list->select(
@@ -245,7 +251,7 @@ class Index extends Admin_Controller {
 			$this->data['page_description'] = 'Create Sales Packages';
 
 			// load views...
-			$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template/template', $this->data);
+			$this->load->view('admin/metronic/template/template', $this->data);
 		}
 		else
 		{
@@ -269,7 +275,7 @@ class Index extends Admin_Controller {
 			            [linesheets_only] => N
 			        )
 
-			    [sales_user] => 1
+			    [sales_user] => 1	// sales user id, defaults to 1 for admin
 			    [author] => admin
 			    [prod_no] => Array
 			        (
@@ -288,12 +294,18 @@ class Index extends Admin_Controller {
 				// connect to database
 				$DB = $this->load->database('instyle', TRUE);
 
-				// grab post data and process some of them to accomodate database
+				// grab post data and process some other options data
 				$post_ary = $this->input->post();
-				$post_ary['options']['des_slug'] = $this->session->admin_sa_des_slug; // additional data
+				// in case a sales user is the one who created the package
+				//$post_ary['options']['admin_sales_designer'] = @$this->sales_user_details->desginer;
+				// des_slug can only be true for single designer packages
+				// des_slug cannot be used as reference designer where the package was created
+				$post_ary['options']['des_slug'] = $this->session->admin_sa_des_slug;
+				$post_ary['options']['designers'] = $this->session->admin_sa_designers;
 				$post_ary['options'] = json_encode($post_ary['options']);
 
 				// additional items to set
+				$post_ary['webspace_id'] = $this->webspace_details->id; // where the package was created
 
 				// remove variables not needed
 				unset($post_ary['files']);

@@ -32,6 +32,7 @@ class Index extends Admin_Controller {
 		$this->load->library('designers/designers_list');
 		$this->load->library('sales_package/sales_package_list');
 		$this->load->library('products/product_details');
+		$this->load->library('users/wholesale_users_list');
 
 		// get designer list for the dropdown filter
 		$this->designers_list->initialize(array('with_products'=>TRUE));
@@ -54,9 +55,11 @@ class Index extends Admin_Controller {
 		{
 			$this->data['des_slug'] = @$this->sales_user_details->designer ?: $this->webspace_details->slug;
 			$where['sales_packages.options LIKE'] = '%'.$this->data['des_slug'].'%';
+			$where['sales_packages.webspace_id'] = $this->webspace_details->id;
 		}
 		else
 		{
+			// for filtering packages to specific designer
 			if ($des_slug)
 			{
 				$where['sales_packages.options LIKE'] = '%'.$des_slug.'%';
@@ -67,6 +70,26 @@ class Index extends Admin_Controller {
 
 		// get the list
 		$this->data['packages'] = $this->sales_package_list->select($where);
+
+		// active user list
+		$per_page = 300;
+		// where clauses
+		$where2['tbluser_data_wholesale.is_active'] = '1';
+		$this->data['users'] = $this->wholesale_users_list->select(
+			$where2, // where
+			array( // order by
+				'tbluser_data_wholesale.store_name' => 'asc'
+			),
+			array($per_page)
+		);
+		//$this->data['user_id'] = '';
+		$this->data['users_per_page'] = $per_page;
+		$this->data['total_users'] = $this->wholesale_users_list->count_all;
+		$this->data['number_of_pages'] =
+			$per_page > 0
+			? ceil($this->data['total_users'] / $this->data['users_per_page'])
+			: $this->data['total_users']
+		;
 
 		// set data variables...
 		$this->data['role'] = 'admin';

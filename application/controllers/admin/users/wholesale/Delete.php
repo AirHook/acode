@@ -51,11 +51,27 @@ class Delete extends Admin_Controller {
 			'remove'
 		);
 
-		// remove user from mailgun list
-		$params['address'] = $this->wholesale_user_details->email;
-		$params['list_name'] = 'wholesale_users@mg.shop7thavenue.com';
-		$this->load->library('mailgun/list_member_delete', $params);
-		$res = $this->list_member_delete->delete();
+		// get list name for mailgun udpate on all status
+		switch ($this->wholesale_user_details->reference_designer)
+		{
+			case 'tempoparis':
+				$list_name = 'ws_tempo@mg.shop7thavenue.com';
+			break;
+			case 'basixblacklabel':
+				$list_name = 'wholesale_users@mg.shop7thavenue.com';
+			break;
+			default:
+				$list_name = '';
+		}
+
+		if ($list_name)
+		{
+			// remove user from mailgun list
+			$params['address'] = $this->wholesale_user_details->email;
+			$params['list_name'] = $list_name;
+			$this->load->library('mailgun/list_member_delete', $params);
+			$res = $this->list_member_delete->delete();
+		}
 
 		// note in comments
 		$comments = 'Previously associated with '

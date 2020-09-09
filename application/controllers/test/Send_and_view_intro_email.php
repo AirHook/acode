@@ -20,7 +20,7 @@ class Send_and_view_intro_email extends CI_Controller
 		$this->load->library('users/wholesale_user_details');
 
 		// get user details
-		$this->wholesale_user_details->initialize(array('email' => 'rsbgm@rcpixel.com'));
+		$this->wholesale_user_details->initialize(array('email' => 'rsbgm@tempoparis.com'));
 
 		$this->wholesale_user_details->send_intro_email();
 

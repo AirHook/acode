@@ -32,7 +32,7 @@ class Modify extends Sales_user_Controller {
 			$this->session->set_flashdata('error', 'no_id_passed');
 
 			// redirect user
-			redirect('my_account/sales/sales_package');
+			redirect('my_account/sales/sales_package', 'location');
 		}
 
 		// generate the plugin scripts and css
@@ -64,7 +64,8 @@ class Modify extends Sales_user_Controller {
 			{
 				// new po admin createa ccess
 				unset($_SESSION['sa_id']);
-				unset($_SESSION['sa_des_slug']);
+				unset($_SESSION['sa_des_slug']); // session for designer drop down for hub sites
+				unset($_SESSION['sa_designers']); // hub site mixed designer case
 				unset($_SESSION['sa_slug_segs']);
 				unset($_SESSION['sa_items']);
 				unset($_SESSION['sa_name']); // used at view
@@ -72,22 +73,13 @@ class Modify extends Sales_user_Controller {
 				unset($_SESSION['sa_email_message']); // used at view
 				unset($_SESSION['sa_options']);
 
-				// check for sa create session
-				if ( ! $this->session->sa_mod_items)
-				{
-					// remove po mod details
-					unset($_SESSION['sa_mod_id']);
-					unset($_SESSION['sa_mod_items']);
-					unset($_SESSION['sa_mod_slug_segs']);
-					unset($_SESSION['sa_mod_options']);
-					unset($_SESSION['sa_mod_des_slug']);
-
-					// set session flashdata
-					$this->session->set_flashdata('error', 'no_id_passed');
-
-					// redirect user
-					redirect('my_account/sales/sales_package/create', 'location');
-				}
+				// remove mod details
+				unset($_SESSION['sa_mod_id']);
+				unset($_SESSION['sa_mod_items']);
+				unset($_SESSION['sa_mod_slug_segs']);
+				unset($_SESSION['sa_mod_options']);
+				unset($_SESSION['sa_mod_des_slug']); // session for designer drop down for hub sites
+				unset($_SESSION['sa_mod_designers']); // hub site mixed designer case
 			}
 
 			// capture package id being modified
@@ -142,7 +134,7 @@ class Modify extends Sales_user_Controller {
 					?: (
 						@$this->webspace_details->options['site_type'] != 'hub_site'
 						? $this->webspace_details->slug // can only use if sat_site
-						: ''
+						: @$this->webspace_details->options['primary_designer']
 						// we have to trap the chance that the options didn't capture the des_slug
 						// setting it to blank for now
 					)
@@ -198,7 +190,12 @@ class Modify extends Sales_user_Controller {
 			}
 
 			$where_more['tbl_product.categories LIKE'] = $category_id;
-			//$where_more['condition'] = 'tbl_stock.options NOT LIKE \'%"clearance_consumer_only":"1"%\'';
+			// dont show cs clearance only to level 2 sales users
+			if ($this->sales_user_details->access_level == '2')
+			{
+				$con_clearance_cs_only = 'tbl_stock.options NOT LIKE \'%"clearance_consumer_only":"1"%\' ESCAPE \'!\'';
+				$where_more['condition'][] = $con_clearance_cs_only;
+			}
 
 			// get the products list for the thumbs grid view
 			$params['show_private'] = TRUE; // all items general public (Y) - N for private
@@ -308,7 +305,12 @@ class Modify extends Sales_user_Controller {
 
 			// grab post data and process some of them to accomodate database
 			$post_ary = $this->input->post();
+			// in case a sales user is the one who created the package
+			$post_ary['options']['admin_sales_designer'] = @$this->sales_user_details->desginer;
+			// des_slug can only be true for single designer packages
+			// des_slug cannot be used as reference designer where the package was created
 			$post_ary['options']['des_slug'] = $this->session->sa_mod_des_slug; // additional data
+			$post_ary['options']['designers'] = $this->session->sa_mod_designers;
 			$post_ary['options'] = json_encode($post_ary['options']);
 
 			// remove variables not needed
@@ -331,7 +333,7 @@ class Modify extends Sales_user_Controller {
 			$this->session->set_flashdata('success', 'edit');
 
 			// redirect user
-			redirect('my_account/sales/sales_package/send/index/'.$id);
+			redirect('my_account/sales/sales_package/send/index/'.$id, 'location');
 		}
 	}
 

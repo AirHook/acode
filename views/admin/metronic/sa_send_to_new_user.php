@@ -85,7 +85,7 @@
 											<input name="zipcode" type="text" class="form-control send_to_new_user" value="<?php echo set_value('zipcode'); ?>" />
 										</div>
 
-										<hr />
+										<hr class="form-group" />
 
 										<div class="form-group">
 											<div class="btn-set btn-set-send-sales-package display-none">

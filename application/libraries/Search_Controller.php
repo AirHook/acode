@@ -116,6 +116,10 @@ class Search_Controller extends Frontend_Controller {
             )";
             $where['condition'][] = $where_public;
 
+            /*********
+        	 * Current custom conditions for consumers users
+        	 */
+            // only with stocks as of...
             $where['HAVING with_stocks'] = '1';
         }
         else if (
@@ -128,15 +132,52 @@ class Search_Controller extends Frontend_Controller {
         }
         else if ($this->session->userdata('user_role') == 'wholesale')
         {
+            // don't show clearance cs only items
+            $con_clearance_cs_only = 'tbl_stock.options NOT LIKE \'%"clearance_consumer_only":"1"%\' ESCAPE \'!\'';
+            $where['condition'][] = $con_clearance_cs_only;
+
+            /*********
+        	 * Current custom conditions for wholesale users
+        	 */
             // don't show clearance items
             $con_clearance = "(tbl_stock.custom_order != '3' OR (tbl_stock.custom_order = '3' AND designer.url_structure != 'basixblacklabel'))";
             $where['condition'][] = $con_clearance;
 
-            // don't show clearance cs only items
-            $con_clearance_cs_only = 'tbl_stock.options NOT LIKE \'%"clearance_consumer_only":"1"%\' ESCAPE \'!\'';
-            $where['condition'][] = $con_clearance_cs_only;
+            // special show private for ws users under help@basixblacklabel.com
+            if ($this->wholesale_user_details->admin_sales_email != 'help@basixblacklabel.com')
+            {
+                $where_public_only = "(
+    				tbl_product.publish = '1'
+    				OR tbl_product.publish = '11'
+    				OR tbl_product.publish = '12'
+    			)";
+                $where['condition'][] = $where_public_only;
+            }
+        }
+        else if (
+            $this->session->userdata('user_role') == 'consumer'
+            && @$_GET['availability'] != 'onsale'
+        )
+        {
+            $where_public = "(
+				tbl_product.publish = '1'
+				OR tbl_product.publish = '11'
+				OR tbl_product.publish = '12'
+			)";
+            $where['condition'][] = $where_public;
+
+            /*********
+        	 * Current custom conditions for consumers users
+        	 */
+            // only with stocks as of...
+            $where['HAVING with_stocks'] = '1';
         }
         // */
+
+        // clearance_cs_only option
+        // must show as a normal item
+        //$con_clearance_cs_only = 'tbl_stock.options NOT LIKE \'%"clearance_consumer_only":"1"%\' ESCAPE \'!\'';
+        //$where['condition'][] = $con_clearance_cs_only;
 
 		// get the products list and total count based on parameters
 		$params['wholesale'] = $this->session->userdata('user_cat') == 'wholesale' ? TRUE : FALSE;

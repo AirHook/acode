@@ -46,9 +46,16 @@ class Search extends Admin_Controller {
 		// generate the plugin scripts and css
 		$this->_create_plugin_scripts();
 
+		// consider sat sites
+		$where = array();
+		if ($this->webspace_details->options['site_type'] != 'hub_site')
+		{
+			$where['tbluser_data_wholesale.reference_designer'] = $this->webspace_details->slug;
+		}
+
 		// get data
 		$this->data['users'] = $this->wholesale_users_list->select(
-			array(),
+			$where,
 			array(),
 			array(),
 			"tbluser_data_wholesale.email LIKE '%".$this->input->post('search_string')."%'

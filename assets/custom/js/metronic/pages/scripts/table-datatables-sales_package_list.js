@@ -133,6 +133,14 @@ var TableDatatablesManaged = function () {
 			alert("Please select an action to take.");
 			return false;
 		} else {
+            if (z == 'send_to_current_user' || z == 'send_to_new_user') {
+                if ($('#tbl-sales_packages tbody tr .checkboxes:checked').length > 1) {
+                    alert('Select only 1 sales package');
+                    return false;
+                } else {
+                    // code to send to user...
+                }
+            }
 			$('#confirm_bulk_actions-' + z).modal('toggle');
 			return false;
 		}

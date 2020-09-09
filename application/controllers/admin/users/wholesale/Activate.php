@@ -47,23 +47,39 @@ class Activate extends Admin_Controller {
 		// get user details
 		$this->wholesale_user_details->initialize(array('user_id' => $id));
 
-		// basix only for now
-		if ($this->wholesale_user_details->reference_designer == 'basixblacklabel')
+		// add user to mailgun list
+		// no need to validate email as these are stores
+		// force add users to mailgun
+		switch ($this->wholesale_user_details->reference_designer)
 		{
-			// add user to mailgun list
-			// no need to validate email as these are stores
-			// force add users to mailgun
+			case 'tempoparis':
+				$list_name = 'ws_tempo@mg.shop7thavenue.com';
+			break;
+			case 'basixblacklabel':
+				$list_name = 'wholesale_users@mg.shop7thavenue.com';
+			break;
+			default:
+				$list_name = '';
+		}
+
+		if ($list_name)
+		{
 			$params['address'] = $this->wholesale_user_details->email;
 			$params['fname'] = $this->wholesale_user_details->fname;
 			$params['lname'] = $this->wholesale_user_details->lname;
-			$params['vars'] = '{"store_name":"'.$this->wholesale_user_details->store_name.'"}';
+			$params_vars = array(
+				'designer' => $this->wholesale_user_details->designer,
+				'designer_slug' => $this->wholesale_user_details->reference_designer,
+				'store_name' => $this->wholesale_user_details->store_name
+			);
+			$params['vars'] = json_encode($params_vars);
 			$params['description'] = 'Wholesale User';
-			$params['list_name'] = 'wholesale_users@mg.shop7thavenue.com';
+			$params['list_name'] = $list_name;
 			$this->load->library('mailgun/list_member_add', $params);
 			$res = $this->list_member_add->add();
 			$this->list_member_add->clear();
 		}
-
+		
 		// send activation email where necessary
 		if ($activation_email)
 		{

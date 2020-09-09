@@ -34,8 +34,15 @@ class Set_des_slug_session extends MY_Controller {
 			exit;
 		}
 
-		// set session
+		// set active designer slug and designer list
+		// this is usually access by hub sites for active designer list
+		// drop down to select designer thumbs
 		$this->session->sa_des_slug = $slug;
+		if ($this->session->sa_designers)
+		{
+			array_push($this->session->sa_designers, $des_slug);
+		}
+		else $this->session->sa_designers = array($des_slug);
 
 		// return
 		echo 'success';

@@ -3,19 +3,6 @@ var ComponentsEditors = function () {
     var base_url = $('body').data('base_url');
     var object_data = $('.body-content').data('object_data');
 
-    var handleSummernote = function () {
-        $('#summernote_1').summernote({
-			height: 150,
-			toolbar: [
-				// [groupName, [list of button]]
-				['main', ['style']],
-				['style', ['bold', 'italic', 'underline', 'clear']],
-				['para', ['ul', 'ol', 'paragraph']],
-				['link', ['link']]
-			]
-		});
-    }
-
     var handleFancyBox = function () {
         $(".fancybox").fancybox({
             helpers: {
@@ -50,11 +37,12 @@ var ComponentsEditors = function () {
             $(this).css('color', 'black');
             $(this).addClass('btn-active');
             $('[name="send_to"]').val('current_user');
-            $('.send_to_new_user').hide();
-            $('.send_to_current_user').show();
             $('.notice-select-action').hide();
-            $('.btn-set-send-sales-package').show();
+            $('.send_to_new_user').hide();
+            $('.send_to_all_users').hide();
+            $('.send_to_current_user').fadeIn();
             $('#form-send_sales_package').trigger("reset");
+            $('.alert-danger').hide();
         });
 
         // select action option buttons function
@@ -69,13 +57,37 @@ var ComponentsEditors = function () {
             $(this).css('color', 'black');
             $(this).addClass('btn-active');
             $('[name="send_to"]').val('new_user');
-            $('.send_to_current_user').hide();
-            $('.send_to_new_user').fadeIn();
             $('.notice-select-action').hide();
+            $('.send_to_current_user').hide();
+            $('.send_to_all_users').hide();
+            $('.send_to_new_user').fadeIn();
             $('.btn-set-send-sales-package').show();
             $('.selected-users-list').html('');
             $('.selected-users-list-wrapper').hide();
             $('#form-send_sales_package').trigger("reset");
+            $('.alert-danger').hide();
+        });
+
+        // select action option buttons function
+        $('.send-to-all-users').on('click', function(){
+            // set all buttons to default
+            $('.select-send-options').css('background-color', '#2f353b');
+            $('.select-send-options').css('color', 'white');
+            $('.select-send-options').removeClass('btn-active');
+            // set this button to active
+            //$(this).css('background-color', '#696969');
+            $(this).css('background-color', '#E5E5E5');
+            $(this).css('color', 'black');
+            $(this).addClass('btn-active');
+            $('[name="send_to"]').val('all_users');
+            $('.notice-select-action').hide();
+            $('.send_to_all_users').fadeIn();
+            $('.send_to_current_user').hide();
+            $('.send_to_new_user').hide();
+            $('.selected-users-list').html('');
+            $('.selected-users-list-wrapper').hide();
+            $('#form-send_sales_package').trigger("reset");
+            $('.alert-danger').hide();
         });
 
         // apply hover effect
@@ -91,231 +103,16 @@ var ComponentsEditors = function () {
             }
         });
 
-
-        // load preset actions
-        $('[name="preset"]').on('change', function(){
-            // call jquery loading on items
-            $('.thumb-tiles.sales-package').loading();
-            var objectData = object_data;
-            objectData.preset = $(this).val();
-            // get preset sales package
-            getPreset(objectData);
-            // user toastr notification
-            toastr.info('Items added...');
-        });
-
-        // category tree list click action
-        $('.categories-tree').on('click', '.category_list', function(){
-            $('#loading').modal('show');
-            var objectData = object_data;
-            objectData.slugs_link = $(this).data('slugs_link');
-            // get category tree
-            getCategoryTree(objectData);
-        });
-
-        // clicked on product grid view
-        $('.thumb-tiles-wrapper').on('click', '.package_items', function() {
-            var checked = $(this).prop('checked');
-            var objectData = object_data;
-            objectData.prod_no = $(this).data('item');
-            if (checked) {
-                objectData.action = 'add_item';
-                // check thumb
-                $('.thumb-tile.'+objectData.prod_no).addClass('selected');
-            } else {
-                objectData.action = 'rem_item';
-                // check thumb
-                $('.thumb-tile.'+objectData.prod_no).removeClass('selected');
+        // submit form action for all users
+        $('.btn-send-sales-package-all-users').on('click', function(){
+            var form = $('#form-send_sales_package');
+            //$('[name="send_to"]').val('current_user');
+            if ($('.send_to_all_users.list:checked').length > 0){
+                form.submit();
+            }else{
+                alert('Select user list to send pacakge');
             }
-            // get item...
-            addRemItem(objectData);
         });
-
-        // on any change on sa info
-        $('.input-sa_info').on('change', function(){
-            var objectData = object_data;
-            objectData.param = $(this).attr('name');
-            objectData.val = $(this).val();
-            // set new info
-            setInfo(objectData);
-        });
-
-        // on any change on sa info email short message
-        $('#summernote_1').on('summernote.blur', function(){
-            var objectData = object_data;
-            objectData.param = $(this).attr('name');
-            objectData.val = $(this).summernote('code');
-            // set new info
-            setInfo(objectData);
-        });
-
-        // radio options actions
-        $('.radio-options').on('change', function(){
-            // call jquery loading on options section
-            $('.mt-radio-list').loading();
-            // get post data
-            var objectData = object_data;
-            objectData.param = $(this).attr('name');
-            objectData.val = $(this).val();
-            // set new info
-            setOptions(objectData);
-        });
-
-        // "w_prices" radio toggle action
-        $('[name="options[w_prices]"]').on('change', function(){
-            var show = $(this).val();
-            if (show == 'Y') $('.item_prices').fadeIn();
-            else $('.item_prices').fadeOut();
-        });
-
-        // edit price pencil button action
-        $('.thumb-tiles.sales-package').on('click', '.btn-edit_item_price', function(){
-            var item = $(this).data('item');
-            $('#modal-edit_item_price .modal-body .eip-modal-item').html(item);
-            $('#modal-edit_item_price .modal-footer .submit-edit_item_prices').attr('data-item', item);
-            $('#modal-edit_item_price').modal('show');
-        });
-
-        // edit item price modal submit actions
-        $('.submit-edit_item_prices').on('click', function(){
-            // call jquery loading on items
-            $('.thumb-tiles.sales-package').loading();
-            // gather data
-            var objectData = object_data;
-            objectData.item = $(this).data('item');
-            objectData.price = $('[name="item_price"]').val();
-            // set price at front end
-            $('.item_prices.'+objectData.item+' > span.e_prices').html(objectData.price);
-            // set new price
-            submitNewPrice(objectData);
-        });
-
-
-
-
-        // remove item at summary view
-        $('.cart_basket_wrapper table tbody').on('click', '.summary-item-remove', function(){
-            // call jquery loading on po table of items
-            $('.cart_basket_wrapper table tbody').loading();
-            var objectData = $(this).closest('table').data('object_data');
-            objectData.prod_no = $(this).data('item');
-            objectData.size_label = $(this).data('size_label');
-            objectData.page = $(this).data('page');
-            objectData.action = 'rem_item';
-            // remove item from list
-            addRemItem(objectData);
-        });
-
-        // multiple search submit action
-        $('#so-multi-search-form_').on('submit', function(e){
-            $('#loading').modal('show');
-            var this_form = $(this);
-            // prevent the form from submitting
-            e.preventDefault();
-            // let us check first if at least one box has a value
-            var style_ary = [];
-            $('[name="style_ary[]"]').each(function(){
-                var value = $(this).val();
-                if (value) {
-                    style_ary.push(value);
-                }
-            });
-            if (style_ary.length === 0) {
-                alert('Please fill out at least one box...')
-                return;
-            }
-            // grab the form data
-            var objectData = $(this).serializeArray();
-            var search_for_thumbs = $.ajax({
-                type:    "POST",
-                url:     base_url + "admin/sales_orders/search_multiple.html",
-                data:    objectData
-            });
-            search_for_thumbs.done(function(data){
-                $('.blank-grid-text').hide();
-                $('.search-multiple-items-wrapper').hide(); // hide the form
-                $('.thumbs-grid').fadeIn();
-                // populate thumbs
-                $('.thumb-tiles-wrapper').hide();
-                $('.thumb-tiles-wrapper').html(data);
-                $('.thumb-tiles-wrapper').fadeIn();
-                $('.select-product-options').css('background-color', '#2f353b');
-                $('.select-product-options.thumbs-grid-view').css('background-color', '#696969');
-                $('#loading').modal('hide');
-            });
-            search_for_thumbs.fail(function(jqXHR, textStatus, errorThrown) {
-                $('#loading').modal('hide');
-                alert("Search Multiple Items Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
-                //$('#reloading').modal('show');
-                //location.reload();
-            });
-        });
-
-
-
-        // ===========
-
-        // manage the tooltip to work on thumbs on change
-        $('.thumb-tiles-wrapper').on({
-            mouseenter: function () {
-                $(this).closest('a.tooltips').tooltip();
-            },
-            mouseleave: function () {
-            }
-        }, '.img-a_'); //pass the element as an argument to .on
-
-        // manage the tooltip to work on table after ajax change
-        $('.cart_basket_wrapper .thumb-tiles.sales-package').on({
-            mouseenter: function () {
-                $(this).tooltip('show');
-            },
-            mouseleave: function () {
-                $(this).tooltip('hide');
-            }
-        }, '.tooltips'); //pass the element as an argument to .on
-
-        // on hide #modal-unlisted_style_no
-        $('#modal-unlisted_style_no').on('hide.bs.modal', function(){
-            // reset input text element value
-            $('[name="prod_no"]').val('');
-            // reset selectpicker value
-            $('[name="color_code"]').selectpicker('val', '');
-            // revert back to thumbs button and grid
-            $('.select-product-options').css('background-color', '#2f353b');
-            $('.select-product-options.thumbs-grid-view').css('background-color', '#696969');
-            $('.search-multiple-items-wrapper').hide();
-            $('.thumbs-grid').fadeIn();
-        })
-
-        // remove body scroll on some modal on show
-        $('#modal-select_store, #modal-enter_manual_info').on('show.bs.modal', function(){
-            $('body').attr('style', 'overflow: hidden !important');
-        }).on('hide.bs.modal', function(){
-            $('body').removeAttr('style');
-            // call jquery loading
-            $('.form-control').loading('stop');
-        })
-
-        // datepicker select
-        $('[name="delivery_date"]').on('change', function(){
-            var objectData = $(this).closest('.right-section').data('object_data');
-            objectData.delivery_date = $(this).val();
-            var setdd = $.ajax({
-                type:    "POST",
-                url:     base_url + "admin/sales_orders/set_dely_date.html",
-                data:    objectData
-            });
-            setdd.done(function(){
-                // nothing to do at the moment...
-            });
-        });
-
-        // add items NOT in the list functions
-        $('[name="color_code"]').on('changed.bs.select', function(){
-            var color_name = $('option:selected', this).data('color_name');
-            $('[name="color_name"]').val(color_name);
-        });
-
     }
 
     var handleCurrentUsers = function () {
@@ -354,9 +151,6 @@ var ComponentsEditors = function () {
             $(this).parents('label').remove();
             $('input.send_to_current_user.list[value="'+email+'"]').prop('checked', false);
         });
-
-
-
 
         // search current user
         $('.btn-search-current-user').on('click', function(){
@@ -536,7 +330,7 @@ var ComponentsEditors = function () {
             });
         };
 
-        // submit form action
+        // submit form action for current users
         $('.btn-send-sales-package').on('click', function(){
             var form = $('#form-send_sales_package');
             //$('[name="send_to"]').val('current_user');
@@ -551,7 +345,7 @@ var ComponentsEditors = function () {
                 $('[name="emails"]').val(val);
                 form.submit();
             }else{
-                alert('Select user from list');
+                alert('Select user/s from list');
             }
         });
     }
@@ -659,32 +453,10 @@ var ComponentsEditors = function () {
 		});
     }
 
-    var handleDatePickers = function () {
-
-        if (jQuery().datepicker) {
-            $('.date-picker').datepicker({
-                rtl: App.isRTL(),
-                orientation: "left",
-                autoclose: true
-                //startDate: '01/01/2000'
-            });
-            //$('body').removeClass("modal-open"); // fix bug when inline picker is used in modal
-        }
-
-        /* Workaround to restrict daterange past date select: http://stackoverflow.com/questions/11933173/how-to-restrict-the-selectable-date-ranges-in-bootstrap-datepicker */
-
-        // Workaround to fix datepicker position on window scroll
-        $( document ).scroll(function(){
-            $('#form_modal2 .date-picker').datepicker('place'); //#modal is the id of the modal
-        });
-    }
-
     return {
         //main function to initiate the module
         init: function () {
-            handleSummernote();
             handleFancyBox();
-            handleDatePickers();
             handleValidation1();
             handleScripts();
             handleCurrentUsers();

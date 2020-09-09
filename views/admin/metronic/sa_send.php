@@ -1,3 +1,11 @@
+                    <?php
+                    // let's set the role for sales user my account
+                    $pre_link =
+                        @$role == 'sales'
+                        ? 'my_account/sales'
+                        : 'admin/campaigns'
+                    ;
+                    ?>
                     <!-- BEGIN PAGE CONTENT BODY -->
                     <div class="row body-content" data-object_data='{"<?php echo $this->security->get_csrf_token_name(); ?>":"<?php echo $this->security->get_csrf_hash(); ?>"}'>
 
@@ -10,10 +18,6 @@
                                  */
                                 ?>
                                 <div class="notifications col-sm-12 clearfix margin-top-20">
-                                    <div class="alert alert-danger display-hide" data-test="test">
-                                        <button class="close" data-close="alert"></button> You have some form errors. Please check below. </div>
-                                    <div class="alert alert-success display-hide">
-                                        <button class="close" data-close="alert"></button> Your form validation is successful! </div>
                                     <?php if (validation_errors()) { ?>
                                     <div class="alert alert-danger">
                                         <button class="close" data-close="alert"></button> <?php echo validation_errors(); ?>
@@ -149,6 +153,14 @@
                                         </div>
                                     </div>
 
+                                    <div class="form-group" style="margin:0px -10px;">
+                                        <a class="btn btn-secondary-outline btn-sm font-dark pull-right" href="<?php echo site_url($pre_link.'/sales_package'); ?>">
+                                            <i class="fa fa-reply"></i> Back to List
+                                        </a>
+                                        <a class="btn btn-secondary-outline btn-sm font-dark" href="<?php echo site_url($pre_link.'/sales_package/modify/index/'.$sa_details->sales_package_id); ?>">
+        	                                <i class="fa fa-pencil"></i> Modify Sales Package
+        								</a>
+                                    </div>
                                     <div class="form-group">
                                         <div class="col-md-12">
                                             <a href="javascript:;" class="btn dark btn-md btn-active select-send-options send-to-current-user col-md-4 <?php echo @$ws_user_details ? 'hide' : ''; ?>" style="font-size:0.9em;background-color:#E5E5E5;color: black;">
@@ -157,12 +169,9 @@
                                             <a href="javascript:;" class="btn dark btn-md select-send-options send-to-new-user col-md-4 <?php echo @$ws_user_details ? 'hide' : ''; ?>" style="font-size:0.9em;">
                                                 Send To New Wholesale User
                                             </a>
-                                            <!--
-                                            <a href="<?php echo site_url((@$role == 'sales' ? 'my_account/sales' : 'admin/campaigns').'/sales_package/modify/index/'.$sa_details->sales_package_id); ?>" class="btn dark btn-md select-send-options thumbs-grid-view col-md-4" style="">
-                                            -->
-                                            <a href="<?php echo site_url((@$role == 'sales' ? 'my_account/sales' : 'admin/campaigns').'/sales_package/modify/index/'.$sa_details->sales_package_id); ?>" class="btn dark btn-md select-send-options thumbs-grid-view col-md-4" style="font-size:0.9em;">
-                                                Modify Sales Package
-                                            </a>
+                                            <button type="button" class="btn dark btn-md select-send-options send-to-all-users_ col-md-4 tooltips" data-original-title="Under Construction" style="font-size:0.9em;">
+                                                Send To All Users
+                                            </button>
                                         </div>
                                     </div>
 
@@ -183,7 +192,7 @@
                                 <!-- BEGIN FORM-->
                                 <!-- FORM =======================================================================-->
                                 <?php echo form_open(
-                                    (@$role == 'sales' ? 'my_account/sales' : 'admin/campaigns').'/sales_package/send/sa/'.$sa_details->sales_package_id,
+                                    $pre_link.'/sales_package/send/sa/'.$sa_details->sales_package_id,
                                     array(
                                         'class' => 'form-horizontal',
                                         'id' => 'form-send_sales_package'
@@ -219,6 +228,8 @@
                                 <?php $this->load->view('admin/metronic/sa_send_to_new_user'); ?>
 
                                 <?php $this->load->view('admin/metronic/sa_send_to_current_user'); ?>
+
+                                <?php $this->load->view('admin/metronic/sa_send_to_all_users'); ?>
 
                                 <h3 class="notice-select-action <?php echo @$ws_user_details ? 'hide' : 'hide'; ?>"><cite>Select action...</cite></h3>
 

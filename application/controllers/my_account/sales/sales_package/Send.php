@@ -29,7 +29,7 @@ class Send extends Sales_user_Controller {
 			$this->session->set_flashdata('error', 'no_id_passed');
 
 			// redirect user
-			redirect('my_account/sales/sales_package');
+			redirect('my_account/sales/sales_package', 'location');
 		}
 
 		// generate the plugin scripts and css
@@ -42,6 +42,7 @@ class Send extends Sales_user_Controller {
 		$this->load->library('products/product_details');
 		$this->load->library('designers/designers_list');
 		$this->load->library('categories/categories_tree');
+		$this->load->library('users/wholesale_user_details');
 		$this->load->library('users/wholesale_users_list');
 		$this->load->library('users/sales_user_details');
 		$this->load->library('color_list');
@@ -58,10 +59,28 @@ class Send extends Sales_user_Controller {
 		$this->data['sa_items'] = $this->sales_package_details->items;
 		$this->data['sa_options'] = $this->sales_package_details->options;
 
+		// check for presence of wholesale user_id coming from
+		// create sales package by product clicks report
+		// or, from options['product_clicks']
+		$this->data['ws_user_details'] = $this->wholesale_user_details->initialize(
+			array(
+				'user_id' => (@$user_id ?: @$this->data['sa_options']['product_clicks'])
+			)
+		);
+
+		// set some data for the email view
+		$this->data['username'] = ucwords(strtolower(trim($this->wholesale_user_details->fname).' '.trim($this->wholesale_user_details->lname)));
+		$this->data['email_message'] = $this->sales_package_details->email_message;
+		$this->data['access_link'] = 'javascript:;';
+		$this->data['items'] = $this->sales_package_details->items;
+
 		// author
-		if ($this->sales_package_details->sales_user == '1')
+		if (
+			$this->sales_package_details->sales_user == '1'
+			OR $this->sales_package_details->author == 'admin'
+		)
 		{
-			$this->data['author_name'] = $this->webspace_details->name;
+			$this->data['author_name'] = 'In-House';
 			$this->data['author'] = 'admin'; // admin/system
 			$this->data['author_email'] = $this->webspace_details->info_email;
 			$this->data['author_id'] = $this->session->admin_id;
@@ -87,8 +106,10 @@ class Send extends Sales_user_Controller {
 
 		// get data
 		// limits and per page
-		$per_page = 20;
+		$per_page = 300;
 		$limit = $per_page > 0 ? array($per_page) : array();
+
+		// active user list
 		// where clauses
 		$where['tbluser_data_wholesale.is_active'] = '1';
 		if ($this->session->admin_sales_loggedin)
@@ -147,11 +168,11 @@ class Send extends Sales_user_Controller {
 		Array
 		(
 		    [sales_package_id] => 12
-		    [send_to] => current_user/new_user
-			[sales_user] => rsbgm@rcpixel.com
-		    [reference_designer] => basixblacklabel
-		    [admin_sales_email] => rsbgm@rcpixel.com
-		    [admin_sales_id] => 90
+			[send_to] => current_user / new_user / all_users
+			[sales_user] => rsbgm@rcpixel.com 			// not available on modify from admin
+		    [reference_designer] => basixblacklabel 	// not available on modify from admin
+		    [admin_sales_email] => rsbgm@rcpixel.com	// not available on modify from admin
+		    [admin_sales_id] => 90 						// not available on modify from admin
 		    [access_level] => 2
 
 				//current_user
@@ -178,6 +199,9 @@ class Send extends Sales_user_Controller {
 
 			[emails] => // current user set to email (up to ten and comma separated), empty on new_user
 			[search_string] => // used for searching users from current list
+
+			[active_users]
+			[inactive_users]
 		)
 		// */
 		if ( ! $this->input->post())
@@ -223,12 +247,15 @@ class Send extends Sales_user_Controller {
 				'create_date' => date('Y-m-d', time()),
 				'admin_sales_id' => $this->input->post('admin_sales_id'),
 				'admin_sales_email' => $this->input->post('admin_sales_email'),
-				'reference_designer' => $this->input->post('ereference_designermail')
+				'reference_designer' => $this->input->post('reference_designer')
 			);
 			$DB->insert('tbluser_data_wholesale', $post_user);
 			$users = array($this->input->post('email'));
 		}
-		//else $users = $this->input->post('email');
+		else if ($this->input->post('send_to') === 'all_users')
+		{
+			// code to send to all users...
+		}
 		else
 		{
 			// latest current user email processing

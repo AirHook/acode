@@ -44,8 +44,8 @@
                                 // available only on hub sites for now
                                 if ($this->webspace_details->options['site_type'] == 'hub_site')
                                 { ?>
-                                <li class="nav-item  <?php echo $this->uri->segment(3) == 'clearance_consumer_only' ? 'active open' : ''; ?>">
-                                    <a href="<?php echo site_url('admin/products/clearance_consumer_only'); ?>" class="nav-link  ">
+                                <li class="nav-item  <?php echo $this->uri->segment(3) == 'clearance_cs_only' ? 'active open' : ''; ?>">
+                                    <a href="<?php echo site_url('admin/products/clearance_cs_only'); ?>" class="nav-link  ">
                                         <span class="title">Clearance CS Only</span>
                                     </a>
                                 </li>

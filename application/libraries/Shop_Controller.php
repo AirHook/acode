@@ -279,7 +279,7 @@ class Shop_Controller extends Frontend_Controller {
             b. Not ture for Tempo items
         2. consumer to see items that has stock only
         3. consumer gets to see on sale items
-        4. consumer gets to see consumer clearance items
+        4. consumer gets to see consumer clearance items (only loggedin this time)
         5. consumer does not see private items
         overrides:
         1. private items only show for help@basixblacklabel.com ws users
@@ -334,9 +334,29 @@ class Shop_Controller extends Frontend_Controller {
                 $where['condition'][] = $where_public_only;
             }
         }
+        else if (
+            $this->session->userdata('user_role') == 'consumer'
+            && @$_GET['availability'] != 'onsale'
+        )
+        {
+            $where_public = "(
+				tbl_product.publish = '1'
+				OR tbl_product.publish = '11'
+				OR tbl_product.publish = '12'
+			)";
+            $where['condition'][] = $where_public;
 
-        // clearance_consumer_only option
-        //$where['condition'] = '(tbl_stock.options IS NULL OR tbl_stock.options NOT LIKE \'%"clearance_consumer_only":"1"%\')';
+            /*********
+        	 * Current custom conditions for consumers users
+        	 */
+            // only with stocks as of...
+            $where['HAVING with_stocks'] = '1';
+        }
+
+        // clearance_cs_only option
+        // must show as a normal item
+        //$con_clearance_cs_only = 'tbl_stock.options NOT LIKE \'%"clearance_consumer_only":"1"%\' ESCAPE \'!\'';
+        //$where['condition'][] = $con_clearance_cs_only;
 
 		// get the products list and total count based on parameters
 		$params['wholesale'] = $this->session->userdata('user_role') == 'wholesale' ? TRUE : FALSE;

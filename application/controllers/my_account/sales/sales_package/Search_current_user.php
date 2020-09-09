@@ -25,15 +25,33 @@ class Search_current_user extends MY_Controller {
 	 */
 	public function index()
 	{
+		$this->output->enable_profiler(FALSE);
+
+		// load pertinent library/model/helpers
+		$this->load->library('users/wholesale_users_list');
+		$this->load->library('users/admin_user_details');
+
+		// get admin login details
+		if ($this->session->admin_loggedin)
+		{
+			$this->admin_user_details->initialize(
+				array(
+					'admin_id' => $this->session->admin_id
+				)
+			);
+		}
+		else
+		{
+			echo 'loggedout';
+			exit;
+		}
+
 		if ( ! $this->input->post())
 		{
 			// nothing more to do...
 			echo 'error';
 			exit;
 		}
-
-		// load pertinent library/model/helpers
-		$this->load->library('users/wholesale_users_list');
 
 		// set customer where clause for the search
 		$custom_where = "(
@@ -44,10 +62,8 @@ class Search_current_user extends MY_Controller {
 		// get data
 		// where clauses
 		$where['tbluser_data_wholesale.is_active'] = '1';
-		if ($this->session->admin_sales_loggedin)
-		{
-			$where['tbluser_data_wholesale.admin_sales_email'] = $this->sales_user_details->email;
-		}
+		$where['tbluser_data_wholesale.admin_sales_email'] = $this->sales_user_details->email;
+		$where['tbluser_data_wholesale.reference_designer'] = $this->sales_user_details->designer;
 		$users = $this->wholesale_users_list->select(
 			$where, // where
 			array( // order by

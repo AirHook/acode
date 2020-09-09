@@ -43,7 +43,7 @@ class Activation_email_click extends Frontend_Controller
 
 		// set variables
 		$wholesale_user_id = $get['ws'];
-		$tc = $get['act'];
+		$ts = $get['act'];
 
 		// load pertinent library/model/helpers
 		$this->load->library('users/wholesale_user_details');
@@ -60,7 +60,7 @@ class Activation_email_click extends Frontend_Controller
 				$this->session->set_flashdata('error', 'sa_diff_user_loggedin');
 
 				// nothing more to do...
-				redirect('account');
+				redirect('account', 'location');
 			}
 			// logged in user and sa user id is valid, hence we already have
 			// wholesale user details
@@ -73,7 +73,7 @@ class Activation_email_click extends Frontend_Controller
 				$this->session->set_flashdata('error', 'invalid_credentials');
 
 				// nothing more to do...
-				redirect('account');
+				redirect('account', 'location');
 			}
 		}
 
@@ -87,7 +87,7 @@ class Activation_email_click extends Frontend_Controller
 			redirect('account/request/activation', 'location');
 		}
 
-		// auto sign in user is not already signed in
+		// auto sign in user if not already signed in
 		// set a boolean param for new or exisiting login
 		$new_login = FALSE;
 		if ( ! $this->session->this_login_id)
@@ -107,33 +107,37 @@ class Activation_email_click extends Frontend_Controller
 		// get the ws user options property
 		$options = $this->wholesale_user_details->options;
 
-		if ( ! isset($options['act'][$tc]))
+		if ( ! isset($options['act'][$ts]))
 		{
 			// this only means it's the user's firt time to click the link
-			// set the [act] = login_id option indicating user now clicked on the link
+			// set the "[act] = login_id" option indicating user now clicked on the link
 			$this->wholesale_user_details->act_click_one(
 				$wholesale_user_id,
-				$tc,
+				$ts,
 				$this->session->this_login_id,
 				$this->wholesale_user_details->options
 			);
 
-			// since it is the user's first time to click an activation email
-			// send the 2nd email introducing JT as main contact person
-			// using wholesale_user_details class
-			$this->wholesale_user_details->send_intro_email();
+			// deactivating this for tempo
+			if ($this->wholesale_user_details->reference_designer != 'tempoparis')
+			{
+				// since it is the user's first time to click an activation email
+				// send the 2nd email introducing JT as main contact person
+				// using wholesale_user_details class
+				$this->wholesale_user_details->send_intro_email();
+			}
 
 			// set the [intro] = '1' true option indicating user now got intro letter
 			$this->wholesale_user_details->intro_sent_one(
 				$wholesale_user_id,
 				$this->wholesale_user_details->options
 			);
-
 			// reload options
 			$options = $this->wholesale_user_details->options;
 		}
 
-		if (@$options['act'][$tc] !== $this->session->this_login_id)
+		// catch all for not the same login_id
+		if (@$options['act'][$ts] !== $this->session->this_login_id)
 		{
 			if ($new_login === TRUE)
 			{
@@ -150,6 +154,7 @@ class Activation_email_click extends Frontend_Controller
 			redirect('account', 'location');
 		}
 
+		// record login details and notify admin/sales
 		if ($new_login === TRUE)
 		{
 			// record login details

@@ -223,7 +223,7 @@ class Send_product_clicks extends Admin_Controller {
 		$data['email_message'] = $this->input->post('email_message');
 
 		// the items
-		$data['items'] = json_decode($this->session->product_clicks_sa_items, TRUE);
+		$data['items'] = json_decode($this->session->product_clicks_admin_sa_items, TRUE);
 		$data['items_csv'] = implode(',', $data['items']);
 
 		// options
