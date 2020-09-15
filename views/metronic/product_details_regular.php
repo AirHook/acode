@@ -11,7 +11,7 @@
 												 * Noification area
 												 */
 												?>
-												<div>
+												<div class="notifications col-md-12">
 													<div class="alert alert-danger display-hide">
 														<button class="close" data-close="alert"></button> You have some form errors. Please check below. </div>
 													<div class="alert alert-success display-hide">
@@ -26,6 +26,18 @@
 														<button class="close" data-close="alert"></button> <?php echo validation_errors(); ?>
 													</div>
 													<?php } ?>
+
+                                                    <?php if (
+                                                        $this->input->get('type') == 'Consumer'
+                                                        && $this->input->get('form') == 'inquiry'
+                                                        && (time() - $this->input->get('tc')) <= (24*60*60)
+                                                        && @$this->product_details->stocks_options['clearance_consumer_only'] == '1'
+                                                    ) { ?>
+                                                    <div class="alert alert-danger text-center" style="background:red;font-size:1.8em;color:white;">
+                                                        <strong>SPECIAL SALE - CLEARANCE PRICE - VALID FOR 24 HOURS</strong>
+                                                    </div>
+                                                    <?php } ?>
+
 												</div>
 
 												<div class="col-xs-12 margin-bottom-20">
@@ -256,6 +268,10 @@
 
                                                             if ( $this->session->userdata('user_cat') === 'wholesale')
                                                             {
+                                                                // compensating for HOW TO ORDER options['custom_order'] parameter
+                                                                // as seen on second elsif statement
+                                                                $hto_customer_order = '0';
+
     															/**********
     															 * Wholeslae price
     															 */
@@ -299,10 +315,33 @@
                                                             }
 															elseif (
                                                                 $this->product_details->custom_order === '3'
-                                                                OR @$this->product_details->stocks_options['clearance_consumer_only'] == '1__'
-                                                                OR $this->session->flashdata('cs_how_to_order') == 'show_sale_price'
+                                                                // cs sale price for logged in cs or cs from how to order
+                                                                // and if item is makred cs clearance only
+                                                                OR (
+                                                                    $this->input->get('type') == 'Consumer'
+                                                                    && $this->input->get('form') == 'inquiry'
+                                                                    && (time() - $this->input->get('tc')) <= (24*60*60)
+                                                                    && @$this->product_details->stocks_options['clearance_consumer_only'] == '1'
+                                                                )
                                                             )
                                                             {
+                                                                /**********
+    															 * If item is on HOW TO ORDER SALE
+    															 * set a variable to make the options['custom_order'] value to 3
+                                                                 * for the checkout process to set correct price
+                                                                 * NOTE: only if item is marked cs clearance only
+    															 */
+                                                                if (
+                                                                    $this->input->get('type') == 'Consumer'
+                                                                    && $this->input->get('form') == 'inquiry'
+                                                                    && (time() - $this->input->get('tc')) <= (24*60*60)
+                                                                    && @$this->product_details->stocks_options['clearance_consumer_only'] == '1'
+                                                                )
+                                                                {
+                                                                    $hto_customer_order = '3';
+                                                                }
+                                                                else $hto_customer_order = '0';
+
     															/**********
     															 * Sale price
     															 *
@@ -342,6 +381,10 @@
                                                             }
 															else
                                                             {
+                                                                // compensating for HOW TO ORDER options['custom_order'] parameter
+                                                                // as seen on second elsif statement
+                                                                $hto_customer_order = '0';
+
     															/**********
     															 * Retail price
     															 */
@@ -759,7 +802,7 @@
     																		$('.size-qty-submit').html('<?php echo $check_stock[$size_stock] == 0 ? 'ADD TO BAG (AS PRE ORDER)' : 'ADD TO BAG'; ?>');
     																		$('input#size').val('<?php echo $size->size_name; ?>');
     																		$('input[name=\'qty\']').attr('max', '<?php echo $check_stock[$size_stock] ?: '30'; ?>');
-    																		$('input[name=\'custom_order\']').val('<?php echo $check_stock[$size_stock] == 0 ? '1' : $this->product_details->custom_order; ?>');
+    																		$('input[name=\'custom_order\']').val('<?php echo $check_stock[$size_stock] == 0 ? '1' : ($hto_customer_order ?: $this->product_details->custom_order); ?>');
     																		$('.hoverable.product-form__list-item').css('background-color','transparent');
     																		$(this).css('background-color','#ccc');
     																	">
@@ -832,7 +875,7 @@
 																	 * Script on click of size box changes this to 1 for pre-order sizes
 																	 */
 																	?>
-																	<input type="hidden" id="custom_order-<?php echo $this->product_details->color_code; ?>" name="custom_order" value="<?php echo $this->product_details->custom_order; ?>" />
+																	<input type="hidden" id="custom_order-<?php echo $this->product_details->color_code; ?>" name="custom_order" value="<?php echo @$hto_customer_order ?: $this->product_details->custom_order; ?>" />
 
 																</div>
 

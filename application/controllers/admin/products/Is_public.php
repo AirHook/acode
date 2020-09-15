@@ -51,6 +51,24 @@ class Is_public extends Admin_Controller {
 		$prev_url_segs = $this->session->flashdata('prev_url_segs') ? '/'.$this->session->flashdata('prev_url_segs') : '';
 		$this->session->set_flashdata('prev_url_segs', implode('/', $url_segs));
 
+		// check any previous url segs for unwanted designer slugs
+		if ($this->webspace_details->options['site_type'] != 'hub_site')
+		{
+			// check any previous url segs for unwanted designer slugs
+			if ($this->designer_details->initialize(array('designer.url_structure'=>$url_segs[0])))
+			{
+				if ($this->designer_details->slug != $this->webspace_details->slug)
+				{
+					// unset any prev_url_segs
+					unset($_SESSION['prev_url_segs']);
+
+					// reload page with new prev_url_segs
+					redirect('admin/products/is_public', 'location');
+				}
+			}
+
+		}
+
 		// set category pre link
 		$this->data['pre_link'] = implode('/', array_diff($uri_string, $url_segs));
 
@@ -128,7 +146,11 @@ class Is_public extends Admin_Controller {
 				$redirect_url =
 					$prev_url_segs
 					? 'admin/products/is_public/index'.$prev_url_segs
-					: 'admin/products/is_public/index/basixblacklabel/womens_apparel/dresses/evening_dresses'
+					: (
+						$this->webspace_details->slug == 'shop7thavenue'
+						? 'admin/products/is_public/index/basixblacklabel/womens_apparel/dresses/evening_dresses'
+						: 'admin/products/is_public/index/womens_apparel'
+					)
 				;
 			}
 			else
@@ -163,7 +185,7 @@ class Is_public extends Admin_Controller {
 
 		// don't show clearance cs only items
 		$where['tbl_stock.options NOT LIKE'] = '"clearance_consumer_only":"1"';
-		
+
 		// get the products list and total count
 		$params['show_private'] = FALSE; // all items general public (Y) - N for private
 		$params['view_status'] = 'ALL'; // all items view status (Y, Y1, Y2, N)

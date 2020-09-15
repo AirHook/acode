@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Orders extends Consumer_user_Controller {
+class Index extends Consumer_user_Controller {
 
 	/**
 	 * Constructor
@@ -65,10 +65,11 @@ class Orders extends Consumer_user_Controller {
 		$this->data['file'] = '../my_account/orders'; // retail orders
 		$this->data['page_title'] = 'Consumer Orders';
 		$this->data['page_description'] = 'List of Consumer Orders';
+		
 		// load views...
 		$this->load->view('metronic/template/template', $this->data);
 	}
-	
+
 	// ----------------------------------------------------------------------
 
 	/**
@@ -126,7 +127,7 @@ class Orders extends Consumer_user_Controller {
 		// load views...
 		$this->load->view('metronic/template/template', $this->data);
 	}
-		
+
 	// ----------------------------------------------------------------------
 
 	/**
@@ -152,7 +153,7 @@ class Orders extends Consumer_user_Controller {
 		$this->data['limit'] = 100;
 		$this->data['offset'] = $this->data['page'] == '' ? 0 : ($this->data['page'] * 100) - 100;
 		$this->orders_list->pagination = $this->data['page'];
-		
+
 		// get data
 		$where['tbl_order_log.c !='] = 'ws'; //consumer orders only
 		$where['tbl_order_log.user_id'] = $this->session->userdata['user_id'];
@@ -184,7 +185,7 @@ class Orders extends Consumer_user_Controller {
 		// load views...
 		$this->load->view('metronic/template/template', $this->data);
 	}
-		
+
 	// ----------------------------------------------------------------------
 
 	/**
@@ -258,31 +259,31 @@ class Orders extends Consumer_user_Controller {
 			// nothing more to do...
 			// set flash data
 			$this->session->set_flashdata('error', 'no_id_passed');
-			
+
 			// redirect user
 			redirect('/my_account/consumer/orders');
 		}
-		
+
 		// generate the plugin scripts and css
 		$this->_create_plugin_scripts();
-		
+
 		// load pertinent library/model/helpers
 		$this->load->library('products/product_details');
 		$this->load->library('orders/order_details');
-		
+
 		// initialize...
 		$this->order_details->initialize(array('tbl_order_log.order_log_id'=>$id));
-		
+
 		// set data variables...
 		$this->data['role'] = 'consumer'; //userrole will be used for IF statements in template files
 		$this->data['file'] = '../my_account/orders_details';
 		$this->data['page_title'] = 'Order Details';
 		$this->data['page_description'] = 'Details of the order transaction';
-		
+
 		// load views...
 		$this->load->view('metronic/template/template', $this->data);
 	}
-	
+
 	// ----------------------------------------------------------------------
 
 	/**
@@ -322,7 +323,7 @@ class Orders extends Consumer_user_Controller {
 		$this->pagination->initialize($config);
 
 	}
-	
+
 	// ----------------------------------------------------------------------
 
 	/**

@@ -51,6 +51,24 @@ class Clearance_cs_only extends Admin_Controller {
 		$prev_url_segs = $this->session->flashdata('prev_url_segs') ? '/'.$this->session->flashdata('prev_url_segs') : '';
 		$this->session->set_flashdata('prev_url_segs', implode('/', $url_segs));
 
+		// check any previous url segs for unwanted designer slugs
+		if ($this->webspace_details->options['site_type'] != 'hub_site')
+		{
+			// check any previous url segs for unwanted designer slugs
+			if ($this->designer_details->initialize(array('designer.url_structure'=>$url_segs[0])))
+			{
+				if ($this->designer_details->slug != $this->webspace_details->slug)
+				{
+					// unset any prev_url_segs
+					unset($_SESSION['prev_url_segs']);
+
+					// reload page with new prev_url_segs
+					redirect('admin/products/clearance_cs_only', 'location');
+				}
+			}
+
+		}
+
 		// set category pre link
 		$this->data['pre_link'] = implode('/', array_diff($uri_string, $url_segs));
 
@@ -128,7 +146,11 @@ class Clearance_cs_only extends Admin_Controller {
 				$redirect_url =
 					$prev_url_segs
 					? 'admin/products/clearance_cs_only/index'.$prev_url_segs
-					: 'admin/products/clearance_cs_only/index/basixblacklabel/womens_apparel/dresses/evening_dresses'
+					: (
+						$this->webspace_details->slug == 'shop7thavenue'
+						? 'admin/products/clearance_cs_only/index/basixblacklabel/womens_apparel/dresses/evening_dresses'
+						: 'admin/products/clearance_cs_only/index/womens_apparel'
+					)
 				;
 			}
 			else

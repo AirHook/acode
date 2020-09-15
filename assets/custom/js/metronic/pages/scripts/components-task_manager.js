@@ -3,6 +3,19 @@ var ComponentsEditors = function () {
     var base_url = $('body').data('base_url');
     var object_data = $('body').data('object_data');
 
+    var handleSummernote = function () {
+        $('#summernote_1').summernote({
+			height: 250,
+			toolbar: [
+				// [groupName, [list of button]]
+				['main', ['style']],
+				['style', ['bold', 'italic', 'underline', 'clear']],
+				['para', ['ul', 'ol', 'paragraph']],
+				['link', ['link']]
+			]
+		});
+    }
+
     var handleScripts = function () {
 
         // activate nestable list
@@ -393,6 +406,7 @@ var ComponentsEditors = function () {
     return {
         //main function to initiate the module
         init: function () {
+            handleSummernote();
             handleDatePickers();
             handleScripts();
             handleValidation1(); // add new project

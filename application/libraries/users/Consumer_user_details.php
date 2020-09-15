@@ -345,6 +345,90 @@ class Consumer_user_details
 		return TRUE;
 	}
 
+	// ----------------------------------------------------------------------
+
+	/**
+	 * Notify admin of user being online
+	 *
+	 * @return	void
+	 */
+	public function notify_admin_user_online()
+	{
+		// begin send email requet to isntyle admin
+		$email_message = '
+			<br /><br />
+			Dear Admin,
+			<br /><br />
+			Consumer User:<br />
+			'.ucfirst($this->fname.' '.$this->lname).' is now online.<br />
+			<br />
+			<strong>Sale User Representative:</strong> &nbsp; &nbsp; '.$this->admin_sales_user.' '.$this->admin_sales_lname.'
+			<br /><br />
+			User Details:
+			<br /><br />
+			<table>
+				<tr>
+					<td>User Name: &nbsp; </td>
+					<td>'.ucwords($this->fname.' '.$this->lname).'</td>
+				</tr>
+				<tr>
+					<td>Telephone: &nbsp; </td>
+					<td>'.$this->telephone.'</td>
+				</tr>
+				<tr>
+					<td>Email: &nbsp; </td>
+					<td>'.$this->email.'</td>
+				</tr>
+			</table>
+			<br /><br />
+
+			<br />
+		';
+		// *** removing below line from above bottom space while it doesn't work
+		// Click <u>here</u> to chat with user. <span style="color:red">[ Not yet available. ]</span>
+
+		if (ENVIRONMENT == 'development') // ---> used for development purposes
+		{
+			// we are unable to send out email in our dev environment
+			// so we check on the email template instead.
+			// just don't forget to comment these accordingly
+			echo $email_message;
+			echo '<br /><br />';
+
+			echo '<a href="'.site_url('shop/designers/'.$this->reference_designer).'">Continue...</a>';
+			echo '<br /><br />';
+			exit;
+		}
+		else
+		{
+			// let's send the email
+			// load email library
+			$this->CI->load->library('email');
+
+			// notify admin
+			$this->CI->email->clear();
+
+			//$this->CI->email->from($this->designer_info_email, $this->designer);
+			$this->CI->email->from($this->designer_info_email, $this->designer);
+
+			// user user email to reply to
+			$this->CI->email->reply_to($this->email, ucwords($this->fname.' '.$this->lname));
+
+			$this->CI->email->to($this->CI->webspace_details->info_email);
+
+			$this->CI->email->bcc('help@shop7thavenue.com'); // --> for debuggin purposes
+
+			$this->CI->email->subject('WHOLESALE USER IS ON LINE - '.strtoupper($this->CI->webspace_details->name));
+			$this->CI->email->message($email_message);
+
+			// email class has a security error
+			// "idn_to_ascii(): INTL_IDNA_VARIANT_2003 is deprecated"
+			// using the '@' sign to supress this
+			// must resolve pending update of CI
+			@$this->CI->email->send();
+		}
+	}
+
 	// --------------------------------------------------------------------
 
 	/**

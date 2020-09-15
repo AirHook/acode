@@ -94,7 +94,7 @@
 			</div>
 			<div class="form-horizontal" role="form" style="color:red;">
 				<div class="form-group">
-                    <label class="col-xs-7 control-label" style="text-align:left;text-transform:uppercase;">Send me special offers on future clearance items *</label>
+                    <label class="col-xs-7 control-label" style="text-align:left;text-transform:uppercase;">Send me reduced price offers on items *</label>
                     <div class="col-xs-5">
                         <div class="mt-radio-inline">
                             <label class="mt-radio mt-radio-outline">

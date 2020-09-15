@@ -176,6 +176,11 @@ class Frontend_Controller extends MY_Controller {
 			// in case the user login session holds and the user is already inactive
 			if ($this->wholesale_user_details->status != '1')
 			{
+				// manually logout user and remove previous session records, and
+				// redirect to request for activation page
+				$this->wholesale_user_details->initialize();
+				$this->wholesale_user_details->unset_session();
+
 				// set flash notice
 				$this->session->set_flashdata('error', 'status_inactive');
 

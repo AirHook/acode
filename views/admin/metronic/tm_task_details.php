@@ -156,7 +156,15 @@
                                     <img src="<?php echo base_url().$attachment->media_url; ?>" alt="<?php echo $attachment->media_filename; ?>" />
                                 </a>
                             </div>
-                            <a href="<?php echo base_url().$attachment->media_url; ?>" download> <i class="fa fa-download font-dark tooltips" data-original-title="Download"></i> <?php echo trim($attachment->media_dimensions) == 'x' ? '<small title="'.$attachment->media_filename.'">'.$attachment->media_filename.'</small>' : ''; ?> </a>
+                            <a href="<?php echo base_url().$attachment->media_url; ?>">
+                                <i class="fa fa-download font-dark tooltips" data-original-title="Download"></i>
+                                <?php echo trim($attachment->media_dimensions) == 'x' ? '<small title="'.$attachment->media_filename.'">'.$attachment->media_filename.'</small>' : ''; ?>
+                            </a>
+                            <?php echo trim($attachment->media_dimensions) == 'x' ? '<br />' : ''; ?>
+                            <a href="<?php echo site_url('remove_file'); ?>" class="hide">
+                                <i class="fa fa-trash font-dark tooltips" data-original-title="Delete"></i>
+                                <?php echo trim($attachment->media_dimensions) == 'x' ? '<small title="'.$attachment->media_filename.'">'.$attachment->media_filename.'</small>' : ''; ?>
+                            </a>
                         </div>
 
                                 <?php
@@ -460,7 +468,7 @@
                             <input class="form-control todo-task-title" name="title" type="text" value="<?php echo $task_details->title; ?>" placeholder="Task title..." />
                         </h3>
                         <p class="todo-task-modal-bg">
-                            <textarea class="form-control todo-task-description" name="description" rows="15" placeholder="Description..."><?php echo $task_details->description; ?></textarea>
+                            <textarea class="form-control todo-task-description summernote" name="description" id="summernote_1" rows="15" placeholder="Description..."><?php echo $task_details->description; ?></textarea>
                         </p>
                     </div>
 

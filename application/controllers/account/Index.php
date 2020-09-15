@@ -261,6 +261,10 @@ class Index extends Frontend_Controller {
 				{
 					$this->session->set_userdata('cs_login_time', $sestime);
 				}
+
+				//$this->consumer_user_details->notify_admin_user_online();
+
+				redirect('my_account/consumer/dashboard', 'location');
 			}
 			else if ($this_login == 'sales')
 			{

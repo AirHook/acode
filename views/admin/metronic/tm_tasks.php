@@ -372,7 +372,7 @@
                         <input class="form-control todo-task-title" type="text" value="" placeholder="Task title..." />
                     </h3>
                     <p class="todo-task-modal-bg">
-                        <textarea class="form-control todo-task-description" rows="15" placeholder="Description..."></textarea>
+                        <textarea class="form-control todo-task-description summernote" id="summernote_1" rows="15" placeholder="Description..."></textarea>
                     </p>
                 </div>
 

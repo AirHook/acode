@@ -56,6 +56,7 @@ class Task_edit extends Admin_Controller {
 		$post_ary['last_modified'] = time();
 		// unset unneeded variables
 		unset($post_ary['task_id']);
+		unset($post_ary['files']);
 
 		$this->DB->where('task_id', $this->input->post('task_id'));
 		$query = $this->DB->update('tm_tasks', $post_ary);

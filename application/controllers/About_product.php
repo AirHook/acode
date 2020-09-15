@@ -183,7 +183,7 @@ class About_product extends Frontend_Controller {
 		}
 
 		// ---> to the hub site
-		$backurl = $backdomain.$backurl_path
+		$backurl = $backdomain.$backurl_path;
 
 		// break name into 2 parts
 		$name_exp = explode(' ', trim($name));
@@ -211,14 +211,15 @@ class About_product extends Frontend_Controller {
 			'form' => 'inquiry',
 			'no_stocks_at_all' => $no_stocks_at_all,
 			'sc_url' => $this->product_details->sc_url_structure,
-			'site_referrer' => $this->webspace_details->slug
+			'site_referrer' => $this->webspace_details->slug,
+			'tc' => time()
 		);
 		$query_string = http_build_query($query_string_ary);
 
 		// ---> PATCH
 		// Sept 7, 2020 -> using the redirect to hub site 'about_product' controller
 		// with query string as the access link to the HOW TO ORDER email
-		$access_link = $this->config->slash_item('PROD_IMG_URL').'about_product/validate.html?'.$query_string
+		$access_link = $this->config->slash_item('PROD_IMG_URL').'about_product/validate.html?'.$query_string;
 
 		/*
 		| ------------------------------------------------------------------------------
@@ -256,7 +257,7 @@ class About_product extends Frontend_Controller {
 							<p>Dress Size: '.$dress_size.'</p>
 							<p>Name: '.$name.'</p>
 							<p>Email Address: '.$email.'</p>
-							<p>Send me offers on clearance items: '.($opt_type == '1' ? 'YES' : 'NO').'</p>
+							<p>Send me reduced price offer: '.($opt_type == '1' ? 'YES' : 'NO').'</p>
 							<p>I am a: '.$u_type.'</p>
 							<p>Message or Comments: '.$message.'</p>
 						</td>
@@ -722,7 +723,7 @@ class About_product extends Frontend_Controller {
 
 		if ($this->input->get('type') == 'Store')
 		{
-			if ($valid_user = $this->wholesale_user_details->initialize(array('tbluser_data_wholesale.email'=>$this->input->get('user_email'))))
+			if ($valid_user = $this->wholesale_user_details->initialize(array('email'=>$this->input->get('user_email'))))
 			{
 				// set logged in session
 				$this->wholesale_user_details->set_session();
@@ -734,25 +735,33 @@ class About_product extends Frontend_Controller {
 			}
 		}
 
+		// ---> PATCH
+		// Sept 7, 2020 -> for consumers, enable showing discount prices on first land
+		// using data from query string:
+		// tc => time() -> reference for 24 hours validity
+		// form => 'inquiry' -> indicating from how to order
+		// type=> $u_type -> user type must be Consumer
+		$get_ary = array(
+			'tc' => $this->input->get('tc'),
+			'form' => $this->input->get('form'),
+			'type' => $this->input->get('type')
+		);
+		$get = '?'.http_build_query($get_ary);
+
 		if ($valid_user)
 		{
 			// redirect to product details page here at hub site
 			//redirect('shop/details/'.$this->input->get('url'), 'location');
-			redirect($this->input->get('url'), 'location');
+			redirect(site_url($this->input->get('url').$get), 'location');
 		}
 
 		// lets process the user (add to recors where necessary)
 		if ($this->input->get('type') == 'Consumer') $this->_add_inquiring_consumer();
 		if ($this->input->get('type') == 'Store') $this->_add_inquiring_wholesale();
 
-		// ---> PATCH
-		// Sept 7, 2020 -> for consumers, we set a flash session to enable
-		// showing discount prices on first land
-		$this->session->set_flashdata('cs_how_to_order', 'show_sale_price');
-
 		// redirect to product details page here at hub site
 		//redirect('shop/details/'.$this->input->get('url'), 'location');
-		redirect($this->input->get('url'), 'location');
+		redirect(site_url($this->input->get('url').$get), 'location');
 	}
 
 	// --------------------------------------------------------------------

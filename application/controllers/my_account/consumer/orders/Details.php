@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Details extends Wholesale_user_Controller {
+class Details extends Consumer_user_Controller {
 
 	/**
 	 * Constructor
@@ -42,7 +42,6 @@ class Details extends Wholesale_user_Controller {
 		$this->load->library('products/size_names');
 		$this->load->library('products/product_details');
 		$this->load->library('orders/order_details');
-		$this->load->library('users/wholesale_user_details');
 		$this->load->library('users/sales_user_details');
 		$this->load->library('barcodes/upc_barcodes');
 
@@ -56,43 +55,41 @@ class Details extends Wholesale_user_Controller {
 		;
 
 		// billto shipto address
-		$this->data['store_name'] = $this->wholesale_user_details->store_name;
-		$this->data['firstname'] = $this->wholesale_user_details->firstname;
-		$this->data['lastname'] = $this->wholesale_user_details->lastname;
-		$this->data['address1'] = $this->wholesale_user_details->address1;
-		$this->data['address2'] = $this->wholesale_user_details->address2;
-		$this->data['city'] = $this->wholesale_user_details->city;
-		$this->data['state'] = $this->wholesale_user_details->state;
-		$this->data['country'] = $this->wholesale_user_details->country;
-		$this->data['zipcode'] = $this->wholesale_user_details->zipcode;
-		$this->data['telephone'] = $this->wholesale_user_details->telephone;
-		$this->data['email'] = $this->wholesale_user_details->email;
-		$this->data['sh_store_name'] = $this->order_details->store_name ?: $this->wholesale_user_details->store_name;
-		$this->data['sh_firstname'] = $this->order_details->firstname ?: $this->wholesale_user_details->firstname;
-		$this->data['sh_lastname'] = $this->order_details->lastname ?: $this->wholesale_user_details->lastname;
-		$this->data['sh_address1'] = $this->order_details->ship_address1 ?: $this->wholesale_user_details->address1;
-		$this->data['sh_address2'] = $this->order_details->ship_address2 ?: $this->wholesale_user_details->address2;
-		$this->data['sh_city'] = $this->order_details->ship_city ?: $this->wholesale_user_details->city;
-		$this->data['sh_state'] = $this->order_details->ship_state ?: $this->wholesale_user_details->state;
-		$this->data['sh_country'] = $this->order_details->ship_country ?: $this->wholesale_user_details->country;
-		$this->data['sh_zipcode'] = $this->order_details->ship_zipcode ?: $this->wholesale_user_details->zipcode;
-		$this->data['sh_telephone'] = $this->order_details->telephone ?: $this->wholesale_user_details->telephone;
-		$this->data['sh_email'] = $this->order_details->email ?: $this->wholesale_user_details->email;
+		$this->data['store_name'] = $this->consumer_user_details->store_name;
+		$this->data['firstname'] = $this->consumer_user_details->firstname;
+		$this->data['lastname'] = $this->consumer_user_details->lastname;
+		$this->data['address1'] = $this->consumer_user_details->address1;
+		$this->data['address2'] = $this->consumer_user_details->address2;
+		$this->data['city'] = $this->consumer_user_details->city;
+		$this->data['state'] = $this->consumer_user_details->state;
+		$this->data['country'] = $this->consumer_user_details->country;
+		$this->data['zipcode'] = $this->consumer_user_details->zipcode;
+		$this->data['telephone'] = $this->consumer_user_details->telephone;
+		$this->data['email'] = $this->consumer_user_details->email;
+		$this->data['sh_store_name'] = $this->order_details->store_name ?: $this->consumer_user_details->store_name;
+		$this->data['sh_firstname'] = $this->order_details->firstname ?: $this->consumer_user_details->firstname;
+		$this->data['sh_lastname'] = $this->order_details->lastname ?: $this->consumer_user_details->lastname;
+		$this->data['sh_address1'] = $this->order_details->ship_address1 ?: $this->consumer_user_details->address1;
+		$this->data['sh_address2'] = $this->order_details->ship_address2 ?: $this->consumer_user_details->address2;
+		$this->data['sh_city'] = $this->order_details->ship_city ?: $this->consumer_user_details->city;
+		$this->data['sh_state'] = $this->order_details->ship_state ?: $this->consumer_user_details->state;
+		$this->data['sh_country'] = $this->order_details->ship_country ?: $this->consumer_user_details->country;
+		$this->data['sh_zipcode'] = $this->order_details->ship_zipcode ?: $this->consumer_user_details->zipcode;
+		$this->data['sh_telephone'] = $this->order_details->telephone ?: $this->consumer_user_details->telephone;
+		$this->data['sh_email'] = $this->order_details->email ?: $this->consumer_user_details->email;
 
 		// other data
 		$this->data['status'] = $this->order_details->status_text;
 		$this->data['name'] =
-			(
-				@$this->wholesale_user_details->store_name
-				?: $this->wholesale_user_details->firstname.' '.$this->wholesale_user_details->lastname
-			).' (#'.$this->data['order_details']->user_id.')'
+			$this->consumer_user_details->firstname.' '.$this->consumer_user_details->lastname
+			.' (#'.$this->data['order_details']->user_id.')'
 		;
 
 		// need to show loading at start
 		$this->data['show_loading'] = FALSE;
 
 		// set data variables...
-		$this->data['role'] = 'wholesale'; //userrole will be used for IF statements in template files
+		$this->data['role'] = 'consumer'; //userrole will be used for IF statements in template files
 		$this->data['file'] = '../my_account/order_details';
 		$this->data['page_title'] = 'Order Details';
 		$this->data['page_description'] = 'Details of the order transaction';

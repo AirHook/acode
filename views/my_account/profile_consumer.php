@@ -195,16 +195,24 @@
 				<input name="zip_postcode" type="text" class="form-control" value="<?php echo $this->consumer_user_details->zipcode; ?>" />
 			</div>
 		</div>
+
 		<hr />
+
 		<div class="form-group">
+			<div class="col-md-offset-3 col-md-4">
+				<input type="checkbox" class="change-password" name="change-password" value="1" tabindex="-1" /> Change password
+			</div>
+		</div>
+		<div class="form-group hide-password display-none">
 			<label class="control-label col-md-3">Password
 			</label>
 			<div class="col-md-4">
 				<input type="password" id="password" name="password" class="form-control" />
-				<cite class="help-block small">Leave blank to not change</cite>
+				<cite class="help-block small"> Enter new password </cite>
+				<input type="checkbox" class="show-password" tabindex="-1" /> Show password
 			</div>
 		</div>
-		<div class="form-group">
+		<div class="form-group hide-password display-none">
 			<label class="control-label col-md-3">Confirm Password
 			</label>
 			<div class="col-md-4">

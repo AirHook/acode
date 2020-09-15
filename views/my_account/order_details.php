@@ -129,9 +129,7 @@
 															<div class="col-xs-5 col-sm-4 name"> Designer: </div>
 															<div class="col-xs-7 col-sm-8 value"> <?php echo $order_details->designer_group; ?> </div>
 															<div class="col-xs-5 col-sm-4 name"> Customer: </div>
-															<div class="col-xs-7 col-sm-8 value">
-																<?php echo (@$this->wholesale_user_details->store_name ?: $this->wholesale_user_details->firstname.' '.$this->wholesale_user_details->lastname).' (#'.$order_details->user_id.')'; ?>
-															</div>
+															<div class="col-xs-7 col-sm-8 value"> <?php echo $name; ?> </div>
 															<div class="col-xs-5 col-sm-4 name"> Role: </div>
 															<div class="col-xs-7 col-sm-8 value"> <?php echo ($order_details->c == 'guest' OR $order_details->c == 'cs') ? 'Retail' : 'Wholesale'; ?> </div>
 															<div class="col-xs-5 col-sm-4 name"> Payment Info: </div>
@@ -156,7 +154,7 @@
 																	}
 																	else
 																	{
-																		echo '<a href="'.site_url($pre_link.'/orders/payment_options/index/'.$order_details->order_id).'" class="">SELECT PAYMENT OPTIONS</a>';
+																		echo 'Credit Card';
 																	}
 																} ?>
 
@@ -169,28 +167,30 @@
 
 														<h4> Billing Address </h4>
 
-														<?php echo @$this->wholesale_user_details->store_name ?: $this->wholesale_user_details->firstname.' '.$this->wholesale_user_details->lastname; ?>
-														<br> <?php echo $this->wholesale_user_details->address1; ?>
-														<?php echo $this->wholesale_user_details->address2 ? '<br>'.$this->wholesale_user_details->address2 : ''; ?>
-														<br> <?php echo $this->wholesale_user_details->city; ?>
-														<br> <?php echo $this->wholesale_user_details->zipcode.' '.$this->wholesale_user_details->state; ?>
-														<br> <?php echo $this->wholesale_user_details->country; ?>
-														<?php echo $this->wholesale_user_details->telephone ? '<br >T: '.$this->wholesale_user_details->telephone : ''; ?>
-														<br> ATTN: <?php echo $this->wholesale_user_details->firstname.' '.$this->wholesale_user_details->lastname; ?> <?php echo '<cite class="small">('.$this->wholesale_user_details->email.')</cite>'; ?>
+														<?php
+														echo $store_name ?: $firstname.' '.$lastname; echo '<br />';
+														echo $address1.'<br />';
+														echo $address2 ? $address2.'<br />' : '';
+														echo $city.', '.$zipcode.' '.$state.'<br />';
+														echo $country.'<br />';
+														echo $telephone.'<br />';
+														echo 'ATTN: '.$firstname.' '.$lastname.' <cite class="small">('.$email.')</cite>';
+														?>
 
 													</div>
 													<div class="col-md-6 col-sm-12">
 
 														<h4> Shipping Address </h4>
 
-														<?php echo $order_details->store_name ?: $order_details->firstname.' '.$order_details->lastname; ?>
-														<br> <?php echo $order_details->ship_address1; ?>
-														<?php echo $order_details->ship_address2 ? '<br>'.$order_details->ship_address2 : ''; ?>
-														<br> <?php echo $order_details->ship_city; ?>
-														<br> <?php echo $order_details->ship_zipcode.' '.$order_details->ship_state; ?>
-														<br> <?php echo $order_details->ship_country; ?>
-														<?php echo $order_details->telephone ? '<br >T: '.$order_details->telephone : ''; ?>
-														<br> ATTN: <?php echo $order_details->firstname.' '.$order_details->lastname; ?> <?php echo '<cite class="small">('.$order_details->email.')</cite>'; ?>
+														<?php
+														echo $sh_store_name ?: $sh_firstname.' '.$sh_lastname; echo '<br />';
+														echo $sh_address1.'<br />';
+														echo $sh_address2 ? $sh_address2.'<br />' : '';
+														echo $sh_city.', '.$sh_zipcode.' '.$sh_state.'<br />';
+														echo $sh_country.'<br />';
+														echo $sh_telephone.'<br />';
+														echo 'ATTN: '.$sh_firstname.' '.$sh_lastname.' <cite class="small">('.$sh_email.')</cite>';
+														?>
 
 													</div>
 												</div>

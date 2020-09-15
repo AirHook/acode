@@ -105,24 +105,6 @@ class Search_Controller extends Frontend_Controller {
         // 3. consumer gets to see on sale items
         /* */
         if (
-            $this->session->userdata('user_role') != 'wholesale'
-            && @$_GET['availability'] != 'onsale'
-        )
-        {
-            $where_public = "(
-                tbl_product.publish = '1'
-                OR tbl_product.publish = '11'
-                OR tbl_product.publish = '12'
-            )";
-            $where['condition'][] = $where_public;
-
-            /*********
-        	 * Current custom conditions for consumers users
-        	 */
-            // only with stocks as of...
-            $where['HAVING with_stocks'] = '1';
-        }
-        else if (
             $this->session->userdata('user_role') == 'wholesale'
             && @$_GET['availability'] == 'onsale'
         )
@@ -155,7 +137,7 @@ class Search_Controller extends Frontend_Controller {
             }
         }
         else if (
-            $this->session->userdata('user_role') == 'consumer'
+            $this->session->userdata('user_role') != 'wholesale'
             && @$_GET['availability'] != 'onsale'
         )
         {
@@ -165,6 +147,13 @@ class Search_Controller extends Frontend_Controller {
 				OR tbl_product.publish = '12'
 			)";
             $where['condition'][] = $where_public;
+
+            $where_variant_public = "(
+				tbl_stock.new_color_publish = '1'
+				OR tbl_stock.new_color_publish = '11'
+				OR tbl_stock.new_color_publish = '12'
+			)";
+            $where['condition'][] = $where_variant_public;
 
             /*********
         	 * Current custom conditions for consumers users

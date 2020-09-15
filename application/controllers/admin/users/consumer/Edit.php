@@ -116,6 +116,7 @@ class Edit extends Admin_Controller {
 			}
 
 			// set data variables...
+			$this->data['role'] = 'admin';
 			$this->data['file'] = 'users_consumer_edit';
 			$this->data['page_title'] = 'Consumer User Edit';
 			$this->data['page_description'] = 'Edit Consumer User Details';
