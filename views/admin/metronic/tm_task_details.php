@@ -132,7 +132,7 @@
                     <br />
                     <?php
                     /*********
-                     * TASK ASSETS
+                     * TASK ATTACHMENTS
                      */
                     ?>
                     <style>
@@ -161,11 +161,34 @@
                                 <?php echo trim($attachment->media_dimensions) == 'x' ? '<small title="'.$attachment->media_filename.'">'.$attachment->media_filename.'</small>' : ''; ?>
                             </a>
                             <?php echo trim($attachment->media_dimensions) == 'x' ? '<br />' : ''; ?>
-                            <a href="<?php echo site_url('remove_file'); ?>" class="hide">
+                            <a href="#modal-remove_file" class="" data-toggle="modal" data-media_id="<?php echo $attachment->media_id; ?>">
                                 <i class="fa fa-trash font-dark tooltips" data-original-title="Delete"></i>
                                 <?php echo trim($attachment->media_dimensions) == 'x' ? '<small title="'.$attachment->media_filename.'">'.$attachment->media_filename.'</small>' : ''; ?>
                             </a>
                         </div>
+
+                        <!-- REMOVE FILE -->
+                        <div class="modal fade bs-modal-sm" id="modal-remove_file" tabindex="-1" role="dialog" aria-hidden="true">
+                            <div class="modal-dialog modal-sm">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                        <h4 class="modal-title">REMOVE FILE</h4>
+                                    </div>
+                                    <div class="modal-body"> Are you sure you want to remove file? </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
+                                        <a href="<?php echo site_url('admin/task_manager/remove_file/index/'.$attachment->media_id.'/'.$task_details->task_id); ?>" type="button" class="btn green">
+                                            <span class="ladda-label">Confirm?</span>
+                                            <span class="ladda-spinner"></span>
+                                        </a>
+                                    </div>
+                                </div>
+                                <!-- /.modal-content -->
+                            </div>
+                            <!-- /.modal-dialog -->
+                        </div>
+                        <!-- /.modal -->
 
                                 <?php
                             }

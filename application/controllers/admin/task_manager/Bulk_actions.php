@@ -51,11 +51,61 @@ class Bulk_actions extends Admin_Controller {
 		{
 			if ($key === 0) $DB->where('project_id', $id);
 			else $DB->or_where('project_id', $id);
+
+			// iterate through each project if delete
+			if ($this->input->post('bulk_action') === 'del')
+			{
+				// load pertinent library/model/helpers
+				$this->load->library('task_manager/tasks_list');
+				$this->load->library('task_manager/project_task_details');
+				$this->load->library('uploads/image_unlink');
+
+				// get the task list first
+				$tasks = $this->tasks_list->select(
+					array(
+						'project_id' => $id
+					)
+				);
+
+				// get attachments for each task
+				foreach ($tasks as $task)
+				{
+					// get the data
+					$task_details = $this->project_task_details->initialize(
+						array(
+							'task_id' => $task->task_id
+						)
+					);
+					$attachments = $this->project_task_details->attachments();
+
+					// unlink attachments first
+					foreach ($attachments as $attachment)
+					{
+						// initialize class
+						$params['media_lib_id'] = $attachment->media_id;
+						$params['attached_to_key'] = 'task_manager';
+						$params['attached_to_value'] = $task->task_id;
+						$this->image_unlink->initialize($params);
+
+						// remove file
+						$this->image_unlink->delunlink();
+					}
+
+					// delete any chats link to task
+					$this->DB->where('task_id', $task->task_id);
+					$this->DB->delete('tm_chats');
+
+					// finally, delete task record
+					$this->DB->where('task_id', $task->task_id);
+					$this->DB->delete('tm_tasks');
+				}
+			}
 		}
 
 		// update or delete items from database
 		if ($this->input->post('bulk_action') === 'del')
 		{
+			// delete project
 			$DB->delete('tm_projects');
 
 			// set flash data

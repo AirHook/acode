@@ -250,7 +250,36 @@ class Task_edit extends Admin_Controller {
 			}
 		}
 
-		// update records
+		// load pertinent library/model/helpers
+		$this->load->library('task_manager/project_task_details');
+		$this->load->library('uploads/image_unlink');
+
+		// get the data
+		$task_details = $this->project_task_details->initialize(
+			array(
+				'task_id' => $task_id
+			)
+		);
+		$attachments = $this->project_task_details->attachments();
+
+		// unlink attachments first
+		foreach ($attachments as $attachment)
+		{
+			// initialize class
+			$params['media_lib_id'] = $attachment->media_id;
+			$params['attached_to_key'] = 'task_manager';
+			$params['attached_to_value'] = $task_id;
+			$this->image_unlink->initialize($params);
+
+			// remove file
+			$this->image_unlink->delunlink();
+		}
+
+		// delete any chats link to task
+		$this->DB->where('task_id', $task_id);
+		$this->DB->delete('tm_chats');
+
+		// finally, delete task record
 		$this->DB->where('task_id', $task_id);
 		$this->DB->delete('tm_tasks');
 

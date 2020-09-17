@@ -21,20 +21,19 @@ if ( ! defined('BASEPATH')) exit('ERROR: 404 Not Found');
 class Image_unlink
 {
 	/**
-	 * FILE
+	 * Media Library ID
 	 *
 	 * @var	string
 	 */
-	public $tempFile = '';
-	public $filename = '';
+	public $media_lib_id = '';
 
 	/**
-	 * Image Path and source URL
+	 * This image is attached to where?
 	 *
 	 * @var	string
 	 */
-	public $image_width = '';
-	public $image_height = '';
+	public $attached_to_key = '';
+	public $attached_to_value = '';
 
 	/**
 	 * Image Information
@@ -42,22 +41,14 @@ class Image_unlink
 	 * @var	string
 	 */
 	public $image_url = '';
-	public $image_path = '';
 
 	/**
-	 * Media Library ID
+	 * Attache to - array of key -> value(id)
+	 * of where image is attached to
 	 *
 	 * @var	string
 	 */
-	public $media_lib_id = '';
-	public $media_filename = '';
-
-	/**
-	 * This image is attached to?
-	 *
-	 * @var	string
-	 */
-	public $attached_to = '';
+	public $attached_to = [];
 
 
 	/**
@@ -148,33 +139,17 @@ class Image_unlink
 			return FALSE;
 		}
 
-		// set media filename
-		$this->media_filename = $this->filename;
+		// get media details
+		$this->DB->where('media_id', $this->media_lib_id);
+		$q = $this->DB->get('media_library');
+		$r = $q->row();
 
-		// at this point, we can now set image_url
-		$yr = @date('Y', time());
-		$mo = @date('m', time());
-		$this->image_path = 'uploads/'.$yr.'/'.$mo.'/';
+		// get media options to check for key and value pairs
+		// indicating where the image is attached to
+		$this->attached_to = json_decode($r->attached_to, TRUE);
 
-		// and, create folder where necessary
-		if ( ! file_exists($this->image_path))
-		{
-			$old = umask(0);
-			if ( ! mkdir($this->image_path, 0777, TRUE))
-			{
-				$this->error_message = 'ERROR: Unable to create "'.$this->image_path.'" folder.';
-
-				// deinitialize class
-				$this->deinitialize();
-
-				// nothing more to do...
-				return FALSE;
-			}
-			umask($old);
-		}
-
-		// let us also get image dimensions
-		list($this->image_width, $this->image_height) = getimagesize($this->tempFile);
+		// get the media url
+		$this->image_url = $r->media_url;
 
 		return $this;
 	}
@@ -182,89 +157,42 @@ class Image_unlink
 	// --------------------------------------------------------------------
 
 	/**
-	 * PUBLIC - Upload Image
+	 * PUBLIC - Unlink Image and remove from folder
 	 *
 	 * @return	boolean
 	 */
-	public function upload()
+	public function delunlink()
 	{
-		// if tempFile has gone empty, return FALSE
-		if ( ! $this->tempFile)
+		// unset attached to params if present
+		if (
+			isset($this->attached_to[$this->attached_to_key])
+			&& $this->attached_to[$this->attached_to_key] == $this->attached_to_value
+		)
 		{
-			$this->error_message = 'Upload file is missing.';
+			unset($this->attached_to[$this->attached_to_key]);
+		}
+
+		// update records where necessary
+		$this->DB->set('attached_to', json_encode($this->attached_to));
+		$this->DB->where('media_id', $this->media_lib_id);
+		$this->DB->update('media_library');
+
+		// check are any other items using image?
+		if (count($this->attached_to) == 0)
+		{
+			// if not, unlink image and remove from directory
+			if (file_exists($this->image_url))
+			{
+				unlink($this->image_url);
+			}
+
+			// remove media lib details if there is no use anymore
+			$this->DB->where('media_id', $this->media_lib_id);
+			$this->DB->delete('media_library');
 
 			// deinitialize class
 			$this->deinitialize();
-
-			// nothing more to do...
-			return FALSE;
 		}
-
-		// set target file (still original upload filename)
-		$targetFile = $this->image_path.$this->filename;
-
-		// if for some reason, image file name already exists
-		// we rename targetFile and add suffix accordingly
-		$i = 1;
-		while (file_exists($targetFile))
-		{
-			$filename_parts = explode('.', $this->filename);
-			$filename_parts[0] = $filename_parts[0].'_'.$i;
-
-			// set new media filename as it is changed here
-			$this->media_filename = implode('.', $filename_parts);
-
-			$targetFile = $this->image_path.$this->media_filename;
-			$i++;
-		}
-
-		/**
-		// UPLOAD
-		// upload original file with origianl filename
-		// use the suffix-ed filename to not overwrite previous uploads
-		*/
-		if ( ! move_uploaded_file($this->tempFile, $targetFile))
-		{
-			$this->error_message = 'Error uploading of "'.$this->tempFile.'.';
-
-			// deinitialize class
-			$this->deinitialize();
-
-			// nothing more to do...
-			return FALSE;
-		}
-		// */
-
-		$this->image_url = $targetFile;
-
-		// let's save the info to media library
-		$this->media_lib_id = $this->insert_to_media_lib();
-
-		// everything went well
-		return $this;
-	}
-
-	// ----------------------------------------------------------------------
-
-	/**
-	 * PUBLIC - insert to media libary and return media_lib_id
-	 *
-	 * @return	string/boolean FALSE
-	 */
-	public function insert_to_media_lib()
-	{
-		$data_ary = array(
-			'media_url' => $this->image_url, // generated in this class
-			'media_path' => $this->image_path, // generated in this class
-			'media_filename' => $this->media_filename, // provide as params
-			'media_dimensions' => ($this->image_width.' x '.$this->image_height), // provided as params
-			'attached_to' => ($this->attached_to ?: ''), // provided as config and json ecoded
-			'timestamp' => time()
-		);
-		$this->DB->insert('media_library', $data_ary);
-		$this->media_lib_id = $this->DB->insert_id();
-
-		return $this->media_lib_id;
 	}
 
 	// --------------------------------------------------------------------
@@ -278,14 +206,11 @@ class Image_unlink
 	 */
 	public function deinitialize()
 	{
-		$this->tempFile = '';
-		$this->filename = '';
-		$this->image_width = '';
-		$this->image_height = '';
-		$this->image_url = '';
-		$this->image_path = '';
 		$this->media_lib_id = '';
-		$this->attached_to = '';
+		$this->attached_to_key = '';
+		$this->attached_to_value = '';
+		$this->image_url = '';
+		$this->attached_to = [];
 		$this->error_message = '';
 	}
 
