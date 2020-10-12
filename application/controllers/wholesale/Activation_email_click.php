@@ -118,6 +118,7 @@ class Activation_email_click extends Frontend_Controller
 				$this->wholesale_user_details->options
 			);
 
+			/* **********************
 			// deactivating this for tempo
 			if ($this->wholesale_user_details->reference_designer != 'tempoparis')
 			{
@@ -134,6 +135,7 @@ class Activation_email_click extends Frontend_Controller
 			);
 			// reload options
 			$options = $this->wholesale_user_details->options;
+			// */
 		}
 
 		// catch all for not the same login_id

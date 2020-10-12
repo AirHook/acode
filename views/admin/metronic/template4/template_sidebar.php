@@ -401,22 +401,26 @@
                             <h3 class="uppercase">Inventory</h3>
                         </li>
                         <li class="nav-item <?php echo strpos($this->uri->uri_string(), 'admin/inventory/physical') === FALSE ? '' : 'active'; ?>">
-                            <a href="<?php echo site_url('admin/inventory/physical'); ?>" class="nav-link ">
+                            <a href="javascript:;" class="nav-link disabled-link disable-target tooltips" data-original-title="Under Construction">
+                            <!--<a href="<?php echo site_url('admin/inventory/physical'); ?>" class="nav-link ">-->
                                 <span class="title">Physical Stocks</span>
                             </a>
                         </li>
                         <li class="nav-item <?php echo strpos($this->uri->uri_string(), 'admin/inventory/available') === FALSE ? '' : 'active'; ?>">
-                            <a href="<?php echo site_url('admin/inventory/available'); ?>" class="nav-link ">
+                            <a href="javascript:;" class="nav-link disabled-link disable-target tooltips" data-original-title="Under Construction">
+                            <!--<a href="<?php echo site_url('admin/inventory/available'); ?>" class="nav-link ">-->
                                 <span class="title">Available Stocks</span>
                             </a>
                         </li>
                         <li class="nav-item <?php echo strpos($this->uri->uri_string(), 'admin/inventory/onorder') === FALSE ? '' : 'active'; ?>">
-                            <a href="<?php echo site_url('admin/inventory/onorder'); ?>" class="nav-link ">
+                            <a href="javascript:;" class="nav-link disabled-link disable-target tooltips" data-original-title="Under Construction">
+                            <!--<a href="<?php echo site_url('admin/inventory/onorder'); ?>" class="nav-link ">-->
                                 <span class="title">On-Order Stocks</span>
                             </a>
                         </li>
                         <li class="nav-item <?php echo strpos($this->uri->uri_string(), 'admin/inventory/update_by_scan') === FALSE ? '' : 'active'; ?>">
-                            <a href="<?php echo site_url('admin/inventory/update_by_scan'); ?>" class="nav-link ">
+                            <a href="javascript:;" class="nav-link disabled-link disable-target tooltips" data-original-title="Under Construction">
+                            <!--<a href="<?php echo site_url('admin/inventory/update_by_scan'); ?>" class="nav-link ">-->
                                 <span class="title">Inventory Count By Barcode Scan</span>
                             </a>
                         </li>
@@ -538,7 +542,7 @@
                                 <span class="title">Link to Sales Dashboard</span>
                             </a>
                         </li>
-                        <li class="nav-item <?php echo strpos($this->uri->uri_string(), 'admin/task_manager') === FALSE ? '' : 'active'; ?>">
+                        <li class="nav-item with-heading <?php echo strpos($this->uri->uri_string(), 'admin/task_manager') === FALSE ? '' : 'active'; ?>">
                             <a href="<?php echo site_url('admin/task_manager/projects'); ?>" class="nav-link ">
                                 <span class="title uppercase">Task Manager</span>
                             </a>

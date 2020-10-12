@@ -304,7 +304,9 @@ class Edit extends Admin_Controller {
 		unset($post_ary['custom_order_old']);
 		unset($post_ary['clearance_consumer_only']);
 		unset($post_ary['clearance_consumer_only_old']);
+		unset($post_ary['admin_stocks_only']);
 		unset($post_ary['warehouse_code']);
+		unset($post_ary['admin_warehouse_code']);
 
 		return $post_ary;
 	}
@@ -451,6 +453,15 @@ class Edit extends Admin_Controller {
 			{
 				$options['clearance_consumer_only'] = $post_ary['clearance_consumer_only'][$st_id];
 			}
+			// admin stocks only
+			if ( ! isset($post_ary['admin_stocks_only'][$st_id]))
+			{
+				$options['admin_stocks_only'] = '0';
+			}
+			else
+			{
+				$options['admin_stocks_only'] = $post_ary['admin_stocks_only'][$st_id];
+			}
 			// warehouse_code
 			// warehouse_code - 6 boxes
 			if (isset($post_ary['warehouse_code'][$st_id]))
@@ -458,6 +469,13 @@ class Edit extends Admin_Controller {
 				$warehouse_code_ary = $post_ary['warehouse_code'][$st_id];
 				$warehouse_code_ary = array_values(array_filter($warehouse_code_ary, 'strlen'));
 				$options['warehouse_code'] = $warehouse_code_ary;
+			}
+			// admin warehouse_code - 6 boxes
+			if (isset($post_ary['admin_warehouse_code'][$st_id]))
+			{
+				$admin_warehouse_code_ary = $post_ary['admin_warehouse_code'][$st_id];
+				$admin_warehouse_code_ary = array_values(array_filter($admin_warehouse_code_ary, 'strlen'));
+				$options['admin_warehouse_code'] = $admin_warehouse_code_ary;
 			}
 			// ----
 			// set options

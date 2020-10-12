@@ -116,7 +116,7 @@ class Search_multiple extends MY_Controller {
 		$html = '';
 		if ($search_string)
 		{
-			$html.= '<h1 style="word-wrap:break-word;"><small><em>Search results for:</em></small> "'.$search_string.'"</h1><br />';
+			$html.= '<h3 style="word-wrap:break-word;"><small><em>Search results for:</em> &nbsp; "'.$search_string.'"</small></h3><br />';
 		}
 
 		$html.= '<div class="thumb-tiles">';

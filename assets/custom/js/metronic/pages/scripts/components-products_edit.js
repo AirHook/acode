@@ -250,6 +250,47 @@ var ComponentsProductEdit = function () {
 			}
 		});
 
+        // admin stock passing of data to modal
+		$('.modal_admin_stocks').on('click', function() {
+			var el = $(this);
+			var st_id = el.data('st_id');
+			var color_name = el.data('color_name');
+			$('#admin_st_id').val(st_id);
+			var sizeMode = el.data('size_mode');
+			var stocks = el.data('stocks');
+			if (sizeMode == '1') {
+                var stocksArray = stocks.split(',');
+				stocksArray.forEach(function(item, index){
+					$('#admin_physical_' + (index * 2)).val(item);
+				});
+			} else if (sizeMode == '0') {
+                var stocksArray = stocks.split(',');
+				stocksArray.forEach(function(item, index){
+					switch (index) {
+						case 0: var size = 'admin_physical_ss'; break;
+						case 1: var size = 'admin_physical_sm'; break;
+						case 2: var size = 'admin_physical_sl'; break;
+						case 3: var size = 'admin_physical_sxl'; break;
+						case 4: var size = 'admin_physical_sxxl'; break;
+					}
+					$('#' + size).val(item);
+				});
+            } else if (sizeMode == '2') {
+                $('#admin_physical_sprepack1221').val(stocks);
+            } else if (sizeMode == '3') {
+                var stocksArray = stocks.split(',');
+				stocksArray.forEach(function(item, index){
+					switch (index) {
+						case 0: var size = 'admin_physical_ssm'; break;
+						case 1: var size = 'admin_physical_sml'; break;
+					}
+					$('#' + size).val(item);
+				});
+            } else if (sizeMode == '4') {
+                $('#admin_physical_sonesizefitsall').val(stocks);
+			}
+		});
+
 		//refresing date of datepicker
 		$('.publish_date').click(function(){
 			$('#publish_date').datepicker('setDate', $('input[name="publish_date"').data('initial_value'));
@@ -554,6 +595,38 @@ var ComponentsProductEdit = function () {
 			// process data
 			if ($(this).is(":checked")) dataObject.options = {"clearance_consumer_only":"1"};
 			else dataObject.options = {"clearance_consumer_only":"0"};
+			$('#loading .modal-title').html('Updating...');
+			$('#loading').modal('show');
+            $.ajax({
+				type:    "POST",
+				url:     base_url + "admin/products/update_variant_options.html",
+				data:    dataObject,
+				success: function(data) {
+					//alert(data);
+					$('#loading').modal('hide');
+					//window.location.href=base_url + "admin/products/edit/index/" + prod_id;
+				},
+				// vvv---- This is the new bit
+				error:   function(jqXHR, textStatus, errorThrown) {
+					//$('#loading').modal('hide');
+					//alert("Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
+					$('#reloading').modal('show');
+					location.reload();
+				}
+			});
+        });
+
+        // Checkbox Admin Stock Sale per variant
+        $('.admin_stocks_only').on('change', function(){
+            // let get necessary information
+			var primary_color = $(this).closest('.section-options').data('primary_color');
+			var color_code = $(this).closest('.section-options').data('color_code');
+			var base_url = $(this).closest('.section-options').data('base_url');
+            // the object data holds the st_id post data
+			var dataObject = $(this).closest('.section-options').data('object_data');
+			// process data
+			if ($(this).is(":checked")) dataObject.options = {"admin_stocks_only":"1"};
+			else dataObject.options = {"admin_stocks_only":"0"};
 			$('#loading .modal-title').html('Updating...');
 			$('#loading').modal('show');
             $.ajax({

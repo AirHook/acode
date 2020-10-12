@@ -29,34 +29,35 @@ class Add_cart extends Frontend_Controller
 	{
 		// grab the post information
 		// common between consumer and wholesale users
-		$prod_name		= $this->input->post('prod_name');
+		$prod_name			= $this->input->post('prod_name');
 		// cart option items
 		// common between consumer and wholesale users
-		$prod_no		= $this->input->post('prod_no');
-		$des_id			= $this->input->post('des_id');
-		$cat_id			= $this->input->post('cat_id');
-		$subcat_id		= $this->input->post('subcat_id');
-		$designer		= $this->input->post('label_designer');
+		$prod_no			= $this->input->post('prod_no');
+		$des_id				= $this->input->post('des_id');
+		$cat_id				= $this->input->post('cat_id');
+		$subcat_id			= $this->input->post('subcat_id');
+		$designer			= $this->input->post('label_designer');
 
 		// check size_mode (A or 'a' or '1' default for instyle)
 		// '0' for S,M,L...
 		// checking is for potentially using this to other sites
 		// primarily for the size array to iterate before adding to cart
-		$size_mode		= $this->input->post('size_mode');
+		$size_mode			= $this->input->post('size_mode');
 
-		$previous_url	= $this->input->post('current_url');
-		$prod_image		= $this->input->post('prod_image');
+		$previous_url		= $this->input->post('current_url');
+		$prod_image			= $this->input->post('prod_image');
 		// new image url system
-		$prod_image_url	= $this->input->post('prod_image_url');
-		$custom_order	= $this->input->post('custom_order');
-		$color_code		= $this->input->post('color_code');
-		$color			= $this->input->post('label_color');
-		$prod_sku		= $this->input->post('prod_sku');
-		$price			= $this->input->post('price');
-		$orig_price		= $this->input->post('orig_price');
+		$prod_image_url		= $this->input->post('prod_image_url');
+		$custom_order		= $this->input->post('custom_order');
+		$color_code			= $this->input->post('color_code');
+		$color				= $this->input->post('label_color');
+		$admin_stocks_only	= $this->input->post('admin_stocks_only'); // '1','0'
+		$prod_sku			= $this->input->post('prod_sku');
+		$price				= $this->input->post('price');
+		$orig_price			= $this->input->post('orig_price');
 
-		$qty			= $this->input->post('qty');
-		$size			= $this->input->post('size');
+		$qty				= $this->input->post('qty');
+		$size				= $this->input->post('size');
 
 		// This function allows for zero integer as not empty in a variable
 		// especially made for size '0' which is always mistekan as empty for isset() function
@@ -106,6 +107,7 @@ class Add_cart extends Frontend_Controller
 				'orig_price'		=> $orig_price,
 				'current_url'		=> $previous_url,
 				'custom_order' 		=> $custom_order,
+				'admin_stocks_only' => $admin_stocks_only,
 				'sa_item' 			=> $this->input->post('package_details')
 			)
 		);
@@ -258,6 +260,7 @@ class Add_cart extends Frontend_Controller
 					'orig_price'		=> $orig_price,
 					'current_url'		=> $previous_url,
 					'custom_order' 		=> ($custom_order ?: 0),
+					'admin_stocks_only' => '0',
 					'sa_item' 			=> $this->input->post('package_details')
 				)
 			);

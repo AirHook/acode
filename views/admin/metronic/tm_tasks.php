@@ -358,6 +358,17 @@
         <div class="modal-dialog">
             <div class="modal-content scroller" style="height: 100%;" data-always-visible="1" data-rail-visible="0">
 
+                <!-- BEGIN FORM-->
+                <!-- FORM =======================================================================-->
+                <?php echo form_open(
+                    'admin/task_manager/tasks_add'
+                ); ?>
+
+                <input type="hidden" name="project_id" value="<?php echo $project_details->project_id; ?>" />
+                <input type="hidden" name="due_date" value="" />
+                <input type="hidden" name="user_id" value="" />
+                <input type="hidden" name="title" value="" />
+
                 <div class="modal-header">
                     <button type="button" class="close tooltips" data-original-title="Cancel" data-placement="bottom" data-dismiss="modal" aria-hidden="true"></button>
                     <p class="todo-task-modal-title todo-inline">Due:
@@ -372,19 +383,9 @@
                         <input class="form-control todo-task-title" type="text" value="" placeholder="Task title..." />
                     </h3>
                     <p class="todo-task-modal-bg">
-                        <textarea class="form-control todo-task-description summernote" id="summernote_1" rows="15" placeholder="Description..."></textarea>
+                        <textarea class="form-control todo-task-description summernote" id="summernote_1" name="description" rows="15" placeholder="Description..."></textarea>
                     </p>
                 </div>
-
-                <?php echo form_open(
-                    'admin/task_manager/tasks_add'
-                ); ?>
-
-                <input type="hidden" name="project_id" value="<?php echo $project_details->project_id; ?>" />
-                <input type="hidden" name="due_date" value="" />
-                <input type="hidden" name="user_id" value="" />
-                <input type="hidden" name="title" value="" />
-                <textarea style="visibility:hidden;" name="description"></textarea>
 
                 <div class="modal-footer">
                     <button class="btn default" data-dismiss="modal" aria-hidden="true" onclick="$('#todo-add-button-attach-input').val('');">Cancel</button>
@@ -392,6 +393,8 @@
                 </div>
 
                 </form>
+                <!-- FORM =======================================================================-->
+                <!-- END FORM-->
 
             </div>
         </div>

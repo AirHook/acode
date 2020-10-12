@@ -145,7 +145,9 @@ class Address extends Frontend_Controller
 						'how_hear_about'		=> '',
 						'receive_productupd'	=> '1',
 						'admin_sales_email'		=> $this->webspace_details->info_email,
-						'reference_designer'	=> 'shop7thavenue'
+						'reference_designer'	=> 'shop7thavenue',
+						'create_date'			=> date('Y-m-d', time()),
+						'is_active'				=> '1'
 					);
 					$this->DB->insert('tbluser_data', $data);
 
@@ -179,6 +181,7 @@ class Address extends Frontend_Controller
 						//'receive_productupd'	=> '1',
 						//'admin_sales_email'		=> $this->webspace_details->into_email,
 						//'reference_designer'	=> 'shop7thavenue'
+						'is_active'				=> '1'
 					);
 					$this->DB->where('email', $this->input->post('b_email'));
 					$this->DB->update('tbluser_data', $data);

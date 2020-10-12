@@ -539,7 +539,7 @@ class Products_list
 		// set with stocks where condition always based on available stocks
 		if ($this->with_stocks)
 		{
-			$where_with_stocks = "((tbl_product.size_mode = '1' AND (tbl_stock.size_0 > '0' OR tbl_stock.size_2 > '0' OR tbl_stock.size_4 > '0' OR tbl_stock.size_6 > '0' OR tbl_stock.size_8 > '0' OR tbl_stock.size_10 > '0' OR tbl_stock.size_12 > '0' OR tbl_stock.size_14 > '0' OR tbl_stock.size_16 > '0' OR tbl_stock.size_18 > '0' OR tbl_stock.size_20 > '0' OR tbl_stock.size_22 > '0')) OR (tbl_product.size_mode = '0' AND (tbl_stock.size_sxs > '0' OR tbl_stock.size_ss > '0' OR tbl_stock.size_sm > '0' OR tbl_stock.size_sl > '0' OR tbl_stock.size_sxl > '0' OR tbl_stock.size_sxxl > '0' OR tbl_stock.size_sxl1 > '0' OR tbl_stock.size_sxl2 > '0')) OR (tbl_product.size_mode = '2' AND (tbl_stock.size_sprepack1221 > '0')) OR (tbl_product.size_mode = '3' AND (tbl_stock.size_ssm > '0' AND tbl_stock.size_sml > '0')) OR (tbl_product.size_mode = '4' AND (tbl_stock.size_sonesizefitsall > '0')))";
+			$where_with_stocks = "((tbl_product.size_mode = '1' AND (tbl_stock.size_0 > '0' OR tbl_stock.size_2 > '0' OR tbl_stock.size_4 > '0' OR tbl_stock.size_6 > '0' OR tbl_stock.size_8 > '0' OR tbl_stock.size_10 > '0' OR tbl_stock.size_12 > '0' OR tbl_stock.size_14 > '0' OR tbl_stock.size_16 > '0' OR tbl_stock.size_18 > '0' OR tbl_stock.size_20 > '0' OR tbl_stock.size_22 > '0')) OR (tbl_product.size_mode = '0' AND (tbl_stock.size_ss > '0' OR tbl_stock.size_sm > '0' OR tbl_stock.size_sl > '0' OR tbl_stock.size_sxl > '0' OR tbl_stock.size_sxxl > '0' OR tbl_stock.size_sxl1 > '0' OR tbl_stock.size_sxl2 > '0')) OR (tbl_product.size_mode = '2' AND (tbl_stock.size_sprepack1221 > '0')) OR (tbl_product.size_mode = '3' AND (tbl_stock.size_ssm > '0' AND tbl_stock.size_sml > '0')) OR (tbl_product.size_mode = '4' AND (tbl_stock.size_sonesizefitsall > '0')))";
 			$this->DB->where($where_with_stocks);
 		}
 
@@ -558,7 +558,7 @@ class Products_list
 			{
 				// check size facet mode by value
 				$size_mode_1 = array('0','2','4','6','8','10','12','14','16','18','20','22');
-				$size_mode_0 = array('xs','s','m','l','xl','xxl','xl1','xl2');
+				$size_mode_0 = array('s','m','l','xl','xxl','xl1','xl2');
 				$size_mode_2 = array('prepack1221');
 				$size_mode_3 = array('sm','ml');
 				$size_mode_4 = array('onesizefitsall');
@@ -649,11 +649,11 @@ class Products_list
 					break;
 
 					case 'preorder':
-						$facet_where .= " AND (tbl_product.size_mode = '1' AND (tbl_stock.size_0 = '0' AND tbl_stock.size_2 = '0' AND tbl_stock.size_4 = '0' AND tbl_stock.size_6 = '0' AND tbl_stock.size_8 = '0' AND tbl_stock.size_10 = '0' AND tbl_stock.size_12 = '0' AND tbl_stock.size_14 = '0' AND tbl_stock.size_16 = '0' AND tbl_stock.size_18 = '0' AND tbl_stock.size_20 = '0' AND tbl_stock.size_22 = '0') OR tbl_product.size_mode = '0' AND (tbl_stock.size_sxs = '0' AND tbl_stock.size_ss = '0' AND tbl_stock.size_sm = '0' AND tbl_stock.size_sl = '0' AND tbl_stock.size_sxl = '0' AND tbl_stock.size_sxxl = '0' AND tbl_stock.size_sxl1 = '0' AND tbl_stock.size_sxl2 = '0') OR tbl_product.size_mode = '2' AND (tbl_stock.size_sprepack1221 = '0') OR tbl_product.size_mode = '3' AND (tbl_stock.size_ssm = '0' AND tbl_stock.size_sml = '0') OR tbl_product.size_mode = '4' AND (tbl_stock.size_sonesizefitsall = '0'))";
+						$facet_where .= " AND (tbl_product.size_mode = '1' AND (tbl_stock.size_0 = '0' AND tbl_stock.size_2 = '0' AND tbl_stock.size_4 = '0' AND tbl_stock.size_6 = '0' AND tbl_stock.size_8 = '0' AND tbl_stock.size_10 = '0' AND tbl_stock.size_12 = '0' AND tbl_stock.size_14 = '0' AND tbl_stock.size_16 = '0' AND tbl_stock.size_18 = '0' AND tbl_stock.size_20 = '0' AND tbl_stock.size_22 = '0') OR tbl_product.size_mode = '0' AND (tbl_stock.size_ss = '0' AND tbl_stock.size_sm = '0' AND tbl_stock.size_sl = '0' AND tbl_stock.size_sxl = '0' AND tbl_stock.size_sxxl = '0' AND tbl_stock.size_sxl1 = '0' AND tbl_stock.size_sxl2 = '0') OR tbl_product.size_mode = '2' AND (tbl_stock.size_sprepack1221 = '0') OR tbl_product.size_mode = '3' AND (tbl_stock.size_ssm = '0' AND tbl_stock.size_sml = '0') OR tbl_product.size_mode = '4' AND (tbl_stock.size_sonesizefitsall = '0'))";
 					break;
 
 					case 'instock':
-						$facet_where .= " AND (tbl_product.size_mode = '1' AND (tbl_stock.size_0 > '0' OR tbl_stock.size_2 > '0' OR tbl_stock.size_4 > '0' OR tbl_stock.size_6 > '0' OR tbl_stock.size_8 > '0' OR tbl_stock.size_10 > '0' OR tbl_stock.size_12 > '0' OR tbl_stock.size_14 > '0' OR tbl_stock.size_16 > '0' OR tbl_stock.size_18 > '0' OR tbl_stock.size_20 > '0' OR tbl_stock.size_22 > '0') OR tbl_product.size_mode = '0' AND (tbl_stock.size_sxs > '0' OR tbl_stock.size_ss > '0' OR tbl_stock.size_sm > '0' OR tbl_stock.size_sl > '0' OR tbl_stock.size_sxl > '0' OR tbl_stock.size_sxxl > '0' OR tbl_stock.size_sxl1 > '0' OR tbl_stock.size_sxl2 > '0') OR tbl_product.size_mode = '2' AND (tbl_stock.size_sprepack1221 > '0') OR tbl_product.size_mode = '3' AND (tbl_stock.size_ssm > '0' AND tbl_stock.size_sml > '0') OR tbl_product.size_mode = '4' AND (tbl_stock.size_sonesizefitsall > '0'))";
+						$facet_where .= " AND (tbl_product.size_mode = '1' AND (tbl_stock.size_0 > '0' OR tbl_stock.size_2 > '0' OR tbl_stock.size_4 > '0' OR tbl_stock.size_6 > '0' OR tbl_stock.size_8 > '0' OR tbl_stock.size_10 > '0' OR tbl_stock.size_12 > '0' OR tbl_stock.size_14 > '0' OR tbl_stock.size_16 > '0' OR tbl_stock.size_18 > '0' OR tbl_stock.size_20 > '0' OR tbl_stock.size_22 > '0') OR tbl_product.size_mode = '0' AND (tbl_stock.size_ss > '0' OR tbl_stock.size_sm > '0' OR tbl_stock.size_sl > '0' OR tbl_stock.size_sxl > '0' OR tbl_stock.size_sxxl > '0' OR tbl_stock.size_sxl1 > '0' OR tbl_stock.size_sxl2 > '0') OR tbl_product.size_mode = '2' AND (tbl_stock.size_sprepack1221 > '0') OR tbl_product.size_mode = '3' AND (tbl_stock.size_ssm > '0' AND tbl_stock.size_sml > '0') OR tbl_product.size_mode = '4' AND (tbl_stock.size_sonesizefitsall > '0'))";
 					break;
 				}
 			}
@@ -753,8 +753,7 @@ class Products_list
 		// some issue with server - #1305 - FUNCTION db_shopseven.JSON_EXTRACT does not exist
 		//$this->DB->select("JSON_EXTRACT(tbl_stock.options, '$.clearance_consumer_only') AS clearance_consumer_only");
 		$this->DB->select('
-			tbl_stock.size_sxs,
-				tbl_stock.size_ss,
+			tbl_stock.size_ss,
 				tbl_stock.size_sm,
 				tbl_stock.size_sl,
 				tbl_stock.size_sxl,
@@ -779,34 +778,7 @@ class Products_list
 			tbl_stock.size_sonesizefitsall
 		');
 		$this->DB->select('
-			tsav.size_ss AS available_sxs,
-				tsav.size_ss AS available_ss,
-				tsav.size_sm AS available_sm,
-				tsav.size_sl AS available_sl,
-				tsav.size_sxl AS available_sxl,
-				tsav.size_sxxl AS available_sxxl,
-				tsav.size_sxl1 AS available_ssl1,
-				tsav.size_sxl2 AS available_sxl2,
-			tsav.size_0 AS available_0,
-				tsav.size_2 AS available_2,
-				tsav.size_4 AS available_4,
-				tsav.size_6 AS available_6,
-				tsav.size_8 AS available_8,
-				tsav.size_10 AS available_10,
-				tsav.size_12 AS available_12,
-				tsav.size_14 AS available_14,
-				tsav.size_16 AS available_16,
-				tsav.size_18 AS available_18,
-				tsav.size_20 AS available_20,
-				tsav.size_22 AS available_22,
-			tsav.size_sprepack1221 AS available_sprepack1221,
-			tsav.size_ssm AS available_ssm,
-				tsav.size_sml AS available_ssm,
-			tsav.size_sonesizefitsall AS available_sonesizefitsall
-		');
-		$this->DB->select('
-			tso.size_ss AS onorder_sxs,
-				tso.size_ss AS onorder_ss,
+			tso.size_ss AS onorder_ss,
 				tso.size_sm AS onorder_sm,
 				tso.size_sl AS onorder_sl,
 				tso.size_sxl AS onorder_sxl,
@@ -831,8 +803,7 @@ class Products_list
 			tso.size_sonesizefitsall AS onorder_sonesizefitsall
 		');
 		$this->DB->select('
-			tsp.size_ss AS physical_sxs,
-				tsp.size_ss AS physical_ss,
+			tsp.size_ss AS physical_ss,
 				tsp.size_sm AS physical_sm,
 				tsp.size_sl AS physical_sl,
 				tsp.size_sxl AS physical_sxl,
@@ -855,84 +826,6 @@ class Products_list
 			tsp.size_ssm AS physical_ssm,
 				tsp.size_sml AS physical_ssm,
 			tsp.size_sonesizefitsall AS physical_sonesizefitsall
-		');
-		$this->DB->select('
-			tsa.size_ss AS admin_sxs,
-				tsa.size_ss AS admin_ss,
-				tsa.size_sm AS admin_sm,
-				tsa.size_sl AS admin_sl,
-				tsa.size_sxl AS admin_sxl,
-				tsa.size_sxxl AS admin_sxxl,
-				tsa.size_sxl1 AS admin_ssl1,
-				tsa.size_sxl2 AS admin_sxl2,
-			tsa.size_0 AS admin_0,
-				tsa.size_2 AS admin_2,
-				tsa.size_4 AS admin_4,
-				tsa.size_6 AS admin_6,
-				tsa.size_8 AS admin_8,
-				tsa.size_10 AS admin_10,
-				tsa.size_12 AS admin_12,
-				tsa.size_14 AS admin_14,
-				tsa.size_16 AS admin_16,
-				tsa.size_18 AS admin_18,
-				tsa.size_20 AS admin_20,
-				tsa.size_22 AS admin_22,
-			tsa.size_sprepack1221 AS admin_sprepack1221,
-			tsa.size_ssm AS admin_ssm,
-				tsa.size_sml AS admin_ssm,
-			tsa.size_sonesizefitsall AS admin_sonesizefitsall
-		');
-		$this->DB->select('
-			tsao.size_ss AS admin_onorder_sxs,
-				tsao.size_ss AS admin_onorder_ss,
-				tsao.size_sm AS admin_onorder_sm,
-				tsao.size_sl AS admin_onorder_sl,
-				tsao.size_sxl AS admin_onorder_sxl,
-				tsao.size_sxxl AS admin_onorder_sxxl,
-				tsao.size_sxl1 AS admin_onorder_ssl1,
-				tsao.size_sxl2 AS admin_onorder_sxl2,
-			tsao.size_0 AS admin_onorder_0,
-				tsao.size_2 AS admin_onorder_2,
-				tsao.size_4 AS admin_onorder_4,
-				tsao.size_6 AS admin_onorder_6,
-				tsao.size_8 AS admin_onorder_8,
-				tsao.size_10 AS admin_onorder_10,
-				tsao.size_12 AS admin_onorder_12,
-				tsao.size_14 AS admin_onorder_14,
-				tsao.size_16 AS admin_onorder_16,
-				tsao.size_18 AS admin_onorder_18,
-				tsao.size_20 AS admin_onorder_20,
-				tsao.size_22 AS admin_onorder_22,
-			tsao.size_sprepack1221 AS admin_onorder_sprepack1221,
-			tsao.size_ssm AS admin_onorder_ssm,
-				tsao.size_sml AS admin_onorder_ssm,
-			tsao.size_sonesizefitsall AS admin_onorder_sonesizefitsall
-		');
-		$this->DB->select('
-			tsap.size_ss AS admin_physical_sxs,
-				tsap.size_ss AS admin_physical_ss,
-				tsap.size_sm AS admin_physical_sm,
-				tsap.size_sl AS admin_physical_sl,
-				tsap.size_sxl AS admin_physical_sxl,
-				tsap.size_sxxl AS admin_physical_sxxl,
-				tsap.size_sxl1 AS admin_physical_ssl1,
-				tsap.size_sxl2 AS admin_physical_sxl2,
-			tsap.size_0 AS admin_physical_0,
-				tsap.size_2 AS admin_physical_2,
-				tsap.size_4 AS admin_physical_4,
-				tsap.size_6 AS admin_physical_6,
-				tsap.size_8 AS admin_physical_8,
-				tsap.size_10 AS admin_physical_10,
-				tsap.size_12 AS admin_physical_12,
-				tsap.size_14 AS admin_physical_14,
-				tsap.size_16 AS admin_physical_16,
-				tsap.size_18 AS admin_physical_18,
-				tsap.size_20 AS admin_physical_20,
-				tsap.size_22 AS admin_physical_22,
-			tsap.size_sprepack1221 AS admin_physical_sprepack1221,
-			tsap.size_ssm AS admin_physical_ssm,
-				tsap.size_sml AS admin_physical_ssm,
-			tsap.size_sonesizefitsall AS admin_physical_sonesizefitsall
 		');
 		// other info
 		$this->DB->select('tbl_product.size_mode');
@@ -1016,8 +909,7 @@ class Products_list
 							OR tbl_stock.size_20 > '0'
 							OR tbl_stock.size_22 > '0'))
 					OR (tbl_product.size_mode = '0'
-						AND (tbl_stock.size_sxs > '0'
-							OR tbl_stock.size_ss > '0'
+						AND (tbl_stock.size_ss > '0'
 							OR tbl_stock.size_sm > '0'
 							OR tbl_stock.size_sl > '0'
 							OR tbl_stock.size_sxl > '0'
@@ -1041,12 +933,8 @@ class Products_list
 		// user subquery to sort colors with primary as first
 		// NOTE: on un-grouped listing, primary color may be on consumer clearance and may not show
 		$this->DB->join('(SELECT * FROM tbl_stock ORDER BY primary_color DESC) as tbl_stock', 'tbl_stock.prod_no = tbl_product.prod_no', 'left');
-		$this->DB->join('tbl_stock_available tsav', 'tsav.st_id = tbl_stock.st_id', 'left');
 		$this->DB->join('tbl_stock_onorder tso', 'tso.st_id = tbl_stock.st_id', 'left');
 		$this->DB->join('tbl_stock_physical tsp', 'tsp.st_id = tbl_stock.st_id', 'left');
-		$this->DB->join('tbl_stock_admin tsa', 'tsa.st_id = tbl_stock.st_id', 'left');
-		$this->DB->join('tbl_stock_admin_onorder tsao', 'tsao.st_id = tbl_stock.st_id', 'left');
-		$this->DB->join('tbl_stock_admin_physical tsap', 'tsap.st_id = tbl_stock.st_id', 'left');
 
 		// group products by prod_no
 		if ($this->group_products)

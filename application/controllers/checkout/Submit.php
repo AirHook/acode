@@ -56,9 +56,13 @@ class Submit extends Frontend_Controller
 		$this->load->library('products/size_names');
 
 		// initialize consumer details
-		$this->consumer_user_details->initialize(array('user_id'=>$this->session->user_id));
+		//$this->consumer_user_details->initialize(array('user_id'=>$this->session->user_id));
 
-		// log order
+		// log order (tbl_order_log items)
+		// note: ship to address is saved on this order log
+		// user bill to address is saved at or taken from user details
+		// order details is also taken care at the _log_order() private method
+		// stocks data update is also done in the _log_order() private method
 		if ($this->session->user_cat == 'wholesale') $user_array['store_name'] 	= $this->session->store_name;
 		$user_array['agree_policy'] 	= NULL;
 		$user_array['p_first_name'] 	= $this->session->sh_firstname;
@@ -80,130 +84,97 @@ class Submit extends Frontend_Controller
 		if ($this->session->user_cat == 'wholesale') $order_log_id = $this->min_order_required($user_array); //for wholesale
 		else $order_log_id = $this->_log_order($user_array);
 
-		// use the logged order data to poppulate the email confirmation
-		// to use the designer setting
-		// initialize order details
-		//$email_data = $this->order_details->initialize(array('tbl_order_log.order_log_id'=>$order_log_id));
+		/**********
+		 * New Order Confirmation Layout
+		 * Uses most of the above items but needs to add a few things to make the new
+		 * HTML layout work
+		 * - this overrides above order details, email subject, and html message
+		*/
+		// we need to set some data to pass to view file before sending
+		// order confirmation
+		// initialize...
+		$this->data['order_details'] =
+			$this->order_details->initialize(
+				array(
+					'tbl_order_log.order_log_id'=>$order_log_id
+				)
+			)
+		;
 
-		// we will just use the flashdata session directly on the view file
-		// to show the cc details...
-		//$email_data['p_card_type']		= $this->session->flashdata('cc_type');
-		//$email_data['p_card_num']		= $this->session->flashdata('cc_number');
-		//$email_data['p_exp_date']		= $this->session->flashdata('cc_expmo').'/'.$this->session->flashdata('cc_expyy');
-		//$email_data['p_card_code']		= $this->session->flashdata('cc_code');
+		// get user_id and role and designer group
+		$user_role = $this->data['order_details']->c;
+		$user_id = $this->data['order_details']->user_id;
+		$designer_group = $this->data['order_details']->designer_group;
+		$designer_slug = $this->data['order_details']->designer_slug;
 
-		// keeping this here for now
-		//$email_data['p_first_name']		= $this->session->sh_firstname;
-		//$email_data['p_last_name']		= $this->session->sh_lastname;
-		//$email_data['p_email']			= $this->session->sh_email;
-		//$email_data['p_telephone']		= $this->session->sh_phone;
-		//$email_data['p_store_name']		= $this->session->store_name ?: '';
-		//$email_data['sh_address1']		= $this->session->sh_address1;
-		//$email_data['sh_address2']		= $this->session->sh_address2;
-		//$email_data['sh_city']			= $this->session->sh_city;
-		//$email_data['sh_state']			= $this->session->sh_state;
-		//$email_data['sh_country']		= $this->session->sh_country;
-		//$email_data['sh_zipcode']		= $this->session->sh_zip;
-		//$email_data['shipping_fee']		= $this->session->fix_fee;
-		//$email_data['shipping_courier']	= $this->session->courier;
-		//$email_data['add_ny_sales_tax']	= $this->session->ny_tax ? $this->cart->format_number($this->webspace_details->options['ny_sales_tax'] * $this->cart->total()) : 0;
-
-		// compute grand total
-		//$email_data['grand_total'] = $this->cart->total() + $email_data['add_ny_sales_tax'] + $email_data['shipping_fee'];
-
-		// let's start email sending
-		//$email_subject = $this->webspace_details->name.' Product Order'.($this->session->user_cat == 'wholesale' ? ' - Wholesale' : '');
-		//$message = $this->load->view('templates/order_confirmation', $email_data, TRUE);
-
-			/**********
-			 * New Order Confirmation Layout
-			 * Uses most of the above items but needs to add a few things to make the new
-			 * HTML layout work
-			 * - this overrides above order details, email subject, and html message
-			*/
-			// initialize...
-			$this->data['order_details'] =
-				$this->order_details->initialize(
+		// initialize user details
+		if ($user_role == 'ws')
+		{
+			// wholesale
+			$this->data['user_details'] =
+				$this->wholesale_user_details->initialize(
 					array(
-						'tbl_order_log.order_log_id'=>$order_log_id
+						'user_id'=>$user_id
 					)
 				)
 			;
-
-			// get user_id and role and designer group
-			$user_role = $this->data['order_details']->c;
-			$user_id = $this->data['order_details']->user_id;
-			$designer_group = $this->data['order_details']->designer_group;
-			$designer_slug = $this->data['order_details']->designer_slug;
-
-			// initialize user details
-			if ($user_role == 'ws')
-			{
-				// wholesale
-				$this->data['user_details'] =
-					$this->wholesale_user_details->initialize(
-						array(
-							'user_id'=>$user_id
-						)
-					)
-				;
-			}
-			else
-			{
-				// consumer
-				$this->data['user_details'] =
-					$this->consumer_user_details->initialize(
-						array(
-							'user_id'=>$user_id
-						)
-					)
-				;
-			}
-
-			// set company details via order designer
-			if ($designer_group == 'Mixed Designers')
-			{
-				$this->data['company_name'] = $this->webspace_details->name;
-				$this->data['company_address1'] = $this->webspace_details->address1;
-				$this->data['company_address2'] = $this->webspace_details->address2;
-				$this->data['company_city'] = $this->webspace_details->city;
-				$this->data['company_state'] = $this->webspace_details->state;
-				$this->data['company_zipcode'] = $this->webspace_details->zipcode;
-				$this->data['company_country'] = $this->webspace_details->country;
-				$this->data['company_telephone'] = $this->webspace_details->phone;
-				$info_email = $this->webspace_details->info_email;
-				$this->data['logo'] =
-					@$this->webspace_details->options['logo']
-					? $this->config->item('PROD_IMG_URL').$this->webspace_details->options['logo']
-					: $this->config->item('PROD_IMG_URL').'assets/images/logo/logo-shop7thavenue.png'
-				;
-			}
-			else
-			{
-				// initialize class
-				$this->designer_details->initialize(
+		}
+		else
+		{
+			// consumer
+			$this->data['user_details'] =
+				$this->consumer_user_details->initialize(
 					array(
-						'url_structure' => $designer_slug
+						'user_id'=>$user_id
 					)
-				);
+				)
+			;
+		}
 
-				$this->data['company_name'] = $this->designer_details->designer;
-				$this->data['company_address1'] = $this->designer_details->address1;
-				$this->data['company_address2'] = $this->designer_details->address2;
-				$this->data['company_city'] = $this->designer_details->city;
-				$this->data['company_state'] = $this->designer_details->state;
-				$this->data['company_zipcode'] = $this->designer_details->zipcode;
-				$this->data['company_country'] = $this->designer_details->country;
-				$this->data['company_telephone'] = $this->designer_details->phone;
-				$info_email = $this->designer_details->info_email;
-				$this->data['logo'] = $this->config->item('PROD_IMG_URL').$this->designer_details->logo;
-			}
+		// set company details via order designer
+		if ($designer_group == 'Mixed Designers')
+		{
+			$this->data['company_name'] = $this->webspace_details->name;
+			$this->data['company_address1'] = $this->webspace_details->address1;
+			$this->data['company_address2'] = $this->webspace_details->address2;
+			$this->data['company_city'] = $this->webspace_details->city;
+			$this->data['company_state'] = $this->webspace_details->state;
+			$this->data['company_zipcode'] = $this->webspace_details->zipcode;
+			$this->data['company_country'] = $this->webspace_details->country;
+			$this->data['company_telephone'] = $this->webspace_details->phone;
+			$info_email = $this->webspace_details->info_email;
+			$this->data['logo'] =
+				@$this->webspace_details->options['logo']
+				? $this->config->item('PROD_IMG_URL').$this->webspace_details->options['logo']
+				: $this->config->item('PROD_IMG_URL').'assets/images/logo/logo-shop7thavenue.png'
+			;
+		}
+		else
+		{
+			// initialize class
+			$this->designer_details->initialize(
+				array(
+					'url_structure' => $designer_slug
+				)
+			);
 
-			// set email subject
-			$email_subject = $this->data['company_name'].' - Product Order'.($user_role == 'ws' ? ' - Wholesale' : '');
+			$this->data['company_name'] = $this->designer_details->designer;
+			$this->data['company_address1'] = $this->designer_details->address1;
+			$this->data['company_address2'] = $this->designer_details->address2;
+			$this->data['company_city'] = $this->designer_details->city;
+			$this->data['company_state'] = $this->designer_details->state;
+			$this->data['company_zipcode'] = $this->designer_details->zipcode;
+			$this->data['company_country'] = $this->designer_details->country;
+			$this->data['company_telephone'] = $this->designer_details->phone;
+			$info_email = $this->designer_details->info_email;
+			$this->data['logo'] = $this->config->item('PROD_IMG_URL').$this->designer_details->logo;
+		}
 
-			// load the view
-			$message = $this->load->view('templates/order_confirmation_new', $this->data, TRUE);
+		// set email subject
+		$email_subject = $this->data['company_name'].' - Product Order'.($user_role == 'ws' ? ' - Wholesale' : '');
+
+		// load the view
+		$message = $this->load->view('templates/order_confirmation_new', $this->data, TRUE);
 
 		if (ENVIRONMENT == 'development') // ---> used for development purposes
 		{
@@ -477,45 +448,45 @@ class Submit extends Frontend_Controller
 		$this->load->library('inventory/update_stocks');
 
 		$i = 1;
-		foreach ($this->cart->contents() as $items)
+		foreach ($this->cart->contents() as $item)
 		{
 			// insert cart/order details to order log detail
-			$log_detail_data = array(
-				'order_log_id'			=> $order_log_id,
-				'transaction_code'		=> $random_code, // for deprecation
-				'image'					=> (
-											(isset($items['options']['prod_image_url']) && ! empty($items['options']['prod_image_url']))
-											? $items['options']['prod_image_url']
-											: $items['options']['prod_image']
-										),
-				'prod_sku'				=> $items['id'],
-				'prod_no'				=> $items['options']['prod_no'],
-				'prod_name'				=> $items['name'],
-				'color'					=> $items['options']['color'],
-				'size'					=> $items['options']['size'],
-				'designer'				=> $items['options']['designer'],
-				'qty'					=> $items['qty'],
-				'unit_price'			=> $items['price'],
-				'subtotal'				=> $items['subtotal'],
-				// custom_order = 0-instock, 1-preorer, 3-instock/clearance
-				'custom_order'			=> ($items['options']['custom_order'] ?: '0'),
-				'options'				=> json_encode(
-											array(
-												'orig_price' => (@$items['options']['orig_price'] ?: $items['price']),
-												'product_details_link' => $items['options']['current_url']
-											)
-										)
-			);
+			$log_detail_data['order_log_id'] = $order_log_id;
+			$log_detail_data['transaction_code'] = $random_code; // for deprecation;
+			$log_detail_data['image'] =
+				(isset($item['options']['prod_image_url']) && ! empty($item['options']['prod_image_url']))
+				? $item['options']['prod_image_url']
+				: $item['options']['prod_image']
+			;
+			$log_detail_data['prod_sku'] = $item['id'];
+			$log_detail_data['prod_no'] = $item['options']['prod_no'];
+			$log_detail_data['prod_name'] = $item['name'];
+			$log_detail_data['color'] = $item['options']['color'];
+			$log_detail_data['size'] = $item['options']['size'];
+			$log_detail_data['designer'] = $item['options']['designer'];
+			$log_detail_data['qty'] = $item['qty'];
+			$log_detail_data['unit_price'] = $item['price'];
+			$log_detail_data['subtotal'] = $item['subtotal'];
+			$log_detail_data['custom_order'] = $item['options']['custom_order'] ?: '0'; // custom_order = 0-instock, 1-preorer, 3-instock/clearance
+				$this_log_options['orig_price'] = @$item['options']['orig_price'] ?: $item['price'];
+				$this_log_options['product_details_link'] = $item['options']['current_url'];
+				if (@$item['options']['admin_stocks_only'])
+				{
+					$this_log_options['admin_stocks_only'] = $item['options']['admin_stocks_only']; // '1','0'
+				}
+			$log_detail_data['options'] = json_encode($this_log_options);
 			$this->DB->insert('tbl_order_log_details', $log_detail_data);
 
 			// process inventory by deducting from available and putting to onorder unless preorder
 			// items needed are prod_no, color_code, size, qty
 			if ($log_detail_data['custom_order'] != '1')
 			{
-				$config['prod_sku'] = $items['id'];
-				$config['size'] = $items['options']['size'];
-				$config['qty'] = $items['qty'];
+				$config['prod_sku'] = $item['id'];
+				$config['size'] = $item['options']['size'];
+				$config['qty'] = $item['qty'];
 				$config['order_id'] = $order_log_id;
+				$config['admin_stocks'] = $item['options']['admin_stocks_only'];
+				//if (@$item['options']['admin_stocks']) $config['admin_stocks'] = $item['options']['admin_stocks'];
 				$this->update_stocks->initialize($config);
 				$this->update_stocks->reserve();
 			}

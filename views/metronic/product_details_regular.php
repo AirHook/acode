@@ -32,11 +32,28 @@
                                                         && $this->input->get('form') == 'inquiry'
                                                         && (time() - $this->input->get('tc')) <= (24*60*60)
                                                         && @$this->product_details->stocks_options['clearance_consumer_only'] == '1'
-                                                    ) { ?>
+                                                    )
+                                                    {
+                                                        // setting a variable here for us on the size stock level for items that are 'admin_stocks_only'
+                                                        $from_how_to_order = TRUE;
+                                                        ?>
                                                     <div class="alert alert-danger text-center" style="background:red;font-size:1.8em;color:white;">
                                                         <strong>SPECIAL SALE - CLEARANCE PRICE - VALID FOR 24 HOURS</strong>
                                                     </div>
-                                                    <?php } ?>
+                                                        <?php
+                                                    }
+                                                    else
+                                                    {
+                                                        $from_how_to_order = FALSE;
+                                                    } ?>
+
+                                                    <?php if (@$this->product_details->stocks_options['admin_stocks_only'] === '1_')
+                                                    { ?>
+                                                    <div class="alert alert-danger text-center" style="background:red;font-size:1.8em;color:white;">
+                                                        <strong>SPECIAL SALE - CLEARANCE PRICE - ON LIMITED SIZES</strong>
+                                                    </div>
+                                                        <?php
+                                                    } ?>
 
 												</div>
 
@@ -272,6 +289,11 @@
                                                                 // as seen on second elsif statement
                                                                 $hto_customer_order = '0';
 
+                                                                /**********
+                                                                 * Admin Stocks Only variable
+                                                                 */
+                                                                $admin_stocks_only = '0';
+
     															/**********
     															 * Wholeslae price
     															 */
@@ -315,13 +337,15 @@
                                                             }
 															elseif (
                                                                 $this->product_details->custom_order === '3'
-                                                                // cs sale price for logged in cs or cs from how to order
+                                                                // cs sale price is for logged in cs or cs from how to order
                                                                 // and if item is makred cs clearance only
+                                                                OR $from_how_to_order == TRUE
                                                                 OR (
-                                                                    $this->input->get('type') == 'Consumer'
-                                                                    && $this->input->get('form') == 'inquiry'
-                                                                    && (time() - $this->input->get('tc')) <= (24*60*60)
-                                                                    && @$this->product_details->stocks_options['clearance_consumer_only'] == '1'
+                                                                    // logged in consumer
+                                                                    // and item is admin_stocks_only
+                                                                    @$this->product_details->stocks_options['admin_stocks_only'] === '1'
+                                                                    && $this->session->user_loggedin == '1'
+                                                                    && $this->session->user_role == 'consumer'
                                                                 )
                                                             )
                                                             {
@@ -331,16 +355,29 @@
                                                                  * for the checkout process to set correct price
                                                                  * NOTE: only if item is marked cs clearance only
     															 */
-                                                                if (
-                                                                    $this->input->get('type') == 'Consumer'
-                                                                    && $this->input->get('form') == 'inquiry'
-                                                                    && (time() - $this->input->get('tc')) <= (24*60*60)
-                                                                    && @$this->product_details->stocks_options['clearance_consumer_only'] == '1'
-                                                                )
+                                                                if ($from_how_to_order == TRUE)
                                                                 {
                                                                     $hto_customer_order = '3';
                                                                 }
                                                                 else $hto_customer_order = '0';
+
+                                                                /**********
+                                                                 * Admin Stocks Only variable
+                                                                 */
+                                                                if (
+                                                                    $from_how_to_order == TRUE
+                                                                    OR (
+                                                                        // logged in consumer
+                                                                        // and item is admin_stocks_only
+                                                                        @$this->product_details->stocks_options['admin_stocks_only'] === '1'
+                                                                        && $this->session->user_loggedin == '1'
+                                                                        && $this->session->user_role == 'consumer'
+                                                                    )
+                                                                )
+                                                                {
+                                                                    $admin_stocks_only = '1';
+                                                                }
+                                                                else $admin_stocks_only = '0';
 
     															/**********
     															 * Sale price
@@ -384,6 +421,11 @@
                                                                 // compensating for HOW TO ORDER options['custom_order'] parameter
                                                                 // as seen on second elsif statement
                                                                 $hto_customer_order = '0';
+
+                                                                /**********
+                                                                 * Admin Stocks Only variable
+                                                                 */
+                                                                $admin_stocks_only = '0';
 
     															/**********
     															 * Retail price
@@ -681,6 +723,8 @@
 																<input type="hidden" name="prod_sku" value="<?php echo $this->product_details->prod_no.'_'.$this->product_details->color_code; ?>" />
 																<input type="hidden" name="label_color" value="<?php echo $this->product_details->color_name; ?>" />
 
+                                                                <input type="hidden" name="admin_stocks_only" value="<?php echo $admin_stocks_only; ?>" />
+
 																<?php
 																/*
 																<input type="hidden" name="prod_image" value="<?php echo $img_path.'product_front/thumbs/'.$img_name.'_2.jpg'; ?>" />
@@ -732,6 +776,9 @@
 																	<ul class="list-unstyled list-inline product-form__list" style="margin-bottom:0px;">
 
 																		<?php
+                                                                        // get the color variant options
+                                                                        $options = $this->product_details->stocks_options;
+
 																		/**********
 																		 * Let's get the sizes and it's availablity through stock qty
 																		 * according to size mode system
@@ -746,26 +793,58 @@
 																		{
 																			foreach ($get_size as $size)
 																			{
-																				if($size->size_name == 'S' || $size->size_name == 'M' || $size->size_name == 'L' || $size->size_name == 'XL' || $size->size_name == 'XXL' || $size->size_name == 'XL1' || $size->size_name == 'XL2' || $size->size_name == 'S-M' || $size->size_name == 'M-L' || $size->size_name == 'ONE-SIZE-FITS-ALL')
+                                                                                // we need to set the prefix for the size lable
+																				if($size->size_name == 'XS' || $size->size_name == 'S' || $size->size_name == 'M' || $size->size_name == 'L' || $size->size_name == 'XL' || $size->size_name == 'XXL' || $size->size_name == 'XL1' || $size->size_name == 'XL2' || $size->size_name == 'S-M' || $size->size_name == 'M-L' || $size->size_name == 'ONE-SIZE-FITS-ALL')
 																				{
 																					$size_stock = 'size_s'.strtolower($size->size_name);
+                                                                                    $admin_size_stock = 'admin_s'.strtolower($size->size_name);
 																				}
 																				else
 																				{
 																					$size_stock = 'size_'.$size->size_name;
+                                                                                    $admin_size_stock = 'admin_'.$size->size_name;
 																				}
 
 																				if ($size->size_name == 'XXL' || $size->size_name == 'XL1' || $size->size_name == 'XL2') $hide_size_xxl_xl2 = 'style="display:none;"';
 																				else $hide_size_xxl_xl2 = '';
 
 																				if (
+                                                                                    // removing other sizes not used
 																					$size_stock != 'size_fs' // for size mode 1
 																					&& $size_stock != 'size_ss-m' // for size mode 0
 																					&& $size_stock != 'size_sm-l'
 																					&& $size_stock != 'size_sone-size-fits-all'
 																				)
 																				{
-																					if ($check_stock[$size_stock] > 0)
+                                                                                    // set max available stocks
+                                                                                    // default is as per regular stocks only
+                                                                                    // alt is when 'admin_stocks_only' is set,
+                                                                                    // regulat stocks plus admin stocks
+                                                                                    // but the alt is only for:
+                                                                                    // logged in consumer user and from how-to-order
+                                                                                    $max_available =
+                                                                                        (
+                                                                                            // admin_stocks_only
+                                                                                            // and either from how_to_order
+                                                                                            // or consumer logged in
+                                                                                            @$options['admin_stocks_only'] === '1'
+                                                                                            && @$check_stock[$admin_size_stock]
+                                                                                            && (
+                                                                                                $from_how_to_order == TRUE
+                                                                                                OR (
+                                                                                                    $this->session->user_loggedin == '1'
+                                                                                                    && $this->session->user_role == 'consumer'
+                                                                                                )
+                                                                                            )
+                                                                                        )
+                                                                                        ? $check_stock[$size_stock] + $check_stock[$admin_size_stock]
+                                                                                        : $check_stock[$size_stock]
+                                                                                    ;
+
+                                                                                    // general stocks
+                                                                                    // show only with stocks using $availability
+																					//if ($check_stock[$size_stock] > 0)
+                                                                                    if ($max_available > 0)
 																					{
 																						$a_class = 'input-control parent-select product-form__product-size instock';
 																						$availability = 'availability--instock';
@@ -796,26 +875,27 @@
                                                                         <?php if ($this->webspace_details->slug != 'basixblacklabel')
                                                                         { ?>
 
-                                                                        <li class="hoverable product-form__list-item" <?php echo $hide_size_xxl_xl2; ?> onmouseover="$('#<?php echo $size_stock; ?>.details.unavailable').show();" onmouseout="$('#<?php echo $size_stock; ?>.details.unavailable').hide();$('span#diagonal-line-<?php echo $size_stock; ?>').show();" onclick="
+                                                                        <li class="hoverable product-form__list-item" <?php echo $hide_size_xxl_xl2; ?> onmouseover="$('#<?php echo $size_stock; ?>.details.unavailable').show();$('.<?php echo $size_stock; ?>.details.admin-stocks-only').show();" onmouseout="$('#<?php echo $size_stock; ?>.details.unavailable').hide();$('.<?php echo $size_stock; ?>.details.admin-stocks-only').hide();$('span#diagonal-line-<?php echo $size_stock; ?>').show();" onclick="
     																		$('span.availability').hide();
     																		$('span.availability.<?php echo $availability; ?>').show();
-    																		$('.size-qty-submit').html('<?php echo $check_stock[$size_stock] == 0 ? 'ADD TO BAG (AS PRE ORDER)' : 'ADD TO BAG'; ?>');
+    																		$('.size-qty-submit').html('<?php echo $max_available == 0 ? 'ADD TO BAG (AS PRE ORDER)' : 'ADD TO BAG'; ?>');
     																		$('input#size').val('<?php echo $size->size_name; ?>');
-    																		$('input[name=\'qty\']').attr('max', '<?php echo $check_stock[$size_stock] ?: '30'; ?>');
-    																		$('input[name=\'custom_order\']').val('<?php echo $check_stock[$size_stock] == 0 ? '1' : ($hto_customer_order ?: $this->product_details->custom_order); ?>');
+    																		$('input[name=\'qty\']').attr('max', '<?php echo $max_available ?: '30'; ?>');
+                                                                            $('input[name=\'qty\']').trigger('touchspin.updatesettings', {max:'<?php echo $max_available ?: '30'; ?>'});
+    																		$('input[name=\'custom_order\']').val('<?php echo $max_available == 0 ? '1' : ($hto_customer_order ?: $this->product_details->custom_order); ?>');
     																		$('.hoverable.product-form__list-item').css('background-color','transparent');
     																		$(this).css('background-color','#ccc');
     																	">
 
-                                                                        <?php if ($this->session->userdata('user_cat') == 'wholesale')
-                                                                        { ?>
+                                                                            <?php if ($this->session->userdata('user_cat') == 'wholesale')
+                                                                            { ?>
 
-                                                                        <span class="tooltips" data-original-title="Available Stock" style="display:inline-block;float:right;position:relative;top:7px;color:red;margin-left:7px;">
-                                                                            ( <?php echo $check_stock[$size_stock]; ?> )
-                                                                        </span>
+                                                                            <span class="tooltips" data-original-title="Available Stock" style="display:inline-block;float:right;position:relative;top:7px;color:red;margin-left:7px;">
+                                                                                ( <?php echo $max_available; ?> )
+                                                                            </span>
 
-                                                                            <?php
-                                                                        } ?>
+                                                                                <?php
+                                                                            } ?>
 
     																		<a href="javascript:void();" class="<?php echo $a_class; ?>" style="z-index:10;">
     																			<span><?php echo $size->size_name; ?></span>
@@ -823,7 +903,7 @@
     																		<span class="ico"></span>
 
     																		<?php
-    																		if ($check_stock[$size_stock] == 0):
+    																		if ($max_available == 0):
 
     																			if ($this->product_details->d_folder === 'junnieleigh')
     																			{

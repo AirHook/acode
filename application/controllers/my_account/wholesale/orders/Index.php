@@ -42,6 +42,7 @@ class Index extends Wholesale_user_Controller {
 		// get data
 		$where['tbl_order_log.c'] = 'ws';
 		$where['tbl_order_log.user_id'] = $this->session->user_id;
+		$where['tbl_order_log.status'] = '0';
 		if (@$this->webspace_details->options['site_type'] != 'hub_site')
 		{
 			$where['tbl_order_log.webspace_id'] = @$this->webspace_details->id;

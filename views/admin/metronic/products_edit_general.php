@@ -95,7 +95,7 @@
 	                                                            </label>
 	                                                            <label class="mt-radio mt-radio-outline">
 	                                                                <input type="radio" name="size_mode" value="0" <?php echo $this->product_details->size_mode == '0' ? 'checked="checked"' : ''; ?> />
-																	Mode B: S,M,L,XL,XXL
+																	Mode B: XS,S,M,L,XL,XXL
 	                                                                <span></span>
 	                                                            </label>
 																<label class="mt-radio mt-radio-outline">

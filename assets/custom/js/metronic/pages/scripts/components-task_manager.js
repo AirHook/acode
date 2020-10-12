@@ -145,6 +145,18 @@ var ComponentsEditors = function () {
             $('[name="due_date"]').val($(this).val());
         });
 
+        // get the title
+        $('.todo-task-title').on('blur', function(){
+            $('[name="title"]').val($(this).val());
+        });
+
+        // get the description
+        /*
+        $('.todo-task-description').on('blur', function(){
+            $('[name="description"]').text($(this).val());
+        });
+        */
+
         // datepicker select (task details)
         $('.date-picker.todo-details-task-due').on('change', function(){
             var objectData = object_data;
@@ -167,16 +179,6 @@ var ComponentsEditors = function () {
                 alert("Edit Seque Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
             });
             // */
-        });
-
-        // get the title
-        $('.todo-task-title').on('blur', function(){
-            $('[name="title"]').val($(this).val());
-        });
-
-        // get the description
-        $('.todo-task-description').on('blur', function(){
-            $('[name="description"]').text($(this).val());
         });
 
         // user accept script

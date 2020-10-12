@@ -54,7 +54,7 @@ class Consumer_special_sale_email_carousel extends MY_Controller {
 	 *
 	 * @return	void
 	 */
-	public function index()
+	public function index($test = '')
 	{
 		//echo 'Processing...<br />';
 		//echo 'Not done...';
@@ -143,8 +143,14 @@ class Consumer_special_sale_email_carousel extends MY_Controller {
 		$this->mailgun->o_tag = 'Consumer Special Sale Invite';
 		$this->mailgun->from = 'Basix Black Label <help@basixblacklabel.com>';
 
-		//$this->mailgun->to = 'test@mg.shop7thavenue.com';
-		$this->mailgun->to = 'consumers@mg.shop7thavenue.com';
+		if ($test === 'admin')
+		{
+			$this->mailgun->to = 'test@mg.shop7thavenue.com';
+		}
+		else
+		{
+			$this->mailgun->to = 'consumers@mg.shop7thavenue.com';
+		}
 
 		//$this->mailgun->cc = $this->webspace_details->info_email;
 		//$this->mailgun->bcc = $this->CI->config->item('dev1_email');

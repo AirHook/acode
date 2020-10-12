@@ -14,7 +14,7 @@
 								</div>
 								<div class="actions">
 									<div class="btn-group btn-group-devided">
-										<a class="btn btn-secondary-outline font-dark" href="<javascript:;">
+										<a class="btn btn-secondary-outline font-dark" href="javascript:;" onclick="history.back();">
 											<i class="fa fa-reply"></i> Back to order logs
 										</a>
 									</div>

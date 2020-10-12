@@ -98,9 +98,11 @@ var FormValidation = function () {
 			//$('#form-products_add_multiple_upload_images').validate().element($('select[name="category"]'));
 			// update dropzone input fields
 			$('input[name="des_id"]').val(des_id);
+			$('input[name="size_mode_choice"][value="'+size_mode+'"]').prop('checked', true);
 			$('input[name="size_mode"]').val(size_mode);
 			$('input[name="designer_slug"]').val(d_folder);
 			// update size default set depending of size mode
+			/* *
 			switch (size_mode) {
 				case 0:
 					var sizeHtml = 'Set size S &amp; M with 1 unit(s) each (default)';
@@ -123,6 +125,79 @@ var FormValidation = function () {
 					var sizeHtml = 'Set size 2 &amp; 4 with 1 unit each (default)';
 					var sizeHelpBlock = 'Current size mode is A (0,2,4,6,8,...,22)';
 			};
+			// */
+			// update size default set depending of designer
+			/* */
+			switch (des_id) {
+				case 66: // 66-tempo
+					var sizeHtml = 'Set size S &amp; M with 1 unit(s) each';
+					var sizeHelpBlock = 'Current size mode is B (XS,S,M,L,XL,XXL)';
+					break;
+				case 64: // 64-chaarm
+				case 68: // 68-story
+					var sizeHtml = 'Set size XS, S, M, L, &amp; XL with 1 unit(s) each';
+					var sizeHelpBlock = 'Current size mode is B (XS,S,M,L,XL,XXL)';
+					break;
+				case 2:
+					var sizeHtml = 'Set prepack qty to 1 (default)';
+					var sizeHelpBlock = 'Current size mode is C (Pre-packed S1-M2-L2-XL1)';
+					break;
+				case 3:
+					var sizeHtml = 'Set sizes qty to 1';
+					var sizeHelpBlock = 'Current size mode is D (S-M, M-L)';
+					break;
+				case 4:
+					var sizeHtml = 'Set qty to 1';
+					var sizeHelpBlock = 'Current size mode is E (One Size Fits All)';
+					break;
+				case 5:	// 5-basix
+				case 65: // 65-issue
+				default:
+					var sizeHtml = 'Set size 2 &amp; 4 with 1 unit each';
+					var sizeHelpBlock = 'Current size mode is A (0,2,4,6,8,...,22)';
+			};
+			// */
+			$('.size-default-set').html(sizeHtml);
+			$('.size-help-block').html(sizeHelpBlock);
+		});
+
+		// on change of size mode choice
+		$('input[name="size_mode_choice"]').on('change', function(){
+			// get the selected size mode value
+			var size_mode = $(this).val();
+			// in case where it is needed, get the selected designer id
+			var des_id = $('select[name="designer"]').find(':selected').data('des_id');
+			// update dropzone input fields
+			$('input[name="size_mode"]').val(size_mode);
+			// update size default set depending of size mode
+			/* */
+			switch (size_mode) {
+				case '0':
+					if (des_id == '66'){
+						var sizeHtml = 'Set size S &amp; M with 1 unit(s) each';
+					} else {
+						var sizeHtml = 'Set size XS, S, M, L, &amp; XL with 1 unit(s) each';
+					}
+					var sizeHelpBlock = 'Current size mode is B (XS,S,M,L,XL,XXL)';
+					break;
+				case '2':
+					var sizeHtml = 'Set prepack qty to 1';
+					var sizeHelpBlock = 'Current size mode is C (Pre-packed S1-M2-L2-XL1)';
+					break;
+				case '3':
+					var sizeHtml = 'Set sizes qty to 1';
+					var sizeHelpBlock = 'Current size mode is D (S-M, M-L)';
+					break;
+				case '4':
+					var sizeHtml = 'Set qty to 1';
+					var sizeHelpBlock = 'Current size mode is E (One Size Fits All)';
+					break;
+				case '1':
+				default:
+					var sizeHtml = 'Set size 2 &amp; 4 with 1 unit each';
+					var sizeHelpBlock = 'Current size mode is A (0,2,4,6,8,...,22)';
+			};
+			// */
 			$('.size-default-set').html(sizeHtml);
 			$('.size-help-block').html(sizeHelpBlock);
 		});

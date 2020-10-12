@@ -547,7 +547,14 @@ class Prod_image_upload
 		{
 			// assuming roden theme assets
 			//$des_logo = 'assets/roden_assets/images/'.$query->logo_image;
-			$des_logo = $query->logo;
+
+			// $query->logo_image is now used to save logo light for dark backgrounds
+			$temp_logo = $query->logo_image;
+			if (file_exists($query->logo_image))
+			{
+				$des_logo = $query->logo_image;
+			}
+			else $des_logo = $query->logo;
 			$exp1 = explode('/', $des_logo);
 			$logo_image_file = $exp1[count($exp1) - 1];
 

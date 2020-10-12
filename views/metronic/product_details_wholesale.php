@@ -400,7 +400,7 @@
 																			if ($i != 0) echo nbs().' | '.nbs();
 																			?>
 
-																<a href="<?php echo site_url($new_url.str_replace(' ','-',strtolower(trim($color->color_name))).'/'.str_replace('/','-',str_replace(' ','-',$this->product_details->prod_name)).'/'.$url[6]); ?>" class="pdp--color-name tooltips" data-original-title="<?php echo $color->color_name; ?>" onmouseover="<?php echo $java3; ?>" onmouseout="<?php echo $java4; ?>" data-with-stocks="<?php echo $color->with_stocks; ?>" <?php echo $link_txt; ?>>
+																<a href="<?php echo site_url($new_url.str_replace(' ','-',strtolower(trim($color->color_name))).'/'.str_replace('/','-',str_replace(' ','-',$this->product_details->prod_name)).'/'.@$url[6]); ?>" class="pdp--color-name tooltips" data-original-title="<?php echo $color->color_name; ?>" onmouseover="<?php echo $java3; ?>" onmouseout="<?php echo $java4; ?>" data-with-stocks="<?php echo $color->with_stocks; ?>" <?php echo $link_txt; ?>>
 																	<?php echo $color->color_name; ?>
 																</a>
 
@@ -420,7 +420,7 @@
 																			if ($i != 0) echo nbs().' | '.nbs();
 																			?>
 
-																<a href="<?php echo site_url($new_url.str_replace(' ','-',strtolower(trim($color->color_name))).'/'.str_replace('/','-',str_replace(' ','-',$this->product_details->prod_name)).'/'.$url[6]); ?>" class="pdp--color-name tooltips <?php echo $link_txt; ?>" data-original-title="<?php echo $color->color_name; ?>" onmouseover="<?php echo $java3; ?>" onmouseout="<?php echo $java4; ?>">
+																<a href="<?php echo site_url($new_url.str_replace(' ','-',strtolower(trim($color->color_name))).'/'.str_replace('/','-',str_replace(' ','-',$this->product_details->prod_name)).'/'.@$url[6]); ?>" class="pdp--color-name tooltips <?php echo $link_txt; ?>" data-original-title="<?php echo $color->color_name; ?>" onmouseover="<?php echo $java3; ?>" onmouseout="<?php echo $java4; ?>">
 																	<?php echo $color->color_name; ?>
 																</a>
 
@@ -471,7 +471,7 @@
 
 																$swatch_style = $this->product_details->color_code == $color->color_code ? 'border:1px solid #333;padding:2px;' : 'padding: 3px;';
 																echo anchor(
-																	$new_url.str_replace(' ','-',strtolower(trim($color->color_name))).'/'.str_replace('/','-',str_replace(' ','-',$this->product_details->prod_name)).'/'.$url[6],
+																	$new_url.str_replace(' ','-',strtolower(trim($color->color_name))).'/'.str_replace('/','-',str_replace(' ','-',$this->product_details->prod_name)).'/'.@$url[6],
 																	img(
 																		array(
 																			'src'=>(
@@ -500,7 +500,7 @@
 
 																$swatch_style = $this->product_details->color_code == $color->color_code ? 'border:1px solid #333;padding:2px;' : 'padding: 3px;';
 																echo anchor(
-																	$new_url.str_replace(' ','-',strtolower(trim($color->color_name))).'/'.str_replace('/','-',str_replace(' ','-',$this->product_details->prod_name)).'/'.$url[6],
+																	$new_url.str_replace(' ','-',strtolower(trim($color->color_name))).'/'.str_replace('/','-',str_replace(' ','-',$this->product_details->prod_name)).'/'.@$url[6],
 																	img(
 																		array(
 																			'src'=>(
@@ -577,9 +577,11 @@
 
 																<input type="hidden" name="size_mode" value="<?php echo $this->product_details->size_mode; ?>" />
 
+                                                                <?php if ($this->webspace_details->slug != 'tempoparis') { ?>
                                                                 <p>
                                                                     Item in (2) brackets indicate quantity on hand. To add items to your order inquiry, drop the quantity and select number of units for that size
                                                                 </p>
+                                                                <?php } ?>
 
                                                                 <div class="product_details_wholesale row clearfix" style="margin-bottom:5px;">
 
@@ -695,7 +697,7 @@
                     														?>
                                                                             <div class="col-xs-4" style="padding-right:5px;">
 
-                                                                                <?php if ($qty > 0)
+                                                                                <?php if ($qty > 0 && $this->webspace_details->slug != 'tempoparis')
                                                                                 { ?>
 
                                                                                 <span class="tooltips" data-original-title="Available Stock" style="display:inline-block;float:right;position:relative;top:7px;color:red;margin-left:7px;">

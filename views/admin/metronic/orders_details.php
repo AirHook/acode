@@ -117,6 +117,21 @@
 									<?php
 								} ?>
 
+								<?php if ($order_details->status == '7')
+								{ ?>
+
+								<button href="#modal-shipment_pending" data-toggle="modal" class="btn grey-gallery btn-block btn-sm filter-options-field-details" style="text-align:left;padding-left:20px;">
+									<i class="fa fa-check"></i>
+									Set Order Shipment Pending
+								</button>
+								<button href="#modal-cancel" data-toggle="modal" class="btn grey-gallery btn-block btn-sm filter-options-field-details" style="text-align:left;padding-left:20px;">
+									<i class="fa fa-ban"></i>
+									Cancel Order
+								</button>
+
+									<?php
+								} ?>
+
 								<?php if ($order_details->status == '5')
 								{ ?>
 

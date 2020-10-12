@@ -69,6 +69,7 @@ class Status extends Admin_Controller {
 				$DB->set('status', '6');
 			break;
 			case 'payment_pending':
+				echo 'here';
 				$DB->set('status', '7');
 			break;
 		}
@@ -149,6 +150,7 @@ class Status extends Admin_Controller {
 
 		foreach ($order->order_items as $item)
 		{
+			$item_options = json_decode($item->options, TRUE);
 			// process inventory by removing from onorder and physical
 			// items needed are prod_no, color_code, size, qty
 			$this->load->library('inventory/update_stocks');
@@ -156,6 +158,7 @@ class Status extends Admin_Controller {
 			$config['size'] = $item->size;
 			$config['qty'] = $item->qty;
 			$config['order_id'] = $order_id;
+			$config['admin_stocks'] = $item_options['admin_stocks_only'];
 			$this->update_stocks->initialize($config);
 			$this->update_stocks->return();
 		}
@@ -225,6 +228,7 @@ class Status extends Admin_Controller {
 
 		foreach ($order->order_items as $item)
 		{
+			$item_options = json_decode($item->options, TRUE);
 			// process inventory by removing from onorder and physical
 			// items needed are prod_no, color_code, size, qty
 			$this->load->library('inventory/update_stocks');
@@ -232,6 +236,7 @@ class Status extends Admin_Controller {
 			$config['size'] = $item->size;
 			$config['qty'] = $item->qty;
 			$config['order_id'] = $order_id;
+			$config['admin_stocks'] = $item_options['admin_stocks_only'];
 			$this->update_stocks->initialize($config);
 			$this->update_stocks->remove();
 		}

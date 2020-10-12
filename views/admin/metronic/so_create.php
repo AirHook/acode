@@ -507,7 +507,7 @@
                                     <div class="thumb-tiles-wrapper margin-top-20 <?php echo @$des_subcats ? '' : 'display-none'; ?>" data-row-count="<?php echo @$products_count; ?>" data-object_data='{"<?php echo $this->security->get_csrf_token_name(); ?>":"<?php echo $this->security->get_csrf_hash(); ?>"}'>
 
         								<?php if ($search_string) { ?>
-        	                            <h1 style="word-wrap:break-word;"><small><em>Search results for:</em></small> "<?php echo $search_string; ?>"</h1>
+        	                            <h3 style="word-wrap:break-word;"><small><em>Search results for:</em> &nbsp; "<?php echo $search_string; ?>"</small></h3>
         	                            <br />
         	                            <?php } ?>
 

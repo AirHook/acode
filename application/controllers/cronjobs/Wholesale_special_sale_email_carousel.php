@@ -54,7 +54,7 @@ class Wholesale_special_sale_email_carousel extends MY_Controller {
 	 *
 	 * @return	void
 	 */
-	public function index()
+	public function index($test = '')
 	{
 		//echo 'Processing...<br />';
 		//echo 'Not done...';
@@ -142,8 +142,14 @@ class Wholesale_special_sale_email_carousel extends MY_Controller {
 		$this->mailgun->o_tag = 'Wholesale Email Carousel';
 		$this->mailgun->from = 'Basix Black Label <help@basixblacklabel.com>';
 
-		//$this->mailgun->to = 'test@mg.shop7thavenue.com';
-		$this->mailgun->to = 'wholesale_users@mg.shop7thavenue.com';
+		if ($test === 'admin')
+		{
+			$this->mailgun->to = 'test@mg.shop7thavenue.com';
+		}
+		else
+		{
+			$this->mailgun->to = 'wholesale_users@mg.shop7thavenue.com';
+		}
 
 		//$this->mailgun->cc = $this->webspace_details->info_email;
 		//$this->mailgun->bcc = $this->CI->config->item('dev1_email');

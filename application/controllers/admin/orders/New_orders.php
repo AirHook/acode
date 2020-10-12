@@ -83,6 +83,9 @@ class New_orders extends Admin_Controller {
 		}
 		// 0-new,1-complete,2-onhold,3-canclled,4-returned/refunded,5-shipment_pending,6-store_credit
 		$where['status'] = '0';
+		// removing tempoparis on list for shop7
+		$where['tbl_order_log.webspace_id !='] = '4'; // tempoparis.com
+		//$where['tbl_order_log.webspace_id !='] = '67'; // tempoparis.net
 		// check for date ranges in uri query strings
 		$this->data['from_date'] = @$_GET['from_date'] ?: '';
 		$this->data['to_date'] = @$_GET['to_date'] ?: '';
@@ -102,6 +105,8 @@ class New_orders extends Admin_Controller {
 			$having_des_group
 		);
 		$this->data['count_all'] = $this->orders_list->count_all;
+
+		//echo $this->orders_list->last_query; die();
 
 		// other data
 		$this->data['list'] = $list;

@@ -447,7 +447,7 @@
 									<input type="hidden" name="prod_id" value="<?php echo $this->product_details->prod_id; ?>" />
 									<input type="hidden" name="designer_slug" value="<?php echo $this->product_details->d_url_structure; ?>" />
 
-									<table data-toggle="table" data-card-view="true" style="margin:0 auto;">
+									<table class="table-stocks" data-toggle="table" data-card-view="true" style="margin:0 auto;">
 
 										<thead>
 											<?php $size_cnt = count($size_names); ?>
@@ -477,6 +477,82 @@
 												{ ?>
 
 												<td> <input type="text" size="2" id="<?php echo $size_label; ?>" name="<?php echo $size_label; ?>" value="" /> </td>
+
+													<?php
+												} ?>
+
+											</tr>
+										</tbody>
+
+									</table>
+
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
+									<button type="submit" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+										<span class="ladda-label">UPDATE</span>
+										<span class="ladda-spinner"></span>
+									</button>
+								</div>
+
+								</form>
+								<!-- End FORM =======================================================================-->
+								<!-- END FORM-->
+
+							</div>
+							<!-- /.modal-content -->
+						</div>
+						<!-- /.modal-dialog -->
+					</div>
+					<!-- /.modal -->
+
+					<!-- UPDATE AMDIN STOCK -->
+					<div class="modal fade bs-modal-md" id="update_admin_stock" tabindex="-1" role="dialog" aria-hidden="true">
+						<div class="modal-dialog modal-md">
+							<div class="modal-content">
+
+								<!-- BEGIN FORM-->
+								<!-- FORM =======================================================================-->
+								<?php echo form_open($this->config->slash_item('admin_folder').'products/update_stocks/admin/'.$this->product_details->prod_id, array('class'=>'form-horizontal', 'id'=>'form_products_edit_update_stocks')); ?>
+
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+									<h4 class="modal-title">Update ADMIN STOCK only</h4>
+								</div>
+								<div class="modal-body" style="text-align:center;">
+
+									<input type="hidden" id="admin_st_id" name="st_id" value="" />
+
+									<table class="table-admin-stocks" data-toggle="table" data-card-view="true" style="margin:0 auto;">
+
+										<thead>
+											<?php $size_cnt = count($size_names); ?>
+											<tr>
+												<th colspan="<?php echo $size_cnt; ?>">
+													Size
+												</th>
+											</tr>
+
+											<tr>
+												<?php
+												foreach ($size_names as $size_label => $s)
+												{ ?>
+
+												<th> <?php echo $s; ?> </th>
+
+													<?php
+												} ?>
+											</tr>
+										</thead>
+
+										<tbody>
+											<tr>
+
+												<?php
+												foreach ($size_names as $size_label => $s)
+												{ ?>
+
+												<td> <input type="text" size="2" id="<?php echo str_replace('size', 'admin_physical', $size_label); ?>" name="<?php echo $size_label; ?>" value="" /> </td>
 
 													<?php
 												} ?>

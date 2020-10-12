@@ -24,7 +24,6 @@ class Update_variant_options extends Admin_Controller {
 
 		// load pertinent library/model/helpers
 		$this->load->library('products/product_details');
-		$this->load->library('odoo');
 
 		// connect to database
 		$this->DB = $this->load->database('instyle', TRUE);
@@ -46,7 +45,16 @@ class Update_variant_options extends Admin_Controller {
 			// check for $options posted
 			if (@$post_ary['options'])
 			{
-				$post_ary['options'] = json_encode($post_ary['options']);
+				// get variant options data
+				$this->DB->select('options');
+				$this->DB->where('st_id', $post_ary['st_id']);
+				$q1 = $this->DB->get('tbl_stock');
+				$r1 = $q1->row();
+				$options = json_decode($r1->options, TRUE);
+
+				$stocks_options = array_merge($options, $post_ary['options']);
+
+				$post_ary['options'] = json_encode($stocks_options);
 			}
 
 			// update stock record
@@ -78,57 +86,6 @@ class Update_variant_options extends Admin_Controller {
 			echo 'Done';
 		}
 		else echo 'Uh oh...';
-	}
-
-	// ----------------------------------------------------------------------
-
-	/**
-	 * Update Product Stock To Odoo via API
-	 *
-	 * @access 	private
-	 * @return	void
-	 */
-	private function _update_stock_to_odoo($data_ary)
-	{
-		//
-		// A very simple PHP example that sends a HTTP POST to a remote site
-		//
-		$api_url = 'http://70.32.74.131:8069/api/update/product/'.$prod_id;
-		$api_key = $this->config->item('odoo_api_key');
-		if ($api_url != '')
-		{
-			// add api_key to data_ary
-			$data_ary['client_api_key'] = $api_key;
-
-			// set post fields
-			$post = $data_ary;
-
-			$ch = curl_init();
-			curl_setopt($ch, CURLOPT_URL, $api_url);
-			curl_setopt($ch, CURLOPT_POST, TRUE);
-			curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
-			// receive server response ...
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-			// execute
-			$response = curl_exec($ch);
-
-			// for debugging purposes, check for response
-			/*
-			if($response === false)
-			{
-				//echo 'Curl error: ' . curl_error($ch);
-				// set flash data
-				$this->session->set_flashdata('error', 'post_data_error');
-				$this->session->set_flashdata('error_value', curl_error($ch));
-
-				redirect($this->config->slash_item('admin_folder').'products/edit/index/'.$prod_id, 'location');
-			}
-			*/
-
-			// close the connection, release resources used
-			curl_close ($ch);
-		}
 	}
 
 	// ----------------------------------------------------------------------

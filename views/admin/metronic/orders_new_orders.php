@@ -67,7 +67,7 @@
 							</li>
 							<li class="nav-items <?php echo strpos($this->uri->uri_string(), 'admin/orders/shipment_pending') === FALSE ? '' : 'active'; ?>">
 								<a href="<?php echo site_url($pre_link.'/orders/shipment_pending'); ?>">
-									Shipmnet Pending
+									Shipment Pending
 								</a>
 							</li>
 							<li class="nav-items <?php echo strpos($this->uri->uri_string(), 'admin/orders/shipped') === FALSE ? '' : 'active'; ?>">
@@ -352,6 +352,14 @@
 										<button class="close" data-close="alert"></button> There was an error sending sales pacakge.
 									</div>
 									<?php } ?>
+
+									<?php if ($this->webspace_details->slug == 'shop7thavenue' && ! @$des_slug && $this->uri->segment(3) == 'new_orders') { ?>
+									<div class="alert alert-info">
+										<button class="close" data-close="alert"></button>
+										New Orders from shop7thavenue.com admin does not show Tempo Paris orders.<br />
+										To view Tempo Paris orders, please select Tempo Paris from the By Designer drop down filter on the side menu.
+									</div>
+									<?php } ?>
 			                    </div>
 
 			                    <div class="table-toolbar">
@@ -604,8 +612,15 @@
 													if (@$role == 'sales' && @$this->sales_user_details->access_level == '2') $hide_approve = 'hide';
 													else $hide_approve = '';
 													?>
-			                                    <!-- Acknowledge -->
-			                                    <a data-toggle="modal" href="#acknowledge-<?php echo $order->order_id; ?>" class="tooltips <?php echo $hide_approve; ?>" data-original-title="Acknowledge Order">
+												<!-- Pending Payment -->
+			                                    <a data-toggle="modal" href="#payment_pending-<?php echo $order->order_id; ?>" class="tooltips <?php echo $hide_approve; ?>" data-original-title="Pending Payment">
+			                                        <i class="fa fa-check font-dark"></i>
+			                                    </a>
+												<?php } ?>
+
+												<?php if ($order->status == '7' OR $this->webspace_details->slug == 'tempoparis') { ?>
+												<!-- Acknowledge for Shipment Pending -->
+			                                    <a data-toggle="modal" href="#acknowledge-<?php echo $order->order_id; ?>" class="tooltips" data-original-title="Shipment Pending">
 			                                        <i class="fa fa-check font-dark"></i>
 			                                    </a>
 												<?php } ?>
@@ -617,7 +632,7 @@
 			                                    </a>
 												<?php } ?>
 
-												<?php if ($order->status == '0' OR $order->status == '5') { ?>
+												<?php if ($order->status == '0' OR $order->status == '5' OR $order->status == '7') { ?>
 												<!-- Cancel -->
 			                                    <a data-toggle="modal" href="#cancel-<?php echo $order->order_id; ?>" class="tooltips" data-original-title="Cancel Order">
 			                                        <i class="fa fa-ban font-dark"></i>
@@ -664,7 +679,7 @@
 													<!-- /.modal-dialog -->
 												</div>
 												<!-- /.modal -->
-												<!-- ACKNOWLEDEGE -->
+												<!-- ACKNOWLEDEGE SHIPMENET PENDING -->
 												<div class="modal fade bs-modal-sm" id="acknowledge-<?php echo $order->order_id?>" tabindex="-1" role="dialog" aria-hidden="true">
 													<div class="modal-dialog modal-sm">
 														<div class="modal-content">
@@ -672,10 +687,32 @@
 																<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
 																<h4 class="modal-title">Update Order Info</h4>
 															</div>
-															<div class="modal-body"> Acknowledge Order? </div>
+															<div class="modal-body"> Acknowledge Order for Shipment Pending? </div>
 															<div class="modal-footer">
 																<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-																<a href="<?php echo site_url($pre_link.'/orders/status/index/'.$order->order_id.'/acknowledge/'.$status); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+																<a href="<?php echo site_url($pre_link.'/orders/status/index/'.$order->order_id.'/shipment_pending/'.$status); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
+																	<span class="ladda-label">Confirm?</span>
+																	<span class="ladda-spinner"></span>
+																</a>
+															</div>
+														</div>
+														<!-- /.modal-content -->
+													</div>
+													<!-- /.modal-dialog -->
+												</div>
+												<!-- /.modal -->
+												<!-- PENDING PAYMENT -->
+												<div class="modal fade bs-modal-sm" id="payment_pending-<?php echo $order->order_id?>" tabindex="-1" role="dialog" aria-hidden="true">
+													<div class="modal-dialog modal-sm">
+														<div class="modal-content">
+															<div class="modal-header">
+																<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+																<h4 class="modal-title">Update Order Info</h4>
+															</div>
+															<div class="modal-body"> Acknowledge Order for Pending Payment? </div>
+															<div class="modal-footer">
+																<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
+																<a href="<?php echo site_url($pre_link.'/orders/status/index/'.$order->order_id.'/payment_pending/'.$status); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
 																	<span class="ladda-label">Confirm?</span>
 																	<span class="ladda-spinner"></span>
 																</a>

@@ -114,6 +114,47 @@
 														</div>
 													</div>
 												</div>
+                                                <div class="form-group">
+                                                    <label class="col-lg-4 control-label">Size Mode:
+                                                    </label>
+                                                    <div class="col-lg-8">
+
+                                                        <div class="mt-radio-list" style="padding-top:8px;">
+                                                            <label class="mt-radio mt-radio-outline">
+                                                                <input type="radio" name="size_mode_choice" value="1" <?php echo $this->product_details->size_mode == '1' ? 'checked="checked"' : ''; ?> checked="checked" />
+                                                                Mode A: 0,2,4,6,8,10,...,22
+                                                                <span></span>
+                                                            </label>
+                                                            <label class="mt-radio mt-radio-outline">
+                                                                <input type="radio" name="size_mode_choice" value="0" <?php echo $this->product_details->size_mode == '0' ? 'checked="checked"' : ''; ?> />
+                                                                Mode B: XS,S,M,L,XL,XXL
+                                                                <span></span>
+                                                            </label>
+                                                            <label class="mt-radio mt-radio-outline">
+                                                                <input type="radio" name="size_mode_choice" value="2" <?php echo $this->product_details->size_mode == '2' ? 'checked="checked"' : ''; ?> />
+                                                                Mode C: Pre-packed (1S-2M-2L-1XL)
+                                                                <span></span>
+                                                            </label>
+                                                            <label class="mt-radio mt-radio-outline">
+                                                                <input type="radio" name="size_mode_choice" value="3" <?php echo $this->product_details->size_mode == '3' ? 'checked="checked"' : ''; ?> />
+                                                                Mode D: S-M, M-L
+                                                                <span></span>
+                                                            </label>
+                                                            <label class="mt-radio mt-radio-outline">
+                                                                <input type="radio" name="size_mode_choice" value="4" <?php echo $this->product_details->size_mode == '4' ? 'checked="checked"' : ''; ?> />
+                                                                Mode E: One Size Fits All
+                                                                <span></span>
+                                                            </label>
+                                                            <!--
+                                                            <label class="mt-radio mt-radio-outline mt-radio-disabled">
+                                                                <input type="radio" disabled> Disabled
+                                                                <span></span>
+                                                            </label>
+                                                        -->
+                                                        </div>
+
+                                                    </div>
+                                                </div>
 												<div class="form-group">
 													<label class="col-lg-4 control-label">Stocks
 													</label>
@@ -131,14 +172,19 @@
 
 														<div class="mt-radio-list" style="padding-top:8px;">
 															<label class="mt-radio mt-radio-outline">
-																<input type="radio" name="stocks" id="optionsRadios22" value="0" checked="">
+																<input type="radio" name="stocks" id="optionsRadios22" value="0" />
                                                                 Set all sizes to zero '0' stock
 																<span></span>
 															</label>
 															<label class="mt-radio mt-radio-outline">
-																<input type="radio" name="stocks" id="optionsRadios23" value="1" checked="checked">
+																<input type="radio" name="stocks" id="optionsRadios23" value="1" checked="checked" />
                                                                 <span></span>
-                                                                <div class="size-default-set"> Set size 2 &amp; 4 with 1 unit each (default) </div>
+                                                                <div class="size-default-set"> Set size 2 &amp; 4 with 1 unit each </div>
+															</label>
+                                                            <label class="mt-radio mt-radio-outline">
+																<input type="radio" name="stocks" id="optionsRadios24" value="2" />
+                                                                <span></span>
+                                                                <div class=""> Do nothing<br /><small>(for updating images only and will not affect current stocks)</small> </div>
 															</label>
                                                             <cite class="help-block small size-help-block"> Current size mode is A (0,2,4,6,8,...,22) </cite>
 														</div>

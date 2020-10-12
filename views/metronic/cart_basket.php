@@ -266,30 +266,31 @@
 												<?php if ($this->cart->total_items() > 0)
 												{ ?>
 
-												<div class="col-sm-6">
-													<div class="portlet light" style="padding-top:0px;">
-														<div class="portlet-title">
-															<div class="caption">
-																<span class="caption-subject"> Promo Codes </span>
-															</div>
-														</div>
-														<div class="portlet-body">
+												<div class="portlet light col-sm-6 hidden-xs" style="padding-top:0px;">
 
-															<div class="input-group">
-																<div class="input-icon">
-																	<input class="form-control" name="promocode" type="text">
-																</div>
-																<span class="input-group-btn">
-																	<button id="genpassword" class="btn dark" type="button">
-																		<i class="fa fa-arrow-left fa-fw"></i> Apply </button>
-																</span>
-															</div>
-
+													<div class="portlet-title display-none">
+														<div class="caption">
+															<span class="caption-subject"> Promo Codes </span>
 														</div>
 													</div>
+													<div class="portlet-body display-none">
+
+														<div class="input-group">
+															<div class="input-icon">
+																<input class="form-control" name="promocode" type="text">
+															</div>
+															<span class="input-group-btn">
+																<button id="genpassword" class="btn dark" type="button">
+																	<i class="fa fa-arrow-left fa-fw"></i> Apply </button>
+															</span>
+														</div>
+
+													</div>
+
 												</div>
 
 												<div class="col-sm-6">
+
 													<table class="table table-condensed cart-summary">
 														<tr>
 															<td>Subtotal</td>

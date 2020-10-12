@@ -609,7 +609,7 @@
 											}
 											else
 											{
-												$delivery_notice = 'Your order was received and will be researched for availability on product.';
+												$delivery_notice = 'Your order has been received and is being processed.';
 											}
 										}
 										if ($order_details->shipping_fee === '0')
@@ -617,6 +617,15 @@
 
 										<span style="font-size:85%;">
 											<sup>*</sup>NOTE: <?php echo $delivery_notice; ?>
+										</span>
+
+											<?php
+										}
+										else
+										{ ?>
+
+										<span style="font-size:85%;">
+											Your order has been received and is processing for next shipment window within 24-72 hours.
 										</span>
 
 											<?php

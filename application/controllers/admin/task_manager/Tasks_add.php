@@ -69,6 +69,7 @@ class Tasks_add extends Admin_Controller {
 		$post_ary['user_id'] = $this->input->post('user_id') ?: NULL;
 		// unset unneeded variables
 		unset($post_ary['due_date']);
+		unset($post_ary['files']);
 
 		$query = $this->DB->insert('tm_tasks', $post_ary);
 

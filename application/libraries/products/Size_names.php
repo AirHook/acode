@@ -49,6 +49,7 @@ class Size_names {
 		}
 
 		// get data
+		$this->DB->order_by('size_id', 'ASC');
 		$query = $this->DB->get('tblsize');
 
 		$array = array();
@@ -56,6 +57,7 @@ class Size_names {
 		{
 			switch ($row->size_name)
 			{
+				case ('XS'):
 				case ('S'):
 				case ('M'):
 				case ('L'):

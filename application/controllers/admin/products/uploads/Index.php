@@ -75,7 +75,6 @@ class Index extends Admin_Controller {
 			$this->load->library('uploads/prod_image_upload');
 			$this->load->library('products/product_details');
 			$this->load->library('designers/designer_details');
-			$this->load->library('designers/designer_details');
 			$this->load->library('categories/category_details');
 			$this->load->library('odoo');
 			//$this->load->library('designers/designers_list');
@@ -133,7 +132,7 @@ class Index extends Admin_Controller {
 
 				// this is old category system
 				//$post_ary['cat_id'] 	= '1'; // fashion default cat_id
-				$post_ary['subcat_id'] 	= $this->input->post('subcat_id') ?: '';
+				$post_ary['subcat_id'] 	= $this->input->post('subcat_id') ?: '0';
 
 				// applying new category system
 				// NOTE: input field is already an array
@@ -369,8 +368,9 @@ class Index extends Admin_Controller {
 				{
 					// before inserting new product
 					// we need to update seque since new product's seque is '0'
-					$qry_str1 = "UPDATE tbl_product SET seque = seque + 1";
-					$this->DB->query($qry_str1);
+					// turning this off a seque is manually encoded by joe
+					//$qry_str1 = "UPDATE tbl_product SET seque = seque + 1";
+					//$this->DB->query($qry_str1);
 
 					// insert the record...
 					$query3 = $this->DB->insert('tbl_product', $post_ary);
@@ -432,15 +432,30 @@ class Index extends Admin_Controller {
 				$post_ary_variant['stock_date'] = $post_ary['prod_date'];
 				$post_ary_variant['des_id'] = $post_ary['designer'];
 
-				// set stock qty where necessary
-				if ($this->input->post('stock_qty') && $this->input->post('stock_qty') != '0')
-				{
-					// initialize designer details
-					$this->designer_details->initialize(array('designer.url_structure'=>$this->input->post('designer_slug')));
+				// set stocks default last modified time
+				$last_modified = time();
 
+				// set stock qty where necessary
+				if ($this->input->post('stock_qty') == '1')
+				{
 					// new stock options: zero stock and default size S & M with 1 unit each
-					if ($this->designer_details->webspace_options['size_mode'] == '0')
+					if ($post_ary['size_mode'] == '0')
 					{
+						if ($d_url_structure != 'tempoparis')
+						{
+							$post_ary_variant['size_sxs'] = $this->input->post('stock_qty');
+							$post_ary_variant_size['size_sxs'] = $this->input->post('stock_qty');
+							$post_ary_size['size_sxs'] = $this->input->post('stock_qty');
+
+							$post_ary_variant['size_sl'] = $this->input->post('stock_qty');
+							$post_ary_variant_size['size_sl'] = $this->input->post('stock_qty');
+							$post_ary_size['size_sl'] = $this->input->post('stock_qty');
+
+							$post_ary_variant['size_sxl'] = $this->input->post('stock_qty');
+							$post_ary_variant_size['size_sxl'] = $this->input->post('stock_qty');
+							$post_ary_size['size_sxl'] = $this->input->post('stock_qty');
+						}
+
 						$post_ary_variant['size_ss'] = $this->input->post('stock_qty');
 						$post_ary_variant_size['size_ss'] = $this->input->post('stock_qty');
 						$post_ary_size['size_ss'] = $this->input->post('stock_qty');
@@ -450,7 +465,7 @@ class Index extends Admin_Controller {
 						$post_ary_size['size_sm'] = $this->input->post('stock_qty');
 					}
 					// new stock options: zero stock and default size 2 & 4 with 1 unit each
-					if ($this->designer_details->webspace_options['size_mode'] == '1')
+					if ($post_ary['size_mode'] == '1')
 					{
 						$post_ary_variant['size_2'] = $this->input->post('stock_qty');
 						$post_ary_variant_size['size_2'] = $this->input->post('stock_qty');
@@ -461,13 +476,13 @@ class Index extends Admin_Controller {
 						$post_ary_size['size_4'] = $this->input->post('stock_qty');
 					}
 					// new stock options: zero stock and default 1 unit
-					if ($this->designer_details->webspace_options['size_mode'] == '2')
+					if ($post_ary['size_mode'] == '2')
 					{
 						$post_ary_variant['size_sprepack1221'] = $this->input->post('stock_qty');
 						$post_ary_variant_size['size_sprepack1221'] = $this->input->post('stock_qty');
 						$post_ary_size['size_sprepack1221'] = $this->input->post('stock_qty');
 					}
-					if ($this->designer_details->webspace_options['size_mode'] == '3')
+					if ($post_ary['size_mode'] == '3')
 					{
 						$post_ary_variant['size_ssm'] = $this->input->post('stock_qty');
 						$post_ary_variant_size['size_ssm'] = $this->input->post('stock_qty');
@@ -477,17 +492,15 @@ class Index extends Admin_Controller {
 						$post_ary_variant_size['size_sml'] = $this->input->post('stock_qty');
 						$post_ary_size['size_sml'] = $this->input->post('stock_qty');
 					}
-					if ($this->designer_details->webspace_options['size_mode'] == '4')
+					if ($post_ary['size_mode'] == '4')
 					{
 						$post_ary_variant['size_sonesizefitsall'] = $this->input->post('stock_qty');
 						$post_ary_variant_size['size_sonesizefitsall'] = $this->input->post('stock_qty');
 						$post_ary_size['size_sonesizefitsall'] = $this->input->post('stock_qty');
 					}
 
-					// set last modified time for physical stocks
-					$last_modified = time();
+					// set last modified time for physical stocks for inserts
 					$post_ary_variant['options'] = json_encode(array('last_modified'=>$last_modified));
-					//$post_ary_size['options'] = json_encode(array('last_modified'=>$last_modified));
 				}
 
 				/*
@@ -501,7 +514,9 @@ class Index extends Admin_Controller {
 
 					// insert to tbl_stock_physical
 					$post_ary_size['st_id'] = $_st_id;
-					$this->DB->insert('tbl_stock_physical', $post_ary_size);
+					$this->DB->insert('tbl_stock_available', $post_ary_size);
+					// for depracation, physical will now be the tbl_stock
+					//$this->DB->insert('tbl_stock_physical', $post_ary_size);
 				}
 				else
 				{
@@ -510,23 +525,59 @@ class Index extends Admin_Controller {
 					// if any. Also, image is uploaded respectively. In this case,
 					// we only need to update image url of the color.
 
+					// reinitialize product details for user on the specific variant
+					$this->product_details->initialize(
+						array(
+							'tbl_product.prod_no' => $this->prod_image_upload->prod_no,
+							'color_code' => $this->prod_image_upload->color_code
+						)
+					);
+
 					// get variant id
 					$_st_id = $this->input->post('upload_images_st_id') ?: $this->product_details->variant_id($this->prod_image_upload->color_code);
 
 					// but if size is set, we will need to update variant sizes as well...
-					if ($this->input->post('stock_qty') && $this->input->post('stock_qty') != '0')
+					if ($this->input->post('stock_qty') == '1')
 					{
+						// check product details stock options
+						// and set last_modified for udpates on stocks
+						$stock_options = $this->product_details->stocks_options;
+						$stock_options['last_modified'] = $last_modified;
+						$post_ary_variant_update_only['options'] = json_encode($stock_options);
+
+						// grab the variant size updates
 						$post_ary_variant_update_only = $post_ary_variant_size;
+
+						// set physical stock where necessary, or update it
+						// tbl_stock_physical, is for depracation
+						// physical will not be tbl_stock
+						// we set available stock instead
+						if ($this->product_details->physical_st_id)
+						{
+							// update tbl_stock_physical
+							$this->DB->where('st_id', $_st_id);
+							$this->DB->update('tbl_stock_available', $post_ary_size);
+							//$this->DB->update('tbl_stock_physical', $post_ary_size);
+						}
+						else
+						{
+							// insert to tbl_stock_physical
+							$post_ary_size['st_id'] = $_st_id;
+							$this->DB->insert('tbl_stock_available', $post_ary_size);
+							//$this->DB->insert('tbl_stock_physical', $post_ary_size);
+						}
 					}
+
+					// finally update tbl_stocks here so that when there is no size update
+					// but new image is uploaded via admin edit product details page
+					// variant is update esp the 'image_url_path'
+					// set the image_url_path
 					$post_ary_variant_update_only['image_url_path'] = $media_id;
 
 					// update the record...
 					$this->DB->where('st_id', $_st_id);
 					$this->DB->update('tbl_stock', $post_ary_variant_update_only);
 
-					// update tbl_stock_physical
-					$this->DB->where('st_id', $_st_id);
-					$this->DB->update('tbl_stock_physical', $post_ary_size);
 				}
 				// */
 

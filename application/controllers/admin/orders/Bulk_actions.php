@@ -119,7 +119,7 @@ class Bulk_actions extends Admin_Controller {
 				foreach ($this->input->post('checkbox') as $key => $id)
 				{
 					if ($this->input->post('bulk_action') == 'ac') $this->_send_order_acknowledgement($id);
-					if ($this->input->post('bulk_action') == 'co') $this->_remove_stocks($id);
+					//if ($this->input->post('bulk_action') == 'co') $this->_remove_stocks($id);
 					if (
 						$this->input->post('bulk_action') == 'ca'
 						OR $this->input->post('bulk_action') == 're'
@@ -176,6 +176,7 @@ class Bulk_actions extends Admin_Controller {
 
 		foreach ($order->items() as $item)
 		{
+			$item_options = json_decode($item->options, TRUE);
 			// process inventory by removing from onorder and physical
 			// items needed are prod_no, color_code, size, qty
 			$this->load->library('inventory/update_stocks');
@@ -183,11 +184,12 @@ class Bulk_actions extends Admin_Controller {
 			$config['size'] = $item->size;
 			$config['qty'] = $item->qty;
 			$config['order_id'] = $order_id;
+			$config['admin_stocks'] = $item_options['admin_stocks_only'];
 			$this->update_stocks->initialize($config);
 			$this->update_stocks->return();
 		}
 
-		// turning ORDERS notification for now
+		// turning OFF notifications for now
 		/* *
 		$store_name = $order->store_name ?: '';
 		$username = ucwords(strtolower($order->firstname.' '.$order->lastname));
@@ -259,11 +261,12 @@ class Bulk_actions extends Admin_Controller {
 			$config['size'] = $item->size;
 			$config['qty'] = $item->qty;
 			$config['order_id'] = $order_id;
+			$config['admin_stocks'] = $item_options['admin_stocks_only'];
 			$this->update_stocks->initialize($config);
 			$this->update_stocks->remove();
 		}
 
-		// turning ORDERS notification for now
+		// turning OFF notifications for now
 		/* *
 		$store_name = $order->store_name ?: '';
 		$username = ucwords(strtolower($order->firstname.' '.$order->lastname));
@@ -325,7 +328,7 @@ class Bulk_actions extends Admin_Controller {
 		// initialize...
 		$order = $this->order_details->initialize(array('tbl_order_log.order_log_id'=>$order_id));
 
-		// turning ORDERS notification for now
+		// turning OFF notifications for now
 		/* *
 		$store_name = $order->store_name ?: '';
 		$username = ucwords(strtolower($order->firstname.' '.$order->lastname));

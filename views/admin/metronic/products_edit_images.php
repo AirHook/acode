@@ -420,10 +420,10 @@
 										</div>
 									</div>
 								</div>
-								<div class="form-group">
+								<div class="form-group" style="<?php echo $this->session->admin_id == '1' ? 'margin-bottom:0px' : ''; ?>;">
 									<label class="control-label col-md-4">Clearance Consumer Only:</label>
 									<div class="col-md-8">
-										<div class="mt-checkbox-inline">
+										<div class="mt-checkbox-inline" style="padding-bottom:0px;">
 											<label class="mt-checkbox mt-checkbox-outline">
 												<input type="checkbox" class="clearance_consumer_only" id="clearance_consumer_only-<?php echo $color->color_code; ?>" name="clearance_consumer_only[<?php echo $color->st_id; ?>]" value="1" <?php echo @$color_options['clearance_consumer_only'] == '1' ? 'checked': ''; ?> /> Yes
 												<span></span>
@@ -432,6 +432,24 @@
 										</div>
 									</div>
 								</div>
+
+								<?php if ($this->webspace_details->options['site_type'] == 'hub_site')
+								{ ?>
+
+								<div class="form-group">
+									<label class="control-label col-md-4">Shop7th Private Stock Sale:</label>
+									<div class="col-md-8">
+										<div class="mt-checkbox-inline" style="padding-bottom:0px;">
+											<label class="mt-checkbox mt-checkbox-outline">
+												<input type="checkbox" class="admin_stocks_only" id="admin_stocks_only-<?php echo $color->color_code; ?>" name="admin_stocks_only[<?php echo $color->st_id; ?>]" value="1" <?php echo @$color_options['admin_stocks_only'] == '1' ? 'checked': ''; ?> /> Yes
+												<span></span>
+											</label>
+										</div>
+									</div>
+								</div>
+
+									<?php
+								} ?>
 
 							</div>
 						</div>
@@ -480,6 +498,7 @@
 							$size_assoc_ary = array();
 							foreach ($size_names as $size_label => $s)
 							{
+								$available_size_label = str_replace('size', 'size_physical', $size_label);
 								array_push($size_ary, $color->$size_label);
 								$size_assoc_ary[$size_label] = $color->$size_label;
 							}
@@ -501,7 +520,7 @@
 									<?php $size_cnt = count($size_names); ?>
 									<tr>
 										<th colspan="<?php echo $size_cnt; ?>">
-											Size
+											Si<a href="javascript:;" class="font-dark" onclick="$('.stock-status-regular-<?php echo $color->st_id; ?>').toggle();">z</a>e
 										</th>
 									</tr>
 
@@ -533,7 +552,35 @@
 									foreach ($size_names as $size_label => $s)
 									{ ?>
 
-									<td style="padding:5px;text-align:center;"><small> <?php echo $color->$size_label; ?> </small></td>
+									<td style="padding:5px;text-align:center;"><small> <?php echo $color->$size_label ?: 0; ?> </small></td>
+
+										<?php
+									} ?>
+
+								</tr>
+								<tr class="stock-status-regular-<?php echo $color->st_id; ?> available display-none">
+
+									<?php
+									foreach ($size_names as $size_label => $s)
+									{
+										$available_label =  str_replace('size', 'available', $size_label)
+										?>
+
+									<td style="padding:5px;text-align:center;"><small> <?php echo $color->$available_label ?: 0; ?> </small></td>
+
+										<?php
+									} ?>
+
+								</tr>
+								<tr class="stock-status-regular-<?php echo $color->st_id; ?> onorder display-none">
+
+									<?php
+									foreach ($size_names as $size_label => $s)
+									{
+										$onorder_label =  str_replace('size', 'onorder', $size_label)
+										?>
+
+									<td style="padding:5px;text-align:center;"><small> <?php echo $color->$onorder_label ?: 0; ?> </small></td>
 
 										<?php
 									} ?>
@@ -555,6 +602,146 @@
 
 					</div>
 				</div>
+
+				<?php
+				/***********
+				 * Admin Stocks
+				 */
+				?>
+				<?php if ($this->webspace_details->options['site_type'] == 'hub_site')
+				{ ?>
+
+				<div class="panel panel-default" data-width_stocks="<?php echo isset($color->with_stocks) ? $color->with_stocks : ''; ?>">
+					<div class="panel-heading">
+
+						<div class="caption">
+							<i class="glyphicon glyphicon-folder-close"></i>
+							<span class="caption-subject uppercase"> Edit Admin Stock </span>
+						</div>
+
+						<?php if ($this->product_details->size_mode == '2_')
+						{ ?>
+
+						<div class="actions">
+							Pre-packed... (1S-2M-2L-1XL)
+						</div>
+
+							<?php
+						}
+						else
+						{
+							$size_ary = array();
+							$size_assoc_ary = array();
+							foreach ($size_names as $size_label => $s)
+							{
+								$admin_size_label = str_replace('size', 'admin_physical', $size_label);
+								array_push($size_ary, ($color->$admin_size_label ?: '0'));
+								$size_assoc_ary[$size_label] = $color->$admin_size_label ?: '0';
+							}
+							$size_csv = implode(',',$size_ary);
+							$size_json = json_encode($size_assoc_ary);
+							?>
+
+						<div class="actions">
+							<a id="modal_admin-stocks-<?php echo $color->st_id; ?>" data-toggle="modal" href="#update_admin_stock" class="modal_admin_stocks btn btn-default btn-sm" data-stocks="<?php echo $size_csv; ?>" data-size_mode="<?php echo $this->product_details->size_mode; ?>" data-color_name="<?php echo $color->color_name; ?>" data-st_id="<?php echo $color->st_id; ?>">
+								<i class="fa fa-pencil"></i> Edit admin stocks... </a>
+							<a href="javascript:;" class="modal_stocks btn btn-default btn-sm">
+								Last modified: <?php echo date('Y-m-d', @$color_options['last_modified_admin_stocks']); ?> </a>
+						</div>
+
+						<table class=" table-bordered table-striped table-hover margin-top-10">
+							<thead>
+								<tr>
+									<?php $size_cnt = count($size_names); ?>
+									<tr>
+										<th colspan="<?php echo $size_cnt; ?>">
+											Si<a href="javascript:;" class="font-dark" onclick="$('.stock-status-admin-<?php echo $color->st_id; ?>').toggle();">z</a>e
+										</th>
+									</tr>
+
+									<tr>
+										<?php
+										foreach ($size_names as $size_label => $s)
+										{
+											if (
+												$this->product_details->size_mode == '2'
+												OR $this->product_details->size_mode == '4'
+											)
+											{
+												$th_width = 'width:150px;';
+											}
+											else $th_width = 'width:70px;';
+											?>
+
+										<th style="text-align:center;font-weight:600;padding:8px;<?php echo $th_width; ?>"> <?php echo $s; ?> </th>
+
+											<?php
+										} ?>
+									</tr>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+
+									<?php
+									foreach ($size_names as $size_label => $s)
+									{
+										$admin_size_label = str_replace('size', 'admin_physical', $size_label);
+										?>
+
+									<td style="padding:5px;text-align:center;"><small> <?php echo @$color->$admin_size_label ?: '0'; ?> </small></td>
+
+										<?php
+									} ?>
+
+								</tr>
+								<tr class="stock-status-admin-<?php echo $color->st_id; ?> available display-none">
+
+									<?php
+									foreach ($size_names as $size_label => $s)
+									{
+										$admin_available_label =  str_replace('size', 'admin', $size_label)
+										?>
+
+									<td style="padding:5px;text-align:center;"><small> <?php echo $color->$admin_available_label ?: 0; ?> </small></td>
+
+										<?php
+									} ?>
+
+								</tr>
+								<tr class="stock-status-admin-<?php echo $color->st_id; ?> onorder display-none">
+
+									<?php
+									foreach ($size_names as $size_label => $s)
+									{
+										$admin_onorder_label =  str_replace('size', 'admin_onorder', $size_label)
+										?>
+
+									<td style="padding:5px;text-align:center;"><small> <?php echo $color->$admin_onorder_label ?: 0; ?> </small></td>
+
+										<?php
+									} ?>
+
+								</tr>
+						</table>
+
+							<?php
+						} ?>
+
+						<div class="actions margin-top-10">
+							<input type="text" class="" name="admin_warehouse_code[<?php echo $color->st_id; ?>][]" value="<?php echo @$color_options['admin_warehouse_code'][0]; ?>" placeholder="AWCode" style="width:60px;text-align:center;border:1px solid #ccc;font-size:12px;line-height:1.5;padding:5px 0px;" />
+							<input type="text" class="" name="admin_warehouse_code[<?php echo $color->st_id; ?>][]" value="<?php echo @$color_options['admin_warehouse_code'][1]; ?>" placeholder="AWCode" style="width:60px;text-align:center;border:1px solid #ccc;font-size:12px;line-height:1.5;padding:5px 0px;" />
+							<input type="text" class="" name="admin_warehouse_code[<?php echo $color->st_id; ?>][]" value="<?php echo @$color_options['admin_warehouse_code'][2]; ?>" placeholder="AWCode" style="width:60px;text-align:center;border:1px solid #ccc;font-size:12px;line-height:1.5;padding:5px 0px;" />
+							<input type="text" class="" name="admin_warehouse_code[<?php echo $color->st_id; ?>][]" value="<?php echo @$color_options['admin_warehouse_code'][3]; ?>" placeholder="AWCode" style="width:60px;text-align:center;border:1px solid #ccc;font-size:12px;line-height:1.5;padding:5px 0px;" />
+							<input type="text" class="" name="admin_warehouse_code[<?php echo $color->st_id; ?>][]" value="<?php echo @$color_options['admin_warehouse_code'][4]; ?>" placeholder="AWCode" style="width:60px;text-align:center;border:1px solid #ccc;font-size:12px;line-height:1.5;padding:5px 0px;" />
+							<input type="text" class="" name="admin_warehouse_code[<?php echo $color->st_id; ?>][]" value="<?php echo @$color_options['admin_warehouse_code'][5]; ?>" placeholder="AWCode" style="width:60px;text-align:center;border:1px solid #ccc;font-size:12px;line-height:1.5;padding:5px 0px;" />
+						</div>
+
+					</div>
+				</div>
+
+					<?php
+				} ?>
 
 				<?php
 				/***********
