@@ -313,6 +313,12 @@
 															</div>
 															<div class="col-xs-5 col-sm-4 name"> Role: </div>
 															<div class="col-xs-7 col-sm-8 value"> <?php echo ($this->order_details->c == 'guest' OR $this->order_details->c == 'cs') ? 'Retail' : 'Wholesale'; ?> </div>
+															<?php if (
+																$this->order_details->status != '3' && $this->order_details->status != '4'
+																&& $this->order_details->status != '5' && $this->order_details->status != '6'
+																&& $this->order_details->status != '7'
+															)
+															{ ?>
 															<div class="col-xs-5 col-sm-4 name"> Payment Info: </div>
 															<div class="col-xs-7 col-sm-8 value">
 																<select name="payment_info">
@@ -322,6 +328,7 @@
 																	<option value="wt">Wire Transfer</option>
 																</select>
 															</div>
+															<?php } ?>
 														</div>
 													</div>
 												</div>
@@ -358,21 +365,43 @@
 												<div class="row">
 													<div class="col-md-12 col-sm-12 margin-top-20">
 
-														<h4 style="display:inline-block;"> Ship Method: </h4>
-														&nbsp; &nbsp;
-														<?php
-														if (@$order_details->courier == 'TBD')
-														{
-															// the TBD is taken only from Create Sales Order via sales user my account
-															// and the options['shipmethod_text']
-															echo @$order_details->options['shipmethod_text'] ?: $order_details->courier;
-														}
-														else
-														{
-															// this is normally used via the frontend checkout process
-															echo @$order_details->courier ?: 'TBD';
-														}
-														?>
+														<div>
+
+															<h4 style="display:inline-block;"> Ship Method: </h4>
+															&nbsp; &nbsp;
+															<?php
+															if (@$order_details->courier == 'TBD')
+															{
+																// the TBD is taken only from Create Sales Order via sales user my account
+																// and the options['shipmethod_text']
+																echo @$order_details->options['shipmethod_text'] ?: $order_details->courier;
+															}
+															else
+															{
+																// this is normally used via the frontend checkout process
+																echo @$order_details->courier ?: 'TBD';
+															}
+															?>
+
+															<h5>
+																Tracking Number:
+																&nbsp; &nbsp;
+																<?php
+																if (@$order_details->options['tracking_number'])
+																{
+																	echo $order_details->options['tracking_number'];
+																}
+																else
+																{ ?>
+																<a href="#modal-input_tracking_number" data-toggle="modal" class="btn btn-xs grey-gallery small" style="">
+																	Input Tracking Number
+																</a>
+																	<?php
+																} ?>
+															</h5>
+														</div>
+														<div>
+														</div>
 
 													</div>
 												</div>
@@ -938,6 +967,49 @@
 			                					<h4 class="modal-title">Send Invoice To User</h4>
 			                				</div>
 											<div class="modal-body"> Sending invoice to user via email. </div>
+			                				<div class="modal-footer">
+			                					<button type="button" class="btn dark btn-outline" data-dismiss="modal" tabindex="-1">Close</button>
+			                					<button type="submit" class="btn dark submit-send_invoice_to_user">Confirm?</button>
+			                				</div>
+
+											</form>
+											<!-- END FORM =========================================================-->
+
+			                			</div>
+			                			<!-- /.modal-content -->
+			                		</div>
+			                		<!-- /.modal-dialog -->
+			                	</div>
+			                	<!-- /.modal -->
+
+								<!-- INPUT TRACKING NUMBER -->
+			                	<div id="modal-input_tracking_number" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+			                		<div class="modal-dialog modal-sm">
+			                			<div class="modal-content">
+
+											<!-- BEGIN FORM =======================================================-->
+											<?php echo form_open(
+												$pre_link.'/orders/input_tracking_number/index/'.$order_details->order_id,
+												array(
+													'class' => 'enter-user-form ws clearfix',
+													'id' => 'form-send_invoice_to_user'
+												)
+											); ?>
+
+			                				<div class="modal-header">
+			                					<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+			                					<h4 class="modal-title">Input Tracking Number</h4>
+			                				</div>
+											<div class="modal-body">
+												<div class="form-body">
+													<div class="form-group">
+														<label class="control-label">Tracking#:
+															<span class="required"> * </span>
+														</label>
+														<input type="text" class="form-control" name="tracking_number" value="" />
+													</div>
+												</div>
+											</div>
 			                				<div class="modal-footer">
 			                					<button type="button" class="btn dark btn-outline" data-dismiss="modal" tabindex="-1">Close</button>
 			                					<button type="submit" class="btn dark submit-send_invoice_to_user">Confirm?</button>

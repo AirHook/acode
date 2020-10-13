@@ -1003,11 +1003,15 @@
 									<h4 class="modal-title">Complete!</h4>
 								</div>
 								<div class="modal-body">
+									<div class="alert alert-info">
+										<button class="close" data-close="alert"></button>
+										NOTE:<br />
+										If you have TRACKING NUMBER for shipments, input the TRACKING NUMBER via the order details page. This bulk action assumes either you already have inputted TRACKING NUMBER, or, do not need it for these orders.
+									</div>
 									Set multiple items as COMPLETE? <br />
-									<cite class="small">NOTE: only Pending orders will be set to complete.</cite>
 								</div>
 								<div class="modal-footer">
-									<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
+									<button type="button" class="btn dark btn-outline cancel-bulk-set-to-complete" data-dismiss="modal" onclick="$('.group-checkable, tr .checkboxes').prop('checked', false);">Cancel</button>
 									<button onclick="$('#form-orders_bulk_actions').submit();" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
 										<span class="ladda-label">Confirm?</span>
 										<span class="ladda-spinner"></span>

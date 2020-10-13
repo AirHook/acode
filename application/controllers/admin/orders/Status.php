@@ -99,6 +99,8 @@ class Status extends Admin_Controller {
 				case 'complete':
 					// process inventory count
 					$this->_remove_stocks($id);
+					// send order complete notification
+					$this->_send_order_complete_notification($id);
 				break;
 			}
 		}
@@ -328,6 +330,95 @@ class Status extends Admin_Controller {
 		$this->email->bcc($this->config->item('dev1_email')); // --> for debuggin purposes
 
 		$this->email->subject('Your ORDER# '.$order_id);
+		$this->email->message($email_message);
+
+		if (ENVIRONMENT == 'development') // ---> used for development purposes
+		{
+			// we are unable to send out email in our dev environment
+			// so we check on the email template instead.
+			// just don't forget to comment these accordingly
+			echo 'FROM: '.$this->webspace_details->info_email.'<br />';
+			echo 'TO: '.@$order->email.'<br />';
+			echo 'SUBJECT: '.'Your ORDER# '.$order_id.'<br /><br />';
+			echo $email_message;
+			echo '<br /><br />';
+
+			//echo '<a href="'.site_url('shop/designers/'.$this->reference_designer).'">Continue...</a>';
+			echo '<br /><br />';
+			exit;
+		}
+		else @$this->email->send();
+		// */
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Send Order Ancknowledgement Email
+	 *
+	 * @return	void
+	 */
+	private function _send_order_complete_notification($order_id)
+	{
+		// load pertinent library/model/helpers
+		$this->load->library('orders/order_details');
+		$this->load->library('email');
+		$this->load->library('users/wholesale_user_details');
+		$this->load->library('users/consumer_user_details');
+
+		// initialize...
+		$order = $this->order_details->initialize(array('tbl_order_log.order_log_id'=>$order_id));
+
+		// based on order details, get user details
+		if ($order->c == 'ws')
+		{
+			$user_details =
+				$this->wholesale_user_details->initialize(
+					array(
+						'user_id' => $this->data['order_details']->user_id
+					)
+				)
+			;
+		}
+		else
+		{
+			$user_details =
+				$this->consumer_user_details->initialize(
+					array(
+						'user_id' => $this->data['order_details']->user_id
+					)
+				)
+			;
+		}
+
+		// notify user
+		/* */
+		$store_name = @$order->store_name ?: '';
+		$username = ucwords(strtolower(@$order->firstname.' '.@$order->lastname));
+
+		// check for tracking number
+		$tracking_number =  @$order->options['tracking_number'] ?: '';
+		$courier = @$order->courier ?: '';
+
+		$email_message = '
+			Dear '.$username.',
+			<br /><br />
+			Your order with reference ORDER ID#: '.$order_id.' has been SHIPPED!'
+			.($tracking_number ? '<br />Tracking #: '.$tracking_number : '')
+			.($courier ? '<br />Courier: '.$courier : '')
+			.'<br /><br />
+			<br />
+			Best Regards<br />
+			<br><br>
+		';
+
+		// send email to admin
+		$this->email->from($this->webspace_details->info_email, $this->webspace_details->name);
+		$this->email->to(@$user_details->email);
+		$this->email->cc($this->webspace_details->info_email);
+		$this->email->bcc($this->config->item('dev1_email')); // --> for debuggin purposes
+
+		$this->email->subject('Your ORDER# '.$order_id.' has SHIPPED');
 		$this->email->message($email_message);
 
 		if (ENVIRONMENT == 'development') // ---> used for development purposes

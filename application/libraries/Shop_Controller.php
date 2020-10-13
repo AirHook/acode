@@ -431,31 +431,131 @@ class Shop_Controller extends Frontend_Controller {
 	 */
 	public function get_suggested_products()
 	{
-		// get the products list and total count based on parameters
+        // tempoparis is a stand along wholesale site
+        // we need to apply same conditions for tempo items at shop7
+        // and not show tempo items in general pages
+        // only when user is logged in
+        if ($this->d_url_structure == '')
+        {
+            $wwhere['designer.url_structure <>'] = 'tempoparis';
+        }
+        else $wwhere['designer.url_structure'] = $this->d_url_structure;
+
+        /** *
+         *
+        show item conditions
+        1. wholesale users gets to see everything except on sale items
+            a. This is true for Basix items
+            b. Not ture for Tempo items
+        2. consumer to see items that has stock only
+        3. consumer gets to see on sale items
+        4. consumer gets to see consumer clearance items (only loggedin this time)
+        5. consumer does not see private items
+        overrides:
+        1. private items only show for help@basixblacklabel.com ws users
+        // */
+        if (
+            $this->session->userdata('user_role') != 'wholesale'
+            && @$_GET['availability'] != 'onsale'
+        )
+        {
+            $wwhere_public = "(
+				tbl_product.publish = '1'
+				OR tbl_product.publish = '11'
+				OR tbl_product.publish = '12'
+			)";
+            $wwhere['condition'][] = $wwhere_public;
+
+            /*********
+        	 * Current custom conditions for consumers users
+        	 */
+            // only with stocks as of...
+            $wwhere['HAVING with_stocks'] = '1';
+        }
+        else if (
+            $this->session->userdata('user_role') == 'wholesale'
+            && @$_GET['availability'] == 'onsale'
+        )
+        {
+            // can only show non-basix onsale items
+            $wwhere['designer.url_structure !='] = 'basixblacklabel';
+        }
+        else if ($this->session->userdata('user_role') == 'wholesale')
+        {
+            // clearance cs only items is not for wholesale users
+            $ccon_clearance_cs_only = 'tbl_stock.options NOT LIKE \'%"clearance_consumer_only":"1"%\' ESCAPE \'!\'';
+            $wwhere['condition'][] = $ccon_clearance_cs_only;
+
+            /*********
+        	 * Current custom conditions for wholesale users
+        	 */
+            // don't show clearance items to wholesale
+            $ccon_clearance = "(tbl_stock.custom_order != '3' OR (tbl_stock.custom_order = '3' AND designer.url_structure != 'basixblacklabel'))";
+            $wwhere['condition'][] = $ccon_clearance;
+
+            // special show private for ws users under help@basixblacklabel.com
+            if ($this->wholesale_user_details->admin_sales_email != 'help@basixblacklabel.com')
+            {
+                $wwhere_public_only = "(
+    				tbl_product.publish = '1'
+    				OR tbl_product.publish = '11'
+    				OR tbl_product.publish = '12'
+    			)";
+                $wwhere['condition'][] = $wwhere_public_only;
+            }
+        }
+        else if (
+            $this->session->userdata('user_role') == 'consumer'
+            && @$_GET['availability'] != 'onsale'
+        )
+        {
+            $wwhere_public = "(
+				tbl_product.publish = '1'
+				OR tbl_product.publish = '11'
+				OR tbl_product.publish = '12'
+			)";
+            $wwhere['condition'][] = $wwhere_public;
+
+            /*********
+        	 * Current custom conditions for consumers users
+        	 */
+            // only with stocks as of...
+            $wwhere['HAVING with_stocks'] = '1';
+        }
+
+        // get the products list and total count based on parameters
 		$pparams['wholesale'] = $this->session->userdata('user_role') == 'wholesale' ? TRUE : FALSE;
-		$pparams['show_private'] = $this->session->userdata('user_role') == 'wholesale' ? TRUE : FALSE;
-		if ($this->webspace_details->options['site_type'] != 'hub_site') $pparams['view_at_hub'] = FALSE;
-		if ($this->webspace_details->options['site_type'] == 'hub_site') $pparams['view_at_satellite'] = FALSE;
-		// show items even without stocks at all
-		$pparams['with_stocks'] = FALSE;
-		$pparams['group_products'] = TRUE;
-		// clear facets
-		$pparams['facets'] = array();
-		// others
-		$pparams['special_sale'] = FALSE;
-		$pparams['random_seed'] = TRUE;
+        // list main color variant only
+        $pparams['group_products'] = TRUE;
+		// show items with stocks only
+        // NOTE: this also depends on 'group_products' params
+		$pparams['with_stocks'] = $pparams['group_products'] ? FALSE : TRUE;
+		// set facet searching if needed
+		$pparams['facets'] = @$_GET ?: array();
+		// user random listing for frontend 'all'/'womens_apparel' url segments
+		$pparams['random_seed'] =
+			(
+				$this->uri->segment(2) == 'all'
+				OR $this->uri->segment(2) == 'womens_apparel'
+			)
+			? TRUE
+			: FALSE
+		;
+        // set pagination condition
 		$pparams['pagination'] = $this->num;
+
+        // get products
 		$this->products_list->initialize($pparams);
 		$this->suggested_products = $this->products_list->select(
 			// where conditions
-			array(
-				'designer.url_structure' => $this->d_url_structure
-			),
+            $wwhere,
 			// sorting conditions
 			array(),
 			($this->session->view_list_number ?: '')
 		);
 		$product_count = $this->products_list->count_all;
+
+        //echo $this->products_list->last_query; die();
 
 		// finally, get product items grouped as one primary image
 		$this->data['grouped_products'] = TRUE;

@@ -108,9 +108,16 @@ class Orders_list
 		{
 			foreach ($where as $key => $val)
 			{
-				if ($key == 'condition')
+				if ($key === 'condition')
 				{
-					$this->DB->where($val);
+					if (is_array($val))
+					{
+						foreach ($where['condition'] as $this_where_clause)
+						{
+							$this->DB->where($this_where_clause);
+						}
+					}
+					else $this->DB->where($val);
 				}
 				else
 				{

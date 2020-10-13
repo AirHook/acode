@@ -180,6 +180,12 @@ var TableDatatablesManaged = function () {
 		}
 	});
 
+    // cancel bulk action set to complete
+    $('.cancel-bulk-set-to-complete').click(function(){
+        $('#tbl-orders_').find('.group-checkable').trigger('change');
+        //$('#tbl-orders_ tbody tr .checkboxes').trigger('change');
+    });
+
     // apply filter by designer
 	$('.filter_by_designer_select').on('change', function(){
         var qDates1 = '';
