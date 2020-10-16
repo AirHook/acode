@@ -10,6 +10,7 @@ var Tabledit = function () {
         $('#table-inventory-size_mode-1').Tabledit({
             deleteButton: false,
             editButton: false,
+            hideIdentifier: true,
             columns: {
                 identifier: [0, 'st_id'],
                 editable: [
@@ -21,6 +22,7 @@ var Tabledit = function () {
             inputClass: 'input-inventory',
             url: base_url + 'admin/inventory/live_edit.html',
             onAjax: function(action, serialize){
+                // serialize = st_id=5903&size_22=0&action=edit
                 // check if input is empty
                 var pairs = serialize.split('+').join('').split('&');
                 pairs.forEach(function(pair){
@@ -37,15 +39,16 @@ var Tabledit = function () {
                 //alert(JSON.stringify(data));
             },
             onFail: function(jqXHR, textStatus, errorThrown) {
-                alert(textStatus+'\n'+errorThrown);
-                //alert('Ooops... Something went wrong. Please contact admin.');
-                //location.reload();
+                alert('ERROR1: '+textStatus+'\n'+errorThrown);
+                alert('Ooops... Something went wrong. Please contact admin.');
+                location.reload();
             }
         });
 
         $('#table-inventory-size_mode-0').Tabledit({
             deleteButton: false,
             editButton: false,
+            hideIdentifier: true,
             columns: {
                 identifier: [0, 'st_id'],
                 editable: [
@@ -69,13 +72,16 @@ var Tabledit = function () {
                 });
             },
             onFail: function(jqXHR, textStatus, errorThrown) {
-                alert(textStatus+'\n'+errorThrown);
+                //alert('ERROR0: '+textStatus+'\n'+errorThrown);
+                alert('Ooops... Something went wrong. Please contact admin.');
+                location.reload();
             }
         });
 
         $('#table-inventory-size_mode-2').Tabledit({
             deleteButton: false,
             editButton: false,
+            hideIdentifier: true,
             columns: {
                 identifier: [0, 'st_id'],
                 editable: [
@@ -98,13 +104,16 @@ var Tabledit = function () {
                 });
             },
             onFail: function(jqXHR, textStatus, errorThrown) {
-                alert(textStatus+'\n'+errorThrown);
+                //alert('ERROR2: '+textStatus+'\n'+errorThrown);
+                alert('Ooops... Something went wrong. Please contact admin.');
+                location.reload();
             }
         });
 
         $('#table-inventory-size_mode-3').Tabledit({
             deleteButton: false,
             editButton: false,
+            hideIdentifier: true,
             columns: {
                 identifier: [0, 'st_id'],
                 editable: [
@@ -127,13 +136,16 @@ var Tabledit = function () {
                 });
             },
             onFail: function(jqXHR, textStatus, errorThrown) {
-                alert(textStatus+'\n'+errorThrown);
+                //alert('ERROR3: '+textStatus+'\n'+errorThrown);
+                alert('Ooops... Something went wrong. Please contact admin.');
+                location.reload();
             }
         });
 
         $('#table-inventory-size_mode-4').Tabledit({
             deleteButton: false,
             editButton: false,
+            hideIdentifier: true,
             columns: {
                 identifier: [0, 'st_id'],
                 editable: [
@@ -156,7 +168,9 @@ var Tabledit = function () {
                 });
             },
             onFail: function(jqXHR, textStatus, errorThrown) {
-                alert(textStatus+'\n'+errorThrown);
+                //alert('ERROR4: '+textStatus+'\n'+errorThrown);
+                alert('Ooops... Something went wrong. Please contact admin.');
+                location.reload();
             }
         });
 

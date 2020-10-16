@@ -83,8 +83,11 @@ class Receipt extends Frontend_Controller
 			// capture user id first
 			$user_id = $this->session->user_id;
 
-			// destroy consumer set session
-			$this->consumer_user_details->unset_session();
+			// destroy consumer set session for non-logged in users
+			if ( ! $this->session->user_loggedin)
+			{
+				$this->consumer_user_details->unset_session();
+			}
 
 			// initialize details
 			$this->data['user'] = $this->consumer_user_details->initialize(array('user_id'=>$user_id));

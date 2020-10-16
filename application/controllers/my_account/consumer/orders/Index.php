@@ -42,6 +42,7 @@ class Index extends Consumer_user_Controller {
 		// get data
 		$where['tbl_order_log.c !='] = 'ws';
 		$where['tbl_order_log.user_id'] = $this->session->userdata['user_id'];
+		$where['tbl_order_log.status'] = '0';
 		if (@$this->webspace_details->options['site_type'] != 'hub_site')
 		{
 			$where['tbl_order_log.webspace_id'] = @$this->webspace_details->id;
@@ -65,7 +66,7 @@ class Index extends Consumer_user_Controller {
 		$this->data['file'] = '../my_account/orders'; // retail orders
 		$this->data['page_title'] = 'Consumer Orders';
 		$this->data['page_description'] = 'List of Consumer Orders';
-		
+
 		// load views...
 		$this->load->view('metronic/template/template', $this->data);
 	}

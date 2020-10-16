@@ -141,7 +141,7 @@
 			});
         </script>
 
-		<div class="hide margin-top-30 margin-bottom-30">
+		<div class="margin-top-30 margin-bottom-30">
 			<?php
 			/*********
 			 * Developer information
@@ -151,4 +151,10 @@
 			print_r($this->webspace_details->options);
 			// */
 			?>
+            <div class="session-array display-none">
+                <?php
+                echo '<pre>';
+                print_r($_SESSION);
+                ?>
+            </div>
 		</div>

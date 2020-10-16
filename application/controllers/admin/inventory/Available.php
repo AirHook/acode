@@ -301,7 +301,7 @@ class Available extends Admin_Controller {
 			';
 			// handle datatable
 			$this->data['page_level_scripts'].= '
-				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/tabledit-inventory.js" type="text/javascript"></script>
+				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/tabledit-inventory.js?z='.time().'" type="text/javascript"></script>
 			';
 	}
 

@@ -63,7 +63,7 @@ class Submit extends Frontend_Controller
 		// user bill to address is saved at or taken from user details
 		// order details is also taken care at the _log_order() private method
 		// stocks data update is also done in the _log_order() private method
-		if ($this->session->user_cat == 'wholesale') $user_array['store_name'] 	= $this->session->store_name;
+		if ($this->session->user_role == 'wholesale') $user_array['store_name'] 	= $this->session->store_name;
 		$user_array['agree_policy'] 	= NULL;
 		$user_array['p_first_name'] 	= $this->session->sh_firstname;
 		$user_array['p_last_name'] 		= $this->session->sh_lastname;

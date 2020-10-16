@@ -723,7 +723,7 @@
 																<input type="hidden" name="prod_sku" value="<?php echo $this->product_details->prod_no.'_'.$this->product_details->color_code; ?>" />
 																<input type="hidden" name="label_color" value="<?php echo $this->product_details->color_name; ?>" />
 
-                                                                <input type="hidden" name="admin_stocks_only" value="<?php echo $admin_stocks_only; ?>" />
+                                                                <input type="hidden" name="admin_stocks_only" value="<?php echo @$admin_stocks_only ?: 0; ?>" />
 
 																<?php
 																/*
@@ -796,12 +796,12 @@
                                                                                 // we need to set the prefix for the size lable
 																				if($size->size_name == 'XS' || $size->size_name == 'S' || $size->size_name == 'M' || $size->size_name == 'L' || $size->size_name == 'XL' || $size->size_name == 'XXL' || $size->size_name == 'XL1' || $size->size_name == 'XL2' || $size->size_name == 'S-M' || $size->size_name == 'M-L' || $size->size_name == 'ONE-SIZE-FITS-ALL')
 																				{
-																					$size_stock = 'size_s'.strtolower($size->size_name);
+																					$size_stock = 'available_s'.strtolower($size->size_name);
                                                                                     $admin_size_stock = 'admin_s'.strtolower($size->size_name);
 																				}
 																				else
 																				{
-																					$size_stock = 'size_'.$size->size_name;
+																					$size_stock = 'available_'.$size->size_name;
                                                                                     $admin_size_stock = 'admin_'.$size->size_name;
 																				}
 
@@ -880,9 +880,10 @@
     																		$('span.availability.<?php echo $availability; ?>').show();
     																		$('.size-qty-submit').html('<?php echo $max_available == 0 ? 'ADD TO BAG (AS PRE ORDER)' : 'ADD TO BAG'; ?>');
     																		$('input#size').val('<?php echo $size->size_name; ?>');
+                                                                            $('input[name=\'qty\']').val('1');
     																		$('input[name=\'qty\']').attr('max', '<?php echo $max_available ?: '30'; ?>');
                                                                             $('input[name=\'qty\']').trigger('touchspin.updatesettings', {max:'<?php echo $max_available ?: '30'; ?>'});
-    																		$('input[name=\'custom_order\']').val('<?php echo $max_available == 0 ? '1' : ($hto_customer_order ?: $this->product_details->custom_order); ?>');
+    																		$('input[name=\'custom_order\']').val('<?php echo $max_available == 0 ? '1' : (($hto_customer_order OR $admin_stocks_only) ? '3' : $this->product_details->custom_order); ?>');
     																		$('.hoverable.product-form__list-item').css('background-color','transparent');
     																		$(this).css('background-color','#ccc');
     																	">
@@ -955,7 +956,7 @@
 																	 * Script on click of size box changes this to 1 for pre-order sizes
 																	 */
 																	?>
-																	<input type="hidden" id="custom_order-<?php echo $this->product_details->color_code; ?>" name="custom_order" value="<?php echo @$hto_customer_order ?: $this->product_details->custom_order; ?>" />
+																	<input type="hidden" id="custom_order-<?php echo $this->product_details->color_code; ?>" name="custom_order" value="<?php echo @($hto_customer_order OR $admin_stocks_only) ? '3' : $this->product_details->custom_order; ?>" />
 
 																</div>
 
@@ -973,7 +974,7 @@
 
                                                                 <span class="key  product-form__label  product-form__label--alt  uppercase"><strong>SELECT QUANTITY:</strong></span>
 																<div class="product-form__qty" style="width:100px;margin-bottom:25px;">
-																	<input id="touchspin_5" type="text" value="" name="qty" class="center text-center" required="required" />
+																	<input id="touchspin_5" type="text" value="0" name="qty" class="center text-center" required="required" />
 																</div>
 
                                                                     <?php

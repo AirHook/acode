@@ -412,10 +412,23 @@ class Status extends Admin_Controller {
 			<br><br>
 		';
 
+		// send to email - user
+		// but for tempo, we send to rafi only for now
+		if ($this->webspace_details->slug == 'tempopairs')
+		{
+			$send_to_email = $this->webspace_details->info_email;
+			$cc_email = '';
+		}
+		else
+		{
+			$send_to_email = $user_details->email;
+			$cc_email = $this->webspace_details->info_email;
+		}
+
 		// send email to admin
 		$this->email->from($this->webspace_details->info_email, $this->webspace_details->name);
-		$this->email->to(@$user_details->email);
-		$this->email->cc($this->webspace_details->info_email);
+		$this->email->to($send_to_email);
+		if ($cc_email) $this->email->cc($cc_email);
 		$this->email->bcc($this->config->item('dev1_email')); // --> for debuggin purposes
 
 		$this->email->subject('Your ORDER# '.$order_id.' has SHIPPED');

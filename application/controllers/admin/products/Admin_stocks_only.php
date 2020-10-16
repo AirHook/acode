@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Clearance_cs_only extends Admin_Controller {
+class Admin_stocks_only extends Admin_Controller {
 
 	/**
 	 * Constructor
@@ -63,7 +63,7 @@ class Clearance_cs_only extends Admin_Controller {
 					unset($_SESSION['prev_url_segs']);
 
 					// reload page with new prev_url_segs
-					redirect('admin/products/clearance_cs_only', 'location');
+					redirect('admin/products/admin_stocks_only', 'location');
 				}
 			}
 
@@ -148,8 +148,8 @@ class Clearance_cs_only extends Admin_Controller {
 					? 'admin/products/clearance_cs_only/index'.$prev_url_segs
 					: (
 						$this->webspace_details->slug == 'shop7thavenue'
-						? 'admin/products/clearance_cs_only/index/basixblacklabel/womens_apparel/dresses/evening_dresses'
-						: 'admin/products/clearance_cs_only/index/womens_apparel'
+						? 'admin/products/admin_stocks_only/index/basixblacklabel/womens_apparel/dresses/evening_dresses'
+						: 'admin/products/admin_stocks_only/index/womens_apparel'
 					)
 				;
 			}
@@ -157,8 +157,8 @@ class Clearance_cs_only extends Admin_Controller {
 			{
 				$redirect_url =
 					$prev_url_segs
-					? 'admin/products/clearance_cs_only/index'.$prev_url_segs
-					: 'admin/products/clearance_cs_only/index/womens_apparel'
+					? 'admin/products/admin_stocks_only/index'.$prev_url_segs
+					: 'admin/products/admin_stocks_only/index/womens_apparel'
 				;
 			}
 
@@ -180,7 +180,7 @@ class Clearance_cs_only extends Admin_Controller {
 		}
 		else $where['tbl_product.categories LIKE'] = $category_id;
 
-		$where['tbl_stock.options LIKE'] = '"clearance_consumer_only":"1"';
+		$where['tbl_stock.options LIKE'] = '"admin_stocks_only":"1"';
 
 		// get the products list and total count
 		$params['with_stocks'] = FALSE; // Show all with and without stocks
@@ -201,8 +201,6 @@ class Clearance_cs_only extends Admin_Controller {
 		);
 		$this->data['count_all'] = $this->products_list->count_all;
 		$this->data['products_count'] = $this->products_list->row_count;
-
-		//echo $this->products_list->last_query; die();
 
 		// need to show loading at start
 		$this->data['show_loading'] = FALSE;

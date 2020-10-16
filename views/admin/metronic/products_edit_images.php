@@ -558,7 +558,7 @@
 									} ?>
 
 								</tr>
-								<tr class="stock-status-regular-<?php echo $color->st_id; ?> available display-none">
+								<tr class="stock-status-regular-<?php echo $color->st_id; ?> available <?php echo ENVIRONMENT === 'development' ?: 'display-none'; ?>">
 
 									<?php
 									foreach ($size_names as $size_label => $s)
@@ -572,7 +572,7 @@
 									} ?>
 
 								</tr>
-								<tr class="stock-status-regular-<?php echo $color->st_id; ?> onorder display-none">
+								<tr class="stock-status-regular-<?php echo $color->st_id; ?> onorder <?php echo ENVIRONMENT === 'development' ?: 'display-none'; ?>">
 
 									<?php
 									foreach ($size_names as $size_label => $s)
@@ -695,7 +695,7 @@
 									} ?>
 
 								</tr>
-								<tr class="stock-status-admin-<?php echo $color->st_id; ?> available display-none">
+								<tr class="stock-status-admin-<?php echo $color->st_id; ?> available <?php echo ENVIRONMENT === 'development' ?: 'display-none'; ?>">
 
 									<?php
 									foreach ($size_names as $size_label => $s)
@@ -709,7 +709,7 @@
 									} ?>
 
 								</tr>
-								<tr class="stock-status-admin-<?php echo $color->st_id; ?> onorder display-none">
+								<tr class="stock-status-admin-<?php echo $color->st_id; ?> onorder <?php echo ENVIRONMENT === 'development' ?: 'display-none'; ?>">
 
 									<?php
 									foreach ($size_names as $size_label => $s)

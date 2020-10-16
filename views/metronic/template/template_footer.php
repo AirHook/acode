@@ -109,7 +109,7 @@
                     <div class="page-footer text-center">
 						<!-- DOC: change between class "container-fluid" and "container" for fluid or boxed layout -->
                         <div class="container">
-							<?php echo @date('Y', @time()); ?> © <?php echo @$this->webspace_details->name ?: 'Rcpixel'; ?>
+							<?php echo @date('Y', @time()); ?> <span onclick="$('.session-array').toggle();">©</span> <?php echo @$this->webspace_details->name ?: 'Rcpixel'; ?>
 							<!--
                             <a target="_blank" href="http://keenthemes.com">Keenthemes</a> &nbsp;|&nbsp;
                             <a href="http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes" title="Purchase Metronic just for 27$ and get lifetime updates for free" target="_blank">Purchase Metronic!</a>

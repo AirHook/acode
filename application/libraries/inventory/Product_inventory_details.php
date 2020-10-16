@@ -329,7 +329,8 @@ class Product_inventory_details
 			tbl_stock.size_ssm, tbl_stock.size_sml,
 			tbl_stock.size_sonesizefitsall,
 			tbl_stock.options,
-			prod_no, color_code
+			tbl_stock.prod_no,
+			tblcolor.color_code
 		');
 		$this->DB->select('
 			tsav.size_sxs AS available_sxs, tsav.size_ss AS available_ss, tsav.size_sm AS available_sm,
@@ -446,7 +447,7 @@ class Product_inventory_details
 		{
 			$this->stock_id = $row->stock_id;
 			// color variant data if such
-			// AVAILABLE SIZES
+			// PHYSICAL SIZES
 			$this->size_sxs = $row->size_sxs;
 			$this->size_ss = $row->size_ss;
 			$this->size_sm = $row->size_sm;
@@ -471,6 +472,32 @@ class Product_inventory_details
 			$this->size_ssm = $row->size_ssm;
 			$this->size_sml = $row->size_sml;
 			$this->size_sonesizefitsall = $row->size_sonesizefitsall;
+
+			// AVAILABLE SIZES
+			$this->available_sxs = $row->available_sxs;
+			$this->available_ss = $row->available_ss;
+			$this->available_sm = $row->available_sm;
+			$this->available_sl = $row->available_sl;
+			$this->available_sxl = $row->available_sxl;
+			$this->available_sxxl = $row->available_sxxl;
+			$this->available_sxl1 = $row->available_sxl1;
+			$this->available_sxl2 = $row->available_sxl2;
+			$this->available_0 = $row->available_0;
+			$this->available_2 = $row->available_2;
+			$this->available_4 = $row->available_4;
+			$this->available_6 = $row->available_6;
+			$this->available_8 = $row->available_8;
+			$this->available_10 = $row->available_10;
+			$this->available_12 = $row->available_12;
+			$this->available_14 = $row->available_14;
+			$this->available_16 = $row->available_16;
+			$this->available_18 = $row->available_18;
+			$this->available_20 = $row->available_20;
+			$this->available_22 = $row->available_22;
+			$this->available_sprepack1221 = $row->available_sprepack1221;
+			$this->available_ssm = $row->available_ssm;
+			$this->available_sml = $row->available_sml;
+			$this->available_sonesizefitsall = $row->available_sonesizefitsall;
 
 			// ONORDER SIZES
 			$this->onorder_sxs = $row->onorder_sxs;
@@ -605,6 +632,9 @@ class Product_inventory_details
 			// the options
 			$this->options = ($row->options && $row->options != '') ? json_decode($row->options , TRUE) : array();
 			$this->stocks_options = $this->options;
+
+			$this->prod_no = $row->prod_no;
+			$this->color_code = $row->color_code;
 
 			return $this;
 		}

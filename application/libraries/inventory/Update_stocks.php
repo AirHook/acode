@@ -173,58 +173,63 @@ class Update_stocks {
 		array_push($stocks['onorder'], $this->order_id);
 		$stocks_options['onorder'] = $stocks['onorder'];
 
-		// first we need to determine if item is regular item only
-		// or, may involve admin stocks
-		if ($this->admin_stocks)
-		{
-
-		}
-
 		// regardless, if there is available stock,
-		// deduct from available stock
-		// get on order stock and update accordingly
-		$available_label = 'available_'.$size_suffix;
-		$available_stock = $product->$available_label;
-		$final_available_stock =
-			($available_stock - $qty) < 0
-			? 0
-			: $available_stock - $qty
-		;
+		// deduct from available stock first
+		// however, if there is only admin stocks
+		// we skip processing regular stocks
 
-		// get current stock and update accordingly
+		// get current stocks and update accordingly
 		// this is now regardless if stock is 'admin_stocks_only'
 		// we update regular stock first before admin stocks
 		// get available stock
 		$available_label = 'available_'.$size_suffix;
 		$available_stock = $product->$available_label;
 		$final_available_stock = $available_stock; // assume initial stock
-		$admin_available_label = 'admin_available_'.$size_suffix;
+		$admin_available_label = 'admin_'.$size_suffix;
 		$admin_available_stock = $product->$admin_available_label;
 		$final_admin_available_stock = $admin_available_stock; // assume initial stock
-		$regular_qty = $qty;
-		$admin_qty = 0;
 
-		// update final available stocks
+		// get on order stocks
+		$onorder_label = 'onorder_'.$size_suffix;
+		$onorder_stock = $product->$onorder_label;
+		$admin_onorder_label = 'admin_onorder_'.$size_suffix;
+		$admin_onorder_stock = $product->$admin_onorder_label;
+
+		// set order quantities
+		$regular_order_qty = $qty;
+		$admin_order_qty = 0;
+
 		if ($available_stock > 0)
 		{
 			// we take from regular stock first
 			if (($available_stock - $qty) <= 0)
 			{
-				// if ending regular stock is zero or less, calculate...
-				$regular_qty = $available_stock;
-				$admin_qty = $qty - $admin_available_stock;
 				$final_available_stock = 0;
+
+				// if ending regular stock is zero or less, calculate...
+				$regular_order_qty = $available_stock;
+				$admin_order_qty = $qty - $regular_order_qty;
 				$final_admin_available_stock =
-					($admin_available_stock - $admin_qty) < 0
+					($admin_available_stock - $admin_order_qty) < 0
 					? 0
-					: $admin_available_stock - $admin_qty
+					: $admin_available_stock - $admin_order_qty
 				;
+
+				// udpate onorder stock
+				$final_onorder_stock = $onorder_stock + $available_stock;
 			}
 			else
 			{
 				// otherwise, simply...
+				// and final admin available stocks is what it is
+				// so update final available stocks
+				// as well as final onrder stocks
 				$final_available_stock = $available_stock - $qty;
+				$final_onorder_stock = $onorder_stock + $qty;
 			}
+
+			// udpate admin on order stock as it is
+			$final_admin_onorder_stock = $admin_onorder_stock + $admin_order_qty;
 		}
 		else
 		{
@@ -234,15 +239,13 @@ class Update_stocks {
 				? 0
 				: $admin_available_stock - $qty
 			;
-		}
 
-		// get on order stock and update accordingly
-		$onorder_label = 'onorder_'.$size_suffix;
-		$onorder_stock = $product->$onorder_label;
-		$final_onorder_stock = $onorder_stock + $regular_qty;
-		$admin_onorder_label = 'admin_onorder_'.$size_suffix;
-		$admin_onorder_stock = $product->$admin_onorder_label;
-		$final_admin_onorder_stock = $admin_onorder_stock + $admin_qty;
+			// udpate admin on order stock
+			$final_admin_onorder_stock = $admin_onorder_stock + $qty;
+
+			// retain regular onorder stock
+			$final_onorder_stock = $onorder_stock;
+		}
 
 		// update available stocks
 		$this->DB->where('st_id', $product->st_id);
@@ -612,54 +615,109 @@ class Update_stocks {
 		// in this case, add to regular stocks only
 		// joe will update admin stocks where necessary
 
-		// get physical stock and onorder stock
+		// get stocks
 		$physical_label = 'physical_'.$size_suffix;
 		$physical_stock = $product->$physical_label;
+		$final_physical_stock = $physical_stock; // assume initial stock
+		$available_label = 'available_'.$size_suffix;
+		$available_stock = $product->$available_label;
+		$final_available_stock = $available_stock; // assume initial stock
 		$onorder_label = 'onorder_'.$size_suffix;
 		$onorder_stock = $product->$onorder_label;
+		$final_onorder_stock = $onorder_stock; // assume initial stock
+		$admin_physical_label = 'admin_physical_'.$size_suffix;
+		$admin_physical_stock = $product->$admin_physical_label;
+		$final_admin_physical_stock = $admin_physical_stock; // assume initial stock
+		$admin_available_label = 'admin_'.$size_suffix;
+		$admin_available_stock = $product->$admin_available_label;
+		$final_admin_available_stock = $admin_available_stock; // assume initial stock
+		$admin_onorder_label = 'admin_onorder_'.$size_suffix;
+		$admin_onorder_stock = $product->$admin_onorder_label;
+		$final_admin_onorder_stock = $admin_onorder_stock; // assume initial stock
+
+		// some necessary default variables
+		$admin_return_qty = 0;
+		$regular_return_qty = $qty;
 
 		// set final onorder stock
-		// set final physical stock
+		// set final available stock and onorder stock
 		if ($is_for_cancel === TRUE)
 		{
 			// cancel - remove from onorder
+			// as physical is the same,
 			// return to available stock
-			$final_onorder_stock = ($onorder_stock - $qty) <= 0 ? 0 : $onorder_stock - $qty;
-			$final_physical_stock = $physical_stock;
-		}
-		else
-		{
-			// return - add to physical and available
-			$final_onorder_stock = $onorder_stock;
-			$final_physical_stock = $physical_stock + $qty;
-		}
 
-		// set final available stock
-		// set or remove flag - stock => insufficient
-		if (($final_physical_stock - $final_onorder_stock) <= 0)
-		{
-			$final_available_stock = 0;
-			$stocks_options['stock'] = 'insufficient';
+			// we also need to make a catch error code here to check that
+			// $final_admin_physical_label = $final_admin_available_label + $final_admin_onorder_stock
+
+			// check if admin stocks has onorder items
+			if ($admin_onorder_stock > 0)
+			{
+				// get return qty for admin, and if any, for regular too
+				if ($qty <= $admin_onorder_stock)
+				{
+					$admin_return_qty = $qty;
+					$regular_return_qty = 0;
+				}
+				else
+				{
+					$admin_return_qty = $admin_onorder_stock;
+					$regular_return_qty = $qty - $admin_onorder_stock;
+				}
+
+				// set final stocks
+				$final_admin_available_stock = $admin_available_stock + $admin_return_qty;
+				$final_admin_onorder_stock = $admin_onorder_stock - $admin_return_qty;
+			}
+
+			// whether there is admin stocks to adjust or not
+			// adjust regular stocks here...
+			if ($regular_return_qty > 0) // if not all return stocks are place at admin stocks
+			{
+				if ($regular_return_qty < $onorder_stock)
+				{
+					$final_available_stock = $available_stock + $regular_return_qty;
+					$final_onorder_stock = $onorder_stock - $regular_return_qty;
+				}
+				else
+				{
+					$final_available_stock = $available_stock + $onorder_stock;
+					$final_onorder_stock = 0;
+				}
+			}
 		}
 		else
 		{
-			$final_available_stock = $final_physical_stock - $final_onorder_stock;
-			// all onorders are accounted by $stocks_options['onorder']
-			// since this condition is positive, remove any flag stock=>insufficient
-			if (isset($stocks_options['stock'])) unset($stocks_options['stock']);
+			// no cancel orders are shipped order that are being returned
+			// we return all to regular stocks and let joe adjust for admin
+			// stocks where necessary
+			// return - add to physical and available
+			$final_physical_stock = $physical_stock + $qty;
+			$final_available_stock = $available_stock + $qty;
 		}
 
 		// update records
-
-		// available stocks
+		// physical stocks
 		$this->DB->where('st_id', $product->st_id);
 		$this->DB->update(
 			'tbl_stock',
 			array(
-				$size_label => $final_available_stock,
+				$size_label => $final_physical_stock,
 				'options' => json_encode($stocks_options)
 			)
 		);
+		// available stocks
+		if ($product->available_st_id)
+		{
+			$this->DB->where('st_id', $product->st_id);
+			$this->DB->update('tbl_stock_available', array($size_label => $final_available_stock));
+		}
+		else
+		{
+			$this->DB->set('st_id', $product->st_id);
+			$this->DB->set($size_label, $final_available_stock);
+			$this->DB->insert('tbl_stock_available');
+		}
 		// onorder stocks
 		if ($product->onorder_st_id)
 		{
@@ -672,17 +730,42 @@ class Update_stocks {
 			$this->DB->set($size_label, $final_onorder_stock);
 			$this->DB->insert('tbl_stock_onorder');
 		}
-		// available stocks
-		if ($product->physical_st_id)
+		
+		// admin physical
+		if ($product->admin_physical_st_id)
 		{
-			$this->DB->where('st_id', $product->st_id);
-			$this->DB->update('tbl_stock_physical', array($size_label => $final_physical_stock));
+			$this->DB->where('st_id', $product->admin_physical_st_id);
+			$this->DB->update('tbl_stock_admin_physical', array($size_label => $final_admin_physical_stock));
 		}
 		else
 		{
-			$this->DB->set('st_id', $product->st_id);
-			$this->DB->set($size_label, $final_physical_stock);
-			$this->DB->insert('tbl_stock_physical');
+			$this->DB->set('st_id', $product->admin_physical_st_id);
+			$this->DB->set($size_label, $final_admin_physical_stock);
+			$this->DB->insert('tbl_stock_admin_physical');
+		}
+		// admin available
+		if ($product->admin_st_id)
+		{
+			$this->DB->where('st_id', $product->admin_st_id);
+			$this->DB->update('tbl_stock_admin', array($size_label => $final_admin_available_stock));
+		}
+		else
+		{
+			$this->DB->set('st_id', $product->admin_st_id);
+			$this->DB->set($size_label, $final_admin_available_stock);
+			$this->DB->insert('tbl_stock_admin');
+		}
+		// admin onorder
+		if ($product->admin_onorder_st_id)
+		{
+			$this->DB->where('st_id', $product->admin_onorder_st_id);
+			$this->DB->update('tbl_stock_admin_onorder', array($size_label => $final_admin_onorder_stock));
+		}
+		else
+		{
+			$this->DB->set('st_id', $product->admin_onorder_st_id);
+			$this->DB->set($size_label, $final_admin_onorder_stock);
+			$this->DB->insert('tbl_stock_admin_onorer');
 		}
 
 		return TRUE;

@@ -55,10 +55,13 @@ class Review extends Frontend_Controller
 		$this->load->library('users/consumer_user_details');
 
 		// initialize consumer user details if the user isn't a wholesale user
-		// otherwise, use would have been loggedin and initialized
-		if ($this->session->user_cat == 'consumer')
+		// otherwise, user would have been loggedin and initialized
+		if ( ! $this->session->user_loggedin)
 		{
-			$this->consumer_user_details->initialize(array('user_id'=>$this->session->user_id));
+			if ($this->session->user_role == 'consumer')
+			{
+				$this->consumer_user_details->initialize(array('user_id'=>$this->session->user_id));
+			}
 		}
 
 		// retain flash session data

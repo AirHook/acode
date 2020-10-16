@@ -15,7 +15,7 @@
 <?php } ?>
 
 <div class="table-scrollable" style="margin-top:0px!important;">
-    <table id="table-inventory-size_mode-<?php echo $size_mode; ?>" class="table table-bordered table-striped table-hover table-condensed inventory-physical">
+    <table id="table-inventory-size_mode-<?php echo $size_mode; ?><?php echo $inv_prefix == 'physical' ? '' : '-disabled-edit'; ?>" class="table table-bordered table-striped table-hover table-condensed inventory-<?php echo $inv_prefix; ?>">
         <thead>
             <tr>
                 <th>#</th>
@@ -38,10 +38,51 @@
             if ($products)
             {
                 foreach ($products as $product)
-                { ?>
+                {
+                    if ($this->session->admin_id == '1' OR $this->session->admin_id == '2')
+                    { ?>
 
             <tr>
-                <td class="font-default"><?php echo $product->st_id; ?></td>
+                <td class="font-default" ><?php echo $product->st_id.'-'.$inv_prefix; ?></td>
+                <td ><?php echo $product->prod_no; ?></td>
+                <td ><?php echo $product->color_name; ?></td>
+
+                        <?php
+                        foreach ($size_names as $size_label => $s)
+                        {
+                            if ($s == 'XL1' OR $s == 'XL2') continue;
+                            $exp = explode('_', $size_label);
+                            $inv_size_label = ($inv_prefix == 'physical' ? 'size' : $inv_prefix).'_'.end($exp);
+                            echo '<td>'.($product->$inv_size_label ?: 0).'</td>';
+                        }
+                        ?>
+
+            </tr>
+            <tr>
+                <td class="" style="color:transparent;"><?php echo $product->st_id.'-a_'.$inv_prefix; ?></td>
+                <td ></td>
+                <td ></td>
+
+                        <?php
+                        foreach ($size_names as $size_label => $s)
+                        {
+                            if ($s == 'XL1' OR $s == 'XL2') continue;
+                            $exp = explode('_', $size_label);
+                            $inv_size_label = ($inv_prefix == 'available' ? 'admin' : 'admin_'.$inv_prefix).'_'.end($exp);
+                            $admin_stock = $product->$inv_size_label ?: 0;
+                            echo '<td class="admin-stocks '.($admin_stock ? 'font-red' : 'font-default').'">'.$admin_stock.'</td>';
+                        }
+                        ?>
+
+            </tr>
+
+                        <?php
+                    }
+                    else
+                    { ?>
+
+            <tr>
+                <td class="font-default" ><?php echo $product->st_id.'-'.$inv_prefix; ?></td>
                 <td><?php echo $product->prod_no; ?></td>
                 <td><?php echo $product->color_name; ?></td>
 
@@ -50,14 +91,15 @@
                     {
                         if ($s == 'XL1' OR $s == 'XL2') continue;
                         $exp = explode('_', $size_label);
-                        $inv_size_label = ($inv_prefix == 'available' ? 'size' : $inv_prefix).'_'.end($exp);
-                        echo '<td>'.$product->$inv_size_label.'</td>';
+                        $inv_size_label = ($inv_prefix == 'physical' ? 'size' : $inv_prefix).'_'.end($exp);
+                        echo '<td>'.($product->$inv_size_label ?: 0).'</td>';
                     }
                     ?>
 
             </tr>
 
-                    <?php
+                        <?php
+                    }
                 }
             }
             else

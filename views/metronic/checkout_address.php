@@ -12,7 +12,7 @@
 												)
 											); ?>
 
-											<input type="hidden" name="ny_tax" value="<?php echo $this->session->ny_tax ?: ($ny_tax ?: ''); ?>" />
+											<input type="hidden" name="ny_tax" value="<?php echo ($ny_tax ?: ''); ?>" />
 
 											<div class="row margin-top-10 margin-bottom-30">
 												<div class="col-sm-12 clearfix">

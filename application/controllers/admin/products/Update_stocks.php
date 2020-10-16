@@ -176,7 +176,7 @@ class Update_stocks extends Admin_Controller {
 		// update stock options record
 		$this->DB->set('options', json_encode($stocks_options));
 		$this->DB->where('st_id', $this->input->post('st_id'));
-		$this->DB->update('tbl_stock_admin');
+		$this->DB->update('tbl_stock');
 
 		// check if admin stocks already has the record
 		$q_admin = $this->DB->get_where('tbl_stock_admin_physical', array('st_id'=>$this->input->post('st_id')));
