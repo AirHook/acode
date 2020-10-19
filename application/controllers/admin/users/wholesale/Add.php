@@ -102,6 +102,7 @@ class Add extends Admin_Controller {
 			{
 				$post_ary['active_date'] = date('Y-m-d', time());
 			}
+			$post_ary['alt_address'] = json_encode($post_ary['alt_address']);
 			// unset unneeded variables
 			unset($post_ary['passconf']);
 			unset($post_ary['send_activation_email']);

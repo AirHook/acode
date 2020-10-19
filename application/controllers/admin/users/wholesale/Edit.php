@@ -137,8 +137,11 @@ class Edit extends Admin_Controller {
 			$post_ary = $this->input->post();
 			// set necessary variables
 			//$post_ary['account_status'] = '1';
+
 			// process/add some variables
 			if (@$post_ary['pword'] == '') unset($post_ary['pword']);
+			$post_ary['alt_address'] = json_encode($post_ary['alt_address']);
+
 			// unset unneeded variables
 			unset($post_ary['passconf']);
 			unset($post_ary['change-password']);

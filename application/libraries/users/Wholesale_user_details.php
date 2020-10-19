@@ -65,6 +65,7 @@ class Wholesale_user_details
 	public $telephone2 = '';
 	public $telephone3 = '';
 	public $fax = '';
+	public $alt_address = array();
 	public $comments = '';
 
 	public $create_date = '';
@@ -291,6 +292,7 @@ class Wholesale_user_details
 			$this->telephone2 = $row->telephone2;
 			$this->telephone3 = $row->telephone3;
 			$this->fax = $row->fax;
+			$this->alt_address = $row->alt_address != '' ? json_decode($row->alt_address , TRUE) : array();
 			$this->comments = $row->comments;
 
 			$this->create_date = $row->create_date;
@@ -1035,6 +1037,7 @@ class Wholesale_user_details
 		$this->telephone2 = '';
 		$this->telephone3 = '';
 		$this->fax = '';
+		$this->alt_address = array();
 		$this->comments = '';
 
 		$this->create_date = '';

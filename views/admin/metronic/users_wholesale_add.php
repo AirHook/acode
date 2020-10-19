@@ -224,129 +224,590 @@
                                     <cite class="help-block small"> Any optional emails found invalid will not be saved. </cite>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label class="col-md-3 control-label">First Name
-                                    <span class="required"> * </span>
-                                </label>
-                                <div class="col-md-4">
-                                    <input name="firstname" type="text" class="form-control" value="<?php echo set_value('firstname'); ?>" />
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-3 control-label">Last Name
-                                    <span class="required"> * </span>
-                                </label>
-                                <div class="col-md-4">
-                                    <input name="lastname" type="text" class="form-control" value="<?php echo set_value('lastname'); ?>" />
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-3 control-label">Store Name
-                                    <span class="required"> * </span>
-                                </label>
-                                <div class="col-md-4">
-                                    <input name="store_name" type="text" class="form-control" value="<?php echo set_value('store_name'); ?>" />
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label col-md-3">Website
-                                </label>
-                                <div class="col-md-4">
-                                    <div class="input-group">
-                                        <span class="input-group-addon">
-                                            www.
-                                        </span>
-                                        <input type="text" name="website" class="form-control" value="<?php echo set_value('website'); ?>" />
+
+                            <hr /> <!--------------------------------->
+
+                            <div class="tabbable-bordered">
+
+                                <!-- TABS -->
+                                <ul class="nav nav-tabs">
+        							<li class="nav-tabs-item active">
+        								<a href="#main_address" data-toggle="tab">
+        									Main Billing Address 1
+        								</a>
+        							</li>
+        							<li class="nav-tabs-item ">
+                                        <a href="#alt2_address" data-toggle="tab">
+        									Alternate Address 2
+        								</a>
+        							</li>
+                                    <li class="nav-tabs-item ">
+                                        <a href="#alt3_address" data-toggle="tab">
+                                            Alternate Address 3
+        								</a>
+        							</li>
+                                    <li class="nav-tabs-item ">
+                                        <a href="#alt4_address" data-toggle="tab">
+                                            Alternate Address 4
+        								</a>
+        							</li>
+                                    <li class="nav-tabs-item ">
+                                        <a href="#alt5_address" data-toggle="tab">
+                                            Alternate Address 5
+        								</a>
+        							</li>
+                                    <li class="nav-tabs-item ">
+                                        <a href="#alt6_address" data-toggle="tab">
+                                            Alternate Address 6
+        								</a>
+        							</li>
+        						</ul>
+
+                                <!-- BEGIN TAB CONTENTS -->
+                                <div class="tab-content clearfix">
+
+                                    <div class="tab-pane active" id="main_address">
+
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">First Name
+                                                <span class="required"> * </span>
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input name="firstname" type="text" class="form-control" value="<?php echo set_value('firstname'); ?>" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Last Name
+                                                <span class="required"> * </span>
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input name="lastname" type="text" class="form-control" value="<?php echo set_value('lastname'); ?>" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Store Name
+                                                <span class="required"> * </span>
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input name="store_name" type="text" class="form-control" value="<?php echo set_value('store_name'); ?>" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3">Website
+                                            </label>
+                                            <div class="col-md-4">
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">
+                                                        www.
+                                                    </span>
+                                                    <input type="text" name="website" class="form-control" value="<?php echo set_value('website'); ?>" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Fed Tax ID
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input name="fed_tax_id" type="text" class="form-control" value="<?php echo set_value('fed_tax_id'); ?>" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Main Contact Number
+                                                <span class="required"> * </span>
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input name="telephone" type="text" class="form-control" value="<?php echo set_value('telephone'); ?>" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Address 1
+                                                <span class="required"> * </span>
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input name="address1" type="text" class="form-control" value="<?php echo set_value('address1'); ?>" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Address 2
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input name="address2" type="text" class="form-control" value="<?php echo set_value('address2'); ?>" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">City
+                                                <span class="required"> * </span>
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input name="city" type="text" class="form-control" value="<?php echo set_value('city'); ?>" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3">State
+                                                <span class="required"> * </span>
+                                            </label>
+                                            <div class="col-md-4">
+                                                <select class="form-control select2me" name="state">
+                                                    <option value="">Select...</option>
+                                                    <?php foreach (list_states() as $state) { ?>
+                                                    <option value="<?php echo $state->state_name; ?>" <?php echo set_select('state', $state->state_name); ?>><?php echo $state->state_name; ?></option>
+                                                    <?php } ?>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3">Country
+                                                <span class="required"> * </span>
+                                            </label>
+                                            <div class="col-md-4">
+                                                <select class="form-control select2me" name="country">
+                                                    <option value="">Select...</option>
+                                                    <?php foreach (list_countries() as $country) { ?>
+                                                    <option value="<?php echo $country->countries_name; ?>" <?php echo set_select('country', $country->countries_name); ?>><?php echo $country->countries_name; ?></option>
+                                                    <?php } ?>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Zip Code
+                                                <span class="required"> * </span>
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input name="zipcode" type="text" class="form-control" value="<?php echo set_value('zipcode'); ?>" />
+                                            </div>
+                                        </div>
+
                                     </div>
+
+                                    <div class="tab-pane " id="alt2_address">
+
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Contact First Name
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input name="alt_address[2][firstname]" type="text" class="form-control" value="<?php echo set_value('alt_address[2][firstname]'); ?>" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Contact Last Name
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input name="alt_address[2][lastname]" type="text" class="form-control" value="<?php echo set_value('alt_address[2][lastname]'); ?>" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Store Name
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input name="alt_address[2][store_name]" type="text" class="form-control" value="<?php echo set_value('alt_address[2][store_name]'); ?>" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Contact Number
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input name="alt_address[2][telephone]" type="text" class="form-control" value="<?php echo set_value('alt_address[2][telephone]'); ?>" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Address 1
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input name="alt_address[2][address1]" type="text" class="form-control" value="<?php echo set_value('alt_address[2][address1]'); ?>" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Address 2
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input name="alt_address[2][address2]" type="text" class="form-control" value="<?php echo set_value('alt_address[2][address2]'); ?>" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">City
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input name="alt_address[2][city]" type="text" class="form-control" value="<?php echo set_value('alt_address[2][city]'); ?>" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3">State
+                                            </label>
+                                            <div class="col-md-4">
+                                                <select class="form-control select2me" name="alt_address[2][state]">
+                                                    <option value="">Select...</option>
+                                                    <?php foreach (list_states() as $state) { ?>
+                                                    <option value="<?php echo $state->state_name; ?>" <?php echo set_select('alt_address[2][state]', $state->state_name); ?>><?php echo $state->state_name; ?></option>
+                                                    <?php } ?>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3">Country
+                                            </label>
+                                            <div class="col-md-4">
+                                                <select class="form-control select2me" name="alt_address[2][country]">
+                                                    <option value="">Select...</option>
+                                                    <?php foreach (list_countries() as $country) { ?>
+                                                    <option value="<?php echo $country->countries_name; ?>" <?php echo set_select('alt_address[2][country]', $country->countries_name); ?>><?php echo $country->countries_name; ?></option>
+                                                    <?php } ?>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Zip Code
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input name="alt_address[2][zipcode]" type="text" class="form-control" value="<?php echo set_value('alt_address[2][zipcode]'); ?>" />
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="tab-pane " id="alt3_address">
+
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Contact First Name
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input name="alt_address[3][firstname]" type="text" class="form-control" value="<?php echo set_value('alt_address[3][firstname]'); ?>" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Contact Last Name
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input name="alt_address[3][lastname]" type="text" class="form-control" value="<?php echo set_value('alt_address[3][lastname]'); ?>" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Store Name
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input name="alt_address[3][store_name]" type="text" class="form-control" value="<?php echo set_value('alt_address[3][store_name]'); ?>" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Contact Number
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input name="alt_address[3][telephone]" type="text" class="form-control" value="<?php echo set_value('alt_address[3][telephone]'); ?>" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Address 1
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input name="alt_address[3][address1]" type="text" class="form-control" value="<?php echo set_value('alt_address[3][address1]'); ?>" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Address 2
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input name="alt_address[3][address2]" type="text" class="form-control" value="<?php echo set_value('alt_address[3][address2]'); ?>" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">City
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input name="alt_address[3][city]" type="text" class="form-control" value="<?php echo set_value('alt_address[3][city]'); ?>" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3">State
+                                            </label>
+                                            <div class="col-md-4">
+                                                <select class="form-control select2me" name="alt_address[3][state]">
+                                                    <option value="">Select...</option>
+                                                    <?php foreach (list_states() as $state) { ?>
+                                                    <option value="<?php echo $state->state_name; ?>" <?php echo set_select('alt_address[3][state]', $state->state_name); ?>><?php echo $state->state_name; ?></option>
+                                                    <?php } ?>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3">Country
+                                            </label>
+                                            <div class="col-md-4">
+                                                <select class="form-control select2me" name="alt_address[3][country]">
+                                                    <option value="">Select...</option>
+                                                    <?php foreach (list_countries() as $country) { ?>
+                                                    <option value="<?php echo $country->countries_name; ?>" <?php echo set_select('alt_address[3][country]', $country->countries_name); ?>><?php echo $country->countries_name; ?></option>
+                                                    <?php } ?>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Zip Code
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input name="alt_address[3][zipcode]" type="text" class="form-control" value="<?php echo set_value('alt_address[3][zipcode]'); ?>" />
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="tab-pane " id="alt4_address">
+
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Contact First Name
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input name="alt_address[4][firstname]" type="text" class="form-control" value="<?php echo set_value('alt_address[4][firstname]'); ?>" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Contact Last Name
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input name="alt_address[4][lastname]" type="text" class="form-control" value="<?php echo set_value('alt_address[4][lastname]'); ?>" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Store Name
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input name="alt_address[4][store_name]" type="text" class="form-control" value="<?php echo set_value('alt_address[4][store_name]'); ?>" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Contact Number
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input name="alt_address[4][telephone]" type="text" class="form-control" value="<?php echo set_value('alt_address[4][telephone]'); ?>" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Address 1
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input name="alt_address[4][address1]" type="text" class="form-control" value="<?php echo set_value('alt_address[4][address1]'); ?>" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Address 2
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input name="alt_address[4][address2]" type="text" class="form-control" value="<?php echo set_value('alt_address[4][address2]'); ?>" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">City
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input name="alt_address[4][city]" type="text" class="form-control" value="<?php echo set_value('alt_address[4][city]'); ?>" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3">State
+                                            </label>
+                                            <div class="col-md-4">
+                                                <select class="form-control select2me" name="alt_address[4][state]">
+                                                    <option value="">Select...</option>
+                                                    <?php foreach (list_states() as $state) { ?>
+                                                    <option value="<?php echo $state->state_name; ?>" <?php echo set_select('alt_address[4][state]', $state->state_name); ?>><?php echo $state->state_name; ?></option>
+                                                    <?php } ?>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3">Country
+                                            </label>
+                                            <div class="col-md-4">
+                                                <select class="form-control select2me" name="alt_address[4][country]">
+                                                    <option value="">Select...</option>
+                                                    <?php foreach (list_countries() as $country) { ?>
+                                                    <option value="<?php echo $country->countries_name; ?>" <?php echo set_select('alt_address[4][country]', $country->countries_name); ?>><?php echo $country->countries_name; ?></option>
+                                                    <?php } ?>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Zip Code
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input name="alt_address[4][zipcode]" type="text" class="form-control" value="<?php echo set_value('alt_address[4][zipcode]'); ?>" />
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="tab-pane " id="alt5_address">
+
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Contact First Name
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input name="alt_address[5][firstname]" type="text" class="form-control" value="<?php echo set_value('alt_address[5][firstname]'); ?>" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Contact Last Name
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input name="alt_address[5][lastname]" type="text" class="form-control" value="<?php echo set_value('alt_address[5][lastname]'); ?>" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Store Name
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input name="alt_address[5][store_name]" type="text" class="form-control" value="<?php echo set_value('alt_address[5][store_name]'); ?>" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Contact Number
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input name="alt_address[5][telephone]" type="text" class="form-control" value="<?php echo set_value('alt_address[5][telephone]'); ?>" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Address 1
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input name="alt_address[5][address1]" type="text" class="form-control" value="<?php echo set_value('alt_address[5][address1]'); ?>" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Address 2
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input name="alt_address[5][address2]" type="text" class="form-control" value="<?php echo set_value('alt_address[5][address2]'); ?>" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">City
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input name="alt_address[5][city]" type="text" class="form-control" value="<?php echo set_value('alt_address[5][city]'); ?>" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3">State
+                                            </label>
+                                            <div class="col-md-4">
+                                                <select class="form-control select2me" name="alt_address[5][state]">
+                                                    <option value="">Select...</option>
+                                                    <?php foreach (list_states() as $state) { ?>
+                                                    <option value="<?php echo $state->state_name; ?>" <?php echo set_select('alt_address[5][state]', $state->state_name); ?>><?php echo $state->state_name; ?></option>
+                                                    <?php } ?>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3">Country
+                                            </label>
+                                            <div class="col-md-4">
+                                                <select class="form-control select2me" name="alt_address[5][country]">
+                                                    <option value="">Select...</option>
+                                                    <?php foreach (list_countries() as $country) { ?>
+                                                    <option value="<?php echo $country->countries_name; ?>" <?php echo set_select('alt_address[5][country]', $country->countries_name); ?>><?php echo $country->countries_name; ?></option>
+                                                    <?php } ?>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Zip Code
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input name="alt_address[5][zipcode]" type="text" class="form-control" value="<?php echo set_value('alt_address[5][zipcode]'); ?>" />
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="tab-pane " id="alt6_address">
+
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Contact First Name
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input name="alt_address[6][firstname]" type="text" class="form-control" value="<?php echo set_value('alt_address[6][firstname]'); ?>" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Contact Last Name
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input name="alt_address[6][lastname]" type="text" class="form-control" value="<?php echo set_value('alt_address[6][lastname]'); ?>" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Store Name
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input name="alt_address[6][store_name]" type="text" class="form-control" value="<?php echo set_value('alt_address[6][store_name]'); ?>" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Contact Number
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input name="alt_address[6][telephone]" type="text" class="form-control" value="<?php echo set_value('alt_address[6][telephone]'); ?>" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Address 1
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input name="alt_address[6][address1]" type="text" class="form-control" value="<?php echo set_value('alt_address[6][address1]'); ?>" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Address 2
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input name="alt_address[6][address2]" type="text" class="form-control" value="<?php echo set_value('alt_address[6][address2]'); ?>" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">City
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input name="alt_address[6][city]" type="text" class="form-control" value="<?php echo set_value('alt_address[6][city]'); ?>" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3">State
+                                            </label>
+                                            <div class="col-md-4">
+                                                <select class="form-control select2me" name="alt_address[6][state]">
+                                                    <option value="">Select...</option>
+                                                    <?php foreach (list_states() as $state) { ?>
+                                                    <option value="<?php echo $state->state_name; ?>" <?php echo set_select('alt_address[6][state]', $state->state_name); ?>><?php echo $state->state_name; ?></option>
+                                                    <?php } ?>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3">Country
+                                            </label>
+                                            <div class="col-md-4">
+                                                <select class="form-control select2me" name="alt_address[6][country]">
+                                                    <option value="">Select...</option>
+                                                    <?php foreach (list_countries() as $country) { ?>
+                                                    <option value="<?php echo $country->countries_name; ?>" <?php echo set_select('alt_address[6][country]', $country->countries_name); ?>><?php echo $country->countries_name; ?></option>
+                                                    <?php } ?>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Zip Code
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input name="alt_address[6][zipcode]" type="text" class="form-control" value="<?php echo set_value('alt_address[6][zipcode]'); ?>" />
+                                            </div>
+                                        </div>
+
+                                    </div>
+
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label class="col-md-3 control-label">Fed Tax ID
-                                </label>
-                                <div class="col-md-4">
-                                    <input name="fed_tax_id" type="text" class="form-control" value="<?php echo set_value('fed_tax_id'); ?>" />
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-3 control-label">Main Contact Number
-                                    <span class="required"> * </span>
-                                </label>
-                                <div class="col-md-4">
-                                    <input name="telephone" type="text" class="form-control" value="<?php echo set_value('telephone'); ?>" />
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-3 control-label">Contact Number 2
-                                </label>
-                                <div class="col-md-4">
-                                    <input name="telephone2" type="text" class="form-control" value="<?php echo set_value('telephone2'); ?>" />
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-3 control-label">Contact Number 3
-                                </label>
-                                <div class="col-md-4">
-                                    <input name="telephone3" type="text" class="form-control" value="<?php echo set_value('telephone3'); ?>" />
-                                    <cite class="help-block small"> Contact numbers can be a landline or mobile number. </cite>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-3 control-label">Address 1
-                                    <span class="required"> * </span>
-                                </label>
-                                <div class="col-md-4">
-                                    <input name="address1" type="text" class="form-control" value="<?php echo set_value('address1'); ?>" />
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-3 control-label">Address 2
-                                </label>
-                                <div class="col-md-4">
-                                    <input name="address2" type="text" class="form-control" value="<?php echo set_value('address2'); ?>" />
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-3 control-label">City
-                                    <span class="required"> * </span>
-                                </label>
-                                <div class="col-md-4">
-                                    <input name="city" type="text" class="form-control" value="<?php echo set_value('city'); ?>" />
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label col-md-3">State
-                                    <span class="required"> * </span>
-                                </label>
-                                <div class="col-md-4">
-                                    <select class="form-control select2me" name="state">
-                                        <option value="">Select...</option>
-                                        <?php foreach (list_states() as $state) { ?>
-                                        <option value="<?php echo $state->state_name; ?>" <?php echo set_select('state', $state->state_name); ?>><?php echo $state->state_name; ?></option>
-                                        <?php } ?>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label col-md-3">Country
-                                    <span class="required"> * </span>
-                                </label>
-                                <div class="col-md-4">
-                                    <select class="form-control select2me" name="country">
-                                        <option value="">Select...</option>
-                                        <?php foreach (list_countries() as $country) { ?>
-                                        <option value="<?php echo $country->countries_name; ?>" <?php echo set_select('country', $country->countries_name); ?>><?php echo $country->countries_name; ?></option>
-                                        <?php } ?>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-3 control-label">Zip Code
-                                    <span class="required"> * </span>
-                                </label>
-                                <div class="col-md-4">
-                                    <input name="zipcode" type="text" class="form-control" value="<?php echo set_value('zipcode'); ?>" />
-                                </div>
-                            </div>
+
+                            <hr /> <!--------------------------------->
                             <div class="form-group">
                                 <label class="col-md-3 control-label">Comments
                                 </label>

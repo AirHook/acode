@@ -443,7 +443,7 @@ class Bulk_actions extends Admin_Controller {
 
 		// send to email - user
 		// but for tempo, we send to rafi only for now
-		if ($this->webspace_details->slug == 'tempopairs')
+		if ($this->webspace_details->slug == 'tempoparis')
 		{
 			$send_to_email = $this->webspace_details->info_email;
 			$cc_email = '';
