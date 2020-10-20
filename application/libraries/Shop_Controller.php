@@ -290,9 +290,15 @@ class Shop_Controller extends Frontend_Controller {
         )
         {
             $where_public = "(
-				tbl_product.publish = '1'
-				OR tbl_product.publish = '11'
-				OR tbl_product.publish = '12'
+				(
+                    tbl_product.publish = '1'
+                    OR tbl_product.publish = '11'
+    				OR tbl_product.publish = '12'
+                ) AND (
+                    tbl_stock.new_color_publish = '1'
+                    OR tbl_stock.new_color_publish = '11'
+    				OR tbl_stock.new_color_publish = '12'
+                )
 			)";
             $where['condition'][] = $where_public;
 
@@ -327,9 +333,15 @@ class Shop_Controller extends Frontend_Controller {
             if ($this->wholesale_user_details->admin_sales_email != 'help@basixblacklabel.com')
             {
                 $where_public_only = "(
-    				tbl_product.publish = '1'
-    				OR tbl_product.publish = '11'
-    				OR tbl_product.publish = '12'
+                    (
+                        tbl_product.publish = '1'
+                        OR tbl_product.publish = '11'
+        				OR tbl_product.publish = '12'
+                    ) AND (
+                        tbl_stock.new_color_publish = '1'
+                        OR tbl_stock.new_color_publish = '11'
+        				OR tbl_stock.new_color_publish = '12'
+                    )
     			)";
                 $where['condition'][] = $where_public_only;
             }
@@ -340,9 +352,15 @@ class Shop_Controller extends Frontend_Controller {
         )
         {
             $where_public = "(
-				tbl_product.publish = '1'
-				OR tbl_product.publish = '11'
-				OR tbl_product.publish = '12'
+                (
+                    tbl_product.publish = '1'
+                    OR tbl_product.publish = '11'
+    				OR tbl_product.publish = '12'
+                ) AND (
+                    tbl_stock.new_color_publish = '1'
+                    OR tbl_stock.new_color_publish = '11'
+    				OR tbl_stock.new_color_publish = '12'
+                )
 			)";
             $where['condition'][] = $where_public;
 

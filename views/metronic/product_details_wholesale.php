@@ -253,9 +253,18 @@
     															 * If item is on SPEICAL SALE
     															 * We stil need to show the wholesale price with strikethrough line
     															 * and get the wholesale clearance price
+                                                                 * Same as with patron discount price
     															 */
+                                                                $patron_discount_price = 'hide';
     															if ($this->product_details->custom_order === '3')
-    															$price = $this->product_details->wholesale_price_clearance; // --> retail price
+                                                                {
+                                                                    $price = $this->product_details->wholesale_price_clearance; // --> clearance price
+                                                                }
+                                                                else if (@$this->wholesale_user_details->options['patron_discount'] > 0)
+                                                                {
+                                                                    $price = $this->product_details->wholesale_price - ($this->product_details->wholesale_price * (@$this->wholesale_user_details->options['patron_discount'] / 100));
+                                                                    $patron_discount_price = 'show';
+                                                                }
 
                                                                 if (@$this->webspace_details->options['show_product_price'] == '0')
                                                                 { ?>
@@ -269,13 +278,25 @@
                                                                 else
                                                                 { ?>
 
-															<span itemprop="price" <?php echo $this->product_details->custom_order === '3' ? 'style="text-decoration:line-through;"' : ''; ?>>[WHOLESALE PRICE] &nbsp; <?php echo $this->config->item('currency').' '.number_format($this->product_details->wholesale_price, 2); ?></span>&nbsp;
+															[WHOLESALE] &nbsp; <span itemprop="price" <?php echo ($this->product_details->custom_order === '3' OR $patron_discount_price == 'show') ? 'style="text-decoration:line-through;"' : ''; ?>><?php echo $this->config->item('currency').' '.number_format($this->product_details->wholesale_price, 2); ?></span>&nbsp;
 
-    																<?php if ($this->product_details->custom_order === '3')
+    																<?php if ($this->product_details->custom_order === '3' && $patron_discount_price != 'show')
                                                                     { ?>
 
 															&nbsp; <span itemprop="price" style="color:red;">
 																[CLEARANCE] &nbsp; <?php echo $this->config->item('currency').' '.number_format($price, 2); ?>
+    															</span>
+
+                                                                    <?php
+                                                                    }
+
+                                                                    if ($patron_discount_price == 'show')
+                                                                    { ?>
+
+															<span itemprop="price" style="color:red;">
+																<?php echo $this->config->item('currency').' '.number_format($price, 2); ?>
+                                                                &nbsp;
+                                                                (≈<?php echo @$this->wholesale_user_details->options['patron_discount']; ?>% OFF)
     															</span>
 
                                                                     <?php

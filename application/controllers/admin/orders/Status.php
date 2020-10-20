@@ -375,7 +375,7 @@ class Status extends Admin_Controller {
 			$user_details =
 				$this->wholesale_user_details->initialize(
 					array(
-						'user_id' => $this->data['order_details']->user_id
+						'user_id' => $order->user_id
 					)
 				)
 			;
@@ -385,7 +385,7 @@ class Status extends Admin_Controller {
 			$user_details =
 				$this->consumer_user_details->initialize(
 					array(
-						'user_id' => $this->data['order_details']->user_id
+						'user_id' => $order->user_id
 					)
 				)
 			;

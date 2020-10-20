@@ -337,7 +337,7 @@
 					</div>
 				</div>
 
-				<div class="tab-pane active" id="alt2_address">
+				<div class="tab-pane " id="alt2_address">
 					<div class="form-group">
 						<label class="col-md-3 control-label">Contact First Name
 						</label>
@@ -421,7 +421,7 @@
 					</div>
 				</div>
 
-				<div class="tab-pane active" id="alt3_address">
+				<div class="tab-pane " id="alt3_address">
 					<div class="form-group">
 						<label class="col-md-3 control-label">Contact First Name
 						</label>
@@ -505,7 +505,7 @@
 					</div>
 				</div>
 
-				<div class="tab-pane active" id="alt4_address">
+				<div class="tab-pane " id="alt4_address">
 					<div class="form-group">
 						<label class="col-md-3 control-label">Contact First Name
 						</label>
@@ -589,7 +589,7 @@
 					</div>
 				</div>
 
-				<div class="tab-pane active" id="alt5_address">
+				<div class="tab-pane " id="alt5_address">
 					<div class="form-group">
 						<label class="col-md-3 control-label">Contact First Name
 						</label>
@@ -673,7 +673,7 @@
 					</div>
 				</div>
 
-				<div class="tab-pane active" id="alt6_address">
+				<div class="tab-pane " id="alt6_address">
 					<div class="form-group">
 						<label class="col-md-3 control-label">Contact First Name
 						</label>

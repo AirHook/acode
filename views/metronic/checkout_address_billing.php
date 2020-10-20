@@ -20,6 +20,15 @@
 																<span></span>
 															</label>
 														</div>
+														<?php if ($this->session->user_loggedin && $this->session->user_role == 'wholesale') { ?>
+														<div class="form-group" style="visibility:hidden;">
+															<label>Country
+																</label>
+															<select class="form-control bs-select select-b_address dummy" name="select_b_address" data-size="8" data-live-search="true" data-bsh-type="sh_" disabled>
+																<option value="">Select...</option>
+															</select>
+														</div>
+														<?php } ?>
 														<div class="form-group">
 															<label>Email Address
 																<span class="required">*</span></label>

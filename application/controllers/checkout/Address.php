@@ -87,34 +87,37 @@ class Address extends Frontend_Controller
 				$this->consumer_user_details->initialize(array('user_id'=>$this->session->user_id));
 			}
 
-			// set addresses session data
-			$newdata = array(
-				'ny_tax' 				=> $this->data['ny_tax'],
-				'same_shipping_address'	=> '1',
-				'store_name'			=> $this->consumer_user_details->store_name,
-				'b_email' 				=> $this->consumer_user_details->email,
-				'b_firstname'			=> $this->consumer_user_details->fname,
-				'b_lastname'			=> $this->consumer_user_details->lname,
-				'b_phone'				=> $this->consumer_user_details->telephone,
-				'b_address1'			=> $this->consumer_user_details->address1,
-				'b_address2'			=> $this->consumer_user_details->address2,
-				'b_country'				=> $this->consumer_user_details->country,
-				'b_city'				=> $this->consumer_user_details->city,
-				'b_state'				=> $this->consumer_user_details->state,
-				'b_zip'					=> $this->consumer_user_details->zipcode,
-				'sh_email' 				=> ($this->session->sh_email ?: $this->consumer_user_details->email),
-				'sh_firstname'			=> ($this->session->sh_firstname ?: $this->consumer_user_details->fname),
-				'sh_lastname'			=> ($this->session->sh_lastname ?: $this->consumer_user_details->lname),
-				'sh_phone'				=> ($this->session->sh_phone ?: $this->consumer_user_details->telephone),
-				'sh_address1'			=> ($this->session->sh_address1 ?: $this->consumer_user_details->address1),
-				'sh_address2'			=> ($this->session->sh_address2 ?: $this->consumer_user_details->address2),
-				'sh_country'			=> ($this->session->sh_country ?: $this->consumer_user_details->country),
-				'sh_city'				=> ($this->session->sh_city ?: $this->consumer_user_details->city),
-				'sh_state'				=> ($this->session->sh_state ?: $this->consumer_user_details->state),
-				'sh_zip'				=> ($this->session->sh_zip ?: $this->consumer_user_details->zipcode),
-				'agree_to_policy'		=> '1'
-			);
-			$this->session->set_userdata($newdata);
+			if ($this->session->user_role != 'wholesale')
+			{
+				// set addresses session data
+				$newdata = array(
+					'ny_tax' 				=> $this->data['ny_tax'],
+					'same_shipping_address'	=> '1',
+					'store_name'			=> $this->consumer_user_details->store_name,
+					'b_email' 				=> $this->consumer_user_details->email,
+					'b_firstname'			=> $this->consumer_user_details->fname,
+					'b_lastname'			=> $this->consumer_user_details->lname,
+					'b_phone'				=> $this->consumer_user_details->telephone,
+					'b_address1'			=> $this->consumer_user_details->address1,
+					'b_address2'			=> $this->consumer_user_details->address2,
+					'b_country'				=> $this->consumer_user_details->country,
+					'b_city'				=> $this->consumer_user_details->city,
+					'b_state'				=> $this->consumer_user_details->state,
+					'b_zip'					=> $this->consumer_user_details->zipcode,
+					'sh_email' 				=> ($this->session->sh_email ?: $this->consumer_user_details->email),
+					'sh_firstname'			=> ($this->session->sh_firstname ?: $this->consumer_user_details->fname),
+					'sh_lastname'			=> ($this->session->sh_lastname ?: $this->consumer_user_details->lname),
+					'sh_phone'				=> ($this->session->sh_phone ?: $this->consumer_user_details->telephone),
+					'sh_address1'			=> ($this->session->sh_address1 ?: $this->consumer_user_details->address1),
+					'sh_address2'			=> ($this->session->sh_address2 ?: $this->consumer_user_details->address2),
+					'sh_country'			=> ($this->session->sh_country ?: $this->consumer_user_details->country),
+					'sh_city'				=> ($this->session->sh_city ?: $this->consumer_user_details->city),
+					'sh_state'				=> ($this->session->sh_state ?: $this->consumer_user_details->state),
+					'sh_zip'				=> ($this->session->sh_zip ?: $this->consumer_user_details->zipcode),
+					'agree_to_policy'		=> '1'
+				);
+				$this->session->set_userdata($newdata);
+			}
 
 			// set data variables...
 			$this->data['file'] = 'checkout_address';

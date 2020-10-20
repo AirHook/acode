@@ -60,6 +60,10 @@
 																	<button class="close" data-close="alert"></button> New Account ADDED! Continue edit new account below now...
 																</div>
 																<?php } ?>
+                                                                <div class="alert alert-info auto-remove">
+																	<button class="close" data-close="alert"></button>
+                                                                    As a wholesale user, multiple SHIP TO addresses can be added to your MY ACCOUNTS >> PROFILE page after activation of registration.
+																</div>
 															</div>
 
 															<h4 class="form-section">Wholesale Registration</h4>

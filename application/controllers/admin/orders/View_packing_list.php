@@ -28,13 +28,19 @@ class view_packing_list extends MY_Controller
 		$this->load->library('barcodes/upc_barcodes');
 
 		// initialize...
-		$this->data['order_details'] = $this->order_details->initialize(array('tbl_order_log.order_log_id'=>$id));
+		$this->data['order_details'] =
+			$this->order_details->initialize(
+				array(
+					'tbl_order_log.order_log_id' => $id
+				)
+			)
+		;
 
 		// other data
 		$this->data['status'] = $this->order_details->status_text;
 
 		// set THE items
-		$data['order_items'] = $this->order_details->items();
+		$data['order_items'] = $this->order_details->order_items;
 		$data['order_date'] = $this->order_details->order_date;
 		$data['order_number'] = $this->order_details->order_id;
 		$data['order_options'] = $this->order_details->options;

@@ -145,13 +145,28 @@ var ComponentsScripts = function() {
 
     var handleScripts1 = function() {
 
+        // wholeale select alt address
+        $('.select-alt_address').on('change', function(){
+            var val = $(this).selectpicker('val');
+            var alt_details = $(this).find(':selected').data('alt_details');
+            $('[name="sh_email"]').val(alt_details.email);
+            $('[name="sh_firstname"]').val(alt_details.firstname);
+            $('[name="sh_lastname"]').val(alt_details.lastname);
+            $('[name="sh_phone"]').val(alt_details.telephone);
+            $('[name="sh_address1"]').val(alt_details.address1);
+            $('[name="sh_address2"]').val(alt_details.address2);
+            $('[name="sh_city"]').val(alt_details.city);
+            $('[name="sh_state"]').val(alt_details.state);
+            $('[name="sh_country"]').val(alt_details.country);
+            $('[name="sh_zip"]').val(alt_details.zipcode);
+        });
     }
 
     return {
         //main function to initiate the module
         init: function() {
             handleValidation1();
-            //handleScripts1();
+            handleScripts1();
         }
     };
 

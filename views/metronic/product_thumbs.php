@@ -1386,6 +1386,18 @@
                                                                                         $line_thru = '';
                                                                                         $mark_down_price_class = 'hide';
                                                                                     }
+
+                                                                                    // check for wholesale patron discount
+                                                                                    $patron_discount_price = 'hide';
+                                                                                    if (
+                                                                                        $this->session->user_role == 'wholesale'
+                                                                                        && @$this->wholesale_user_details->options['patron_discount'] > 0
+                                                                                    )
+                                                                                    {
+                                                                                        $line_thru = 'text-decoration:line-through;';
+                                                                                        $mark_down_price_class = 'hide';
+                                                                                        $patron_discount_price = '';
+                                                                                    }
     																				?>
 
 																				<span class="<?php echo $price_class; ?>" itemprop="price" style="<?php echo $line_thru; ?>">
@@ -1417,6 +1429,12 @@
 																					echo $this->config->item('currency').$price;
 																					?>
 																				</span>
+                                                                                <span class="<?php echo $price_class.' '.$patron_discount_price; ?>" style="color:red;">
+                                                                                    <?php
+                                                                                    $price = number_format(ceil(($thumb->wholesale_price - ($thumb->wholesale_price * (@$this->wholesale_user_details->options['patron_discount'] / 100)))), 2);
+                                                                                    echo $this->config->item('currency').$price.' (≈'.@$this->wholesale_user_details->options['patron_discount'].'% OFF)';
+                                                                                    ?>
+                                                                                </span>
 
                                                                                     <?php
                                                                                 } ?>

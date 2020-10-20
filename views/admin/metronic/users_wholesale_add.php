@@ -808,6 +808,21 @@
                             </div>
 
                             <hr /> <!--------------------------------->
+                            <h4 class="form-section">Miscellaneous</h4>
+                            <br />
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Patron Discount
+                                </label>
+                                <div class="col-md-4">
+                                    <select class="form-control select2me" name="options[patron_discount]">
+                                        <option value="">Select...</option>
+                                        <?php for($i=1;$i<100;$i++) { ?>
+                                        <option value="<?php echo $i; ?>" <?php echo set_select('options[patron_discount]', @$this->wholesale_user_details->options['patron_discount']); ?>><?php echo $i.' %'; ?></option>
+                                        <?php } ?>
+                                    </select>
+                                    <cite class="help-block small"> Applies accross all regular items only. </cite>
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label class="col-md-3 control-label">Comments
                                 </label>

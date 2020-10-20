@@ -133,6 +133,10 @@ class Edit extends Admin_Controller {
 		}
 		else
 		{
+			// grab any existing property 'options' to preserve it
+			// while adding any additional options value
+			$user_options = $this->wholesale_user_details->options;
+
 			// insert record
 			$post_ary = $this->input->post();
 			// set necessary variables
@@ -141,6 +145,8 @@ class Edit extends Admin_Controller {
 			// process/add some variables
 			if (@$post_ary['pword'] == '') unset($post_ary['pword']);
 			$post_ary['alt_address'] = json_encode($post_ary['alt_address']);
+			if (@$post_ary['options']['patron_discount']) $user_options['patron_discount'] = $post_ary['options']['patron_discount'];
+			$post_ary['options'] = json_encode($user_options);
 
 			// unset unneeded variables
 			unset($post_ary['passconf']);

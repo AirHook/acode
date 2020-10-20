@@ -3,7 +3,13 @@
 
 														<div class="col-sm-6">
 
-															<h5> Billing Address <span class="small"> &nbsp; <a href="<?php echo site_url('checkout/address'); ?>" style="color:black;">Edit</a></span></h5>
+															<h5>
+																Billing Address
+																&nbsp;
+																<a href="<?php echo site_url('checkout/address'); ?>" class="btn btn-xs grey-gallery" style="font-size:60%;">
+																	Edit
+																</a>
+															</h5>
 
 															<p>
 															<?php
@@ -30,7 +36,13 @@
 														</div>
 														<div class="col-sm-6">
 
-															<h5> Shipping Address <span class="small"> &nbsp; <a href="<?php echo site_url('checkout/address'); ?>" style="color:black;">Edit</a></span></h5>
+															<h5>
+																Shipping Address
+																&nbsp;
+																<a href="<?php echo site_url('checkout/address'); ?>" class="btn btn-xs grey-gallery" style="font-size:60%;">
+																	Edit
+																</a>
+															</h5>
 
 															<p>
 															<?php
