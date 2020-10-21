@@ -49,6 +49,11 @@
                                         <span class="title">Clearance CS Only</span>
                                     </a>
                                 </li>
+                                <li class="nav-item  <?php echo $this->uri->segment(3) == 'admin_stocks' ? 'active open' : ''; ?>">
+                                    <a href="<?php echo site_url('admin/products/admin_stocks'); ?>" class="nav-link  ">
+                                        <span class="title">Admin Stocks</span>
+                                    </a>
+                                </li>
                                     <?php
                                 } ?>
                                 <li class="nav-item  <?php echo $this->uri->segment(3) == 'unpublished' ? 'active open' : ''; ?>">

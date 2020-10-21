@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Admin_stocks_only extends Admin_Controller {
+class Admin_stocks extends Admin_Controller {
 
 	/**
 	 * Constructor
@@ -63,7 +63,7 @@ class Admin_stocks_only extends Admin_Controller {
 					unset($_SESSION['prev_url_segs']);
 
 					// reload page with new prev_url_segs
-					redirect('admin/products/admin_stocks_only', 'location');
+					redirect('admin/products/admin_stocks', 'location');
 				}
 			}
 
@@ -145,11 +145,11 @@ class Admin_stocks_only extends Admin_Controller {
 			{
 				$redirect_url =
 					$prev_url_segs
-					? 'admin/products/clearance_cs_only/index'.$prev_url_segs
+					? 'admin/products/admin_stocks/index'.$prev_url_segs
 					: (
 						$this->webspace_details->slug == 'shop7thavenue'
-						? 'admin/products/admin_stocks_only/index/basixblacklabel/womens_apparel/dresses/evening_dresses'
-						: 'admin/products/admin_stocks_only/index/womens_apparel'
+						? 'admin/products/admin_stocks/index/basixblacklabel/womens_apparel/dresses/evening_dresses'
+						: 'admin/products/admin_stocks/index/womens_apparel'
 					)
 				;
 			}
@@ -157,8 +157,8 @@ class Admin_stocks_only extends Admin_Controller {
 			{
 				$redirect_url =
 					$prev_url_segs
-					? 'admin/products/admin_stocks_only/index'.$prev_url_segs
-					: 'admin/products/admin_stocks_only/index/womens_apparel'
+					? 'admin/products/admin_stocks/index'.$prev_url_segs
+					: 'admin/products/admin_stocks/index/womens_apparel'
 				;
 			}
 

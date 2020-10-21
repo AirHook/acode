@@ -81,7 +81,7 @@
 						<ul class="nav nav-tabs">
 							<li class="<?php echo ($this->uri->segment(3) == 'all' OR $this->uri->segment(4) == 'all') ? 'active' : ''; ?>">
 								<a href="<?php echo site_url($link_prefix.'/products/all'); ?>">
-									All Products
+									All
 								</a>
 							</li>
 							<li class="<?php echo ($this->uri->segment(3) == 'is_public'  OR $this->uri->segment(4) == 'is_public') ? 'active' : ''; ?>">
@@ -96,7 +96,7 @@
 							</li>
 							<li class="<?php echo ($this->uri->segment(3) == 'clearance' OR $this->uri->segment(4) == 'clearance') ? 'active' : ''; ?>">
 								<a href="<?php echo site_url($link_prefix.'/products/clearance'); ?>">
-									On Sale
+									Sale
 								</a>
 							</li>
 							<?php
@@ -108,7 +108,12 @@
 							{ ?>
 							<li class="<?php echo ($this->uri->segment(3) == 'clearance_cs_only' OR $this->uri->segment(4) == 'clearance_cs_only') ? 'active' : ''; ?>">
 								<a href="<?php echo site_url($link_prefix.'/products/clearance_cs_only'); ?>">
-									Clearance CS Only
+									Clearance CS
+								</a>
+							</li>
+							<li class="<?php echo ($this->uri->segment(3) == 'admin_stocks' OR $this->uri->segment(4) == 'admin_stocks') ? 'active' : ''; ?>">
+								<a href="<?php echo site_url($link_prefix.'/products/admin_stocks'); ?>">
+									Admin Stocks
 								</a>
 							</li>
 							<?php } ?>
@@ -139,14 +144,16 @@
 								&& ! @$role
 							)
 							{ ?>
+							<!--
 							<li>
 								<a href="<?php echo site_url('admin/products/add'); ?>">
 									Add Product <i class="fa fa-plus"></i>
 								</a>
 							</li>
+							-->
 							<li>
 								<a href="<?php echo site_url('admin/products/add/multiple_upload_images'); ?>">
-									Add Multiple Products via Images <i class="fa fa-plus"></i>
+									Add Multiple Products <i class="fa fa-plus"></i>
 								</a>
 							</li>
 							<?php } ?>
