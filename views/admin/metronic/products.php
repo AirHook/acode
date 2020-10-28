@@ -127,14 +127,14 @@
 									In Stock
 								</a>
 							</li>
+							<li class="<?php echo ($this->uri->segment(3) == 'by_vendor' OR $this->uri->segment(4) == 'by_vendor') ? 'active' : ''; ?>">
+								<a href="<?php echo site_url($link_prefix.'/products/by_vendor'); ?>">
+									By Vendor
+								</a>
+							</li>
 							<li class="<?php echo ($this->uri->segment(3) == 'onorder' OR $this->uri->segment(4) == 'onorder') ? 'active' : ''; ?>">
 								<a href="javascript:;" class="tooltips" data-original-title="Currently under construction">
 									On Order
-								</a>
-							</li>
-							<li class="<?php echo ($this->uri->segment(3) == 'by_vendor' OR $this->uri->segment(4) == 'by_vendor') ? 'active' : ''; ?>">
-								<a href="javascript:;" class="tooltips" data-original-title="Currently under construction">
-									By Vendor
 								</a>
 							</li>
 							<?php

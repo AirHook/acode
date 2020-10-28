@@ -66,14 +66,14 @@
                                         <span class="title">In Stock</span>
                                     </a>
                                 </li>
-                                <li class="nav-item  ">
-                                    <a href="javascript:;" class="nav-link tooltips" data-original-title="Currently Under Construction" data-placement="right">
-                                        <span class="title">On Order <cite class="small font-red-flamingo">(Under Construction)</cite></span>
+                                <li class="nav-item  <?php echo $this->uri->segment(3) == 'by_vendor' ? 'active open' : ''; ?>">
+                                    <a href="<?php echo site_url('admin/products/by_vendor'); ?>" class="nav-link  ">
+                                        <span class="title">By Vendor</span>
                                     </a>
                                 </li>
                                 <li class="nav-item  ">
                                     <a href="javascript:;" class="nav-link tooltips" data-original-title="Currently Under Construction" data-placement="right">
-                                        <span class="title">By Vendor <cite class="small font-red-flamingo">(Under Construction)</cite></span>
+                                        <span class="title">On Order <cite class="small font-red-flamingo">(Under Construction)</cite></span>
                                     </a>
                                 </li>
                             </ul>
