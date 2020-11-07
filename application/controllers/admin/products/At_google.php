@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Admin_stocks extends Admin_Controller {
+class At_google extends Admin_Controller {
 
 	/**
 	 * Constructor
@@ -41,7 +41,7 @@ class Admin_stocks extends Admin_Controller {
 		$this->data['url_segs'] = $uri_string;
 		array_shift($this->data['url_segs']); // admin
 		array_shift($this->data['url_segs']); // products
-		array_shift($this->data['url_segs']); // index/all/private/unpublished/instock/onorder/clearance/by_vendor/clearance_cs_only
+		array_shift($this->data['url_segs']); // index/all/private/unpublished/instock/onorder/clearance/by_vendor/clearance_cs_only/admin_stocks/at_google
 		array_shift($this->data['url_segs']); // index
 
 		// we need a real variable to process some calculations
@@ -63,7 +63,7 @@ class Admin_stocks extends Admin_Controller {
 					unset($_SESSION['prev_url_segs']);
 
 					// reload page with new prev_url_segs
-					redirect('admin/products/admin_stocks', 'location');
+					redirect('admin/products/at_google', 'location');
 				}
 			}
 
@@ -145,11 +145,14 @@ class Admin_stocks extends Admin_Controller {
 			{
 				$redirect_url =
 					$prev_url_segs
-					? 'admin/products/admin_stocks/index'.$prev_url_segs
+					? 'admin/products/at_google/index'.$prev_url_segs
 					: (
-						$this->webspace_details->slug == 'shop7thavenue'
-						? 'admin/products/admin_stocks/index/basixblacklabel/womens_apparel/dresses/evening_dresses'
-						: 'admin/products/admin_stocks/index/womens_apparel'
+						(
+							$this->webspace_details->slug == 'shop7thavenue'
+							OR $this->webspace_details->slug == 'instylenewyork'
+						)
+						? 'admin/products/at_google/index/basixblacklabel/womens_apparel/dresses/evening_dresses'
+						: 'admin/products/at_google/index/womens_apparel'
 					)
 				;
 			}
@@ -157,8 +160,8 @@ class Admin_stocks extends Admin_Controller {
 			{
 				$redirect_url =
 					$prev_url_segs
-					? 'admin/products/admin_stocks/index'.$prev_url_segs
-					: 'admin/products/admin_stocks/index/womens_apparel'
+					? 'admin/products/at_google/index'.$prev_url_segs
+					: 'admin/products/at_google/index/womens_apparel'
 				;
 			}
 
@@ -180,7 +183,7 @@ class Admin_stocks extends Admin_Controller {
 		}
 		else $where['tbl_product.categories LIKE'] = $category_id;
 
-		$where['tbl_stock.options LIKE'] = '"admin_stocks_only":"1"';
+		$where['tbl_stock.options LIKE'] = '"post_to_goole":"1"';
 
 		// get the products list and total count
 		$params['with_stocks'] = FALSE; // Show all with and without stocks
@@ -204,7 +207,7 @@ class Admin_stocks extends Admin_Controller {
 
 		// need to show loading at start
 		$this->data['show_loading'] = FALSE;
-		$this->data['page_param'] = 'admin_stocks';
+		$this->data['page_param'] = 'at_google';
 
 		// enable pagination
 		$this->_set_pagination($this->data['count_all'], $this->data['limit']);

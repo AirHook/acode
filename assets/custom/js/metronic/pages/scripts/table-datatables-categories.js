@@ -144,7 +144,7 @@ var TableDatatablesManaged = function () {
 			if (filter == 'general_categories')
 				window.location.href = base_url + "admin/categories.html";
 			else
-				window.location.href = base_url + "admin/categories/index/" + filter + ".html";
+				window.location.href = base_url + "admin/categories/index/index/" + filter + ".html";
 		});
     }
 

@@ -96,6 +96,7 @@ class Add extends Admin_Controller {
 
 			// insert record
 			$post_ary = $this->input->post();
+
 			// set necessary variables
 			$post_ary['create_date'] = date('Y-m-d', time());
 			if ($this->input->post('is_active') == '1')
@@ -103,6 +104,14 @@ class Add extends Admin_Controller {
 				$post_ary['active_date'] = date('Y-m-d', time());
 			}
 			$post_ary['alt_address'] = json_encode($post_ary['alt_address']);
+
+			// restructure options if any
+			if (@$post_ary['options']['patron_discount'])
+			{
+				$post_ary['options'] = json_encode($post_ary['options']);
+			}
+			else unset($post_ary['options']);
+
 			// unset unneeded variables
 			unset($post_ary['passconf']);
 			unset($post_ary['send_activation_email']);

@@ -619,14 +619,42 @@ var ComponentsProductEdit = function () {
         // Checkbox Admin Stock Sale per variant
         $('.admin_stocks_only').on('change', function(){
             // let get necessary information
-			var primary_color = $(this).closest('.section-options').data('primary_color');
-			var color_code = $(this).closest('.section-options').data('color_code');
 			var base_url = $(this).closest('.section-options').data('base_url');
             // the object data holds the st_id post data
 			var dataObject = $(this).closest('.section-options').data('object_data');
 			// process data
 			if ($(this).is(":checked")) dataObject.options = {"admin_stocks_only":"1"};
 			else dataObject.options = {"admin_stocks_only":"0"};
+			$('#loading .modal-title').html('Updating...');
+			$('#loading').modal('show');
+            $.ajax({
+				type:    "POST",
+				url:     base_url + "admin/products/update_variant_options.html",
+				data:    dataObject,
+				success: function(data) {
+					//alert(data);
+					$('#loading').modal('hide');
+					//window.location.href=base_url + "admin/products/edit/index/" + prod_id;
+				},
+				// vvv---- This is the new bit
+				error:   function(jqXHR, textStatus, errorThrown) {
+					//$('#loading').modal('hide');
+					//alert("Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
+					$('#reloading').modal('show');
+					location.reload();
+				}
+			});
+        });
+
+        // Checkbox POST TO GOOGLE per variant
+        $('.post_to_goole').on('change', function(){
+            // let get necessary information
+			var base_url = $(this).closest('.section-options').data('base_url');
+            // the object data holds the st_id post data
+			var dataObject = $(this).closest('.section-options').data('object_data');
+			// process data
+			if ($(this).is(":checked")) dataObject.options = {"post_to_goole":$(this).val()};
+			else dataObject.options = {"post_to_goole":"0"};
 			$('#loading .modal-title').html('Updating...');
 			$('#loading').modal('show');
             $.ajax({

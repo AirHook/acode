@@ -783,7 +783,7 @@ class Wholesale_user_details
 			// "idn_to_ascii(): INTL_IDNA_VARIANT_2003 is deprecated"
 			// using the '@' sign to supress this
 			// must resolve pending update of CI
-			@$this->CI->email->send();
+			//@$this->CI->email->send(); // turned off 20201022 for some changes
 		}
 	}
 

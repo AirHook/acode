@@ -46,38 +46,42 @@
                                                 OR $this->webspace_details->options['site_type'] != 'hub_site'
                                             )
                                             {
-                                                // get respective logo for desinger pages
-    											if (
-    												$this->uri->segment(2)
-    												OR $this->uri->segment(3)
-
-    											)
-    											{
-    												$designer = $this->designer_details->initialize(array('url_structure'=>$this->uri->segment(2)));
-                                                    if ( ! $designer)
-                                                    {
-                                                        $designer = $this->designer_details->initialize(array('url_structure'=>$this->uri->segment(3)));
-                                                    }
-
-    												if ($designer)
-    												{
-    													$des_logo = $this->designer_details->logo;
-    												}
-    												else $des_logo = '';
-    											}
-    											else
+                                                // get logo for sat site
+                                                if (@$this->webspace_details->options['site_type'] != 'hub_site')
                                                 {
-                                                    if (@$this->webspace_details->options['site_type'] == 'sat_site')
-                                                    {
-                                                        $designer = $this->designer_details->initialize(
-                                                            array(
-                                                                'url_structure' => $this->webspace_details->slug
-                                                            )
-                                                        );
+                                                    $designer = $this->designer_details->initialize(
+                                                        array(
+                                                            'url_structure' => $this->webspace_details->slug
+                                                        )
+                                                    );
 
-                                                        $des_logo = $this->designer_details->logo;
+                                                    $des_logo = $this->designer_details->logo;
+                                                }
+                                                else
+                                                {
+                                                    // get respective logo for desinger pages
+        											if (
+        												$this->uri->segment(2)
+        												OR $this->uri->segment(3)
+
+        											)
+        											{
+        												$designer = $this->designer_details->initialize(array('url_structure'=>$this->uri->segment(2)));
+                                                        if ( ! $designer)
+                                                        {
+                                                            $designer = $this->designer_details->initialize(array('url_structure'=>$this->uri->segment(3)));
+                                                        }
+
+        												if ($designer)
+        												{
+        													$des_logo = $this->designer_details->logo;
+        												}
+        												else $des_logo = '';
+        											}
+                                                    else
+                                                    {
+                                                        $des_logo = '';
                                                     }
-                                                    else $des_logo = '';
                                                 }
 
                                                 // set $logo per designer or as per webspace details
@@ -89,13 +93,13 @@
     											if ($logo)
     											{ ?>
 
-    											<img src="<?php echo $logo; ?>" alt="logo" class="logo-default" />
+    											<img src="<?php echo $logo; ?>" alt="logo" class="logo-default not-hub-site" />
     												<?php
     											}
     											else
     											{ ?>
 
-    											<img src="<?php echo base_url(); ?>assets/images/logo/logo-<?php echo $this->webspace_details->slug; ?>.png" alt="logo" class="logo-default" data-info="<?php echo $des_logo; ?>" data-information="hello" />
+    											<img src="<?php echo base_url(); ?>assets/images/logo/logo-<?php echo $this->webspace_details->slug; ?>.png" alt="logo" class="logo-default not-hub-site" data-info="<?php echo $des_logo; ?>" data-information="hello" />
     												<?php
                                                 }
                                             }
@@ -109,7 +113,7 @@
                                                     { ?>
 
                                                     <li style="float:left;" data-here="here">
-                                                        <img src="<?php echo $this->config->item('PROD_IMG_URL').$this->wholesale_user_details->designer_logo; ?>" alt="logo" class="logo-default" />
+                                                        <img src="<?php echo $this->config->item('PROD_IMG_URL').$this->wholesale_user_details->designer_logo; ?>" alt="logo" class="logo-default logo-list-slider-for-wholesale" />
                 									</li>
 
                                                         <?php
@@ -122,7 +126,7 @@
                                                             { ?>
 
                                                     <li style="float:left;" data-here="here">
-                                                        <img src="<?php echo $this->config->item('PROD_IMG_URL').$designer->logo; ?>" alt="logo" class="logo-default" />
+                                                        <img src="<?php echo $this->config->item('PROD_IMG_URL').$designer->logo; ?>" alt="logo" class="logo-default logo-list-slider-for-all-designers" />
                 									</li>
 
                                                                 <?php
@@ -133,7 +137,7 @@
                                                     { ?>
 
                                                     <li style="float:left;">
-                                                        <img src="<?php echo base_url(); ?>assets/images/logo/logo-<?php echo $this->webspace_details->slug; ?>-dark.png" alt="logo" class="logo-default" />
+                                                        <img src="<?php echo base_url(); ?>assets/images/logo/logo-<?php echo $this->webspace_details->slug; ?>-dark.png" alt="logo" class="logo-default else-logo-list-slider-single" />
                                                     </li>
 
                                                         <?php

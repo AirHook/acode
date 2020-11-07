@@ -255,8 +255,52 @@
                                                     <div class="cbp-l-grid-projects-desc text-center hidden-lg"> <?php echo $clearance_label; ?> </div>
                                                 </div>
 
-                                                <?php
-                                            } ?>
+                                                    <?php
+                                                }
+                                                elseif ($this->webspace_details->slug == 'tempoparis')
+                                                { ?>
+
+                                                <div class="cbp-item on-sale-general clearfix" style="height:345px;">
+                                                    <a href="<?php echo base_url(); ?>shop/<?php echo $this->webspace_details->options['site_type'] == 'sat_site' ? $this->webspace_details->slug.'/' : ''; ?>womens_apparel.html?filter=&availability=onsale" class="cbp-caption cbp-singlePageInline_" data-title="Womens Apparel<br>On Sale Items" rel="nofollow">
+                                                        <div class="cbp-caption-defaultWrap">
+
+                                                            <?php if ($this->webspace_details->slug == 'basixblacklabel')
+                                                            {
+                                                                $clearance_label = 'Sale';
+                                                                ?>
+
+                                                            <!--<img src="<?php echo base_url().'images/subcategory_icon/thumb/icon-final-sale.jpg'; ?>" alt="" />-->
+                                                            <img src="<?php echo base_url().'images/subcategory_icon/thumb/sale_icon.jpg'; ?>" alt="" />
+
+                                                                <?php
+                                                            }
+                                                            else
+                                                            {
+                                                                $clearance_label = 'Clearance Sale';
+                                                                ?>
+
+                                                            <img src="<?php echo base_url().'images/subcategory_icon/thumb/sale-general.jpg'; ?>" alt="" />
+
+                                                                <?php
+                                                            } ?>
+
+														</div>
+                                                        <div class="cbp-caption-activeWrap">
+                                                            <div class="cbp-l-caption-alignLeft">
+                                                                <div class="cbp-l-caption-body">
+                                                                    <div class="cbp-l-caption-title"> Womens Apparel </div>
+                                                                    <div class="cbp-l-caption-desc"> Items on special clerarance as low as 50% off or more </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                    <div class="cbp-l-grid-projects-title text-center hidden-xs hidden-sm hidden-md"> <?php echo $clearance_label; ?> </div>
+                                                    <div class="cbp-l-grid-projects-title text-center hidden-lg"> Womens Apparel </div>
+                                                    <div class="cbp-l-grid-projects-desc text-center hidden-lg"> <?php echo $clearance_label; ?> </div>
+                                                </div>
+
+                                                    <?php
+                                                } ?>
 
                                             </div>
                                             <div id="js-loadMore-lightbox-gallery" class="cbp-l-loadMore-button hide">

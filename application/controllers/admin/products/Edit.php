@@ -307,6 +307,7 @@ class Edit extends Admin_Controller {
 		unset($post_ary['admin_stocks_only']);
 		unset($post_ary['warehouse_code']);
 		unset($post_ary['admin_warehouse_code']);
+		unset($post_ary['post_to_goole']);
 
 		return $post_ary;
 	}
@@ -462,6 +463,32 @@ class Edit extends Admin_Controller {
 			{
 				$options['admin_stocks_only'] = $post_ary['admin_stocks_only'][$st_id];
 			}
+			// post to goole
+			// check for previous record of 'post_to_goole'
+			// and increment value for image link purposes
+			// range starts from 1 to 5
+			$google_action = FALSE;
+			if ( ! isset($post_ary['post_to_goole'][$st_id]))
+			{
+				//$options['post_to_goole'] = '0';
+				unset($options['post_to_goole']);
+
+				// post delete from google
+				$google_action = 'DELETE';
+			}
+			else
+			{
+				$post_to_goole_val =
+					($post_ary['post_to_goole'][$st_id] + 1) > 5
+					? 1
+					: $post_ary['post_to_goole'][$st_id] + 1
+				;
+
+				$options['post_to_goole'] = $post_to_goole_val;
+
+				// post insert/update to google
+				$google_action = 'UPSERT';
+			}
 			// warehouse_code
 			// warehouse_code - 6 boxes
 			if (isset($post_ary['warehouse_code'][$st_id]))
@@ -503,7 +530,92 @@ class Edit extends Admin_Controller {
 			$this->DB->where('st_id', $st_id);
 			$this->DB->update('tbl_stock');
 			// */
+
+			// process google API if any after record update
+			if ($google_action == 'UPSERT') $this->_post_to_google($post_to_goole_val);
+			if ($google_action == 'DELETE') $this->_remove_from_google();
 		}
+	}
+
+	// ----------------------------------------------------------------------
+
+	/**
+	 * POST TO GOOGLE
+	 *
+	 * @return	void
+	 */
+	private function _post_to_google($post_to_goole_val)
+	{
+		// google merchant center requires a main image link and add'l image links
+		// create google image is already added to class Prod_image_upload
+		// we just need to check if there are old items taht do not have the new images
+
+		// check images for all views
+		$views = array('f', 'b', 's');
+		foreach ($views as $view)
+		{
+			// set source image
+			$src_image =
+				$this->product_details->media_path
+				.$this->product_details->prod_no.'_'.$this->product_details->color_code
+				.'_'
+				.$view
+				.'.jpg'
+			;
+
+			// set new image
+			$new_image =
+				$this->product_details->media_path
+				.$this->product_details->prod_no.'_'.$this->product_details->color_code
+				.'_'
+				.$view
+				.'g'
+				.$post_to_goole_val
+				.'.jpg'
+			;
+
+			/* */
+			$this->load->helper('create_google_images');
+			if ($img_info = @GetImageSize($src_image))
+			{
+				$create = create_google_images(
+					$img_info,
+					$src_image,
+					$new_image
+				);
+			}
+			// */
+		}
+
+		// load library and post to google
+		$this->load->library('api/google/upsert');
+		$this->upsert->initialize(
+			array(
+				'prod_no' => $this->product_details->prod_no,
+				'color_code' => $this->product_details->color_code
+			)
+		);
+		$response = $this->upsert->go();
+	}
+
+	// ----------------------------------------------------------------------
+
+	/**
+	 * POST TO GOOGLE
+	 *
+	 * @return	void
+	 */
+	private function _remove_from_google()
+	{
+		// load library and post to google
+		$this->load->library('api/google/delete');
+		$this->delete->initialize(
+			array(
+				'prod_no' => $this->product_details->prod_no,
+				'color_code' => $this->product_details->color_code
+			)
+		);
+		$response = $this->delete->go();
 	}
 
 	// ----------------------------------------------------------------------

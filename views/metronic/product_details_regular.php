@@ -53,11 +53,13 @@
                                                         <strong>SPECIAL SALE - CLEARANCE PRICE - ON LIMITED SIZES</strong>
                                                     </div>
                                                         <?php
+                                                        $url	   = explode('/',$this->uri->uri_string());
                                                     } ?>
 
 												</div>
 
 												<div class="col-xs-12 margin-bottom-20">
+
 													<?php if ( ! @$search_result)
 													{ ?>
 
@@ -99,8 +101,14 @@
 
 													</ul>
 													<!-- END THUMBS BREADCRUMBS -->
+
 														<?php
 													} ?>
+
+                                                    <?php
+                                                    $url_check = explode('/',$this->uri->uri_string());
+                                                    if (@$url_check[6])
+                                                    { ?>
 
 													<br class="hidden-sm hidden-md hidden-lg" />
 
@@ -133,6 +141,9 @@
 													?>
 
 												</div>
+
+                                                    <?php
+                                                } ?>
 
 											</div>
 
@@ -540,7 +551,7 @@
                                                                                     if ($i != 0) echo nbs().' | '.nbs();
     																			?>
 
-																<a href="<?php echo site_url($new_url.str_replace(' ','-',strtolower(trim($color->color_name))).'/'.str_replace('/','-',str_replace(' ','-',$this->product_details->prod_name)).'/'.$url[6]); ?>" class="pdp--color-name" onmouseover="<?php echo $java3; ?>" onmouseout="<?php echo $java4; ?>" data-with-stocks="<?php echo $color->with_stocks; ?>" <?php echo $link_txt; ?> data-publish="<?php echo $color->custom_order; ?>">
+																<a href="<?php echo site_url($new_url.str_replace(' ','-',strtolower(trim($color->color_name))).'/'.str_replace('/','-',str_replace(' ','-',$this->product_details->prod_name)).(@$url[6] ? '/'.$url[6] : '')); ?>" class="pdp--color-name" onmouseover="<?php echo $java3; ?>" onmouseout="<?php echo $java4; ?>" data-with-stocks="<?php echo $color->with_stocks; ?>" <?php echo $link_txt; ?> data-publish="<?php echo $color->custom_order; ?>">
 																	<?php echo $color->color_name; ?>
 																</a>
 
@@ -562,7 +573,7 @@
     																			if ($i != 0) echo nbs().' | '.nbs();
     																			?>
 
-																<a href="<?php echo site_url($new_url.str_replace(' ','-',strtolower(trim($color->color_name))).'/'.str_replace('/','-',str_replace(' ','-',$this->product_details->prod_name)).'/'.$url[6]); ?>" class="pdp--color-name <?php echo $link_txt; ?>" onmouseover="<?php echo $java3; ?>" onmouseout="<?php echo $java4; ?>" data-publish="<?php echo $color->custom_order; ?>">
+																<a href="<?php echo site_url($new_url.str_replace(' ','-',strtolower(trim($color->color_name))).'/'.str_replace('/','-',str_replace(' ','-',$this->product_details->prod_name)).(@$url[6] ? '/'.$url[6] : '')); ?>" class="pdp--color-name <?php echo $link_txt; ?>" onmouseover="<?php echo $java3; ?>" onmouseout="<?php echo $java4; ?>" data-publish="<?php echo $color->custom_order; ?>">
 																	<?php echo $color->color_name; ?>
 																</a>
 
@@ -635,7 +646,7 @@
                                                                         )
                                                                         {
             																echo anchor(
-            																	$new_url.str_replace(' ','-',strtolower(trim($color->color_name))).'/'.str_replace('/','-',str_replace(' ','-',$this->product_details->prod_name)).'/'.$url[6],
+            																	$new_url.str_replace(' ','-',strtolower(trim($color->color_name))).'/'.str_replace('/','-',str_replace(' ','-',$this->product_details->prod_name)).(@$url[6] ? '/'.$url[6] : ''),
             																	img(
             																		array(
             																			'src'=>(
@@ -665,7 +676,7 @@
 
         																$swatch_style = $this->product_details->color_code == $color->color_code ? 'border:1px solid #333;padding:2px;' : 'padding: 3px;';
         																echo anchor(
-        																	$new_url.str_replace(' ','-',strtolower(trim($color->color_name))).'/'.str_replace('/','-',str_replace(' ','-',$this->product_details->prod_name)).'/'.$url[6],
+        																	$new_url.str_replace(' ','-',strtolower(trim($color->color_name))).'/'.str_replace('/','-',str_replace(' ','-',$this->product_details->prod_name)).(@$url[6] ? '/'.$url[6] : ''),
         																	img(
         																		array(
         																			'src'=>(

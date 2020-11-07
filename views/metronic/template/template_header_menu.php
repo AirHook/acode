@@ -637,19 +637,32 @@
                                         <?php
                                         // use ON SALE for basixblacklabel
                                         // use CLEARANCE for shop7
+                                        $link_label = $this->webspace_details->slug == 'basixblacklabel' ? 'Sale' : 'Clearance';
                                         if (
                                             (
                                                 $this->webspace_details->slug != 'tempoparis'
                                                 //&& $this->webspace_details->slug != 'basixblacklabel'
                                             )
-                                            && $this->session->user_cat != 'wholesale'
+                                            && $this->session->user_role != 'wholesale'
                                         )
                                         {
-                                            $link_label = $this->webspace_details->slug == 'basixblacklabel' ? 'Sale' : 'Clearance';
                                             ?>
 
                                         <li aria-haspopup="true" class="menu-dropdown classic-menu-dropdown">
-                                            <a class="margin-right-0 font-red" href="<?php echo ENVIRONMENT == 'development' ? base_url() : $this->config->item('PROD_IMG_URL'); ?>shop/<?php echo $this->webspace_details->options['site_type'] == 'sat_site' ? $this->webspace_details->slug.'/' : ''; ?>womens_apparel.html?filter=&availability=onsale" <?php echo $this->webspace_details->options['site_type'] == 'sat_site' ? 'target="_blank"' : ''; ?>> <?php echo $link_label; ?>
+                                            <a class="margin-right-0 font-red" href="<?php echo ENVIRONMENT == 'development' ? base_url() : $this->config->item('PROD_IMG_URL'); ?>shop/<?php echo $this->webspace_details->options['site_type'] == 'sat_site' ? $this->webspace_details->slug.'/' : ''; ?>womens_apparel.html?filter=&availability=onsale" <?php echo $this->webspace_details->options['site_type'] == 'sat_site' ? 'target="_blank"' : ''; ?>>
+                                                <?php echo $link_label; ?>
+                                                <span class="arrow hide"></span>
+                                            </a>
+                                        </li>
+
+                                            <?php
+                                        }
+                                        elseif ($this->webspace_details->slug == 'tempoparis')
+                                        { ?>
+
+                                        <li aria-haspopup="true" class="menu-dropdown classic-menu-dropdown">
+                                            <a class="margin-right-0 font-red" href="<?php echo base_url(); ?>shop/<?php echo $this->webspace_details->options['site_type'] == 'sat_site' ? $this->webspace_details->slug.'/' : ''; ?>womens_apparel.html?filter=&availability=onsale">
+                                                <?php echo $link_label; ?>
                                                 <span class="arrow hide"></span>
                                             </a>
                                         </li>

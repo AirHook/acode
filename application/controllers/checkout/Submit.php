@@ -269,7 +269,14 @@ class Submit extends Frontend_Controller
 			$this->email->reply_to($user_array['p_email']);
 
 			// copies
-			$shop7 = $this->webspace_details->info_email == 'help@shop7thavenue.com' ? '' : ', help@shop7thavenue.com';
+			$shop7 =
+				(
+					$this->webspace_details->info_email == 'help@shop7thavenue.com'
+					OR $this->webspace_details->slug == 'tempoparis'
+				)
+				? ''
+				: ', help@shop7thavenue.com'
+			;
 			$this->email->bcc($this->config->item('dev1_email').$shop7);
 
 			$this->email->to($this->webspace_details->info_email);
