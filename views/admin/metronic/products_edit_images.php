@@ -409,8 +409,8 @@
 								} ?>
 
 								<div class="form-group" style="margin-bottom:0px;">
-									<label class="control-label col-md-6">On Sale:</label>
-									<div class="col-md-6">
+									<label class="control-label col-md-5">On Sale:</label>
+									<div class="col-md-7">
 										<div class="mt-checkbox-inline" style="padding-bottom:0px;">
 											<label class="mt-checkbox mt-checkbox-outline">
 												<input type="checkbox" class="custom_order" id="custom_order-<?php echo $color->color_code; ?>" name="custom_order[<?php echo $color->st_id; ?>]" value="3" <?php echo $color->custom_order == '3' ? 'checked': ''; ?> <?php echo ($this->product_details->publish === '0') ? 'disabled': ''; ?> /> Yes
@@ -421,8 +421,8 @@
 									</div>
 								</div>
 								<div class="form-group" style="margin-bottom:0px;">
-									<label class="control-label col-md-6">Clearance Consumer Only:</label>
-									<div class="col-md-6">
+									<label class="control-label col-md-5">Clearance Consumer Only:</label>
+									<div class="col-md-7">
 										<div class="mt-checkbox-inline" style="padding-bottom:0px;">
 											<label class="mt-checkbox mt-checkbox-outline">
 												<input type="checkbox" class="clearance_consumer_only" id="clearance_consumer_only-<?php echo $color->color_code; ?>" name="clearance_consumer_only[<?php echo $color->st_id; ?>]" value="1" <?php echo @$color_options['clearance_consumer_only'] == '1' ? 'checked': ''; ?> /> Yes
@@ -437,8 +437,8 @@
 								{ ?>
 
 								<div class="form-group" style="margin-bottom:0px;">
-									<label class="control-label col-md-6">Shop7th Private Stock Sale:</label>
-									<div class="col-md-6">
+									<label class="control-label col-md-5">Shop7th Private Stock Sale:</label>
+									<div class="col-md-7">
 										<div class="mt-checkbox-inline" style="padding-bottom:0px;">
 											<label class="mt-checkbox mt-checkbox-outline">
 												<input type="checkbox" class="admin_stocks_only" id="admin_stocks_only-<?php echo $color->color_code; ?>" name="admin_stocks_only[<?php echo $color->st_id; ?>]" value="1" <?php echo @$color_options['admin_stocks_only'] == '1' ? 'checked': ''; ?> /> Yes
@@ -449,14 +449,17 @@
 								</div>
 
 								<div class="form-group">
-									<label class="control-label col-md-6">Post Item to Google</label>
-									<div class="col-md-6">
+									<label class="control-label col-md-5">Post Item to Google</label>
+									<div class="col-md-7">
 										<div class="mt-checkbox-inline" style="padding-bottom:0px;">
 											<label class="mt-checkbox mt-checkbox-outline">
 												<input type="checkbox" class="post_to_goole" id="post_to_goole-<?php echo $color->color_code; ?>" name="post_to_goole[<?php echo $color->st_id; ?>]" value="<?php echo @$color_options['post_to_goole'] ?: '1'; ?>" <?php echo @$color_options['post_to_goole'] ? 'checked': ''; ?> /> Yes
 												<span></span>
 											</label>
 										</div>
+										<cite class="small help-block">
+											NOTE: It may take between 2-5 mins before actually reflecting at Google Merchant Center. Images gets crawled within 3 days. Google approval usually haapens within a day.
+										</cite>
 									</div>
 								</div>
 

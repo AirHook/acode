@@ -648,9 +648,6 @@ class Prod_image_upload
 		$this->CI->load->helper('create_google_images');
 		$this->CI->load->library('products/product_details');
 
-		// set source image
-		$src_image = $this->image_path.$this->img_name.'_'.strtolower($this->view[0]).'.jpg';
-
 		// get product details
 		$product_details = $this->CI->product_details->initialize(
 			array(
@@ -665,7 +662,7 @@ class Prod_image_upload
 			// grab options
 			$options = $product_details->stocks_options;
 
-			// set post to goole value
+			// process only if post to goole value is set
 			if (@$options['post_to_goole'])
 			{
 				$post_to_goole_val =
@@ -673,52 +670,58 @@ class Prod_image_upload
 					? 1
 					: $options['post_to_goole'] + 1
 				;
+
+				// since item exists, this is an image update to product
+				// update records for options too
+				$stocks_options = json_encode($options);
+				$this->DB->set('options', $stocks_options);
+				$this->DB->where('st_id', $product_details->st_id);
+				$q = $this->DB->update('tbl_stock');
+
+				// post insert/update to google
+				$google_action = 'UPSERT';
+
+				// check images for all views
+				$views = array('f', 'b', 's');
+				foreach ($views as $view)
+				{
+					// set source image
+					$src_image = $this->image_path.$this->img_name.'_'.$view.'.jpg';
+
+					// set new image
+					$new_image =
+						$this->image_path
+						.$this->img_name
+						.'_'
+						.strtolower($this->view[0])
+						.'g'
+						.$post_to_goole_val
+						.'.jpg'
+					;
+
+					/* */
+					if ($img_info = @GetImageSize($src_image))
+					{
+						$create = create_google_images(
+							$img_info,
+							$src_image,
+							$new_image
+						);
+					}
+					// */
+				}
+
+				// load library and post to google
+				$this->load->library('api/google/upsert');
+				$this->upsert->initialize(
+					array(
+						'prod_no' => $product_details->prod_no,
+						'color_code' => $product_details->color_code
+					)
+				);
+				$response = $this->upsert->go();
 			}
-			else
-			{
-				$post_to_goole_val = 1;
-			}
-			$options['post_to_goole'] = $post_to_goole_val;
-
-			// since item exists, this is an image update to product
-			// update records for options too
-			$stocks_options = json_encode($options);
-			$this->DB->set('options', $stocks_options);
-			$this->DB->where('st_id', $product_details->st_id);
-			$q = $this->DB->update('tbl_stock');
-
-			// post insert/update to google
-			$google_action = 'UPSERT';
-
-			// set new image
-			$new_image =
-				$this->image_path
-				.$this->img_name
-				.'_'
-				.strtolower($this->view[0])
-				.'g'
-				.$post_to_goole_val
-				.'.jpg'
-			;
 		}
-		else
-		{
-			$new_image = $this->image_path.$this->img_name.'_'.strtolower($this->view[0]).'g1.jpg';
-		}
-
-		if ($img_info = GetImageSize($src_image))
-		{
-			$create = create_google_images(
-				$img_info,
-				$src_image,
-				$new_image
-			);
-		}
-
-		// after processing image
-		// check if updating image and process google API if any after record update
-		if ($google_action == 'UPSERT') $this->_post_to_google();
-		// */
 
 		// everything went well
 		return $this;
