@@ -211,6 +211,7 @@ class Edit extends Admin_Controller {
 				// redirect user
 				redirect($this->config->slash_item('admin_folder').'products/edit/index/'.$id, 'location');
 			}
+
 		}
 	}
 
@@ -441,8 +442,14 @@ class Edit extends Admin_Controller {
 
 			}
 
+			$product_details = $this->product_details->initialize(
+				array(
+					'tbl_stock.st_id' => $st_id
+				)
+			);
+
 			// variant options
-			$options = $this->product_details->stocks_options;
+			$options = $product_details->stocks_options;
 			// ----
 			// insert options here
 			// clearance for consumer only checkbox (first of all options)
@@ -478,13 +485,13 @@ class Edit extends Admin_Controller {
 			}
 			else
 			{
-				$post_to_goole_val =
+				$post_to_goole_index_val =
 					($post_ary['post_to_goole'][$st_id] + 1) > 5
 					? 1
 					: $post_ary['post_to_goole'][$st_id] + 1
 				;
 
-				$options['post_to_goole'] = $post_to_goole_val;
+				$options['post_to_goole'] = $post_to_goole_index_val;
 
 				// post insert/update to google
 				$google_action = 'UPSERT';
@@ -532,7 +539,7 @@ class Edit extends Admin_Controller {
 			// */
 
 			// process google API if any after record update
-			if ($google_action == 'UPSERT') $this->_post_to_google($post_to_goole_val);
+			if ($google_action == 'UPSERT') $this->_post_to_google($post_to_goole_index_val, $st_id);
 			if ($google_action == 'DELETE') $this->_remove_from_google();
 		}
 	}
@@ -544,11 +551,67 @@ class Edit extends Admin_Controller {
 	 *
 	 * @return	void
 	 */
-	private function _post_to_google($post_to_goole_val)
+	private function _post_to_google($post_to_goole_index_val, $st_id)
 	{
 		// google merchant center requires a main image link and add'l image links
 		// create google image is already added to class Prod_image_upload
 		// we just need to check if there are old items taht do not have the new images
+
+		// load library and get product details
+		$product_details = $this->product_details->initialize(
+			array(
+				'tbl_stock.st_id' => $st_id
+			)
+		);
+
+		// check for available stocks
+		// load library and get available sizes
+		$this->load->model('get_sizes_by_mode');
+		$get_size = $this->get_sizes_by_mode->get_sizes($product_details->size_mode);
+		$this->load->model('get_product_stocks');
+		$check_stock = $this->get_product_stocks->get_stocks($product_details->prod_no, $product_details->color_name);
+		$available_sizes = array();
+		foreach ($get_size as $size)
+		{
+			// we need to set the prefix for the size lable
+			if($size->size_name == 'XS' || $size->size_name == 'S' || $size->size_name == 'M' || $size->size_name == 'L' || $size->size_name == 'XL' || $size->size_name == 'XXL' || $size->size_name == 'XL1' || $size->size_name == 'XL2' || $size->size_name == 'S-M' || $size->size_name == 'M-L' || $size->size_name == 'ONE-SIZE-FITS-ALL')
+			{
+				$size_stock = 'available_s'.strtolower($size->size_name);
+				$admin_size_stock = 'admin_s'.strtolower($size->size_name);
+			}
+			else
+			{
+				$size_stock = 'available_'.$size->size_name;
+				$admin_size_stock = 'admin_'.$size->size_name;
+			}
+			$max_available =
+				(
+					@$product_details->stocks_options['clearance_consumer_only'] == '1'
+					OR @$product_details->stocks_options['admin_stocks_only'] == '1'
+				)
+				? $check_stock[$size_stock] + $check_stock[$admin_size_stock]
+				: $check_stock[$size_stock]
+			;
+
+			if ($max_available > 0) array_push($available_sizes, $size->size_name);
+		}
+		if (empty($available_sizes))
+		{
+			echo "Not enough stock quantity.<br />";
+
+			return FALSE;
+		}
+
+		// make sure product is public
+		if (
+			$product_details->publish != '1'
+			OR $product_details->new_color_publish != '1'
+		)
+		{
+			echo "Item not PUBLIC.<br />";
+
+			return FALSE;
+		}
 
 		// check images for all views
 		$views = array('f', 'b', 's');
@@ -556,8 +619,8 @@ class Edit extends Admin_Controller {
 		{
 			// set source image
 			$src_image =
-				$this->product_details->media_path
-				.$this->product_details->prod_no.'_'.$this->product_details->color_code
+				$product_details->media_path
+				.$product_details->prod_no.'_'.$product_details->color_code
 				.'_'
 				.$view
 				.'.jpg'
@@ -565,37 +628,45 @@ class Edit extends Admin_Controller {
 
 			// set new image
 			$new_image =
-				$this->product_details->media_path
-				.$this->product_details->prod_no.'_'.$this->product_details->color_code
+				$product_details->media_path
+				.$product_details->prod_no.'_'.$product_details->color_code
 				.'_'
 				.$view
 				.'g'
-				.$post_to_goole_val
+				.$post_to_goole_index_val
 				.'.jpg'
 			;
 
 			/* */
-			$this->load->helper('create_google_images');
-			if ($img_info = @GetImageSize($src_image))
+			if (ENVIRONMENT != 'development')
 			{
-				$create = create_google_images(
-					$img_info,
-					$src_image,
-					$new_image
-				);
+				$this->load->helper('create_google_images');
+				if ($img_info = @GetImageSize($src_image))
+				{
+					$create = create_google_images(
+						$img_info,
+						$src_image,
+						$new_image
+					);
+				}
 			}
 			// */
 		}
 
+		/* */
 		// load library and post to google
-		$this->load->library('api/google/upsert');
-		$this->upsert->initialize(
-			array(
-				'prod_no' => $this->product_details->prod_no,
-				'color_code' => $this->product_details->color_code
-			)
-		);
-		$response = $this->upsert->go();
+		if (ENVIRONMENT != 'development')
+		{
+			$this->load->library('api/google/upsert');
+			$this->upsert->initialize(
+				array(
+					'prod_no' => $product_details->prod_no,
+					'color_code' => $product_details->color_code
+				)
+			);
+			$response = $this->upsert->go();
+		}
+		// */
 	}
 
 	// ----------------------------------------------------------------------
@@ -608,14 +679,17 @@ class Edit extends Admin_Controller {
 	private function _remove_from_google()
 	{
 		// load library and post to google
-		$this->load->library('api/google/delete');
-		$this->delete->initialize(
-			array(
-				'prod_no' => $this->product_details->prod_no,
-				'color_code' => $this->product_details->color_code
-			)
-		);
-		$response = $this->delete->go();
+		if (ENVIRONMENT != 'development')
+		{
+			$this->load->library('api/google/delete');
+			$this->delete->initialize(
+				array(
+					'prod_no' => $this->product_details->prod_no,
+					'color_code' => $this->product_details->color_code
+				)
+			);
+			$response = $this->delete->go();
+		}
 	}
 
 	// ----------------------------------------------------------------------

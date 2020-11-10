@@ -106,10 +106,10 @@ class Delete
 	 *
 	 * @return	boolean/string
 	 */
-	public function go()
+	public function go($delete_index = 0)
 	{
 		// a primary requirement for initialization to complete
-		if ( ! $this->prod_no OR ! $this->color_code)
+		if ( ! $this->prod_no OR ! $this->color_code OR $delete_index == 0)
 		{
 			$this->error_message = "Missing parameter.";
 
@@ -131,6 +131,33 @@ class Delete
 			return FALSE;
 		}
 
+		// let's unlink images
+		$imageLink =
+			$product_details->media_path
+			.$product_details->prod_no.'_'.$product_details->color_code
+			.'_fg'
+			.$delete_index
+			.'.jpg'
+		;
+		if (file_exists($imageLink)) unlink($imageLink);
+		$addlImageLinks1 =
+			$product_details->media_path
+			.$product_details->prod_no.'_'.$product_details->color_code
+			.'_bg'
+			.$delete_index
+			.'.jpg'
+		;
+		if (file_exists($addlImageLinks1)) unlink($addlImageLinks1);
+		$addlImageLinks2 =
+			$product_details->media_path
+			.$product_details->prod_no.'_'.$product_details->color_code
+			.'_sg'
+			.$delete_index
+			.'.jpg'
+		;
+		if (file_exists($addlImageLinks2)) unlink($addlImageLinks2);
+
+		// set the id's
 		$offerId = $product_details->prod_no.'_'.$product_details->color_code;
 		$product_id = 'online:en:US:'.$offerId;
 
@@ -139,10 +166,7 @@ class Delete
 		$access_token = $this->CI->google_api->initialize();
 
 		// Google Content API v2.1 references (commands and request methods) for Products
-		// https://developers.google.com/shopping-content/reference/rest/v2.1/products/list
-		// query parameters
-		//		maxResults (int) - The maximum number of products to return in the response, used for paging.
-		//		pageToken (string) - The token returned by the previous request.
+		// https://developers.google.com/shopping-content/reference/rest/v2.1/products
 		/* */
 		$url = 'https://www.googleapis.com/content/v2.1/'
 			.$this->CI->config->item('google_merchant_id')

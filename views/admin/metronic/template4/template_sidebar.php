@@ -54,6 +54,11 @@
                                         <span class="title">Admin Stocks</span>
                                     </a>
                                 </li>
+                                <li class="nav-item  <?php echo $this->uri->segment(3) == 'at_google' ? 'active open' : ''; ?>">
+                                    <a href="<?php echo site_url('admin/products/at_google'); ?>" class="nav-link  ">
+                                        <span class="title">Google</span>
+                                    </a>
+                                </li>
                                     <?php
                                 } ?>
                                 <li class="nav-item  <?php echo $this->uri->segment(3) == 'unpublished' ? 'active open' : ''; ?>">

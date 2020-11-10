@@ -116,6 +116,11 @@
 									Admin Stocks
 								</a>
 							</li>
+							<li class="<?php echo ($this->uri->segment(3) == 'at_google' OR $this->uri->segment(4) == 'at_google') ? 'active' : ''; ?>">
+								<a href="<?php echo site_url($link_prefix.'/products/at_google'); ?>">
+									Google
+								</a>
+							</li>
 							<?php } ?>
 							<li class="<?php echo ($this->uri->segment(3) == 'unpublished' OR $this->uri->segment(4) == 'unpublished') ? 'active' : ''; ?>">
 								<a href="<?php echo site_url($link_prefix.'/products/unpublished'); ?>">

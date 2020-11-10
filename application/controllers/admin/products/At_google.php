@@ -183,7 +183,7 @@ class At_google extends Admin_Controller {
 		}
 		else $where['tbl_product.categories LIKE'] = $category_id;
 
-		$where['tbl_stock.options LIKE'] = '"post_to_goole":"1"';
+		$where['tbl_stock.options LIKE'] = '"post_to_goole"';
 
 		// get the products list and total count
 		$params['with_stocks'] = FALSE; // Show all with and without stocks

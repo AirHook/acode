@@ -140,6 +140,7 @@ class Upsert
 			. $product_details->prod_no. '/'
 			. str_replace(' ','-',strtolower(trim($product_details->color_name))). '/'
 			. str_replace(' ','-',strtolower(trim(($product_details->prod_name ?: $product_details->prod_no))))
+			.'.html'
 		;
 
 		// front image link, and, additional image links of other views
@@ -147,17 +148,23 @@ class Upsert
 			$this->CI->config->item('PROD_IMG_URL')
 			.$product_details->media_path
 			.$product_details->prod_no.'_'.$product_details->color_code
-			.'_fg.jpg'
+			.'_fg'
+			.$product_details->stocks_options['post_to_goole']
+			.'.jpg'
 		;
 		$addlImageLinks[0] =
 			$product_details->media_path
 			.$product_details->prod_no.'_'.$product_details->color_code
-			.'_bg.jpg'
+			.'_bg'
+			.$product_details->stocks_options['post_to_goole']
+			.'.jpg'
 		;
 		$addlImageLinks[1] =
 			$product_details->media_path
 			.$product_details->prod_no.'_'.$product_details->color_code
-			.'_sg.jpg'
+			.'_sg'
+			.$product_details->stocks_options['post_to_goole']
+			.'.jpg'
 		;
 		$additionalImageLinks = array();
 		foreach ($addlImageLinks as $addlImageLink)
@@ -210,6 +217,12 @@ class Upsert
 			;
 
 			if ($max_available > 0) array_push($available_sizes, $size->size_name);
+		}
+		if (empty($available_sizes))
+		{
+			$this->error_message = "Not enough stock quantity.";
+
+			return FALSE;
 		}
 		$available_sizes = implode('/', $available_sizes);
 

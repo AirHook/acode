@@ -496,6 +496,91 @@ class Submit extends Frontend_Controller
 				//if (@$item['options']['admin_stocks']) $config['admin_stocks'] = $item['options']['admin_stocks'];
 				$this->update_stocks->initialize($config);
 				$this->update_stocks->reserve();
+
+				// check for post to google and delete where necessary
+				// on stocks zero count
+				// get product details
+				$exp = explode('_', $item['id']);
+				$product_details = $this->product_details->initialize(
+					array(
+						'tbl_product.prod_no' => @$exp[0],
+						'color_code' => @$exp[1]
+					)
+				);
+
+				// get stocks options particularly ['post_to_goole']
+				$stocks_options = $product_details->stocks_options;
+				if (@$stocks_optionsp['post_to_goole'])
+				{
+					// check for available stocks
+					// load library and get available sizes
+					$this->load->model('get_sizes_by_mode');
+					$get_size = $this->get_sizes_by_mode->get_sizes($product_details->size_mode);
+					$this->load->model('get_product_stocks');
+					$check_stock = $this->get_product_stocks->get_stocks($product_details->prod_no, $product_details->color_name);
+					$available_sizes = array();
+					foreach ($get_size as $size)
+					{
+						// we need to set the prefix for the size lable
+						if($size->size_name == 'XS' || $size->size_name == 'S' || $size->size_name == 'M' || $size->size_name == 'L' || $size->size_name == 'XL' || $size->size_name == 'XXL' || $size->size_name == 'XL1' || $size->size_name == 'XL2' || $size->size_name == 'S-M' || $size->size_name == 'M-L' || $size->size_name == 'ONE-SIZE-FITS-ALL')
+						{
+							$size_stock = 'available_s'.strtolower($size->size_name);
+							$admin_size_stock = 'admin_s'.strtolower($size->size_name);
+						}
+						else
+						{
+							$size_stock = 'available_'.$size->size_name;
+							$admin_size_stock = 'admin_'.$size->size_name;
+						}
+						$max_available =
+							(
+								@$product_details->stocks_options['clearance_consumer_only'] == '1'
+								OR @$product_details->stocks_options['admin_stocks_only'] == '1'
+							)
+							? $check_stock[$size_stock] + $check_stock[$admin_size_stock]
+							: $check_stock[$size_stock]
+						;
+
+						if ($max_available > 0) array_push($available_sizes, $size->size_name);
+					}
+
+					if (empty($available_sizes))
+					{
+						// load library and remove from google
+						$this->load->library('api/google/delete');
+						$this->delete->initialize(
+							array(
+								'prod_no' => $product_details->prod_no,
+								'color_code' => $product_details->color_code
+							)
+						);
+						$response = $this->delete->go($stocks_options['post_to_goole']);
+
+						// unset any previous ['post_to_goole']
+						unset($stocks_options['post_to_goole']);
+
+						// set new options data in json form
+						$post_ary['options'] = json_encode($stocks_options);
+
+						// update stock record
+						$this->DB->set($post_ary);
+						$this->DB->where('st_id', $product_details->st_id);
+						$q = $this->DB->update('tbl_stock');
+					}
+					else
+					{
+						// simply update google product data
+						// load library and post to google
+						$this->load->library('api/google/upsert');
+						$this->upsert->initialize(
+							array(
+								'prod_no' => $product_details->prod_no,
+								'color_code' => $product_details->color_code
+							)
+						);
+						$response = $this->upsert->go();
+					}
+				}
 			}
 
 			$i++;

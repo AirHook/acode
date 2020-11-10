@@ -63,8 +63,12 @@ class Update_variant_options extends Admin_Controller {
 				// process items for OPTIONS['post_to_goole']
 				// ajax scripts send only 2 values - '0', '1'
 				$google_action = FALSE;
+				$delete_index = 0;
 				if (@$post_ary['options']['post_to_goole'] == '0')
 				{
+					// grab image link index
+					$delete_index = $options['post_to_goole'];
+
 					// post delete from google
 					$google_action = 'DELETE';
 
@@ -111,8 +115,29 @@ class Update_variant_options extends Admin_Controller {
 			$q = $this->DB->update('tbl_stock');
 
 			// process google API if any after record update
-			if ($google_action == 'UPSERT') $this->_post_to_google($r1->prod_no, $r1->color_code);
-			if ($google_action == 'DELETE') $this->_remove_from_google($r1->prod_no, $r1->color_code);
+			if ($google_action == 'UPSERT')
+			{
+				$post_to_goole = $this->_post_to_google($r1->prod_no, $r1->color_code);
+
+				if ($post_to_goole === FALSE)
+				{
+					// unset options['post_to_goole']
+					// get variant options data
+					$this->DB->where('st_id', $post_ary['st_id']);
+					$this->DB->join('tblcolor', 'tblcolor.color_name = tbl_stock.color_name');
+					$q1 = $this->DB->get('tbl_stock');
+					$r1 = $q1->row();
+					$options = json_decode($r1->options, TRUE);
+					// unset options['post_to_goole']
+					unset($options['post_to_goole']);
+					$this_post_ary['options'] = json_encode($options);
+					// update stock record
+					$this->DB->set($this_post_ary);
+					$this->DB->where('st_id', $post_ary['st_id']);
+					$q = $this->DB->update('tbl_stock');
+				}
+			}
+			if ($google_action == 'DELETE') $this->_remove_from_google($r1->prod_no, $r1->color_code, $delete_index);
 		}
 	}
 
@@ -159,6 +184,55 @@ class Update_variant_options extends Admin_Controller {
 			)
 		);
 
+		// check for available stocks
+		// load library and get available sizes
+		$this->load->model('get_sizes_by_mode');
+		$get_size = $this->get_sizes_by_mode->get_sizes($product_details->size_mode);
+		$this->load->model('get_product_stocks');
+		$check_stock = $this->get_product_stocks->get_stocks($product_details->prod_no, $product_details->color_name);
+		$available_sizes = array();
+		foreach ($get_size as $size)
+		{
+			// we need to set the prefix for the size lable
+			if($size->size_name == 'XS' || $size->size_name == 'S' || $size->size_name == 'M' || $size->size_name == 'L' || $size->size_name == 'XL' || $size->size_name == 'XXL' || $size->size_name == 'XL1' || $size->size_name == 'XL2' || $size->size_name == 'S-M' || $size->size_name == 'M-L' || $size->size_name == 'ONE-SIZE-FITS-ALL')
+			{
+				$size_stock = 'available_s'.strtolower($size->size_name);
+				$admin_size_stock = 'admin_s'.strtolower($size->size_name);
+			}
+			else
+			{
+				$size_stock = 'available_'.$size->size_name;
+				$admin_size_stock = 'admin_'.$size->size_name;
+			}
+			$max_available =
+				(
+					@$product_details->stocks_options['clearance_consumer_only'] == '1'
+					OR @$product_details->stocks_options['admin_stocks_only'] == '1'
+				)
+				? $check_stock[$size_stock] + $check_stock[$admin_size_stock]
+				: $check_stock[$size_stock]
+			;
+
+			if ($max_available > 0) array_push($available_sizes, $size->size_name);
+		}
+		if (empty($available_sizes))
+		{
+			$this->error_message = "Not enough stock quantity.";
+
+			return FALSE;
+		}
+
+		// make sure product is public
+		if (
+			$product_details->publish != '1'
+			OR $product_details->new_color_publish != '1'
+		)
+		{
+			$this->error_message = "Item not PUBLIC.";
+
+			return FALSE;
+		}
+
 		// check images for all views
 		$views = array('f', 'b', 's');
 		foreach ($views as $view)
@@ -184,27 +258,33 @@ class Update_variant_options extends Admin_Controller {
 			;
 
 			/* */
-			$this->load->helper('create_google_images');
-			if ($img_info = @GetImageSize($src_image))
+			if (ENVIRONMENT != 'development')
 			{
-				$create = create_google_images(
-					$img_info,
-					$src_image,
-					$new_image
-				);
+				$this->load->helper('create_google_images');
+				if ($img_info = @GetImageSize($src_image))
+				{
+					$create = create_google_images(
+						$img_info,
+						$src_image,
+						$new_image
+					);
+				}
 			}
 			// */
 		}
 
 		// load library and post to google
-		$this->load->library('api/google/upsert');
-		$this->upsert->initialize(
-			array(
-				'prod_no' => $product_details->prod_no,
-				'color_code' => $product_details->color_code
-			)
-		);
-		$response = $this->upsert->go();
+		if (ENVIRONMENT != 'development')
+		{
+			$this->load->library('api/google/upsert');
+			$this->upsert->initialize(
+				array(
+					'prod_no' => $product_details->prod_no,
+					'color_code' => $product_details->color_code
+				)
+			);
+			$response = $this->upsert->go();
+		}
 	}
 
 	// ----------------------------------------------------------------------
@@ -214,17 +294,20 @@ class Update_variant_options extends Admin_Controller {
 	 *
 	 * @return	void
 	 */
-	private function _remove_from_google($prod_no, $color_code)
+	private function _remove_from_google($prod_no, $color_code, $delete_index)
 	{
 		// load library and post to google
-		$this->load->library('api/google/delete');
-		$this->delete->initialize(
-			array(
-				'prod_no' => $prod_no,
-				'color_code' => $color_code
-			)
-		);
-		$response = $this->delete->go();
+		if (ENVIRONMENT != 'development')
+		{
+			$this->load->library('api/google/delete');
+			$this->delete->initialize(
+				array(
+					'prod_no' => $prod_no,
+					'color_code' => $color_code
+				)
+			);
+			$response = $this->delete->go($delete_index);
+		}
 	}
 
 	// ----------------------------------------------------------------------
