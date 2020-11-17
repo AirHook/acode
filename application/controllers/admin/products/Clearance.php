@@ -185,7 +185,7 @@ class Clearance extends Admin_Controller {
 
 		// get the products list and total count
 		$params['with_stocks'] = FALSE; // Show all with and without stocks
-		$params['group_products'] = TRUE; // group per product number or per variant
+		$params['group_products'] = FALSE; // group per product number or per variant
 		$params['special_sale'] = TRUE; // special sale items only
 		$params['pagination'] = $this->data['page']; // get all in one query
 		$this->load->library('products/products_list', $params);

@@ -138,7 +138,7 @@ class Onorder extends Admin_Controller {
 		$params['variant_view_at_hub'] = TRUE; // variant level public at hub site
 		$params['variant_view_at_satellite'] = TRUE; // varian level public at satellite site
 		$params['with_stocks'] = FALSE; // FALSE - Show all with and without stocks
-		$params['group_products'] = TRUE; // group per product number or per variant
+		$params['group_products'] = FALSE; // group per product number or per variant
 		$params['special_sale'] = FALSE; // special sale items only
 		$params['pagination'] = $this->data['page']; // get all in one query
 		$this->load->library('products/products_list', $params);
