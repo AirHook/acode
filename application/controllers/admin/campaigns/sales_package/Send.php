@@ -116,6 +116,10 @@ class Send extends Admin_Controller {
 		{
 			$where['tbluser_data_wholesale.admin_sales_email'] = $this->sales_user_details->email;
 		}
+		if ($this->webspace_details->options['site_type'] != 'hub_site')
+		{
+			$where['tbluser_data_wholesale.reference_designer'] = $this->webspace_details->slug;
+		}
 		$this->data['users'] = $this->wholesale_users_list->select(
 			$where, // where
 			array( // order by

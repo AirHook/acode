@@ -471,9 +471,16 @@
                 				<span class="arrow open"></span>
                 			</a>
                 			<ul class="sub-menu always-open">
-                				<li class="nav-item  ">
-                					<a href="javascript:;" class="nav-link tooltips" data-original-title="Currently Under Construction" data-placement="right">
-                						<span class="title">Consumer Special Sale Email Carousel</span>
+                                <li class="nav-item  <?php echo $this->uri->uri_string() == 'admin/marketing/carousel/carousels' ? 'active open' : ''; ?>">
+                                    <a href="<?php echo site_url('admin/marketing/carousel/carousels'); ?>" class="nav-link  ">
+                					<!--<a href="javascript:;" class="nav-link tooltips" data-original-title="Currently Under Construction" data-placement="right">-->
+                						<span class="title">Carousels</span>
+                					</a>
+                				</li>
+                                <li class="nav-item  <?php echo $this->uri->uri_string() == 'admin/marketing/carousel/add' ? 'active open' : ''; ?>">
+                                    <a href="<?php echo site_url('admin/marketing/carousel/add'); ?>" class="nav-link  ">
+                					<!--<a href="javascript:;" class="nav-link tooltips" data-original-title="Currently Under Construction" data-placement="right">-->
+                						<span class="title">Add New Carousel</span>
                 					</a>
                 				</li>
                 				<li class="nav-item  ">

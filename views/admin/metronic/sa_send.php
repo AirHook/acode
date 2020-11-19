@@ -89,7 +89,7 @@
 
                                     <h4>Email Details</h4>
                                     <hr />
-                                    <?php $this->load->view('admin/metronic/sa_email_view'); ?>
+                                    <?php $this->load->view('admin/metronic/sa_email_view', $this->data); ?>
 
                                 </div>
 

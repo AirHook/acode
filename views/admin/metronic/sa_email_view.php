@@ -35,7 +35,7 @@
 						<?php
 						$logo =
 							@$logo
-							?: base_url().'assets/images/logo/logo-shop7thavenue.png'
+							?: base_url().'assets/images/logo/logo-'.$this->webspace_details->slug.'.png'
 						;
 						?>
 
