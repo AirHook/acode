@@ -566,7 +566,7 @@
                                                                             <option value="instock" <?php echo @$_GET['availability'] == 'instock' ? 'selected': '';?>>
                                                                                 In Stock
                                                                             </option>
-                                                                            <option value="preorder" <?php echo @$_GET['availability'] == 'preorder' ? 'selected': '';?> class="hide">
+                                                                            <option value="preorder" <?php echo @$_GET['availability'] == 'preorder' ? 'selected': '';?> class="">
                                                                                 Pre Order
                                                                             </option>
 
@@ -1109,7 +1109,7 @@
                                                                                         <option value="instock" <?php echo @$_GET['availability'] == 'instock' ? 'selected': '';?>>
                             																In Stock
                             															</option>
-                            															<option value="preorder" <?php echo @$_GET['availability'] == 'preorder' ? 'selected': '';?> class="hide">
+                            															<option value="preorder" <?php echo @$_GET['availability'] == 'preorder' ? 'selected': '';?> class="">
                             																Pre Order
                             															</option>
                                                                                         <option value="onsale" <?php echo @$_GET['availability'] == 'onsale' ? 'selected': '';?>>
@@ -1984,7 +1984,7 @@
                                                                                         <option value="instock" <?php echo @$_GET['availability'] == 'instock' ? 'selected': '';?>>
                             																In Stock
                             															</option>
-                            															<option value="preorder" <?php echo @$_GET['availability'] == 'preorder' ? 'selected': '';?> class="hide">
+                            															<option value="preorder" <?php echo @$_GET['availability'] == 'preorder' ? 'selected': '';?> class="">
                             																Pre Order
                             															</option>
                                                                                         <option value="onsale" <?php echo @$_GET['availability'] == 'onsale' ? 'selected': '';?>>
@@ -2355,6 +2355,7 @@
                                                                 <?php
                                                                 if (@$seasons_array && $this->webspace_details->slug == 'tempoparis')
                                                                 { ?>
+                                                            <!-- SEASONS -->
                                                             <div class="m-grid-col m-grid-col-left" style="padding-right:7px;">
                                                                 <div class="form-group mobile-thumbs-filter">
 
@@ -2452,7 +2453,7 @@
                                                                             <option value="instock" <?php echo @$_GET['availability'] == 'instock' ? 'selected': '';?>>
                                                                                 In Stock
                                                                             </option>
-                                                                            <option value="preorder" <?php echo @$_GET['availability'] == 'preorder' ? 'selected': '';?> class="hide">
+                                                                            <option value="preorder" <?php echo @$_GET['availability'] == 'preorder' ? 'selected': '';?> class="">
                                                                                 Pre Order
                                                                             </option>
                                                                             <option value="onsale" <?php echo @$_GET['availability'] == 'onsale' ? 'selected': '';?>>

@@ -298,6 +298,8 @@ class Shop_Controller extends Frontend_Controller {
                     tbl_stock.new_color_publish = '1'
                     OR tbl_stock.new_color_publish = '11'
     				OR tbl_stock.new_color_publish = '12'
+                ) AND (
+                    tbl_stock.color_publish = 'Y'
                 )
 			)";
             $where['condition'][] = $where_public;
@@ -306,7 +308,10 @@ class Shop_Controller extends Frontend_Controller {
         	 * Current custom conditions for consumers users
         	 */
             // only with stocks as of...
-            $where['HAVING with_stocks'] = '1';
+            //$where['HAVING with_stocks'] = '1';
+            // show preorder as of 20201124
+            // but still implement $695 price barrier
+            $where['tbl_product.less_discount >='] = '695'; // alias for retail_price
         }
         else if (
             $this->session->userdata('user_role') == 'wholesale'
@@ -360,6 +365,8 @@ class Shop_Controller extends Frontend_Controller {
                     tbl_stock.new_color_publish = '1'
                     OR tbl_stock.new_color_publish = '11'
     				OR tbl_stock.new_color_publish = '12'
+                ) AND (
+                    tbl_stock.color_publish = 'Y'
                 )
 			)";
             $where['condition'][] = $where_public;
@@ -368,7 +375,10 @@ class Shop_Controller extends Frontend_Controller {
         	 * Current custom conditions for consumers users
         	 */
             // only with stocks as of...
-            $where['HAVING with_stocks'] = '1';
+            //$where['HAVING with_stocks'] = '1';
+            // show preorder as of 20201124
+            // but still implement $695 price barrier
+            $where['tbl_product.less_discount >='] = '695'; // alias for retail_price
         }
 
         // clearance_cs_only option
@@ -377,12 +387,15 @@ class Shop_Controller extends Frontend_Controller {
         //$where['condition'][] = $con_clearance_cs_only;
 
 		// get the products list and total count based on parameters
+        $params['private'] = FALSE;
 		$params['wholesale'] = $this->session->userdata('user_role') == 'wholesale' ? TRUE : FALSE;
         // list all variants
         $params['group_products'] = FALSE;
 		// show items with stocks only
         // NOTE: this also depends on 'group_products' params
-		$params['with_stocks'] = $params['group_products'] ? FALSE : TRUE;
+        // if group products, must always be false to show primary color only
+        // can only change the 'if no't result
+		$params['with_stocks'] = $params['group_products'] ? FALSE : FALSE;
 		// set facet searching if needed
 		$params['facets'] = @$_GET ?: array();
 		// user random listing for frontend 'all'/'womens_apparel' url segments

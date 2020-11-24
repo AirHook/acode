@@ -830,6 +830,7 @@ class Products_list
 				tso.size_sml AS onorder_ssm,
 			tso.size_sonesizefitsall AS onorder_sonesizefitsall
 		');
+		/*
 		$this->DB->select('
 			tsp.size_ss AS physical_sxs,
 				tsp.size_ss AS physical_ss,
@@ -856,6 +857,7 @@ class Products_list
 				tsp.size_sml AS physical_ssm,
 			tsp.size_sonesizefitsall AS physical_sonesizefitsall
 		');
+		*/
 		$this->DB->select('
 			tsa.size_ss AS admin_sxs,
 				tsa.size_ss AS admin_ss,
@@ -1043,7 +1045,7 @@ class Products_list
 		$this->DB->join('(SELECT * FROM tbl_stock ORDER BY primary_color DESC) as tbl_stock', 'tbl_stock.prod_no = tbl_product.prod_no', 'left');
 		$this->DB->join('tbl_stock_available tsav', 'tsav.st_id = tbl_stock.st_id', 'left');
 		$this->DB->join('tbl_stock_onorder tso', 'tso.st_id = tbl_stock.st_id', 'left');
-		$this->DB->join('tbl_stock_physical tsp', 'tsp.st_id = tbl_stock.st_id', 'left');
+		//$this->DB->join('tbl_stock_physical tsp', 'tsp.st_id = tbl_stock.st_id', 'left');
 		$this->DB->join('tbl_stock_admin tsa', 'tsa.st_id = tbl_stock.st_id', 'left');
 		$this->DB->join('tbl_stock_admin_onorder tsao', 'tsao.st_id = tbl_stock.st_id', 'left');
 		$this->DB->join('tbl_stock_admin_physical tsap', 'tsap.st_id = tbl_stock.st_id', 'left');

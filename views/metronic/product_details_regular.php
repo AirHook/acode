@@ -505,7 +505,7 @@
 																	$i = 0;
 																	foreach ($get_color_list as $color)
 																	{
-																		/* */
+																		/* *
 																		// hide items with no stocks at all
 																		if ( ! $color->with_stocks)
 																		{
@@ -600,7 +600,7 @@
 														{
 															foreach ($get_color_list as $color)
 															{
-                                                                /* */
+                                                                /* *
                                                                 // hide items with no stocks at all
                                                                 if ( ! $color->with_stocks)
                                                                 {
@@ -877,11 +877,14 @@
                                                                                         // override:
                                                                                         // only items in stock will use sale/clearance price
                                                                                         // all pre orders must use retail price
-                                                                                        if (
-                                                                                            $availability != 'availability--preorder'
-                                                                                            //OR $this->product_details->retail_price >= '695'
-                                                                                        )
-                                                                                        { ?>
+                                                                                        //
+                                                                                        // 20201124 need to show preorder items
+                                                                                        //if (
+                                                                                        //    $availability != 'availability--preorder'
+                                                                                        //    //OR $this->product_details->retail_price >= '695'
+                                                                                        //)
+                                                                                        //{
+                                                                                            ?>
 
                                                                         <?php if ($this->webspace_details->slug != 'basixblacklabel')
                                                                         { ?>
@@ -951,8 +954,8 @@
                                                                             <?php
                                                                         } ?>
 
-																		<?php
-                                                                                        }
+                                                                                            <?php
+                                                                                        //}
 																					}
 																				}
 																			}

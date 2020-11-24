@@ -84,10 +84,19 @@ class Details extends Frontend_Controller
 		// page is shown.  $this->product_details->with_stocks doesn't seem
 		// to address this issue. will need to put code here to redirect to
 		// home categories page with error='without_stocks'
+		//
+		// 20201124 Show Preorder, hence, show all items even without stocks
+		// but with prices >= 695
+		/* */
 		if (
-			! $this->product_details->with_stocks
-			OR $this->product_details->publish == '0'
-			OR $this->product_details->new_color_publish == '0'
+			$this->webspace_details->slug != 'tempoparis'
+			&& (
+				//! $this->product_details->with_stocks
+				//OR $this->product_details->publish == '0'
+				//OR $this->product_details->new_color_publish == '0'
+				! $this->product_details->with_stocks
+				&& $this->product_details->retail_price < 695
+			)
 		)
 		{
 			// set session
@@ -100,6 +109,7 @@ class Details extends Frontend_Controller
 			}
 			else redirect(site_url(), 'location');
 		}
+		// */
 
 		// this next section of the program is necessary
 		// to be able to draw up a correct category breadcrumb
