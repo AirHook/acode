@@ -159,7 +159,65 @@ class Search_Controller extends Frontend_Controller {
         	 * Current custom conditions for consumers users
         	 */
             // only with stocks as of...
-            $where['HAVING with_stocks'] = '1';
+            //$where['HAVING with_stocks'] = '1';
+            // show preorder as of 20201124
+            // but still implement $695 price barrier
+            $with_stocks_and_high_priced_preorder = "(
+                ((tbl_product.size_mode = '1'
+                    AND (tsav.size_0 > '0'
+                        OR tsav.size_2 > '0'
+                        OR tsav.size_4 > '0'
+                        OR tsav.size_6 > '0'
+                        OR tsav.size_8 > '0'
+                        OR tsav.size_10 > '0'
+                        OR tsav.size_12 > '0'
+                        OR tsav.size_14 > '0'
+                        OR tsav.size_16 > '0'
+                        OR tsav.size_18 > '0'
+                        OR tsav.size_20 > '0'
+                        OR tsav.size_22 > '0'))
+                OR (tbl_product.size_mode = '0'
+                    AND (tsav.size_sxs > '0'
+                        OR tsav.size_ss > '0'
+                        OR tsav.size_sm > '0'
+                        OR tsav.size_sl > '0'
+                        OR tsav.size_sxl > '0'
+                        OR tsav.size_sxxl > '0'
+                        OR tsav.size_sxl1 > '0'
+                        OR tsav.size_sxl2 > '0'))
+                OR (tbl_product.size_mode = '2' AND (tsav.size_sprepack1221 > '0'))
+                OR (tbl_product.size_mode = '3' AND (tsav.size_ssm > '0' AND tsav.size_sml > '0'))
+                OR (tbl_product.size_mode = '4' AND (tsav.size_sonesizefitsall > '0')))
+                OR (
+                    ((tbl_product.size_mode = '1'
+                        AND (tsav.size_0 = '0'
+                            OR tsav.size_2 = '0'
+                            OR tsav.size_4 = '0'
+                            OR tsav.size_6 = '0'
+                            OR tsav.size_8 = '0'
+                            OR tsav.size_10 = '0'
+                            OR tsav.size_12 = '0'
+                            OR tsav.size_14 = '0'
+                            OR tsav.size_16 = '0'
+                            OR tsav.size_18 = '0'
+                            OR tsav.size_20 = '0'
+                            OR tsav.size_22 = '0'))
+                    OR (tbl_product.size_mode = '0'
+                        AND (tsav.size_sxs = '0'
+                            OR tsav.size_ss = '0'
+                            OR tsav.size_sm = '0'
+                            OR tsav.size_sl = '0'
+                            OR tsav.size_sxl = '0'
+                            OR tsav.size_sxxl = '0'
+                            OR tsav.size_sxl1 = '0'
+                            OR tsav.size_sxl2 = '0'))
+                    OR (tbl_product.size_mode = '2' AND (tsav.size_sprepack1221 = '0'))
+                    OR (tbl_product.size_mode = '3' AND (tsav.size_ssm > '0' AND tsav.size_sml = '0'))
+                    OR (tbl_product.size_mode = '4' AND (tsav.size_sonesizefitsall = '0')))
+                    AND tbl_product.less_discount >= '695'
+                )
+			)";
+            $where['condition'][] = $with_stocks_and_high_priced_preorder;
         }
         // */
 
@@ -175,7 +233,7 @@ class Search_Controller extends Frontend_Controller {
 		if ($this->webspace_details->options['site_type'] == 'hub_site') $params['view_at_satellite'] = FALSE;
 		// show items even without stocks at all
         $params['group_products'] = FALSE;
-		$params['with_stocks'] = $params['group_products'] ? FALSE : TRUE;
+		$params['with_stocks'] = $params['group_products'] ? FALSE : FALSE;
 		// others
 		$params['pagination'] = $this->num ?: TRUE;
 		$this->load->library('products/products_list', $params);

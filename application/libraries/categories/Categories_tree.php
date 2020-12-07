@@ -524,7 +524,7 @@ class Categories_tree
 	 * @access	public
 	 * @return	boolean FALSE/object or array
 	 */
-	public function get_children($parent_category = '', $return_array = FALSE, $primary_subcat = '')
+	public function get_children($parent_category = '', $designer = '', $return_array = FALSE, $primary_subcat = '')
 	{
 		if ($parent_category === '')
 		{
@@ -533,7 +533,7 @@ class Categories_tree
 		}
 
 		// --> The WHERE clauses start
-		$where = "category_id != '".$parent_category."' AND parent_category = '".$parent_category."'";
+		$where = "(category_id != '".$parent_category."' AND parent_category = '".$parent_category."'";
 
 		// let's get all the category id's of the children
 
@@ -613,10 +613,23 @@ class Categories_tree
 			}
 		}
 
+		$where .= ")";
+
+		if ($designer)
+		{
+			$where_designer = "designer.url_structure = '".$designer."' AND ";
+		}
+		else $where_designer = '';
+
 		$this->DB->select('*');
 		$this->DB->select('
 			(CASE
-				WHEN EXISTS (SELECT * FROM tbl_product WHERE tbl_product.categories LIKE CONCAT(\'%"\', category_id, \'"%\'))
+				WHEN EXISTS (
+					SELECT *
+					FROM tbl_product
+					LEFT JOIN designer ON designer.des_id = tbl_product.designer
+					WHERE '.$where_designer.' tbl_product.categories LIKE CONCAT(\'%"\', category_id, \'"%\')
+				)
 				THEN "1"
 				ELSE "0"
 			END) AS with_products
@@ -624,10 +637,13 @@ class Categories_tree
 		$this->DB->select('
 			(SELECT COUNT(*)
 				FROM tbl_product
-				WHERE view_status = \'Y\'
-					AND public = \'Y\'
-					AND publish = \'1\'
-					AND categories LIKE CONCAT(\'%"\', category_id, \'"%\')
+				LEFT JOIN designer ON designer.des_id = tbl_product.designer
+				WHERE
+					'.$where_designer.'
+					tbl_product.view_status = \'Y\'
+					AND tbl_product.public = \'Y\'
+					AND tbl_product.publish = \'1\'
+					AND tbl_product.categories LIKE CONCAT(\'%"\', category_id, \'"%\')
 			) AS with_visible_products
 		');
 		$this->DB->where($where);

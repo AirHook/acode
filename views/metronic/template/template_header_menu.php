@@ -494,7 +494,12 @@
 																	 * Start iteration of subcats
 																	 * First get the category childres
 																	 */
-																	$category_children = $this->categories_tree->get_children($main_category->category_id);
+                                                                    if ($this->webspace_details->options['site_type'] != 'hub_site')
+                                                                    {
+                                                                        $d_url_structure = $this->webspace_details->slug;
+                                                                    }
+                                                                    else $d_url_structure = '';
+																	$category_children = $this->categories_tree->get_children($main_category->category_id, $d_url_structure);
 																	if ($category_children)
 																	{
 																		foreach ($category_children as $subcat) // ---> start category tree
