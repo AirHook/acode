@@ -112,7 +112,28 @@
 															&& $category->category_level != '1'
 														)
 													)
-													{ ?>
+													{
+                                                        if ($category->category_slug == 'prom_dresses')
+                                                        {
+                                                            $the_link = site_url('shop/womens_apparel/dresses').'?occassion=prom';
+                                                        }
+                                                        else $the_link = site_url('shop/'.implode('/', $li_a_link));
+
+                                                        if (
+                                                            $this->webspace_details->slug == 'tempoparis'
+                                                            && (
+                                                                $category->category_slug == 'shirts'
+                                                                OR $category->category_slug == 'sweaters'
+                                                                OR $category->category_slug == 'coats'
+                                                            )
+                                                        )
+                                                        {
+                                                            // we are temporarily hiding these categories from tempo on issue of icon image uploading
+                                                            // via satellite sites, as well as, issue on reference base_url used for the icon image
+                                                            // need to address this accordingly
+                                                            continue;
+                                                        }
+                                                        ?>
 
                                                 <div class="cbp-item clearfix" style="height:345px;" data-category_level="<?php echo $category->category_level; ?>">
                                                     <a href="<?php echo site_url('shop/'.$designer->slug.'/'.implode('/', $li_a_link)); ?>" class="cbp-caption cbp-singlePageInline_" data-title="<?php echo $category->category_name; ?><br><?php echo $description; ?>" rel="nofollow">

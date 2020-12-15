@@ -38,3 +38,34 @@
 		<link href="<?php echo base_url('assets/custom'); ?>/css/loading-modal.css" rel="stylesheet" type="text/css" />
         <!-- END GLOBAL CUSTOM STYLES -->
         <link rel="shortcut icon" href="<?php echo base_url(); ?>favicon.ico" />
+        <!-- GOGGLE ADS GLOBAL SITE TAG AND EVENT SNIPPET -->
+        <!-- Global site tag (gtag.js) - Google Ads: 1067714451 -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=AW-1067714451"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', 'AW-1067714451');
+        </script>
+        <?php if ($this->webspace_details->slug == 'instylenewyork')
+        { ?>
+        <!-- Event snippet for Instyle New York Purchase conversion page -->
+        <script>
+          gtag('event', 'conversion', {
+              'send_to': 'AW-1067714451/X-tICI_lwusBEJOPkP0D',
+              'value': 195.0,
+              'currency': 'USD',
+              'transaction_id': ''
+          });
+        </script>
+            <?php
+        } ?>
+        <?php if ($this->webspace_details->slug == 'basixblacklabel')
+        { ?>
+        <!-- Event snippet for Basix Black Label How To Order conversion page -->
+        <script>
+          gtag('event', 'conversion', {'send_to': 'AW-1067714451/4SHICNuNw-sBEJOPkP0D'});
+        </script>
+            <?php
+        } ?>

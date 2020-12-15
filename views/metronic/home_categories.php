@@ -182,6 +182,21 @@
                                                             $the_link = site_url('shop/womens_apparel/dresses').'?occassion=prom';
                                                         }
                                                         else $the_link = site_url('shop/'.implode('/', $li_a_link));
+
+                                                        if (
+                                                            $this->webspace_details->slug == 'tempoparis'
+                                                            && (
+                                                                $category->category_slug == 'shirts'
+                                                                OR $category->category_slug == 'sweaters'
+                                                                OR $category->category_slug == 'coats'
+                                                            )
+                                                        )
+                                                        {
+                                                            // we are temporarily hiding these categories from tempo on issue of icon image uploading
+                                                            // via satellite sites, as well as, issue on reference base_url used for the icon image
+                                                            // need to address this accordingly
+                                                            continue;
+                                                        }
                                                         ?>
 
                                                 <div class="cbp-item <?php echo @$slugs ? implode(' ', @$slugs) : ''; ?> clearfix" style="height:345px;">
@@ -201,7 +216,8 @@
                                                     <div class="cbp-l-grid-projects-title text-center"><?php echo $category->category_name; ?></div>
                                                     <div class="cbp-l-grid-projects-desc text-center hidden-lg"><?php echo $description ?: '&nbsp;'; ?></div>
                                                 </div>
-														<?php
+
+                                                        <?php
 													}
 
 													// save as previous level

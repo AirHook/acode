@@ -4,12 +4,40 @@
 										<?php if ($page == '')
 										{ ?>
 
-										<h3><?php echo strtoupper($page_title); ?></h3>
+										<h3>
+                                            <?php
+                                            if (@$page_details)
+                                            {
+                                                echo strtoupper($page_details->page_name);
+                                            }
+                                            else
+                                            {
+                                                echo strtoupper($page_title);
+                                            }
+                                            ?>
+                                        </h3>
+                                        <br />
 										<div class="page-text-body">
-											<?php echo str_replace('Instylenewyork.com', ucwords($this->webspace_details->site), @$page_text); ?>
+											<?php
+                                            if (@$page_details)
+                                            {
+                                                echo $page_details->content;
+                                            }
+                                            else
+                                            {
+                                                if (@$page_text)
+                                                {
+                                                    echo str_replace('Instylenewyork.com', ucwords($this->webspace_details->site), @$page_text);
+                                                }
+                                                else
+                                                {
+                                                    echo 'Page content inserted here. To begin, edit content at admin.';
+                                                }
+                                            }
+                                            ?>
 										</div>
 
-										<?php
+                                            <?php
 										}
 										elseif ($page == 'events')
 										{ ?>
@@ -44,7 +72,7 @@
 
 											<?php endif; ?>
 
-										<?php
+                                            <?php
 										}
 										elseif ($page == 'press')
 										{ ?>

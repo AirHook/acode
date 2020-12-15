@@ -523,7 +523,7 @@ class Details extends Frontend_Controller
 			';
 			// slick
 			$this->data['page_level_styles_plugins'].= '
-				<link href="'.base_url().'assets/custom/jscript/slick/slick.css" rel="stylesheet" type="text/css" />
+				<link href="'.base_url().'assets/custom/jscript/slick/slick.css?z='.time().'" rel="stylesheet" type="text/css" />
 				<link href="'.base_url().'assets/custom/jscript/slick/slick-theme.css" rel="stylesheet" type="text/css" />
 			';
 
