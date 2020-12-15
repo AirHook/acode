@@ -8,15 +8,77 @@
 									<hr />
                                     <ul class="list-unstyled list-inline text-center">
                                         <?php
-                                        if (
-                                            $this->webspace_details->slug == 'tempoparis'
-                                            OR $this->session->user_role == 'wholesale'
-                                        )
-                                        {
-                                            $disabled_footer = 'disabled-link disable-target';
+                                        if ($this->webspace_details->slug == 'tempoparis')
+                                        { ?>
+
+                                        <li>
+                                            <a href="<?php echo site_url('pages/ordering'); ?>" data-original-title="" class=" ">
+												Ordering
+											</a>
+                                        </li>
+										<li><span class="separator"></span></li>
+                                        <li>
+                                            <a href="<?php echo site_url('pages/shipping'); ?>" data-original-title="" class=" ">
+												Shipping
+											</a>
+                                        </li>
+										<li><span class="separator"></span></li>
+                                        <li>
+                                            <a href="<?php echo site_url('pages/return_policy'); ?>" data-original-title="" class=" ">
+												Returns
+											</a>
+                                        </li>
+										<li><span class="separator"></span></li>
+                                        <li>
+                                            <a href="<?php echo site_url('pages/privacy_notice'); ?>" data-original-title="" class=" ">
+												Privacy
+											</a>
+                                        </li>
+										<li><span class="separator"></span></li>
+                                        <li>
+                                            <a href="<?php echo site_url('pages/faq'); ?>" data-original-title="" class=" ">
+												FAQ
+											</a>
+                                        </li>
+										<li><span class="separator"></span></li>
+                                        <li>
+                                            <a href="javascript:;" data-original-title="" class=" disabled-link disable-target">
+												Sitemap
+											</a>
+                                        </li>
+										<li><span class="separator"></span></li>
+                                        <li>
+                                            <a href="javascript:;" data-original-title="" class=" disabled-link disable-target">
+												Press
+											</a>
+                                        </li>
+										<li><span class="separator"></span></li>
+                                        <li>
+                                            <a href="<?php echo site_url('contact'); ?>" data-original-title="" class="">
+												Contact
+											</a>
+                                        </li>
+										<li><span class="separator"></span></li>
+                                        <li>
+                                            <a href="<?php echo site_url('pages/terms_of_use'); ?>" data-original-title="" class=" ">
+												Terms Of Use
+											</a>
+                                        </li>
+
+                                            <?php
                                         }
-                                        else $disabled_footer = '';
-                                        ?>
+                                        else
+                                        {
+                                            if (
+                                                $this->webspace_details->slug == 'tempoparis'
+                                                OR $this->session->user_role == 'wholesale'
+                                            )
+                                            {
+                                                $disabled_footer = 'disabled-link disable-target';
+                                            }
+                                            else $disabled_footer = '';
+                                            ?>
+
                                         <li>
                                             <a href="<?php echo $disabled_footer ? 'javascript:;' : site_url('ordering'); ?>" data-original-title="" class=" <?php echo $disabled_footer; ?>">
 												Ordering
@@ -70,7 +132,21 @@
 												Terms Of Use
 											</a>
                                         </li>
+
+                                            <?php
+                                        } ?>
                                     </ul>
+
+                                    <?php
+                                    if (
+                                        $this->webspace_details->slug == 'tempoparis'
+                                        OR $this->session->user_role == 'wholesale'
+                                    )
+                                    {
+                                        $disabled_footer = 'disabled-link disable-target';
+                                    }
+                                    else $disabled_footer = '';
+                                    ?>
 
                                     <ul class="social-icons list-inline text-center">
                                         <li>

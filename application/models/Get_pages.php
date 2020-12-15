@@ -9,8 +9,8 @@ class Get_pages extends CI_Model {
 	 * @return	object
 	 */
 	protected $DB;
-	
-	
+
+
 	/**
 	 * Constructor
 	 *
@@ -19,11 +19,11 @@ class Get_pages extends CI_Model {
 	function __Construct()
 	{
 		parent::__Construct();
-		
+
 		// connect to database for use by model
 		$this->DB = $this->load->database('instyle', TRUE);
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -38,17 +38,17 @@ class Get_pages extends CI_Model {
 		{
 			return FALSE;
 		}
-		
+
 		$this->DB->where('pagename', $params);
 		$q1 = $this->DB->get('tblmeta');
-		
+
 		if ($q1->num_rows() > 0)
 		{
 			return $q1->row();
 		}
 		else return FALSE;
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -63,17 +63,17 @@ class Get_pages extends CI_Model {
 		{
 			return FALSE;
 		}
-		
+
 		$this->DB->where('title_code', $params);
 		$q1 = $this->DB->get('pages');
-		
+
 		if ($q1->num_rows() > 0)
 		{
 			return $q1->row();
 		}
 		else return FALSE;
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -82,23 +82,35 @@ class Get_pages extends CI_Model {
 	 * @params	string (pagename field)
 	 * @return	object/boolean false
 	 */
-	function page_details_new($params = '')
+	function page_details_new($params)
 	{
-		if ( ! $params)
+		if (is_string($params))
 		{
-			return FALSE;
+			if ( ! $params)
+			{
+				return FALSE;
+			}
+			else $this->DB->where('pagename', $params);
 		}
-		
-		$this->DB->where('pagename', $params);
+
+		if (is_array($params))
+		{
+			if (empty($params))
+			{
+				return FALSE;
+			}
+			else $this->DB->where($params);
+		}
+
 		$q1 = $this->DB->get('pages_new');
-		
+
 		if ($q1->num_rows() > 0)
 		{
 			return $q1->row();
 		}
 		else return FALSE;
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -110,14 +122,14 @@ class Get_pages extends CI_Model {
 	function press()
 	{
 		$q1 = $this->DB->get('tbl_press');
-		
+
 		if ($q1->num_rows() > 0)
 		{
 			return $q1->result();
 		}
 		else return FALSE;
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -129,14 +141,14 @@ class Get_pages extends CI_Model {
 	function events()
 	{
 		$q1 = $this->DB->get('tblnews');
-		
+
 		if ($q1->num_rows() > 0)
 		{
 			return $q1->result();
 		}
 		else return FALSE;
 	}
-	
+
 	// --------------------------------------------------------------------
 
 }

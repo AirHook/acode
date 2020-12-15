@@ -200,6 +200,8 @@ class All extends Admin_Controller {
 		$this->data['count_all'] = $this->products_list->count_all;
 		$this->data['products_count'] = $this->products_list->row_count;
 
+		//echo $this->products_list->last_query; die();
+
 		// need to show loading at start
 		$this->data['show_loading'] = FALSE;
 		$this->data['page_param'] = 'all';

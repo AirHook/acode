@@ -466,19 +466,19 @@
                 			<h3 class="uppercase">Marketing</h3>
                 		</li>
                 		<li class="nav-item with-heading ">
-                			<a href="javascript:;" class="nav-link tooltips" data-original-title="Currently Under Construction" data-placement="right">
+                			<a href="javascript:;" class="nav-link tooltips_" data-original-title="Currently Under Construction" data-placement="right">
                 				<span class="title uppercase">Mailgun Emailing</span>
                 				<span class="arrow open"></span>
                 			</a>
                 			<ul class="sub-menu always-open">
-                                <li class="nav-item  <?php echo $this->uri->uri_string() == 'admin/marketing/carousel/carousels' ? 'active open' : ''; ?>">
-                                    <a href="<?php echo site_url('admin/marketing/carousel/carousels'); ?>" class="nav-link  ">
+                                <li class="nav-item  <?php echo ($this->uri->uri_string() == 'admin/marketing/carousels' OR (strpos($this->uri->uri_string(), 'admin/marketing/carousels/edit') !== FALSE)) ? 'active open' : ''; ?>">
+                                    <a href="<?php echo site_url('admin/marketing/carousels'); ?>" class="nav-link  ">
                 					<!--<a href="javascript:;" class="nav-link tooltips" data-original-title="Currently Under Construction" data-placement="right">-->
                 						<span class="title">Carousels</span>
                 					</a>
                 				</li>
-                                <li class="nav-item  <?php echo $this->uri->uri_string() == 'admin/marketing/carousel/add' ? 'active open' : ''; ?>">
-                                    <a href="<?php echo site_url('admin/marketing/carousel/add'); ?>" class="nav-link  ">
+                                <li class="nav-item  <?php echo $this->uri->uri_string() == 'admin/marketing/carousels/add' ? 'active open' : ''; ?>">
+                                    <a href="<?php echo site_url('admin/marketing/carousels/add'); ?>" class="nav-link  ">
                 					<!--<a href="javascript:;" class="nav-link tooltips" data-original-title="Currently Under Construction" data-placement="right">-->
                 						<span class="title">Add New Carousel</span>
                 					</a>
@@ -562,14 +562,18 @@
                                 <span class="title uppercase">Task Manager</span>
                             </a>
                         </li>
-                        <li class="nav-item with-heading ">
-                            <a href="javascript:;" class="nav-link tooltips" data-original-title="Currently Under Construction" data-placement="right">
+
+                            <?php
+                        } ?>
+
+                        <li class="nav-item with-heading <?php echo $this->uri->segment(2) == 'pages' ? 'active' : ''; ?>">
+                            <a href="<?php echo site_url('admin/pages'); ?>" class="nav-link ">
                                 <span class="title uppercase">Pages Manager</span>
                                 <span class="arrow open"></span>
                             </a>
                             <ul class="sub-menu always-open">
-                                <li class="nav-item  ">
-                                    <a href="javascript:;" class="nav-link tooltips" data-original-title="Currently Under Construction" data-placement="right">
+                                <li class="nav-item <?php echo strpos($this->uri->uri_string(), 'admin/pages') === FALSE ? '' : 'active'; ?>">
+                                    <a href="<?php echo site_url('admin/pages'); ?>" class="nav-link ">
                                         <span class="title">Pages</span>
                                     </a>
                                 </li>
@@ -580,6 +584,11 @@
                                 </li>
                             </ul>
                         </li>
+
+                        <?php
+                        // available only on hub sites for now
+                        if ($this->webspace_details->options['site_type'] == 'hub_site')
+                        { ?>
                         <li class="nav-item with-heading ">
                             <a href="javascript:;" class="nav-link tooltips" data-original-title="Currently Under Construction" data-placement="right">
                                 <span class="title uppercase">Reports Manager</span>

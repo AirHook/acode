@@ -151,6 +151,7 @@ class Designers_list
 				ELSE "1"
 			END) AS complete_info_status
 		');
+		/*
 		$this->DB->select('
 			(CASE
 				WHEN EXISTS (SELECT * FROM tbl_product WHERE tbl_product.designer = designer.des_id)
@@ -158,6 +159,7 @@ class Designers_list
 				ELSE "0"
 			END) AS with_products
 		');
+		*/
 		$this->DB->select("
 			(CASE
 				WHEN EXISTS (
