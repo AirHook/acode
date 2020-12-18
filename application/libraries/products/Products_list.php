@@ -1087,6 +1087,7 @@ class Products_list
 				{
 					$this->DB->order_by($key, $val);
 				}
+				else $this->DB->order_by($key);
 			}
 		}
 		else

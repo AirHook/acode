@@ -239,7 +239,7 @@
 									 */
 									?>
 									<div class="col-sm-4 pull-right">
-										<div class="thumbnail">
+										<div class="thumbnail" data-src="<?php echo base_url(); ?>images/subcategory_icon/thumb/<?php echo @$icon_images[$key]; ?>">
 											<img src="<?php echo base_url(); ?>images/subcategory_icon/thumb/<?php echo (array_key_exists(0, $icon_images) ? @$icon_images[0] : @$icon_images[$des_key]) ?: 'default-subcat-icon.jpg'; ?>" width="100%" data-icon_tab="general" onerror="this.onerror=null;this.src='<?php echo base_url(); ?>images/subcategory_icon/thumb/default-subcat-icon.jpg';document.getElementById('thumb-error-general').style.display='block';" />
 											<div class="caption">
 												<div id="subcategory_icon_caption_general">
@@ -387,7 +387,7 @@
 									 */
 									?>
 									<div class="col-sm-4 pull-right">
-										<div class="thumbnail">
+										<div class="thumbnail" data-src="<?php echo base_url(); ?>images/subcategory_icon/thumb/<?php echo @$icon_images[$key]; ?>">
 											<img src="<?php echo base_url(); ?>images/subcategory_icon/thumb/<?php echo @$icon_images[$key] ?: 'default-subcat-icon.jpg'; ?>" width="100%" data-icon_tab="<?php echo $designer->url_structure; ?>" onerror="this.onerror=null;this.src='<?php echo base_url(); ?>images/subcategory_icon/thumb/default-subcat-icon.jpg';document.getElementById('thumb-error-<?php echo $designer->url_structure; ?>').style.display='block';" />
 											<div class="caption">
 												<div id="subcategory_icon_caption_<?php echo $designer->url_structure; ?>">

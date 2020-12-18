@@ -2,7 +2,7 @@
 								<div class="send_to_current_user">
 
 									<div class="form-body selected-users-list-wrapper <?php echo @$ws_user_details ? '' : 'display-none'; ?>">
-										<span class="caption">Send to the following <cite class="<?php echo @$ws_user_details ? 'hide' : ''; ?>">(maximum of 10 users per sending)</cite>:</span>
+										<span class="caption">Send to the following <cite class="<?php echo @$ws_user_details ? 'hide' : ''; ?>">(maximum of 30 users per sending)</cite>:</span>
 										<input type="hidden" name="emails" value="" />
 										<div class="mt-checkbox-list selected-users-list">
 											<!-- DOC: example child element --

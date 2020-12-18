@@ -31,10 +31,20 @@ class Link extends Shop_Controller
 	 *
 	 * Show the sales package items as thumbs page
 	 */
-	function index($sales_package_id = '', $user_id = '', $tc = '')
+	function index($sales_package_id = '', $wholesale_user_id = '', $tc = '')
 	{
-		// set the now
-		$now = time();
+		// sales packages are only for hub sites
+		if (
+			! isset($this->webspace_details->options['site_type'])
+			&& $this->webspace_details->options['site_type'] !== 'hub_site'
+		)
+		{
+			// set flash notice
+			$this->session->set_flashdata('error', 'no_sales_package');
+
+			// nothing more to do...
+			redirect(site_url(), 'location');
+		}
 
 		// some params to initialize for the class
 		$is_a_sales_package = TRUE; // this class is initially intended for saved sales packages
@@ -42,14 +52,14 @@ class Link extends Shop_Controller
 		// validate url segments and if sales package id is correct
 		if ($sales_package_id == 'X')
 		{
-			// this link is from an email carousel
+			// this link is from the wholesale email carousel
 			// where package offer is not saved
 			$is_a_sales_package = FALSE;
 		}
 		else if (
 			! $tc
 			OR ! $sales_package_id
-			OR ! $user_id
+			OR ! $wholesale_user_id
 		)
 		{
 			// unset any or old sales package sessions
@@ -59,13 +69,12 @@ class Link extends Shop_Controller
 			$this->session->set_flashdata('error', 'sales_package_invalid_link');
 
 			// nothing more to do...
-			redirect('shop/categories', 'location');
+			redirect('shop/categories');
 		}
 
 		// load pertinent library/model/helpers
 		$this->load->library('user_agent');
 		$this->load->library('sales_package/sales_package_details');
-		$this->load->library('users/consumer_user_details');
 		$this->load->library('users/wholesale_user_details');
 		$this->load->library('designers/designer_details');
 		$this->load->library('categories/category_details');
@@ -88,18 +97,23 @@ class Link extends Shop_Controller
 				$this->session->set_flashdata('error', 'sales_package_invalid_link');
 
 				// nothing more to do...
-				redirect('shop/categories', 'location');
+				redirect('shop/categories');
 			}
 		}
 
 		/****************
-		 * Lets get the user details
+		 * Lets get the wholesale user details
 		 */
 		// check for logged in users and verify link user id
-		if ($this->session->user_loggedin)
+		if ($this->session->user_loggedin && $this->session->user_role === 'wholesale')
 		{
-			// if not the same user
-			if ($this->session->user_id != $user_id)
+			if (
+				$this->session->user_id != $wholesale_user_id
+				OR (
+					$wholesale_user_id == '0'
+					&& @$this->wholesale_user_details->email != $this->input->get('email')
+				)
+			)
 			{
 				// unset any or old sales package sessions
 				$this->_unset_sa_session();
@@ -110,93 +124,72 @@ class Link extends Shop_Controller
 				// nothing more to do...
 				redirect('account', 'location');
 			}
-
-			// user already logged in
-			// re-validate user details catch all error
-			if ($this->session->user_role == 'wholesale')
+		}
+		else
+		{
+			// logged in user and sa user id/or email is valid, hence we already have
+			// wholesale user details
+			if (
+				! $this->wholesale_user_details->initialize(array('user_id'=>$wholesale_user_id))
+				&& ! $this->wholesale_user_details->initialize(array('email'=>$this->input->get('email')))
+			)
 			{
-				if (
-					! $this->wholesale_user_details->initialize(array('user_id'=>$user_id))
-					&& ! $this->wholesale_user_details->initialize(array('email'=>$this->input->get('email')))
-				)
-				{
-					// unset any or old sales package sessions
-					$this->_unset_sa_session();
+				// unset any or old sales package sessions
+				$this->_unset_sa_session();
 
-					// set flash notice
-					$this->session->set_flashdata('error', 'invalid_credentials');
+				// set flash notice
+				$this->session->set_flashdata('error', 'invalid_credentials');
 
-					// nothing more to do...
-					redirect('account', 'location');
-				}
-
-				// global catch all for inactive wholeslae users
-				if (@$this->wholesale_user_details->status != '1')
-				{
-					// set flash notice
-					$this->session->set_flashdata('error', 'status_inactive');
-
-					// send to request for activation page
-					redirect('account/request/activation', 'location');
-				}
-
-				// auto sign in user if not already signed in
-				// do notifications where necessary
-				if ( ! $this->session->this_login_id)
-				{
-					// auto activate user if he clicks on the sales package
-					//if ($this->wholesale_user_details->status != '1') $this->wholesale_user_details->activate_user();
-					// set wholesale user session
-					$this->wholesale_user_details->set_session();
-					// record login details
-					$this->wholesale_user_details->record_login_detail();
-
-					if (ENVIRONMENT !== 'development')
-					{
-						// notify sales user
-						$this->wholesale_user_details->notify_sales_user_online();
-						// notify admin user is online
-						$this->wholesale_user_details->notify_admin_user_online();
-					}
-				}
+				// nothing more to do...
+				redirect('account', 'location');
 			}
+		}
 
-			if ($this->session->user_role == 'consumer')
+		// global catch all for inactive wholeslae users
+		if (@$this->wholesale_user_details->status != '1')
+		{
+			// set flash notice
+			$this->session->set_flashdata('error', 'status_inactive');
+
+			// send to request for activation page
+			redirect('account/request/activation', 'location');
+		}
+
+		// auto sign in user if not already signed in
+		// do notifications where necessary
+		if ( ! $this->session->this_login_id)
+		{
+			// auto activate user if he clicks on the sales package
+			//if ($this->wholesale_user_details->status != '1') $this->wholesale_user_details->activate_user();
+			// set wholesale user session
+			$this->wholesale_user_details->set_session();
+			// record login details
+			$this->wholesale_user_details->record_login_detail();
+
+			if (ENVIRONMENT !== 'development')
 			{
-				if (
-					! $this->consumer_user_details->initialize(array('user_id'=>$user_id))
-					&& ! $this->consumer_user_details->initialize(array('email'=>$this->input->get('email')))
-				)
-				{
-					// unset any or old sales package sessions
-					$this->_unset_sa_session();
-
-					// set flash notice
-					$this->session->set_flashdata('error', 'invalid_credentials');
-
-					// nothing more to do...
-					redirect('account', 'location');
-				}
+				// notify sales user
+				$this->wholesale_user_details->notify_sales_user_online();
+				// notify admin user is online
+				$this->wholesale_user_details->notify_admin_user_online();
 			}
 		}
 
 		/****************
-		 * Lets check for 1 click sales package session
+		 * Lets check for 1 click session
 		 */
+		// get the sales package options property
 		if ($is_a_sales_package)
 		{
-			// get the sales package options property
-			// check for 1 click
-			// and get the items
 			$options = $this->sales_package_details->options;
 
 			// if click 1 is not yet set, we set it
-			if ( ! isset($options[$user_id][$tc]))
+			if ( ! isset($options[$wholesale_user_id][$tc]))
 			{
 				// this only means it's the user's firt time to click the link
 				// set the [user_id][tc] = logid option indicating user now clicked on the link
 				$this->sales_package_details->click_one(
-					$user_id,
+					$wholesale_user_id,
 					$tc,
 					$this->session->this_login_id
 				);
@@ -208,7 +201,7 @@ class Link extends Shop_Controller
 			// if click 1 is set, check for same session login id
 			// if in different session already, sales package is already invalid
 			/* *
-			if (@$options[$user_id][$tc] !== $this->session->this_login_id)
+			if (@$options[$wholesale_user_id][$tc] !== $this->session->this_login_id)
 			{
 				// unset any or old sales package sessions
 				$this->_unset_sa_session();
@@ -237,21 +230,6 @@ class Link extends Shop_Controller
 		}
 		else
 		{
-			// for package offers that are not saved sales package
-			// get the hashed timestamp and ensure that is not older than 24 hours
-			// and get the items
-			$md5_today =  md5(@date('Y-m-d', $now));
-			$md5_yesterday =  md5(@date('Y-m-d', strtotime('yesterday')));
-			if ($md5_today != $tc && $md5_yesterday != $tc)
-			{
-				// set flash notice
-				$this->session->set_flashdata('error', 'sales_package_invalid_link');
-
-				// nothing more to do...
-				redirect('shop/categories', 'location');
-			}
-
-			// define shop_controller package items
 			$this->sales_package_items = explode(',', $this->input->get('items_csv'));
 		}
 
@@ -305,7 +283,6 @@ class Link extends Shop_Controller
 		$this->check_facet_query_string();
 
 		// now we grab the product items
-		$this->sort_by = 'unsorted';
 		$this->get_products();
 
 		// set data variables to pass to view file

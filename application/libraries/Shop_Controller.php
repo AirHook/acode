@@ -52,6 +52,7 @@ class Shop_Controller extends Frontend_Controller {
 	 *		featured		- not yet available
 	 *		best_sellers	- not yet available
 	 *		top_rated		- not yet available
+     *      unsorted        - no sorting used for carousel emails (non sales package offers)
 	 *
 	 * @return	various
 	 */
@@ -187,7 +188,67 @@ class Shop_Controller extends Frontend_Controller {
 	 */
 	public function get_products()
 	{
-		// soring conditions
+        // set $where variable
+        $where = array();
+
+        // check for sales package where conditions
+        if ($this->sales_package_items)
+        {
+            // set prod_no clause
+            $con_prod_no_ary = '';
+            $order_by_case = '';
+
+            // capture items that uses style no along with prod_no
+            $in = 1;
+            foreach ($this->sales_package_items as $style_no)
+            {
+                $exp = explode('_', $style_no);
+                // used for Product_list.php class on where clause
+                // checking if numerically indexed and set to ->or_where() function
+                //array_push($where, $exp[0]);
+                // Unfortunately, above array is not suitable due to succeeding where clauses
+                // in which case, we separate each item instead
+
+                if ($in == 1)
+                {
+                    $con_prod_no_ary.= "tbl_product.prod_no LIKE '%".$exp[0]."%' ESCAPE '!'";
+                    $order_by_case.= "(CASE ";
+                }
+                else
+                {
+                    $con_prod_no_ary.= " OR tbl_product.prod_no LIKE '%".$exp[0]."%' ESCAPE '!'";
+                }
+
+                $order_by_case.= "WHEN tbl_product.prod_no LIKE '%".$exp[0]."%' ESCAPE '!' THEN ".$in." ";
+
+                $in++;
+            }
+
+            $order_by_case.= "ELSE ".$in." END)";
+
+            // close condition clause
+            //$con_prod_no_ary.= '';
+            $where['condition'][] = $con_prod_no_ary;
+        }
+        else
+        {
+            // tempoparis is a stand along wholesale site
+            // we need to apply same conditions for tempo items at shop7
+            // and not show tempo items in general pages
+            // only when user is logged in
+            if ($this->d_url_structure == '')
+            {
+                $where['designer.url_structure <>'] = 'tempoparis';
+            }
+            else $where['designer.url_structure'] = $this->d_url_structure;
+
+            if ($this->category_id)
+            {
+                $where['tbl_product.categories LIKE'] = $this->category_id; // last segment of category
+            }
+        }
+
+        // soring conditions
 		switch($this->sort_by)
 		{
 			case 'featured':
@@ -213,63 +274,12 @@ class Shop_Controller extends Frontend_Controller {
 			case 'onsale':
 				$sort_by = array('tbl_stock.custom_order'=>'desc');
 			break;
+            case 'unsorted':
+				$sort_by = array($order_by_case => 'ASC');
+			break;
 			default:
 				$sort_by = array('seque'=>'asc', 'tbl_product.prod_no' => 'desc');
 		}
-
-        // set $where variable
-        $where = array();
-
-        // check for sales package where conditions
-        if ($this->sales_package_items)
-        {
-            // set prod_no clause
-            $con_prod_no_ary = '';
-
-            // capture items that uses style no along with prod_no
-            $in = 1;
-            foreach ($this->sales_package_items as $style_no)
-            {
-                $exp = explode('_', $style_no);
-                // used for Product_list.php class on where clause
-                // checking if numerically indexed and set to ->or_where() function
-                //array_push($where, $exp[0]);
-                // Unfortunately, above array is not suitable due to succeeding where clauses
-                // in which case, we separate each item instead
-
-                if ($in == 1)
-                {
-                    $con_prod_no_ary.= "tbl_product.prod_no LIKE '%".$exp[0]."%' ESCAPE '!'";
-                }
-                else
-                {
-                    $con_prod_no_ary.= " OR tbl_product.prod_no LIKE '%".$exp[0]."%' ESCAPE '!'";
-                }
-
-                $in++;
-            }
-
-            // close condition clause
-            //$con_prod_no_ary.= '';
-            $where['condition'][] = $con_prod_no_ary;
-        }
-        else
-        {
-            // tempoparis is a stand along wholesale site
-            // we need to apply same conditions for tempo items at shop7
-            // and not show tempo items in general pages
-            // only when user is logged in
-            if ($this->d_url_structure == '')
-            {
-                $where['designer.url_structure <>'] = 'tempoparis';
-            }
-            else $where['designer.url_structure'] = $this->d_url_structure;
-
-            if ($this->category_id)
-            {
-                $where['tbl_product.categories LIKE'] = $this->category_id; // last segment of category
-            }
-        }
 
         /** *
          *

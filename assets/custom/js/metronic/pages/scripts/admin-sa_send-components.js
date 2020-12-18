@@ -129,8 +129,8 @@ var ComponentsEditors = function () {
                 // show wrapper of list
                 if ($('[name="email[]"]:checked').length == 0) $('.selected-users-list-wrapper').show();
                 // check if number of selected users is more than 10 already
-                if ($('[name="email[]"]:checked').length > 9){
-                    alert('You already have 10 selected users.')
+                if ($('[name="email[]"]:checked').length > 29){
+                    alert('You already have 30 selected users.')
                     $(this).prop('checked', false);
                 }else{
                     // add to selected list

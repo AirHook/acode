@@ -172,8 +172,9 @@
 															<div id="panzoom2" class=""><img src="<?php echo $img_back_thumb; ?>" style="width:100%;" /></div>
 															<div id="panzoom3" class=""><img src="<?php echo $img_side_thumb; ?>" style="width:100%;" /></div>
 
-														</div>.
+														</div>
 														<!--<div id="panzoom4" class=""><img src="<?php echo $img_front_thumb; ?>" style="width:100%;" /></div>-->
+                                                        <!--
 														<div class="mobile-product-details-utilities text-center" style="">
 															<span style="display:inline-block;text-align:center;">
 																<i class="fa fa-2x fa-heart-o"></i> <br />
@@ -190,8 +191,9 @@
 																<i class="fa fa-2x fa-search-minus"></i> <br />
 																ZOOM OUT
 															</a>
-															-->
+															--
 														</div>
+                                                        -->
 													</div>
 													<!-- END MOBILE MAIN IMAGE AND OTHER VIEW SLIDER -->
 
@@ -1043,7 +1045,9 @@
 																<?php } else { ?>
 																<button type="submit" class="btn dark btn-block size-qty-submit" onclick="return checkSizeQty();">ADD TO BAG</button>
 																<?php } ?>
+                                                                <!--
                                                                 <button type="button" class="btn btn-default btn-block add-to-favorites-submit hide"><i class="icon icon-heart"></i> ADD TO FAVORITES</button>
+                                                                -->
 
 																<script>
 																function checkSizeQty(){

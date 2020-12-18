@@ -135,8 +135,8 @@
 															<div id="panzoom2" class=""><img src="<?php echo $img_back_new; ?>" style="width:100%;" /></div>
 															<div id="panzoom3" class=""><img src="<?php echo $img_side_new; ?>" style="width:100%;" /></div>
 
-														</div>.
-
+														</div>
+                                                        <!--
 														<div class="mobile-product-details-utilities text-center" style="">
 															<span style="display:inline-block;text-align:center;">
 																<i class="fa fa-2x fa-heart-o"></i> <br />
@@ -153,8 +153,9 @@
 																<i class="fa fa-2x fa-search-minus"></i> <br />
 																ZOOM OUT
 															</a>
-															-->
+															--
 														</div>
+                                                        -->
 													</div>
 													<!-- END MOBILE MAIN IMAGE AND OTHER VIEW SLIDER -->
 
