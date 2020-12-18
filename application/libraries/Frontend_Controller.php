@@ -52,17 +52,23 @@ class Frontend_Controller extends MY_Controller {
 		$this->data['categories'] = $this->categories_tree->treelist(
 			$cat_ary
 		);
+
 		// NOTE: use this variable for the total count of categories as
 		// $this->categories_tree->row_count will be overwritten by succeeding
 		// $this->categories_tree function/method calls below
 		$this->data['number_of_categories'] = $this->categories_tree->row_count;
 
 		// some category listing needed for the main menu lists
-		$this->data['main_categories'] = $this->categories_tree->treelist(
-			array(
-				'category_level' => '1'
-			)
-		);
+		// hub sites show all main categories
+		// sat sites must show only it's respective main categories and with products
+		$mcatparams['category_level'] = '1';
+		if ($this->webspace_details->options['site_type'] != 'hub_site')
+		{
+			$mcatparams['d_url_structure'] = ($this->webspace_details->slug ?: '');
+			$mcatparams['with_products'] = TRUE;
+		}
+		$this->data['main_categories'] = $this->categories_tree->treelist($mcatparams);
+		
 		// while we have identified the main categories under womens apparel
 		// we will need to come up with a solution to decouple this system
 		$this->data['dresses_subcats'] = $this->categories_tree->get_children('161');
