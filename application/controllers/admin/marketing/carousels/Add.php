@@ -35,13 +35,13 @@ class Add extends Admin_Controller {
 		if ($this->input->post('date')) $this->form_validation->set_rules('date', 'Schedule', 'trim|required');
 		if ($this->input->post('week')) $this->form_validation->set_rules('week', 'Schedule', 'trim|required');
 		if ($this->input->post('month')) $this->form_validation->set_rules('month', 'Schedule', 'trim|required');
-		$this->form_validation->set_rules('layout', 'Layout', 'trim|required');
+		if ($this->webspace_details->options['site_type'] == 'hub_site') $this->form_validation->set_rules('layout', 'Layout', 'trim|required');
 		if ($this->input->post('layout') && $this->input->post('layout') != 'default')
 		{
 			$this->form_validation->set_rules('designer[]', 'Designer', 'trim|required');
 		}
 		$this->form_validation->set_rules('stock_condition', 'Stock Condition', 'trim|required');
-		$this->form_validation->set_rules('users', 'Users', 'trim|required');
+		if ($this->webspace_details->slug != 'tempoparis') $this->form_validation->set_rules('users', 'Users', 'trim|required');
 		//$this->form_validation->set_rules('subject[]', 'Email Subject/s', 'trim|required');
 		//$this->form_validation->set_rules('message[]', 'Email Message/s', 'trim|required');
 
@@ -140,6 +140,25 @@ class Add extends Admin_Controller {
 					// save it
 					$post_ary['schedule'] = $ref_ts[0];
 				}
+			}
+
+			// satellite sites doesn't have to post layout because
+			// on 'single_designer' layout is used for satellite sites
+			if (
+				$this->webspace_details->options['site_type'] == 'sat_site'
+				OR $this->webspace_details->options['site_type'] == 'sal_site'
+			)
+			{
+				$post_ary['layout'] = 'single_designer';
+			}
+
+			// wholesale_only_site have only one user -> wholesale users
+			if (
+				$this->webspace_details->options['wholesale_only_site'] == '1'
+				OR $this->webspace_details->slug == 'tempoparis'
+			)
+			{
+				$post_ary['users'] = 'wholesale';
 			}
 
 			// filter and jsonify designer, subject and mesesage

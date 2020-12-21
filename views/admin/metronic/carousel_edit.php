@@ -523,7 +523,7 @@
 
                                             </div>
                                             <div class="modal-footer">
-                                                <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
+                                                <button type="button" class="btn dark btn-outline" data-dismiss="modal" tabindex="-1">Close</button>
                                                 <button type="button" class="btn green test-send-carousel">Send</button>
                                             </div>
                                         </div>
@@ -598,7 +598,7 @@
 									Permanently DELETE item? <br /> This cannot be undone!
 								</div>
 								<div class="modal-footer">
-									<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
+									<button type="button" class="btn dark btn-outline" data-dismiss="modal" tabindex="-1">Close</button>
 									<a href="<?php echo site_url('admin/marketing/delete/index/'.$carousel_details->carousel_id); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
 										<span class="ladda-label">Confirm?</span>
 										<span class="ladda-spinner"></span>

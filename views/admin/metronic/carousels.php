@@ -253,7 +253,7 @@
                                                 </div>
                                                 <div class="modal-body"> Set Carousel to ACTIVE? </div>
                                                 <div class="modal-footer">
-                                                    <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
+                                                    <button type="button" class="btn dark btn-outline" data-dismiss="modal" tabindex="-1">Close</button>
                                                     <a href="<?php echo site_url($pre_link.'/marketing/carousels/activate/index/'.@$carousel->carousel_id); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
                                                         <span class="ladda-label">Confirm?</span>
                                                         <span class="ladda-spinner"></span>
@@ -275,7 +275,7 @@
                                                 </div>
                                                 <div class="modal-body"> Are you sure you want to SET INACTIVE carousel? </div>
                                                 <div class="modal-footer">
-                                                    <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
+                                                    <button type="button" class="btn dark btn-outline" data-dismiss="modal" tabindex="-1">Close</button>
                                                     <a href="<?php echo site_url($pre_link.'/marketing/carousels/deactivate/index/'.@$carousel->carousel_id); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
                                                         <span class="ladda-label">Confirm?</span>
                                                         <span class="ladda-spinner"></span>
@@ -297,7 +297,7 @@
                                                 </div>
                                                 <div class="modal-body"> DELETE carousel permanently? <br /> This cannot be undone! </div>
                                                 <div class="modal-footer">
-                                                    <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
+                                                    <button type="button" class="btn dark btn-outline" data-dismiss="modal" tabindex="-1">Close</button>
                                                     <a href="<?php echo site_url($pre_link.'/marketing/carousels/delete/index/'.@$carousel->carousel_id); ?>" type="button" class="btn green mt-ladda-btn ladda-button" data-style="expand-left">
                                                         <span class="ladda-label">Confirm?</span>
                                                         <span class="ladda-spinner"></span>
@@ -331,8 +331,8 @@
 
                                                 </div>
                                                 <div class="modal-footer">
-                                                    <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-                                                    <button type="button" class="btn green test-send-carousel">Send</button>
+                                                    <button type="button" class="btn dark btn-outline" data-dismiss="modal" tabindex="-1">Close</button>
+                                                    <button type="button" class="btn green test-send-carousel" data-carousel_id="<?php echo @$carousel->carousel_id?>">Send</button>
                                                 </div>
                                             </div>
                                             <!-- /.modal-content -->
