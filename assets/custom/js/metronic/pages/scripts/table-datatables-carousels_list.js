@@ -187,8 +187,8 @@ var TableDatatablesManaged = function () {
 
     // test send actions
     $('.test-send-carousel').on('click', function(){
-        var id = $('.test-send-email').data('carousel_id');
-        var email = $('.test-send-email').val();
+        var id = $(this).data('carousel_id');
+        var email = $('.test-send-email[data-carousel_id="'+id+'"]').val();
         if ( ! email) {
             alert('Please enter email address.');
             return false;

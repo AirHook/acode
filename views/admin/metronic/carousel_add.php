@@ -92,11 +92,11 @@
                                     <div class="col-md-9">
                                         <div class="mt-radio-inline">
 											<label class="mt-radio mt-radio-outline" style="margin-bottom:0px;">
-												<input type="radio" class="form-control" name="type" value="once" data-error-container="select-type-error" <?php echo set_radio('type', 'once'); ?> /> Once
+												<input type="radio" class="form-control" name="type" value="once" data-error-container="select-type-error" /> Once
 												<span></span>
 											</label>
                                             <label class="mt-radio mt-radio-outline" style="margin-bottom:0px;">
-												<input type="radio" class="form-control" name="type" value="recurring" data-error-container="select-type-error" <?php echo set_radio('type', 'recurring'); ?> /> Recurring
+												<input type="radio" class="form-control" name="type" value="recurring" data-error-container="select-type-error" /> Recurring
 												<span></span>
 											</label>
 										</div>

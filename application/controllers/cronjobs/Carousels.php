@@ -437,10 +437,36 @@ class Carousels extends MY_Controller {
 				}
 				// */
 
+				/**
+				// USERS
+				*/
+				switch ($carousel->users)
+				{
+					case 'wholesale':
+						if ($carousel->webspace_id == '4') $users = array('ws_tempo@mg.shop7thavenue.com');
+						else $users = array('wholesale_users@mg.shop7thavenue.com');
+					break;
+
+					case 'consumers':
+						$users = array('consumers@mg.shop7thavenue.com');
+					break;
+
+					case 'all':
+					default:
+						$users = array(
+							'consumers@mg.shop7thavenue.com',
+							'wholesale_users@mg.shop7thavenue.com,'
+							'ws_tempo@mg.shop7thavenue.com'
+						)
+				}
+
+				// set the webspace id for use on the view file
+				$data['webspace_id'] = $carousel->webspace_id;
+
 				// lets set the hashed time code used for the access_link so that the batch holds the same tc only
 				$data['tc'] = md5(@date('Y-m-d', $this->now));
 
-				// load the view file
+				// load and set the view file
 				$content_body = $this->load->view('templates/carousel_wrapper', $data, TRUE);
 			}
 		}
@@ -500,6 +526,8 @@ class Carousels extends MY_Controller {
 				// */
 			}
 
+			die('here');
+
 			// set flash data
 			$this->session->set_flashdata('success', 'test_sent');
 
@@ -508,30 +536,34 @@ class Carousels extends MY_Controller {
 		}
 		else
 		{
-			$this->mailgun->to = 'test@mg.shop7thavenue.com';
-
-			//$this->mailgun->cc = $this->webspace_details->info_email;
-			//$this->mailgun->bcc = $this->CI->config->item('dev1_email');
-			$this->mailgun->subject = $data['subject'];
-			$this->mailgun->message = $content_body;
-
-			if ( ! $this->mailgun->Send())
+			foreach ($users as $user_grp)
 			{
-				$error = 'Unable to send.<br />';
-				$error .= $this->mailgun->error_message;
+				$this->mailgun->to = $user_grp;
+				//$this->mailgun->to = 'test@mg.shop7thavenue.com';
 
-				echo $error;
+				//$this->mailgun->cc = $this->webspace_details->info_email;
+				//$this->mailgun->bcc = $this->CI->config->item('dev1_email');
+				$this->mailgun->subject = $data['subject'];
+				$this->mailgun->message = $content_body;
 
-				echo '<br />';
-				echo $data['subject'];
+				if ( ! $this->mailgun->Send())
+				{
+					$error = 'Unable to send.<br />';
+					$error .= $this->mailgun->error_message;
 
-				echo '<br /><br />';
-				echo $content_body;
-				exit;
+					echo $error;
+
+					echo '<br />';
+					echo $data['subject'];
+
+					echo '<br /><br />';
+					echo $content_body;
+					exit;
+				}
+
+				$this->mailgun->clear();
+				// */
 			}
-
-			$this->mailgun->clear();
-			// */
 		}
 
 		echo 'Done<br />';
