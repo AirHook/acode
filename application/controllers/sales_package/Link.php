@@ -108,7 +108,7 @@ class Link extends Shop_Controller
 				$this->session->set_flashdata('error', 'sa_diff_user_loggedin');
 
 				// nothing more to do...
-				redirect('account', 'location');
+				redirect('account/index/1', 'location');
 			}
 
 			// user already logged in
@@ -175,7 +175,32 @@ class Link extends Shop_Controller
 					$this->session->set_flashdata('error', 'invalid_credentials');
 
 					// nothing more to do...
-					redirect('account', 'location');
+					redirect('account/index/2', 'location');
+				}
+			}
+		}
+		else
+		{
+			if ($this->wholesale_user_details->initialize(array('email'=>$this->input->get('email'))))
+			{
+				echo 'user is Wholelsale User<br />';
+				// auto sign in user if not already signed in
+				// set a boolean param for new or exisiting login
+				// auto activate user if he clicks on the sales package
+				if ($this->wholesale_user_details->status != '1') $this->wholesale_user_details->activate_user();
+				// set wholesale user session
+				$this->wholesale_user_details->set_session();
+
+				// record login details
+				$this->wholesale_user_details->record_login_detail();
+
+				// do notifications where necessary
+				if (ENVIRONMENT !== 'development')
+				{
+					// notify sales user
+					$this->wholesale_user_details->notify_sales_user_online();
+					// notify admin user is online
+					$this->wholesale_user_details->notify_admin_user_online();
 				}
 			}
 		}

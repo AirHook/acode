@@ -170,6 +170,27 @@ class Edit extends Admin_Controller {
 				}
 			}
 
+			// satellite sites doesn't have to post layout because
+			// on 'single_designer' layout is used for satellite sites
+			if (
+				$this->webspace_details->options['site_type'] == 'sat_site'
+				OR $this->webspace_details->options['site_type'] == 'sal_site'
+			)
+			{
+				$post_ary['layout'] = 'single_designer';
+				$_designer = array($this->webspace_details->slug);
+				$post_ary['designer'] = json_encode($_designer);
+			}
+
+			// wholesale_only_site have only one user -> wholesale users
+			if (
+				$this->webspace_details->options['wholesale_only_site'] == '1'
+				OR $this->webspace_details->slug == 'tempoparis'
+			)
+			{
+				$post_ary['users'] = 'wholesale';
+			}
+
 			// filter and jsonify designer, subject and mesesage
 			if (@$post_ary['designer'])
 			{

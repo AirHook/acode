@@ -34,7 +34,18 @@
 						<table width="100%" border="0" cellspacing="0" cellpadding="0">
 							<tr>
 								<td class="h2" style="color:#153643;font-family:sans-serif;padding: 0 0 15px 0;font-size:24px;line-height:28px;font-weight:bold;">
-                                    Hello <?php echo $webspace_id == '4' ? '%recipient.store_name%' : '%recipient_name%'; ?>,
+                                    <?php
+                                    $salutation =
+                                        $test_email
+                                        ? 'Gues (test send for '.$test_email.')'
+                                        : (
+                                            $webspace_id == '4'
+                                            ? '%recipient.store_name%'
+                                            : '%recipient_name%'
+                                        )
+                                    ;
+                                    ?>
+									Hello <?php echo $salutation; ?>,
 								</td>
 							</tr>
 							<tr>
@@ -132,8 +143,8 @@
         										echo '</tr><tr>';
         									}
 
-                                            //$access_link = base_url().'shop/basixblacklabel/womens_apparel/dresses.html?filter=&availability=onsale';
-                                            $access_link = base_url().'sales_package/link/index/X/0/'.$tc.'.html?email=%recipient_email%&items_csv='.$items_csv['mixed'];
+                                            // access link
+                                            $access_link = base_url().'sales_package/link/index/X/0/'.$tc.'.html?email='.($test_email ?: '%recipient_email%').'&items_csv='.$items_csv['mixed'];
         									?>
 
         								<td align="center" style="width:33%;vertical-align:top;padding-bottom:10px;" data-item="<?php echo $item; ?>">
@@ -151,15 +162,18 @@
         										<span style="font-size:10px;">
                                                     <?php echo $product->prod_no.' ('.$product->color_name.')'; ?>
                                                 </span>
-                                                <?php if ($product->custom_order == '3')
+                                                <?php
+                                                $unit_price = $user_role == 'ws' ? $product->wholesale_price :  $product->retail_price;
+                                                $off_price = $user_role == 'ws' ? $product->wholesale_price_clearance :  $product->retail_sale_price;
+                                                if ($product->custom_order == '3')
                                                 { ?>
                                                     <br />
                                                     <span style="font-size:10px;position:relative;top:-3px;text-decoration:line-through;">
-            											<span style="position:relative;top:3px;">$ <?php echo number_format($product->retail_price, 2); ?></span>
+            											<span style="position:relative;top:3px;">$ <?php echo number_format($unit_price, 2); ?></span>
             										</span>
                                                     <br />
             										<span style="font-size:10px;color:red;">
-            											Now $ <?php echo number_format($product->retail_sale_price, 2); ?>
+            											Now $ <?php echo number_format($off_price, 2); ?>
             										</span>
                                                     <?php
                                                 }
@@ -167,7 +181,7 @@
                                                 { ?>
                                                     <br />
                                                     <span style="font-size:10px;position:relative;top:-3px;">
-            											<span style="position:relative;top:3px;">$ <?php echo number_format($product->retail_price, 2); ?></span>
+            											<span style="position:relative;top:3px;">$ <?php echo number_format($unit_price, 2); ?></span>
             										</span>
                                                     <?php
                                                 } ?>

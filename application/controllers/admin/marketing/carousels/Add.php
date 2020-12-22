@@ -150,6 +150,8 @@ class Add extends Admin_Controller {
 			)
 			{
 				$post_ary['layout'] = 'single_designer';
+				$_designer = array($this->webspace_details->slug);
+				$post_ary['designer'] = json_encode($_designer);
 			}
 
 			// wholesale_only_site have only one user -> wholesale users

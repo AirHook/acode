@@ -93,6 +93,8 @@ class MY_Controller extends CI_Controller
 					// sales pages
 					$this->uri->uri_string() !== 'sa' &&
 					! preg_match('/(sa\/[a-zA-Z0-9.\/&=?-])\S+/', $this->uri->uri_string()) &&
+                    $this->uri->uri_string() !== 'sales_package/link' &&
+                    ! preg_match('/(sales_package\/link\/[a-zA-Z0-9.\/&=?-])\S+/', $this->uri->uri_string()) &&
 					// index
 					$this->uri->uri_string() !== 'shop/categories' &&
 					$this->uri->uri_string() !== ''

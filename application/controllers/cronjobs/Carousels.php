@@ -79,9 +79,13 @@ class Carousels extends MY_Controller {
 		//die();
 
 		// load pertinent library/model/helpers
+		//$this->load->library('webspaces/webspace_details');
 		$this->load->library('carousel/carousels_list');
 		$this->load->library('products/product_details');
 		$this->load->library('designers/designer_details');
+
+		// initialize webspace_details (since extending directly on CI_Controller)
+		//$this->webspace_details->initialize(array('domain_name'=>DOMAINNAME));
 
 		// get carousel list that are scheduled for today
 		// update 'schedule' field on carousels that are recurring after Processing
@@ -445,19 +449,22 @@ class Carousels extends MY_Controller {
 					case 'wholesale':
 						if ($carousel->webspace_id == '4') $users = array('ws_tempo@mg.shop7thavenue.com');
 						else $users = array('wholesale_users@mg.shop7thavenue.com');
+						$data['user_role'] = 'ws';
 					break;
 
 					case 'consumers':
 						$users = array('consumers@mg.shop7thavenue.com');
+						$data['user_role'] = 'cs';
 					break;
 
 					case 'all':
 					default:
 						$users = array(
 							'consumers@mg.shop7thavenue.com',
-							'wholesale_users@mg.shop7thavenue.com,'
+							'wholesale_users@mg.shop7thavenue.com',
 							'ws_tempo@mg.shop7thavenue.com'
-						)
+						);
+						$data['user_role'] = 'cs';
 				}
 
 				// set the webspace id for use on the view file
@@ -465,6 +472,13 @@ class Carousels extends MY_Controller {
 
 				// lets set the hashed time code used for the access_link so that the batch holds the same tc only
 				$data['tc'] = md5(@date('Y-m-d', $this->now));
+
+				// set test email accordingly
+				if ($test && $this->input->get('email'))
+				{
+					$data['test_email'] = $this->input->get('email');
+				}
+				else $data['test_email'] = '';
 
 				// load and set the view file
 				$content_body = $this->load->view('templates/carousel_wrapper', $data, TRUE);
@@ -526,8 +540,6 @@ class Carousels extends MY_Controller {
 				// */
 			}
 
-			die('here');
-
 			// set flash data
 			$this->session->set_flashdata('success', 'test_sent');
 
@@ -538,8 +550,8 @@ class Carousels extends MY_Controller {
 		{
 			foreach ($users as $user_grp)
 			{
-				$this->mailgun->to = $user_grp;
-				//$this->mailgun->to = 'test@mg.shop7thavenue.com';
+				//$this->mailgun->to = $user_grp;
+				$this->mailgun->to = 'test@mg.shop7thavenue.com';
 
 				//$this->mailgun->cc = $this->webspace_details->info_email;
 				//$this->mailgun->bcc = $this->CI->config->item('dev1_email');
