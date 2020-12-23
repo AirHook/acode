@@ -102,8 +102,9 @@
 										</td>
 									</tr>
 									<tr>
+                                        <!-- Up to 70% Off On Special Occasion, Prom and Evening Dresses. -->
 										<td class="bodycopy" style="color: #153643; font-family: sans-serif; font-size: 16px; line-height: 22px;">
-											Up to 70% Off On Special Occasion, Prom and Evening Dresses.
+                                            New Arrivals And On Sale ITems For Your Store.
 										</td>
 									</tr>
 								</table>
