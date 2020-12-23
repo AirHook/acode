@@ -36,10 +36,10 @@
 								<td class="h2" style="color:#153643;font-family:sans-serif;padding: 0 0 15px 0;font-size:24px;line-height:28px;font-weight:bold;">
                                     <?php
                                     $salutation =
-                                        $test_email
+                                        @$test_email
                                         ? 'Gues (test send for '.$test_email.')'
                                         : (
-                                            $webspace_id == '4'
+                                            @$webspace_id == '4'
                                             ? '%recipient.store_name%'
                                             : '%recipient_name%'
                                         )

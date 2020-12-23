@@ -501,43 +501,43 @@
                                     </div>
                                 </div>
 
-                                <!-- TEST SEND -->
-                                <div class="modal fade bs-modal-md" id="test_send-<?php echo $carousel_details->carousel_id?>" tabindex="-1" role="dialog" aria-hidden="true">
-                                    <div class="modal-dialog modal-md">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                                <h4 class="modal-title">Test Send Carousel</h4>
-                                            </div>
-                                            <div class="modal-body">
-
-                                                <!-- Carousel Name -->
-                                                <div class="form-group">
-                                                    <label class="control-label col-md-3">
-                                                        Email
-                                                    </label>
-                                                    <div class="col-md-9">
-                                                        <input type="email" name="email" data-required="1" class="form-control test-send-email" value="" data-carousel_id="<?php echo $carousel_details->carousel_id?>" />
-                                                    </div>
-                                                </div>
-
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn dark btn-outline" data-dismiss="modal" tabindex="-1">Close</button>
-                                                <button type="button" class="btn green test-send-carousel">Send</button>
-                                            </div>
-                                        </div>
-                                        <!-- /.modal-content -->
-                                    </div>
-                                    <!-- /.modal-dialog -->
-                                </div>
-                                <!-- /.modal -->
-
 							</div>
 
                             </form>
                             <!-- END  =======================================================================-->
                             <!-- END FORM-->
+
+                            <!-- TEST SEND -->
+                            <div class="modal fade bs-modal-md" id="test_send-<?php echo $carousel_details->carousel_id?>" tabindex="-1" role="dialog" aria-hidden="true">
+                                <div class="modal-dialog modal-md">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                            <h4 class="modal-title">Test Send Carousel</h4>
+                                        </div>
+                                        <div class="modal-body">
+
+                                            <!-- Carousel Name -->
+                                            <div class="form-group">
+                                                <label class="control-label col-md-3">
+                                                    Email
+                                                </label>
+                                                <div class="col-md-9">
+                                                    <input type="email" name="email" data-required="1" class="form-control test-send-email" value="" data-carousel_id="<?php echo $carousel_details->carousel_id?>" />
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn dark btn-outline" data-dismiss="modal" tabindex="-1">Close</button>
+                                            <button type="button" class="btn green test-send-carousel">Send</button>
+                                        </div>
+                                    </div>
+                                    <!-- /.modal-content -->
+                                </div>
+                                <!-- /.modal-dialog -->
+                            </div>
+                            <!-- /.modal -->
 
                         </div>
 

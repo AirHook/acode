@@ -140,22 +140,22 @@ class Edit extends Admin_Controller {
 				{
 					$days_of_the_month = explode(',', $cron_data['month']);
 					$ref_ts = array();
+					$_this_yr = date('Y', $now);
+					$this_month = date('M', $now);
+					$ts_today = strtotime('today');
 					foreach ($days_of_the_month as $day)
 					{
-						$this_month = date('M', $now);
-						$ts_today = strtotime('today');
 						if (strtotime($this_month.$day) < $ts_today)
 						{
 							$_this_mo = date('n', $now); // numeric month
 							$_next_mo = $_this_mo + 1;
-							$next_month = date('M', mktime(0, 0, 0, $_next_mo, 10));
+							$next_month = date('M', mktime(0, 0, 0, $_next_mo, $day));
 							if ($next_month == 'Jan')
 							{
-								$_this_yr = date('Y', $now);
-								$yr = ', '.$_this_yr + 1;
+								$yr = $_this_yr + 1;
 							}
 							else $yr = $_this_yr;
-							array_push($ref_ts, strtotime($next_month.$day.$yr));
+							array_push($ref_ts, strtotime($next_month.$day.', '.$yr));
 						}
 						else
 						{
@@ -205,7 +205,6 @@ class Edit extends Admin_Controller {
 			// add other variables
 			$post_ary['date_created'] = $now;
 			$post_ary['last_modified'] = $now;
-			$post_ary['webspace_id'] = $this->webspace_details->id;
 
 			// do all unsets last to ensure no error upon record insert
 			unset($post_ary['files']);

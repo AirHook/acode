@@ -112,10 +112,11 @@ class Add extends Admin_Controller {
 				{
 					$days_of_the_month = explode(',', $cron_data['month']);
 					$ref_ts = array();
+					$_this_yr = date('Y', $now);
+					$this_month = date('M', $now);
+					$ts_today = strtotime('today');
 					foreach ($days_of_the_month as $day)
 					{
-						$this_month = date('M', $now);
-						$ts_today = strtotime('today');
 						if (strtotime($this_month.$day) < $ts_today)
 						{
 							$_this_mo = date('n', $now); // numeric month
@@ -123,11 +124,10 @@ class Add extends Admin_Controller {
 							$next_month = date('M', mktime(0, 0, 0, $_next_mo, 10));
 							if ($next_month == 'Jan')
 							{
-								$_this_yr = date('Y', $now);
-								$yr = ', '.$_this_yr + 1;
+								$yr = $_this_yr + 1;
 							}
 							else $yr = $_this_yr;
-							array_push($ref_ts, strtotime($next_month.$day.$yr));
+							array_push($ref_ts, strtotime($next_month.$day.', '.$yr));
 						}
 						else
 						{
