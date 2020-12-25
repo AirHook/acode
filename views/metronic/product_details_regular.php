@@ -881,15 +881,25 @@
                                                                                         // all pre orders must use retail price
                                                                                         //
                                                                                         // 20201124 need to show preorder items
-                                                                                        //if (
-                                                                                        //    $availability != 'availability--preorder'
-                                                                                        //    //OR $this->product_details->retail_price >= '695'
-                                                                                        //)
-                                                                                        //{
-                                                                                            ?>
-
-                                                                        <?php if ($this->webspace_details->slug != 'basixblacklabel')
-                                                                        { ?>
+                                                                                        if (
+                                                                                            $availability != 'availability--preorder'
+                                                                                            OR (
+                                                                                                $availability == 'availability--preorder'
+                                                                                                && ((
+                                                                                                        $this->product_details->custom_order != '3'
+                                                                                                        && $this->product_details->retail_price >= '695'
+                                                                                                    )
+                                                                                                    OR (
+                                                                                                        $this->product_details->custom_order == '3'
+                                                                                                        && $this->product_details->retail_sale_price >= '695'
+                                                                                                    )
+                                                                                                )
+                                                                                            )
+                                                                                            //OR $this->product_details->retail_price >= '695'
+                                                                                        )
+                                                                                        {
+                                                                                            if ($this->webspace_details->slug != 'basixblacklabel')
+                                                                                            { ?>
 
                                                                         <li class="hoverable product-form__list-item" <?php echo $hide_size_xxl_xl2; ?> onmouseover="$('#<?php echo $size_stock; ?>.details.unavailable').show();$('.<?php echo $size_stock; ?>.details.admin-stocks-only').show();" onmouseout="$('#<?php echo $size_stock; ?>.details.unavailable').hide();$('.<?php echo $size_stock; ?>.details.admin-stocks-only').hide();$('span#diagonal-line-<?php echo $size_stock; ?>').show();" onclick="
     																		$('span.availability').hide();
@@ -904,29 +914,28 @@
     																		$(this).css('background-color','#ccc');
     																	">
 
-                                                                            <?php if ($this->session->userdata('user_cat') == 'wholesale')
-                                                                            { ?>
+                                                                                                <?php if ($this->session->userdata('user_cat') == 'wholesale')
+                                                                                                { ?>
 
                                                                             <span class="tooltips" data-original-title="Available Stock" style="display:inline-block;float:right;position:relative;top:7px;color:red;margin-left:7px;">
                                                                                 ( <?php echo $max_available; ?> )
                                                                             </span>
 
-                                                                                <?php
-                                                                            } ?>
+                                                                                                    <?php
+                                                                                                } ?>
 
     																		<a href="javascript:void();" class="<?php echo $a_class; ?>" style="z-index:10;">
     																			<span><?php echo $size->size_name; ?></span>
     																		</a>
     																		<span class="ico"></span>
 
-    																		<?php
-    																		if ($max_available == 0):
-
-    																			if ($this->product_details->d_folder === 'junnieleigh')
-    																			{
-    																				$product_stock_status = '5-12';
-    																			}
-    																		?>
+                        																		<?php
+                        																		if ($max_available == 0)
+                                                                                                {
+                        																			if ($this->product_details->d_folder === 'junnieleigh')
+                        																			{
+                        																				$product_stock_status = '5-12';
+                        																			} ?>
 
     																		<span id="diagonal-line-<?php echo $size_stock; ?>" class="diagonal-line"></span>
     																		<span id="<?php echo $size_stock; ?>" class="details unavailable" style="text-align:left;color:red;">
@@ -937,14 +946,15 @@
     																			From Order Date
     																		</span>
 
-    																		<?php endif; ?>
+                                                                                                    <?php
+                                                                                                } ?>
 
     																	</li>
 
-                                                                            <?php
-                                                                        }
-                                                                        else
-                                                                        { ?>
+                                                                                                <?php
+                                                                                            }
+                                                                                            else
+                                                                                            { ?>
 
                                                                         <li class="hoverable product-form__list-item basix-only" <?php echo $hide_size_xxl_xl2; ?>>
 																			<a href="#how-to-oder" class="<?php echo $a_class; ?>" data-toggle="modal" style="z-index:10;">
@@ -953,11 +963,9 @@
 																			<span class="ico"></span>
 																		</li>
 
-                                                                            <?php
-                                                                        } ?>
-
-                                                                                            <?php
-                                                                                        //}
+                                                                                                <?php
+                                                                                            }
+                                                                                        }
 																					}
 																				}
 																			}

@@ -95,7 +95,15 @@ class Details extends Frontend_Controller
 				//OR $this->product_details->publish == '0'
 				//OR $this->product_details->new_color_publish == '0'
 				! $this->product_details->with_stocks
-				&& $this->product_details->retail_price < 695
+				&& ((
+						$this->product_details->custom_order != 3
+						&& $this->product_details->retail_price < 695
+					)
+					OR (
+						$this->product_details->custom_order == 3
+						&& $this->product_details->retail_sale_price < 695
+					)
+				)
 			)
 		)
 		{

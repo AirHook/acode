@@ -295,90 +295,6 @@ class Shop_Controller extends Frontend_Controller {
         1. private items only show for help@basixblacklabel.com ws users
         // */
         if (
-            $this->session->userdata('user_role') != 'wholesale'
-            && @$_GET['availability'] != 'onsale'
-        )
-        {
-            $where_public = "(
-				(
-                    tbl_product.publish = '1'
-                    OR tbl_product.publish = '11'
-    				OR tbl_product.publish = '12'
-                ) AND (
-                    tbl_stock.new_color_publish = '1'
-                    OR tbl_stock.new_color_publish = '11'
-    				OR tbl_stock.new_color_publish = '12'
-                ) AND (
-                    tbl_stock.color_publish = 'Y'
-                )
-			)";
-            $where['condition'][] = $where_public;
-
-            /*********
-        	 * Current custom conditions for consumers users
-        	 */
-            // only with stocks as of...
-            //$where['HAVING with_stocks'] = '1';
-            // show preorder as of 20201124
-            // but still implement $695 price barrier
-            $with_stocks_and_high_priced_preorder = "(
-                ((tbl_product.size_mode = '1'
-                    AND (tsav.size_0 > '0'
-                        OR tsav.size_2 > '0'
-                        OR tsav.size_4 > '0'
-                        OR tsav.size_6 > '0'
-                        OR tsav.size_8 > '0'
-                        OR tsav.size_10 > '0'
-                        OR tsav.size_12 > '0'
-                        OR tsav.size_14 > '0'
-                        OR tsav.size_16 > '0'
-                        OR tsav.size_18 > '0'
-                        OR tsav.size_20 > '0'
-                        OR tsav.size_22 > '0'))
-                OR (tbl_product.size_mode = '0'
-                    AND (tsav.size_sxs > '0'
-                        OR tsav.size_ss > '0'
-                        OR tsav.size_sm > '0'
-                        OR tsav.size_sl > '0'
-                        OR tsav.size_sxl > '0'
-                        OR tsav.size_sxxl > '0'
-                        OR tsav.size_sxl1 > '0'
-                        OR tsav.size_sxl2 > '0'))
-                OR (tbl_product.size_mode = '2' AND (tsav.size_sprepack1221 > '0'))
-                OR (tbl_product.size_mode = '3' AND (tsav.size_ssm > '0' AND tsav.size_sml > '0'))
-                OR (tbl_product.size_mode = '4' AND (tsav.size_sonesizefitsall > '0')))
-                OR (
-                    ((tbl_product.size_mode = '1'
-                        AND (tsav.size_0 = '0'
-                            OR tsav.size_2 = '0'
-                            OR tsav.size_4 = '0'
-                            OR tsav.size_6 = '0'
-                            OR tsav.size_8 = '0'
-                            OR tsav.size_10 = '0'
-                            OR tsav.size_12 = '0'
-                            OR tsav.size_14 = '0'
-                            OR tsav.size_16 = '0'
-                            OR tsav.size_18 = '0'
-                            OR tsav.size_20 = '0'
-                            OR tsav.size_22 = '0'))
-                    OR (tbl_product.size_mode = '0'
-                        AND (tsav.size_sxs = '0'
-                            OR tsav.size_ss = '0'
-                            OR tsav.size_sm = '0'
-                            OR tsav.size_sl = '0'
-                            OR tsav.size_sxl = '0'
-                            OR tsav.size_sxxl = '0'
-                            OR tsav.size_sxl1 = '0'
-                            OR tsav.size_sxl2 = '0'))
-                    OR (tbl_product.size_mode = '2' AND (tsav.size_sprepack1221 = '0'))
-                    OR (tbl_product.size_mode = '3' AND (tsav.size_ssm > '0' AND tsav.size_sml = '0'))
-                    OR (tbl_product.size_mode = '4' AND (tsav.size_sonesizefitsall = '0')))
-                    AND tbl_product.less_discount >= '695'
-                )
-			)";
-            $where['condition'][] = $with_stocks_and_high_priced_preorder;
-        }
-        else if (
             $this->session->userdata('user_role') == 'wholesale'
             && @$_GET['availability'] == 'onsale'
         )
@@ -416,11 +332,15 @@ class Shop_Controller extends Frontend_Controller {
                 $where['condition'][] = $where_public_only;
             }
         }
-        else if (
-            $this->session->userdata('user_role') == 'consumer'
-            && @$_GET['availability'] != 'onsale'
-        )
+//        else if (
+//            $this->session->userdata('user_role') == 'consumer'
+//            && @$_GET['availability'] != 'onsale'
+//        )
+        else
         {
+            /*********
+        	 * PUBLISH PUBLIC
+        	 */
             $where_public = "(
                 (
                     tbl_product.publish = '1'
@@ -437,65 +357,72 @@ class Shop_Controller extends Frontend_Controller {
             $where['condition'][] = $where_public;
 
             /*********
-        	 * Current custom conditions for consumers users
+        	 * INSTOCK AND PREORDER FOR > 695 (RETAIL AND SALE PRICE)
         	 */
             // only with stocks as of...
             //$where['HAVING with_stocks'] = '1';
-            // show preorder as of 20201124
-            // but still implement $695 price barrier
+            // show preorder as of 20201124 only for $695 price and above
+            // NOTE: if item is onsale, sale price must still be $695 or better
             $with_stocks_and_high_priced_preorder = "(
-                ((tbl_product.size_mode = '1'
-                    AND (tsav.size_0 > '0'
-                        OR tsav.size_2 > '0'
-                        OR tsav.size_4 > '0'
-                        OR tsav.size_6 > '0'
-                        OR tsav.size_8 > '0'
-                        OR tsav.size_10 > '0'
-                        OR tsav.size_12 > '0'
-                        OR tsav.size_14 > '0'
-                        OR tsav.size_16 > '0'
-                        OR tsav.size_18 > '0'
-                        OR tsav.size_20 > '0'
-                        OR tsav.size_22 > '0'))
-                OR (tbl_product.size_mode = '0'
-                    AND (tsav.size_sxs > '0'
-                        OR tsav.size_ss > '0'
-                        OR tsav.size_sm > '0'
-                        OR tsav.size_sl > '0'
-                        OR tsav.size_sxl > '0'
-                        OR tsav.size_sxxl > '0'
-                        OR tsav.size_sxl1 > '0'
-                        OR tsav.size_sxl2 > '0'))
-                OR (tbl_product.size_mode = '2' AND (tsav.size_sprepack1221 > '0'))
-                OR (tbl_product.size_mode = '3' AND (tsav.size_ssm > '0' AND tsav.size_sml > '0'))
-                OR (tbl_product.size_mode = '4' AND (tsav.size_sonesizefitsall > '0')))
-                OR (
-                    ((tbl_product.size_mode = '1'
-                        AND (tsav.size_0 = '0'
-                            OR tsav.size_2 = '0'
-                            OR tsav.size_4 = '0'
-                            OR tsav.size_6 = '0'
-                            OR tsav.size_8 = '0'
-                            OR tsav.size_10 = '0'
-                            OR tsav.size_12 = '0'
-                            OR tsav.size_14 = '0'
-                            OR tsav.size_16 = '0'
-                            OR tsav.size_18 = '0'
-                            OR tsav.size_20 = '0'
-                            OR tsav.size_22 = '0'))
+                (
+                    (tbl_product.size_mode = '1'
+                        AND (tsav.size_0 > '0'
+                            OR tsav.size_2 > '0'
+                            OR tsav.size_4 > '0'
+                            OR tsav.size_6 > '0'
+                            OR tsav.size_8 > '0'
+                            OR tsav.size_10 > '0'
+                            OR tsav.size_12 > '0'
+                            OR tsav.size_14 > '0'
+                            OR tsav.size_16 > '0'
+                            OR tsav.size_18 > '0'
+                            OR tsav.size_20 > '0'
+                            OR tsav.size_22 > '0'))
                     OR (tbl_product.size_mode = '0'
-                        AND (tsav.size_sxs = '0'
-                            OR tsav.size_ss = '0'
-                            OR tsav.size_sm = '0'
-                            OR tsav.size_sl = '0'
-                            OR tsav.size_sxl = '0'
-                            OR tsav.size_sxxl = '0'
-                            OR tsav.size_sxl1 = '0'
-                            OR tsav.size_sxl2 = '0'))
-                    OR (tbl_product.size_mode = '2' AND (tsav.size_sprepack1221 = '0'))
-                    OR (tbl_product.size_mode = '3' AND (tsav.size_ssm > '0' AND tsav.size_sml = '0'))
-                    OR (tbl_product.size_mode = '4' AND (tsav.size_sonesizefitsall = '0')))
-                    AND tbl_product.less_discount >= '695'
+                        AND (tsav.size_sxs > '0'
+                            OR tsav.size_ss > '0'
+                            OR tsav.size_sm > '0'
+                            OR tsav.size_sl > '0'
+                            OR tsav.size_sxl > '0'
+                            OR tsav.size_sxxl > '0'
+                            OR tsav.size_sxl1 > '0'
+                            OR tsav.size_sxl2 > '0'))
+                    OR (tbl_product.size_mode = '2' AND (tsav.size_sprepack1221 > '0'))
+                    OR (tbl_product.size_mode = '3' AND (tsav.size_ssm > '0' AND tsav.size_sml > '0'))
+                    OR (tbl_product.size_mode = '4' AND (tsav.size_sonesizefitsall > '0'))
+                )
+                OR (
+                    (
+                        (tbl_product.size_mode = '1'
+                            AND (tsav.size_0 = '0'
+                                AND tsav.size_2 = '0'
+                                AND tsav.size_4 = '0'
+                                AND tsav.size_6 = '0'
+                                AND tsav.size_8 = '0'
+                                AND tsav.size_10 = '0'
+                                AND tsav.size_12 = '0'
+                                AND tsav.size_14 = '0'
+                                AND tsav.size_16 = '0'
+                                AND tsav.size_18 = '0'
+                                AND tsav.size_20 = '0'
+                                AND tsav.size_22 = '0'))
+                        OR (tbl_product.size_mode = '0'
+                            AND (tsav.size_sxs = '0'
+                                AND tsav.size_ss = '0'
+                                AND tsav.size_sm = '0'
+                                AND tsav.size_sl = '0'
+                                AND tsav.size_sxl = '0'
+                                AND tsav.size_sxxl = '0'
+                                AND tsav.size_sxl1 = '0'
+                                AND tsav.size_sxl2 = '0'))
+                        OR (tbl_product.size_mode = '2' AND (tsav.size_sprepack1221 = '0'))
+                        OR (tbl_product.size_mode = '3' AND (tsav.size_ssm > '0' AND tsav.size_sml = '0'))
+                        OR (tbl_product.size_mode = '4' AND (tsav.size_sonesizefitsall = '0'))
+                    )
+                    AND (
+                        (tbl_stock.custom_order = '3' AND tbl_product.catalogue_price >= '695')
+                        OR tbl_product.less_discount >= '695'
+                    )
                 )
 			)";
             $where['condition'][] = $with_stocks_and_high_priced_preorder;
