@@ -131,39 +131,58 @@
                                     </span>
                                 </a>
                                 <!-- Actions -->
-                                <span class="<?php echo $task->status == '2' ? 'hide' : ''; ?>" style="position:relative;top:-6px;color:<?php echo $task->status == '2' ? '#ccc' : 'black'; ?>;text-decoration:none;margin-left:10px;">
+                                <span class="<?php echo $task->status == '2' ? 'hide_' : ''; ?>" style="position:relative;top:-6px;color:<?php echo $task->status == '2' ? '#ccc' : 'black'; ?>;text-decoration:none;margin-left:10px;">
+
                                     - &nbsp;
-                                    <!-- Details -->
-                                    <a href="<?php echo $details_link; ?>" style="color:black;text-decoration:none;">
-                                        <i class="fa fa-eye small tooltips" data-original-title="View Details"></i>
-                                    </a>
-                                    <!-- Edit -->
-                                    <a href="javascript:;" style="color:black;text-decoration:none;">
-                                        <i class="fa fa-pencil small tooltips" data-original-title="Edit"></i>
-                                    </a>
-                                    <!-- Accept -->
-                                    <a data-toggle="modal" href="#accept-<?php echo $task->task_id?>" style="color:black;text-decoration:none;" data-assign="<?php echo $task->user_id; ?>" class="<?php echo $task->status != '1' ?: 'display-none'; ?>">
-                                        <i class="fa fa-check-square-o small tooltips" data-original-title="Accept Task"></i>
-                                    </a>
-                                    <!-- Unaccept -->
-                                    <a data-toggle="modal" href="#unaccept-<?php echo $task->task_id?>" style="color:black;text-decoration:none;"  data-assign="<?php echo $task->user_id; ?>" class="<?php echo $task->status == '1' ?: 'display-none'; ?>">
-                                        <i class="fa fa-minus-square-o small tooltips" data-original-title="Unaccept Task"></i>
-                                    </a>
-                                    <!-- Complete -->
-                                    <a data-toggle="modal" href="#complete-<?php echo $task->task_id?>" style="color:black;text-decoration:none;">
-                                        <i class="fa fa-check small tooltips" data-original-title="Complete"></i>
-                                    </a>
-                                    <!-- Urgent -->
-                                    <a data-toggle="modal" href="#urgent-<?php echo $task->task_id?>" style="color:black;text-decoration:none;" class="<?php echo $task->urgent != '1' ?: 'display-none'; ?>">
-                                        <i class="fa fa-exclamation-triangle small tooltips" data-original-title="Set Urgent"></i>
-                                    </a>
-                                    <a data-toggle="modal" href="#unurgent-<?php echo $task->task_id?>" style="color:red;text-decoration:none;" class="<?php echo $task->urgent == '1' ?: 'display-none'; ?>">
-                                        <i class="fa fa-exclamation-triangle small tooltips" data-original-title="Restore Normal"></i>
-                                    </a>
-                                    <!-- Delete -->
-                                    <a data-toggle="modal" href="#delete-<?php echo $task->task_id?>" style="color:black;text-decoration:none;">
-                                        <i class="fa fa-trash small tooltips" data-original-title="Delete"></i>
-                                    </a>
+
+                                    <?php if ($task->status == '2')
+                                    { ?>
+
+                                        <!-- Delete -->
+                                        <a data-toggle="modal" href="#delete-<?php echo $task->task_id?>" style="color:black;text-decoration:none;">
+                                            <i class="fa fa-trash small tooltips" data-original-title="Delete"></i>
+                                        </a>
+
+                                        <?php
+                                    }
+                                    else
+                                    { ?>
+
+                                        <!-- Details -->
+                                        <a href="<?php echo $details_link; ?>" style="color:black;text-decoration:none;">
+                                            <i class="fa fa-eye small tooltips" data-original-title="View Details"></i>
+                                        </a>
+                                        <!-- Edit -->
+                                        <a href="javascript:;" style="color:black;text-decoration:none;">
+                                            <i class="fa fa-pencil small tooltips" data-original-title="Edit"></i>
+                                        </a>
+                                        <!-- Accept -->
+                                        <a data-toggle="modal" href="#accept-<?php echo $task->task_id?>" style="color:black;text-decoration:none;" data-assign="<?php echo $task->user_id; ?>" class="<?php echo $task->status != '1' ?: 'display-none'; ?>">
+                                            <i class="fa fa-check-square-o small tooltips" data-original-title="Accept Task"></i>
+                                        </a>
+                                        <!-- Unaccept -->
+                                        <a data-toggle="modal" href="#unaccept-<?php echo $task->task_id?>" style="color:black;text-decoration:none;"  data-assign="<?php echo $task->user_id; ?>" class="<?php echo $task->status == '1' ?: 'display-none'; ?>">
+                                            <i class="fa fa-minus-square-o small tooltips" data-original-title="Unaccept Task"></i>
+                                        </a>
+                                        <!-- Complete -->
+                                        <a data-toggle="modal" href="#complete-<?php echo $task->task_id?>" style="color:black;text-decoration:none;">
+                                            <i class="fa fa-check small tooltips" data-original-title="Complete"></i>
+                                        </a>
+                                        <!-- Urgent -->
+                                        <a data-toggle="modal" href="#urgent-<?php echo $task->task_id?>" style="color:black;text-decoration:none;" class="<?php echo $task->urgent != '1' ?: 'display-none'; ?>">
+                                            <i class="fa fa-exclamation-triangle small tooltips" data-original-title="Set Urgent"></i>
+                                        </a>
+                                        <a data-toggle="modal" href="#unurgent-<?php echo $task->task_id?>" style="color:red;text-decoration:none;" class="<?php echo $task->urgent == '1' ?: 'display-none'; ?>">
+                                            <i class="fa fa-exclamation-triangle small tooltips" data-original-title="Restore Normal"></i>
+                                        </a>
+                                        <!-- Delete -->
+                                        <a data-toggle="modal" href="#delete-<?php echo $task->task_id?>" style="color:black;text-decoration:none;">
+                                            <i class="fa fa-trash small tooltips" data-original-title="Delete"></i>
+                                        </a>
+
+                                        <?php
+                                    }
+                                    ?>
 
                                 </span>
                             </div>
