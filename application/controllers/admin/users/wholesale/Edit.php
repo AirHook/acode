@@ -161,56 +161,60 @@ class Edit extends Admin_Controller {
 			if ( ! $this->validate_email($post_ary['email5'])) unset($post_ary['email5']);
 			if ( ! $this->validate_email($post_ary['email6'])) unset($post_ary['email6']);
 
-			// check if 'is_active' is changed before updating record
-			if ($this->input->post('is_active') != $this->wholesale_user_details->status)
+			// mailgun items
+			switch ($this->input->post('reference_designer'))
 			{
-				// mailgun items
-				switch ($this->input->post('reference_designer'))
-				{
-					case 'tempoparis':
-						$list_name = 'ws_tempo@mg.shop7thavenue.com';
-						$designer_name = 'Tempo Paris';
-					break;
-					case 'basixblacklabel':
-						$list_name = 'wholesale_users@mg.shop7thavenue.com';
-						$designer_name = 'Basix Black Label';
-					break;
-					default:
-						$list_name = '';
-						$designer_name = '';
-				}
+				case 'tempoparis':
+					$list_name = 'ws_tempo@mg.shop7thavenue.com';
+					$designer_name = 'Tempo Paris';
+				break;
+				case 'basixblacklabel':
+					$list_name = 'wholesale_users@mg.shop7thavenue.com';
+					$designer_name = 'Basix Black Label';
+				break;
+				case 'chaarmfurs':
+					$list_name = 'wholesale_users@mg.shop7thavenue.com';
+					$designer_name = 'Chaarm Furs';
+				break;
+				case 'issueny':
+					$list_name = 'wholesale_users@mg.shop7thavenue.com';
+					$designer_name = 'Issue New York';
+				break;
+				default:
+					$list_name = '';
+					$designer_name = '';
+			}
 
-				if ($list_name && $this->input->post('is_active') == '1')
-				{
-					// add user to mailgun list
-					// no need to validate email as these are stores
-					// force add users to mailgun
-					// use input fields to capture any updates
-					$params['address'] = $this->input->post('email');
-					$params['fname'] = $this->input->post('firstname');
-					$params['lname'] = $this->input->post('lastname');
-					$params_vars = array(
-						'designer' => $designer_name,
-						'designer_slug' => $this->input->post('reference_designer'),
-						'store_name' => $this->input->post('store_name')
-					);
-					$params['vars'] = json_encode($params_vars);
-					$params['description'] = 'Wholesale User';
-					$params['list_name'] = $list_name;
-					$this->load->library('mailgun/list_member_add', $params);
-					$res = $this->list_member_add->add();
-					$this->list_member_add->clear();
-				}
+			if ($list_name && $this->input->post('is_active') == '1')
+			{
+				// add user to mailgun list
+				// no need to validate email as these are stores
+				// force add users to mailgun
+				// use input fields to capture any updates
+				$params['address'] = $this->input->post('email');
+				$params['fname'] = $this->input->post('firstname');
+				$params['lname'] = $this->input->post('lastname');
+				$params_vars = array(
+					'designer' => $designer_name,
+					'designer_slug' => $this->input->post('reference_designer'),
+					'store_name' => $this->input->post('store_name')
+				);
+				$params['vars'] = json_encode($params_vars);
+				$params['description'] = 'Wholesale User';
+				$params['list_name'] = $list_name;
+				$this->load->library('mailgun/list_member_add', $params);
+				$res = $this->list_member_add->add();
+				$this->list_member_add->clear();
+			}
 
-				if ($list_name && $this->input->post('is_active') == '0')
-				{
-					// remove user from mailgun list
-					// using old email record to be certain its the one at mailgun
-					$params['address'] = $this->wholesale_user_details->email;
-					$params['list_name'] = $list_name;
-					$this->load->library('mailgun/list_member_delete', $params);
-					$res = $this->list_member_delete->delete();
-				}
+			if ($list_name && $this->input->post('is_active') == '0')
+			{
+				// remove user from mailgun list
+				// using old email record to be certain its the one at mailgun
+				$params['address'] = $this->wholesale_user_details->email;
+				$params['list_name'] = $list_name;
+				$this->load->library('mailgun/list_member_delete', $params);
+				$res = $this->list_member_delete->delete();
 			}
 
 			// update record

@@ -141,9 +141,17 @@ class Add extends Admin_Controller {
 						$list_name = 'wholesale_users@mg.shop7thavenue.com';
 						$designer_name = 'Basix Black Label';
 					break;
+					case 'chaarmfurs':
+						$list_name = 'wholesale_users@mg.shop7thavenue.com';
+						$designer_name = 'Chaarm Furs';
+					break;
+					case 'issueny':
+						$list_name = 'wholesale_users@mg.shop7thavenue.com';
+						$designer_name = 'Issue New York';
+					break;
 					default:
-						$list_name = '';
-						$designer_name = '';
+						$list_name = 'wholesale_users@mg.shop7thavenue.com';
+						$designer_name = $this->webspace_details->name;
 				}
 
 				if ($list_name)

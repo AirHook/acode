@@ -34,6 +34,16 @@
                                         <button class="close" data-close="alert"></button> You have some form errors. Please check below. </div>
                                     <div class="alert alert-success display-hide">
                                         <button class="close" data-close="alert"></button> Your form validation is successful! </div>
+                                    <?php if ($this->session->flashdata('success') == 'add') { ?>
+                                    <div class="alert alert-success ">
+                                        <button class="close" data-close="alert"></button> Carousel Added.
+                                    </div>
+                                    <?php } ?>
+                                    <?php if ($this->session->flashdata('success') == 'edit') { ?>
+                                    <div class="alert alert-success ">
+                                        <button class="close" data-close="alert"></button> Carousel information updated.
+                                    </div>
+                                    <?php } ?>
                                     <?php if ($this->session->flashdata('error') == 'invalid_email') { ?>
                                     <div class="alert alert-danger ">
                                         <button class="close" data-close="alert"></button> There was an error with the email address. Please try again.
@@ -310,9 +320,6 @@
                                     </div>
                                 </div>
 
-                                    <?php
-                                } ?>
-
                                 <hr class="form-group-designer <?php echo empty($carousel_details->designer) ? 'display-none' : ''; ?>" style="margin:10px 0 20px;" />
 
                                 <!-- Select Designer -->
@@ -354,6 +361,9 @@
                                         <div id="select-designer-error"></div>
                                     </div>
                                 </div>
+
+                                    <?php
+                                } ?>
 
                                 <hr style="margin:10px 0 20px;" />
 

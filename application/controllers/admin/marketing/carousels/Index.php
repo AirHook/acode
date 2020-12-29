@@ -35,7 +35,7 @@ class Index extends Admin_Controller {
 		{
 			$this->data['carousels'] = $this->carousels_list->select(
 				array(
-					'webspace_id' => $this->webspace_details->id
+					'carousels.webspace_id' => $this->webspace_details->id
 				)
 			);
 		}

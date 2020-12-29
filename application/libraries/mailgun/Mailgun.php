@@ -237,8 +237,6 @@ class Mailgun
         $this->o_tag = array();
         $this->error_message = '';
         $this->ishtml = TRUE;
-        $this->key = '';
-        $this->domain = '';
 
         return $this;
     }

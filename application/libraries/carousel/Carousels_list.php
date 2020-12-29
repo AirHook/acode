@@ -165,6 +165,8 @@ class Carousels_list
 
 		// set select items
 		$this->DB->select('carousels.*');
+		$this->DB->select('webspaces.domain_name, webspaces.webspace_name, webspaces.info_email');
+		$this->DB->join('webspaces', 'webspaces.webspace_id = carousels.webspace_id', 'left');
 		$query = $this->DB->get('carousels');
 
 		//echo $this->DB->last_query(); die();

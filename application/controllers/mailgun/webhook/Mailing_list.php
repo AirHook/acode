@@ -297,11 +297,17 @@ class Mailing_list extends MY_Controller {
 		//...
 		//echo '500, 17000<br />';
 
+		$this->DB->join('designer', 'designer.url_structure = tbluser_data_wholesale.reference_designer');
 		$this->DB->where('is_active', '1');
 		$this->DB->where('admin_sales_email', 'help@basixblacklabel.com');
 		$this->DB->where('reference_designer', 'basixblacklabel');
-		$this->DB->limit(250, 250); // 250, 250 ...
+		$this->DB->where('user_id', '14519');
+		$this->DB->or_where('user_id', '15019');
+		//$this->DB->limit(250, 250); // 250, 250 ...
 		$query = $this->DB->get('tbluser_data_wholesale');
+
+		//echo $query->num_rows();
+		//echo '<br />';
 
 		if ($query->num_rows() == 0)
 		{
@@ -311,29 +317,37 @@ class Mailing_list extends MY_Controller {
 		}
 		else
 		{
-			$undeliverable = array();
-			$users_ary = array();
+			$i = 1;
+			$members = '[';
 			foreach ($query->result() as $row)
 			{
-				// no need to validate email as these are stores
-				// force add users to mailgun
-				// set params to pass to mailgun on export
-				$user['subscribed'] = TRUE;
-				$user['description'] = 'Wholesale User';
-				$user['address'] = $row->email;
-				$user['name'] = ucwords($row->firstname.' '.$row->lastname);
+				// unable to use json encoded array as the "vars" are formatted differently
+				// create the json data manually
+				$members.= '{"address":"'.$row->email.'","subscribed":true,"name":"'.ucwords($row->firstname.' '.$row->lastname).'","vars":{"designer":"'.$row->designer.'","designer_slug":"'.$row->reference_designer.'","store_name":"'.$row->store_name.'"}}';
 
-				array_push($users_ary, $user);
+				if ($i < $query->num_rows())
+				{
+					$members.= ',';
+				}
+
+				$i++;
 			}
+			$members.= ']';
 
 			// set main email header params accordingly
 			$params['upsert'] = TRUE;
-			$params['members'] = json_encode($users_ary);
+			$params['members'] = $members;
+
+			echo '<pre>';
+			print_r($params);
+			die();
 
 			// set vars per user to be able to access it as %recipient.yourvars%
 			//$params['vars'] = '{"designer":"Basix Black Labe",...}'
+			//$response = '{}';
 
 			// let do the curl
+			/* */
 			$csess = curl_init('https://api.mailgun.net/v3/lists/wholesale_users@mg.shop7thavenue.com/members.json');
 
 			// set settings
@@ -352,6 +366,7 @@ class Mailing_list extends MY_Controller {
 
 			// close curl
 			curl_close($csess);
+			// */
 
 			// convert to array
 			$results = json_decode($response, true);
@@ -359,8 +374,6 @@ class Mailing_list extends MY_Controller {
 
 		echo '<pre>';
 		print_r($results);
-		echo '<br />';
-		print_r($undeliverable);
 		echo '<br />';
 		echo 'done';
 	}

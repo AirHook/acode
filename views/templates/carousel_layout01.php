@@ -39,7 +39,7 @@
                                         @$test_email
                                         ? 'Gues (test send for '.$test_email.')'
                                         : (
-                                            @$webspace_id == '4'
+                                            @$user_role == 'ws'
                                             ? '%recipient.store_name%'
                                             : '%recipient_name%'
                                         )
@@ -126,7 +126,7 @@
         									}
 
                                             // access link
-                                            $access_link = base_url().'sales_package/link/index/X/0/'.$tc.'.html?email='.($test_email ?: '%recipient_email%').'&items_csv='.$items_csv['mixed'];
+                                            $access_link = $domain_url.'sales_package/link/index/X/0/'.$tc.'.html?email='.($test_email ?: '%recipient_email%').'&items_csv='.$items_csv['mixed'];
         									?>
 
         								<td align="center" style="width:33%;vertical-align:top;padding-bottom:10px;" data-item="<?php echo $item; ?>">

@@ -45,7 +45,7 @@ class Unsubscribe extends MY_Controller {
 
 			// this class is to capture unsubscribed users via mailgun webhook
 			// even if this class is only for unsubscribes, we ensure by checking event being 'unsubscribed'
-			if ($data['event-data']['event'] != 'unsubscribed')
+			if ($data['event-data']['event'] != 'unsubscribed' && $data['event-data']['event'] != 'UNSUBSCRIBED')
 			{
 				echo 'Invalid event - '.$data['event-data']['event'];
 				exit;
@@ -106,6 +106,8 @@ class Unsubscribe extends MY_Controller {
 			else
 			{
 				echo 'No records found.';
+				echo '<br />';
+				print_r($data);
 				exit;
 			}
 		}

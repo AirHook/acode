@@ -74,7 +74,7 @@ class Carousels extends MY_Controller {
 			redirect('admin/marketing/carousels/edit/index/'.$test, 'location');
 		}
 
-		//echo 'Processing...<br />';
+		echo 'Start...<br />';
 		//echo 'Not done...';
 		//die();
 
@@ -83,6 +83,7 @@ class Carousels extends MY_Controller {
 		$this->load->library('carousel/carousels_list');
 		$this->load->library('products/product_details');
 		$this->load->library('designers/designer_details');
+		$this->load->library('mailgun/mailgun');
 
 		// initialize webspace_details (since extending directly on CI_Controller)
 		//$this->webspace_details->initialize(array('domain_name'=>DOMAINNAME));
@@ -111,7 +112,15 @@ class Carousels extends MY_Controller {
 		{
 			foreach ($carousels as $carousel)
 			{
-				echo 'Processing...<br />';
+				echo 'Processing '.$carousel->name.'...<br />';
+
+				/**
+				// SET DOMAIN URL
+				*/
+				// set domain url for use on access link so that when
+				// carousel is read from server through cronjob, it uses
+				// the correct domain HTTP url for the access link
+				$data['domain_url'] = 'https://www.'.$carousel->domain_name.'/';
 
 				/**
 				// GET PRIVACY NOTICE
@@ -296,40 +305,47 @@ class Carousels extends MY_Controller {
 					{
 						$days_of_the_week = explode(',', $cron_data['week']);
 						$ref_ts = array();
+						$ts_today = strtotime('today 13:00');
 						foreach ($days_of_the_week as $day)
 						{
-							// strtotime automatically generates the timestamp of the coming day
-							// and not the past day which means, all days will be in future
-							// except for today
-							array_push($ref_ts, strtotime($day));
+							// all past weekdays are set to future using strtotime function
+							if (strtotime($day) < $ts_today)
+							{
+								$next_week = strtotime($day.' + 7 days');
+								array_push($ref_ts, $next_week);
+							}
+							else
+							{
+								array_push($ref_ts, strtotime($day));
+							}
 						}
 						// sort the array to get the first next coming day at index '0'
 						sort($ref_ts);
 
 						// save the next day to schedule
-						$schedule = $ref_ts[1];
+						$schedule = count($ref_ts) > 1 ? $ref_ts[0] : $ref_ts[0];
 					}
 
 					if (@$cron_data['month'])
 					{
 						$days_of_the_month = explode(',', $cron_data['month']);
 						$ref_ts = array();
+						$_this_yr = date('Y', $this->now);
+						$this_month = date('M', $this->now);
+						$ts_today = strtotime('today 13:00');
 						foreach ($days_of_the_month as $day)
 						{
-							$this_month = date('M', $this->now);
-							$ts_today = strtotime('today');
 							if (strtotime($this_month.$day) < $ts_today)
 							{
 								$_this_mo = date('n', $this->now); // numeric month
 								$_next_mo = $_this_mo + 1;
-								$next_month = date('M', mktime(0, 0, 0, $_next_mo, 10));
+								$next_month = date('M', mktime(0, 0, 0, $_next_mo, $day));
 								if ($next_month == 'Jan')
 								{
-									$_this_yr = date('Y', $this->now);
-									$yr = ', '.($_this_yr + 1);
+									$yr = $_this_yr + 1;
 								}
 								else $yr = $_this_yr;
-								array_push($ref_ts, strtotime($next_month.$day.$yr));
+								array_push($ref_ts, strtotime($next_month.$day.', '.$yr));
 							}
 							else
 							{
@@ -340,7 +356,7 @@ class Carousels extends MY_Controller {
 						sort($ref_ts);
 
 						// save the next day to schedule
-						$schedule = $ref_ts[1];
+						$schedule = count($ref_ts) > 1 ? $ref_ts[0] : $ref_ts[0];
 					}
 
 					// update schedule field
@@ -482,103 +498,100 @@ class Carousels extends MY_Controller {
 
 				// load and set the view file
 				$content_body = $this->load->view('templates/carousel_wrapper', $data, TRUE);
+
+				/**
+				// SEND the carousel via MAILGUN or via default php mail()
+				*/
+				if ($this->input->get('email'))
+				{
+					$this->load->library('email');
+
+					$this->email->from($this->webspace_details->info_email, $this->webspace_details->name);
+					$this->email->to($this->input->get('email'));
+
+					$this->email->subject($data['subject'].' - TEST ONLY');
+					$this->email->message($content_body);
+
+					if ( ! $this->email->send())
+					{
+						/* */
+						$error = 'Unable to send.<br />';
+						$error.= $this->email->print_debugger();
+
+						echo $error;
+						exit;
+						// */
+
+						/* *
+						// set flash data
+						$this->session->set_flashdata('error', 'test_unsent');
+
+						// redirect user
+						redirect('admin/marketing/carousels/edit/index/'.$test, 'location');
+						// */
+					}
+
+					// set flash data
+					$this->session->set_flashdata('success', 'test_sent');
+
+					// redirect user
+					redirect('admin/marketing/carousels/edit/index/'.$test, 'location');
+				}
+				else
+				{
+					foreach ($users as $user_grp)
+					{
+						// set up properties
+						/* */
+						if ($data['designers'] == array('mixed'))
+						{
+							$this->mailgun->vars = array("designer" => $this->webspace_details->name, "des_slug" => $this->webspace_details->slug);
+						}
+						else
+						{
+							$the_designers = implode(', ', $data['designers']);
+							$this->mailgun->vars = array("designer" => $the_designers);
+						}
+						$this->mailgun->o_tag = $carousel->name;
+						$this->mailgun->from = $carousel->webspace_name.' <'.$carousel->info_email.'>';
+
+						$this->mailgun->to = $user_grp;
+						//$this->mailgun->to = 'test@mg.shop7thavenue.com';
+
+						//$this->mailgun->cc = $this->webspace_details->info_email;
+						//$this->mailgun->bcc = $this->CI->config->item('dev1_email');
+						$this->mailgun->subject = $data['subject'];
+						$this->mailgun->message = $content_body;
+
+						if ( ! $this->mailgun->Send())
+						{
+							$error = 'Unable to send.<br />';
+							$error .= $this->mailgun->error_message;
+
+							echo $error;
+
+							echo '<br />';
+							echo $data['subject'];
+
+							echo '<br /><br />';
+							echo $content_body;
+							//exit;
+						}
+
+						$this->mailgun->clear();
+						// */
+					}
+				}
 			}
+
+			echo 'Done<br />';
 		}
 		else
 		{
 			// nothing more to do...
 			echo 'Nothing to do...';
-			exit;
 		}
 
-		/**
-		// SEND the carousel via MAILGUN
-		*/
-		// load pertinent library/model/helpers
-		$this->load->library('mailgun/mailgun');
-
-		// set up properties
-		/* */
-		if ($data['designers'] == array('mixed'))
-		{
-			$this->mailgun->vars = array("designer" => $this->webspace_details->name, "des_slug" => $this->webspace_details->slug);
-		}
-		else
-		{
-			$the_designers = implode(', ', $data['designers']);
-			$this->mailgun->vars = array("designer" => $the_designers);
-		}
-		$this->mailgun->o_tag = $carousel->name;
-		$this->mailgun->from = $this->webspace_details->name.' <'.$this->webspace_details->info_email.'>';
-
-		if ($this->input->get('email'))
-		{
-			$this->load->library('email');
-
-			$this->email->from($this->webspace_details->info_email, $this->webspace_details->name);
-			$this->email->to($this->input->get('email'));
-
-			$this->email->subject($data['subject'].' - TEST ONLY');
-			$this->email->message($content_body);
-
-			if ( ! $this->email->send())
-			{
-				/* */
-				$error = 'Unable to send.<br />';
-				$error.= $this->email->print_debugger();
-
-				echo $error;
-				exit;
-				// */
-
-				/* *
-				// set flash data
-				$this->session->set_flashdata('error', 'test_unsent');
-
-				// redirect user
-				redirect('admin/marketing/carousels/edit/index/'.$test, 'location');
-				// */
-			}
-
-			// set flash data
-			$this->session->set_flashdata('success', 'test_sent');
-
-			// redirect user
-			redirect('admin/marketing/carousels/edit/index/'.$test, 'location');
-		}
-		else
-		{
-			foreach ($users as $user_grp)
-			{
-				//$this->mailgun->to = $user_grp;
-				$this->mailgun->to = 'test@mg.shop7thavenue.com';
-
-				//$this->mailgun->cc = $this->webspace_details->info_email;
-				//$this->mailgun->bcc = $this->CI->config->item('dev1_email');
-				$this->mailgun->subject = $data['subject'];
-				$this->mailgun->message = $content_body;
-
-				if ( ! $this->mailgun->Send())
-				{
-					$error = 'Unable to send.<br />';
-					$error .= $this->mailgun->error_message;
-
-					echo $error;
-
-					echo '<br />';
-					echo $data['subject'];
-
-					echo '<br /><br />';
-					echo $content_body;
-					exit;
-				}
-
-				$this->mailgun->clear();
-				// */
-			}
-		}
-
-		echo 'Done<br />';
 		exit;
 	}
 

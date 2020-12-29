@@ -137,28 +137,41 @@ class Edit extends Admin_Controller {
 			unset($post_ary['change-password']);
 
 			// mailgun items
-			$list_name = 'consumers@mg.shop7thavenue.com';
-			$designer_name = 'Basix Black Label / Instyle New York';
+			switch ($this->input->post('reference_designer'))
+			{
+				case 'tempoparis':
+					$list_name = 'ws_tempo@mg.shop7thavenue.com';
+					$designer_name = 'Tempo Paris';
+				break;
+				case 'basixblacklabel':
+					$list_name = 'consumers@mg.shop7thavenue.com';
+					$designer_name = 'Basix Black Label';
+				break;
+				case 'chaarmfurs':
+					$list_name = 'consumers@mg.shop7thavenue.com';
+					$designer_name = 'Chaarm Furs';
+				break;
+				case 'issueny':
+					$list_name = 'consumers@mg.shop7thavenue.com';
+					$designer_name = 'Issue New York';
+				break;
+				default:
+					$list_name = 'consumers@mg.shop7thavenue.com';
+					$designer_name = $this->webspace_details->name;
+			}
+
 			if ($list_name && $this->input->post('is_active') == '1')
 			{
-				// add user to mailgun list
-				// in future, we'll need to include an email varification process
-				// force add users to mailgun
-				// use input fields to capture any updates
 				$params['address'] = $this->input->post('email');
 				$params['fname'] = $this->input->post('firstname');
 				$params['lname'] = $this->input->post('lastname');
-				$params_vars = array(
-					'designer' => $designer_name,
-					'designer_slug' => $this->input->post('reference_designer')
-				);
-				$params['vars'] = json_encode($params_vars);
 				$params['description'] = 'Consumer User';
 				$params['list_name'] = $list_name;
 				$this->load->library('mailgun/list_member_add', $params);
 				$res = $this->list_member_add->add();
 				$this->list_member_add->clear();
 			}
+
 			if ($list_name && $this->input->post('is_active') == '0')
 			{
 				// remove user from mailgun list

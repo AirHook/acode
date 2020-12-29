@@ -95,11 +95,19 @@ class Add extends Admin_Controller {
 				{
 					$days_of_the_week = explode(',', $cron_data['week']);
 					$ref_ts = array();
+					$ts_today = strtotime('today 13:00');
 					foreach ($days_of_the_week as $day)
 					{
-						// strtotime automatically generates the timestamp of the coming day
-						// and not the past day which means, all days will be in future
-						array_push($ref_ts, strtotime($day));
+						// all past weekdays are set to future using strtotime function
+						if (strtotime($day) < $ts_today)
+						{
+							$next_week = strtotime($day.' + 7 days');
+							array_push($ref_ts, $next_week);
+						}
+						else
+						{
+							array_push($ref_ts, strtotime($day));
+						}
 					}
 					// sort the array to get the first next coming day at index '0'
 					sort($ref_ts);
@@ -114,7 +122,7 @@ class Add extends Admin_Controller {
 					$ref_ts = array();
 					$_this_yr = date('Y', $now);
 					$this_month = date('M', $now);
-					$ts_today = strtotime('today');
+					$ts_today = strtotime('today 13:00');
 					foreach ($days_of_the_month as $day)
 					{
 						if (strtotime($this_month.$day) < $ts_today)
@@ -178,6 +186,9 @@ class Add extends Admin_Controller {
 			$post_ary['date_created'] = $now;
 			$post_ary['last_modified'] = $now;
 			$post_ary['webspace_id'] = $this->webspace_details->id;
+
+			// finally, check and set the status
+			if ( ! $post_ary['status']) $post_ary['status'] = '0';
 
 			// do all unsets last to ensure no error upon record insert
 			unset($post_ary['files']);

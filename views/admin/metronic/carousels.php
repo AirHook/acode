@@ -117,7 +117,10 @@
                                     </label>
                                 </th>
                                 <th class="all"> Name </th>
-                                <th class="all" style="width:300px;"> Schedule </th>
+                                <?php if ($this->webspace_details->options['site_type'] == 'hub_site') { ?>
+                                <th class="all" style="width:120px;"> Designer/Webspace </th>
+                                <?php } ?>
+                                <th class="all" style="width:250px;"> Schedule </th>
                                 <th class="all" style="width:100px;"> Status </th>
                                 <th class="all" style="width:100px;"> Actions </th>
                             </tr>
@@ -153,6 +156,16 @@
                                         <?php echo ucwords(strtolower(@$carousel->name)); ?>
                                     </a>
                                 </td>
+                                <?php
+                                /***********
+                                 * Webspace
+                                 */
+                                if ($this->webspace_details->options['site_type'] == 'hub_site') {
+                                ?>
+                                <td>
+                                    <?php echo ucwords(strtolower(@$carousel->webspace_name)); ?>
+                                </td>
+                                <?php } ?>
                                 <?php
                                 /***********
                                  * Schedule
