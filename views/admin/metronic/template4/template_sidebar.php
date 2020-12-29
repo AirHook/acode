@@ -461,6 +461,9 @@
                             </a>
                         </li>
 
+                            <?php
+                        } ?>
+
                         <!-- =============-->
                 		<li class="heading">
                 			<h3 class="uppercase">Marketing</h3>
@@ -483,6 +486,12 @@
                 						<span class="title">Add New Carousel</span>
                 					</a>
                 				</li>
+
+                                <?php
+                                // available only on hub sites for now
+                                if ($this->webspace_details->options['site_type'] == 'hub_site')
+                                { ?>
+
                 				<li class="nav-item  ">
                 					<a href="javascript:;" class="nav-link tooltips" data-original-title="Currently Under Construction" data-placement="right">
                 						<span class="title">Wholesale Special Sale Email Carousel</span>
@@ -498,11 +507,12 @@
                 						<span class="title">Create Newsletter</span>
                 					</a>
                 				</li>
+
+                                    <?php
+                                } ?>
+
                 			</ul>
                 		</li>
-
-                            <?php
-                        } ?>
 
                         <!-- =============-->
                         <li class="heading">

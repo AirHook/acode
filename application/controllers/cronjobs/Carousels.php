@@ -134,7 +134,7 @@ class Carousels extends MY_Controller {
 							'url_structure' => 'privacy_notice',
 							'user_tag' => 'consumer',
 							'view_status' => 'Y',
-							'webspace_id' => $this->webspace_details->id
+							'webspace_id' => $carousel->webspace_id
 						)
 					)->row();
 				}
@@ -146,7 +146,7 @@ class Carousels extends MY_Controller {
 							'url_structure' => 'privacy_notice',
 							'user_tag' => 'wholesale',
 							'view_status' => 'Y',
-							'webspace_id' => $this->webspace_details->id
+							'webspace_id' => $carousel->webspace_id
 						)
 					)->row();
 				}
@@ -171,12 +171,12 @@ class Carousels extends MY_Controller {
 							'Instyle New York'
 						),
 						array(
-							$this->webspace_details->slug,
-							$this->webspace_details->slug,
-							$this->webspace_details->slug,
-							$this->webspace_details->slug,
-							ucwords(strtolower($this->webspace_details->site)),
-							ucwords(strtolower($this->webspace_details->site))
+							rtrim($carousel->domain_name, '.com'),
+							rtrim($carousel->domain_name, '.com'),
+							rtrim($carousel->domain_name, '.com'),
+							rtrim($carousel->domain_name, '.com'),
+							ucwords(strtolower($carousel->webspace_name)),
+							ucwords(strtolower($carousel->webspace_name))
 						),
 						$q->text
 					);
@@ -506,7 +506,7 @@ class Carousels extends MY_Controller {
 				{
 					$this->load->library('email');
 
-					$this->email->from($this->webspace_details->info_email, $this->webspace_details->name);
+					$this->email->from($carousel->info_email, $carousel->webspace_name);
 					$this->email->to($this->input->get('email'));
 
 					$this->email->subject($data['subject'].' - TEST ONLY');

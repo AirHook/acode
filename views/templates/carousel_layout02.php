@@ -37,7 +37,7 @@
                                     <?php
                                     $salutation =
                                         @$test_email
-                                        ? 'Gues (test send for '.$test_email.')'
+                                        ? 'Guest (test send for '.$test_email.')'
                                         : (
                                             @$user_role == 'ws'
                                             ? '%recipient.store_name%'
