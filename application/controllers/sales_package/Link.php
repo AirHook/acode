@@ -183,7 +183,6 @@ class Link extends Shop_Controller
 		{
 			if ($this->wholesale_user_details->initialize(array('email'=>$this->input->get('email'))))
 			{
-				echo 'user is Wholelsale User<br />';
 				// auto sign in user if not already signed in
 				// set a boolean param for new or exisiting login
 				// auto activate user if he clicks on the sales package
