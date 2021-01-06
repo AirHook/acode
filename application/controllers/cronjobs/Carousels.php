@@ -74,7 +74,7 @@ class Carousels extends MY_Controller {
 			redirect('admin/marketing/carousels/edit/index/'.$test, 'location');
 		}
 
-		echo 'Start...<br />';
+		echo 'Start... '.PHP_EOL;
 		//echo 'Not done...';
 		//die();
 
@@ -112,7 +112,7 @@ class Carousels extends MY_Controller {
 		{
 			foreach ($carousels as $carousel)
 			{
-				echo 'Processing '.$carousel->name.'...<br />';
+				echo 'Processing '.$carousel->name.'... '.PHP_EOL;
 
 				/**
 				// SET DOMAIN URL
@@ -515,7 +515,7 @@ class Carousels extends MY_Controller {
 					if ( ! $this->email->send())
 					{
 						/* */
-						$error = 'Unable to send.<br />';
+						$error = 'Unable to send... '.PHP_EOL;
 						$error.= $this->email->print_debugger();
 
 						echo $error;
@@ -565,15 +565,13 @@ class Carousels extends MY_Controller {
 
 						if ( ! $this->mailgun->Send())
 						{
-							$error = 'Unable to send.<br />';
+							$error = 'Unable to send... '.PHP_EOL;
 							$error .= $this->mailgun->error_message;
 
-							echo $error;
+							echo $error.PHP_EOL;
 
-							echo '<br />';
-							echo $data['subject'];
+							echo $data['subject'].PHP_EOL.PHP_EOL;
 
-							echo '<br /><br />';
 							echo $content_body;
 							//exit;
 						}
@@ -584,12 +582,12 @@ class Carousels extends MY_Controller {
 				}
 			}
 
-			echo 'Done<br />';
+			echo 'Done... '.PHP_EOL;
 		}
 		else
 		{
 			// nothing more to do...
-			echo 'Nothing to do...';
+			echo 'Nothing to do... '.PHP_EOL;
 		}
 
 		exit;
