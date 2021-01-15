@@ -737,6 +737,7 @@
 																<input type="hidden" name="label_color" value="<?php echo $this->product_details->color_name; ?>" />
 
                                                                 <input type="hidden" name="admin_stocks_only" value="<?php echo @$admin_stocks_only ?: 0; ?>" />
+                                                                <input type="hidden" name="availability" value="" />
 
 																<?php
 																/*
@@ -912,6 +913,12 @@
     																		$('input[name=\'custom_order\']').val('<?php echo $max_available == 0 ? '1' : (($hto_customer_order OR $admin_stocks_only) ? '3' : $this->product_details->custom_order); ?>');
     																		$('.hoverable.product-form__list-item').css('background-color','transparent');
     																		$(this).css('background-color','#ccc');
+                                                                            <?php if ($availability == 'availability--instock') { ?>
+                                                                            $('input[name=\'availability\']').val('instock');
+                                                                            <?php } ?>
+                                                                            <?php if ($availability == 'availability--preorder') { ?>
+                                                                            $('input[name=\'availability\']').val('preorder');
+                                                                            <?php } ?>
     																	">
 
                                                                                                 <?php if ($this->session->userdata('user_cat') == 'wholesale')

@@ -55,6 +55,7 @@ class Add_cart extends Frontend_Controller
 		$prod_sku			= $this->input->post('prod_sku');
 		$price				= $this->input->post('price');
 		$orig_price			= $this->input->post('orig_price');
+		$availability		= $this->input->post('availability');
 
 		$qty				= $this->input->post('qty');
 		$size				= $this->input->post('size');
@@ -91,7 +92,7 @@ class Add_cart extends Frontend_Controller
 		$cart_item = array(
 			'id'      => $prod_sku,
 			'qty'     => $qty,
-			'price'   => $price,
+			'price'   => ($availability == 'preorder' ? $orig_price : $price),
 			'name'    => $prod_name,
 			'options' => array(
 				'size' 				=> $size,
@@ -107,6 +108,7 @@ class Add_cart extends Frontend_Controller
 				'orig_price'		=> $orig_price,
 				'current_url'		=> $previous_url,
 				'custom_order' 		=> $custom_order,
+				'availability' 		=> $availability,
 				'admin_stocks_only' => $admin_stocks_only,
 				'sa_item' 			=> $this->input->post('package_details')
 			)
