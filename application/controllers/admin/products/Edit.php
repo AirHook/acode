@@ -309,6 +309,8 @@ class Edit extends Admin_Controller {
 		unset($post_ary['warehouse_code']);
 		unset($post_ary['admin_warehouse_code']);
 		unset($post_ary['post_to_goole']);
+		unset($post_ary['post_to_dsco']);
+		unset($post_ary['dsco_sku']);
 
 		return $post_ary;
 	}

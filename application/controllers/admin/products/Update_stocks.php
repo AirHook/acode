@@ -22,6 +22,7 @@ class Update_stocks extends Admin_Controller {
 
 		// load pertinent library/model/helpers
 		$this->load->library('products/product_details');
+		$this->load->library('api/dsco/dsco_item');
 
 		// connect to database
 		$this->DB = $this->load->database('instyle', TRUE);
@@ -44,6 +45,7 @@ class Update_stocks extends Admin_Controller {
 			)
 		);
 		$stocks_options = $this->product_details->stocks_options;
+		$size_mode = $this->product_details->size_mode;
 
 		// set options last modified
 		$stocks_options['last_modified'] = time();
@@ -96,6 +98,80 @@ class Update_stocks extends Admin_Controller {
 
 			// physical is as per input
 			$physical[$size_label] = $qty;
+
+			// stocks influences DSCO items
+			// each size is a single known unit at dsco
+			// process dsco items here
+			if ($stocks_options['post_to_dsco'])
+			{
+				switch ($size_label)
+				{
+					case 'size_sxs':
+					case 'size_0':
+					case 'size_sprepack1221':
+					case 'size_ssm':
+					case 'size_sonesizefitsall':
+						$suffix = '1';
+					break;
+					case 'size_ss':
+					case 'size_2':
+					case 'size_sml':
+						$suffix = '2';
+					break;
+					case 'size_sm':
+					case 'size_4':
+						$suffix = '3';
+					break;
+					case 'size_sl':
+					case 'size_6':
+						$suffix = '4';
+					break;
+					case 'size_sxl':
+					case 'size_8':
+						$suffix = '5';
+					break;
+					case 'size_sxxl':
+					case 'size_10':
+						$suffix = '6';
+					break;
+					case 'size_sxl1':
+					case 'size_12':
+						$suffix = '7';
+					break;
+					case 'size_sxl2':
+					case 'size_14':
+						$suffix = '8';
+					break;
+					case 'size_16':
+						$suffix = '9';
+					break;
+					default:
+						$suffix = '0';
+				}
+
+				// check if item exists at dsco
+				$this->dsco_item->dsco_sku = trim($stocks_options['dsco_sku']).'_'.$suffix;
+				$dsco_get = $this->dsco_item->get();
+
+				if ($dsco_get['status'] != 'failure')
+				{
+					if ($available[$size_label] == '0')
+					{
+						// set action to DSCO
+						$this->dsco_item->status = 'out-of-stock';
+						$this->dsco_item->qty = 0;
+					}
+					else
+					{
+						// set action to DSCO
+						$this->dsco_item->status = 'in-stock';
+						$this->dsco_item->qty = $available[$size_label];
+					}
+
+					// process DSCO API (return is an array)
+					$dsco_udpate = $this->dsco_item->update();
+				}
+			}
 		}
 
 		// insert/update available stock records where necessary

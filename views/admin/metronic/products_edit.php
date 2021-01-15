@@ -25,6 +25,11 @@
 									 */
 									?>
 									<div>
+										<?php if ($this->session->flashdata('error') == 'no_id_passed') { ?>
+										<div class="alert alert-danger auto-remove">
+											<button class="close" data-close="alert"></button> There was an error with your request. Please try again.
+										</div>
+										<?php } ?>
 										<?php if ($this->session->flashdata('success') == 'add') { ?>
 										<div class="alert alert-success auto-remove">
 											<button class="close" data-close="alert"></button> New Product ADDED! Continue edit new product now...

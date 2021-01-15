@@ -1,4 +1,4 @@
-                    <a href="<?php echo site_url('dashboard'); ?>">
+                    <a href="<?php echo site_url('admin/dashboard'); ?>">
                         <?php if (@$this->webspace_details->options['logo_light'])
                         { ?>
 

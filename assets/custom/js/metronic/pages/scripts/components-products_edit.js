@@ -676,6 +676,34 @@ var ComponentsProductEdit = function () {
 			});
         });
 
+        // Checkbox POST TO DSCO per variant
+        $('.post_to_dsco').on('change', function(){
+            // the object data holds the st_id post data, prod_id, and color_name
+			var dataObject = $(this).closest('.section-options').data('object_data');
+			// process data
+			if ($(this).is(":checked")) dataObject.options = {"post_to_dsco":$('[name="dsco_sku"]').val()};
+			else dataObject.options = {"post_to_dsco":"0","dsco_sku":$('[name="dsco_sku"]').val()};
+			$('#loading .modal-title').html('Posting...');
+			$('#loading').modal('show');
+            $.ajax({
+				type:    "POST",
+				url:     base_url + "admin/products/update_variant_options.html",
+				data:    dataObject,
+				success: function(data) {
+					//alert(data);
+					$('#loading').modal('hide');
+					//window.location.href=base_url + "admin/products/edit/index/" + prod_id;
+				},
+				// vvv---- This is the new bit
+				error:   function(jqXHR, textStatus, errorThrown) {
+					//$('#loading').modal('hide');
+					//alert("Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
+					$('#reloading').modal('show');
+					location.reload();
+				}
+			});
+        });
+
 		// color facets checkboxes
 		$('input.color_facets').on('click', function(){
 			// let get pertinent data

@@ -463,6 +463,57 @@
 									</div>
 								</div>
 
+								<div class="form-group">
+									<label class="control-label col-md-5">Post and Update at DSCO</label>
+									<div class="col-md-7">
+										<div class="mt-checkbox-inline" style="">
+											<label class="mt-checkbox mt-checkbox-outline">
+												<input type="checkbox" class="post_to_dsco" id="post_to_dsco-<?php echo $color->color_code; ?>" name="post_to_dsco[<?php echo $color->st_id; ?>]" value="1" <?php echo @$color_options['post_to_dsco'] ? 'checked': ''; ?> /> Yes
+												<span></span>
+											</label>
+											<cite class="small help-block">
+												NOTES: Previously checked items that are being unchecked will set items at DSCO to 'out-of-stock' for all sizes. Otherwise, 'in-stock' status will be posted to sizes with available quantity.
+											</cite>
+										</div>
+										<?php
+										/***********
+										 * Noification area
+										 */
+										?>
+										<div class="notifications">
+											<?php if ($this->session->flashdata('invalid_dsco_sku')) { ?>
+											<div class="alert alert-danger">
+												<i class="fa fa-warning fa-lg"></i> ...
+											</div>
+											<?php } ?>
+											<div class="alert alert-warning" style="margin-bottom:5px;">
+												Before POSTING, please check DSCO SKU# below...
+											</div>
+										</div>
+										<div class="">
+											<?php
+											$dsco_sku = @$color_options['post_to_dsco'] ?: $this->product_details->prod_no.'-'.$color->color_name;
+											?>
+											DSCO SKU: <input type="text" name="dsco_sku" value="<?php echo $dsco_sku; ?>" style="width:110px;border:1px solid #ccc;" /> <span style="color:#737373;">(_1/2/.../9)</span>
+										</div>
+										<cite class="small help-block">
+											NOTES:
+											<ul style="padding-left:10px;">
+												<li>
+													Please ensure that the above SKU matches that of DSCO SKU#.
+												</li>
+												<li>
+													Re-type SKU so that the system will save the correct SKU.
+												</li>
+												<li>
+													DO NOT include the suffix '_1' and so on...
+												</li>
+											</ul>
+										</cite>
+									</div>
+								</div>
+
+
 									<?php
 								} ?>
 

@@ -101,6 +101,35 @@ class Update_variant_options extends Admin_Controller {
 					$google_action = 'UPSERT';
 				}
 
+				// for OPTIONS['post_to_dsco'], new option item added 20201102
+				// process items for OPTIONS['post_to_dsco']
+				// ajax scripts send only 2 values - '0' or the dsco sky#, for ex, 'D9623L-BLUSH' without the suffix for the size
+				if (isset($post_ary['options']['post_to_dsco']))
+				{
+					if ($post_ary['options']['post_to_dsco'] == '0')
+					{
+						// set action to DSCO
+						$dsco_status = 'out-of-stock';
+						$dsco_sku = trim($post_ary['options']['dsco_sku']);
+
+						// unset both post and any previous option of the same index as well
+						unset($post_ary['options']['post_to_dsco']);
+						unset($options['post_to_dsco']);
+					}
+					else
+					{
+						// set action to DSCO
+						$dsco_status = 'in-stock';
+						$dsco_sku = trim($post_ary['options']['post_to_dsco']);
+					}
+
+					// process DSCO API
+					$results = $this->_post_to_dsco($dsco_sku, $dsco_status, $r1->color_code, $post_ary['prod_no']);
+
+					// for post to dsco, set flashdata array
+					$this->session->set_flashdata('success', $results);
+				}
+
 				// merge new options value
 				// other options, simply carry on...
 				$stocks_options = array_merge($options, $post_ary['options']);
@@ -307,6 +336,94 @@ class Update_variant_options extends Admin_Controller {
 				)
 			);
 			$response = $this->delete->go($delete_index);
+		}
+	}
+
+	// ----------------------------------------------------------------------
+
+	/**
+	 * POST / UPDATE TO DSCO
+	 *
+	 * @return	void
+	 */
+	private function _post_to_dsco($dsco_sku, $dsco_status, $color_code, $prod_no)
+	{
+		// load library and post to dsco
+		if (ENVIRONMENT != 'development')
+		{
+			// load pertinent library/model/helpers
+			$this->load->library('api/dsco/dsco_item');
+
+			// get product details
+			$dsco_prod_details = $this->product_details->initialize(
+				array(
+					'tbl_product.prod_no' => $prod_no,
+					'color_code' => $color_code
+				)
+			);
+
+			$ii = -1;
+			for ($i = 1; $i <= 9; $i++)
+			{
+				// check if item exists at dsco
+				$this->dsco_item->dsco_sku = $dsco_sku.'_'.$i;
+				$dsco_get = $this->dsco_item->get();
+
+				if ($dsco_get['status'] != 'failure')
+				{
+					$this->dsco_item->status = $dsco_status;
+
+					if ($dsco_status == 'out-of-stock')
+					{
+						$this->dsco_item->qty = 0;
+					}
+					else
+					{
+						if ($dsco_prod_details->size_mode == '1') $size_label = 'available_'.($i + $ii);
+						else
+						{
+							switch ($i)
+							{
+								case '1':
+									if ($dsco_prod_details->size_mode == '0') $size_label = 'available_sxs';
+									if ($dsco_prod_details->size_mode == '2') $size_label = 'available_sprepack1221';
+									if ($dsco_prod_details->size_mode == '3') $size_label = 'available_ssm';
+									if ($dsco_prod_details->size_mode == '4') $size_label = 'available_sonesizefitsall';
+								break;
+								case '2':
+									if ($dsco_prod_details->size_mode == '0') $size_label = 'available_ss';
+									if ($dsco_prod_details->size_mode == '3') $size_label = 'available_sml';
+								break;
+								case '3':
+									if ($dsco_prod_details->size_mode == '0') $size_label = 'available_sm';
+								break;
+								case '4':
+									if ($dsco_prod_details->size_mode == '0') $size_label = 'available_sl';
+								break;
+								case '5':
+									if ($dsco_prod_details->size_mode == '0') $size_label = 'available_sxl';
+								break;
+								case '6':
+									if ($dsco_prod_details->size_mode == '0') $size_label = 'available_sxxl';
+								break;
+								case '7':
+									if ($dsco_prod_details->size_mode == '0') $size_label = 'available_sxl1';
+								break;
+								case '8':
+									if ($dsco_prod_details->size_mode == '0') $size_label = 'available_sxl2';
+								break;
+							}
+						}
+						
+						$this->dsco_item->qty = $dsco_prod_details->$size_label;
+						if ($dsco_prod_details->$size_label == 0) $this->dsco_item->status = 'out-of-stock';
+					}
+
+					$dsco_udpate = $this->dsco_item->update();
+				}
+
+				$ii++;
+			}
 		}
 	}
 
