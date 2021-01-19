@@ -759,6 +759,9 @@ a.pdp--color-name {
 	.page-breadcrumb.breadcrumb.breadcrumb-thumbs {
 		margin-left: 20px;
 	}
+	.navbar-nav {
+		float: none;
+	}
 }
 @media (max-width:767px) {
 	.menu-toggler-2 {
