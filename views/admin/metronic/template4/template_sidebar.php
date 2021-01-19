@@ -59,6 +59,11 @@
                                         <span class="title">Google</span>
                                     </a>
                                 </li>
+                                <li class="nav-item  <?php echo $this->uri->segment(3) == 'dsco_stocks' ? 'active open' : ''; ?>">
+                                    <a href="<?php echo site_url('admin/products/dsco_stocks'); ?>" class="nav-link  ">
+                                        <span class="title">DSCO</span>
+                                    </a>
+                                </li>
                                     <?php
                                 } ?>
                                 <li class="nav-item  <?php echo $this->uri->segment(3) == 'unpublished' ? 'active open' : ''; ?>">

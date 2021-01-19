@@ -121,6 +121,11 @@
 									Google
 								</a>
 							</li>
+							<li class="<?php echo ($this->uri->segment(3) == 'dsco_stocks' OR $this->uri->segment(4) == 'dsco_stocks') ? 'active' : ''; ?>">
+								<a href="<?php echo site_url($link_prefix.'/products/dsco_stocks'); ?>">
+									DSCO
+								</a>
+							</li>
 							<?php } ?>
 							<li class="<?php echo ($this->uri->segment(3) == 'unpublished' OR $this->uri->segment(4) == 'unpublished') ? 'active' : ''; ?>">
 								<a href="<?php echo site_url($link_prefix.'/products/unpublished'); ?>">

@@ -681,8 +681,8 @@ var ComponentsProductEdit = function () {
             // the object data holds the st_id post data, prod_id, and color_name
 			var dataObject = $(this).closest('.section-options').data('object_data');
 			// process data
-			if ($(this).is(":checked")) dataObject.options = {"post_to_dsco":$('[name="dsco_sku"]').val()};
-			else dataObject.options = {"post_to_dsco":"0","dsco_sku":$('[name="dsco_sku"]').val()};
+			if ($(this).is(":checked")) dataObject.options = {"post_to_dsco":$('#dsco_sku-'+dataObject.color_code).val(),"dsco_sku":$('#dsco_sku-'+dataObject.color_code).val()};
+			else dataObject.options = {"post_to_dsco":"0","dsco_sku":$('#dsco_sku-'+dataObject.color_code).val()};
 			$('#loading .modal-title').html('Posting...');
 			$('#loading').modal('show');
             $.ajax({

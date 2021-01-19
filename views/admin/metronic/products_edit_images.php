@@ -307,7 +307,7 @@
 						 * Options
 						 */
 						?>
-						<div class="row section-options" data-color_code="<?php echo $color->color_code; ?>" data-base_url="<?php echo base_url(); ?>" data-st_id="<?php echo $color->st_id; ?>" data-primary_color="<?php echo $color->color_code == $this->product_details->primary_img_id ? 'true' : 'false'; ?>" data-object_data='{"st_id":"<?php echo $color->st_id; ?>","prod_id":"<?php echo $this->product_details->prod_id; ?>","<?php echo $this->security->get_csrf_token_name(); ?>":"<?php echo $this->security->get_csrf_hash(); ?>","prod_no":"<?php echo $this->product_details->prod_no; ?>","color_name":"<?php echo $color->color_name; ?>"}'>
+						<div class="row section-options" data-color_code="<?php echo $color->color_code; ?>" data-base_url="<?php echo base_url(); ?>" data-st_id="<?php echo $color->st_id; ?>" data-primary_color="<?php echo $color->color_code == $this->product_details->primary_img_id ? 'true' : 'false'; ?>" data-object_data='{"st_id":"<?php echo $color->st_id; ?>","prod_id":"<?php echo $this->product_details->prod_id; ?>","<?php echo $this->security->get_csrf_token_name(); ?>":"<?php echo $this->security->get_csrf_hash(); ?>","prod_no":"<?php echo $this->product_details->prod_no; ?>","color_name":"<?php echo $color->color_name; ?>","color_code":"<?php echo $color->color_code; ?>"}'>
 
 							<div class="col-xs-12">
 
@@ -494,7 +494,7 @@
 											<?php
 											$dsco_sku = @$color_options['post_to_dsco'] ?: $this->product_details->prod_no.'-'.$color->color_name;
 											?>
-											DSCO SKU: <input type="text" name="dsco_sku" value="<?php echo $dsco_sku; ?>" style="width:110px;border:1px solid #ccc;" /> <span style="color:#737373;">(_1/2/.../9)</span>
+											DSCO SKU: <input type="text" name="dsco_sku" id="dsco_sku-<?php echo $color->color_code; ?>" value="<?php echo $dsco_sku; ?>" style="width:110px;border:1px solid #ccc;" /> <span style="color:#737373;">(_1/2/.../9)</span>
 										</div>
 										<cite class="small help-block">
 											NOTES:
