@@ -31,7 +31,7 @@ class Contact extends Frontend_Controller {
 		$this->load->library('form_validation');
 
 		// set validation rules
-		$this->form_validation->set_rules('fname', 'Frist Name', 'trim|required');
+		$this->form_validation->set_rules('fname', 'Frist Name', 'trim|alpha_numeric_spaces|required');
 		$this->form_validation->set_rules('lname', 'Last Name', 'trim|alpha|differs[fname]|required');
 		$this->form_validation->set_rules('state', 'State', 'trim|required');
 		$this->form_validation->set_rules('country', 'Country', 'trim|required');
@@ -91,7 +91,7 @@ class Contact extends Frontend_Controller {
 				$this->email->from($this->webspace_details->info_email, $this->webspace_details->name);
 
 				$this->email->to($this->webspace_details->info_email);
-				//$this->email->cc($this->config->item('dev1_email'));
+				$this->email->cc($this->config->item('dev1_email'));
 
 				$this->email->subject($this->webspace_details->name.' - Contact Us Inquiry');
 				$this->email->message($message);
@@ -170,6 +170,12 @@ class Contact extends Frontend_Controller {
 		}
 		else
 		{
+			if ($str == 'sample@email.tst')
+			{
+				$this->form_validation->set_message('validate_email', 'The Email field must contain a valid email address.');
+				return FALSE;
+			}
+
 			if ( ! filter_var($str, FILTER_VALIDATE_EMAIL))
 			{
 				$this->form_validation->set_message('validate_email', 'The Email field must contain a valid email address.');

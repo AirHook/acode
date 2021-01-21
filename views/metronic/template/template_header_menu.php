@@ -1,3 +1,14 @@
+                        <?php
+                        if ($this->agent->is_browser('Safari'))
+                        { ?>
+                            <style>
+                            .navbar-nav {
+                    			float: none;
+                    		}
+                            </style>
+                            <?php
+                        }
+                        ?>
                         <!-- BEGIN HEADER MENU -->
                         <div class="page-header-menu">
 							<!-- DOC: change between class "container-fluid" and "container" for fluid or boxed layout -->

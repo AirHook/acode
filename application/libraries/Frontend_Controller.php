@@ -13,6 +13,7 @@ class Frontend_Controller extends MY_Controller {
 		parent::__construct();
 
 		// load pertinent library/model/helpers
+		$this->load->library('user_agent');
 		$this->load->library('designers/designer_details');
 		$this->load->library('categories/categories_tree');
 		$this->load->library('designers/designers_list');
@@ -68,7 +69,7 @@ class Frontend_Controller extends MY_Controller {
 			$mcatparams['with_products'] = TRUE;
 		}
 		$this->data['main_categories'] = $this->categories_tree->treelist($mcatparams);
-		
+
 		// while we have identified the main categories under womens apparel
 		// we will need to come up with a solution to decouple this system
 		$this->data['dresses_subcats'] = $this->categories_tree->get_children('161');

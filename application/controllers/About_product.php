@@ -110,6 +110,12 @@ class About_product extends Frontend_Controller {
 			$invalid = TRUE;
 			$errtype = 2;
 		}
+		if ($email1 == 'sample@email.tst')
+		{
+			$destination = $return_url ? base_url().$return_url.'.html' : site_url();
+			$invalid = TRUE;
+			$errtype = 2;
+		}
 
 		// valid dress size
 		if ( preg_match("/[DD]/", $dress_size))
