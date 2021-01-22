@@ -170,7 +170,11 @@ class Contact extends Frontend_Controller {
 		}
 		else
 		{
-			if ($str == 'sample@email.tst')
+			$email_ary = array(
+				'sample@email.tst',
+				'oliverwilkerson36@gmail.com'
+			);
+			if (in_array($str, $email_ary))
 			{
 				$this->form_validation->set_message('validate_email', 'The Email field must contain a valid email address.');
 				return FALSE;
