@@ -172,7 +172,8 @@ class Contact extends Frontend_Controller {
 		{
 			$email_ary = array(
 				'sample@email.tst',
-				'oliverwilkerson36@gmail.com'
+				'oliverwilkerson36@gmail.com',
+				'kennethsanders5649@gmail.com'
 			);
 			if (in_array($str, $email_ary))
 			{

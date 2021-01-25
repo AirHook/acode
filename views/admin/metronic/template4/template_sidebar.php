@@ -231,7 +231,7 @@
 
                         <?php
                         // available only on hub sites for now
-                        if ($this->webspace_details->options['site_type'] == 'hub_site' OR $this->webspace_details->slug = 'tempoparis')
+                        if ($this->webspace_details->options['site_type'] == 'hub_site' OR $this->webspace_details->slug == 'tempoparis')
                         { ?>
                         <!-- =============-->
                         <li class="heading">
