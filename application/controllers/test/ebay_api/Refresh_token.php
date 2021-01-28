@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Get_access_token extends MY_Controller {
+class Refresh_token extends MY_Controller {
 
 	/**
 	 * DB Object
@@ -48,18 +48,12 @@ class Get_access_token extends MY_Controller {
 		//$oauth_credentials = base64_encode('ReySteph-InstyleN-SBX-1f785c336-b4fb021f:SBX-f785c3366a3d-ba19-4863-ba5f-84de'); // sandbox
 		$oauth_credentials = base64_encode('ReySteph-InstyleN-PRD-1f785c25d-adfce627:PRD-f785c25d85e8-71a6-480a-9f3b-0c6c');
 
-		// user token
-		$user_token = "v%5E1.1%23i%5E1%23I%5E3%23r%5E1%23p%5E3%23f%5E0%23t%5EUl41XzU6MkZGN0E0RTY0NTZDNkMzMTI3NzU2NEJEOTgzMTFDRTRfMl8xI0VeMjYw";
-
-		// post data
-		// 'grant_type' from https://developer.ebay.com/api-docs/static/oauth-client-credentials-grant.html
-		//$params['grant_type'] = 'authorization_code'; // client_credentials, authorization_code
-		//$params['redirect_uri'] = 'Rey_Stephen_Mil-ReySteph-Instyl-wqvqxmhd';
-		//$params['code'] = $user_token;
+		// refresh token
+		// taken from when gettin access token
+		$refresh_token = "v^1.1#i^1#I^3#p^3#f^0#r^1#t^Ul4xMF84OjhBNEQwOTA0QjBDRDZGQzc1QjYzNDIwMkY4MDI0MjhCXzFfMSNFXjI2MA==";
 
 		// configure the request payload
-		$params = 'grant_type=authorization_code&redirect_uri=Rey_Stephen_Mil-ReySteph-Instyl-wqvqxmhd&code='.$user_token;
-
+		$params = 'grant_type=refresh_token&refresh_token='.$refresh_token.'&scope=https://api.ebay.com/oauth/api_scope https://api.ebay.com/oauth/api_scope/sell.marketing.readonly https://api.ebay.com/oauth/api_scope/sell.marketing https://api.ebay.com/oauth/api_scope/sell.inventory.readonly https://api.ebay.com/oauth/api_scope/sell.inventory https://api.ebay.com/oauth/api_scope/sell.account.readonly https://api.ebay.com/oauth/api_scope/sell.account https://api.ebay.com/oauth/api_scope/sell.fulfillment.readonly https://api.ebay.com/oauth/api_scope/sell.fulfillment https://api.ebay.com/oauth/api_scope/sell.analytics.readonly https://api.ebay.com/oauth/api_scope/sell.finances https://api.ebay.com/oauth/api_scope/sell.payment.dispute https://api.ebay.com/oauth/api_scope/commerce.identity.readonly';
 
 
 		// set HTTP request headers
@@ -85,26 +79,23 @@ class Get_access_token extends MY_Controller {
 		// convert to array
         $results1 = json_decode($response1, true);
 
-		// access token successful response
+		// refresh token successful response
 		// new access token valid for 2 hours
-		// with refresh_token that has a long validity for user to renew User access token
 		/*
 		Array (
 			[access_token] =>
-			[expires_in] => 7200 // 2 hours
-			[refresh_token] =>
-			[refresh_token_expires_in] => 47304000 // about 547.5 days
+			[expires_in] => 7200
 			[token_type] => User Access Token
 		)
 		*/
 
-		// failed access token request
+		// refresh token request fail
 		/*
 		Array
 		(
 		    [error] => invalid_grant
-		    [error_description] => the provided authorization grant code is invalid or was issued to another client
-		)		
+		    [error_description] => the provided authorization refresh token is invalid or was issued to another client
+		)
 		*/
 
 		echo '<pre>';

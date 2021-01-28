@@ -4,21 +4,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Feed extends MY_Controller {
 
 	/**
-	 * Google Base URL
-	 *
-	 * @var	string
-	 */
-	protected $base_url = 'https://www.googleapis.com/content/v2.1/';
-
-	/**
-	 * Google Merchant ID
-	 *
-	 * @var	string
-	 */
-	protected $merchant_id = '6568666';
-
-
-	/**
 	 * DB Object
 	 *
 	 * @var	object
@@ -53,51 +38,164 @@ class Feed extends MY_Controller {
 	{
 		// load pertinent library/model/helpers
 		//$this->load->library('api/google/google_api');
-		//$this->load->library('accounts/account_details');
+		$this->load->library('api/ebay/ebay_auth');
 
-		// initialize google OAuth authorization
-		//$access_token = $this->google_api->initialize();
+		if ( ! $this->ebay_auth->valid)
+		{
+			echo 'Access token no longer valid<br />';
 
-		// user token
-		$access_token = "
-		v^1.1#i^1#r^0#f^0#I^3#p^3#t^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
+			// let us remember the page being accessed other than index
+			if (@$_GET)
+			{
+				// remove empty $_GET array elements
+				$_GET = array_filter($_GET, function($value) { return $value !== ''; });
 
-		";
+				foreach ($_GET as $key => $val)
+				{
+					$this->filter_items_count += count(explode(',', $_GET[$key]));
+				}
 
-		// post data
-		// 'grant_type' from https://developer.ebay.com/api-docs/static/oauth-client-credentials-grant.html
-		//$params['grant_type'] = 'authorization_code'; // client_credentials, authorization_code
-		//$params['code'] = $user_token;
-		//$params['scope'] = urlencode('https://api.ebay.com/oauth/api_scope');
-		//$params['redirect_uri'] = 'Rey_Stephen_Mil-ReySteph-Instyl-wqvqxmhd';
+				$get = http_build_query($_GET);
 
-		// Google Content API v2.1 references (commands and request methods) for Products
-		// https://developers.google.com/shopping-content/reference/rest/v2.1/products/list
-		// query parameters
-		//		maxResults (int) - The maximum number of products to return in the response, used for paging.
-		//		pageToken (string) - The token returned by the previous request.
-		/* *
-		$url1 = 'https://www.googleapis.com/content/v2.1/'
-			.$this->merchant_id
-			.'/products?maxResults=100'
-		;
-		// */
-		//$url1 = 'https://api.sandbox.ebay.com/identity/v1/oauth2/token'; // sandbox
-		//$url1 = 'https://api.ebay.com/identity/v1/oauth2/token';
-		$url1 = 'https://api.ebay.com/sell/inventory/v1/inventory_item/D6545L';
-		//$url1 = 'https://api.ebay.com/sell/inventory/v1/inventory_item';
-		//$url1 = 'https://api.ebay.com/sell/inventory/v1/inventory_item/T5448_GUNM1';
+				$this->session->set_userdata('ebay_access_uri', site_url($this->uri->uri_string()).'?'.http_build_query($_GET));
+			}
+			else
+			{
+				$this->session->set_userdata('ebay_access_uri', $this->uri->uri_string());
+			}
 
-		$csess1 = curl_init($url1);
+			// redirect to login page
+			//redirect('admin/api/ebay_user_token', 'location');
+		}
 
-		$headers = array(
-			'Authorization: Bearer '.$access_token
+		// let's work on D6545L NAVY (D6545L_NAVY1)
+		$this->load->library('products/product_details');
+		$product_details = $this->product_details->initialize(
+			array(
+				'tbl_product.prod_no' => 'D6545L',
+				'color_code' => 'NAVY1'
+			)
 		);
 
-		curl_setopt($csess1, CURLOPT_HTTPHEADER, $headers);
-		//curl_setopt($csess1, CURLOPT_POST, true);
-        //curl_setopt($csess1, CURLOPT_POSTFIELDS, json_encode($params));
+		// front image link, and, additional image links of other views
+		$addlImageLinks[0] =
+			$product_details->media_path
+			.$product_details->prod_no.'_'.$product_details->color_code
+			.'_f.jpg'
+		;
+		$addlImageLinks[1] =
+			$product_details->media_path
+			.$product_details->prod_no.'_'.$product_details->color_code
+			.'_b.jpg'
+		;
+		$addlImageLinks[2] =
+			$product_details->media_path
+			.$product_details->prod_no.'_'.$product_details->color_code
+			.'_s.jpg'
+		;
+		$imageLinks = array();
+		foreach ($addlImageLinks as $addlImageLink)
+		{
+			if (file_exists($addlImageLink))
+			{
+				array_push($imageLinks, $this->config->item('PROD_IMG_URL').$addlImageLink);
+			}
+		}
+
+		// set SKU
+		// suffix is the size with available qty
+		$size = '4';
+		$sku = $product_details->prod_no.'_'.$product_details->color_code.'_'.$size;
+		$prod_no = $product_details->prod_no;
+		$color_code = $product_details->color_code;
+		$color_name = $product_details->color_name;
+		$qty = 1; // of specific size (in this case, size_4)
+		$brand = $product_details->designer_name;
+		$desc = $product_details->prod_desc ?: $product_details->prod_name;
+		$title = $product_details->prod_name;
+
+		// set payload using product details
+		//$payload = '[{"availability": {"shipToLocationAvailability": {"quantity": '.$qty.'}},"condition": "NEW","product": {"aspects": {"Size": ["'.$size.'"],"Prod No": ["'.$prod_no.'"],"Color": ["'.$color_name.'"],"Color Code": ["'.$color_code.'"]},"brand": "'.$brand.'","description": "'.$desc.'","imageUrls": ["'.implode('","', $imageLinks).'"],"title": "'.$title.'"}}]';
+		$payload = '{"availability": {"shipToLocationAvailability": {"quantity": '.$qty.'}},"condition": "NEW","product": {"brand": "'.$brand.'","description": "'.$desc.'","imageUrls": ["'.implode('","', $imageLinks).'"],"title": "'.$title.'"}}';
+
+		//echo $payload;
+
+		// uri endpoint
+		$url = 'https://api.ebay.com/sell/inventory/v1/inventory_item/'.$sku; // D6545L D6626L
+
+		// set HTTP request headers
+		$headers = array(
+			'Authorization: Bearer '.$this->ebay_auth->access_token,
+			'Content-Type: application/json',
+			'Content-Language: en-US'
+		);
+
+		$csess = curl_init($url);
+
+		curl_setopt($csess, CURLOPT_HTTPHEADER, $headers);
+		curl_setopt($csess, CURLOPT_CUSTOMREQUEST, 'PUT');
+        curl_setopt($csess, CURLOPT_POSTFIELDS, $payload);
+		curl_setopt($csess, CURLOPT_RETURNTRANSFER, TRUE);
+
+		// get response
+        $response = curl_exec($csess);
+
+        // close curl
+        curl_close($csess);
+
+		// convert to array
+        $results = json_decode($response, true);
+
+		echo '<pre>';
+		print_r($results);
+		//echo '...<br />';
+		//echo $response;
+		echo '<br />';
+		echo '<br />';
+
+		// request successful response
+		//
+		/*
+		Array (
+			[access_token] =>
+			[expires_in] => 7200
+			[token_type] => User Access Token
+		)
+		*/
+
+		// request fail
+		/*
+		Array
+		(
+		    [errors] => Array
+		        (
+		            [0] => Array
+		                (
+		                    [errorId] => 1003
+		                    [domain] => OAuth
+		                    [category] => REQUEST
+		                    [message] => Token type in the Authorization header is invalid:Basic
+		                    [longMessage] => Token type in the Authorization header is invalid:Basic
+		                )
+
+		        )
+
+		)
+		*/
+
+
+		// now let us get inventory
+		// set HTTP request headers
+		$headers1 = array(
+			'Authorization: Bearer '.$this->ebay_auth->access_token,
+			'Content-Type: application/json'
+		);
+
+		$csess1 = curl_init($url);
+
+		curl_setopt($csess1, CURLOPT_HTTPHEADER, $headers1);
 		curl_setopt($csess1, CURLOPT_RETURNTRANSFER, TRUE);
+		//curl_setopt($csess1, CURLOPT_HEADER, TRUE);
 
 		// get response
         $response1 = curl_exec($csess1);
@@ -110,9 +208,20 @@ class Feed extends MY_Controller {
 
 		echo '<pre>';
 		print_r($results1);
+		//echo '...<br />';
 		//echo $response1;
+		//var_dump($response1);
 		echo '<br />';
 		echo '<br />';
+
+
+		/*
+		https://forums.developer.ebay.com/questions/21137/seller-hub-does-not-show-inventory-items-created-t.html
+		"…that Inventory SKUs created via new API Inventory API are not currently supported in UI."
+		NOTE:
+		The above create/update inventory is successful and the get inventory returns what was uploaded/updated.
+		Still, cannot see the items at seller hub.  Bummer.
+		*/
 
 
 		echo 'Done';

@@ -65,13 +65,24 @@ class Instock extends Sales_user_Controller {
 		$this->data['view_as'] = 'sales_products_grid'; // products_grid, products_list, products_nestable_list
 		$this->data['order_by'] = 'prod_date';
 
-		// for categories, user sales user reference designer
-		$this->data['categories'] = $this->categories_tree->treelist(
-			array(
-				'with_products' => TRUE,
-				'd_url_structure' => $this->sales_user_details->designer
-			)
-		);
+		// for categories, we check conditions of site type
+		if ($this->webspace_details->options['site_type'] == 'hub_site')
+		{
+			$this->data['categories'] = $this->categories_tree->treelist(
+				array(
+					'with_products' => TRUE
+				)
+			);
+		}
+		else
+		{
+			$this->data['categories'] = $this->categories_tree->treelist(
+				array(
+					'with_products' => TRUE,
+					'd_url_structure' => $this->webspace_details->slug
+				)
+			);
+		}
 		$this->data['number_of_categories'] = $this->categories_tree->row_count;
 
 		// get the last segment which will serve as the category_slug in reference for the product list
@@ -118,7 +129,7 @@ class Instock extends Sales_user_Controller {
 				$redirect_url =
 					$prev_url_segs
 					? 'my_account/sales/products/instock/index'.$prev_url_segs
-					: 'my_account/sales/products/instock/index/womens_apparel/dresses/evening_dresses'
+					: 'my_account/sales/products/instock/index/womens_apparel'
 				;
 			}
 			else
@@ -126,7 +137,7 @@ class Instock extends Sales_user_Controller {
 				$redirect_url =
 					$prev_url_segs
 					? 'my_account/sales/products/instock/index'.$prev_url_segs
-					: 'my_account/sales/products/instock/index/womens_apparel/dresses/evening_dresses'
+					: 'my_account/sales/products/instock/index/womens_apparel'
 				;
 			}
 
@@ -148,17 +159,24 @@ class Instock extends Sales_user_Controller {
 		}
 		else $where['tbl_product.categories LIKE'] = $category_id;
 
-		$where['tbl_stock.options NOT LIKE'] = '"clearance_consumer_only":"1"';
+		$where['tbl_stock.color_publish'] = 'Y';
+		$where['tbl_stock.new_color_publish'] = '1';
+
+		// sales user level 1 can see cs clearance
+		if ($this->sales_user_details->access_level == '2')
+		{
+			$where['tbl_stock.options NOT LIKE'] = '"clearance_consumer_only":"1"';
+		}
 
 		// get the products list and total count
-		$params['show_private'] = FALSE; // all items general public (Y) - N for private
+		$params['show_private'] = TRUE; // all items general public (Y) - N for private
 		$params['view_status'] = 'ALL'; // all items view status (Y, Y1, Y2, N)
 		$params['view_at_hub'] = TRUE; // all items general public at hub site
 		$params['view_at_satellite'] = TRUE; // all items publis at satellite site
 		$params['variant_publish'] = 'ALL'; // all items at variant level publish (view status)
 		$params['variant_view_at_hub'] = TRUE; // variant level public at hub site
 		$params['variant_view_at_satellite'] = TRUE; // varian level public at satellite site
-		$params['with_stocks'] = TRUE; // FALSE - Show all with and without stocks
+		$params['with_stocks'] = FALSE; // FALSE - Show all with and without stocks
 		$params['group_products'] = FALSE; // group per product number or per variant
 		$params['special_sale'] = FALSE; // special sale items only
 		$params['pagination'] = $this->data['page']; // get all in one query
@@ -179,7 +197,7 @@ class Instock extends Sales_user_Controller {
 		$this->data['page_param'] = 'instock';
 
 		// enable pagination
-		$this->_set_pagination($this->data['count_all'], $this->data['limit']);
+		$this->_set_pagination($this->data['count_all'], $this->data['limit'], implode('/', $url_segs));
 
 		// breadcrumbs
 		$this->data['page_breadcrumb'] = array(
@@ -242,7 +260,7 @@ class Instock extends Sales_user_Controller {
 		$config['cur_tag_open'] = '<li class="active"><a href="javascript:;">';
 		$config['cur_tag_close'] = '</a></li>';
 		$config['first_link'] = '<i class="fa fa-angle-double-left"></i>';
-		$config['first_url'] = site_url($uri_string);
+		$config['first_url'] = site_url(implode('/',$uri_string));
 		$config['first_tag_open'] = '<li>';
 		$config['first_tag_close'] = '</li>';
 		$config['last_link'] = '<i class="fa fa-angle-double-right"></i>';

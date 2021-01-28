@@ -13,23 +13,41 @@ if (@$role == 'sales')
 			<h3 class="uppercase">Products</h3>
 		</li>
 		<li class="nav-item with-heading <?php echo $this->uri->segment(3) == 'products' ? 'active' : ''; ?>">
-			<!--<a href="<?php echo site_url('my_account/sales/products'); ?>" class="nav-link ">-->
-			<a href="javascript:;" class="nav-link ">
+			<a href="<?php echo site_url('my_account/sales/products'); ?>" class="nav-link ">
 				<span class="title uppercase">All Products</span>
 				<span class="arrow <?php echo $this->uri->segment(3) == 'products' ? 'open' : 'open'; ?>"></span>
 			</a>
 			<ul class="sub-menu always-open">
-				<!--
 				<li class="nav-item  <?php echo $this->uri->segment(4) == 'is_public' ? 'active open' : ''; ?>">
-					<!--<a href="<?php echo site_url('my_account/sales/products/is_public'); ?>" class="nav-link  ">--
-					<a href="javascript:;" class="nav-link tooltips" data-original-title="Currently Under Construction" data-placement="right">
-						<span class="title">Products</span>
+					<a href="<?php echo site_url('my_account/sales/products/is_public'); ?>" class="nav-link  ">
+						<span class="title">Public</span>
+					</a>
+				</li>
+				<li class="nav-item  <?php echo $this->uri->segment(4) == 'not_public' ? 'active open' : ''; ?>">
+					<a href="<?php echo site_url('my_account/sales/products/not_public'); ?>" class="nav-link  ">
+						<span class="title">Private</span>
+					</a>
+				</li>
+				<li class="nav-item  <?php echo $this->uri->segment(4) == 'clearance' ? 'active open' : ''; ?>">
+					<a href="<?php echo site_url('my_account/sales/products/clearance'); ?>" class="nav-link  ">
+						<span class="title">On Sale</span>
+					</a>
+				</li>
+				<!--
+				<li class="nav-item  <?php echo $this->uri->segment(4) == 'clearance_cs_only' ? 'active open' : ''; ?>">
+					<a href="<?php echo site_url('my_account/sales/products/clearance_cs_only'); ?>" class="nav-link  ">
+						<span class="title">Clearance CS Only</span>
 					</a>
 				</li>
 				-->
+				<li class="nav-item  <?php echo $this->uri->segment(4) == 'unpublished' ? 'active open' : ''; ?>">
+					<a href="<?php echo site_url('my_account/sales/products/unpublished'); ?>" class="nav-link  ">
+						<span class="title">Unpublished</span>
+					</a>
+				</li>
 				<li class="nav-item  <?php echo $this->uri->segment(4) == 'instock' ? 'active open' : ''; ?>">
 					<a href="<?php echo site_url('my_account/sales/products/instock'); ?>" class="nav-link  ">
-						<span class="title">Products</span>
+						<span class="title">In Stock</span>
 					</a>
 				</li>
 				<li class="nav-item  ">

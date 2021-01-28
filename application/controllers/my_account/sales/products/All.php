@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Is_public extends Sales_user_Controller {
+class All extends Sales_user_Controller {
 
 	/**
 	 * Constructor
@@ -37,12 +37,12 @@ class Is_public extends Sales_user_Controller {
 		$this->session->set_flashdata('thumbs_uri_string', $this->uri->uri_string());
 		$uri_string = explode('/', $this->uri->uri_string());
 
-		// let's remove the first series of segment array
+		// let's remove the first series of segments from the resulting array
 		$this->data['url_segs'] = $uri_string;
 		array_shift($this->data['url_segs']); // my_account
 		array_shift($this->data['url_segs']); // sales
 		array_shift($this->data['url_segs']); // products
-		array_shift($this->data['url_segs']); // index/all/private/unpublished/instock/onorder/clearance/by_vendor
+		array_shift($this->data['url_segs']); // all/private/unpublished/instock/onorder/clearance/by_vendor
 		array_shift($this->data['url_segs']); // index
 
 		// we need a real variable to process some calculations
@@ -128,16 +128,16 @@ class Is_public extends Sales_user_Controller {
 			{
 				$redirect_url =
 					$prev_url_segs
-					? 'my_account/sales/products/is_public/index'.$prev_url_segs
-					: 'my_account/sales/products/is_public/index/womens_apparel'
+					? 'my_account/sales/products/all/index'.$prev_url_segs
+					: 'my_account/sales/products/all/index/womens_apparel'
 				;
 			}
 			else
 			{
 				$redirect_url =
 					$prev_url_segs
-					? 'my_account/sales/products/is_public/index'.$prev_url_segs
-					: 'my_account/sales/products/is_public/index/womens_apparel'
+					? 'my_account/sales/products/all/index'.$prev_url_segs
+					: 'my_account/sales/products/all/index/womens_apparel'
 				;
 			}
 
@@ -159,16 +159,13 @@ class Is_public extends Sales_user_Controller {
 		}
 		else $where['tbl_product.categories LIKE'] = $category_id;
 
-		$where['tbl_stock.color_publish'] = 'Y';
-		$where['tbl_stock.new_color_publish'] = '1';
-
 		// sales user level 1 can see cs clearance
 		if ($this->sales_user_details->access_level == '2')
 		{
 			$where['tbl_stock.options NOT LIKE'] = '"clearance_consumer_only":"1"';
 		}
 
-		// get the products list for the thumbs grid view
+		// get the products list and total count
 		$params['show_private'] = TRUE; // all items general public (Y) - N for private
 		$params['view_status'] = 'ALL'; // all items view status (Y, Y1, Y2, N)
 		$params['view_at_hub'] = TRUE; // all items general public at hub site
@@ -176,35 +173,39 @@ class Is_public extends Sales_user_Controller {
 		$params['variant_publish'] = 'ALL'; // all items at variant level publish (view status)
 		$params['variant_view_at_hub'] = TRUE; // variant level public at hub site
 		$params['variant_view_at_satellite'] = TRUE; // varian level public at satellite site
-		$params['with_stocks'] = FALSE; // FALSE to show all with and without stocks
+		$params['with_stocks'] = FALSE; // Show all with and without stocks
 		$params['group_products'] = FALSE; // group per product number or per variant
 		$params['special_sale'] = FALSE; // special sale items only
 		$params['pagination'] = $this->data['page']; // get all in one query
 		$this->load->library('products/products_list', $params);
 		$this->data['products'] = $this->products_list->select(
+			// where conditions
 			$where,
-			array( // order conditions
+			// sorting conditions
+			array(
 				'seque' => 'asc',
 				'tbl_product.prod_no' => 'desc'
 			),
+			// limits
 			$this->data['limit']
 		);
 		$this->data['count_all'] = $this->products_list->count_all;
 		$this->data['products_count'] = $this->products_list->row_count;
 
+		//echo $this->products_list->last_query; die();
+
 		// need to show loading at start
 		$this->data['show_loading'] = FALSE;
-		$this->data['page_param'] = 'instock';
+		$this->data['page_param'] = 'all';
 
 		// enable pagination
-		$this->_set_pagination($this->data['count_all'], $this->data['limit'], implode('/', $url_segs));
+		$this->_set_pagination($this->data['count_all'], $this->data['limit']);
 
 		// breadcrumbs
 		$this->data['page_breadcrumb'] = array(
 			'products' => 'Products',
-			'public' => 'Public'
+			'in_stock' => 'All'
 		);
-
 		// set data variables...
 		$this->data['role'] = 'sales';
 		$this->data['file'] = 'sales_products';
@@ -241,14 +242,14 @@ class Is_public extends Sales_user_Controller {
 	 *
 	 * @return	void
 	 */
-	private function _set_pagination($count_all = '', $per_page = '', $uri_string = '')
+	private function _set_pagination($count_all = '', $per_page = '')
 	{
 		$this->load->library('pagination');
 
 		$uri_string = explode('/', $this->uri->uri_string());
 		if (is_numeric(end($uri_string))) array_pop($uri_string);
 
-		$config['base_url'] = base_url().$url.'/index/'.($uri_string ? $uri_string.'/' : '');
+		$config['base_url'] = base_url().implode('/',$uri_string).'/';
 		$config['total_rows'] = $count_all;
 		$config['per_page'] = $per_page;
 		$config['num_links'] = 3;
@@ -309,11 +310,17 @@ class Is_public extends Sales_user_Controller {
 				<link href="'.$assets_url.'/assets/global/plugins/datatables/datatables.min.css" rel="stylesheet" type="text/css" />
 				<link href="'.$assets_url.'/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css" rel="stylesheet" type="text/css" />
 			';
+			// nestable list
+			$this->data['page_level_styles_plugins'].= '
+				<link href="'.$assets_url.'/assets/global/plugins/jquery-nestable/jquery.nestable.css" rel="stylesheet" type="text/css" />
+			';
+
 
 		/****************
 		 * page style sheets inserted at <head>
 		 */
 		$this->data['page_level_styles'] = '';
+
 
 		/****************
 		 * page js plugins inserted at <bottom>
@@ -346,6 +353,11 @@ class Is_public extends Sales_user_Controller {
 				<script src="'.$assets_url.'/assets/global/plugins/datatables/datatables.min.js" type="text/javascript"></script>
 				<script src="'.$assets_url.'/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>
 			';
+			// nestable list
+			$this->data['page_level_plugins'].= '
+				<script src="'.$assets_url.'/assets/global/plugins/jquery-nestable/jquery.nestable.js" type="text/javascript"></script>
+			';
+
 
 		/****************
 		 * page scripts inserted at <bottom>

@@ -72,10 +72,14 @@
 									All Products
 								</a>
 							</li>
-							<!--
+							<li class="<?php echo ($this->uri->segment(3) == 'all' OR $this->uri->segment(4) == 'all') ? 'active' : ''; ?>">
+								<a href="<?php echo site_url($url_pre.'/products/all'); ?>">
+									All
+								</a>
+							</li>
 							<li class="<?php echo ($this->uri->segment(3) == 'is_public'  OR $this->uri->segment(4) == 'is_public') ? 'active' : ''; ?>">
 								<a href="<?php echo site_url($url_pre.'/products/is_public'); ?>">
-									Products
+									Public
 								</a>
 							</li>
 							<li class="<?php echo ($this->uri->segment(3) == 'not_public' OR $this->uri->segment(4) == 'not_public') ? 'active' : ''; ?>">
@@ -85,9 +89,16 @@
 							</li>
 							<li class="<?php echo ($this->uri->segment(3) == 'clearance' OR $this->uri->segment(4) == 'clearance') ? 'active' : ''; ?>">
 								<a href="<?php echo site_url($url_pre.'/products/clearance'); ?>">
-									Clearance
+									On Sale
 								</a>
 							</li>
+							<!--
+							<li class="<?php echo ($this->uri->segment(3) == 'clearance_cs_only' OR $this->uri->segment(4) == 'clearance_cs_only') ? 'active' : ''; ?>">
+								<a href="<?php echo site_url($url_pre.'/products/clearance_cs_only'); ?>">
+									Clearance CS Only
+								</a>
+							</li>
+							-->
 							<li class="<?php echo ($this->uri->segment(3) == 'unpublished' OR $this->uri->segment(4) == 'unpublished') ? 'active' : ''; ?>">
 								<a href="<?php echo site_url($url_pre.'/products/unpublished'); ?>">
 									Unpublished

@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Instock extends Sales_user_Controller {
+class Not_public extends Sales_user_Controller {
 
 	/**
 	 * Constructor
@@ -26,16 +26,19 @@ class Instock extends Sales_user_Controller {
 		$this->_create_plugin_scripts();
 
 		// load pertinent library/model/helpers
-		$this->load->library('categories/categories_tree');
 		$this->load->helper('metronic/create_category_treelist');
 		$this->load->library('products/product_details');
 		$this->load->library('designers/designer_details');
 		$this->load->library('categories/categories');
+		$this->load->library('categories/categories_tree');
 		$this->load->library('designers/designers_list');
 
-		// let's remove the first series of segment array
-		$uri_string = $this->uri->segment_array();
-		$this->data['url_segs'] = $this->uri->segment_array();
+		// let's grab the uri segments and process it for some item that is required
+		$this->session->set_flashdata('thumbs_uri_string', $this->uri->uri_string());
+		$uri_string = explode('/', $this->uri->uri_string());
+
+		// let's remove the first series of segments from the resulting array
+		$this->data['url_segs'] = $uri_string;
 		array_shift($this->data['url_segs']); // my_account
 		array_shift($this->data['url_segs']); // sales
 		array_shift($this->data['url_segs']); // products
@@ -45,11 +48,9 @@ class Instock extends Sales_user_Controller {
 		// we need a real variable to process some calculations
 		$url_segs = $this->data['url_segs'];
 
-		if (empty($url_segs))
-		{
-			// defauls to all dresses under womens apparel
-			redirect('my_account/sales/products/instock/index/womens_apparel');
-		}
+		// check for and grab flashdata then set new flashdata
+		$prev_url_segs = $this->session->flashdata('prev_url_segs') ? '/'.$this->session->flashdata('prev_url_segs') : '';
+		$this->session->set_flashdata('prev_url_segs', implode('/', $url_segs));
 
 		// set category pre link
 		$this->data['pre_link'] = implode('/', array_diff($uri_string, $url_segs));
@@ -58,27 +59,116 @@ class Instock extends Sales_user_Controller {
 		$this->data['page'] = is_numeric(end($url_segs)) ? end($url_segs) : 1;
 		$this->data['limit'] = 100;
 		$this->data['offset'] = $this->data['page'] == '' ? 0 : ($this->data['page'] * 100) - 100;
-		$this->data['view_as'] = 'sales_products_grid'; // products_grid, products_list -> default to grid for sales
-		$this->data['active_designer'] = $this->sales_user_details->designer;
 
-		// get categories
-		$this->data['categories'] = $this->categories_tree->treelist(
-			array(
-				'with_products' => TRUE,
-				'd_url_structure' => $this->sales_user_details->designer // used by my_account sales
-			)
-		);
+		// get some data
+		//$this->data['designers'] = $this->designers_list->select(); // not needed
+		$this->data['view_as'] = 'sales_products_grid'; // products_grid, products_list, products_nestable_list
+		$this->data['order_by'] = 'prod_date';
+
+		// for categories, we check conditions of site type
+		if ($this->webspace_details->options['site_type'] == 'hub_site')
+		{
+			$this->data['categories'] = $this->categories_tree->treelist(
+				array(
+					'with_products' => TRUE
+				)
+			);
+		}
+		else
+		{
+			$this->data['categories'] = $this->categories_tree->treelist(
+				array(
+					'with_products' => TRUE,
+					'd_url_structure' => $this->webspace_details->slug
+				)
+			);
+		}
 		$this->data['number_of_categories'] = $this->categories_tree->row_count;
 
-		// get designer primary subcat as default subcat for initial page load
-		$category_slug = end($url_segs);
-		$category_id = $this->categories_tree->get_id($category_slug);
-		$where['tbl_product.categories LIKE'] = $category_id;
+		// get the last segment which will serve as the category_slug in reference for the product list
+		if (count($url_segs) > 0)
+		{
+			// we need to check if browsing by designer/category through the first segment
+			$first_seg = $url_segs[0];
+			if ($this->designer_details->initialize(array('designer.url_structure'=>$first_seg)))
+			{
+				// use first segment designer_slug if present
+				$this->data['active_designer'] = $this->designer_details->slug;
+				// and set sessiong accordingly
+				$this->session->set_userdata('active_designer', $this->designer_details->slug);
+				unset($_SESSION['browse_by_category']);
+			}
+			else
+			{
+				// check for session first, otherwise, go browse by category only
+				$this->data['active_designer'] =
+					$this->webspace_details->options['site_type'] == 'hub_site'
+					? FALSE
+					: $this->webspace_details->slug
+				;
+				unset($_SESSION['active_designer']);
+				$this->session->set_userdata('browse_by_category', TRUE);
+			}
 
-		// there will always be one des_slug on sales product listing
-		$where['designer.url_structure'] = $this->sales_user_details->designer;
+			// last segment as category slug
+			$this->data['active_category'] =
+				is_numeric(end($url_segs))
+				? $this->data['url_segs'][count($this->data['url_segs']) - 2]
+				: end($url_segs)
+			;
+			$this->session->set_userdata('active_category', $this->data['active_category']);
+		}
+		else
+		{
+			// defauls to all dresses under womens apparel
+			if (
+				$this->webspace_details->options['site_type'] == 'hub_site'
+				&& ! $this->session->browse_by_category
+			)
+			{
+				$redirect_url =
+					$prev_url_segs
+					? 'my_account/sales/products/not_public/index'.$prev_url_segs
+					: 'my_account/sales/products/not_public/index/womens_apparel'
+				;
+			}
+			else
+			{
+				$redirect_url =
+					$prev_url_segs
+					? 'my_account/sales/products/not_public/index'.$prev_url_segs
+					: 'my_account/sales/products/not_public/index/womens_apparel'
+				;
+			}
 
-		// get the products list for the thumbs grid view
+			redirect($redirect_url);
+		}
+
+		// get respective active category ID for use on product list where condition
+		$category_id = $this->categories_tree->get_id($this->data['active_category']);
+		$this->data['active_category_id'] = $category_id;
+
+		// set product list where condition
+		if ($this->data['active_designer'] !== FALSE)
+		{
+			$where['designer.url_structure'] = $this->data['active_designer'];
+			if ($category_id)
+			{
+				$where['tbl_product.categories LIKE'] = $category_id; // of last segment category
+			}
+		}
+		else $where['tbl_product.categories LIKE'] = $category_id;
+
+		$where['tbl_product.public'] = 'N';
+		$where['tbl_product.publish'] = '2';
+
+		// sales user level 1 can see cs clearance
+		if ($this->sales_user_details->access_level == '2')
+		{
+			$where['tbl_stock.options NOT LIKE'] = '"clearance_consumer_only":"1"';
+		}
+
+		// get the products list and total count
 		$params['show_private'] = TRUE; // all items general public (Y) - N for private
 		$params['view_status'] = 'ALL'; // all items view status (Y, Y1, Y2, N)
 		$params['view_at_hub'] = TRUE; // all items general public at hub site
@@ -86,7 +176,7 @@ class Instock extends Sales_user_Controller {
 		$params['variant_publish'] = 'ALL'; // all items at variant level publish (view status)
 		$params['variant_view_at_hub'] = TRUE; // variant level public at hub site
 		$params['variant_view_at_satellite'] = TRUE; // varian level public at satellite site
-		$params['with_stocks'] = TRUE; // Show all with and without stocks
+		$params['with_stocks'] = FALSE; // FALSE to show all with and without stocks
 		$params['group_products'] = FALSE; // group per product number or per variant
 		$params['special_sale'] = FALSE; // special sale items only
 		$params['pagination'] = $this->data['page']; // get all in one query
@@ -102,16 +192,17 @@ class Instock extends Sales_user_Controller {
 		$this->data['count_all'] = $this->products_list->count_all;
 		$this->data['products_count'] = $this->products_list->row_count;
 
-		// enable pagination
-		$this->_set_pagination($this->data['count_all'], $this->data['limit'], implode('/', $url_segs));
-
 		// need to show loading at start
 		$this->data['show_loading'] = FALSE;
+		$this->data['page_param'] = 'not_public';
+
+		// enable pagination
+		$this->_set_pagination($this->data['count_all'], $this->data['limit'], implode('/', $url_segs));
 
 		// breadcrumbs
 		$this->data['page_breadcrumb'] = array(
 			'products' => 'Products',
-			'in_stock' => 'In Stock'
+			'in_stock' => 'Private'
 		);
 
 		// set data variables...
@@ -121,7 +212,7 @@ class Instock extends Sales_user_Controller {
 		$this->data['page_description'] = 'List of products';
 
 		// load views...
-		$this->load->view('admin'.($this->config->slash_item('admin_template') ?: 'metronic/').'template_my_account/template', $this->data);
+		$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template_my_account/template', $this->data);
 	}
 
 	// ----------------------------------------------------------------------
@@ -150,13 +241,14 @@ class Instock extends Sales_user_Controller {
 	 *
 	 * @return	void
 	 */
-	private function _set_pagination($count_all = '', $per_page = '', $uri_string = '')
+	private function _set_pagination($count_all = '', $per_page = '')
 	{
 		$this->load->library('pagination');
 
-		$url = 'my_account/sales/products/all';
+		$uri_string = explode('/', $this->uri->uri_string());
+		if (is_numeric(end($uri_string))) array_pop($uri_string);
 
-		$config['base_url'] = base_url().$url.'/index/'.($uri_string ? $uri_string.'/' : '');
+		$config['base_url'] = base_url().implode('/',$uri_string).'/';
 		$config['total_rows'] = $count_all;
 		$config['per_page'] = $per_page;
 		$config['num_links'] = 3;
@@ -168,7 +260,7 @@ class Instock extends Sales_user_Controller {
 		$config['cur_tag_open'] = '<li class="active"><a href="javascript:;">';
 		$config['cur_tag_close'] = '</a></li>';
 		$config['first_link'] = '<i class="fa fa-angle-double-left"></i>';
-		$config['first_url'] = site_url($url.'/index/womens_apparel');
+		$config['first_url'] = site_url(implode('/',$uri_string));
 		$config['first_tag_open'] = '<li>';
 		$config['first_tag_close'] = '</li>';
 		$config['last_link'] = '<i class="fa fa-angle-double-right"></i>';
@@ -217,11 +309,17 @@ class Instock extends Sales_user_Controller {
 				<link href="'.$assets_url.'/assets/global/plugins/datatables/datatables.min.css" rel="stylesheet" type="text/css" />
 				<link href="'.$assets_url.'/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css" rel="stylesheet" type="text/css" />
 			';
+			// nestable list
+			$this->data['page_level_styles_plugins'].= '
+				<link href="'.$assets_url.'/assets/global/plugins/jquery-nestable/jquery.nestable.css" rel="stylesheet" type="text/css" />
+			';
+
 
 		/****************
 		 * page style sheets inserted at <head>
 		 */
 		$this->data['page_level_styles'] = '';
+
 
 		/****************
 		 * page js plugins inserted at <bottom>
@@ -254,6 +352,11 @@ class Instock extends Sales_user_Controller {
 				<script src="'.$assets_url.'/assets/global/plugins/datatables/datatables.min.js" type="text/javascript"></script>
 				<script src="'.$assets_url.'/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>
 			';
+			// nestable list
+			$this->data['page_level_plugins'].= '
+				<script src="'.$assets_url.'/assets/global/plugins/jquery-nestable/jquery.nestable.js" type="text/javascript"></script>
+			';
+
 
 		/****************
 		 * page scripts inserted at <bottom>
