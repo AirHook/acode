@@ -118,22 +118,54 @@ class Search_Controller extends Frontend_Controller {
             $con_clearance_cs_only = 'tbl_stock.options NOT LIKE \'%"clearance_consumer_only":"1"%\' ESCAPE \'!\'';
             $where['condition'][] = $con_clearance_cs_only;
 
-            /*********
-        	 * Current custom conditions for wholesale users
-        	 */
-            // don't show clearance items
-            $con_clearance = "(tbl_stock.custom_order != '3' OR (tbl_stock.custom_order = '3' AND designer.url_structure != 'basixblacklabel'))";
-            $where['condition'][] = $con_clearance;
-
-            // special show private for ws users under help@basixblacklabel.com
-            if ($this->wholesale_user_details->admin_sales_email != 'help@basixblacklabel.com')
+            if ($this->wholesale_user_details->access_level == '2')
             {
-                $where_public_only = "(
-    				tbl_product.publish = '1'
-    				OR tbl_product.publish = '11'
-    				OR tbl_product.publish = '12'
+                // show public items and with stocks
+                // can see onsale items
+
+                // show public
+                $con_public = "(
+                    (
+                        tbl_product.publish = '1'
+                        OR tbl_product.publish = '11'
+        				OR tbl_product.publish = '12'
+                    ) AND (
+                        tbl_stock.new_color_publish = '1'
+                        OR tbl_stock.new_color_publish = '11'
+        				OR tbl_stock.new_color_publish = '12'
+                    )
+                )";
+                $where['condition'][] = $con_public;
+
+                // show instock
+                $with_stocks = "(
+                    (tbl_product.size_mode = '1'
+                        AND (tsav.size_0 > '0'
+                            OR tsav.size_2 > '0'
+                            OR tsav.size_4 > '0'
+                            OR tsav.size_6 > '0'
+                            OR tsav.size_8 > '0'
+                            OR tsav.size_10 > '0'
+                            OR tsav.size_12 > '0'
+                            OR tsav.size_14 > '0'
+                            OR tsav.size_16 > '0'
+                            OR tsav.size_18 > '0'
+                            OR tsav.size_20 > '0'
+                            OR tsav.size_22 > '0'))
+                    OR (tbl_product.size_mode = '0'
+                        AND (tsav.size_sxs > '0'
+                            OR tsav.size_ss > '0'
+                            OR tsav.size_sm > '0'
+                            OR tsav.size_sl > '0'
+                            OR tsav.size_sxl > '0'
+                            OR tsav.size_sxxl > '0'
+                            OR tsav.size_sxl1 > '0'
+                            OR tsav.size_sxl2 > '0'))
+                    OR (tbl_product.size_mode = '2' AND (tsav.size_sprepack1221 > '0'))
+                    OR (tbl_product.size_mode = '3' AND (tsav.size_ssm > '0' AND tsav.size_sml > '0'))
+                    OR (tbl_product.size_mode = '4' AND (tsav.size_sonesizefitsall > '0'))
     			)";
-                $where['condition'][] = $where_public_only;
+                $where['condition'][] = $with_stocks;
             }
         }
 //        else if (
@@ -241,8 +273,6 @@ class Search_Controller extends Frontend_Controller {
 		// get the products list and total count based on parameters
 		$params['wholesale'] = $this->session->userdata('user_cat') == 'wholesale' ? TRUE : FALSE;
 		$params['show_private'] = $this->session->userdata('user_cat') == 'wholesale' ? TRUE : FALSE;
-		if ($this->webspace_details->options['site_type'] != 'hub_site') $params['view_at_hub'] = FALSE;
-		if ($this->webspace_details->options['site_type'] == 'hub_site') $params['view_at_satellite'] = FALSE;
 		// show items even without stocks at all
         $params['group_products'] = FALSE;
 		$params['with_stocks'] = $params['group_products'] ? FALSE : FALSE;

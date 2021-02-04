@@ -79,14 +79,15 @@ class Details extends Frontend_Controller
 			redirect('shop/categories', 'location');
 		}
 
-		// there is an issue on phantom links where the product has not availabe
+		// there is an issue on phantom links where the product has no availabe
 		// stocks on all sizes but when link is browsed, the product details
 		// page is shown.  $this->product_details->with_stocks doesn't seem
 		// to address this issue. will need to put code here to redirect to
 		// home categories page with error='without_stocks'
 		//
 		// 20201124 Show Preorder, hence, show all items even without stocks
-		// but with prices >= 695
+		// but with prices >= 695 for consumer
+		// and all for wholesale user level 1 and level 2
 		/* */
 		if (
 			$this->webspace_details->slug != 'tempoparis'
