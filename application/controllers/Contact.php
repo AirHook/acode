@@ -170,14 +170,9 @@ class Contact extends Frontend_Controller {
 		}
 		else
 		{
-			$email_ary = array(
-				'sample@email.tst',
-				'oliverwilkerson36@gmail.com',
-				'kennethsanders5649@gmail.com'
-			);
-			if (in_array($str, $email_ary))
+			if (in_array($str, $this->config->item('email_blacklist')))
 			{
-				$this->form_validation->set_message('validate_email', 'The Email field must contain a valid email address.');
+				$this->form_validation->set_message('validate_email', 'The Email address enetered seems to be invalid. Please contact us directly by phone instead.');
 				return FALSE;
 			}
 
