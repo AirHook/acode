@@ -374,8 +374,8 @@ var ComponentsProductEdit = function () {
 
 		var primarColorNotice = 'This item is Primary Color!' + '\n' + 'As Primary Color, you can edit these options through the MAIN Publish options box at the top right.'
 
-		// Publish radio button changes per variant
-		$('.new_color_publish input[type="radio"]').click(function(){
+		// Publish/Unpublish radio button changes per variant
+		$('.new_color_publish input[type="radio"]').on('click', function(){
 			// let get necessary information
 			var primary_color = $(this).closest('.section-options').data('primary_color');
             var main_publish = $('[name="publish"]').val();
@@ -396,40 +396,49 @@ var ComponentsProductEdit = function () {
                 alert('Cannot publish this color because main publish option is not "Publish Public".');
                 return false;
             }
-			// get publish at hub/sat data
-			if ($('#new_color_publish_at_hub-' + color_code).is(":checked")) var ncph = 1;
-			else var ncph = 0;
-			if ($('#new_color_publish_at_satellite-' + color_code).is(":checked")) var ncps = 1;
-			else var ncps = 0;
-			// we need to get the hub/sat publish data for the variant
-			// and set ncp
-			var ncp;
-			if (ncph == 1 && ncps == 0) ncp = 11;
-			if (ncph == 0 && ncps == 1) ncp = 12;
-			// chances that both are unchecked is slim
-			// but for check purposes, we check both if both is unchecked
-			if (ncph == 0 && ncps == 0) {
-				$('#new_color_publish_at_hub-' + color_code).prop("checked", true);
-				$('#new_color_publish_at_satellite-' + color_code).prop("checked", true);
-				ncp = 1;
-			}
-			// enable publish at hub/sat checkboxes
-			$('#new_color_publish_at_hub-' + color_code).parent('label').removeClass('mt-checkbox-disabled');
-			$('#new_color_publish_at_satellite-' + color_code).parent('label').removeClass('mt-checkbox-disabled');
-			// finally, set new_color_publish
-			if (publish == 0) {
-				var ncp = 0;
+            // check condition of 'publish'
+            var ncp;
+			if (publish == '0') {
 				// disable publish at hub/sat checkboxes
 				$('#new_color_publish_at_hub-' + color_code).parent('label').addClass('mt-checkbox-disabled');
 				$('#new_color_publish_at_satellite-' + color_code).parent('label').addClass('mt-checkbox-disabled');
-			}
+                // finally, set new_color_publish
+                ncp = '0';
+			} else {
+                // get public/private view value
+    			var view = $('input[name="color_publish[' + st_id + ']"]:checked').val();
+                if (view == '0') {
+                    alert('NOTE:\nPublish view is set to PRIVATE.\nYou can change it anytime.');
+                    ncp = '2';
+                }
+                // enable publish at hub/sat checkboxes
+    			$('#new_color_publish_at_hub-' + color_code).parent('label').removeClass('mt-checkbox-disabled');
+    			$('#new_color_publish_at_satellite-' + color_code).parent('label').removeClass('mt-checkbox-disabled');
+                // get publish at hub/sat data
+    			if ($('#new_color_publish_at_hub-' + color_code).is(":checked")) var ncph = 1;
+    			else var ncph = 0;
+    			if ($('#new_color_publish_at_satellite-' + color_code).is(":checked")) var ncps = 1;
+    			else var ncps = 0;
+    			// we need to get the hub/sat publish data for the variant and set ncp
+                // chances that both hub/sat publish data are unchecked is slim
+    			// but for check purposes, we check both if both is unchecked and set ncp to 1
+    			if (ncph == 0 && ncps == 0) {
+    				$('#new_color_publish_at_hub-' + color_code).prop("checked", true);
+    				$('#new_color_publish_at_satellite-' + color_code).prop("checked", true);
+    				ncp = '1';
+    			}
+                // other conditions
+    			if (ncph == 1 && ncps == 0) ncp = '11';
+    			if (ncph == 0 && ncps == 1) ncp = '12';
+                if (ncph == 1 && ncps == 1) ncp = '1';
+            }
+            dataObject.new_color_publish = ncp;
 			// update data to server
 			$('#loading .modal-title').html('Updating...');
 			$('#loading').modal('show');
-			dataObject.new_color_publish = ncp;
 			$.ajax({
 				type:    "POST",
-				url:     base_url + "admin/products/update_variant_options/",
+				url:     base_url + "admin/products/update_variant_options.html",
 				data:    dataObject,
 				success: function(data) {
 					//alert(data);
@@ -439,9 +448,9 @@ var ComponentsProductEdit = function () {
 				// vvv---- This is the new bit
 				error:   function(jqXHR, textStatus, errorThrown) {
 					//$('#loading').modal('hide');
-					//alert("Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
-					$('#reloading').modal('show');
-					location.reload();
+					alert("Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
+					//$('#reloading').modal('show');
+					//location.reload();
 				}
 			});
 		});

@@ -38,15 +38,20 @@ class Update_variant_options extends Admin_Controller {
 	 */
 	public function index()
 	{
-		//$_POST['options']['post_to_goole'] = '1';
-		//$_POST['st_id'] = '5340'; // D9776L D9776L_BLAC1
-		//$_POST['st_id'] = '3307'; // D9974L D7806L_BLACSILV1
-		//$_POST['st_id'] = '5340'; // D9972A D9972A_GOLD1
-		//$_POST['st_id'] = '5373'; // D9964L D9964L_SILVPINK1
+		/*
+		items in post data
+		$_POST['st_id'] = '5907';
+			$_POST['prod_id']
+			$_POST['prod_no']
+			$_POST['color_name']
+			$_POST['color_code'] // not used here
+			$_POST['new_color_publish'] // 1,0
+			*/
 
 		if ($_POST)
 		{
 			$post_ary = $_POST;
+			unset($post_ary['color_code']);
 
 			// check for $options posted
 			if (@$post_ary['options'])
@@ -141,10 +146,17 @@ class Update_variant_options extends Admin_Controller {
 			// update stock record
 			$this->DB->set($post_ary);
 			$this->DB->where('st_id', $post_ary['st_id']);
-			$q = $this->DB->update('tbl_stock');
+			$this->DB->update('tbl_stock');
+
+			// some return data for when debugging script at the page
+			if ( ! $this->DB->affected_rows())
+			{
+				echo 'Failed';
+			}
+			else echo 'Success';
 
 			// process google API if any after record update
-			if ($google_action == 'UPSERT')
+			if (@$google_action == 'UPSERT')
 			{
 				$post_to_goole = $this->_post_to_google($r1->prod_no, $r1->color_code);
 
@@ -166,7 +178,7 @@ class Update_variant_options extends Admin_Controller {
 					$q = $this->DB->update('tbl_stock');
 				}
 			}
-			if ($google_action == 'DELETE') $this->_remove_from_google($r1->prod_no, $r1->color_code, $delete_index);
+			if (@$google_action == 'DELETE') $this->_remove_from_google($r1->prod_no, $r1->color_code, $delete_index);
 		}
 	}
 
@@ -414,7 +426,7 @@ class Update_variant_options extends Admin_Controller {
 								break;
 							}
 						}
-						
+
 						$this->dsco_item->qty = $dsco_prod_details->$size_label;
 						if ($dsco_prod_details->$size_label == 0) $this->dsco_item->status = 'out-of-stock';
 					}

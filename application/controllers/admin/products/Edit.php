@@ -283,31 +283,38 @@ class Edit extends Admin_Controller {
 		// unset unnecessary variables
 		unset($post_ary['publish_at_hub']);
 		unset($post_ary['publish_at_satellite']);
+
 		unset($post_ary['st_id']);
 		unset($post_ary['color_name']);
 		unset($post_ary['color_code']);
 		unset($post_ary['primary_color']);
+		unset($post_ary['image_url_path']);
+		unset($post_ary['image_url']);
 		unset($post_ary['new_color_publish']);
 		unset($post_ary['new_color_publish_at_hub']);
 		unset($post_ary['new_color_publish_at_satellite']);
 		unset($post_ary['color_publish']);
 		unset($post_ary['stock_date']);
-		unset($post_ary['color_facets']);
 		unset($post_ary['custom_order']);
-		unset($post_ary['cat_slug']);
-		unset($post_ary['subcat_slug']);
-		unset($post_ary['designer_slug']);
-		unset($post_ary['category_slugs']);
-		unset($post_ary['image_url']);
-		unset($post_ary['vendor_code']);
-		unset($post_ary['image_url_path']);
-		unset($post_ary['clearance_old']);
 		unset($post_ary['custom_order_old']);
 		unset($post_ary['clearance_consumer_only']);
 		unset($post_ary['clearance_consumer_only_old']);
-		unset($post_ary['admin_stocks_only']);
 		unset($post_ary['warehouse_code']);
 		unset($post_ary['admin_warehouse_code']);
+		unset($post_ary['color_facets']);
+		unset($post_ary['styles']);
+		unset($post_ary['events']);
+
+		unset($post_ary['clearance_old']);
+		unset($post_ary['cat_slug']);
+		unset($post_ary['subcat_slug']);
+		unset($post_ary['designer_slug']);
+		unset($post_ary['vendor_code']);
+		unset($post_ary['vendor_price']);
+		unset($post_ary['category_slugs']);
+
+		// precautions
+		unset($post_ary['admin_stocks_only']);
 		unset($post_ary['post_to_goole']);
 		unset($post_ary['post_to_dsco']);
 		unset($post_ary['dsco_sku']);
@@ -798,7 +805,7 @@ class Edit extends Admin_Controller {
 			';
 			// datepicker & other compnents
 			$this->data['page_level_scripts'].= '
-				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/components-products_edit.js" type="text/javascript"></script>
+				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/components-products_edit.js?z='.time().'" type="text/javascript"></script>
 			';
 	}
 }
