@@ -136,20 +136,6 @@
                                     <cite class="help-block small font-red-mint"> <?php echo form_error('admin_sales_lname'); ?> </cite>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label class="control-label col-md-3">Access Level
-                                    <span class="required"> * </span>
-                                </label>
-                                <div class="col-md-4">
-                                    <select class="form-control bs-select" name="access_level" data-required="1" >
-                                        <option value="">Select...</option>
-                                        <option value="0" <?php echo $this->sales_user_details->access_level == '0' ? 'selected="selected"' : ''; ?>>0</option>
-                                        <option value="1" <?php echo $this->sales_user_details->access_level == '1' ? 'selected="selected"' : ''; ?>>1</option>
-                                        <option value="2" <?php echo $this->sales_user_details->access_level == '2' ? 'selected="selected"' : ''; ?>>2</option>
-                                    </select>
-                                    <cite class="help-block small font-red-mint"> <?php echo form_error('access_level'); ?> </cite>
-                                </div>
-                            </div>
                             <hr />
                             <div class="form-group">
                                 <div class="col-md-offset-3 col-md-4">

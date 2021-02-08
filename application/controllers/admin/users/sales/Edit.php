@@ -111,7 +111,7 @@ class Edit extends Admin_Controller {
 			// set necessary variables
 			//$post_ary['account_status'] = '1';
 			// process/add some variables
-			if ($post_ary['admin_sales_password'] == '') unset($post_ary['admin_sales_password']);
+			if (@$post_ary['admin_sales_password'] == '') unset($post_ary['admin_sales_password']);
 			// unset unneeded variables
 			unset($post_ary['passconf']);
 			unset($post_ary['change-password']);
