@@ -180,8 +180,9 @@ class Not_public extends Admin_Controller {
 		}
 		else $where['tbl_product.categories LIKE'] = $category_id;
 
-		$where['tbl_product.public'] = 'N';
-		$where['tbl_product.publish'] = '2';
+		// publish/public/private down to the variant
+		$where['tbl_stock.color_publish'] = 'N';
+		$where['tbl_stock.new_color_publish !='] = '0';
 
 		// don't show clearance cs only items
 		$where['tbl_stock.options NOT LIKE'] = '"clearance_consumer_only":"1"';

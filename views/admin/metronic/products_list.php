@@ -284,7 +284,30 @@
 														<!-- DOC: Remove "disabled-link disable-target" classes to enable the element -->
 														<td <?php echo (($product->publish == '0' OR $product->publish == '3') && $product->view_status == 'N') ? 'class="disabled-link disable-target"': ''; ?>> <!-- Publish -->
 															<?php
-															switch ($product->publish)
+															// if product listing is grouped, primary color simply represent the main data for the entire group
+															// if per variant, each color represent itself
+															// this use of tbl_color fields is most appropriate
+															if (($product->new_color_publish == '1' OR $product->new_color_publish == '11' OR $product->new_color_publish == '12') AND $product->color_publish == 'Y')
+															{
+																$label = 'success';
+																$label_text = 'Public';
+															}
+															elseif ($product->new_color_publish != '0' AND $product->color_publish == 'N')
+															{
+																$label = 'info';
+																$label_text = 'Private';
+															}
+															elseif ($product->new_color_publish == '3')
+															{
+																$label = 'warning';
+																$label_text = 'Pending';
+															}
+															else {
+																$label = 'danger';
+																$label_text = 'Unpublished';
+															}
+															/*
+															switch ($product->new_color_publish)
 															{
 																case '1':
 																case '11':
@@ -305,27 +328,33 @@
 																	$label = 'danger';
 																	$label_text = 'Unpublished';
 															}
+															*/
 															?>
-															<span class="label label-sm label-<?php echo $label; ?>"> <?php echo $label_text; ?> </span>
+															<span class="label label-sm label-<?php echo $label; ?>" style="font-size:95%;"> <?php echo $label_text; ?> </span>
+
+															<?php if (isset($product->with_stocks) && $product->with_stocks == '0') { ?>
+															<span class="label label-sm label-danger" style="font-size:95%;margin-left:1px;"> Pre Order </span>
+															<?php } ?>
 
 															<?php
-															if ($product->view_status == 'Y' OR $product->publish == '1') { $checked1 = 'checked="checked"'; $checked2 = 'checked="checked"'; }
-															elseif ($product->view_status == 'Y1' OR $product->publish == '11') { $checked1 = 'checked="checked"'; $checked2 = ''; }
-															elseif ($product->view_status == 'Y2' OR $product->publish == '12') { $checked1 = ''; $checked2 = 'checked="checked"'; }
+															if ($product->new_color_publish == '1') { $checked1 = 'checked="checked"'; $checked2 = 'checked="checked"'; }
+															elseif ($product->new_color_publish == '11') { $checked1 = 'checked="checked"'; $checked2 = ''; }
+															elseif ($product->new_color_publish == '12') { $checked1 = ''; $checked2 = 'checked="checked"'; }
 															else { $checked1 = ''; $checked2 = ''; }
 
-															if ($product->public == 'Y' OR $product->publish == '1') { $checked3 = 'checked="checked"'; $checked4 = ''; }
-															elseif ($product->public == 'N' OR $product->publish == '2') { $checked3 = ''; $checked4 = 'checked="checked"'; }
+															//if ($label_text == 'Public') { $checked3 = 'checked="checked"'; $checked4 = ''; }
+															if ($label_text == 'Private') { $checked3 = ''; $checked4 = 'checked="checked"'; }
+															else { $checked3 = 'checked="checked"'; $checked4 = ''; }
 															?>
 															<div>
-																<input name="pub3<?php echo $product->prod_no; ?>" class="list_publish_button" id="public<?php echo $product->prod_no; ?>" type="radio" value="1" <?php echo $checked3; ?> data-action="publish" data-prod_id="<?php echo $product->prod_id; ?>" />Public
+																<input name="pub3<?php echo $product->st_id; ?>" class="list_publish_button" id="public<?php echo $product->st_id; ?>" type="radio" value="1" <?php echo $checked3; ?> data-action="publish" data-prod_id="<?php echo $product->prod_id; ?>" />Public
 																<br />
-																<input name="pub3<?php echo $product->prod_no; ?>" class="list_publish_button" id="public<?php echo $product->prod_no; ?>" type="radio" value="2" <?php echo $checked4; ?> data-action="private" data-prod_id="<?php echo $product->prod_id; ?>" />Private
+																<input name="pub3<?php echo $product->st_id; ?>" class="list_publish_button" id="public<?php echo $product->st_id; ?>" type="radio" value="2" <?php echo $checked4; ?> data-action="private" data-prod_id="<?php echo $product->prod_id; ?>" />Private
 															</div>
 															<div style="background-color:#E0E0E0;border-top:1px dashed gray;" <?php echo (($product->publish == '2' OR $product->view_status == 'Y') && $product->public == 'N') ? 'class="disabled-link disable-target"': ''; ?>>
-																<input name="pub1<?php echo $product->prod_no; ?>" id="pub1<?php echo $product->prod_id; ?>" type="checkbox" value="1" <?php echo $checked1; ?> class="set_purblish_state"  data-prod_id="<?php echo $product->prod_id; ?>" onchange="setPublishState('<?php echo $product->prod_id?>');" />at Shop7
+																<input name="pub1<?php echo $product->prod_no.'_'.$product->color_code; ?>" id="pub1<?php echo $product->st_id; ?>" type="checkbox" value="1" <?php echo $checked1; ?> class="set_purblish_state" data-prod_id="<?php echo $product->prod_id; ?>" data-st_id="<?php echo $product->st_id; ?>" onchange="setPublishState('<?php echo $product->prod_id?>');" />at Shop7
 																<br />
-																<input name="pub2<?php echo $product->prod_no; ?>" id="pub2<?php echo $product->prod_id; ?>" type="checkbox" value="2" <?php echo $checked2; ?> class="set_purblish_state"  data-prod_id="<?php echo $product->prod_id; ?>" onchange="setPublishState('<?php echo $product->prod_id?>');" />at Designer
+																<input name="pub2<?php echo $product->prod_no.'_'.$product->color_code; ?>" id="pub2<?php echo $product->st_id; ?>" type="checkbox" value="2" <?php echo $checked2; ?> class="set_purblish_state"  data-prod_id="<?php echo $product->prod_id; ?>" data-st_id="<?php echo $product->st_id; ?>" onchange="setPublishState('<?php echo $product->prod_id?>');" />at Designer
 															</div>
 
 														</td>
@@ -334,6 +363,8 @@
 															<a class="" href="<?php echo $edit_link; ?>">
 																<?php
 																echo $product->prod_no;
+																echo '<br />';
+																echo '<cite class="small">'.$product->color_name.'</cite>';
 																if ($page_param == 'all' && @$product->clearance == '3')
 																{
 																	echo '<br /><cite class="small font-red"> On Sale </cite>';

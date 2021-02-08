@@ -112,22 +112,24 @@ var TableDatatablesManaged = function () {
 		// hub/sat checkbox check function
 		$('.set_purblish_state').change(function(){
 			var prod_id = $(this).attr('data-prod_id');
+			var st_id = $(this).attr('data-st_id');
+			var public = $('[name="pub3' + st_id + '"]:checked').val();
 			var st;
-			if ($('#pub1'+prod_id).is(':checked') && $('#pub2'+prod_id).is(':checked')) {
+			if ($('#pub1'+st_id).is(':checked') && $('#pub2'+st_id).is(':checked')) {
 				st = 1;
 			}
-			if ( ! $('#pub1'+prod_id).is(':checked') && $('#pub2'+prod_id).is(':checked')) {
+			if ( ! $('#pub1'+st_id).is(':checked') && $('#pub2'+st_id).is(':checked')) {
 				st = 12;
 			}
-			if ($('#pub1'+prod_id).is(':checked') && ! $('#pub2'+prod_id).is(':checked')) {
+			if ($('#pub1'+st_id).is(':checked') && ! $('#pub2'+st_id).is(':checked')) {
 				st = 11;
 			}
-			if ( ! $('#pub1'+prod_id).is(':checked') && ! $('#pub2'+prod_id).is(':checked')) {
+			if ( ! $('#pub1'+st_id).is(':checked') && ! $('#pub2'+st_id).is(':checked')) {
 				st = 0;
 			}
 			$('#loading .modal-title').html('Updating...');
 			$('#loading').modal('show');
-			window.location.href = base_url + "admin/products/publish/index/"+st+"/"+prod_id+".html";
+			window.location.href = base_url + "admin/products/publish/index/"+st+"/"+prod_id+"/"+st_id+".html";
 		});
 
 		// delete item button action

@@ -20,8 +20,11 @@ class Publish extends Admin_Controller {
 	 *
 	 * @return	void
 	 */
-	public function index($param, $prod_id)
+	public function index($param, $prod_id, $st_id = '')
 	{
+		// adding st_id as params for product lists that are not grouped products
+		// color is used to update info
+
 		// connect to database
 		$DB = $this->load->database('instyle', TRUE);
 
@@ -29,14 +32,29 @@ class Publish extends Admin_Controller {
 		$this->load->library('products/product_details');
 
 		// initialize certain properties
-		if ( ! $this->product_details->initialize(array('tbl_product.prod_id'=>$prod_id)))
+		if ($st_id)
 		{
-			// uh oh... no product on record???
-			// set flash data
-			$this->session->set_flashdata('error', 'no_id_passed');
+			if ( ! $this->product_details->initialize(array('tbl_stock.st_id'=>$st_id)))
+			{
+				// uh oh... no product on record???
+				// set flash data
+				$this->session->set_flashdata('error', 'no_id_passed');
 
-			// redirect user
-			redirect($this->config->slash_item('admin_folder').'products');
+				// redirect user
+				redirect($this->config->slash_item('admin_folder').'products');
+			}
+		}
+		else
+		{
+			if ( ! $this->product_details->initialize(array('tbl_product.prod_id'=>$prod_id)))
+			{
+				// uh oh... no product on record???
+				// set flash data
+				$this->session->set_flashdata('error', 'no_id_passed');
+
+				// redirect user
+				redirect($this->config->slash_item('admin_folder').'products');
+			}
 		}
 
 		// process "publish" state on product item level
@@ -45,36 +63,64 @@ class Publish extends Admin_Controller {
 			$post_ary['publish'] = '1';
 			$post_ary['public'] = 'Y';
 			$post_ary['view_status'] = 'Y';
+
+			$post_var['new_color_publish'] = '1';
 		}
 		elseif ($param == '11')
 		{
 			$post_ary['publish'] = '11';
 			$post_ary['public'] = 'Y';
 			$post_ary['view_status'] = 'Y1';
+
+			$post_var['new_color_publish'] = '11';
 		}
 		elseif ($param == '12')
 		{
 			$post_ary['publish'] = '12';
 			$post_ary['public'] = 'Y';
 			$post_ary['view_status'] = 'Y2';
+
+			$post_var['new_color_publish'] = '12';
 		}
 		elseif ($param == '2')
 		{
 			$post_ary['publish'] = '2';
 			$post_ary['public'] = 'N';
 			$post_ary['view_status'] = 'Y';
+
+			$post_var['new_color_publish'] = '2';
 		}
 		else
 		{
 			$post_ary['publish'] = '0';
 			$post_ary['public'] = 'N';
 			$post_ary['view_status'] = 'N';
+
+			$post_var['new_color_publish'] = '0';
 		}
 
-		// update record
-		$DB->set($post_ary);
-		$DB->where('prod_id', $prod_id);
-		$qprod = $DB->update('tbl_product');
+		if ($st_id)
+		{
+			// update record
+			$DB->set($post_var);
+			$DB->where('st_id', $st_id);
+			$qprod = $DB->update('tbl_stock');
+
+			if ($this->product_details->primary_color == '1')
+			{
+				// update record
+				$DB->set($post_ary);
+				$DB->where('prod_id', $prod_id);
+				$qprod = $DB->update('tbl_product');
+			}
+		}
+		else
+		{
+			// update record
+			$DB->set($post_ary);
+			$DB->where('prod_id', $prod_id);
+			$qprod = $DB->update('tbl_product');
+		}
 
 		// pass data to odoo
 		/* *
@@ -93,7 +139,8 @@ class Publish extends Admin_Controller {
 		$referer = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $this->config->slash_item('admin_folder').'products';
 
 		// redirect user
-		redirect($this->config->slash_item('admin_folder').'products');
+		//redirect($this->config->slash_item('admin_folder').'products', 'location');
+		redirect($referer, 'location');
 	}
 
 	// ----------------------------------------------------------------------

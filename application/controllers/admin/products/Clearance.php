@@ -180,8 +180,10 @@ class Clearance extends Admin_Controller {
 		}
 		else $where['tbl_product.categories LIKE'] = $category_id;
 
-		$where['tbl_product.clearance'] = '3';
+		// data conditions down to variant level
+		//$where['tbl_stock.new_color_publish !='] = '0'; // only publish items
 		$where['tbl_stock.options NOT LIKE'] = '"clearance_consumer_only":"1"';
+		$where['tbl_stock.custom_order'] = '3';
 
 		// get the products list and total count
 		$params['with_stocks'] = FALSE; // Show all with and without stocks
