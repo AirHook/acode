@@ -163,6 +163,12 @@
                                         </li>
                                     </ul>
 
+                                    <?php if ($this->webspace_details->slug == 'instylenewyork' OR $this->webspace_details->slug == 'shop7thavenue') { ?>
+                                    <div class="credit-card-logos text-center margin-top-20">
+                                        <img src="<?php echo base_url(); ?>assets/images/credit-card-logos.png" style="width:150px;height:21px;" />
+                                    </div>
+                                    <?php } ?>
+
 									<!-- DOC: Apply/remove class "hide" to show/hide element -->
                                     <div class="subscribe-form hidden-xs hide">
                                         <form action="javascript:;">
