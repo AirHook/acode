@@ -82,8 +82,8 @@
                                         <option value="2" <?php echo $this->sales_user_details->access_level === '2' ? 'selected="selected"' : ''; ?>>Level 2</option>
                                     </select>
                                     <cite class="help-block small ">
-                                        LEVEL 1: Access to INSTOCK, PREORDER, ONSALE, all sizes<br />
-                                        LEVEL 2: Access to INSTOCK and ONSALE, available size only<br />
+                                        LEVEL 1: Access to INSTOCK, PREORDER, ONSALE, PRIVATE<br />
+                                        LEVEL 2: Access to INSTOCK, PREORDER, ONSALE<br />
                                         * Sales users cannot see CS Clearance Items
                                     </cite>
                                 </div>

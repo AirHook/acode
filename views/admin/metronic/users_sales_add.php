@@ -63,8 +63,8 @@
                                         <option value="2" <?php echo set_select('access_level', '2'); ?>>Level 2</option>
                                     </select>
                                     <cite class="help-block small ">
-                                        LEVEL 1: Access to INSTOCK, PREORDER, ONSALE, all sizes<br />
-                                        LEVEL 2: Access to INSTOCK and ONSALE, available size only<br />
+                                        LEVEL 1: Access to INSTOCK, PREORDER, ONSALE, PRIVATE<br />
+                                        LEVEL 2: Access to INSTOCK, PREORDER, ONSALE<br />
                                         * Sales users cannot see CS Clearance Items
                                     </cite>
                                 </div>
@@ -108,19 +108,6 @@
                                 <label class="col-md-3 control-label">Last Name</label>
                                 <div class="col-md-4">
                                     <input name="admin_sales_lname" type="text" class="form-control" value="<?php echo set_value('admin_sales_lname'); ?>" />
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label col-md-3">Access Level
-                                    <span class="required"> * </span>
-                                </label>
-                                <div class="col-md-4">
-                                    <select class="form-control bs-select" name="access_level">
-                                        <option value="">Select...</option>
-                                        <option value="0" <?php echo set_select('access_level', '0'); ?>>0</option>
-                                        <option value="1" <?php echo set_select('access_level', '1'); ?>>1</option>
-                                        <option value="2" <?php echo set_select('access_level', '2'); ?>>2</option>
-                                    </select>
                                 </div>
                             </div>
                             <hr />

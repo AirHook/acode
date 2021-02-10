@@ -185,7 +185,7 @@ class Is_public extends Admin_Controller {
 		$con_color_publish = "(tbl_stock.new_color_publish = '1' OR tbl_stock.new_color_publish = '11' OR tbl_stock.new_color_publish = '12')";
 		$where['condition'][] = $con_color_publish;
 
-		// don't show clearance cs only items
+		// don't show clearance cs only items on public list
 		$where['tbl_stock.options NOT LIKE'] = '"clearance_consumer_only":"1"';
 
 		// get the products list and total count
@@ -211,6 +211,8 @@ class Is_public extends Admin_Controller {
 		);
 		$this->data['count_all'] = $this->products_list->count_all;
 		$this->data['products_count'] = $this->products_list->row_count;
+
+		//echo $this->products_list->last_query; die();
 
 		// need to show loading at start
 		$this->data['show_loading'] = FALSE;
