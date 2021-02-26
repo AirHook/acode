@@ -36,6 +36,7 @@ class Get_item extends Sales_user_Controller {
 
 		// grab the post variable
 		$item = $this->input->post('prod_no');
+		$access_level = $this->input->post('access_level');
 		$barcode = $this->input->post('barcode');
 
 		if ($barcode)
@@ -141,7 +142,7 @@ class Get_item extends Sales_user_Controller {
 		foreach ($size_names as $size_label => $s)
 		{
 			// level 2 users, do not show zero stock sizes
-			if ($product->$size_label === '0') continue;
+			//if ($access_level == '2' && $product->$size_label === '0') continue; // commented to show PREORDER for all levels
 
 			$qty = 0;
 				//isset($size_qty[$size_label])
@@ -166,8 +167,13 @@ class Get_item extends Sales_user_Controller {
 
 		$html.= '</div>';
 
-		$html.= '<div style="margin:10px 0px 30px;">'
+		$html.= '<div style="margin:10px 0px 5px;">'
 			.'<button type="button" class="btn default btn-block btn-add_to_sa"> Add and Create Sales Package </button>'
+			.'</div>'
+		;
+
+		$html.= '<div style="margin:5px 0px 30px;">'
+			.'<button type="button" class="btn btn-danger btn-block btn-add_to_imp"> SEND PHOTO PACKAGE TO BUYER </button>'
 			.'</div>'
 		;
 
@@ -179,7 +185,7 @@ class Get_item extends Sales_user_Controller {
 		foreach ($size_names as $size_label => $s)
 		{
 			// level 2 users, do not show zero stock sizes
-			if ($product->$size_label === '0') continue;
+			//if ($access_level == '2' && $product->$size_label === '0') continue; // commented to show PREORDER for all levels
 
 			$qty = 0;
 				//isset($size_qty[$size_label])

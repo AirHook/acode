@@ -144,7 +144,7 @@
         									}
 
                                             // access link
-                                            $access_link = $domain_url.'sales_package/link/index/X/0/'.$tc.'.html?email='.($test_email ?: '%recipient_email%').'&items_csv='.$items_csv['mixed'];
+                                            $access_link = $domain_url.'sales_package/link/index/X/0/'.$tc.'.html?u='.$user_role.'&email='.($test_email ?: '%recipient_email%').'&items_csv='.$items_csv['mixed'];
         									?>
 
         								<td align="center" style="width:33%;vertical-align:top;padding-bottom:10px;" data-item="<?php echo $item; ?>">

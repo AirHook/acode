@@ -260,6 +260,7 @@ var ComponentsEditors = function () {
         $('[name="des_slug"]').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
             var objectData = object_data;
             objectData.des_slug = $(this).val();
+            objectData.access_level = $('select[name="des_slug"]').data('access_level');
             delete objectData.slugs_link;
             // set admin_sa_des_slug session variable
             $.get(base_url + "my_account/sales/sales_package/set_des_slug_session/index/" + objectData.des_slug + ".html");
@@ -315,6 +316,8 @@ var ComponentsEditors = function () {
             var objectData = object_data;
             objectData.slugs_link = $(this).data('slugs_link');
             objectData.page = $(this).data('page');
+            objectData.access_level = $('select[name="des_slug"]').data('access_level');
+            //delete objectData.slugs_link;
             // get category tree
             getCategoryTree(objectData);
         });
@@ -326,6 +329,7 @@ var ComponentsEditors = function () {
             var objectData = object_data;
             objectData.prod_no = $(this).data('item');
             objectData.page = $(this).data('page');
+            objectData.w_prices = $('[name="options[w_prices]"]:checked').val();
             // check if item is already selected
             var selected = $(this).closest('.thumb-tile.image').hasClass('selected');
             if (selected) {
@@ -356,8 +360,11 @@ var ComponentsEditors = function () {
             objectData.prod_no = $('#size-select-prod_no').val();
             objectData.page = $('#size-select-page').val();
             objectData.action = 'add_item';
+            objectData.w_prices = $('[name="options[w_prices]"]:checked').val();
             // hide this modal
             $('#modal-size_qty_info').modal('hide');
+            // hide error notice if any
+            $('.alert-no-items').hide();
             // add item...
             addRemItem(objectData);
         });
@@ -387,6 +394,7 @@ var ComponentsEditors = function () {
             // get post data
             var objectData = object_data;
             objectData.param = $(this).data('option');
+            objectData.page = $(this).data('page');
             objectData.val = $(this).val();
             if (objectData.param == 'linesheets_only' && objectData.val == 'Y')
             {
@@ -610,7 +618,7 @@ var ComponentsEditors = function () {
 		// http://docs.jquery.com/Plugins/Validation
 
 		var form1 = $('#form-sa_create_summary_review');
-		var error1 = $('.alert-danger');
+		var error1 = $('.alert-danger.alert-form-error');
 		var success1 = $('.alert-success');
 
 		form1.validate({
@@ -670,6 +678,12 @@ var ComponentsEditors = function () {
 			},
 
 			submitHandler: function (form) {
+
+                var items_count = $('#items_count').val();
+                if (items_count == '0') {
+                    $('.alert-no-items').show();
+                    return false;
+                }
 
 				//success1.show();
 				error1.hide();

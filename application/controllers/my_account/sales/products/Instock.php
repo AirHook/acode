@@ -159,13 +159,25 @@ class Instock extends Sales_user_Controller {
 		}
 		else $where['tbl_product.categories LIKE'] = $category_id;
 
-		$where['tbl_stock.color_publish'] = 'Y';
-		$where['tbl_stock.new_color_publish'] = '1';
+		// data conditions down to variant level
+		$where_more['tbl_product.publish !='] = '0';
+		$where['tbl_stock.new_color_publish !='] = '0';
 
-		// sales user level 1 can see cs clearance
 		if ($this->sales_user_details->access_level == '2')
 		{
+			$where_more['tbl_stock.color_publish'] = 'Y';
+
+			// don't show clearance cs only items on public list
 			$where['tbl_stock.options NOT LIKE'] = '"clearance_consumer_only":"1"';
+		}
+
+		// finally, check for designer specific sales user
+		if (
+			$this->sales_user_details->designer != 'instylenewyork'
+			OR $this->sales_user_details->designer != 'shop7thavenue'
+		)
+		{
+			$where['designer.url_structure'] = $this->sales_user_details->designer;
 		}
 
 		// get the products list and total count
@@ -176,7 +188,7 @@ class Instock extends Sales_user_Controller {
 		$params['variant_publish'] = 'ALL'; // all items at variant level publish (view status)
 		$params['variant_view_at_hub'] = TRUE; // variant level public at hub site
 		$params['variant_view_at_satellite'] = TRUE; // varian level public at satellite site
-		$params['with_stocks'] = FALSE; // FALSE - Show all with and without stocks
+		$params['with_stocks'] = TRUE; // FALSE - Show all with and without stocks
 		$params['group_products'] = FALSE; // group per product number or per variant
 		$params['special_sale'] = FALSE; // special sale items only
 		$params['pagination'] = $this->data['page']; // get all in one query
@@ -197,7 +209,7 @@ class Instock extends Sales_user_Controller {
 		$this->data['page_param'] = 'instock';
 
 		// enable pagination
-		$this->_set_pagination($this->data['count_all'], $this->data['limit'], implode('/', $url_segs));
+		$this->_set_pagination($this->data['count_all'], $this->data['limit']);
 
 		// breadcrumbs
 		$this->data['page_breadcrumb'] = array(

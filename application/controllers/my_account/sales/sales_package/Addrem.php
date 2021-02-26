@@ -38,16 +38,33 @@ class Addrem extends MY_Controller {
 		$item = $this->input->post('prod_no');
 		$page = $this->input->post('page');
 
-		// set the items array
-		$items_array =
-			$this->session->sa_items
-			? json_decode($this->session->sa_items, TRUE)
-			: (
+		// set the items array and options array
+		if ($page == 'create')
+		{
+			$items_array =
+				$this->session->sa_items
+				? json_decode($this->session->sa_items, TRUE)
+				: array()
+			;
+			$options_array =
+				$this->session->sa_options
+				? json_decode($this->session->sa_options, TRUE)
+				: array()
+			;
+		}
+		else
+		{
+			$items_array =
 				$this->session->sa_mod_items
 				? json_decode($this->session->sa_mod_items, TRUE)
 				: array()
-			)
-		;
+			;
+			$options_array =
+				$this->session->sa_mod_options
+				? json_decode($this->session->sa_mod_options, TRUE)
+				: array()
+			;
+		}
 
 		// process the item
 		if ($this->input->post('action') == 'add_item')
@@ -67,28 +84,17 @@ class Addrem extends MY_Controller {
 				unset($items_array[$key]);
 			}
 
-			// remove item from sa_options if any
-			/* */
-			$options_array =
-				$this->session->sa_options
-				? json_decode($this->session->sa_options, TRUE)
-				: (
-					$this->session->sa_mod_options
-					? json_decode($this->session->sa_mod_options, TRUE)
-					: array()
-				)
-			;
+			// remove reference to item from sa_options if any
 			if (isset($options_array['e_prices'][$item])) unset($options_array['e_prices'][$item]);
 
 			// reset session value for options array
 			if ( ! empty($options_array))
 			{
-				if ($this->session->sa_items)
+				if ($page == 'create')
 				{
 					$this->session->set_userdata('sa_options', json_encode($options_array));
 				}
-
-				if ($this->session->sa_mod_items)
+				else
 				{
 					$this->session->set_userdata('sa_mod_options', json_encode($options_array));
 				}
@@ -101,11 +107,11 @@ class Addrem extends MY_Controller {
 		sort($items_array);
 
 		// reset session value for items array
-		if ($this->input->post('page') == 'create')
+		if ($page == 'create')
 		{
 			$this->session->set_userdata('sa_items', json_encode($items_array));
 		}
-		if ($this->input->post('page') == 'modify')
+		else
 		{
 			$this->session->set_userdata('sa_mod_items', json_encode($items_array));
 		}

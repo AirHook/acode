@@ -159,17 +159,28 @@ class Is_public extends Sales_user_Controller {
 		}
 		else $where['tbl_product.categories LIKE'] = $category_id;
 
+		// publish/public/private down to the variant
 		$where['tbl_stock.color_publish'] = 'Y';
-		$where['tbl_stock.new_color_publish'] = '1';
+		$con_color_publish = "(tbl_stock.new_color_publish = '1' OR tbl_stock.new_color_publish = '11' OR tbl_stock.new_color_publish = '12')";
+		$where['condition'][] = $con_color_publish;
 
-		// sales user level 1 can see cs clearance
 		if ($this->sales_user_details->access_level == '2')
 		{
+			// don't show clearance cs only items on public list
 			$where['tbl_stock.options NOT LIKE'] = '"clearance_consumer_only":"1"';
 		}
 
+		// finally, check for designer specific sales user
+		if (
+			$this->sales_user_details->designer != 'instylenewyork'
+			OR $this->sales_user_details->designer != 'shop7thavenue'
+		)
+		{
+			$where['designer.url_structure'] = $this->sales_user_details->designer;
+		}
+
 		// get the products list for the thumbs grid view
-		$params['show_private'] = TRUE; // all items general public (Y) - N for private
+		$params['show_private'] = FALSE; // all items general public (Y) - N for private
 		$params['view_status'] = 'ALL'; // all items view status (Y, Y1, Y2, N)
 		$params['view_at_hub'] = TRUE; // all items general public at hub site
 		$params['view_at_satellite'] = TRUE; // all items publis at satellite site
@@ -192,12 +203,14 @@ class Is_public extends Sales_user_Controller {
 		$this->data['count_all'] = $this->products_list->count_all;
 		$this->data['products_count'] = $this->products_list->row_count;
 
+		//echo $this->products_list->last_query; die();
+
 		// need to show loading at start
 		$this->data['show_loading'] = FALSE;
 		$this->data['page_param'] = 'instock';
 
 		// enable pagination
-		$this->_set_pagination($this->data['count_all'], $this->data['limit'], implode('/', $url_segs));
+		$this->_set_pagination($this->data['count_all'], $this->data['limit']);
 
 		// breadcrumbs
 		$this->data['page_breadcrumb'] = array(
@@ -241,14 +254,14 @@ class Is_public extends Sales_user_Controller {
 	 *
 	 * @return	void
 	 */
-	private function _set_pagination($count_all = '', $per_page = '', $uri_string = '')
+	private function _set_pagination($count_all = '', $per_page = '')
 	{
 		$this->load->library('pagination');
 
 		$uri_string = explode('/', $this->uri->uri_string());
 		if (is_numeric(end($uri_string))) array_pop($uri_string);
 
-		$config['base_url'] = base_url().$url.'/index/'.($uri_string ? $uri_string.'/' : '');
+		$config['base_url'] = base_url().implode('/',$uri_string).'/';
 		$config['total_rows'] = $count_all;
 		$config['per_page'] = $per_page;
 		$config['num_links'] = 3;

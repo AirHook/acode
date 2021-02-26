@@ -41,6 +41,7 @@ class Get_thumbs extends MY_Controller {
 		$slug_segs = $this->input->post('slugs_link');
 		$style_ary = $this->input->post('style_ary');
 		$page = $this->input->post('page');
+		$access_level = $this->input->post('access_level');
 
 		// get the items if any
 		// set the items array
@@ -88,12 +89,20 @@ class Get_thumbs extends MY_Controller {
 		}
 		else $search_string = '';
 
-		// sales user is not allowed to see cs clearance only items
-		$con_clearance_cs_only = 'tbl_stock.options NOT LIKE \'%"clearance_consumer_only":"1"%\' ESCAPE \'!\'';
-		$where_more['condition'][] = $con_clearance_cs_only;
+		// public
+		$where_more['tbl_product.publish !='] = '0';
+		$where_more['tbl_stock.new_color_publish !='] = '0';
+
+		if ($access_level == '2')
+		{
+			$where_more['tbl_stock.color_publish'] = 'Y';
+
+			// don't show clearance cs only items
+			$where_more['tbl_stock.options NOT LIKE'] = '"clearance_consumer_only":"1"';
+		}
 
 		// get the products list
-		$params['show_private'] = TRUE; // all items general public (Y) - N for private
+		//$params['show_private'] = TRUE; // all items general public (Y) - N for private
 		//$params['view_status'] = 'ALL'; // all items view status (Y, Y1, Y2, N)
 		//$params['view_at_hub'] = TRUE; // all items general public at hub site
 		//$params['view_at_satellite'] = TRUE; // all items publis at satellite site
@@ -102,7 +111,7 @@ class Get_thumbs extends MY_Controller {
 		//$params['variant_view_at_satellite'] = TRUE; // varian level public at satellite site
 
 		// level 2 users show only items with stocks
-		$params['with_stocks'] = TRUE; // TRUE shows instock items only
+		$params['with_stocks'] = FALSE; // TRUE shows instock items only
 
 		$params['group_products'] = FALSE; // group per product number or per variant
 		$params['special_sale'] = FALSE; // special sale items only

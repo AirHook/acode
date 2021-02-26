@@ -35,14 +35,26 @@ class Set_options extends MY_Controller {
 
 		// grab the post variable
 		$param = $this->input->post('param');
+		$page = $this->input->post('page');
 		$val = $this->input->post('val');
 
 		// grab the options array
-		$options_array =
-			$this->session->sa_options
-			? json_decode($this->session->sa_options, TRUE)
-			: array()
-		;
+		if ($page == 'create')
+		{
+			$options_array =
+				$this->session->sa_options
+				? json_decode($this->session->sa_options, TRUE)
+				: array()
+			;
+		}
+		else
+		{
+			$options_array =
+				$this->session->sa_mod_options
+				? json_decode($this->session->sa_mod_options, TRUE)
+				: array()
+			;
+		}
 
 		switch ($param)
 		{
@@ -66,7 +78,8 @@ class Set_options extends MY_Controller {
 			break;
 		}
 
-		$this->session->set_userdata('sa_options', json_encode($options_array));
+		if ($page == 'create') $this->session->set_userdata('sa_options', json_encode($options_array));
+		else $this->session->set_userdata('sa_mod_options', json_encode($options_array));
 		exit;
 	}
 

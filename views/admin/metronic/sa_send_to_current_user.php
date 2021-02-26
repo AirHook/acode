@@ -79,6 +79,20 @@
 											}
 										</style>
 
+										<?php if ( ! $total_users)
+										{ ?>
+
+										<div class="form-group">
+											<div class="note note-danger">
+												You don't have wholesae users assinged under your care. Add a new user <a href="javascript:;" class="send-to-new-user">here</a>.
+											</div>
+										</div>
+
+											<?php
+										}
+										else
+										{ ?>
+
 										<div class="form-group" style="margin-bottom:0px;">
 											<div class="sa-send current-users toolbar clearfix " style="margin-top:10px;margin-bottom:5px;">
 
@@ -178,6 +192,9 @@
 										</div>
 
 										<hr class="form-group" />
+
+											<?php
+										} ?>
 
 									</div>
 

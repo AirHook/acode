@@ -168,6 +168,15 @@ class Unpublished extends Sales_user_Controller {
 			$where['tbl_stock.options NOT LIKE'] = '"clearance_consumer_only":"1"';
 		}
 
+		// finally, check for designer specific sales user
+		if (
+			$this->sales_user_details->designer != 'instylenewyork'
+			OR $this->sales_user_details->designer != 'shop7thavenue'
+		)
+		{
+			$where['designer.url_structure'] = $this->sales_user_details->designer;
+		}
+
 		// get the products list and total count
 		$params['show_private'] = TRUE; // all items general public (Y) - N for private
 		$params['view_status'] = 'ALL'; // all items view status (Y, Y1, Y2, N)
@@ -197,7 +206,7 @@ class Unpublished extends Sales_user_Controller {
 		$this->data['page_param'] = 'unpublish';
 
 		// enable pagination
-		$this->_set_pagination($this->data['count_all'], $this->data['limit'], implode('/', $url_segs));
+		$this->_set_pagination($this->data['count_all'], $this->data['limit']);
 
 		// breadcrumbs
 		$this->data['page_breadcrumb'] = array(

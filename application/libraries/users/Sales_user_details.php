@@ -80,6 +80,7 @@ class Sales_user_details
 	public $des_id = '';
 	public $designer = '';
 	public $designer_name = '';
+	public $designer_logo = '';
 
 	/**
 	 * Is Active
@@ -181,7 +182,7 @@ class Sales_user_details
 
 		// get recrods
 		$this->DB->select('tbladmin_sales.*');
-		$this->DB->select('designer.designer, designer.des_id');
+		$this->DB->select('designer.designer, designer.des_id, designer.logo');
 		$this->DB->select('webspaces.webspace_id AS webspace_idd');
 		$this->DB->join('designer', 'designer.url_structure = tbladmin_sales.admin_sales_designer', 'left');
 		$this->DB->join('webspaces', 'webspaces.webspace_id = designer.webspace_id', 'left');
@@ -201,6 +202,7 @@ class Sales_user_details
 			$this->des_id = $row->des_id;
 			$this->designer = $row->admin_sales_designer;
 			$this->designer_name = $row->designer;
+			$this->designer_logo = $row->logo;
 			$this->status = $row->is_active;
 			$this->access_level = $row->access_level;
 			$this->favorites = ($row->favorites && $row->favorites != '') ? json_decode($row->favorites, TRUE) : array();
@@ -521,6 +523,7 @@ class Sales_user_details
 		$this->des_id = '';
 		$this->designer = '';
 		$this->designer_name = '';
+		$this->designer_logo = '';
 		$this->status = '';
 		$this->access_level = '';
 		$this->favorites = array();

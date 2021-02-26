@@ -318,6 +318,14 @@
                                         </div>
                                     </div>
 
+                                    <div class="form-group" style="margin:0px -10px;">
+                                        <a class="btn btn-secondary-outline btn-sm font-dark pull-right" href="<?php echo site_url((@$role == 'sales' ? 'my_account/sales' : 'admin/campaigns').'/sales_package'); ?>">
+                                            <i class="fa fa-reply"></i> Back to List
+                                        </a>
+                                        <a class="btn btn-secondary-outline btn-sm font-dark" href="<?php echo site_url((@$role == 'sales' ? 'my_account/sales' : 'admin/campaigns').'/sales_package/create'); ?>">
+        	                                <i class="fa fa-pencil"></i> Modify Sales Package
+        								</a>
+                                    </div>
                                     <div class="form-group">
                                         <div class="col-md-12">
                                             <a href="javascript:;" class="btn dark btn-md select-send-options send-to-current-user col-md-4 btn-active" style="font-size:0.9em;background-color:#E5E5E5;color:black;">
@@ -326,9 +334,9 @@
                                             <a href="javascript:;" class="btn dark btn-md select-send-options send-to-new-user col-md-4" style="font-size:0.9em;">
                                                 Send To New Wholesale User
                                             </a>
-                                            <a href="<?php echo site_url((@$role == 'sales' ? 'my_account/sales' : 'admin/campaigns').'/sales_package/create'); ?>" class="btn dark btn-md select-send-options thumbs-grid-view col-md-4" style="font-size:0.9em;">
-                                                Modify Sales Package
-                                            </a>
+                                            <button type="button" class="btn dark btn-md select-send-options send-to-all-users_ col-md-4 tooltips" data-original-title="Under Construction" style="font-size:0.9em;">
+                                                Send To All Users
+                                            </button>
                                         </div>
                                     </div>
 

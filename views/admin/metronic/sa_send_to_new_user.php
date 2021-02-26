@@ -1,6 +1,6 @@
 								<div class="send_to_new_user display-none">
 
-									<h4> <cite>NEW USER:</cite> </h4>
+									<h4> <cite>ADD NEW USER:</cite> </h4>
 
 									<div class="form-body col-md-12">
 

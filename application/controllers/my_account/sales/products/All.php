@@ -159,10 +159,25 @@ class All extends Sales_user_Controller {
 		}
 		else $where['tbl_product.categories LIKE'] = $category_id;
 
-		// sales user level 1 can see cs clearance
+		// don't show clearance cs only items on ALL list
+		$where['tbl_product.publish !='] = '0';
+		$where['tbl_stock.new_color_publish !='] = '0';
+
 		if ($this->sales_user_details->access_level == '2')
 		{
+			$where_more['tbl_stock.color_publish'] = 'Y';
+
+			// don't show clearance cs only items on public list
 			$where['tbl_stock.options NOT LIKE'] = '"clearance_consumer_only":"1"';
+		}
+
+		// finally, check for designer specific sales user
+		if (
+			$this->sales_user_details->designer != 'instylenewyork'
+			OR $this->sales_user_details->designer != 'shop7thavenue'
+		)
+		{
+			$where['designer.url_structure'] = $this->sales_user_details->designer;
 		}
 
 		// get the products list and total count

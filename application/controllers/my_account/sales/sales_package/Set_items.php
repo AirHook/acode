@@ -30,7 +30,37 @@ class Set_items extends MY_Controller {
 		// grab the post data
 		$page = $this->input->post('page');
 
+		// set the items array and options array
+		if ($page == 'create')
+		{
+			$items_array =
+				$this->session->sa_items
+				? json_decode($this->session->sa_items, TRUE)
+				: array()
+			;
+			$sa_options =
+				$this->session->sa_options
+				? json_decode($this->session->sa_options, TRUE)
+				: array()
+			;
+		}
+		else
+		{
+			$items_array =
+				$this->session->sa_mod_items
+				? json_decode($this->session->sa_mod_items, TRUE)
+				: array()
+			;
+			$sa_options =
+				$this->session->sa_mod_options
+				? json_decode($this->session->sa_mod_options, TRUE)
+				: array()
+			;
+		}
+		$sa_items_count = count($items_array);
+
 		// set the items array
+		/*
 		$items_array =
 			$this->session->sa_items
 			? json_decode($this->session->sa_items, TRUE)
@@ -50,6 +80,7 @@ class Set_items extends MY_Controller {
 				: array()
 			)
 		;
+		*/
 
 		// load pertinent library/model/helpers
 		$this->load->library('products/product_details');
@@ -115,7 +146,7 @@ class Set_items extends MY_Controller {
 				}
 				else
 				{
-					$display_prices = $sa_options['w_prices'] ? '' : 'display-none';
+					$display_prices = $sa_options['w_prices'] == 'Y' ? '' : 'display-none';
 				}
 
 				$html.= '<div class="thumb-tile package image bg-blue-hoki '

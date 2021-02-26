@@ -186,7 +186,11 @@ class Sales_package_sending
 				// 1. which site created the sales package
 				// 1. hub site (user designer) or webspace
 				// 2. sat site (includes sales user my account) or webspace for that matter
-				$data['logo'] = $this->CI->config->item('PROD_IMG_URL').$this->CI->sales_package_details->designer_logo;
+				$data['logo'] =
+					$this->CI->wholesale_user_details->designer_logo
+					? $this->CI->config->item('PROD_IMG_URL').$this->CI->wholesale_user_details->designer_logo
+					: $this->CI->config->item('PROD_IMG_URL').'assets/images/logo/logo-'.$this->CI->wholesale_user_details->designer.'.png';
+				;
 
 				$this->CI->email->clear(TRUE);
 
@@ -208,20 +212,23 @@ class Sales_package_sending
 				// attachment
 				if ($this->w_images === 'Y' OR $this->linesheets_only == 'Y')
 				{
-					foreach ($data['items'] as $product)
+					foreach ($data['items'] as $item)
 					{
 						// get product details
-						$this->CI->product_details->initialize(array('tbl_product.prod_no'=>$product));
-
-						// set image paths
-						/*
-						$img_pre = 'product_assets/WMANSAPREL/'.$this->CI->product_details->d_folder.'/'.$this->CI->product_details->sc_folder.'/product_linesheet/';
-						// the image filename (using 1 - 140x210)
-						$image = $this->CI->product_details->prod_no.'_'.$this->CI->product_details->primary_img_id.'.jpg';
-						*/
+						$product = $this->CI->product_details->initialize(array('tbl_product.prod_no'=>$item));
+						if ( ! $product_details)
+						{
+							$exp = explode('_', $item);
+							$product = $this->CI->product_details->initialize(
+								array(
+									'tbl_product.prod_no' => $exp[0],
+									'color_code' => $exp[1]
+								)
+							);
+						}
 
 						// new image path
-						$linesheet = $this->CI->config->item('PROD_IMG_URL').$this->CI->product_details->media_path.$this->CI->product_details->prod_no.'_'.$this->CI->product_details->primary_img_id.'_linesheet.jpg';
+						$linesheet = $this->CI->config->item('PROD_IMG_URL').$product->media_path.$product->prod_no.'_'.$product->color_code.'_linesheet.jpg';
 
 						$this->CI->email->attach($linesheet);
 					}
@@ -252,7 +259,7 @@ class Sales_package_sending
 					else echo '<a href="'.($this->CI->uri->segment(2) === 'sales' ? site_url('my_account/sales/sales_package') : site_url('admin/campaigns/sales_package/send/index/'.$this->sales_package_id)).'">continue...</a>';
 					echo '<br />';
 					echo '<br />';
-					die();
+					//die();
 					// */
 
 					//echo $message;
@@ -266,9 +273,9 @@ class Sales_package_sending
 					}
 				}
 			//}
-		}
 
-		$this->CI->email->clear(TRUE);
+			$this->CI->email->clear(TRUE);
+		}
 
 		return TRUE;
 	}
@@ -358,7 +365,10 @@ class Sales_package_sending
 
 				$this->CI->email->clear(TRUE);
 
-				$this->CI->email->from((@$this->CI->sales_user_details->email ?: $this->CI->wholesale_user_details->designer_info_email), (@$this->CI->sales_user_details->designer_name ?: $this->CI->wholesale_user_details->designer));
+				$this->CI->email->from(
+					(@$this->CI->sales_user_details->email ?: $this->CI->wholesale_user_details->designer_info_email),
+					(@$this->CI->sales_user_details->designer_name ?: $this->CI->wholesale_user_details->designer)
+				);
 				$this->CI->email->reply_to((@$this->CI->sales_user_details->email ?: $this->CI->wholesale_user_details->designer_info_email));
 				//$this->CI->email->cc($this->CI->config->item('info_email'));
 				$this->CI->email->bcc($this->CI->config->item('info_email').', '.$this->CI->config->item('dev1_email'));

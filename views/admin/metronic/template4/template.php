@@ -12,6 +12,29 @@
     <!-- END HEAD -->
 
     <body class="page-container-bg-solid page-header-fixed page-sidebar-closed-hide-logo" data-base_url="<?php echo base_url(); ?>" data-object_data='{"<?php echo $this->security->get_csrf_token_name(); ?>":"<?php echo $this->security->get_csrf_hash(); ?>"}'>
+
+        <?php if (@$show_loading)
+        { ?>
+        <!-- LOADING -->
+		<div class="modal fade bs-modal-sm in" id="loading-start" tabindex="-1" data-backdrop="static" data-keyboard="false" style="display:block;background:rgba(40,40,40,0.35);">
+			<div class="modal-dialog modal-sm">
+				<div class="modal-content">
+					<div class="modal-header">
+						<!--<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>-->
+						<h4 class="modal-title">Loading...</h4>
+					</div>
+					<div class="modal-body text-center">
+						<p class="modal-body-text"></p>
+						<i class="fa fa-spinner fa-spin fa-3x text-danger" aria-hidden="true" style="margin:35px 0;"></i>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+            <?php
+        } ?>
+
         <!-- BEGIN HEADER -->
         <div class="page-header navbar navbar-fixed-top">
             <!-- BEGIN HEADER INNER -->

@@ -206,6 +206,7 @@
 						 * Sales Package Items
 						 */
 						-->
+						<?php if ($linesheets_only != 'Y') { ?>
 						<tr>
 							<td class="" bgcolor="" style="padding-top:40px;padding-bottom:50px;">
 
@@ -314,7 +315,8 @@
                                                     <span style="font-size:10px;">
                                                         <?php echo $product->color_name; ?>
                                                     </span>
-                                                    <br />
+													<?php if ($w_prices == 'Y') { ?>
+													<br />
                                                     <span style="font-size:10px;">
                                                         <span style="<?php echo $orig_price == $price ?: 'text-decoration:line-through;'; ?>">
                                                             $ <?php echo number_format($product->wholesale_price, 2); ?>
@@ -324,6 +326,7 @@
                                                             $ <?php echo number_format($price, 2); ?>
                                                         </span>
             										</span>
+													<?php } ?>
             									</div>
                                                 <!-- END PRODUCT INFO -->
 
@@ -356,6 +359,7 @@
 
 							</td>
 						</tr>
+						<?php } ?>
 
                         <!--
 						/***********

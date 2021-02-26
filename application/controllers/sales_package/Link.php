@@ -95,11 +95,64 @@ class Link extends Shop_Controller
 		/****************
 		 * Lets get the user details
 		 */
-		// check for logged in users and verify link user id
+		// initialize user details based on params provided
+		// although this is not safe, it's either a user_id or an email is provided in url
+		// $user_id is set from sales package for wholesale user (must also consider user_is a consumer)
+		// the case of carousel (wholesale or consumer), and email is provided
+		// in a query key/val format with the items in a items_csv query value
+		// ----
+		// the assumption is if the user is a consumer, then there is $this->input->get('u') == 'cs'
+		// otherwise, we can presume the user is a wholesale user / buyer
+		if ($user_id)
+		{
+			// while this is ok to assume at the moment, we must code to also consider as consumer
+			// for further evaluation
+			$user_details = $this->wholesale_user_details->initialize(array('user_id'=>$user_id));
+		}
+		else
+		{
+			if (@$this->input->get('u') == 'cs')
+			{
+				$user_details = $this->consumer_user_details->initialize(array('email'=>$this->input->get('email')));
+			}
+			else
+			{
+				$user_details = $this->wholesale_user_details->initialize(array('email'=>$this->input->get('email')));
+			}
+		}
+
+		// invalid credentials catch error
+		if ( ! $user_details)
+		{
+			// unset any or old sales package sessions
+			$this->_unset_sa_session();
+
+			// set flash notice
+			$this->session->set_flashdata('error', 'invalid_credentials');
+
+			// nothing more to do...
+			redirect('account/index/2', 'location');
+		}
+
+		// auto activate user since user clicked on the link
+		if ($user_details->status != '1')
+		{
+			if (@$this->input->get('u') == 'cs')
+			{
+				$this->consumer_user_details->activate_user();
+			}
+			else
+			{
+				$this->wholesale_user_details->activate_user();
+			}
+
+		}
+
+		// check for logged in users and verify
 		if ($this->session->user_loggedin)
 		{
 			// if not the same user
-			if ($this->session->user_id != $user_id)
+			if ($this->session->user_id != @$user_details->user_id)
 			{
 				// unset any or old sales package sessions
 				$this->_unset_sa_session();
@@ -110,90 +163,19 @@ class Link extends Shop_Controller
 				// nothing more to do...
 				redirect('account/index/1', 'location');
 			}
-
-			// user already logged in
-			// re-validate user details catch all error
-			if ($this->session->user_role == 'wholesale')
-			{
-				if (
-					! $this->wholesale_user_details->initialize(array('user_id'=>$user_id))
-					&& ! $this->wholesale_user_details->initialize(array('email'=>$this->input->get('email')))
-				)
-				{
-					// unset any or old sales package sessions
-					$this->_unset_sa_session();
-
-					// set flash notice
-					$this->session->set_flashdata('error', 'invalid_credentials');
-
-					// nothing more to do...
-					redirect('account', 'location');
-				}
-
-				// global catch all for inactive wholeslae users
-				if (@$this->wholesale_user_details->status != '1')
-				{
-					// set flash notice
-					$this->session->set_flashdata('error', 'status_inactive');
-
-					// send to request for activation page
-					redirect('account/request/activation', 'location');
-				}
-
-				// auto sign in user if not already signed in
-				// do notifications where necessary
-				if ( ! $this->session->this_login_id)
-				{
-					// auto activate user if he clicks on the sales package
-					//if ($this->wholesale_user_details->status != '1') $this->wholesale_user_details->activate_user();
-					// set wholesale user session
-					$this->wholesale_user_details->set_session();
-					// record login details
-					$this->wholesale_user_details->record_login_detail();
-
-					if (ENVIRONMENT !== 'development')
-					{
-						// notify sales user
-						$this->wholesale_user_details->notify_sales_user_online();
-						// notify admin user is online
-						$this->wholesale_user_details->notify_admin_user_online();
-					}
-				}
-			}
-
-			if ($this->session->user_role == 'consumer')
-			{
-				if (
-					! $this->consumer_user_details->initialize(array('user_id'=>$user_id))
-					&& ! $this->consumer_user_details->initialize(array('email'=>$this->input->get('email')))
-				)
-				{
-					// unset any or old sales package sessions
-					$this->_unset_sa_session();
-
-					// set flash notice
-					$this->session->set_flashdata('error', 'invalid_credentials');
-
-					// nothing more to do...
-					redirect('account/index/2', 'location');
-				}
-			}
 		}
-		else
+
+		if (@$this->input->get('u') != 'cs')
 		{
-			if ($this->wholesale_user_details->initialize(array('email'=>$this->input->get('email'))))
+			// auto sign in user if not already signed in
+			// do notifications where necessary
+			if ( ! $this->session->this_login_id)
 			{
-				// auto sign in user if not already signed in
-				// set a boolean param for new or exisiting login
-				// auto activate user if he clicks on the sales package
-				if ($this->wholesale_user_details->status != '1') $this->wholesale_user_details->activate_user();
 				// set wholesale user session
 				$this->wholesale_user_details->set_session();
-
 				// record login details
 				$this->wholesale_user_details->record_login_detail();
 
-				// do notifications where necessary
 				if (ENVIRONMENT !== 'development')
 				{
 					// notify sales user

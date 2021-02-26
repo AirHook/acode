@@ -128,8 +128,8 @@
         										echo '</tr><tr>';
         									}
 
-                                            // access link
-                                            $access_link = $domain_url.'sales_package/link/index/X/0/'.$tc.'.html?email='.($test_email ?: '%recipient_email%').'&items_csv='.$items_csv[$designers[0]];
+                                            // access link - derived for use on mailgun email process
+                                            $access_link = $domain_url.'sales_package/link/index/X/0/'.$tc.'.html?u='.$user_role.'&email='.($test_email ?: '%recipient_email%').'&items_csv='.$items_csv[$designers[0]];
         									?>
 
         								<td align="center" style="width:33%;vertical-align:top;padding-bottom:10px;" data-item="<?php echo $item; ?>">

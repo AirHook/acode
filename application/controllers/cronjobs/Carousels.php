@@ -204,6 +204,12 @@ class Carousels extends MY_Controller {
 						;
 
 						// let's get some thumbs
+						/**
+																														carousel_id = 9 on test send
+																														Message: Invalid argument supplied for foreach()
+																														Filename: cronjobs/Carousels.php
+																														Line Number: 207
+						 */
 						foreach ($data['designers'] as $designer)
 						{
 							// returned as items in an array (<prod_no>_<color_code>)
@@ -504,38 +510,53 @@ class Carousels extends MY_Controller {
 				*/
 				if ($this->input->get('email'))
 				{
-					$this->load->library('email');
-
-					$this->email->from($carousel->info_email, $carousel->webspace_name);
-					$this->email->to($this->input->get('email'));
-
-					$this->email->subject($data['subject'].' - TEST ONLY');
-					$this->email->message($content_body);
-
-					if ( ! $this->email->send())
+					if (ENVIRONMENT === 'development')
 					{
 						/* */
-						$error = 'Unable to send... '.PHP_EOL;
-						$error.= $this->email->print_debugger();
-
-						echo $error;
-						exit;
+						echo $content_body;
+						echo '<br />';
+						echo '<br />';
+						echo '<a href="'.site_url('admin/marketing/carousels/edit/index/'.$test).'">continue...</a>';
+						$this->session->set_flashdata('success', 'test_sent');
+						echo '<br />';
+						die();
 						// */
+					}
+					else
+					{
+						$this->load->library('email');
 
-						/* *
+						$this->email->from($carousel->info_email, $carousel->webspace_name);
+						$this->email->to($this->input->get('email'));
+
+						$this->email->subject($data['subject'].' - TEST ONLY');
+						$this->email->message($content_body);
+
+						if ( ! $this->email->send())
+						{
+							/* */
+							$error = 'Unable to send... '.PHP_EOL;
+							$error.= $this->email->print_debugger();
+
+							echo $error;
+							exit;
+							// */
+
+							/* *
+							// set flash data
+							$this->session->set_flashdata('error', 'test_unsent');
+
+							// redirect user
+							redirect('admin/marketing/carousels/edit/index/'.$test, 'location');
+							// */
+						}
+
 						// set flash data
-						$this->session->set_flashdata('error', 'test_unsent');
+						$this->session->set_flashdata('success', 'test_sent');
 
 						// redirect user
 						redirect('admin/marketing/carousels/edit/index/'.$test, 'location');
-						// */
 					}
-
-					// set flash data
-					$this->session->set_flashdata('success', 'test_sent');
-
-					// redirect user
-					redirect('admin/marketing/carousels/edit/index/'.$test, 'location');
 				}
 				else
 				{

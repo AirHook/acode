@@ -211,7 +211,7 @@
 	        									<div class="thumb-tile image bg-blue-hoki <?php echo $classes; ?>" style="<?php echo $styles; ?>">
 
 													<!--<a href="<?php echo $img_large; ?>" class="fancybox " data-original-title="Click to zoom">-->
-	                                                <a href="javascript:;" class="package_items" data-item="<?php echo $product->prod_no.'_'.$product->color_code; ?>" data-page="create">
+	                                                <a href="javascript:;" class="package_items" data-item="<?php echo $product->prod_no.'_'.$product->color_code; ?>" data-page="create" data-access_level="<?php echo $this->sales_user_details->access_level; ?>">
 
 	                                                    <?php if ($product->with_stocks == '0') { ?>
 	        											<div class="ribbon ribbon-shadow ribbon-round ribbon-border-dash ribbon-vertical-right ribbon-color-danger uppercase tooltips" data-placement="bottom" data-container="body" data-original-title="Pre Order" style="position:absolute;right:-3px;width:28px;padding:1em 0;">

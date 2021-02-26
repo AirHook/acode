@@ -485,6 +485,42 @@
                                             left: 0;
                                             top: 0;
                                         }
+                                        .ribbon.ribbon-color-danger {
+                                            background-color: #ed6b75;
+                                            color: #fff;
+                                        }
+                                        .ribbon.ribbon-color-info {
+                                            background-color: #5c9bd1;
+                                            color: #fff;
+                                        }
+                                        .ribbon.ribbon-vertical-right {
+                                            clear: none;
+                                            float: right;
+                                            margin: -2px 10px 0 0;
+                                            padding-top: 1em;
+                                            padding-bottom: 1em;
+                                            width: 41px;
+                                            text-align: center;
+                                        }
+                                        .ribbon.ribbon-vertical-left {
+                                            clear: none;
+                                            float: right;
+                                            margin: -2px 10px 0 0;
+                                            padding-top: 1em;
+                                            padding-bottom: 1em;
+                                            width: 41px;
+                                            text-align: center;
+                                        }
+                                        .ribbon {
+                                            padding: .5em 1em;
+                                                padding-top: 0.5em;
+                                                padding-bottom: 0.5em;
+                                            z-index: 5;
+                                            float: left;
+                                            margin: 10px 0 0 -2px;
+                                            clear: left;
+                                            position: relative;
+                                        }
                                     </style>
                                     <div class="thumb-tiles-wrapper margin-top-20 <?php echo @$des_subcats ? '' : 'display-none'; ?>" data-row-count="<?php echo @$products_count; ?>" data-object_data='{"<?php echo $this->security->get_csrf_token_name(); ?>":"<?php echo $this->security->get_csrf_hash(); ?>"}'>
 
@@ -551,7 +587,23 @@
         									<div class="thumb-tile image bg-blue-hoki <?php echo $classes; ?>" style="<?php echo $styles; ?>">
 
                                                 <!--<a href="<?php echo $img_large; ?>" class="fancybox tooltips" data-original-title="Click to zoom">-->
-                                                <a href="javascript:;" class="package_items" data-item="<?php echo $product->prod_no.'_'.$product->color_code; ?>" data-page="modify">
+                                                <a href="javascript:;" class="package_items" data-item="<?php echo $product->prod_no.'_'.$product->color_code; ?>" data-page="modify" data-access_level="<?php echo $this->sales_user_details->access_level; ?>">
+
+                                                    <div style="position:absolute;top:-3px;">
+
+                                                        <?php if ($product->color_publish == 'N') { // color variant private ?>
+                                                        <div class="ribbon ribbon-shadow ribbon-round ribbon-border-dash ribbon-vertical-left ribbon-color-danger uppercase tooltips" data-placement="top" data-container="body" data-original-title="Pre Order" style="width:25px;padding:1em 0;margin-right:1px;">
+                                                            <i class="fa fa-ban"></i>
+                                                        </div>
+                                                        <?php } ?>
+
+                                                        <?php if ($product->with_stocks == '0') { // color variant private ?>
+                                                        <div class="ribbon ribbon-shadow ribbon-round ribbon-border-dash ribbon-vertical-left ribbon-color-info uppercase tooltips" data-placement="top" data-container="body" data-original-title="Private" style="width:25px;padding:1em 0;;margin-right:1px;">
+                                                            <i class="fa fa-info-circle"></i>
+                                                        </div>
+                                                        <?php } ?>
+
+                                                    </div>
 
         											<div class="corner"> </div>
         											<div class="check"> </div>
@@ -977,11 +1029,11 @@
                                                 <div class="mt-radio-list">
                                                     <div class="mt-radio-inline">
                                                         <label class="mt-radio mt-radio-outline" style="margin-bottom:0px;">
-                                                            <input id="w_prices-Y" class="radio-options" type="radio" name="options[w_prices]" value="Y" data-option="w_prices" <?php echo @$sa_options['w_prices'] == 'Y' ? 'checked="checked"' : ''; ?>> Yes
+                                                            <input id="w_prices-Y" class="radio-options" type="radio" name="options[w_prices]" value="Y" data-page="modify" data-option="w_prices" <?php echo @$sa_options['w_prices'] == 'Y' ? 'checked="checked"' : ''; ?>> Yes
                                                             <span></span>
                                                         </label>
                                                         <label class="mt-radio mt-radio-outline" style="margin-bottom:0px;">
-                                                            <input id="w_prices-N" class="radio-options" type="radio" name="options[w_prices]" value="N" data-option="w_prices" <?php echo @$sa_options['w_prices'] == 'Y' ? '' : 'checked="checked"'; ?>> No
+                                                            <input id="w_prices-N" class="radio-options" type="radio" name="options[w_prices]" value="N" data-page="modify" data-option="w_prices" <?php echo @$sa_options['w_prices'] == 'Y' ? '' : 'checked="checked"'; ?>> No
                                                             <span></span>
                                                         </label>
                                                         <label class="" style="margin-bottom:0px;">
@@ -990,11 +1042,11 @@
                                                     </div>
                                                     <div class="mt-radio-inline <?php echo $hide_attach_linesheets; ?>">
                                                         <label class="mt-radio mt-radio-outline" style="margin-bottom:0px;">
-                                                            <input id="w_images-Y" class="radio-options" type="radio" name="options[w_images]" value="Y" data-option="w_images" <?php echo @$sa_options['w_images'] == 'Y' ? 'checked="checked"' : ''; ?>> Yes
+                                                            <input id="w_images-Y" class="radio-options" type="radio" name="options[w_images]" value="Y" data-page="modify" data-option="w_images" <?php echo @$sa_options['w_images'] == 'Y' ? 'checked="checked"' : ''; ?>> Yes
                                                             <span></span>
                                                         </label>
                                                         <label class="mt-radio mt-radio-outline" style="margin-bottom:0px;">
-                                                            <input id="w_images-N" class="radio-options" type="radio" name="options[w_images]" value="N" data-option="w_images" <?php echo @$sa_options['w_images'] == 'Y' ? '' : 'checked="checked"'; ?>> No
+                                                            <input id="w_images-N" class="radio-options" type="radio" name="options[w_images]" value="N" data-page="modify" data-option="w_images" <?php echo @$sa_options['w_images'] == 'Y' ? '' : 'checked="checked"'; ?>> No
                                                             <span></span>
                                                         </label>
                                                         <label class="" style="margin-bottom:0px;">
@@ -1003,11 +1055,11 @@
                                                     </div>
                                                     <div class="mt-radio-inline <?php echo $hide_send_linesheets_only; ?>">
                                                         <label class="mt-radio mt-radio-outline" style="margin-bottom:0px;">
-                                                            <input id="linesheets_only-Y" class="radio-options" type="radio" name="options[linesheets_only]" value="Y" data-option="linesheets_only" <?php echo @$sa_options['linesheets_only'] == 'Y' ? 'checked="checked"' : ''; ?>> Yes
+                                                            <input id="linesheets_only-Y" class="radio-options" type="radio" name="options[linesheets_only]" value="Y" data-page="modify" data-option="linesheets_only" <?php echo @$sa_options['linesheets_only'] == 'Y' ? 'checked="checked"' : ''; ?>> Yes
                                                             <span></span>
                                                         </label>
                                                         <label class="mt-radio mt-radio-outline" style="margin-bottom:0px;">
-                                                            <input id="linesheets_only-N" class="radio-options" type="radio" name="options[linesheets_only]" value="N" data-option="linesheets_only" <?php echo @$sa_options['linesheets_only'] == 'Y' ? '' : 'checked="checked"'; ?>> No
+                                                            <input id="linesheets_only-N" class="radio-options" type="radio" name="options[linesheets_only]" value="N" data-page="modify" data-option="linesheets_only" <?php echo @$sa_options['linesheets_only'] == 'Y' ? '' : 'checked="checked"'; ?>> No
                                                             <span></span>
                                                         </label>
                                                         <label class="" style="margin-bottom:0px;">
@@ -1075,7 +1127,7 @@
                                             </label>
                                             <div class="col-md-7">
                                                 <cite class="help-block font-red" style="position:relative;top:-4px;">
-                                                    Sales Package will be reset to original.
+                                                    Sales Package will be reset to saved package.
                                                 </cite>
                                             </div>
                                         </div>

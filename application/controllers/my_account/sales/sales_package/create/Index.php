@@ -45,37 +45,6 @@ class Index extends Sales_user_Controller {
 
 		if ($this->form_validation->run() == FALSE)
 		{
-			// let's ensure that there are no mod session for sa
-			if (
-				$this->session->sa_mod_items
-				OR $this->session->sa_mod_des_slug
-				OR $this->session->sa_mod_slug_segs
-			)
-			{
-				// first, remove sa modify details
-				unset($_SESSION['sa_mod_id']);
-				unset($_SESSION['sa_mod_items']);
-				unset($_SESSION['sa_mod_slug_segs']);
-				unset($_SESSION['sa_mod_options']);
-				unset($_SESSION['sa_mod_des_slug']); // session for designer drop down for hub sites
-				unset($_SESSION['sa_mod_designers']); // hub site mixed designer case
-
-				// set create session where necessary
-				if ( ! $this->session->sa_items)
-				{
-					// unset all session and send to create page
-					unset($_SESSION['sa_id']);
-					unset($_SESSION['sa_des_slug']); // session for designer drop down for hub sites
-					unset($_SESSION['sa_designers']); // hub site mixed designer case
-					unset($_SESSION['sa_slug_segs']);
-					unset($_SESSION['sa_items']);
-					unset($_SESSION['sa_name']); // used at view
-					unset($_SESSION['sa_email_subject']); // used at view
-					unset($_SESSION['sa_email_message']); // used at view
-					unset($_SESSION['sa_options']);
-				}
-			}
-
 			// get color list
 			// used for "add product not in list"
 			$this->data['colors'] = $this->color_list->select();
@@ -146,15 +115,20 @@ class Index extends Sales_user_Controller {
 				//		instock items
 				//		on sale items
 
-				// don't show clearance cs only items for level 2 users
+				// public
+				$where_more['tbl_product.publish !='] = '0';
+				$where_more['tbl_stock.new_color_publish !='] = '0';
+
 				if ($this->sales_user_details->access_level == '2')
 				{
-					$con_clearance_cs_only = 'tbl_stock.options NOT LIKE \'%"clearance_consumer_only":"1"%\' ESCAPE \'!\'';
-		            $where_more['condition'][] = $con_clearance_cs_only;
+					$where_more['tbl_stock.color_publish'] = 'Y';
+
+					// don't show clearance cs only items
+					$where_more['tbl_stock.options NOT LIKE'] = '"clearance_consumer_only":"1"';
 				}
 
 				// get the products list for the thumbs grid view
-				$params['show_private'] = TRUE; // all items general public (Y) - N for private
+				//$params['show_private'] = TRUE; // all items general public (Y) - N for private
 				//$params['view_status'] = 'ALL'; // all items view status (Y, Y1, Y2, N)
 				//$params['view_at_hub'] = TRUE; // all items general public at hub site
 				//$params['view_at_satellite'] = TRUE; // all items publis at satellite site
@@ -162,7 +136,7 @@ class Index extends Sales_user_Controller {
 				//$params['variant_view_at_hub'] = TRUE; // variant level public at hub site
 				//$params['variant_view_at_satellite'] = TRUE; // varian level public at satellite site
 
-				$params['with_stocks'] = TRUE; // TRUE shows instock items only
+				$params['with_stocks'] = FALSE; // TRUE shows instock items only
 
 				$params['group_products'] = FALSE; // group per product number or per variant
 				$params['special_sale'] = FALSE; // special sale items only
@@ -236,6 +210,9 @@ class Index extends Sales_user_Controller {
 			 */
 			// input post data
 			/* *
+			echo '<pre>';
+			print_r($this->input->post());
+			die();
 			Array
 			(
 				[date_create] => 1572636339
@@ -259,9 +236,9 @@ class Index extends Sales_user_Controller {
 						[1] => 036_GREY1
 						[2] => 045_TAUP1
 					)
-				[save_sales_package] => 1
+				[save_sales_package] => 1	// item for create sales package
 			)
-			// other needed items
+			// other needed items for sales package create
 			[sales_package_items] -> sa_items
 			// */
 
@@ -283,13 +260,13 @@ class Index extends Sales_user_Controller {
 				// additional items to set
 				$post_ary['webspace_id'] = $this->webspace_details->id; // where the package was created
 
+				// set sales package items
+				$post_ary['sales_package_items'] = $this->session->sa_items ?: json_encode($post_ary['prod_no']);
+
 				// remove variables not needed
 				unset($post_ary['files']);
 				unset($post_ary['prod_no']);
 				unset($post_ary['save_sales_package']);
-
-				// set sales package items
-				$post_ary['sales_package_items'] = $this->session->sa_items;
 
 				// update records
 				$DB->set($post_ary);
@@ -299,6 +276,7 @@ class Index extends Sales_user_Controller {
 				// unset create sessions
 				unset($_SESSION['sa_id']);
 				unset($_SESSION['sa_des_slug']);
+				unset($_SESSION['sa_designers']);
 				unset($_SESSION['sa_slug_segs']);
 				unset($_SESSION['sa_items']);
 				unset($_SESSION['sa_name']); // used at view
@@ -444,7 +422,7 @@ class Index extends Sales_user_Controller {
 			';
 			// handle form validation, datepickers, and scripts
 			$this->data['page_level_scripts'].= '
-				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/sales-sa-components.js" type="text/javascript"></script>
+				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/sales-sa-components.js?z='.time().'" type="text/javascript"></script>
 			';
 	}
 

@@ -181,6 +181,8 @@ class Is_public extends Admin_Controller {
 		else $where['tbl_product.categories LIKE'] = $category_id;
 
 		// publish/public/private down to the variant
+		$con_publish = "(tbl_product.publish = '1' OR tbl_product.publish = '11' OR tbl_product.publish = '12')";
+		$where['condition'][] = $con_publish;
 		$where['tbl_stock.color_publish'] = 'Y';
 		$con_color_publish = "(tbl_stock.new_color_publish = '1' OR tbl_stock.new_color_publish = '11' OR tbl_stock.new_color_publish = '12')";
 		$where['condition'][] = $con_color_publish;

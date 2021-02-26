@@ -159,12 +159,25 @@ class Clearance extends Sales_user_Controller {
 		}
 		else $where['tbl_product.categories LIKE'] = $category_id;
 
-		$where['tbl_product.clearance'] = '3';
+		// data conditions down to variant level
+		//$where['tbl_stock.new_color_publish !='] = '0'; // only publish items
+		$where['tbl_stock.options NOT LIKE'] = '"clearance_consumer_only":"1"';
+		$where['tbl_stock.custom_order'] = '3';
+		$where['tbl_stock.new_color_publish !='] = '0';
 
-		// sales user level 1 can see cs clearance
 		if ($this->sales_user_details->access_level == '2')
 		{
+			// don't show clearance cs only items on public list
 			$where['tbl_stock.options NOT LIKE'] = '"clearance_consumer_only":"1"';
+		}
+
+		// finally, check for designer specific sales user
+		if (
+			$this->sales_user_details->designer != 'instylenewyork'
+			OR $this->sales_user_details->designer != 'shop7thavenue'
+		)
+		{
+			$where['designer.url_structure'] = $this->sales_user_details->designer;
 		}
 
 		// get the products list and total count
@@ -196,7 +209,7 @@ class Clearance extends Sales_user_Controller {
 		$this->data['page_param'] = 'clearance';
 
 		// enable pagination
-		$this->_set_pagination($this->data['count_all'], $this->data['limit'], implode('/', $url_segs));
+		$this->_set_pagination($this->data['count_all'], $this->data['limit']);
 
 		// breadcrumbs
 		$this->data['page_breadcrumb'] = array(

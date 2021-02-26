@@ -33,9 +33,9 @@ var ComponentsEditors = function () {
             $('.select-send-options').removeClass('btn-active');
             // set this button to active
             //$(this).css('background-color', '#696969');
-            $(this).css('background-color', '#E5E5E5');
-            $(this).css('color', 'black');
-            $(this).addClass('btn-active');
+            $('.select-send-options.send-to-current-user').css('background-color', '#E5E5E5');
+            $('.select-send-options.send-to-current-user').css('color', 'black');
+            $('.select-send-options.send-to-current-user').addClass('btn-active');
             $('[name="send_to"]').val('current_user');
             $('.notice-select-action').hide();
             $('.send_to_new_user').hide();
@@ -53,9 +53,9 @@ var ComponentsEditors = function () {
             $('.select-send-options').removeClass('btn-active');
             // set this button to active
             //$(this).css('background-color', '#696969');
-            $(this).css('background-color', '#E5E5E5');
-            $(this).css('color', 'black');
-            $(this).addClass('btn-active');
+            $('.select-send-options.send-to-new-user').css('background-color', '#E5E5E5');
+            $('.select-send-options.send-to-new-user').css('color', 'black');
+            $('.select-send-options.send-to-new-user').addClass('btn-active');
             $('[name="send_to"]').val('new_user');
             $('.notice-select-action').hide();
             $('.send_to_current_user').hide();

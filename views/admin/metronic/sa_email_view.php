@@ -230,6 +230,7 @@
 									<span style="font-size:10px;">
 										<?php echo $product->color_name; ?>
 									</span>
+									<?php if (@$sa_options['w_prices'] == 'Y') { ?>
 									<br />
 									<span style="font-size:10px;">
 										<span style="<?php echo $orig_price == $price ?: 'text-decoration:line-through;'; ?>">
@@ -240,6 +241,7 @@
 											$ <?php echo number_format($price, 2); ?>
 										</span>
 									</span>
+									<?php } ?>
 								</div>
 								<!-- END PRODUCT INFO -->
 

@@ -351,6 +351,7 @@ var ComponentsEditors = function () {
             var objectData = object_data;
             objectData.prod_no = $(this).data('item');
             objectData.page = $(this).data('page');
+            objectData.access_level = $(this).data('access_level');
             // check if item is already selected
             var selected = $(this).closest('.thumb-tile.image').hasClass('selected');
             if (selected) {

@@ -304,9 +304,12 @@ class Shop_Controller extends Frontend_Controller {
         }
         else if ($this->session->userdata('user_role') == 'wholesale')
         {
+            // -- the setting clearance for cs is so that consumer can avail of discount
+            // -- otherwise, show as normal even to wholesale user
+            // -- commenting this for now
             // clearance cs only items is not for wholesale users
-            $con_clearance_cs_only = 'tbl_stock.options NOT LIKE \'%"clearance_consumer_only":"1"%\' ESCAPE \'!\'';
-            $where['condition'][] = $con_clearance_cs_only;
+            //$con_clearance_cs_only = 'tbl_stock.options NOT LIKE \'%"clearance_consumer_only":"1"%\' ESCAPE \'!\'';
+            //$where['condition'][] = $con_clearance_cs_only;
 
             if ($this->wholesale_user_details->access_level == '2')
             {
@@ -586,9 +589,12 @@ class Shop_Controller extends Frontend_Controller {
         }
         else if ($this->session->userdata('user_role') == 'wholesale')
         {
+            // -- the setting clearance for cs is so that consumer can avail of discount
+            // -- otherwise, show as normal even to wholesale user
+            // -- commenting this for now
             // clearance cs only items is not for wholesale users
-            $ccon_clearance_cs_only = 'tbl_stock.options NOT LIKE \'%"clearance_consumer_only":"1"%\' ESCAPE \'!\'';
-            $wwhere['condition'][] = $ccon_clearance_cs_only;
+            //$ccon_clearance_cs_only = 'tbl_stock.options NOT LIKE \'%"clearance_consumer_only":"1"%\' ESCAPE \'!\'';
+            //$wwhere['condition'][] = $ccon_clearance_cs_only;
 
             /*********
         	 * Current custom conditions for wholesale users

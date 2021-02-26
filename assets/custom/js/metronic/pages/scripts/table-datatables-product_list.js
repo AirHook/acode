@@ -200,6 +200,7 @@ var TableDatatablesManaged = function () {
         $('.thumb-tiles').on('click', '.package_items', function() {
             var objectData = object_data;
             objectData.prod_no = $(this).data('item');
+			objectData.access_level = $(this).data('access_level');
             // get item...
             getItem(objectData);
         });

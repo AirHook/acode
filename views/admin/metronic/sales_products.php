@@ -67,11 +67,6 @@
 						?>
 
 						<ul class="nav nav-tabs ">
-							<li class="active">
-								<a href="javascript:;">
-									All Products
-								</a>
-							</li>
 							<li class="<?php echo ($this->uri->segment(3) == 'all' OR $this->uri->segment(4) == 'all') ? 'active' : ''; ?>">
 								<a href="<?php echo site_url($url_pre.'/products/all'); ?>">
 									All
@@ -82,11 +77,13 @@
 									Public
 								</a>
 							</li>
+							<?php if ($this->sales_user_details->access_level != '2') { ?>
 							<li class="<?php echo ($this->uri->segment(3) == 'not_public' OR $this->uri->segment(4) == 'not_public') ? 'active' : ''; ?>">
 								<a href="<?php echo site_url($url_pre.'/products/not_public'); ?>">
 									Private
 								</a>
 							</li>
+							<?php } ?>
 							<li class="<?php echo ($this->uri->segment(3) == 'clearance' OR $this->uri->segment(4) == 'clearance') ? 'active' : ''; ?>">
 								<a href="<?php echo site_url($url_pre.'/products/clearance'); ?>">
 									On Sale
@@ -98,18 +95,17 @@
 									Clearance CS Only
 								</a>
 							</li>
-							-->
 							<li class="<?php echo ($this->uri->segment(3) == 'unpublished' OR $this->uri->segment(4) == 'unpublished') ? 'active' : ''; ?>">
 								<a href="<?php echo site_url($url_pre.'/products/unpublished'); ?>">
 									Unpublished
 								</a>
 							</li>
+							-->
 							<li class="<?php echo ($this->uri->segment(3) == 'instock' OR $this->uri->segment(4) == 'instock') ? 'active' : ''; ?>">
 								<a href="<?php echo site_url($url_pre.'/products/instock'); ?>">
 									In Stock
 								</a>
 							</li>
-							-->
 							<li class="<?php echo ($this->uri->segment(3) == 'onorder' OR $this->uri->segment(4) == 'onorder') ? 'active' : ''; ?>">
 								<a href="javascript:;" class="tooltips" data-original-title="Currently under construction">
 									On Order

@@ -28,6 +28,7 @@ class Add extends Sales_user_Controller {
 		// load pertinent library/model/helpers
 		$this->load->helper('state_country');
 		$this->load->library('users/sales_users_list');
+		$this->load->library('users/wholesale_user_details');
 		$this->load->library('designers/designers_list');
 		$this->load->library('odoo');
 		$this->load->library('form_validation');
@@ -89,14 +90,33 @@ class Add extends Sales_user_Controller {
 		}
 		else
 		{
+			if ($this->wholesale_user_details->initialize(array('email'=>$this->input->post('email'))))
+			{
+				// set flash data
+				$this->session->set_flashdata('error', 'user_exists');
+
+				// resdirect user
+				redirect('my_account/sales/users/wholesale/add', 'location');
+			}
+
 			// insert record
 			$post_ary = $this->input->post();
+
 			// set necessary variables
 			$post_ary['create_date'] = date('Y-m-d', time());
 			if ($this->input->post('is_active') == '1')
 			{
 				$post_ary['active_date'] = date('Y-m-d', time());
 			}
+			$post_ary['alt_address'] = json_encode($post_ary['alt_address']);
+
+			// restructure options if any
+			if (@$post_ary['options']['patron_discount'])
+			{
+				$post_ary['options'] = json_encode($post_ary['options']);
+			}
+			else unset($post_ary['options']);
+
 			// unset unneeded variables
 			unset($post_ary['passconf']);
 			unset($post_ary['send_activation_email']);
@@ -112,19 +132,46 @@ class Add extends Sales_user_Controller {
 			// if active, add user to mailgun list
 			if ($this->input->post('is_active') == '1')
 			{
-				// basix only for now
-				if ($this->input->post('reference_designer') == 'basixblacklabel')
+				// add user to mailgun list
+				// no need to validate email as these are stores
+				// force add users to mailgun
+				// use input fields to capture any updates
+				switch ($this->input->post('reference_designer'))
 				{
-					// add user to mailgun list
-					// no need to validate email as these are stores
-					// force add users to mailgun
-					// use input fields to capture any updates
+					case 'tempoparis':
+						$list_name = 'ws_tempo@mg.shop7thavenue.com';
+						$designer_name = 'Tempo Paris';
+					break;
+					case 'basixblacklabel':
+						$list_name = 'wholesale_users@mg.shop7thavenue.com';
+						$designer_name = 'Basix Black Label';
+					break;
+					case 'chaarmfurs':
+						$list_name = 'wholesale_users@mg.shop7thavenue.com';
+						$designer_name = 'Chaarm Furs';
+					break;
+					case 'issueny':
+						$list_name = 'wholesale_users@mg.shop7thavenue.com';
+						$designer_name = 'Issue New York';
+					break;
+					default:
+						$list_name = 'wholesale_users@mg.shop7thavenue.com';
+						$designer_name = $this->webspace_details->name;
+				}
+
+				if ($list_name)
+				{
 					$params['address'] = $this->input->post('email');
 					$params['fname'] = $this->input->post('firstname');
 					$params['lname'] = $this->input->post('lastname');
-					$params['vars'] = '{"store_name":"'.$this->input->post('store_name').'"}';
+					$params_vars = array(
+						'designer' => $designer_name,
+						'designer_slug' => $this->input->post('reference_designer'),
+						'store_name' => $this->input->post('store_name')
+					);
+					$params['vars'] = json_encode($params_vars);
 					$params['description'] = 'Wholesale User';
-					$params['list_name'] = 'wholesale_users@mg.shop7thavenue.com';
+					$params['list_name'] = $list_name;
 					$this->load->library('mailgun/list_member_add', $params);
 					$res = $this->list_member_add->add();
 					$this->list_member_add->clear();
@@ -156,7 +203,7 @@ class Add extends Sales_user_Controller {
 					$this->session->set_flashdata('error_message', $this->wholesale_activation_email_sending->error);
 
 					// redirect user
-					redirect('my_account/sales/users/wholesale/edit/index/'.$insert_id);
+					redirect('my_account/sales/users/wholesale/edit/index/'.$insert_id, 'location');
 				}
 
 			}
@@ -164,7 +211,7 @@ class Add extends Sales_user_Controller {
 			// set flash data
 			$this->session->set_flashdata('success', 'add');
 
-			redirect('my_account/sales/users/wholesale/edit/index/'.$insert_id);
+			redirect('my_account/sales/users/wholesale/edit/index/'.$insert_id, 'location');
 		}
 	}
 

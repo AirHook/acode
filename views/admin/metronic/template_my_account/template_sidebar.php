@@ -23,11 +23,13 @@ if (@$role == 'sales')
 						<span class="title">Public</span>
 					</a>
 				</li>
+				<?php if ($this->sales_user_details->access_level != '2') { ?>
 				<li class="nav-item  <?php echo $this->uri->segment(4) == 'not_public' ? 'active open' : ''; ?>">
 					<a href="<?php echo site_url('my_account/sales/products/not_public'); ?>" class="nav-link  ">
 						<span class="title">Private</span>
 					</a>
 				</li>
+				<?php } ?>
 				<li class="nav-item  <?php echo $this->uri->segment(4) == 'clearance' ? 'active open' : ''; ?>">
 					<a href="<?php echo site_url('my_account/sales/products/clearance'); ?>" class="nav-link  ">
 						<span class="title">On Sale</span>
@@ -130,6 +132,11 @@ if (@$role == 'sales')
 		<li class="nav-item <?php echo $this->uri->uri_string() == 'my_account/sales/sales_package/create' ? 'active' : ''; ?>">
 			<a href="<?php echo site_url('my_account/sales/sales_package/create'); ?>" class="nav-link  ">
 				<span class="title">Create Sales Package</span>
+			</a>
+		</li>
+		<li class="nav-item <?php echo $this->uri->uri_string() == 'my_account/sales/sales_package/create' ? 'active' : ''; ?>">
+			<a href="<?php echo site_url('my_account/sales/photo_package/create'); ?>" class="nav-link  ">
+				<span class="title">Create Photo Package</span>
 			</a>
 		</li>
 
