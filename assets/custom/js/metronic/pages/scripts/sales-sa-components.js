@@ -214,20 +214,20 @@ var ComponentsEditors = function () {
         };
 
         function submitNewPrice(objectData){
-            var set_options = $.ajax({
+            var set_new_price = $.ajax({
                 type:    "POST",
                 url:     base_url + "my_account/sales/sales_package/set_item_new_price.html",
                 data:    objectData
             });
-            set_options.done(function(data){
+            set_new_price.done(function(data){
                 // reset modal input field
                 $('[name="item_price"]').val();
                 // close modal
                 $('#modal-edit_item_price').modal('hide');
                 // set items anew
-                setItems();
+                setItems(objectData);
             });
-            set_options.fail(function(jqXHR, textStatus, errorThrown) {
+            set_new_price.fail(function(jqXHR, textStatus, errorThrown) {
                 alert("Set Info Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
             });
         };
@@ -429,6 +429,7 @@ var ComponentsEditors = function () {
             // gather data
             var objectData = object_data;
             objectData.item = $(this).data('item');
+            objectData.page = $(this).data('page');
             objectData.price = $('[name="item_price"]').val();
             // set price at front end
             $('.item_prices.'+objectData.item+' > span.e_prices').html(objectData.price);

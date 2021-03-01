@@ -119,9 +119,11 @@ class Set_items extends MY_Controller {
 					// set price
 					$price =
 						@$sa_options['e_prices'][$item]
-						?: ($product->clearance == '3' OR $product->custom_order == '3')
+						?: (
+							($product->clearance == '3' OR $product->custom_order == '3')
 							? $product->wholesale_price_clearance
 							: $product->wholesale_price
+						)
 					;
 				}
 				else

@@ -1339,7 +1339,7 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn dark btn-outline" data-dismiss="modal" tabindex="-1">Cancel</button>
-                                        <button type="button" class="btn dark submit-edit_item_prices" data-item="">Apply changes</button>
+                                        <button type="button" class="btn dark submit-edit_item_prices" data-item="" data-page="create">Apply changes</button>
                                     </div>
 
                                 </div>

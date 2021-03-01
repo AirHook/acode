@@ -145,9 +145,11 @@
 										// set price
 										$price =
 											@$sa_options['e_prices'][$item]
-											?: ($product->clearance == '3' OR $product->custom_order == '3')
+											?: (
+												($product->clearance == '3' OR $product->custom_order == '3')
 												? $product->wholesale_price_clearance
 												: $product->wholesale_price
+											)
 										;
 									}
 									else
@@ -189,7 +191,7 @@
 									<input type="checkbox" class="package_items tooltips" data-original-title="Remove item" name="prod_no[]" data-page="create" value="<?php echo $style_no; ?>" style="float:right;margin-top:0px;" checked />
 									<?php echo $prod_no; ?> <br />
 									<?php echo $color_name; ?> <br />
-									<div class="item_prices <?php echo $style_no; ?> <?php echo $display_prices; ?>">
+									<div class="item_prices <?php echo $style_no; ?> <?php echo $display_prices; ?>" data-e_price="<?php echo @$sa_options['e_prices'][$item] ?: '55'; ?>" data-wholesale_price="<?php echo $product->wholesale_price; ?>" data-onsael_price="<?php echo $product->wholesale_price_clearance; ?>">
 										<span class="<?php echo $onsale ? '' : 'e_prices'; ?>" data-price="<?php echo $price; ?>" style="<?php echo $onsale ? 'text-decoration:line-through;' : ''; ?>">
 											<?php echo '$'.number_format($price, 2); ?>
 										</span>

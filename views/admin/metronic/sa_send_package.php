@@ -167,7 +167,16 @@
                                                                     // check stocks options for clearance cs only and pre-set price for on sale
                                 									// even if on sale price is not used
                                                                     $stocks_options = @$product->stocks_options ?: array();
-                                									$price = @$sa_options['e_prices'][$item] ?: $product->wholesale_price_clearance;
+                                									$price =
+                                                                        ! $product
+                                                                        ? '0'
+                                                                        : @$sa_options['e_prices'][$item]
+                                                    						?: (
+                                                    							($product->clearance == '3' OR $product->custom_order == '3')
+                                                    							? $product->wholesale_price_clearance
+                                                    							: $product->wholesale_price
+                                                    						)
+                                                                    ;
 
                                 									// check if item is on sale
                                 									if (

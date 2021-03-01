@@ -246,7 +246,7 @@ var ComponentsEditors = function () {
                 // close modal
                 $('#modal-edit_item_price').modal('hide');
                 // set items anew
-                setItems();
+                setItems(objectData);
             });
             set_options.fail(function(jqXHR, textStatus, errorThrown) {
                 alert("Set Info Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);

@@ -134,7 +134,7 @@ if (@$role == 'sales')
 				<span class="title">Create Sales Package</span>
 			</a>
 		</li>
-		<li class="nav-item <?php echo $this->uri->uri_string() == 'my_account/sales/sales_package/create' ? 'active' : ''; ?>">
+		<li class="nav-item <?php echo $this->uri->uri_string() == 'my_account/sales/photo_package/create' ? 'active' : ''; ?>">
 			<a href="<?php echo site_url('my_account/sales/photo_package/create'); ?>" class="nav-link  ">
 				<span class="title">Create Photo Package</span>
 			</a>

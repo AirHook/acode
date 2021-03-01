@@ -173,14 +173,10 @@
                                                         	 * setup $email_message here
                                                         	 */
                                                         	?>
-															<?php if ($email_message)
-															{
-																echo $email_message;
-																echo '<br><br>';
-															} ?>
-
-															View Our sales package offer below with several new designs for your review.<br />
-															Please respond with items of interest for your stores by sending in a Inquiry Order.
+															<?php
+															echo $email_message;
+															echo '<br><br>';
+															?>
 
                                                         </td>
                                                     </tr>
