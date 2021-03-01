@@ -127,12 +127,16 @@ class Consumer_special_sale_email_carousel extends MY_Controller {
 		// set new random key
 		while(in_array($rand_key = mt_rand(0, 11), array($last_rand_key)));
 
-		// save new random ket on record
-		$this->DB->set('config_value', $rand_key);
-		$this->DB->set('options', '');
-		$this->DB->where('config_name', 'special_sale_subjects_key');
-		$this->DB->update('config');
-		// */
+		if ($test != 'admin')
+		{
+			// save new random ket on record
+			/* */
+			$this->DB->set('config_value', $rand_key);
+			$this->DB->set('options', '');
+			$this->DB->where('config_name', 'special_sale_subjects_key');
+			$this->DB->update('config');
+			// */
+		}
 
 		// load pertinent library/model/helpers
 		$this->load->library('mailgun/mailgun');
@@ -220,6 +224,8 @@ class Consumer_special_sale_email_carousel extends MY_Controller {
 		);
 		$list_count = $this->products_list->row_count;
 
+		//echo $this->products_list->last_query; die();
+
 		// this 'if' condition only means that we have used all items for sending
 		// thus, we need to reset the 'special_sale_thumbs_sent' to empty
 		if ($list_count == 0)
@@ -267,13 +273,16 @@ class Consumer_special_sale_email_carousel extends MY_Controller {
 				if ($cnt == 30) break;
 			}
 
-			// update previous thumbs sent
-			/* */
-			$this->DB->set('config_value', json_encode($thumbs));
-			$this->DB->set('options', '');
-			$this->DB->where('config_name', 'special_sale_thumbs_sent');
-			$this->DB->update('config');
-			// */
+			if ($test != 'admin')
+			{
+				// update previous thumbs sent
+				/* */
+				$this->DB->set('config_value', json_encode($thumbs));
+				$this->DB->set('options', '');
+				$this->DB->where('config_name', 'special_sale_thumbs_sent');
+				$this->DB->update('config');
+				// */
+			}
 
 			return $items_array;
 		}

@@ -96,7 +96,7 @@ class Wholesale_special_sale_email_carousel extends MY_Controller {
 		// let's get some thumbs
 		// returned as items in an array (<prod_no>_<color_code>)
 		// currently equivalent to https://www.shop7thavenue.com/shop/basixblacklabel/womens_apparel.html
-		$data['onsale_products'] = $this->_get_thumbs('instock');
+		$data['onsale_products'] = $this->_get_thumbs('onsale');
 		// record proudct into a csv format for use on url
 		$data['items_csv'] = implode(',', $data['onsale_products']);
 
@@ -121,13 +121,19 @@ class Wholesale_special_sale_email_carousel extends MY_Controller {
 		$this->DB->where('config_name', 'wholesale_special_sale_subjects_key');
 		$q2 = $this->DB->get('config');
 		$r2 = $q2->row();
-		$subject_key = $r2->config_value >= '3' ? 0 : $r2->config_value + 1;
+		$key_to_use = $r2->config_value + 1;
+		$subject_key = $key_to_use >= count($subject) ? 0 : $key_to_use;
 
-		// save new random ket on record
-		$this->DB->set('config_value', $subject_key);
-		$this->DB->set('options', NULL);
-		$this->DB->where('config_name', 'wholesale_special_sale_subjects_key');
-		$this->DB->update('config');
+		if ($test != 'admin')
+		{
+			// save new random key on record
+			/* */
+			$this->DB->set('config_value', $subject_key);
+			$this->DB->set('options', NULL);
+			$this->DB->where('config_name', 'wholesale_special_sale_subjects_key');
+			$this->DB->update('config');
+			// */
+		}
 
 		// subjects:
 		$subject = $subjects[$subject_key];
@@ -208,7 +214,28 @@ class Wholesale_special_sale_email_carousel extends MY_Controller {
 		$where['designer.url_structure'] = 'basixblacklabel';
 
 		// primary param
-    	if ($str) $params['facets'] = array('availability'=>$str);
+    	//if ($str) $params['facets'] = array('availability'=>$str);
+		$where['tbl_product.clearance'] = '3';
+
+		// do not show cs clearance items
+		$con_clearance_cs_only = 'tbl_stock.options NOT LIKE \'%"clearance_consumer_only":"1"%\' ESCAPE \'!\'';
+        $where['condition'][] = $con_clearance_cs_only;
+
+		// PUBLISH PUBLIC
+		$where_public = "(
+			(
+				tbl_product.publish = '1'
+				OR tbl_product.publish = '11'
+				OR tbl_product.publish = '12'
+			) AND (
+				tbl_stock.new_color_publish = '1'
+				OR tbl_stock.new_color_publish = '11'
+				OR tbl_stock.new_color_publish = '12'
+			) AND (
+				tbl_stock.color_publish = 'Y'
+			)
+		)";
+		$where['condition'][] = $where_public;
 
 		// get the products list
 		// show items even without stocks at all
@@ -227,6 +254,8 @@ class Wholesale_special_sale_email_carousel extends MY_Controller {
 			)
 		);
 		$list_count = $this->products_list->row_count;
+
+		//echo $this->products_list->last_query; die();
 
 		// this 'if' condition only means that we have used all items for sending
 		// thus, we need to reset the 'special_sale_thumbs_sent' to empty
@@ -275,13 +304,16 @@ class Wholesale_special_sale_email_carousel extends MY_Controller {
 				if ($cnt == 30) break;
 			}
 
-			// update previous thumbs sent
-			/* */
-			$this->DB->set('config_value', json_encode($thumbs));
-			$this->DB->set('options', '');
-			$this->DB->where('config_name', 'wholesale_special_sale_thumbs_sent');
-			$this->DB->update('config');
-			// */
+			if ($test != 'admin')
+			{
+				// update previous thumbs sent
+				/* */
+				$this->DB->set('config_value', json_encode($thumbs));
+				$this->DB->set('options', '');
+				$this->DB->where('config_name', 'wholesale_special_sale_thumbs_sent');
+				$this->DB->update('config');
+				// */
+			}
 
 			return $items_array;
 		}

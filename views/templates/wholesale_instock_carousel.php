@@ -98,13 +98,15 @@
 								<table width="100%" border="0" cellspacing="0" cellpadding="0">
 									<tr>
 										<td class="h2" style="color: #153643; font-family: sans-serif; padding: 0 0 15px 0; font-size: 24px; line-height: 28px; font-weight: bold;">
-											Hello %recipient_name%,
+											Hello %recipient.store_name%,
 										</td>
 									</tr>
 									<tr>
                                         <!-- Up to 70% Off On Special Occasion, Prom and Evening Dresses. -->
 										<td class="bodycopy" style="color: #153643; font-family: sans-serif; font-size: 16px; line-height: 22px;">
                                             New Arrivals And On Sale ITems For Your Store.
+                                            <br /><br />
+                                            MINIMUM ORDER ON CLEARANCE ITEMS IS 10 PIECES
 										</td>
 									</tr>
 								</table>
