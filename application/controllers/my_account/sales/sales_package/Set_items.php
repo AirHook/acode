@@ -125,6 +125,7 @@ class Set_items extends MY_Controller {
 							: $product->wholesale_price
 						)
 					;
+					$orig_price = $product->wholesale_price;
 				}
 				else
 				{
@@ -135,7 +136,8 @@ class Set_items extends MY_Controller {
 					$color_name = $this->product_details->get_color_name($color_code);
 
 					// set price
-					$price = @$sa_options['e_prices'][$item] ?: 0;
+					$price = @$sa_options['e_prices'][$item] ?: '0';
+					$orig_price = '0';
 				}
 
 				// check if item is on sale
@@ -200,7 +202,7 @@ class Set_items extends MY_Controller {
 					.'" style="'
 					.($onsale ? 'text-decoration:line-through;' : '')
 					.'">$'
-					.number_format($price, 2)
+					.number_format($orig_price, 2)
 					.'</span>'
 					.'<span class="e_prices" data-price="'
 					.$price

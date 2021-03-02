@@ -210,7 +210,7 @@
                                 										<img src="<?php echo $img_coloricon; ?>" width="10" height="10">
                                 									</div>
 
-                                									<div style="width:100%;">
+                                									<div style="width:100%;" data-e_prices="<?php echo @$sa_options['e_prices'][$item]; ?>" data-wholesale_price="<?php echo $product->wholesale_price; ?>" data-wholesale_price_clearance="<?php echo $product->wholesale_price_clearance; ?>">
                                 										<span style="font-size:10px;"><?php echo $prod_no; ?></span>
                                 										<?php if (@$sa_options['w_prices'] == 'Y') { ?>
                                 										<br />

@@ -326,8 +326,8 @@ class Send_package extends Sales_user_Controller {
 			//$data['items'] = json_decode($this->session->product_clicks_sa_items, TRUE);
 			$data['email'] = $email;
 			$data['w_prices'] = isset($sa_options['w_prices']) ? $sa_options['w_prices'] : 'Y';
-			$data['w_images'] = isset($sa_options['w_images']) ? $sa_options['w_images'] : 'Y';'N';
-			$data['linesheets_only'] = isset($sa_options['linesheets_only']) ? $sa_options['linesheets_only'] : 'Y';'N';
+			$data['w_images'] = isset($sa_options['w_images']) ? $sa_options['w_images'] : 'N';
+			$data['linesheets_only'] = isset($sa_options['linesheets_only']) ? $sa_options['linesheets_only'] : 'N';
 			$data['sales_username'] = $this->input->post('sales_user');
 			$data['sales_ref_designer'] = $this->wholesale_user_details->designer;
 			$data['reference_designer'] = $this->wholesale_user_details->reference_designer;
@@ -339,8 +339,8 @@ class Send_package extends Sales_user_Controller {
 
 			$this->email->clear(TRUE);
 
-			$this->email->from($this->input->post('sales_user'), $this->wholesale_user_details->admin_sales_email);
-			$this->email->reply_to($this->wholesale_user_details->admin_sales_email);
+			$this->email->from($this->sales_user_details->email, $this->sales_user_details->designer_name);
+			$this->email->reply_to($this->sales_user_details->email);
 			//$this->email->cc($this->CI->config->item('info_email'));
 			$this->email->bcc($this->config->item('info_email').', '.$this->config->item('dev1_email').', help@shop7thavenue.com');
 
@@ -396,6 +396,16 @@ class Send_package extends Sales_user_Controller {
 				$this->email->send();
 			}
 		}
+
+		// unset session
+		unset($_SESSION['sa_des_slug']);
+		unset($_SESSION['sa_designers']);
+		unset($_SESSION['sa_slug_segs']);
+		unset($_SESSION['sa_items']);
+		unset($_SESSION['sa_name']); // used at view
+		unset($_SESSION['sa_email_subject']); // used at view
+		unset($_SESSION['sa_email_message']); // used at view
+		unset($_SESSION['sa_options']);
 
 		// set flash data
 		$this->session->set_flashdata('success', 'send_product_clicks');

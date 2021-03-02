@@ -298,7 +298,7 @@ class Index extends Sales_user_Controller {
 				$_SESSION['sa_name'] = $this->input->post('sales_package_name');
 				$_SESSION['sa_email_subject'] = $this->input->post('email_subject');
 				$_SESSION['sa_email_message'] = $this->input->post('email_message');
-				$_SESSION['sa_options'] = json_encode($this->input->post('options'));
+				//$_SESSION['sa_options'] = json_encode($this->input->post('options'));
 
 				// redirect user
 				redirect('my_account/sales/sales_package/send_package', 'location');

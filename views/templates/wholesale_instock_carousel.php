@@ -104,7 +104,7 @@
 									<tr>
                                         <!-- Up to 70% Off On Special Occasion, Prom and Evening Dresses. -->
 										<td class="bodycopy" style="color: #153643; font-family: sans-serif; font-size: 16px; line-height: 22px;">
-                                            New Arrivals And On Sale ITems For Your Store.
+                                            On Sale ITems For Your Store.
                                             <br /><br />
                                             MINIMUM ORDER ON CLEARANCE ITEMS IS 10 PIECES
 										</td>
