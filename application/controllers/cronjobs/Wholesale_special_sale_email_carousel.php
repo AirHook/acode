@@ -4,6 +4,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Wholesale_special_sale_email_carousel extends MY_Controller {
 
 	/**
+	 * Test Param
+	 *
+	 * @var	boolean
+	 */
+	protected $test = FALSE;
+
+	/**
 	 * Mailgun API Key
 	 *
 	 * @var	string
@@ -59,6 +66,11 @@ class Wholesale_special_sale_email_carousel extends MY_Controller {
 		//echo 'Processing...<br />';
 		//echo 'Not done...';
 		//die();
+
+		if ($test)
+		{
+			$this->test = TRUE;
+		}
 
 		// check if this carousel is turned on
 		$this->DB->where('config_name', 'wholesale_special_sale_email_carousel');
@@ -122,9 +134,9 @@ class Wholesale_special_sale_email_carousel extends MY_Controller {
 		$q2 = $this->DB->get('config');
 		$r2 = $q2->row();
 		$key_to_use = $r2->config_value + 1;
-		$subject_key = $key_to_use >= count($subject) ? 0 : $key_to_use;
+		$subject_key = $key_to_use >= count($subjects) ? 0 : $key_to_use;
 
-		if ($test != 'admin')
+		if ( ! $this->test)
 		{
 			// save new random key on record
 			/* */
@@ -138,41 +150,52 @@ class Wholesale_special_sale_email_carousel extends MY_Controller {
 		// subjects:
 		$subject = $subjects[$subject_key];
 
-		// start the email sending
-		// load pertinent library/model/helpers
-		$this->load->library('mailgun/mailgun');
-
-		// set up properties
-		/* */
-		$this->mailgun->vars = array("designer" => "Basix Black Label", "des_slug" => "basixblacklabel");
-		$this->mailgun->o_tag = 'Wholesale Email Carousel';
-		$this->mailgun->from = 'Basix Black Label <help@basixblacklabel.com>';
-
-		if ($test === 'admin')
+		if (ENVIRONMENT != 'development')
 		{
-			$this->mailgun->to = 'test@mg.shop7thavenue.com';
+			// start the email sending
+			// load pertinent library/model/helpers
+			$this->load->library('mailgun/mailgun');
+
+			// set up properties
+			/* */
+			$this->mailgun->vars = array("designer" => "Basix Black Label", "des_slug" => "basixblacklabel");
+			$this->mailgun->o_tag = 'Wholesale Email Carousel';
+			$this->mailgun->from = 'Basix Black Label <help@basixblacklabel.com>';
+
+			if ($this->test)
+			{
+				$this->mailgun->to = 'test@mg.shop7thavenue.com';
+			}
+			else
+			{
+				$this->mailgun->to = 'wholesale_users@mg.shop7thavenue.com';
+			}
+
+			//$this->mailgun->cc = $this->webspace_details->info_email;
+			//$this->mailgun->bcc = $this->CI->config->item('dev1_email');
+			$this->mailgun->subject = $subject;
+			$this->mailgun->message = $message;
+
+			if ( ! $this->mailgun->Send())
+			{
+				$error = 'Unable to send.<br />';
+				$error .= $this->mailgun->error_message;
+
+				echo $error;
+				exit;
+			}
+
+			$this->mailgun->clear();
+			// */
 		}
 		else
 		{
-			$this->mailgun->to = 'wholesale_users@mg.shop7thavenue.com';
+			echo 'SUBJECT: '.$subject;
+			echo '<br /><br />';
+			echo 'MESSAGE: <br />';
+			echo $message;
+
 		}
-
-		//$this->mailgun->cc = $this->webspace_details->info_email;
-		//$this->mailgun->bcc = $this->CI->config->item('dev1_email');
-		$this->mailgun->subject = $subject;
-		$this->mailgun->message = $message;
-
-		if ( ! $this->mailgun->Send())
-		{
-			$error = 'Unable to send.<br />';
-			$error .= $this->mailgun->error_message;
-
-			echo $error;
-			exit;
-		}
-
-		$this->mailgun->clear();
-		// */
 
 		echo 'Done<br />';
 	}
@@ -306,7 +329,7 @@ class Wholesale_special_sale_email_carousel extends MY_Controller {
 				if ($cnt == 30) break;
 			}
 
-			if ($test != 'admin')
+			if ( ! $this->test)
 			{
 				// update previous thumbs sent
 				/* */

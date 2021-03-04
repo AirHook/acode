@@ -195,7 +195,7 @@
                                             		$access_link = site_url(
                                             			'sales_package/link/index/'
                                             			.'X/' // --> supposedly sales_package_id for saved sa via Sales_package_sending.php
-                                            			.@$this->wholesale_user_details->user_id.'/'
+                                            			.(@$this->wholesale_user_details->user_id ?: 0).'/'
                                             			.$tc
                                             		);
                                                     $access_link.= '?email=%recipient_email%&items_csv='.$items_csv;
