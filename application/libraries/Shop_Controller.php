@@ -211,15 +211,15 @@ class Shop_Controller extends Frontend_Controller {
 
                 if ($in == 1)
                 {
-                    $con_prod_no_ary.= "tbl_product.prod_no LIKE '%".$exp[0]."%' ESCAPE '!'";
+                    $con_prod_no_ary.= "(tbl_product.prod_no LIKE '%".$exp[0]."%' ESCAPE '!' AND color_code LIKE '%".$exp[1]."%' ESCAPE '!')";
                     $order_by_case.= "(CASE ";
                 }
                 else
                 {
-                    $con_prod_no_ary.= " OR tbl_product.prod_no LIKE '%".$exp[0]."%' ESCAPE '!'";
+                    $con_prod_no_ary.= " OR (tbl_product.prod_no LIKE '%".$exp[0]."%' ESCAPE '!' AND color_code LIKE '%".$exp[1]."%' ESCAPE '!')";
                 }
 
-                $order_by_case.= "WHEN tbl_product.prod_no LIKE '%".$exp[0]."%' ESCAPE '!' THEN ".$in." ";
+                $order_by_case.= "WHEN (tbl_product.prod_no LIKE '%".$exp[0]."%' ESCAPE '!' AND color_code LIKE '%".$exp[1]."%' ESCAPE '!') THEN ".$in." ";
 
                 $in++;
             }

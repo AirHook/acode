@@ -191,19 +191,20 @@
                                                         .$style_no
                                                     ;
                                                     // set access link
+                                                    //$access_link = base_url().'shop/basixblacklabel/womens_apparel/dresses.html?filter=&availability=onsale'
                                             		$access_link = site_url(
                                             			'sales_package/link/index/'
                                             			.'X/' // --> supposedly sales_package_id for saved sa via Sales_package_sending.php
                                             			.@$this->wholesale_user_details->user_id.'/'
                                             			.$tc
                                             		);
-                                                    $access_link = base_url().'shop/basixblacklabel/womens_apparel/dresses.html?filter=&availability=onsale'
+                                                    $access_link.= '?email=%recipient_email%&items_csv='.$items_csv;
                 									?>
 
                 								<td align="center" style="width:33%;vertical-align:top;padding-bottom:10px;" data-item="<?php echo $item; ?>">
 
                                                     <!-- BEGIN IMAGE -->
-                									<a href="<?php echo base_url(); ?>sales_package/link/index/X/0/<?php echo $tc; ?>.html?email=%recipient_email%&items_csv=<?php echo $items_csv; ?>" style="text-decoration:none;margin:0;padding:0;color:inherit;display:inline-block;">
+                									<a href="<?php echo $access_link; ?>" style="text-decoration:none;margin:0;padding:0;color:inherit;display:inline-block;">
                 										<div id="spthumbdiv_<?php echo $item; ?>" class="fadehover" style="width:194px;height:auto;">
                 											<img src="<?php echo $product->primary_img ? $img_front_new : $img_front_pre.$image; ?>" alt="<?php echo $product->prod_no; ?>" title="<?php echo $product->prod_no; ?>" border="0" width="194" style="width:194px;height:auto;">
                 										</div>

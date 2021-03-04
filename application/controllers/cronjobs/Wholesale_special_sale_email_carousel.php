@@ -215,11 +215,12 @@ class Wholesale_special_sale_email_carousel extends MY_Controller {
 
 		// primary param
     	//if ($str) $params['facets'] = array('availability'=>$str);
-		$where['tbl_product.clearance'] = '3';
+		//$where['tbl_product.clearance'] = '3';
+		$where['tbl_stock.custom_order'] = '3';
 
 		// do not show cs clearance items
-		$con_clearance_cs_only = 'tbl_stock.options NOT LIKE \'%"clearance_consumer_only":"1"%\' ESCAPE \'!\'';
-        $where['condition'][] = $con_clearance_cs_only;
+		//$con_clearance_cs_only = 'tbl_stock.options NOT LIKE \'%"clearance_consumer_only":"1"%\' ESCAPE \'!\'';
+        //$where['condition'][] = $con_clearance_cs_only;
 
 		// PUBLISH PUBLIC
 		$where_public = "(
@@ -240,7 +241,7 @@ class Wholesale_special_sale_email_carousel extends MY_Controller {
 		// get the products list
 		// show items even without stocks at all
 		$params['with_stocks'] = TRUE;	// FALSE for including no stock items
-		$params['group_products'] = TRUE; // FALSE for all variants
+		$params['group_products'] = FALSE; // FALSE for all variants
 		// load and initialize class
 		$this->load->library('products/products_list');
 		$this->products_list->initialize($params);
@@ -276,9 +277,7 @@ class Wholesale_special_sale_email_carousel extends MY_Controller {
 			$this->products_list->initialize($params);
 			$products = $this->products_list->select(
 				// where conditions
-				array(
-					'designer.url_structure' => 'basixblacklabel'
-				),
+				$where,
 				// sorting conditions
 				array(
 					'seque' => 'asc',
@@ -296,9 +295,12 @@ class Wholesale_special_sale_email_carousel extends MY_Controller {
 			{
 				if ( ! in_array($product->prod_no, $thumbs))
 				{
-					array_push($items_array, $product->prod_no.'_'.$product->color_code);
-					array_push($thumbs, $product->prod_no);
-					$cnt++;
+					if ( ! in_array($product->prod_no.'_'.$product->color_code, $thumbs))
+					{
+						array_push($items_array, $product->prod_no.'_'.$product->color_code);
+						array_push($thumbs, $product->prod_no.'_'.$product->color_code);
+						$cnt++;
+					}
 				}
 
 				if ($cnt == 30) break;

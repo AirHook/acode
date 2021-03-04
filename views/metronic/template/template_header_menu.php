@@ -659,7 +659,7 @@
                                                 $this->webspace_details->slug != 'tempoparis'
                                                 //&& $this->webspace_details->slug != 'basixblacklabel'
                                             )
-                                            && $this->session->user_role != 'wholesale'
+                                            //&& $this->session->user_role != 'wholesale'
                                         )
                                         {
                                             ?>
