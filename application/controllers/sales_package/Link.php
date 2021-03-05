@@ -93,6 +93,30 @@ class Link extends Shop_Controller
 		}
 
 		/****************
+		 * Get availability parameter if any
+		 */
+		if (@$this->input->get('av'))
+		{
+			switch ($this->input->get('av'))
+			{
+				case 'onsale':
+					$btn_more_label = 'CLICK TO SEE ALL ITEMS ON CLEARANCE';
+				break;
+				case 'instock':
+					$btn_more_label = 'CLICK TO SEE ALL IN STOCK';
+				break;
+				case 'preorder':
+					$btn_more_label = 'CLICK TO SEE ALL NEW ARRIVALS';
+				break;
+				default:
+					$btn_more_label = '';
+			}
+		}
+		else $btn_more_label = '';
+		$this->data['btn_more_label'] = $btn_more_label;
+		$this->data['av'] = $this->input->get('av');
+
+		/****************
 		 * Lets get the user details
 		 */
 		// initialize user details based on params provided
@@ -117,7 +141,14 @@ class Link extends Shop_Controller
 			}
 			else
 			{
-				$user_details = $this->wholesale_user_details->initialize(array('email'=>$this->input->get('email')));
+				if (ENVIRONMENT == 'development')
+				{
+					$user_details = $this->wholesale_user_details->initialize(array('email'=>'rsbgm@rcpixel.com'));
+				}
+				else
+				{
+					$user_details = $this->wholesale_user_details->initialize(array('email'=>$this->input->get('email')));
+				}
 			}
 		}
 
@@ -131,7 +162,7 @@ class Link extends Shop_Controller
 			$this->session->set_flashdata('error', 'invalid_credentials');
 
 			// nothing more to do...
-			redirect('account/index/2', 'location');
+			redirect('account', 'location');
 		}
 
 		// auto activate user since user clicked on the link

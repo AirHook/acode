@@ -107,8 +107,12 @@ class Wholesale_special_sale_email_carousel extends MY_Controller {
 
 		// let's get some thumbs
 		// returned as items in an array (<prod_no>_<color_code>)
-		// currently equivalent to https://www.shop7thavenue.com/shop/basixblacklabel/womens_apparel.html
+		//$data['instock_products'] = $this->_get_thumbs('instock');
+		//$data['preorder_products'] = $this->_get_thumbs('preorder');
 		$data['onsale_products'] = $this->_get_thumbs('onsale');
+		$data['availability'] = 'onsale'; // availability params used on url for landing page button
+		// check _get_thumbs() as passed properties are not used at this time
+
 		// record proudct into a csv format for use on url
 		$data['items_csv'] = implode(',', $data['onsale_products']);
 

@@ -1307,6 +1307,12 @@
 															</div>
 															<!-- END THUMBS WRAPPER CONTAINER -->
 
+                                                            <?php if (@$btn_more_label) { ?>
+                                                            <div class="row" style="margin-left:-10px;margin-right:-10px;">
+                                                                <a href="<?php echo site_url($this->uri->uri_string()); ?>?availability=<?php echo $av; ?>" class="btn dark btn-lg btn-block" style=""> <?php echo $btn_more_label; ?> </a>
+                                                            </div>
+                                                            <?php } ?>
+
 															<!-- BEGIN DESKTOP THUMBS PAGE BOTTOM UTILITIES SECTION -->
                                                             <!-- DOC: hiding this old sort and pagination temporarity - for depracation -->
 															<div class="thumbs-utilities desktop thumbs-utilities-info margin-top-30 hidden-xs clearfix hide">

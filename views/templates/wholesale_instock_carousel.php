@@ -192,13 +192,14 @@
                                                     ;
                                                     // set access link
                                                     //$access_link = base_url().'shop/basixblacklabel/womens_apparel/dresses.html?filter=&availability=onsale'
-                                            		$access_link = site_url(
-                                            			'sales_package/link/index/'
+                                            		$access_link = base_url()
+                                            			.'sales_package/link/index/'
                                             			.'X/' // --> supposedly sales_package_id for saved sa via Sales_package_sending.php
                                             			.(@$this->wholesale_user_details->user_id ?: 0).'/'
                                             			.$tc
-                                            		);
-                                                    $access_link.= '?email=%recipient_email%&items_csv='.$items_csv;
+                                                        .'.html'
+                                            		;
+                                                    $access_link.= '?email=%recipient_email%&av='.$availability.'&items_csv='.$items_csv;
                 									?>
 
                 								<td align="center" style="width:33%;vertical-align:top;padding-bottom:10px;" data-item="<?php echo $item; ?>">
