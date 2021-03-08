@@ -23,6 +23,7 @@ class Send_package extends Admin_Controller {
 	public function index()
 	{
 		// let's ensure that there are no mod session for sa
+		/* *
 		if (
 			$this->session->admin_sa_mod_items
 			OR $this->session->admin_sa_mod_des_slug
@@ -50,6 +51,7 @@ class Send_package extends Admin_Controller {
 				unset($_SESSION['admin_sa_options']);
 			}
 		}
+		// */
 
 		/***********
 		 * Process the input data
@@ -214,89 +216,194 @@ class Send_package extends Admin_Controller {
 		 */
 		// doing the sending in this class directly
 
-		// first, we double check if user is valid
-		if ( ! $this->wholesale_user_details->initialize(array('email'=>$this->input->post('email'))))
+		if ($this->input->post('send_to') == 'new_user')
 		{
-			// set flash data
-			$this->session->set_flashdata('error', 'invalid_user');
+			// add new user
+			$post_ary = $this->input->post();
+			unset($post_ary['send_to']);
+			unset($post_ary['sales_package_id']);
+			unset($post_ary['sales_user']);
+			unset($post_ary['emails']);
+			unset($post_ary['search_string']);
 
-			// redirect user
-			redirect('my_account/sales/sales_package/create', 'location');
-		}
+			$post_ary['create_date'] = date('Y-m-d', time());
+			$post_ary['active_date'] = date('Y-m-d', time());
+			$post_ary['is_active'] = '1';
+			$post_ary['pword'] = 'shop72021';
 
-		// set emailtracker_id
-		$data['emailtracker_id'] =
-			$this->wholesale_user_details->user_id
-			.'wi0014t'
-			.time()
-		;
-
-		// lets set the hashed time code here so that the batched hold the same tc only
-		$tc = md5(@date('Y-m-d', time()));
-
-		$data['username'] = $this->input->post('store_name');
-		$data['email_message'] = $this->input->post('email_message');
-
-		$data['access_link'] = site_url(
-			'sales_package/link/index/'
-			.'X/' // --> supposedly sales_package_id for saved sa via Sales_package_sending.php
-			.$this->wholesale_user_details->user_id.'/'
-			.$tc
-		);
-
-		$data['items'] = json_decode($this->session->product_clicks_sa_items, TRUE);
-		$data['email'] = $this->input->post('email');
-		$data['w_prices'] = 'Y';
-		$data['w_images'] = 'N';
-		$data['linesheets_only'] = 'N';
-		$data['sales_username'] = $this->input->post('sales_user');
-		$data['sales_ref_designer'] = $this->wholesale_user_details->designer;
-		$data['reference_designer'] = $this->wholesale_user_details->reference_designer;
-		$data['logo'] = $this->config->item('PROD_IMG_URL').$this->wholesale_user_details->designer_logo;
-
-		$this->email->clear(TRUE);
-
-		$this->email->from($this->input->post('sales_user'), $this->wholesale_user_details->admin_sales_email);
-		$this->email->reply_to($this->wholesale_user_details->admin_sales_email);
-		//$this->email->cc($this->CI->config->item('info_email'));
-		$this->email->bcc($this->config->item('info_email').', '.$this->config->item('dev1_email').', help@shop7thavenue.com');
-
-		$this->email->subject($this->input->post('email_subject'));
-
-		$this->email->to($this->input->post('email'));
-
-		// let's get the message
-		$message = $this->load->view('templates/sales_package', $data, TRUE);
-		$this->email->message($message);
-
-		if (ENVIRONMENT === 'development')
-		{
-			// set flashdata
-			//$this->CI->session->set_flashdata('success', 'pacakge_sent'); return TRUE;
-
-			/* */
-			echo $message;
-			echo '<br />';
-			echo '<br />';
-			echo '<a href="'.site_url('my_account/sales/sales_package').'">continue...</a>';
-			$this->session->set_flashdata('success', 'send_product_clicks');
-			die();
-			// */
-
-			//echo $message;
-			//die();
-		}
-		else
-		{
-			if ( ! $this->email->send())
+			// add user to mailgun list
+			// no need to validate email as these are stores
+			// force add users to mailgun
+			// use input fields to capture any updates
+			if (ENVIRONMENT != 'development')
 			{
-				// set flash data
-				$this->session->set_flashdata('error', 'sending_unsuccessful');
+				switch ($this->input->post('reference_designer'))
+				{
+					case 'tempoparis':
+						$list_name = 'ws_tempo@mg.shop7thavenue.com';
+						$designer_name = 'Tempo Paris';
+					break;
+					case 'basixblacklabel':
+						$list_name = 'wholesale_users@mg.shop7thavenue.com';
+						$designer_name = 'Basix Black Label';
+					break;
+					case 'chaarmfurs':
+						$list_name = 'wholesale_users@mg.shop7thavenue.com';
+						$designer_name = 'Chaarm Furs';
+					break;
+					case 'issueny':
+						$list_name = 'wholesale_users@mg.shop7thavenue.com';
+						$designer_name = 'Issue New York';
+					break;
+					default:
+						$list_name = 'wholesale_users@mg.shop7thavenue.com';
+						$designer_name = $this->webspace_details->name;
+				}
 
-				// redirect user
-				redirect('my_account/sales/sales_package/create', 'location');
+				if ($list_name)
+				{
+					$params['address'] = $this->input->post('email');
+					$params['fname'] = $this->input->post('firstname');
+					$params['lname'] = $this->input->post('lastname');
+					$params_vars = array(
+						'designer' => $designer_name,
+						'designer_slug' => $this->input->post('reference_designer'),
+						'store_name' => $this->input->post('store_name')
+					);
+					$params['vars'] = json_encode($params_vars);
+					$params['description'] = 'Wholesale User';
+					$params['list_name'] = $list_name;
+					$this->load->library('mailgun/list_member_add', $params);
+					$res = $this->list_member_add->add();
+					$this->list_member_add->clear();
+				}
+			}
+
+			// add record to database
+			$DB = $this->load->database('instyle', TRUE);
+			$query = $DB->insert('tbluser_data_wholesale', $post_ary);
+			$insert_id = $DB->insert_id();
+		}
+		else if ($this->input->post('send_to') === 'all_users')
+		{
+			// code to send to all users...
+		}
+
+		// if new user, user is already added from above code
+		// if current user, user is current...
+		$emails = $this->input->post('email');
+		$email_ary = is_array($emails) ? $emails : array($emails);
+
+		foreach ($email_ary as $email)
+		{
+			$this->wholesale_user_details->initialize(array('email' => $email));
+
+			// set emailtracker_id
+			$data['emailtracker_id'] =
+				$this->wholesale_user_details->user_id
+				.'wi0014t'
+				.time()
+			;
+
+			// lets set the hashed time code here so that the batched hold the same tc only
+			$tc = md5(@date('Y-m-d', time()));
+
+			$data['username'] = $this->input->post('store_name') ?: $this->wholesale_user_details->store_name;
+			$data['email_message'] = $this->session->admin_sa_email_message;
+
+			// access link
+			$data['access_link'] = site_url(
+				'sales_package/link/index/'
+				.'X/' // --> supposedly sales_package_id for saved sa via Sales_package_sending.php
+				.$this->wholesale_user_details->user_id.'/' // --> using user id as this is for wholesale user
+				.$tc
+			);
+
+			// since this is not a saved sales package, we use $items_csv and append to url as query string
+			$data['items'] = json_decode($this->session->admin_sa_items, TRUE);
+			$data['access_link'].= '?items_csv='.implode(',', $data['items']);
+
+			// check for sa options
+			$sa_options = json_decode($this->session->admin_sa_options, TRUE);
+
+			$data['email'] = $this->input->post('email');
+			$data['w_prices'] = isset($sa_options['w_prices']) ? $sa_options['w_prices'] : 'Y';
+			$data['w_images'] = isset($sa_options['w_images']) ? $sa_options['w_images'] : 'N';
+			$data['linesheets_only'] = isset($sa_options['linesheets_only']) ? $sa_options['linesheets_only'] : 'N';
+			$data['sales_username'] = $this->input->post('sales_user');
+			$data['sales_ref_designer'] = $this->wholesale_user_details->designer;
+			$data['reference_designer'] = $this->wholesale_user_details->reference_designer;
+			$data['logo'] = $this->config->item('PROD_IMG_URL').$this->wholesale_user_details->designer_logo;
+
+			$this->email->clear(TRUE);
+
+			$this->email->from($this->wholesale_user_details->admin_sales_email, $this->wholesale_user_details->designer);
+			$this->email->reply_to($this->wholesale_user_details->admin_sales_email);
+			//$this->email->cc($this->CI->config->item('info_email'));
+			$this->email->bcc($this->config->item('info_email').', '.$this->config->item('dev1_email').', help@shop7thavenue.com');
+
+			$this->email->subject($this->session->admin_sa_email_subject);
+
+			$this->email->to($email);
+
+			// attachment
+			if ($data['w_images'] === 'Y' OR $data['linesheets_only'] == 'Y')
+			{
+				foreach ($data['items'] as $item)
+				{
+					// get product details
+					$exp = explode('_', $item);
+					$product = $this->product_details->initialize(
+						array(
+							'tbl_product.prod_no' => $exp[0],
+							'color_code' => $exp[1]
+						)
+					);
+
+					// the image
+					$image = $this->config->item('PROD_IMG_URL').$product->media_path.$product->prod_no.'_'.$product->color_code.'_linesheet.jpg';
+
+					$this->email->attach($image);
+				}
+			}
+
+			// let's get the message
+			$message = $this->load->view('templates/sales_package', $data, TRUE);
+			$this->email->message($message);
+
+			if (ENVIRONMENT === 'development')
+			{
+				// set flashdata
+				//$this->CI->session->set_flashdata('success', 'pacakge_sent'); return TRUE;
+
+				/* */
+				echo $message;
+				echo '<br />';
+				echo '<br />';
+				echo '<a href="'.site_url('my_account/sales/sales_package').'">continue...</a>';
+				$this->session->set_flashdata('success', 'send_product_clicks');
+				echo '<br />';
+				die();
+				// */
+
+				//echo $message;
+				//die();
+			}
+			else
+			{
+				$this->email->send();
 			}
 		}
+
+		// unset session
+		unset($_SESSION['admin_sa_des_slug']);
+		unset($_SESSION['admin_sa_designers']);
+		unset($_SESSION['admin_sa_slug_segs']);
+		unset($_SESSION['admin_sa_items']);
+		unset($_SESSION['admin_sa_name']); // used at view
+		unset($_SESSION['admin_sa_email_subject']); // used at view
+		unset($_SESSION['admin_sa_email_message']); // used at view
+		unset($_SESSION['admin_sa_options']);
 
 		// set flash data
 		$this->session->set_flashdata('success', 'send_product_clicks');

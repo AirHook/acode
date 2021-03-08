@@ -46,6 +46,7 @@ class Index extends Admin_Controller {
 		if ($this->form_validation->run() == FALSE)
 		{
 			// let's ensure that there are no mod session for sa
+			/* *
 			if (
 				$this->session->admin_sa_mod_items
 				OR $this->session->admin_sa_mod_des_slug
@@ -75,6 +76,7 @@ class Index extends Admin_Controller {
 					unset($_SESSION['admin_sa_options']);
 				}
 			}
+			// */
 
 			// get color list
 			// used for "add product not in list"
@@ -164,9 +166,9 @@ class Index extends Admin_Controller {
 				//		instock items
 				//		on sale items
 
-				// show published items only (public and private)
-				//$con_published = '(tbl_product.publish = \'1\' OR tbl_product.publish = \'11\' OR tbl_product.publish = \'12\' OR tbl_product.publish = \'2\')';
-				//$where_more['condition'][] = $con_published;
+				// public
+				$where_more['tbl_product.publish !='] = '0';
+				$where_more['tbl_stock.new_color_publish !='] = '0';
 
 				// don't show clearance cs only items for non-super admin
 				if ($this->admin_user_details->access_level != '0')
@@ -176,7 +178,7 @@ class Index extends Admin_Controller {
 				}
 
 				// get the products list for the thumbs grid view
-				$params['show_private'] = TRUE; // all items general public (Y) - N for private
+				//$params['show_private'] = TRUE; // all items general public (Y) - N for private
 				//$params['view_status'] = 'ALL'; // all items view status (Y, Y1, Y2, N)
 				//$params['view_at_hub'] = TRUE; // all items general public at hub site
 				//$params['view_at_satellite'] = TRUE; // all items publis at satellite site
@@ -218,27 +220,11 @@ class Index extends Admin_Controller {
 				: array()
 			;
 
-			// set author to 1 for Inhouse or set logged in admin sales user
-			if ($this->session->admin_sales_loggedin)
-			{
-				$this->sales_user_details->initialize(
-					array(
-						'admin_sales_id' => $this->session->admin_sales_id
-					)
-				);
-
-				$this->data['author_name'] = $this->sales_user_details->fname.' '.$this->sales_user_details->lname;
-				$this->data['author'] = $this->data['author_name'];
-				$this->data['author_email'] = $this->sales_user_details->email;
-				$this->data['author_id'] = $this->sales_user_details->admin_sales_id;
-			}
-			else
-			{
-				$this->data['author_name'] = 'In-House';
-				$this->data['author'] = 'admin'; // admin/system
-				$this->data['author_email'] = $this->webspace_details->info_email;
-				$this->data['author_id'] = $this->session->admin_id;
-			}
+			// set author to 1 for Inhouse as this is admin panel
+			$this->data['author_name'] = 'In-House';
+			$this->data['author'] = 'admin'; // admin/system
+			$this->data['author_email'] = $this->webspace_details->info_email;
+			$this->data['author_id'] = $this->session->admin_id;
 
 			// need to show loading at start
 			$this->data['show_loading'] = @$this->data['products_count'] > 0 ? TRUE : FALSE;
@@ -260,6 +246,9 @@ class Index extends Admin_Controller {
 			 */
 			// input post data
 			/* *
+			echo '<pre>';
+			print_r($this->input->post());
+			die();
 			Array
 			(
 				[date_create] => 1572636339
@@ -323,6 +312,7 @@ class Index extends Admin_Controller {
 				// unset create sessions
 				unset($_SESSION['admin_sa_id']);
 				unset($_SESSION['admin_sa_des_slug']);
+				unset($_SESSION['admin_sa_designers']);
 				unset($_SESSION['admin_sa_slug_segs']);
 				unset($_SESSION['admin_sa_items']);
 				unset($_SESSION['admin_sa_name']); // used at view
@@ -344,7 +334,7 @@ class Index extends Admin_Controller {
 				$_SESSION['admin_sa_name'] = $this->input->post('sales_package_name');
 				$_SESSION['admin_sa_email_subject'] = $this->input->post('email_subject');
 				$_SESSION['admin_sa_email_message'] = $this->input->post('email_message');
-				$_SESSION['admin_sa_options'] = json_encode($this->input->post('options'));
+				//$_SESSION['admin_sa_options'] = json_encode($this->input->post('options'));
 
 				// redirect user
 				redirect('admin/campaigns/sales_package/send_package', 'location');

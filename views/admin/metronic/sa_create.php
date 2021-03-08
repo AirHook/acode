@@ -1068,7 +1068,7 @@
                                                 <span class="required"> * </span>
                                             </label>
                                             <div class="col-md-9">
-                                                <input type="text" name="sales_package_name" data-required="1" class="form-control input-sa_info" value="<?php echo @$role == 'sales' ? $this->session->sa_name : $this->session->admin_sa_name; ?>" placeholder="Sales Package Name" />
+                                                <input type="text" name="sales_package_name" data-required="1" class="form-control input-sa_info" value="<?php echo @$role == 'sales' ? $this->session->sa_name : $this->session->admin_sa_name; ?>" placeholder="Sales Package Name" data-page="create" />
                                                 <cite class="help-block small"> A a user friendly name to identify this package as reference. </cite>
                                             </div>
                                         </div>
@@ -1078,7 +1078,7 @@
                                                 <span class="required"> * </span>
                                             </label>
                                             <div class="col-md-9">
-                                                <input type="text" name="email_subject" data-required="1" class="form-control input-sa_info" value="<?php echo @$role == 'sales' ? @$this->session->sa_email_subject : @$this->session->admin_sa_email_subject; ?>" placeholder="Email Subject" />
+                                                <input type="text" name="email_subject" data-required="1" class="form-control input-sa_info" value="<?php echo @$role == 'sales' ? @$this->session->sa_email_subject : @$this->session->admin_sa_email_subject; ?>" placeholder="Email Subject" data-page="create" />
                                                 <cite class="help-block small"> Used as the subject for the email. </cite>
                                             </div>
                                         </div>
@@ -1086,7 +1086,7 @@
                                             <label class="col-md-3 control-label">Message
                                             </label>
                                             <div class="col-md-9">
-                                                <textarea name="email_message" class="form-control summernote input-sa_info" id="summernote_1" data-error-container="email_message_error"><?php echo @$role == 'sales' ? $this->session->sa_email_message : $this->session->admin_sa_email_message ?: 'Here are designs that are now available. Review them for your store.'; ?></textarea>
+                                                <textarea name="email_message" class="form-control summernote input-sa_info" id="summernote_1" data-error-container="email_message_error" data-page="create"><?php echo @$role == 'sales' ? $this->session->sa_email_message : $this->session->admin_sa_email_message ?: 'Here are designs that are now available. Review them for your store.'; ?></textarea>
                                                 <cite class="help-block small"> A short message to the users. HTML tags are accepted. </cite>
                                                 <div id="email_message_error"> </div>
                                             </div>

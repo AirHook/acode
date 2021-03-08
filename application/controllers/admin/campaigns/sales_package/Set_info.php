@@ -36,17 +36,21 @@ class Set_info extends MY_Controller {
 		// grab the post variable
 		$param = $this->input->post('param');
 		$val = $this->input->post('val');
+		$page = $this->input->post('page');
 
 		switch ($param)
 		{
 			case 'sales_package_name':
-				$this->session->set_userdata('admin_sa_name', $val);
+				if ($page == 'create') $this->session->set_userdata('admin_sa_name', $val);
+				else $this->session->set_userdata('admin_sa_mode_name', $val);
 			break;
 			case 'email_subject':
-				$this->session->set_userdata('admin_sa_email_subject', $val);
+				if ($page == 'create') $this->session->set_userdata('admin_sa_email_subject', $val);
+				else $this->session->set_userdata('admin_sa_mod_email_subject', $val);
 			break;
 			case 'email_message':
-				$this->session->set_userdata('admin_sa_email_message', $val);
+				if ($page == 'create') $this->session->set_userdata('admin_sa_email_message', $val);
+				else $this->session->set_userdata('admin_sa_mode_email_message', $val);
 			break;
 		}
 

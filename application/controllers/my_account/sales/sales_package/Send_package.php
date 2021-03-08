@@ -328,7 +328,7 @@ class Send_package extends Sales_user_Controller {
 			$data['w_prices'] = isset($sa_options['w_prices']) ? $sa_options['w_prices'] : 'Y';
 			$data['w_images'] = isset($sa_options['w_images']) ? $sa_options['w_images'] : 'N';
 			$data['linesheets_only'] = isset($sa_options['linesheets_only']) ? $sa_options['linesheets_only'] : 'N';
-			$data['sales_username'] = $this->input->post('sales_user');
+			$data['sales_username'] = 'In-House';
 			$data['sales_ref_designer'] = $this->wholesale_user_details->designer;
 			$data['reference_designer'] = $this->wholesale_user_details->reference_designer;
 			$data['logo'] =

@@ -55,29 +55,6 @@ class Modify extends Admin_Controller {
 
 		if ($this->form_validation->run() == FALSE)
 		{
-			// let's ensure that there are no admin session for sa create
-			if ($this->session->admin_sa_items)
-			{
-				// new admin create details
-				unset($_SESSION['admin_sa_id']);
-				unset($_SESSION['admin_sa_des_slug']); // session for designer drop down for hub sites
-				unset($_SESSION['admin_sa_designers']); // hub site mixed designer case
-				unset($_SESSION['admin_sa_slug_segs']);
-				unset($_SESSION['admin_sa_items']);
-				unset($_SESSION['admin_sa_name']); // used at view
-				unset($_SESSION['admin_sa_email_subject']); // used at view
-				unset($_SESSION['admin_sa_email_message']); // used at view
-				unset($_SESSION['admin_sa_options']);
-
-				// remove mod details
-				unset($_SESSION['admin_sa_mod_id']);
-				unset($_SESSION['admin_sa_mod_items']);
-				unset($_SESSION['admin_sa_mod_slug_segs']);
-				unset($_SESSION['admin_sa_mod_options']);
-				unset($_SESSION['admin_sa_mod_des_slug']); // session for designer drop down for hub sites
-				unset($_SESSION['admin_sa_mod_designers']); // hub site mixed designer case
-			}
-
 			// capture package id being modified
 			if ( ! $this->session->admin_sa_mod_id)
 			{
@@ -137,8 +114,6 @@ class Modify extends Admin_Controller {
 				)
 			;
 
-			//echo $designer_slug; die();
-
 			// get the designer name
 			$this->data['designer_details'] = $this->designer_details->initialize(
 				array(
@@ -189,8 +164,19 @@ class Modify extends Admin_Controller {
 
 			$where_more['tbl_product.categories LIKE'] = $category_id;
 
+			// public
+			$where_more['tbl_product.publish !='] = '0';
+			$where_more['tbl_stock.new_color_publish !='] = '0';
+
+			// don't show clearance cs only items for non-super admin
+			if ($this->admin_user_details->access_level != '0')
+			{
+				// don't show clearance cs only items
+				$where_more['tbl_stock.options NOT LIKE'] = '"clearance_consumer_only":"1"';
+			}
+
 			// get the products list for the thumbs grid view
-			$params['show_private'] = TRUE; // all items general public (Y) - N for private
+			//$params['show_private'] = TRUE; // all items general public (Y) - N for private
 			//$params['view_status'] = 'ALL'; // all items view status (Y, Y1, Y2, N)
 			//$params['view_at_hub'] = TRUE; // all items general public at hub site
 			//$params['view_at_satellite'] = TRUE; // all items publis at satellite site
@@ -206,35 +192,17 @@ class Modify extends Admin_Controller {
 			$this->data['products'] = $this->products_list->select(
 				$where_more,
 				array( // order conditions
-					'seque' => 'asc'
+					'seque' => 'asc',
+					'tbl_product.prod_no' => 'desc'
 				)
 			);
 			$this->data['products_count'] = $this->products_list->row_count;
 
 			// author
-			if (
-				$this->sales_package_details->sales_user == '1'
-				OR $this->sales_package_details->author == 'admin'
-			)
-			{
-				$this->data['author_name'] = 'In-House';
-				$this->data['author'] = 'admin'; // admin/system
-				$this->data['author_email'] = $this->webspace_details->info_email;
-				$this->data['author_id'] = $this->session->admin_id;
-			}
-			else
-			{
-				$this->sales_user_details->initialize(
-					array(
-						'admin_sales_id' => $this->sales_package_details->sales_user
-					)
-				);
-
-				$this->data['author_name'] = $this->sales_user_details->fname.' '.$this->sales_user_details->lname;
-				$this->data['author'] = $this->data['author_name'];
-				$this->data['author_email'] = $this->sales_user_details->email;
-				$this->data['author_id'] = $this->sales_user_details->admin_sales_id;
-			}
+			$this->data['author_name'] = 'In-House';
+			$this->data['author'] = 'admin'; // admin/system
+			$this->data['author_email'] = $this->webspace_details->info_email;
+			$this->data['author_id'] = $this->session->admin_id;
 
 			// need to show loading at start
 			$this->data['show_loading'] = @$this->data['products_count'] > 0 ? TRUE : FALSE;
@@ -256,6 +224,9 @@ class Modify extends Admin_Controller {
 			 */
 			// input post data
 			/* *
+			echo '<pre>';
+			print_r($this->input->post());
+			die();
 			Array
 			(
 			    [last_modified] => 1572636339

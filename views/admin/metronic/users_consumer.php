@@ -156,22 +156,22 @@
                         <ul class="nav nav-tabs">
                             <li class="<?php echo $this->uri->segment(4) == 'active' ? 'active' : ''; ?>">
                                 <a href="<?php echo site_url('admin/users/consumer/active'); ?>">
-                                    <?php echo $this->uri->segment(4) != 'active' ? 'Show' : ''; ?> Active User List
+                                    Active Consumer Users
                                 </a>
                             </li>
                             <li class="<?php echo $this->uri->segment(4) == 'optout' ? 'optout' : ''; ?>">
                                 <a href="<?php echo site_url('admin/users/consumer/optout'); ?>">
-                                    <?php echo $this->uri->segment(4) != 'optout' ? 'Show' : ''; ?> Active Optout List
+                                    Opted Out Consumers
                                 </a>
                             </li>
-                            <li class="<?php echo $this->uri->segment(4) == 'inactive' ? 'active' : ''; ?>">
+                            <li class="<?php echo $this->uri->segment(4) == 'inactive' ? 'active' : ''; ?> hide">
                                 <a href="<?php echo site_url('admin/users/consumer/inactive'); ?>">
-                                    <?php echo $this->uri->segment(4) != 'inactive' ? 'Show' : ''; ?> Inactive User List
+                                    Inactive Consumers
                                 </a>
                             </li>
-                            <li class="<?php echo $this->uri->segment(4) == 'suspended' ? 'active' : ''; ?>">
+                            <li class="<?php echo $this->uri->segment(4) == 'suspended' ? 'active' : ''; ?> hide">
                                 <a href="<?php echo site_url('admin/users/consumer/suspended'); ?>">
-                                    <?php echo $this->uri->segment(4) != 'suspended' ? 'Show' : ''; ?> Suspended Users
+                                    Suspended Users
                                 </a>
                             </li>
                             <?php
@@ -199,9 +199,10 @@
                                 <select class="bs-select form-control selectpicker" id="bulk_actions_select" name="bulk_action" disabled>
                                     <option value="" selected="selected">Bulk Actions</option>
                                     <option value="ac">Activate</option>
-                                    <option value="in">Move to Inactive</option>
-                                    <option value="su">Move to Suspended</option>
-                                    <option value="se">Send Special Sale Email Invite</option>
+                                    <option value="op">Optout</option>
+                                    <option class="hide" value="in">Move to Inactive</option>
+                                    <option class="hide" value="su">Move to Suspended</option>
+                                    <option class="hide" value="se">Send Special Sale Email Invite</option>
                                     <option value="del">Permanently Delete</option>
                                 </select>
                             </div>
@@ -315,7 +316,7 @@
                                     <span class="badge badge-success pull-right tooltips" data-original-title="Product item invite last sent: <?php echo @date('Y-m-d', $options['product_item_invite']); ?>"><i class="fa fa-globe"></i></span>
                                     <?php } ?>
                                     <?php // */ ?>
-                                    <div style="<?php echo @$options['product_item_invite'] ? 'margin-right:30px;': ''; ?>"> <?php echo $user->product_items; ?> </div>
+                                    <div style="width:300px;word-wrap:break-word;<?php echo @$options['product_item_invite'] ? 'margin-right:30px;': ''; ?>"> <?php echo $user->product_items; ?> </div>
                                 </td>
                                 <td> <?php echo $user->dresssize ? 'size-'.$user->dresssize : ''; ?> </td>
                                 <td> <?php echo ucwords(strtolower($user->designer)); ?> </td>

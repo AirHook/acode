@@ -294,15 +294,16 @@ class Shop_Controller extends Frontend_Controller {
         overrides:
         1. private items only show for help@basixblacklabel.com ws users
         // */
-        if (
-            $this->session->userdata('user_role') == 'wholesale'
-            && @$_GET['availability'] == 'onsale'
-        )
-        {
+        //if (
+        //    $this->session->userdata('user_role') == 'wholesale'
+        //    && @$_GET['availability'] == 'onsale'
+        //)
+        //{
             // can only show non-basix onsale items
-            $where['designer.url_structure !='] = 'basixblacklabel';
-        }
-        else if ($this->session->userdata('user_role') == 'wholesale')
+            //$where['designer.url_structure !='] = 'basixblacklabel';
+        //}
+        //else
+        if ($this->session->userdata('user_role') == 'wholesale')
         {
             // -- the setting clearance for cs is so that consumer can avail of discount
             // -- otherwise, show as normal even to wholesale user

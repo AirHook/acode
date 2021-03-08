@@ -61,6 +61,7 @@ class MY_Controller extends CI_Controller
 				&& (
 					// wholesale pages
                     $this->uri->uri_string() !== 'account' &&
+                    $this->uri->uri_string() !== 'account/authenticate' &&
                     $this->uri->uri_string() !== 'account/request/activation' &&
                     $this->uri->uri_string() !== 'account/register/wholesale' &&
 					$this->uri->uri_string() !== 'wholesale/signin' &&
@@ -104,7 +105,11 @@ class MY_Controller extends CI_Controller
 				$this->session->set_flashdata('logErr', 'Login required');
 				$this->session->set_flashdata('page_being_accessed', $this->uri->uri_string());
 				$this->session->set_flashdata('flashMsg', 'Login required');
-				redirect(site_url('wholesale/signin'), 'location');
+
+                // set flash notice
+    			$this->session->set_flashdata('error', 'must_login');
+
+				redirect('account', 'location');
 			}
 		}
 

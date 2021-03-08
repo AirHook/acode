@@ -39,7 +39,7 @@
 											<?php } ?>
                                             <?php if ($this->session->flashdata('error') == 'no_sales_package') { ?>
 											<div class="alert alert-danger">
-												<strong>Ooops!</strong>&nbsp; Something went wrong. Please try again.
+												<strong>Ooops!</strong>&nbsp; Something went wrong with the Sales Package. Please try again.
 											</div>
 											<?php } ?>
 											<?php if ($this->session->flashdata('error') == 'not_in_the_list') { ?>

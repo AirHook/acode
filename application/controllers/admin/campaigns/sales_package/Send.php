@@ -55,6 +55,16 @@ class Send extends Admin_Controller {
 			)
 		);
 
+		if ( ! $this->data['sa_details'])
+		{
+			// nothing more to do...
+			// set flash data
+			$this->session->set_flashdata('error', 'no_id_passed');
+
+			// redirect user
+			redirect('admin/campaigns/sales_package', 'location');
+		}
+
 		// disect some information from sales package
 		$this->data['sa_items'] = $this->sales_package_details->items;
 		$this->data['sa_options'] = $this->sales_package_details->options;
@@ -104,6 +114,13 @@ class Send extends Admin_Controller {
 			$where['tbluser_data_wholesale.admin_sales_email'] = $this->sales_user_details->email;
 		}
 
+		// other data params
+		$this->data['logo'] =
+			$this->sales_user_details->designer_logo
+			? $this->config->item('PROD_IMG_URL').$this->sales_user_details->designer_logo
+			: $this->config->item('PROD_IMG_URL').'assets/images/logo/logo-'.$this->sales_user_details->designer.'.png';
+		;
+
 		// get data
 		// limits and per page
 		$per_page = 300;
@@ -141,6 +158,12 @@ class Send extends Admin_Controller {
 		// need to show loading at start
 		$this->data['show_loading'] = FALSE;
 		$this->data['search_string'] = FALSE;
+
+		// breadcrumbs
+		$this->data['page_breadcrumb'] = array(
+			'sales_package' => 'Sales Packages',
+			'send' => 'Send'
+		);
 
 		// set data variables...
 		$this->data['role'] = 'admin';
@@ -249,6 +272,54 @@ class Send extends Admin_Controller {
 			);
 			$DB->insert('tbluser_data_wholesale', $post_user);
 			$users = array($this->input->post('email'));
+
+			// add user to mailgun list
+			// no need to validate email as these are stores
+			// force add users to mailgun
+			// use input fields to capture any updates
+			if (ENVIRONMENT != 'development')
+			{
+				switch ($this->input->post('reference_designer'))
+				{
+					case 'tempoparis':
+						$list_name = 'ws_tempo@mg.shop7thavenue.com';
+						$designer_name = 'Tempo Paris';
+					break;
+					case 'basixblacklabel':
+						$list_name = 'wholesale_users@mg.shop7thavenue.com';
+						$designer_name = 'Basix Black Label';
+					break;
+					case 'chaarmfurs':
+						$list_name = 'wholesale_users@mg.shop7thavenue.com';
+						$designer_name = 'Chaarm Furs';
+					break;
+					case 'issueny':
+						$list_name = 'wholesale_users@mg.shop7thavenue.com';
+						$designer_name = 'Issue New York';
+					break;
+					default:
+						$list_name = 'wholesale_users@mg.shop7thavenue.com';
+						$designer_name = $this->webspace_details->name;
+				}
+
+				if ($list_name)
+				{
+					$params['address'] = $this->input->post('email');
+					$params['fname'] = $this->input->post('firstname');
+					$params['lname'] = $this->input->post('lastname');
+					$params_vars = array(
+						'designer' => $designer_name,
+						'designer_slug' => $this->input->post('reference_designer'),
+						'store_name' => $this->input->post('store_name')
+					);
+					$params['vars'] = json_encode($params_vars);
+					$params['description'] = 'Wholesale User';
+					$params['list_name'] = $list_name;
+					$this->load->library('mailgun/list_member_add', $params);
+					$res = $this->list_member_add->add();
+					$this->list_member_add->clear();
+				}
+			}
 		}
 		else if ($this->input->post('send_to') === 'all_users')
 		{

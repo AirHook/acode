@@ -57,6 +57,7 @@ class Index extends Frontend_Controller {
 
 			// authenticate user
 			$this_login = FALSE;
+			$this_user_id = '';
 			if ($this->webspace_details->options['site_type'] !== 'hub_site')
 			{
 				// check wholesale user
@@ -69,6 +70,7 @@ class Index extends Frontend_Controller {
 				)
 				{
 					$this_login = 'ws';
+					$this_user_id = $this->wholesale_user_details->user_id;
 				}
 
 				// check consumer user
@@ -81,6 +83,7 @@ class Index extends Frontend_Controller {
 				)
 				{
 					$this_login = 'cs';
+					$this_user_id = $this->consumer_user_details->user_id;
 				}
 
 				// check sales user
@@ -93,6 +96,7 @@ class Index extends Frontend_Controller {
 				)
 				{
 					$this_login = 'sales';
+					$this_user_id = $this->sales_user_details->admin_sales_id;
 				}
 
 				// check vendor user
@@ -105,6 +109,7 @@ class Index extends Frontend_Controller {
 				)
 				{
 					$this_login = 'vendor';
+					$this_user_id = $this->vendor_user_details->vendor_id;
 				}
 			}
 			else
@@ -118,6 +123,7 @@ class Index extends Frontend_Controller {
 				)
 				{
 					$this_login = 'ws';
+					$this_user_id = $this->wholesale_user_details->user_id;
 				}
 
 				// check consumer user
@@ -129,6 +135,7 @@ class Index extends Frontend_Controller {
 				)
 				{
 					$this_login = 'cs';
+					$this_user_id = $this->consumer_user_details->user_id;
 				}
 
 				// check sales user
@@ -140,6 +147,7 @@ class Index extends Frontend_Controller {
 				)
 				{
 					$this_login = 'sales';
+					$this_user_id = $this->sales_user_details->admin_sales_id;
 				}
 
 				// check vendor user
@@ -151,6 +159,7 @@ class Index extends Frontend_Controller {
 				)
 				{
 					$this_login = 'vendor';
+					$this_user_id = $this->vendor_user_details->vendor_id;
 				}
 			}
 
@@ -182,137 +191,20 @@ class Index extends Frontend_Controller {
 				redirect('account/request/activation', 'location');
 			}
 
-			// let us set sessions
-			// and set the session lapse time if it has not been set
-			// and redirect user
-			$sestime = @time();
-			if ($this_login == 'ws')
+			// NOTE:
+			// we need to redirect user first before setting sessions
+			// send user to hub if not already at hub
+			if (
+				$this->webspace_details->options['site_type'] == 'hub_site'
+				OR $this->webspace_details->slug == 'tempoparis'
+			)
 			{
-				$this->wholesale_user_details->set_session();
-
-				if ( ! $this->session->userdata('ws_login_time'))
-				{
-					$this->session->set_userdata('ws_login_time', $sestime);
-				}
-
-				// record login which starts the login session
-				$this->wholesale_user_details->record_login_detail();
-
-				if (ENVIRONMENT !== 'development')
-				{
-					// notify sales user
-					$this->wholesale_user_details->notify_sales_user_online();
-
-					// notify admin
-					$this->wholesale_user_details->notify_admin_user_online();
-
-					// get the ws user options property
-					$options = $this->wholesale_user_details->options;
-
-					if ( ! isset($options['intro']))
-					{
-						// since it is the user's first time to click an activation email
-						// send the 2nd email introducing JT as main contact person
-						// using wholesale_user_details class
-						$this->wholesale_user_details->send_intro_email();
-
-						// set the [intro] = '1' true option indicating user now got intro letter
-						$this->wholesale_user_details->intro_sent_one(
-							$this->wholesale_user_details->user_id,
-							$this->wholesale_user_details->options
-						);
-
-						// reload options
-						$options = $this->wholesale_user_details->options;
-					}
-				}
-
-				// send user to hub if not already at hub
-				// send to subcat icons page of the respective designer
-				// users wil now stay at respective sat and sal sites
-				// at MY ACCOUNTS page
-				if (
-					$this->webspace_details->options['site_type'] == 'hub_site'
-					OR $this->webspace_details->slug == 'tempoparis'
-				)
-				{
-					// send user to respective page...
-					// send wholesale user to reference designer categories or general womens_apparel
-					$ref_designer = $this->wholesale_user_details->reference_designer;
-					if ($ref_designer && $ref_designer != 'shop7thavenue')
-					{
-						redirect('shop/designers/'.$ref_designer, 'location');
-					}
-					else redirect('shop/designers', 'location');
-				}
-				else
-				{
-					// default designer subcat icons page at hub site
-					//redirect('https://www.'.$this->webspace_details->parent_site().'/shop/designers/'.$this->webspace_details->slug.'.html', 'location');
-					redirect('shop/designers/'.$this->wholesale_user_details->reference_designer, 'location');
-					//redirect('my_account/wholesale/dashboard', 'location');
-				}
-			}
-			else if ($this_login == 'cs')
-			{
-				$this->consumer_user_details->set_session();
-
-				if ( ! $this->session->userdata('cs_login_time'))
-				{
-					$this->session->set_userdata('cs_login_time', $sestime);
-				}
-
-				//$this->consumer_user_details->notify_admin_user_online();
-
-				redirect('my_account/consumer/dashboard', 'location');
-			}
-			else if ($this_login == 'sales')
-			{
-				$this->sales_user_details->set_session();
-
-				if ( ! $this->session->userdata('admin_sales_login_time'))
-				{
-					$this->session->set_userdata('admin_sales_login_time', $sestime);
-				}
-
-				$this->sales_user_details->notify_admin_sales_is_online();
-
-				redirect('my_account/sales/dashboard', 'location');
-			}
-			else if ($this_login == 'vendor')
-			{
-				$this->vendor_user_details->set_session();
-
-				if ( ! $this->session->userdata('vendor_login_time'))
-				{
-					$this->session->set_userdata('vendor_login_time', $sestime);
-				}
-
-				redirect('my_account/vendors/dashboard', 'location');
+				redirect(site_url('account/authenticate').'?param='.$this_login.'&uid='.$this_user_id, 'location');
 			}
 			else
 			{
-				$this->wholesale_user_details->unset_session();
-				$this->consumer_user_details->unset_session();
-				//$this->sales_user_details->unset_session();
-				$this->vendor_user_details->unset_session();
+				redirect('https://www.'.$this->webspace_details->parent_site().'/account/authenticate.html?param='.$this_login.'&uid='.$this_user_id, 'location');
 			}
-
-			// default process assumes user is a consumer
-			if ($this->webspace_details->slug != 'tempoparis')
-			{
-				// let's send user to reference designer categories or general womens_apparel
-				$ref_designer = $this->consumer_user_details->reference_designer;
-				if ($ref_designer && $ref_designer!='shop7thavenue')
-					redirect('shop/designers/'.$ref_designer);
-				else redirect('shop/designers');
-			}
-
-			// set flash notice
-			$this->session->set_flashdata('error', 'no_id_passed');
-
-			// rediect back to sign in page
-			redirect('account', 'location');
 		}
 	}
 

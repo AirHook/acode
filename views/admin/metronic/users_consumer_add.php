@@ -38,7 +38,8 @@
                                 <div class="col-md-4">
                                     <select class="form-control select2me" name="is_active">
                                         <option value="1" <?php echo set_select('is_active', '1', TRUE); ?>>Active</option>
-                                        <option value="0" <?php echo set_select('is_active', '0'); ?>>Inactive</option>
+                                        <option class="hide" value="0" <?php echo set_select('is_active', '0'); ?>>Inactive</option>
+                                        <option value="3" <?php echo set_select('is_active', '3'); ?>>Optout</option>
                                     </select>
                                     <cite class="help-block small"> By default, new user is always active. </cite>
                                 </div>

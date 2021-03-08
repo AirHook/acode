@@ -285,6 +285,7 @@ var ComponentsEditors = function () {
         $('[name="des_slug"]').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
             var objectData = object_data;
             objectData.des_slug = $(this).val();
+            objectData.access_level = '0';
             delete objectData.slugs_link;
             // set admin_sa_des_slug session variable
             $.get(base_url + "admin/campaigns/sales_package/set_des_slug_session/index/" + objectData.des_slug + ".html");
@@ -340,6 +341,7 @@ var ComponentsEditors = function () {
             var objectData = object_data;
             objectData.slugs_link = $(this).data('slugs_link');
             objectData.page = $(this).data('page');
+            objectData.access_level = '0';
             // get category tree
             getCategoryTree(objectData);
         });
@@ -393,6 +395,7 @@ var ComponentsEditors = function () {
             var objectData = object_data;
             objectData.param = $(this).attr('name');
             objectData.val = $(this).val();
+            objectData.page = $(this).date('page');
             // set new info
             setInfo(objectData);
         });
@@ -413,7 +416,15 @@ var ComponentsEditors = function () {
             // get post data
             var objectData = object_data;
             objectData.param = $(this).data('option');
+            objectData.page = $(this).data('page');
             objectData.val = $(this).val();
+            if (objectData.param == 'linesheets_only' && objectData.val == 'Y')
+            {
+                $('#w_prices-Y').prop('checked', false);
+                $('#w_prices-N').prop('checked', true);
+                $('#w_images-Y').prop('checked', false);
+                $('#w_images-N').prop('checked', true);
+            }
             // set new info
             setOptions(objectData);
         });
@@ -440,6 +451,7 @@ var ComponentsEditors = function () {
             // gather data
             var objectData = object_data;
             objectData.item = $(this).data('item');
+            objectData.page = $(this).data('page');
             objectData.price = $('[name="item_price"]').val();
             // set price at front end
             $('.item_prices.'+objectData.item+' > span.e_prices').html(objectData.price);

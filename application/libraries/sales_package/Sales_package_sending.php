@@ -172,8 +172,11 @@ class Sales_package_sending
 					.$tc
 				);
 
-				//$data['items'] = $items_ary[$batch];
+				// we will now use exact items in package to show on thumbs
+				// appending it to access_link as query strings
 				$data['items'] = $this->CI->sales_package_details->items;
+				$data['access_link'].= '?items_csv='.implode(',', $data['items']);
+
 				$data['email'] = $email;
 				$data['w_prices'] = $this->w_prices;
 				$data['w_images'] = $this->w_images;
