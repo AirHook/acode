@@ -97,6 +97,9 @@ class Wholesale_activation_email_sending
 		$this->CI->load->library('users/wholesale_user_details');
 		$this->CI->load->library('products/product_details');
 
+		// set timestamp
+		$tc = time();
+
 		// connect to database
 		$DB = $this->CI->load->database('instyle', TRUE);
 		// get privay Policy
@@ -123,13 +126,13 @@ class Wholesale_activation_email_sending
 			$data['emailtracker_id'] =
 				$this->CI->wholesale_user_details->user_id
 				.'wi0010t'
-				.time()
+				.$tc
 			;
 
 			// get product list
-			$data['instock_products'] = $this->_get_thumbs('instock');
-			$data['preorder_products'] = $this->_get_thumbs('preorder');
-			$data['onsale_products'] = ''; //$this->_get_thumbs('onsale');
+			//$data['instock_products'] = $this->_get_thumbs('instock');
+			//$data['preorder_products'] = $this->_get_thumbs('preorder');
+			$data['onsale_products'] = $this->_get_thumbs('onsale');
 
 			$this->CI->email->clear();
 
@@ -142,6 +145,7 @@ class Wholesale_activation_email_sending
 			$this->CI->email->to($this->CI->wholesale_user_details->email);
 
 			// let's set some data and get the message template
+			$data['tc'] = md5(@date('Y-m-d', $tc));
 			$data['username'] = ucwords(strtolower(trim($this->CI->wholesale_user_details->fname).' '.trim($this->CI->wholesale_user_details->lname)));
 			$data['email'] = $this->CI->wholesale_user_details->email;
 			$data['password'] = $this->CI->wholesale_user_details->password;
@@ -229,34 +233,59 @@ class Wholesale_activation_email_sending
 		// load pertinent library/model/helpers
 		$this->CI->load->library('products/products_list');
 
-		// primary item that is changed for the preset salespackages
-    	$params['facets'] = array('availability'=>$str);
+		// collection params
+    	//$params['facets'] = array('availability'=>$str);
+		if ($str == 'onsale')
+		{
+			$where['tbl_stock.custom_order'] = '3';
+		}
 
-		// set category_id
+		// set refernce designer
 		if ($this->CI->wholesale_user_details->reference_designer == 'tempoparis')
 		{
 			$category = '199';
 		}
 		else $category = '195';
 
+		if (
+			$this->CI->wholesale_user_details->reference_designer == 'shop7thavenue'
+			OR $this->CI->wholesale_user_details->reference_designer == 'instylenewyork'
+		)
+		{
+			$where['designer.url_structure'] = 'basixblacklabel';
+		}
+		else $where['designer.url_structure'] = $this->CI->wholesale_user_details->reference_designer;
+
+		// set reference category
+		$where['tbl_product.categories LIKE'] = $category;
+
+		// PUBLISH PUBLIC
+		$where_public = "(
+			(
+				tbl_product.publish = '1'
+				OR tbl_product.publish = '11'
+				OR tbl_product.publish = '12'
+			) AND (
+				tbl_stock.new_color_publish = '1'
+				OR tbl_stock.new_color_publish = '11'
+				OR tbl_stock.new_color_publish = '12'
+			) AND (
+				tbl_stock.color_publish = 'Y'
+			)
+		)";
+		$where['condition'][] = $where_public;
+
 		// get the products list
 		$params['show_private'] = TRUE; // all items general public (Y) - N for private
 		$params['view_status'] = 'ALL'; // ALL items view status (Y, Y1, Y2, N)
 		$params['variant_publish'] = 'ALL'; // ALL variant level color publish (view status)
 		// show items even without stocks at all
-		$params['with_stocks'] = $params == 'instock' ? TRUE : FALSE;
-		$params['group_products'] = TRUE;
+		$params['with_stocks'] = TRUE;
+		$params['group_products'] = FALSE;
 		// others
 		$this->CI->products_list->initialize($params);
 		$products = $this->CI->products_list->select(
-			array(
-				'designer.url_structure' => (
-					$this->CI->wholesale_user_details->reference_designer == 'shop7thavenue'
-					? 'basixblacklabel'
-					: $this->CI->wholesale_user_details->reference_designer
-				),
-				'tbl_product.categories LIKE' => $category	// evening dresses for activation email
-			),
+			$where,
 			array( // order conditions
 				'seque' => 'asc',
 				'tbl_product.prod_no' => 'desc'

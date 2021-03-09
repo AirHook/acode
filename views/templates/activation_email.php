@@ -278,19 +278,28 @@
 									<tr bgcolor="white" style="">
 
                                             <?php
-            								// generalized accesslink
-                                            $access_link =
-                                                base_url()
-                                                .'shop/womens_apparel.html?filter=&availability=instock'
-                                                .'&act='.time()
-                                                .'&ws='.(@$user_id ?: '6854')
-                                            ;
-
             								$icol = 1; // count the number of columns
             								//$irow = 1; // counter for number of rows upto 2 rows for 5 items each row
             								$ii = 0; // items count
                                             if (@$instock_products)
                                             {
+                                                // generalized accesslink
+                                                //$access_link =
+                                                //    base_url()
+                                                //    .'shop/womens_apparel.html?filter=&availability=instock'
+                                                //    .'&act='.time()
+                                                //    .'&ws='.(@$user_id ?: '6854')
+                                                //;
+                                                $access_link = base_url()
+                                                    .'sales_package/link/index/'
+                                                    .'X/' // --> sales_package_id, or, X for unsaved sales package or other type of sales package
+                                                    .(@$user_id ?: 0).'/'
+                                                    .$tc
+                                                    .'.html'
+                                                ;
+                                                // append $access_link with items
+                                                $access_link.= '?email='.$email.'&av=instock&items_csv='.implode(',', $instock_products);
+
                 								foreach($instock_products as $item)
                 								{
                 									// get product details
@@ -448,19 +457,28 @@
 									<tr bgcolor="white" style="">
 
                                             <?php
-                                            // generalized accesslink
-                                            $access_link =
-                                                base_url()
-                                                .'shop/womens_apparel.html?filter=&availability=preorder'
-                                                .'&act='.time()
-                                                .'&ws='.(@$user_id ?: '6854')
-                                            ;
-
             								$icol = 1; // count the number of columns (5 for 5 thumbs per row)
             								//$irow = 1; // counter for number of rows upto 2 rows for 5 items each row
             								$ii = 0; // items count
                                             if (@$preorder_products)
                                             {
+                                                // generalized accesslink
+                                                //$access_link =
+                                                //    base_url()
+                                                //    .'shop/womens_apparel.html?filter=&availability=preorder'
+                                                //    .'&act='.time()
+                                                //    .'&ws='.(@$user_id ?: '6854')
+                                                //;
+                                                $access_link = base_url()
+                                                    .'sales_package/link/index/'
+                                                    .'X/' // --> sales_package_id, or, X for unsaved sales package or other type of sales package
+                                                    .(@$user_id ?: 0).'/'
+                                                    .$tc
+                                                    .'.html'
+                                                ;
+                                                // append $access_link with items
+                                                $access_link.= '?email='.$email.'&av=preorder&items_csv='.implode(',', $preorder_products);
+
                 								foreach($preorder_products as $item)
                 								{
                 									// get product details
@@ -596,25 +614,34 @@
 								<table width="100%" border="0" cellpadding="0" cellspacing="0">
                                     <tr bgcolor="white">
                                         <td align="center" colspan="4" style="padding:30px 50px;font-family:Arial;font-size:12px;color:black;">
-                                            <span style="font-size:1.6em;color:red;">ORDER OFF PRICE ITEMS</span>
+                                            <span style="font-size:1.6em;color:red;">ON SALE ITEMS</span>
                                         </td>
                                     </tr>
 									<tr bgcolor="white" style="">
 
                                             <?php
-                                            // generalized accesslink
-                                            $access_link =
-                                                base_url()
-                                                .'shop/womens_apparel.html?filter=&availability=onsale'
-                                                .'&act='.time()
-                                                .'&ws='.(@$user_id ?: '6854')
-                                            ;
-
             								$icol = 1; // count the number of columns (5 for 5 thumbs per row)
             								//$irow = 1; // counter for number of rows upto 2 rows for 5 items each row
             								$ii = 0; // items count
                                             if (@$onsale_products)
                                             {
+                                                // generalized accesslink
+                                                $access_link =
+                                                    base_url()
+                                                    .'shop/womens_apparel.html?filter=&availability=onsale'
+                                                    .'&act='.time()
+                                                    .'&ws='.(@$user_id ?: '6854')
+                                                ;
+                                                $access_link = base_url()
+                                                    .'sales_package/link/index/'
+                                                    .'X/' // --> sales_package_id, or, X for unsaved sales package or other type of sales package
+                                                    .(@$user_id ?: 0).'/'
+                                                    .$tc
+                                                    .'.html'
+                                                ;
+                                                // append $access_link with items
+                                                $access_link.= '?email='.$email.'&av=onsale&items_csv='.implode(',', $onsale_products);
+
                 								foreach($onsale_products as $item)
                 								{
                 									// get product details

@@ -106,7 +106,7 @@
 										<td class="bodycopy" style="color: #153643; font-family: sans-serif; font-size: 16px; line-height: 22px;">
                                             On Sale ITems For Your Store.
                                             <br /><br />
-                                            MINIMUM ORDER ON CLEARANCE ITEMS IS 10 PIECES
+                                            <span style="color:red;">MINIMUM ORDER ON CLEARANCE ITEMS IS 10 PIECES</span>
 										</td>
 									</tr>
 								</table>
