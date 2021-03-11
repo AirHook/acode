@@ -126,8 +126,8 @@
 
 										<?php
 										$logo =
-											@$logo
-											?: base_url().'assets/images/logo/logo-shop7thavenue.png'
+											@$d_logo
+											?: 'assets/images/logo/logo-shop7thavenue.png'
 										;
 
 										if (
@@ -138,18 +138,17 @@
 
 										<img src="<?php echo base_url().'assets/images/logo/logo-shop7thavenue.png'; ?>" alt="logo" style="height:25px;" class="logo" />
 										&nbsp; <span style="position:relative;bottom:5px;font-size:25px;">-</span> &nbsp;
-										<img src="<?php echo $logo; ?>" alt="logo" style="height:25px;" class="logo" />
+										<img src="<?php echo base_url().$logo; ?>" alt="logo" style="height:25px;" class="logo universal" />
 
 											<?php
 										}
 										else
 										{ ?>
 
-										<img src="<?php echo $logo; ?>" alt="logo" style="height:35px;" class="logo" />
+										<img src="<?php echo base_url().$logo; ?>" alt="logo" style="height:35px;" class="logo specific" />
 
 											<?php
 										} ?>
-
 
 									</td>
 								</tr>
@@ -190,7 +189,7 @@
 										</strong>
 										<br />
 										<small>
-											Designer: <?php echo @$designer ?: '--'; ?>
+											Designer: <?php echo @$d_designer ?: '--'; ?>
 											<br />
 											Customer: #<?php echo @$order_details->user_id ?: '--'; ?>
 											<br />
@@ -636,10 +635,16 @@
 											<tr>
 												<td width="630" align="center">
 													<font color="#333333" style="font-family:sans-serif;font-size:10px;">
-														<?php echo $this->webspace_details->name; ?>
-														<?php echo $this->webspace_details->address1; ?>
-														<?php echo $this->webspace_details->address2; ?>
-														<br />EMAIL <a href="mailto:<?php echo $this->webspace_details->info_email; ?>"><?php echo $this->webspace_details->info_email; ?></a>
+														<?php echo @$d_designer; ?>
+														<br />
+														<?php echo @$d_address1 ?: $this->webspace_details->address1; ?>
+														<?php echo @$d_address2 ?: $this->webspace_details->address2; ?>
+														<br />
+														TEL: <?php echo @$d_telephone ?: $this->webspace_details->telephone; ?>
+														&nbsp;
+														EMAIL <a href="mailto:<?php echo @$d_info_email ?: $this->webspace_details->info_email; ?>">
+															<?php echo @$d_info_email ?: $this->webspace_details->info_email; ?>
+														</a>
 													</font>
 												</td>
 											</tr>

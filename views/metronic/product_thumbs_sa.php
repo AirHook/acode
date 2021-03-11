@@ -1309,7 +1309,7 @@
 
                                                             <?php if (@$btn_more_label) { ?>
                                                             <div class="row" style="margin-left:-10px;margin-right:-10px;">
-                                                                <a href="<?php echo site_url($this->uri->uri_string()); ?>?availability=<?php echo $av; ?>" class="btn dark btn-lg btn-block" style=""> <?php echo $btn_more_label; ?> </a>
+                                                                <a href="<?php echo site_url('shop/womens_apparel'); ?>?filter=&availability=<?php echo $av; ?>" class="btn dark btn-lg btn-block" style=""> <?php echo $btn_more_label; ?> </a>
                                                             </div>
                                                             <?php } ?>
 

@@ -304,7 +304,7 @@ class Order_details
 	 * This is used for when the order has mixed designers and we need
 	 * to separate each designer items, e.g., for inoicing
 	 *
-	 * @return	array/boolean false
+	 * @return	object/boolean false
 	 */
 	public function items()
 	{
@@ -330,6 +330,76 @@ class Order_details
 		}
 
 		return (object) $array;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Order items
+	 * This is used for when the order has mixed designers and we need
+	 * to separate each designer items, e.g., for inoicing
+	 *
+	 * @return	object/boolean false
+	 */
+	public function items_object()
+	{
+		if ( ! $this->order_id)
+		{
+			// nothing more to do...
+			return FALSE;
+		}
+
+		// check if mixed designers
+		$array = array();
+		foreach ($this->designers as $designer)
+		{
+			// get record
+			$this->DB->join('designer', 'designer.designer = tbl_order_log_details.designer', 'left');
+			$this->DB->join('webspaces', 'webspaces.webspace_slug = designer.url_structure', 'left');
+			$this->DB->where('tbl_order_log_details.order_log_id', $this->order_id);
+			$this->DB->where('tbl_order_log_details.designer', $designer);
+			$this->DB->group_by('order_log_detail_id');
+			$this->DB->order_by('order_log_detail_id', 'asc');
+			$query = $this->DB->get('tbl_order_log_details');
+			$array[$designer] = $query->result();
+		}
+
+		return (object) $array;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Order items
+	 * This is used for when the order has mixed designers and we need
+	 * to separate each designer items, e.g., for inoicing
+	 *
+	 * @return	array/boolean false
+	 */
+	public function items_array()
+	{
+		if ( ! $this->order_id)
+		{
+			// nothing more to do...
+			return FALSE;
+		}
+
+		// check if mixed designers
+		$array = array();
+		foreach ($this->designers as $designer)
+		{
+			// get record
+			$this->DB->join('designer', 'designer.designer = tbl_order_log_details.designer', 'left');
+			$this->DB->join('webspaces', 'webspaces.webspace_slug = designer.url_structure', 'left');
+			$this->DB->where('tbl_order_log_details.order_log_id', $this->order_id);
+			$this->DB->where('tbl_order_log_details.designer', $designer);
+			$this->DB->group_by('order_log_detail_id');
+			$this->DB->order_by('order_log_detail_id', 'asc');
+			$query = $this->DB->get('tbl_order_log_details');
+			$array[$designer] = $query->result_array();
+		}
+
+		return $array;
 	}
 
 	// --------------------------------------------------------------------

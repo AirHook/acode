@@ -51,6 +51,7 @@
 		@media only screen and (min-device-width: 801px) {
 			.content {width: 800px !important;}
 			.col380 {width: 400px !important;}
+			.col280 {width: 280px !important;}
 		}
 
 	</style>
@@ -75,9 +76,25 @@
 	<table border="0" cellpadding="0" cellspacing="0" width="100%">
 		<tr>
 			<td>
+
+				<!--
+				/***********
+				 * Overcoming the Lack of Max-Width Support
+				 * Unfortunately, max-width is not supported by all email clients.
+				 * we need to wrap each table in some conditional code which creates
+				 * a table with a set width to hold everything in.
+				 */
+				-->
+				<!--[if (gte mso 9)|(IE)]>
+				<table width="625" align="center" cellpadding="0" cellspacing="0" border="0">
+					<tr>
+						<td>
+							<![endif]-->
 				<table align="center" border="0" cellpadding="0" cellspacing="0" width="625px" style="border-collapse: collapse;">
 
-					<?php if ($view_params == 'invoice_email') : ?>
+					<?php if (@$view_params !== 'invoice_email')
+					{ ?>
+
 					<tr>
 						<td bgcolor="#f9ece6" style="padding:10px;">
 
@@ -104,7 +121,9 @@
 
 						</td>
 					</tr>
-					<?php endif; ?>
+					
+						<?php
+					} ?>
 
 					<tr>
 						<td>
@@ -560,6 +579,12 @@
 						</td>
 					</tr>
 				</table>
+							<!--[if (gte mso 9)|(IE)]>
+						</td>
+					</tr>
+				</table>
+				<![endif]-->
+
 			</td>
 		</tr>
 	</table>

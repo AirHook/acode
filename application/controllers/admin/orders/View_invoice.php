@@ -108,21 +108,36 @@ class View_invoice extends Admin_Controller
 		$this->data['status'] = $this->order_details->status_text;
 		//$this->data['order_items'] = $this->order_details->items();
 
+		// iterate through the designer based items
 		$i = 1;
 		foreach ($this->order_details->items() as $designer => $items)
 		{
 			// set the order items
 			$this->data['order_items'] = $items;
 
-			// we need to get the size mode
+			// we need to get the size mode and other details based even on the first item only
 			foreach ($items as $item)
 			{
 				$des_options = json_decode($item->webspace_options, TRUE);
+
+				// other details
+				$this->data['d_designer'] = $designer;
+				$this->data['d_address1'] = $item->designer_address1;
+				$this->data['d_address2'] = $item->designer_address2;
+				$this->data['d_telephone'] = $item->designer_phone;
+				$this->data['d_info_email'] = $item->designer_info_email;
+				$this->data['d_logo'] =
+					$item->logo ?: (
+						$item->url_structure
+						? base_url().'assets/images/logo/logo-'.$item->url_structure.'.png'
+						: ''
+					)
+				;
+
 				break;
 			}
 			$this->data['size_mode'] = $des_options['size_mode'];
 			$this->data['size_names'] = $this->size_names->get_size_names($des_options['size_mode']);
-			$this->data['designer'] = $designer;
 
 			// load the view
 			$html = $this->load->view('templates/invoice', $this->data, TRUE);

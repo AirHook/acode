@@ -52,6 +52,7 @@ class Send_invoice extends Admin_Controller
 		$this->load->library('products/product_details');
 		$this->load->library('orders/order_details');
 		$this->load->library('products/size_names');
+		$this->load->library('m_pdf');
 
 		// get order details
 		$this->data['order_details'] =
@@ -103,8 +104,9 @@ class Send_invoice extends Admin_Controller
 		}
 
 		// other data
+		$this->data['view_params'] = 'invoice_email';
 		$this->data['status'] = $this->order_details->status_text;
-		$this->data['order_items'] = $this->order_details->items();
+		//$this->data['order_items'] = $this->order_details->items();
 
 		// create access link to payment options
 		$this->data['access_link'] = site_url(
@@ -114,21 +116,53 @@ class Send_invoice extends Admin_Controller
 			.md5(@date('Y-m-d', time()))	// $ts = md5 hashed timestamp
 		);
 
-		// load the view
-		$html = $this->load->view('templates/invoice', $this->data, TRUE);
+		// iterate through the designer based items
+		$i = 1;
+		foreach ($this->order_details->items() as $designer => $items)
+		{
+			// set the order items
+			$this->data['order_items'] = $items;
 
-		/**
-		 * Create PDF
-		 */
-		// load pertinent library/model/helpers
- 		$this->load->library('m_pdf');
-		$this->load->library('email');
+			// we need to get the size mode and other details based even on the first item only
+			foreach ($items as $item)
+			{
+				$des_options = json_decode($item->webspace_options, TRUE);
 
- 		// generate pdf
- 		$this->m_pdf->pdf->WriteHTML($html);
+				// other details
+				$this->data['d_designer'] = $designer;
+				$this->data['d_address1'] = $item->designer_address1;
+				$this->data['d_address2'] = $item->designer_address2;
+				$this->data['d_telephone'] = $item->designer_phone;
+				$this->data['d_info_email'] = $item->designer_info_email;
+				$this->data['d_logo'] =
+					$item->logo ?: (
+						$item->url_structure
+						? 'assets/images/logo/logo-'.$item->url_structure.'.png'
+						: ''
+					)
+				;
 
- 		// set filename and file path
- 		$pdf_file_path = 'assets/pdf/pdf_invoice.pdf';
+				break;
+			}
+			$this->data['size_mode'] = $des_options['size_mode'];
+			$this->data['size_names'] = $this->size_names->get_size_names($des_options['size_mode']);
+
+			// load the view
+			$html = $this->load->view('templates/invoice', $this->data, TRUE);
+
+			if ($i > 1)
+			{
+				$this->m_pdf->pdf->WriteHTML('<pagebreak>');
+			}
+
+			// generate pdf
+			$this->m_pdf->pdf->WriteHTML($html);
+
+			// set filename and file path
+			$pdf_file_path = 'assets/pdf/pdf_invoice_'.$designer.'.pdf';
+
+			$i++;
+		}
 
 		// download it "D" - download, "I" - inline, "F" - local file, "S" - string
 		//$this->m_pdf->pdf->Output(); // output to browser
@@ -137,6 +171,8 @@ class Send_invoice extends Admin_Controller
 		/**
 		 * Send the email
 		 */
+		$this->load->library('email');
+
 		// let start composing the email
 		$email_subject = $this->webspace_details->name.' Order Invoice #'.$this->data['order_details']->invoice_id;
 
