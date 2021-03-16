@@ -89,7 +89,7 @@ class Wholesale_special_sale_email_carousel extends MY_Controller {
 			exit;
 		}
 
-		echo 'Processing...<br />';
+		echo 'Processing...'.PHP_EOL;
 
 		// load pertinent library/model/helpers
 		$this->load->library('email');
@@ -105,13 +105,19 @@ class Wholesale_special_sale_email_carousel extends MY_Controller {
 			$q->text
 		);
 
+		// info debugger
+		echo 'Getting the 30 thumbs using parameter "onsale"...'.PHP_EOL;
+
 		// let's get some thumbs
 		// returned as items in an array (<prod_no>_<color_code>)
 		//$data['instock_products'] = $this->_get_thumbs('instock');
 		//$data['preorder_products'] = $this->_get_thumbs('preorder');
-		$data['onsale_products'] = $this->_get_thumbs('onsale');
 		$data['availability'] = 'onsale'; // availability params used on url for landing page button
+		$data['onsale_products'] = $this->_get_thumbs('onsale');
 		// check _get_thumbs() as passed properties are not used at this time
+
+		// info debugger
+		echo 'Continuing...'.PHP_EOL;
 
 		// record proudct into a csv format for use on url
 		$data['items_csv'] = implode(',', $data['onsale_products']);
@@ -154,6 +160,9 @@ class Wholesale_special_sale_email_carousel extends MY_Controller {
 		// subjects:
 		$subject = $subjects[$subject_key];
 
+		// info debugger
+		echo 'Sending to mailgun for mass mailing...'.PHP_EOL;
+
 		if (ENVIRONMENT != 'development')
 		{
 			// start the email sending
@@ -172,6 +181,7 @@ class Wholesale_special_sale_email_carousel extends MY_Controller {
 			}
 			else
 			{
+				//$this->mailgun->to = 'test@mg.shop7thavenue.com';
 				$this->mailgun->to = 'wholesale_users@mg.shop7thavenue.com';
 			}
 
@@ -180,9 +190,11 @@ class Wholesale_special_sale_email_carousel extends MY_Controller {
 			$this->mailgun->subject = $subject;
 			$this->mailgun->message = $message;
 
+			// mail send via mailgun
+			/* */
 			if ( ! $this->mailgun->Send())
 			{
-				$error = 'Unable to send.<br />';
+				$error = 'Unable to send.'.PHP_EOL;
 				$error .= $this->mailgun->error_message;
 
 				echo $error;
@@ -214,6 +226,9 @@ class Wholesale_special_sale_email_carousel extends MY_Controller {
 	 */
 	private function _get_thumbs($str = '')
 	{
+		// info debugger
+		echo 'Get recorded Thumbs Sent Set...'.PHP_EOL;
+
 		// get previous thumbs sent
 		$this->DB->select('config_value');
 		$this->DB->where('config_name', 'wholesale_special_sale_thumbs_sent');
@@ -230,6 +245,10 @@ class Wholesale_special_sale_email_carousel extends MY_Controller {
 			$thumbs = array();
 			$number_of_items_previous_sent = 0;
 		}
+
+		// info debugger
+		echo 'Initial Thumbs Set count - '.count($thumbs).PHP_EOL;
+		echo 'Get product list...'.PHP_EOL;
 
 		if ($number_of_items_previous_sent > 0)
 		{
@@ -255,12 +274,12 @@ class Wholesale_special_sale_email_carousel extends MY_Controller {
 				tbl_product.publish = '1'
 				OR tbl_product.publish = '11'
 				OR tbl_product.publish = '12'
+				OR tbl_product.publish = '2'
 			) AND (
 				tbl_stock.new_color_publish = '1'
 				OR tbl_stock.new_color_publish = '11'
 				OR tbl_stock.new_color_publish = '12'
-			) AND (
-				tbl_stock.color_publish = 'Y'
+				OR tbl_stock.new_color_publish = '2'
 			)
 		)";
 		$where['condition'][] = $where_public;
@@ -285,68 +304,78 @@ class Wholesale_special_sale_email_carousel extends MY_Controller {
 
 		//echo $this->products_list->last_query; die();
 
-		// this 'if' condition only means that we have used all items for sending
-		// thus, we need to reset the 'special_sale_thumbs_sent' to empty
-		if ($list_count == 0)
-		{
-			// reset $thumbs
-			$thumbs = array();
-
-			// reset $thumbs record
-			/* */
-			$this->DB->set('config_value', json_encode($thumbs));
-			$this->DB->set('options', NULL);
-			$this->DB->where('config_name', 'wholesale_special_sale_thumbs_sent');
-			$this->DB->update('config');
-			// */
-
-			// redo query
-			$this->products_list->initialize($params);
-			$products = $this->products_list->select(
-				// where conditions
-				$where,
-				// sorting conditions
-				array(
-					'seque' => 'asc',
-					'tbl_product.prod_no' => 'desc'
-				)
-			);
-		}
+		// info debugger
+		echo 'Prodct list query count - '.$list_count.PHP_EOL;
 
 		// capture product numbers and set items array
 		if ($products)
 		{
+			// info debugger
+			echo 'Settings items array...'.PHP_EOL;
+
 			$cnt = 0;
 			$items_array = array();
 			foreach ($products as $product)
 			{
-				if ( ! in_array($product->prod_no, $thumbs))
+				if ( ! in_array($product->prod_no.'_'.$product->color_code, $thumbs))
 				{
-					if ( ! in_array($product->prod_no.'_'.$product->color_code, $thumbs))
-					{
-						array_push($items_array, $product->prod_no.'_'.$product->color_code);
-						array_push($thumbs, $product->prod_no.'_'.$product->color_code);
-						$cnt++;
-					}
+					array_push($items_array, $product->prod_no.'_'.$product->color_code);
+					array_push($thumbs, $product->prod_no.'_'.$product->color_code);
+					$cnt++;
 				}
 
 				if ($cnt == 30) break;
 			}
+		}
+		else
+		{
+			// info debugger
+			echo 'No product queried. Nothing more to do...'.PHP_EOL;
+			return FALSE;
+		}
+
+		// info debugger
+		echo 'Final Thumbs Set count with new item array included - '.count($thumbs).PHP_EOL;
+		echo 'Checking counts and items array...'.PHP_EOL;
+
+		if ($list_count <= count($thumbs))
+		{
+			// info debugger
+			echo 'Product list is equal and lower to items array...'.PHP_EOL;
+			echo 'Reset recorded items array...'.PHP_EOL;
+
+			if ( ! $this->test)
+			{
+				// update previous thumbs sent
+				/* */
+				$this->DB->set('config_value', NULL);
+				$this->DB->set('options', NULL);
+				$this->DB->where('config_name', 'wholesale_special_sale_thumbs_sent');
+				$this->DB->update('config');
+				// */
+			}
+		}
+		else
+		{
+			// info debugger
+			echo 'Saved new items array...'.PHP_EOL;
 
 			if ( ! $this->test)
 			{
 				// update previous thumbs sent
 				/* */
 				$this->DB->set('config_value', json_encode($thumbs));
-				$this->DB->set('options', '');
+				$this->DB->set('options', NULL);
 				$this->DB->where('config_name', 'wholesale_special_sale_thumbs_sent');
 				$this->DB->update('config');
 				// */
 			}
-
-			return $items_array;
 		}
-		else return FALSE;
+
+		// info debugger
+		echo 'Items array saved...'.PHP_EOL;
+
+		return $items_array;
 	}
 
 	// ----------------------------------------------------------------------

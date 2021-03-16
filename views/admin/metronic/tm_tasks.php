@@ -111,7 +111,7 @@
                         <li class="dd-item dd3-item" data-task_id="<?php echo $task->task_id; ?>">
 
                             <div class="dd-handle dd3-handle"> </div>
-                            <div class="dd3-content <?php echo $task->status == '2' ? 'tooltips' : ''; ?>" data-original-title="Complete">
+                            <div class="dd3-content <?php echo $task->status == '2' ? 'tooltips' : ''; ?>" data-original-title="Complete" style="height:auto;">
                                 <a href="<?php echo $details_link; ?>" style="display:inline-block;width:87%;color:black;">
                                     <!-- User -->
                                     <span class="pull-right" style="<?php echo $task->status == '2' ? 'color:#ccc;text-decoration:line-through;' : ''; ?>">
@@ -121,10 +121,10 @@
                                     <span style="width:60%;display:inline-block;overflow:hidden;<?php echo $task->status == '2' ? 'color:#ccc;text-decoration:line-through;' : ''; ?>">
                                         <?php
                                         $title = '<span class="t_no">'.$t.'</span>. '.$task->title;
-                                        if (strlen($title) > 80)
-                                        {
-                                            $title = substr($title, 0, 80).'...<cite class="small">(more)</cite>';
-                                        }
+                                        //if (strlen($title) > 80)
+                                        //{
+                                        //    $title = substr($title, 0, 80).'...<cite class="small">(more)</cite>';
+                                        //}
                                         echo $title;
                                         ?>
                                         <?php echo $task->urgent == '1' ? '<cite class="font-red"><strong>URGENT!</strong></cite>' : ''; ?>

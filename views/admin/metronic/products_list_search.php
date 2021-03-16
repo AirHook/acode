@@ -195,27 +195,53 @@
 												<!-- DOC: Remove "disabled-link disable-target" classes to enable the element -->
                                                 <td style="padding-top:10px;">
 													<?php
-													//switch ($product->publish)
-													switch ($product->new_color_publish)
+													if ($product->primary_color == '1')
 													{
-														case '1':
-														case '11':
-														case '12':
-															$label = 'success';
-															$label_text = 'Public';
-															break;
-														case '2':
-															$label = 'info';
-															$label_text = 'Private';
-															break;
-														case '3':
-															$label = 'warning';
-															$label_text = 'Pending';
-															break;
-														case '0':
-														default:
-															$label = 'danger';
-															$label_text = 'Unpublished';
+														switch ($product->publish)
+														{
+															case '1':
+															case '11':
+															case '12':
+																$label = 'success';
+																$label_text = 'Public';
+																break;
+															case '2':
+																$label = 'info';
+																$label_text = 'Private';
+																break;
+															case '3':
+																$label = 'warning';
+																$label_text = 'Pending';
+																break;
+															case '0':
+															default:
+																$label = 'danger';
+																$label_text = 'Unpublished';
+														}
+													}
+													else
+													{
+														switch ($product->new_color_publish)
+														{
+															case '1':
+															case '11':
+															case '12':
+																$label = 'success';
+																$label_text = 'Public';
+																break;
+															case '2':
+																$label = 'info';
+																$label_text = 'Private';
+																break;
+															case '3':
+																$label = 'warning';
+																$label_text = 'Pending';
+																break;
+															case '0':
+															default:
+																$label = 'danger';
+																$label_text = 'Unpublished';
+														}
 													}
 													?>
                                                     <span class="label label-sm label-<?php echo $label; ?>" style="margin-top:5px;"> <?php echo $label_text; ?> </span>
