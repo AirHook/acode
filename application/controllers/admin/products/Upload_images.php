@@ -87,8 +87,6 @@ class Upload_images extends Admin_Controller {
 				exit;
 			}
 
-			die('died');
-
 			// let's grab the posts
 			// set the switches
 			$view 			= $this->input->post('product_view');

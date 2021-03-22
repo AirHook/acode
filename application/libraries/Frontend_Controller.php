@@ -83,6 +83,7 @@ class Frontend_Controller extends MY_Controller {
 		if (
 			! $this->data['categories']
 			&& $this->uri->uri_string() != 'contact'
+			&& $this->webspace_details->slug !== 'nantucketyardsailing' // letting nantucket pass
 		)
 		{
 			// set flash data
@@ -107,6 +108,7 @@ class Frontend_Controller extends MY_Controller {
 				'with_products' => TRUE
 			))
 			&& $this->uri->uri_string() !== 'contact'
+			&& $this->webspace_details->slug !== 'nantucketyardsailing' // letting nantucket pass
 		)
 		{
 			// set flash data

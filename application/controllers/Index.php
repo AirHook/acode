@@ -68,24 +68,35 @@ class Index extends Frontend_Controller {
 		/***************/
 
 		/**********
-		 * Right now, we are defaulting the home page to the categories
-		 * page and we will deal with coding the home page options for
-		 * roden template later on...  'shop/categories'
+		 * Introducing nantucketyardsailing
 		 */
-		//redirect('shop/womens_apparel');
+		if ($this->webspace_details->slug === 'nantucketyardsailing')
+		{
+			// load views...
+			$this->load->view('nantucket/index');
+		}
+		else
+		{
+			/**********
+			 * Right now, we are defaulting the home page to the categories
+			 * page and we will deal with coding the home page options for
+			 * roden template later on...  'shop/categories'
+			 */
+			//redirect('shop/womens_apparel');
 
-		// generate the plugin scripts and css
-		$this->_create_plugin_scripts();
+			// generate the plugin scripts and css
+			$this->_create_plugin_scripts();
 
-		// set data variables...
-		$this->data['file'] = 'home_categories';
-		$this->data['page_title'] = $this->webspace_details->name.' | '.$this->webspace_details->site_tagline;
-		$this->data['page_description'] = $this->webspace_details->site_description;
-		$this->data['page_keywords'] = $this->webspace_details->site_keywords;
+			// set data variables...
+			$this->data['file'] = 'home_categories';
+			$this->data['page_title'] = $this->webspace_details->name.' | '.$this->webspace_details->site_tagline;
+			$this->data['page_description'] = $this->webspace_details->site_description;
+			$this->data['page_keywords'] = $this->webspace_details->site_keywords;
 
-		// load views...
-		//$this->load->view($this->webspace_details->options['theme'].'/template', $this->data);
-		$this->load->view('metronic/template/template', $this->data);
+			// load views...
+			//$this->load->view($this->webspace_details->options['theme'].'/template', $this->data);
+			$this->load->view('metronic/template/template', $this->data);
+		}
 	}
 
 	// ----------------------------------------------------------------------

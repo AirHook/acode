@@ -126,7 +126,7 @@ class About_product extends Frontend_Controller {
 		}
 
 		// blocked emails
-		if (in_array($email1, array('test@test.com')))
+		if (in_array($email1, array('test@test.com', 'patroser@gmail.com')))
 		{
 			$destination = $return_url ? base_url().$return_url.'.html' : site_url();
 			$invalid = TRUE;

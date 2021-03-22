@@ -391,66 +391,69 @@ class Status extends Admin_Controller {
 			;
 		}
 
-		// notify user
-		/* */
-		$store_name = @$order->store_name ?: '';
-		$username = ucwords(strtolower(@$order->firstname.' '.@$order->lastname));
-
-		// check for tracking number
-		$tracking_number =  @$order->options['tracking_number'] ?: '';
-		$courier = @$order->courier ?: '';
-
-		$email_message = '
-			Dear '.$username.',
-			<br /><br />
-			Your order with reference ORDER ID#: '.$order_id.' has been SHIPPED!'
-			.($tracking_number ? '<br />Tracking #: '.$tracking_number : '')
-			.($courier ? '<br />Courier: '.$courier : '')
-			.'<br /><br />
-			<br />
-			Best Regards<br />
-			<br><br>
-		';
-
-		// send to email - user
-		// but for tempo, we send to rafi only for now
 		if ($this->webspace_details->slug == 'tempoparis')
 		{
-			$send_to_email = $this->webspace_details->info_email;
-			$cc_email = '';
+			// notify user
+			/* */
+			$store_name = @$order->store_name ?: '';
+			$username = ucwords(strtolower(@$order->firstname.' '.@$order->lastname));
+
+			// check for tracking number
+			$tracking_number =  @$order->options['tracking_number'] ?: '';
+			$courier = @$order->courier ?: '';
+
+			$email_message = '
+				Dear '.$username.',
+				<br /><br />
+				Your order with reference ORDER ID#: '.$order_id.' has been SHIPPED!'
+				.($tracking_number ? '<br />Tracking #: '.$tracking_number : '')
+				.($courier ? '<br />Courier: '.$courier : '')
+				.'<br /><br />
+				<br />
+				Best Regards<br />
+				<br><br>
+			';
+
+			// send to email - user
+			// but for tempo, we send to rafi only for now
+			if ($this->webspace_details->slug == 'tempoparis')
+			{
+				$send_to_email = $this->webspace_details->info_email;
+				$cc_email = '';
+			}
+			else
+			{
+				$send_to_email = $user_details->email;
+				$cc_email = $this->webspace_details->info_email;
+			}
+
+			// send email to admin
+			$this->email->from($this->webspace_details->info_email, $this->webspace_details->name);
+			$this->email->to($send_to_email);
+			if ($cc_email) $this->email->cc($cc_email);
+			$this->email->bcc($this->config->item('dev1_email')); // --> for debuggin purposes
+
+			$this->email->subject('Your ORDER# '.$order_id.' has SHIPPED');
+			$this->email->message($email_message);
+
+			if (ENVIRONMENT == 'development') // ---> used for development purposes
+			{
+				// we are unable to send out email in our dev environment
+				// so we check on the email template instead.
+				// just don't forget to comment these accordingly
+				echo 'FROM: '.$this->webspace_details->info_email.'<br />';
+				echo 'TO: '.@$order->email.'<br />';
+				echo 'SUBJECT: '.'Your ORDER# '.$order_id.'<br /><br />';
+				echo $email_message;
+				echo '<br /><br />';
+
+				//echo '<a href="'.site_url('shop/designers/'.$this->reference_designer).'">Continue...</a>';
+				echo '<br /><br />';
+				exit;
+			}
+			else @$this->email->send();
+			// */
 		}
-		else
-		{
-			$send_to_email = $user_details->email;
-			$cc_email = $this->webspace_details->info_email;
-		}
-
-		// send email to admin
-		$this->email->from($this->webspace_details->info_email, $this->webspace_details->name);
-		$this->email->to($send_to_email);
-		if ($cc_email) $this->email->cc($cc_email);
-		$this->email->bcc($this->config->item('dev1_email')); // --> for debuggin purposes
-
-		$this->email->subject('Your ORDER# '.$order_id.' has SHIPPED');
-		$this->email->message($email_message);
-
-		if (ENVIRONMENT == 'development') // ---> used for development purposes
-		{
-			// we are unable to send out email in our dev environment
-			// so we check on the email template instead.
-			// just don't forget to comment these accordingly
-			echo 'FROM: '.$this->webspace_details->info_email.'<br />';
-			echo 'TO: '.@$order->email.'<br />';
-			echo 'SUBJECT: '.'Your ORDER# '.$order_id.'<br /><br />';
-			echo $email_message;
-			echo '<br /><br />';
-
-			//echo '<a href="'.site_url('shop/designers/'.$this->reference_designer).'">Continue...</a>';
-			echo '<br /><br />';
-			exit;
-		}
-		else @$this->email->send();
-		// */
 	}
 
 	// ----------------------------------------------------------------------
