@@ -62,6 +62,7 @@ class Product_details
 	public $designer_slug = '';
 	public $d_url_structure = '';
 	public $d_folder = '';
+	public $designer_logo = '';
 
 	/**
 	 * Reference Vendor Association
@@ -545,7 +546,7 @@ class Product_details
 
 		// get recrods
 		$this->DB->select('tbl_product.*');
-		$this->DB->select('designer.designer AS designer_name, designer.url_structure AS d_url_structure, designer.size_chart');
+		$this->DB->select('designer.designer AS designer_name, designer.url_structure AS d_url_structure, designer.logo AS designer_logo, designer.size_chart');
 		$this->DB->select('tblcolor.color_name, tblcolor.color_code');
 		$this->DB->select('vendors.vendor_id, vendors.vendor_name, vendors.vendor_code');
 		$this->DB->select(
@@ -895,6 +896,7 @@ class Product_details
 			$this->designer_slug = $row->d_url_structure;
 			$this->d_url_structure = $row->d_url_structure; // special case used for categories
 			$this->d_folder = $row->d_folder; // special case used for categories
+			$this->designer_logo = $row->designer_logo;
 
 			// Reference vendor
 			$this->vendor_id = $row->vendor_id;

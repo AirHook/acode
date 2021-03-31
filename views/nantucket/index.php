@@ -3,16 +3,16 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Nantucket Yard Sailing</title>
+<title><?php echo $this->webspace_details->name ?: 'The Company'; ?> - Where you find the ungettable gets...</title>
 <meta name="description" content="Buy vintage, antique, mid-century, art deco, industrial,
 upcycled furniture, accessories, fashion and lighting in-store or online" />
 <meta name="keywords" content="vintage, antique, shop, market" />
 <meta name="robots" content="INDEX,FOLLOW" />
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="<?php echo base_url(); ?>images/favicon/favicon-ack180.png">
+<link rel="icon" type="image/png" sizes="32x32" href="<?php echo base_url(); ?>images/favicon/favicon-ack32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="<?php echo base_url(); ?>images/favicon/favicon-ack16.png">
 <link rel="manifest" href="/site.webmanifest">
 <meta name="msapplication-TileColor" content="#da532c">
 <meta name="theme-color" content="#ffffff">
@@ -28,7 +28,7 @@ upcycled furniture, accessories, fashion and lighting in-store or online" />
 
 <link rel="stylesheet" type="text/css" href="//smhttp-ssl-74220.nexcesscdn.net/media/css/u.405b927f24a699b22bd8f46095f09527.css" media="all" />
 <script type="text/javascript" src="//smhttp-ssl-74220.nexcesscdn.net/media/js/u.7d42d9e5af3f0a245dc9a6f595db4a53.js"></script>
-<link rel="canonical" href="https://www.theoldcinema.co.uk/" />
+<link rel="canonical" href="https://www.nantucketyardsailing.com/" />
 <!--<script type="text/javascript">
 if (window.addEventListener)
 window.addEventListener("load", downloadJSAtOnload, false);
@@ -40,7 +40,7 @@ else window.onload = downloadJSAtOnload;
 <script type="text/javascript">
 //<![CDATA[
 Mage.Cookies.path     = '/';
-Mage.Cookies.domain   = '.www.theoldcinema.co.uk';
+Mage.Cookies.domain   = '.www.nantucketyardsailing.com';
 //]]>
 </script>
 
@@ -50,7 +50,7 @@ optionalZipCountries = ["HK","IE","MO","PA"];
 //]]>
 </script>
 <!-- Facebook Ads Extension for Magento -->
-<!-- Facebook Pixel Code -->
+<!-- Facebook Pixel Code --
 <script>
 !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
 n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
@@ -179,7 +179,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                             </div>
                         </form>
                     </div>
-                    <span id="top-contact">212 840 0846</span>
+                    <span id="top-contact"><?php echo @$this->webspace_details->phone ?: '212 840 0846';?></span>
                     <span class="mobile toplinks-cart-qty">
                     <!--<a href="https://www.theoldcinema.co.uk/checkout/cart/">-->
                     <a href="javascript:;">
@@ -697,8 +697,15 @@ li.subcate_list:hover {
                                         With 10,000 square foot of showroom, Nantucket Yard Sailing has the unfindable finds.
                                     </p>
                                     <p style="text-align: center;"><a href="javascript:;">Click here for more information on our store</a></p>
-                                    <p style="text-align: center;"><strong><span style="text-decoration: underline;">Address</span><br /></strong>Nantucket Yard Sailing, 315 West 39th Street, Suite 207, New York NY 10018<br /><span style="color: #0071bb;"><strong><a href="javascript:;"><span style="color: #0071bb;">Find us on Google Maps</span></a></strong></span></p>
-                                    <p style="text-align: center;"><strong><span style="text-decoration: underline;">Contact us</span><br /><span></span></strong>212 840 0846<br />helpl@nantucketyardsailing.com</p>
+                                    <p style="text-align: center;">
+                                        <strong><span style="text-decoration: underline;">Address</span><br /></strong>
+                                        <?php echo @$this->webspace_details->name ?: 'The Company'; ?>, <?php echo @$this->webspace_details->address1 ?: 'The Address'; ?>, <?php echo @$this->webspace_details->city ?: 'New York'; ?> <?php echo @$this->webspace_details->state ?: 'NY'; ?> <?php echo @$this->webspace_details->zipcode ?: '10018'; ?><br />
+                                        <span style="color: #0071bb;"><strong><a href="javascript:;"><span style="color: #0071bb;">Find us on Google Maps</span></a></strong></span></p>
+                                    <p style="text-align: center;">
+                                        <strong><span style="text-decoration: underline;">Contact us</span><br /><span></span></strong>
+                                        <?php echo @$this->webspace_details->phone ?: '212 840 0846';?><br />
+                                        helpl@nantucketyardsailing.com
+                                    </p>
                                     <p style="text-align: center;"><strong><span style="text-decoration: underline;">Operating Hours</span><br /></strong>Monday - Saturday: 10:00am - 6:00pm<br />Sunday: 12:00pm - 5:00pm</p>
                                     </td>
                                     <td class="tablet-view" style="width: 40%; text-align: center;">
@@ -776,7 +783,7 @@ li.subcate_list:hover {
 
 <ul id="menu2">
     <li class="mobile-search-block">
-        <form id="search_mini_form" action="https://www.theoldcinema.co.uk/catalogsearch/result/" method="get" onsubmit="return false;">
+        <form id="search_mini_form" action="" method="get" onsubmit="return false;">
             <div class="form-search">
 
                 <input id="search" type="text" name="q"
@@ -3457,11 +3464,20 @@ $j(window).on("load", function() {
                 </div>
             </li>
             <li class="item hb2 col-sm-4 col-md-4"><!-- LightWidget WIDGET -->
+                <!--
                 <script src="//lightwidget.com/widgets/lightwidget.js" type="text/javascript"></script>
                 <p style="margin-bottom: 0;"><iframe height="240" id="lightwidget_d2c073529e" src="//lightwidget.com/widgets/d2c073529ee951fbb6bd2cda6e3a6cb3.html" style="width: 100%; border: 0; overflow: hidden;" width="320"></iframe>
                 </p>
+                -->
             </li>
-            <li class="item hb3 col-sm-4 col-md-4"><p><a href="javascript:;"><img src="https://smhttp-ssl-74220.nexcesscdn.net/media/wysiwyg/home-banners/del_web.jpg" /></a></p></li>
+            <li class="item hb3 col-sm-4 col-md-4">
+                <p>
+                    <a href="javascript:;">
+                        <!--<img src="https://smhttp-ssl-74220.nexcesscdn.net/media/wysiwyg/home-banners/del_web.jpg" />-->
+                        <img alt="" src="<?php echo base_url(); ?>images/nantucket/del_web.jpg" />
+                    </a>
+                </p>
+            </li>
         </ol>
         <ol class="home-footer-blocks home-promo-bottom">
             <li class="item hb1 col-sm-4 col-md-4">

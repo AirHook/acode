@@ -102,7 +102,7 @@ class Update_stocks extends Admin_Controller {
 			// stocks influences DSCO items
 			// each size is a single known unit at dsco
 			// process dsco items here
-			if ($stocks_options['post_to_dsco'])
+			if (@$stocks_options['post_to_dsco'])
 			{
 				switch ($size_label)
 				{
