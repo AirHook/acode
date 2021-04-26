@@ -104,19 +104,23 @@ class Search_Controller extends Frontend_Controller {
         // 2. consumer to see items that has stock only
         // 3. consumer gets to see on sale items
         /* */
-        if (
-            $this->session->userdata('user_role') == 'wholesale'
-            && @$_GET['availability'] == 'onsale'
-        )
-        {
+        //if (
+        //    $this->session->userdata('user_role') == 'wholesale'
+        //    && @$_GET['availability'] == 'onsale'
+        //)
+        //{
             // can only show non-basix items
-            $where['designer.url_structure !='] = 'basixblacklabel';
-        }
-        else if ($this->session->userdata('user_role') == 'wholesale')
+            //$where['designer.url_structure !='] = 'basixblacklabel';
+        //}
+        //else
+        if ($this->session->userdata('user_role') == 'wholesale')
         {
-            // don't show clearance cs only items
-            $con_clearance_cs_only = 'tbl_stock.options NOT LIKE \'%"clearance_consumer_only":"1"%\' ESCAPE \'!\'';
-            $where['condition'][] = $con_clearance_cs_only;
+            // -- the setting clearance for cs is so that consumer can avail of discount
+            // -- otherwise, show as normal even to wholesale user
+            // -- commenting this for now
+            // clearance cs only items is not for wholesale users
+            //$con_clearance_cs_only = 'tbl_stock.options NOT LIKE \'%"clearance_consumer_only":"1"%\' ESCAPE \'!\'';
+            //$where['condition'][] = $con_clearance_cs_only;
 
             if ($this->wholesale_user_details->access_level == '2')
             {
@@ -166,6 +170,23 @@ class Search_Controller extends Frontend_Controller {
                     OR (tbl_product.size_mode = '4' AND (tsav.size_sonesizefitsall > '0'))
     			)";
                 $where['condition'][] = $with_stocks;
+            }
+            else
+            {
+                // anything but unpublished
+                $con_public = "(
+                    (
+                        tbl_product.publish = '1'
+                        OR tbl_product.publish = '11'
+        				OR tbl_product.publish = '12'
+                        OR tbl_product.publish = '2'
+                    ) AND (
+                        tbl_stock.new_color_publish = '1'
+                        OR tbl_stock.new_color_publish = '11'
+        				OR tbl_stock.new_color_publish = '12'
+                    )
+                )";
+                $where['condition'][] = $con_public;
             }
         }
 //        else if (
@@ -272,7 +293,7 @@ class Search_Controller extends Frontend_Controller {
 
 		// get the products list and total count based on parameters
 		$params['wholesale'] = $this->session->userdata('user_cat') == 'wholesale' ? TRUE : FALSE;
-		$params['show_private'] = $this->session->userdata('user_cat') == 'wholesale' ? TRUE : FALSE;
+		//$params['show_private'] = $this->session->userdata('user_cat') == 'wholesale' ? TRUE : FALSE;
 		// show items even without stocks at all
         $params['group_products'] = FALSE;
 		$params['with_stocks'] = $params['group_products'] ? FALSE : FALSE;

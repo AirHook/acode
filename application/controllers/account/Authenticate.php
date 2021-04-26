@@ -101,7 +101,7 @@ class Authenticate extends Frontend_Controller {
 			}
 			else redirect(site_url(), 'location');
 		}
-		else if ($this_login == 'cs')
+		else if ($param == 'cs')
 		{
 			// initialize user
 			$this->consumer_user_details->initialize(array('user_id'=>$user_id));
@@ -117,10 +117,10 @@ class Authenticate extends Frontend_Controller {
 
 			redirect('my_account/consumer/dashboard', 'location');
 		}
-		else if ($this_login == 'sales')
+		else if ($param == 'sales')
 		{
 			// initialize user
-			$this->sales_user_details->initialize(array('user_id'=>$user_id));
+			$this->sales_user_details->initialize(array('admin_sales_id'=>$user_id));
 
 			$this->sales_user_details->set_session();
 
@@ -133,10 +133,10 @@ class Authenticate extends Frontend_Controller {
 
 			redirect('my_account/sales/dashboard', 'location');
 		}
-		else if ($this_login == 'vendor')
+		else if ($param == 'vendor')
 		{
 			// initialize user
-			$this->vendor_user_details->initialize(array('user_id'=>$user_id));
+			$this->vendor_user_details->initialize(array('vendor_id'=>$user_id));
 
 			$this->vendor_user_details->set_session();
 

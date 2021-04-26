@@ -231,7 +231,11 @@
 
                         <?php
                         // available only on hub sites for now
-                        if ($this->webspace_details->options['site_type'] == 'hub_site' OR $this->webspace_details->slug == 'tempoparis')
+                        if (
+                            $this->webspace_details->options['site_type'] == 'hub_site'
+                            OR $this->webspace_details->slug == 'tempoparis'
+                            OR $this->webspace_details->slug == 'chaarmfurs'
+                        )
                         { ?>
                         <!-- =============-->
                         <li class="heading">
@@ -252,6 +256,25 @@
                                     <!--<a href="javascript:;" class="nav-link disabled-link disable-target">-->
                                     <a href="<?php echo site_url('admin/campaigns/sales_package/create'); ?>" class="nav-link  ">
                                         <span class="title">Create Sales Package</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item with-heading <?php echo $this->uri->segment(3) == 'lookbook' ? 'active' : ''; ?>">
+                            <a href="<?php echo site_url('admin/campaigns/lookbook'); ?>" class="nav-link ">
+                                <span class="title uppercase">Lookbook Manager</span>
+                                <span class="arrow <?php echo $this->uri->segment(3) == 'lookbook' ? 'open' : 'open'; ?>"></span>
+                            </a>
+                            <ul class="sub-menu always-open">
+                                <li class="nav-item  <?php echo $this->uri->uri_string() == 'admin/campaigns/lookbook' ? 'active open' : ''; ?>">
+                                    <a href="<?php echo site_url('admin/campaigns/lookbook'); ?>" class="nav-link  ">
+                                        <span class="title">List Lookbooks</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item  <?php echo $this->uri->uri_string() == 'admin/campaigns/lookbook/create' ? 'active open' : ''; ?>">
+                                    <!--<a href="javascript:;" class="nav-link disabled-link disable-target">-->
+                                    <a href="<?php echo site_url('admin/campaigns/lookbook/create'); ?>" class="nav-link  ">
+                                        <span class="title">Create Lookbook</span>
                                     </a>
                                 </li>
                             </ul>

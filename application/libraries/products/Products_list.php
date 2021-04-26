@@ -363,6 +363,14 @@ class Products_list
 										$i++;
 									}
 								}
+								// custom setting to indicate that $key is a query phrase in itself
+								elseif ($key === 'condition')
+								{
+									foreach ($where['condition'] as $this_where_clause)
+									{
+										$this->DB->where($this_where_clause);
+									}
+								}
 								else
 								{
 									// this OR_WHERE item is used for search strings

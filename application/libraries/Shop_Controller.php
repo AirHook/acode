@@ -361,6 +361,23 @@ class Shop_Controller extends Frontend_Controller {
     			)";
                 $where['condition'][] = $with_stocks;
             }
+            else
+            {
+                // anything but unpublished
+                $con_public = "(
+                    (
+                        tbl_product.publish = '1'
+                        OR tbl_product.publish = '11'
+        				OR tbl_product.publish = '12'
+                        OR tbl_product.publish = '2'
+                    ) AND (
+                        tbl_stock.new_color_publish = '1'
+                        OR tbl_stock.new_color_publish = '11'
+        				OR tbl_stock.new_color_publish = '12'
+                    )
+                )";
+                $where['condition'][] = $con_public;
+            }
         }
 //        else if (
 //            $this->session->userdata('user_role') == 'consumer'
@@ -464,7 +481,7 @@ class Shop_Controller extends Frontend_Controller {
         //$where['condition'][] = $con_clearance_cs_only;
 
 		// get the products list and total count based on parameters
-        $params['private'] = FALSE;
+        //$params['private'] = FALSE;
 		$params['wholesale'] = $this->session->userdata('user_role') == 'wholesale' ? TRUE : FALSE;
         // list all variants
         $params['group_products'] = FALSE;

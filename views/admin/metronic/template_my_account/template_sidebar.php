@@ -119,7 +119,16 @@ if (@$role == 'sales')
 		)
 		{
 			$sa_list_active = '';
-		} ?>
+		}
+		$lb_list_active = 'active';
+		if (
+			$this->uri->uri_string() != 'my_account/sales/lookbook'
+			&& strpos($this->uri->uri_string(), 'my_account/sales/lookbook/modify') === FALSE
+		)
+		{
+			$lb_list_active = '';
+		}
+		?>
 
 		<li class="heading">
 			<h3 class="uppercase">Sales</h3>
@@ -134,9 +143,14 @@ if (@$role == 'sales')
 				<span class="title">Create Sales Package</span>
 			</a>
 		</li>
-		<li class="nav-item <?php echo $this->uri->uri_string() == 'my_account/sales/photo_package/create' ? 'active' : ''; ?>">
-			<a href="<?php echo site_url('my_account/sales/photo_package/create'); ?>" class="nav-link  ">
-				<span class="title">Create Photo Package</span>
+		<li class="nav-item <?php echo $lb_list_active; ?>">
+			<a href="<?php echo site_url('my_account/sales/lookbook'); ?>" class="nav-link  ">
+				<span class="title">List Lookbook</span>
+			</a>
+		</li>
+		<li class="nav-item <?php echo $this->uri->uri_string() == 'my_account/sales/lookbook/create' ? 'active' : ''; ?>">
+			<a href="<?php echo site_url('my_account/sales/lookbook/create'); ?>" class="nav-link  ">
+				<span class="title">Create Lookbook</span>
 			</a>
 		</li>
 

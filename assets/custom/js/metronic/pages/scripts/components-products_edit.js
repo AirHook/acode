@@ -402,6 +402,8 @@ var ComponentsProductEdit = function () {
 				// disable publish at hub/sat checkboxes
 				$('#new_color_publish_at_hub-' + color_code).parent('label').addClass('mt-checkbox-disabled');
 				$('#new_color_publish_at_satellite-' + color_code).parent('label').addClass('mt-checkbox-disabled');
+                // disable private/public option
+                $('.color_publish-' + st_id).parent('label').addClass('mt-radio-disabled');
                 // finally, set new_color_publish
                 ncp = '0';
 			} else {
@@ -414,6 +416,8 @@ var ComponentsProductEdit = function () {
                 // enable publish at hub/sat checkboxes
     			$('#new_color_publish_at_hub-' + color_code).parent('label').removeClass('mt-checkbox-disabled');
     			$('#new_color_publish_at_satellite-' + color_code).parent('label').removeClass('mt-checkbox-disabled');
+                // enable private/public option
+                $('.color_publish-' + st_id).parent('label').removeClass('mt-radio-disabled');
                 // get publish at hub/sat data
     			if ($('#new_color_publish_at_hub-' + color_code).is(":checked")) var ncph = 1;
     			else var ncph = 0;
@@ -457,6 +461,10 @@ var ComponentsProductEdit = function () {
 
 		// Public/Private view radio function per variant
 		$('.color_publish input[type="radio"]').click(function(){
+            if ($(this).parent('label').hasClass('mt-radio-disabled')) {
+				//$(this).prop('checked', !$(this).prop('checked'));
+				return false;
+			}
 			// let get necessary information
 			var primary_color = $(this).closest('.section-options').data('primary_color');
             var main_publish = $('[name="publish"]').val();

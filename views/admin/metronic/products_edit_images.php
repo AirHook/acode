@@ -378,12 +378,12 @@
 									</label>
 									<div class="col-lg-8 <?php echo $color->color_code == $this->product_details->primary_img_id ? 'tooltips': ''; ?>" data-original-title="Primary Color! Change MAIN Publish Date Options to change this variant primary color publish date option.">
 										<div class="mt-radio-inline color_publish <?php echo $color->new_color_publish; ?>">
-											<label class="mt-radio mt-radio-outline">
-												<input type="radio" name="color_publish[<?php echo $color->st_id; ?>]" value="1" <?php echo $color->color_publish === 'Y' ? 'checked': ''; ?> /> Public
+											<label class="mt-radio mt-radio-outline <?php echo ($color->new_color_publish === '0') ? 'mt-radio-disabled' : ''; ?>">
+												<input type="radio" class="color_publish-<?php echo $color->st_id; ?>" name="color_publish[<?php echo $color->st_id; ?>]" value="1" <?php echo $color->color_publish === 'Y' ? 'checked': ''; ?> /> Public
 												<span></span>
 											</label>
-											<label class="mt-radio mt-radio-outline">
-												<input type="radio" name="color_publish[<?php echo $color->st_id; ?>]" value="0" <?php echo $color->color_publish === 'N' ? 'checked': ''; ?> /> Private
+											<label class="mt-radio mt-radio-outline <?php echo ($color->new_color_publish === '0') ? 'mt-radio-disabled' : ''; ?>">
+												<input type="radio" class="color_publish-<?php echo $color->st_id; ?>" name="color_publish[<?php echo $color->st_id; ?>]" value="0" <?php echo $color->color_publish === 'N' ? 'checked': ''; ?> /> Private
 												<span></span>
 											</label>
 										</div>

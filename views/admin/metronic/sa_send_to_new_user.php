@@ -4,7 +4,7 @@
 
 									<div class="form-body col-md-12">
 
-										<input type="hidden" name="reference_designer" class="send_to_new_user" value="<?php echo @$this->sales_user_details->designer ?: $this->webspace_details->name; ?>" />
+										<input type="hidden" name="reference_designer" class="send_to_new_user" value="<?php echo @$this->sales_user_details->designer ?: $this->webspace_details->slug; ?>" />
 										<input type="hidden" name="admin_sales_email" class="send_to_new_user" value="<?php echo @$this->sales_user_details->email ?: $this->webspace_details->info_email; ?>" />
 										<input type="hidden" name="admin_sales_id" class="send_to_new_user" value="<?php echo @$this->sales_user_details->admin_sales_id ?: '0'; ?>" />
 										<input type="hidden" name="access_level" value="2" />

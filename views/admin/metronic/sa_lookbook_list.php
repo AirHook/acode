@@ -115,20 +115,11 @@
                                     Lookbooks
                                 </a>
                             </li>
-                            <?php
-                            // available only on hub sites for now
-                            if (
-								$this->webspace_details->options['site_type'] == 'hub_site'
-								OR @$role == 'sales'
-							)
-                            { ?>
                             <li>
                                 <a href="<?php echo site_url($pre_link.'/lookbook/create'); ?>">
                                     Create New Lookbook <i class="fa fa-plus"></i>
                                 </a>
                             </li>
-                                <?php
-                            } ?>
                         </ul>
 
                         <br />
@@ -325,9 +316,8 @@
                                     </label>
                                 </td>
                                 <td>
-									<?php echo $lookbook->lookbook_name; ?>
-									<a class="small italic hidden_first_edit_link" style="display:none;" href="<?php echo $edit_link; ?>">
-										<small class="hide"><cite>view/edit</cite></small>
+									<a class="" href="<?php echo $edit_link; ?>">
+										<?php echo $lookbook->lookbook_name; ?>
 									</a>
 								</td>
                                 <td>
@@ -343,7 +333,7 @@
 										if ($lookbook->items)
 										{
                                             $items = json_decode($lookbook->items, TRUE);
-											foreach ($items as $item)
+											foreach ($items as $item => $options)
 											{
 												// just a catch all error suppression
 												if ( ! $item) continue;
@@ -421,7 +411,7 @@
 
 								</td>
                                 <td class="hidden-xs hidden-sm">
-									<?php if ($lookbook->user_id == '1' OR $lookbook->author == 'admin') { ?>
+									<?php if ($lookbook->user_id == '1' OR $lookbook->user_role == 'admin') { ?>
 									<small class="text-info"> <cite> admin </cite></small>
 									<?php } else { ?>
                                     <?php echo ucwords(strtolower($lookbook->user_name)); ?> - <small class="text-info"> <cite> sales </cite></small>
