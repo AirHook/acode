@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Bulk_actions extends Admin_Controller {
+class Bulk_actions extends Sales_user_Controller {
 
 	/**
 	 * Constructor

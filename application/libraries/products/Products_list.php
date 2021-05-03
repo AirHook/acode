@@ -1298,4 +1298,34 @@ class Products_list
 
 	// --------------------------------------------------------------------
 
+	/**
+	 * Get the product lowest category
+	 *
+	 * @param	json
+	 * @return	string
+	 */
+	public function get_product_category_slug($cats)
+	{
+		$categories = json_decode($cats);
+
+		foreach ($categories as $category_id)
+		{
+			$this->DB->or_where('category_id', $category_id);
+		}
+
+		$this->DB->order_by('category_level', 'DESC');
+		$this->DB->order_by('category_seque', 'ASC');
+		$query = $this->DB->get('categories');
+
+		$row = $query->row();
+
+		if (isset($row))
+		{
+	        return $row->category_slug;
+		}
+		else return FALSE;
+	}
+
+	// --------------------------------------------------------------------
+
 }

@@ -39,21 +39,21 @@ class Set_des_slug_session extends MY_Controller {
 		// drop down to select designer thumbs
 		if ($param == 'create')
 		{
-			$this->session->admin_lb_des_slug = $slug;
-			if ($this->session->admin_lb_designers)
+			$this->session->lb_des_slug = $slug;
+			if ($this->session->lb_designers)
 			{
-				array_push($this->session->admin_lb_designers, $slug);
+				array_push($this->session->lb_designers, $slug);
 			}
-			else $this->session->admin_lb_designers = array($slug);
+			else $this->session->lb_designers = array($slug);
 		}
 		else
 		{
-			$this->session->admin_lb_mod_des_slug = $slug;
-			if ($this->session->admin_lb_mod_designers)
+			$this->session->lb_mod_des_slug = $slug;
+			if ($this->session->lb_mod_designers)
 			{
-				array_push($this->session->admin_lb_mod_designers, $slug);
+				array_push($this->session->lb_mod_designers, $slug);
 			}
-			else $this->session->admin_lb_mod_designers = array($slug);
+			else $this->session->lb_mod_designers = array($slug);
 		}
 
 		// return

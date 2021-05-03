@@ -34,14 +34,14 @@ class Search_multiple extends MY_Controller {
 		$this->output->enable_profiler(FALSE);
 
 		// load pertinent library/model/helpers
-		$this->load->library('users/admin_user_details');
+		$this->load->library('users/sales_user_details');
 
 		// get admin login details
-		if ($this->session->admin_loggedin)
+		if ($this->session->admin_sales_loggedin)
 		{
-			$this->admin_user_details->initialize(
+			$this->sales_user_details->initialize(
 				array(
-					'admin_id' => $this->session->admin_id
+					'admin_sales_id' => $this->session->admin_sales_id
 				)
 			);
 		}
@@ -79,8 +79,8 @@ class Search_multiple extends MY_Controller {
 		// get the items if any
 		// set the items array
 		$items_array =
-			$this->session->admin_lb_items
-			? json_decode($this->session->admin_lb_items, TRUE)
+			$this->session->lb_items
+			? json_decode($this->session->lb_items, TRUE)
 			: array()
 		;
 
@@ -99,7 +99,7 @@ class Search_multiple extends MY_Controller {
 		}
 		else
 		{
-			$where_more['designer.url_structure'] = $this->session->admin_lb_des_slug;
+			$where_more['designer.url_structure'] = $this->session->lb_des_slug;
 			$where_more['tbl_product.prod_no'] = $prod_no;
 			$where = $where_more;
 		}

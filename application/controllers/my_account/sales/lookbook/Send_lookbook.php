@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Send_lookbook extends Admin_Controller {
+class Send_lookbook extends Sales_user_Controller {
 
 	/**
 	 * Constructor
@@ -22,12 +22,29 @@ class Send_lookbook extends Admin_Controller {
 	 */
 	public function index()
 	{
+		if (
+			! $this->session->lb_items
+			OR ! $this->session->lb_user_id
+			OR ! $this->session->lb_user_role
+			OR ! $this->session->lb_user_name
+			OR ! $this->session->lb_user_email
+		)
+		{
+			// set flash data
+			//$this->session->set_flashdata('error', 'no_id_passed');
+			$this->session->set_flashdata('error', 'session_expired');
+
+			// redirect user
+			redirect('my_account/sales/lookbook', 'location');
+		}
+
 		// generate the plugin scripts and css
 		$this->_create_plugin_scripts();
 
 		// load pertinent library/model/helpers
 		$this->load->helpers('state_country');
 		$this->load->library('products/product_details');
+		$this->load->library('products/size_names');
 		$this->load->library('users/wholesale_users_list');
 		$this->load->library('users/sales_user_details');
 		$this->load->library('categories/categories_tree');
@@ -35,12 +52,13 @@ class Send_lookbook extends Admin_Controller {
 		// set some data
 		$this->data['date_create'] = $this->session->date_create;
 		$this->data['last_modified'] = $this->session->last_modified;
-		$this->data['lb_name'] = $this->session->admin_lb_name;
-		$this->data['lb_email_subject'] = $this->session->admin_lb_email_subject;
-		$this->data['lb_email_message'] = $this->session->admin_lb_email_message;
-		$this->data['lb_options'] = json_decode($this->session->admin_lb_options, TRUE);
+		$this->data['lb_name'] = $this->session->lb_name;
+		$this->data['lb_email_subject'] = $this->session->lb_email_subject;
+		$this->data['lb_email_message'] = $this->session->lb_email_message;
+		$this->data['lb_options'] = json_decode($this->session->lb_options, TRUE);
 
-		$this->data['lb_items'] = json_decode($this->session->admin_lb_items, TRUE);
+		$this->data['lb_items'] = json_decode($this->session->lb_items, TRUE);
+		$this->data['lb_items_count'] = count($this->data['lb_items']);
 
 		// this is super admin
 		// sales user is the default sales user of the site
@@ -71,6 +89,11 @@ class Send_lookbook extends Admin_Controller {
 		$limit = $per_page > 0 ? array($per_page) : array();
 		// where clauses
 		$where['tbluser_data_wholesale.is_active'] = '1';
+		if ($this->webspace_details->options['site_type'] != 'hub_site')
+		{
+			$where['tbluser_data_wholesale.reference_designer'] = $this->webspace_details->slug;
+		}
+		// the list
 		$this->data['users'] = $this->wholesale_users_list->select(
 			$where, // where
 			array( // order by
@@ -100,7 +123,7 @@ class Send_lookbook extends Admin_Controller {
 		);
 
 		// set data variables...
-		$this->data['role'] = 'admin';
+		$this->data['role'] = 'sales';
 		$this->data['file'] = 'sa_lookbook_send_lookbook'; //'lb_send';
 		$this->data['page_title'] = 'Lookbook Sending';
 		$this->data['page_description'] = 'Send Lookbook To Users';
@@ -142,6 +165,9 @@ class Send_lookbook extends Admin_Controller {
 				//new_user
 			    [email] => // new user input field
 
+				//sent to a friedn
+				[email_a_friend] => rsbgm@rcpixel.com
+
 			// empty for current_user
 		    [firstname] =>
 		    [lastname] =>
@@ -165,13 +191,14 @@ class Send_lookbook extends Admin_Controller {
 			$this->session->set_flashdata('error', 'no_input_post');
 
 			// redirect user
-			redirect('admin/campaigns/lookbook/create', 'location');
+			redirect('my_account/sales/lookbook/create', 'location');
 		}
 
 		// load pertinent library/model/helpers
 		$this->load->library('email');
 		$this->load->library('users/wholesale_user_details');
 		$this->load->library('products/product_details');
+		$this->load->library('products/size_names');
 		$this->load->library('categories/categories_tree');
 		$this->load->library('lookbook/m_pdf_lookbook');
 
@@ -179,6 +206,8 @@ class Send_lookbook extends Admin_Controller {
 		 * Process Users
 		 */
 		// doing the sending in this class directly
+		// capture the email input first
+		$emails = $this->input->post('email');
 
 		if ($this->input->post('send_to') == 'new_user')
 		{
@@ -248,21 +277,30 @@ class Send_lookbook extends Admin_Controller {
 			$query = $DB->insert('tbluser_data_wholesale', $post_ary);
 			$insert_id = $DB->insert_id();
 		}
+		else if ($this->input->post('send_to') === 'a_friend')
+		{
+			// code to send to a friend
+			// currently nothing to process when sending to a friend
+			// overrides the initial capturing of the email input above
+			$emails = $this->input->post('email_a_friend');
+		}
 		else if ($this->input->post('send_to') === 'all_users')
 		{
 			// code to send to all users...
 		}
 
+		// get options
+		$lb_options = json_decode($this->session->lb_options, TRUE);
+
 		// if new user, user is already added from above code
 		// if current user, user is current...
-		$emails = $this->input->post('email');
 		$email_ary = is_array($emails) ? $emails : array($emails);
 
 		/**
 		// create the lookbook pdf
 		*/
 		$lookbook_temp_dir = 'uploads/lookbook_temp/';
-		$items_array = json_decode($this->session->admin_lb_items, TRUE);
+		$items_array = json_decode($this->session->lb_items, TRUE);
 		$i = 2;
 		$html = '';
 		foreach ($items_array as $item => $options)
@@ -287,8 +325,29 @@ class Send_lookbook extends Admin_Controller {
 			$prod_no = $exp[0];
 			$color_code = $exp[1];
 			$color_name = $this->product_details->get_color_name($color_code);
-			$price = ''; // @$options[2] ?: $product->wholesale_price;
+			$price =
+				isset($lb_options['w_prices'])
+				? (@$options[2] ?: $product->wholesale_price)
+				: ''
+			;
 			$category = $this->categories_tree->get_name($options[1]);
+
+			// get available sizes
+			$size_names = $this->size_names->get_size_names($product->size_mode);
+			$sizes = array();
+			foreach ($size_names as $size_label => $s)
+			{
+				// do not show zero stock sizes
+				if ($product->$size_label === '0') continue;
+
+				// create available sizes with stocks array
+				$sizes[$s] = $product->$size_label;
+			}
+			$available_sizes =
+				isset($lb_options['w_sizes'])
+				? $sizes
+				: array()
+			;
 
 			/**
 			* get logo and set it on lookbook_temp folder
@@ -330,6 +389,7 @@ class Send_lookbook extends Admin_Controller {
 			*/
 			$this->load->helper('create_linesheet');
 			$create = create_lookbook(
+				$i,
 				$prod_no,
 				$color_name,
 				$price,
@@ -338,7 +398,7 @@ class Send_lookbook extends Admin_Controller {
 				$product->media_name,
 				$lookbook_temp_dir.$logo_image_file,
 				$category,
-				$i
+				$available_sizes
 			);
 
 			if ( ! $create)
@@ -388,20 +448,28 @@ class Send_lookbook extends Admin_Controller {
 		*/
 		foreach ($email_ary as $email)
 		{
-			$this->wholesale_user_details->initialize(array('email' => $email));
+			if ($this->input->post('send_to') === 'a_friend')
+			{
+				$data['username'] = '';
+			}
+			else
+			{
+				$this->wholesale_user_details->initialize(array('email' => $email));
 
-			// set emailtracker_id
-			$data['emailtracker_id'] =
-				$this->wholesale_user_details->user_id
-				.'wi0014t'
-				.time()
-			;
+				// set emailtracker_id
+				$data['emailtracker_id'] =
+					$this->wholesale_user_details->user_id
+					.'wi0014t'
+					.time()
+				;
 
-			// lets set the hashed time code here so that the batched hold the same tc only
-			//$tc = md5(@date('Y-m-d', time()));
+				// lets set the hashed time code here so that the batched hold the same tc only
+				//$tc = md5(@date('Y-m-d', time()));
 
-			$data['username'] = $this->input->post('store_name') ?: $this->wholesale_user_details->store_name;
-			$data['email_message'] = $this->session->admin_lb_email_message;
+				$data['username'] = $this->input->post('store_name') ?: $this->wholesale_user_details->store_name;
+			}
+
+			$data['email_message'] = $this->session->lb_email_message;
 
 			// access link
 			/* *
@@ -414,16 +482,17 @@ class Send_lookbook extends Admin_Controller {
 			// */
 
 			// since this is not a saved sales package, we use $items_csv and append to url as query string
-			$data['items'] = json_decode($this->session->admin_lb_items, TRUE);
+			$data['items'] = json_decode($this->session->lb_items, TRUE);
 			$data['access_link'].= '?items_csv='.implode(',', $data['items']);
 
 			// check for sa options
-			$lb_options = json_decode($this->session->admin_lb_options, TRUE);
+			$lb_options = json_decode($this->session->lb_options, TRUE);
 
 			$email_message = '
 				<img src="'.base_url().'link/open.html?id='.@$emailtracker_id.'" alt="" />
-				<br /><br />
-				Dear '.$data['username'].',
+				<br /><br />'
+				.($data['username'] ? 'Dear '.$data['username'] : 'Hello')
+				.',
 				<br /><br />
 				'.$data['email_message'].'<br />
 				<br /><br />
@@ -432,12 +501,16 @@ class Send_lookbook extends Admin_Controller {
 
 			$this->email->clear(TRUE);
 
-			$this->email->from($this->wholesale_user_details->admin_sales_email, $this->wholesale_user_details->designer);
-			$this->email->reply_to($this->wholesale_user_details->admin_sales_email);
-			$this->email->cc($this->config->item('info_email'));
-			$this->email->bcc($this->config->item('dev1_email'));
+			$this->email->from($this->sales_user_details->email, $this->sales_user_details->fname.' '.$this->sales_user_details->lname);
+			$this->email->reply_to($this->sales_user_details->email);
 
-			$this->email->subject($this->session->admin_lb_email_subject);
+			/* *
+			$cc_email = 'help@instylenewyork.com,'$this->webspace_details->info_email;
+			$this->email->cc($cc_email);
+			$this->email->bcc($this->config->item('dev1_email'));
+			// */
+
+			$this->email->subject($this->session->lb_email_subject);
 
 			$this->email->to($email);
 
@@ -456,7 +529,7 @@ class Send_lookbook extends Admin_Controller {
 				echo $message;
 				echo '<br />';
 				echo '<br />';
-				echo '<a href="'.site_url('admin/campaigns/lookbook').'">continue...</a>';
+				echo '<a href="'.site_url('my_account/sales/lookbook').'">continue...</a>';
 				$this->session->set_flashdata('success', 'send_product_clicks');
 				echo '<br />';
 				die();
@@ -472,20 +545,20 @@ class Send_lookbook extends Admin_Controller {
 		}
 
 		// unset session
-		unset($_SESSION['admin_lb_des_slug']);
-		unset($_SESSION['admin_lb_designers']);
-		unset($_SESSION['admin_lb_slug_segs']);
-		unset($_SESSION['admin_lb_items']);
-		unset($_SESSION['admin_lb_name']); // used at view
-		unset($_SESSION['admin_lb_email_subject']); // used at view
-		unset($_SESSION['admin_lb_email_message']); // used at view
-		unset($_SESSION['admin_lb_options']);
+		unset($_SESSION['lb_des_slug']);
+		unset($_SESSION['lb_designers']);
+		unset($_SESSION['lb_slug_segs']);
+		unset($_SESSION['lb_items']);
+		unset($_SESSION['lb_name']); // used at view
+		unset($_SESSION['lb_email_subject']); // used at view
+		unset($_SESSION['lb_email_message']); // used at view
+		unset($_SESSION['lb_options']);
 
 		// set flash data
 		$this->session->set_flashdata('success', 'send_product_clicks');
 
 		// send user back
-		redirect('admin/campaigns/lookbook', 'location');
+		redirect('my_account/sales/lookbook', 'location');
 	}
 
 	// ----------------------------------------------------------------------

@@ -34,6 +34,7 @@ class Index extends Admin_Controller {
 		$this->load->library('lookbook/lookbook_list');
 		$this->load->library('lookbook/lookbook_details');
 		$this->load->library('products/product_details');
+		$this->load->library('products/size_names');
 		$this->load->library('designers/designers_list');
 		$this->load->library('categories/categories_tree');
 		$this->load->library('color_list');
@@ -181,17 +182,25 @@ class Index extends Admin_Controller {
 				: array()
 			;
 			$this->data['lb_items_count'] = count($this->data['lb_items']);
-			$this->data['lb_options'] =
+			$this->data['sa_options'] =
 				$this->session->admin_lb_options
 				? json_decode($this->session->admin_lb_options, TRUE)
 				: array()
 			;
 
 			// set author to 1 for Inhouse as this is admin panel
-			$this->data['author_name'] = 'In-House';
-			$this->data['author'] = 'admin'; // admin/system
-			$this->data['author_email'] = $this->webspace_details->info_email;
-			$this->data['author_id'] = $this->session->admin_id;
+			$this->data['author_name'] =
+				$this->webspace_details->options['site_type'] == 'hub_site'
+				? 'In-House'
+				: ucwords(strtolower($this->admin_user_details->fname.' '.$this->admin_user_details->lname))
+			;
+			$this->data['author'] = 'admin'; // admin/sales - user_role
+			$this->data['author_email'] =
+				$this->webspace_details->options['site_type'] == 'hub_site'
+				? $this->webspace_details->info_email
+				: $this->admin_user_details->email
+			;
+			$this->data['author_id'] = $this->admin_user_details->admin_id;
 
 			// need to show loading at start
 			$this->data['show_loading'] = @$this->data['products_count'] > 0 ? TRUE : TRUE;
@@ -299,6 +308,10 @@ class Index extends Admin_Controller {
 				$_SESSION['admin_lb_name'] = $this->input->post('lookbook_name');
 				$_SESSION['admin_lb_email_subject'] = $this->input->post('email_subject');
 				$_SESSION['admin_lb_email_message'] = $this->input->post('email_message');
+				$_SESSION['admin_lb_user_id'] = $this->input->post('user_id');
+				$_SESSION['admin_lb_user_role'] = $this->input->post('user_role');
+				$_SESSION['admin_lb_user_name'] = $this->input->post('user_name');
+				$_SESSION['admin_lb_user_email'] = $this->input->post('user_email');
 
 				// redirect user
 				redirect('admin/campaigns/lookbook/send_lookbook', 'location');

@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Change_name extends Admin_Controller {
+class Change_name extends Sales_user_Controller {
 
 	/**
 	 * Constructor
@@ -38,7 +38,7 @@ class Change_name extends Admin_Controller {
 			$this->session->set_flashdata('error', 'no_id_passed');
 
 			// redirect user
-			redirect($this->config->slash_item('admin_folder').'campaigns/lookbook', 'location');
+			redirect('my_account/sales/lookbook', 'location');
 		}
 
 		// connect to database
@@ -71,9 +71,9 @@ class Change_name extends Admin_Controller {
 		// redirect user
 		if ($this->input->post('submit') === 'step2')
 		{
-			redirect($this->config->slash_item('admin_folder').'campaigns/lookbook/edit/step2/'.$id.'/womens_apparel', 'location');
+			redirect('my_account/sales/lookbook/edit/step2/'.$id.'/womens_apparel', 'location');
 		}
-		else redirect($this->config->slash_item('admin_folder').'campaigns/lookbook/edit/step1/'.$id, 'location');
+		else redirect('my_account/sales/lookbook/edit/step1/'.$id, 'location');
 	}
 
 	// ----------------------------------------------------------------------

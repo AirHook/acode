@@ -30,14 +30,14 @@ class Get_item extends MY_Controller {
 		// load pertinent library/model/helpers
 		$this->load->library('products/product_details');
 		$this->load->library('products/size_names');
-		$this->load->library('users/admin_user_details');
+		$this->load->library('users/sales_user_details');
 
 		// get admin login details
-		if ($this->session->admin_loggedin)
+		if ($this->session->admin_sales_loggedin)
 		{
-			$this->admin_user_details->initialize(
+			$this->sales_user_details->initialize(
 				array(
-					'admin_id' => $this->session->admin_id
+					'admin_sales_id' => $this->session->admin_sales_id
 				)
 			);
 		}
@@ -58,6 +58,7 @@ class Get_item extends MY_Controller {
 		$prod_no = $this->input->post('prod_no');
 		$item = $this->input->post('style_no');
 		$page = $this->input->post('page');
+		$category_slug = $this->input->post('category_slug');
 		$barcode = $this->input->post('barcode');
 
 		if ($barcode)
@@ -94,8 +95,18 @@ class Get_item extends MY_Controller {
 		}
 
 		// get category from lb_slug_segs
-		$categories = json_decode($this->session->lb_slug_segs, TRUE);
-		$category = end($categories);
+		/*
+		if ( ! $this->session->lb_des_slug)
+		{
+			$category = $category_slug;
+		}
+		else
+		{
+			$categories = json_decode($this->session->lb_slug_segs, TRUE);
+			$category = end($categories);
+		}
+		*/
+		$category = $category_slug;
 
 		// set dome data
 		$style_no = $item;
@@ -117,6 +128,12 @@ class Get_item extends MY_Controller {
 			$sale_price = $product->wholesale_price_clearance;
 			$line_thru = $product->custom_order == '3' ? 'text-decoration:line-through;' : '';
 			$hide_sale_price = $product->custom_order == '3' ? '' : 'hide';
+
+			$ultimate_price =
+				$product->custom_order == '3'
+				? $sale_price
+				: $price
+			;
 		}
 		else
 		{
@@ -125,6 +142,7 @@ class Get_item extends MY_Controller {
 			$img_linesheet = '';
 			$size_mode = @$this->designer_details->webspace_options['size_mode'] ?: $temp_size_mode;
 			$color_name = $this->product_details->get_color_name($color_code);
+			$ultimate_price = '';
 		}
 
 		// set some data
@@ -134,7 +152,8 @@ class Get_item extends MY_Controller {
 		$html.= '<input type="hidden" id="size-select-prod_no" name="size-select-prod_no" value="'.$item.'" />';
 		$html.= '<input type="hidden" id="size-select-page" name="size-select-page" value="'.($page ?: 'create').'" />';
 		$html.= '<input type="hidden" id="size-select-color_name" name="size-select-color_name" value="'.$color_name.'" />';
-		$html.= '<input type="hidden" id="size-select-category" name="size-select-category" value="'.$category.'" />';
+		$html.= '<input type="hidden" id="size-select-category" name="size-select-category" value="'.$category_slug.'" />';
+		$html.= '<input type="hidden" id="size-select-price" name="size-select-price" value="'.$ultimate_price.'" />';
 
 		$html.= '<div class="item-container clearfix '
 			//.$odd_class

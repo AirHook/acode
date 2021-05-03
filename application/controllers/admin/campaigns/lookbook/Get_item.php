@@ -95,6 +95,7 @@ class Get_item extends MY_Controller {
 		}
 
 		// get category from admin_lb_slug_segs
+		/*
 		if ( ! $this->session->admin_lb_des_slug)
 		{
 			$category = $category_slug;
@@ -104,6 +105,8 @@ class Get_item extends MY_Controller {
 			$categories = json_decode($this->session->admin_lb_slug_segs, TRUE);
 			$category = end($categories);
 		}
+		*/
+		$category = $category_slug;
 
 		// set dome data
 		$style_no = $item;
@@ -125,6 +128,12 @@ class Get_item extends MY_Controller {
 			$sale_price = $product->wholesale_price_clearance;
 			$line_thru = $product->custom_order == '3' ? 'text-decoration:line-through;' : '';
 			$hide_sale_price = $product->custom_order == '3' ? '' : 'hide';
+
+			$ultimate_price =
+				$product->custom_order == '3'
+				? $sale_price
+				: $price
+			;
 		}
 		else
 		{
@@ -133,6 +142,7 @@ class Get_item extends MY_Controller {
 			$img_linesheet = '';
 			$size_mode = @$this->designer_details->webspace_options['size_mode'] ?: $temp_size_mode;
 			$color_name = $this->product_details->get_color_name($color_code);
+			$ultimate_price = '';
 		}
 
 		// set some data
@@ -143,6 +153,7 @@ class Get_item extends MY_Controller {
 		$html.= '<input type="hidden" id="size-select-page" name="size-select-page" value="'.($page ?: 'create').'" />';
 		$html.= '<input type="hidden" id="size-select-color_name" name="size-select-color_name" value="'.$color_name.'" />';
 		$html.= '<input type="hidden" id="size-select-category" name="size-select-category" value="'.$category_slug.'" />';
+		$html.= '<input type="hidden" id="size-select-price" name="size-select-price" value="'.$ultimate_price.'" />';
 
 		$html.= '<div class="item-container clearfix '
 			//.$odd_class

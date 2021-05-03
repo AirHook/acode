@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Delete extends Admin_Controller {
+class Delete extends Sales_user_Controller {
 
 	/**
 	 * Constructor

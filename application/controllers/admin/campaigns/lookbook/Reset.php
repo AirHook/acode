@@ -47,6 +47,10 @@ class Reset extends Admin_Controller {
 			unset($_SESSION['admin_lb_email_subject']);
 			unset($_SESSION['admin_lb_email_message']);
 			unset($_SESSION['admin_lb_options']);
+			unset($_SESSION['admin_lb_user_id']);
+			unset($_SESSION['admin_lb_user_role']);
+			unset($_SESSION['admin_lb_user_name']);
+			unset($_SESSION['admin_lb_user_email']);
 
 			redirect($this->config->slash_item('admin_folder').'campaigns/lookbook/create', 'location');
 		}

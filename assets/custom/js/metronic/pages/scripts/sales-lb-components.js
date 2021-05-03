@@ -50,7 +50,7 @@ var ComponentsEditors = function () {
         function getPreset(objectData){
             var get_preset = $.ajax({
                 type:    "POST",
-                url:     base_url + "admin/campaigns/lookbook/get_preset.html",
+                url:     base_url + "my_account/sales/lookbook/get_preset.html",
                 data:    objectData
             });
             get_preset.done(function(data){
@@ -73,7 +73,7 @@ var ComponentsEditors = function () {
         function loadPreset(objectData){
             var load_preset = $.ajax({
                 type:    "POST",
-                url:     base_url + "admin/campaigns/lookbook/load_preset.html",
+                url:     base_url + "my_account/sales/lookbook/load_preset.html",
                 data:    objectData,
                 dataType: 'json'
             });
@@ -101,7 +101,7 @@ var ComponentsEditors = function () {
         function getCategoryTree(objectData){
             var get_category_tree = $.ajax({
                 type:    "POST",
-                url:     base_url + "admin/campaigns/lookbook/get_category_tree.html",
+                url:     base_url + "my_account/sales/lookbook/get_category_tree.html",
                 data:    objectData
             });
             get_category_tree.done(function(data){
@@ -129,7 +129,7 @@ var ComponentsEditors = function () {
         function getThumbs(objectData){
             var get_thumbs = $.ajax({
                 type:    "POST",
-                url:     base_url + "admin/campaigns/lookbook/get_thumbs.html",
+                url:     base_url + "my_account/sales/lookbook/get_thumbs.html",
                 data:    objectData
             });
             get_thumbs.done(function(data){
@@ -158,7 +158,7 @@ var ComponentsEditors = function () {
         function setInfo(objectData){
             var set_info = $.ajax({
                 type:    "POST",
-                url:     base_url + "admin/campaigns/lookbook/set_info.html",
+                url:     base_url + "my_account/sales/lookbook/set_info.html",
                 data:    objectData
             });
             set_info.done(function(data){
@@ -172,7 +172,7 @@ var ComponentsEditors = function () {
         function setOptions(objectData){
             var set_options = $.ajax({
                 type:    "POST",
-                url:     base_url + "admin/campaigns/lookbook/set_options.html",
+                url:     base_url + "my_account/sales/lookbook/set_options.html",
                 data:    objectData
             });
             set_options.done(function(data){
@@ -189,7 +189,7 @@ var ComponentsEditors = function () {
         function getItem(objectData){
             var get_item = $.ajax({
                 type:    "POST",
-                url:     base_url + "admin/campaigns/lookbook/get_item.html",
+                url:     base_url + "my_account/sales/lookbook/get_item.html",
                 data:    objectData
             });
             get_item.done(function(data) {
@@ -213,7 +213,7 @@ var ComponentsEditors = function () {
         function addRemItem(objectData){
             var addrem = $.ajax({
                 type:    "POST",
-                url:     base_url + "admin/campaigns/lookbook/addrem.html",
+                url:     base_url + "my_account/sales/lookbook/addrem.html",
                 data:    objectData
             });
             addrem.done(function(data) {
@@ -242,7 +242,7 @@ var ComponentsEditors = function () {
         function submitNewPrice(objectData){
             var set_options = $.ajax({
                 type:    "POST",
-                url:     base_url + "admin/campaigns/lookbook/set_item_new_price.html",
+                url:     base_url + "my_account/sales/lookbook/set_item_new_price.html",
                 data:    objectData
             });
             set_options.done(function(data){
@@ -261,7 +261,7 @@ var ComponentsEditors = function () {
         function setItems(objectData){
             var set_size_qty = $.ajax({
                 type:    "POST",
-                url:     base_url + "admin/campaigns/lookbook/set_items.html",
+                url:     base_url + "my_account/sales/lookbook/set_items.html",
                 data:    objectData
             });
             set_size_qty.done(function(data){
@@ -297,7 +297,7 @@ var ComponentsEditors = function () {
             objectData.access_level = '0';
             delete objectData.slugs_link;
             // set admin_sa_des_slug session variable
-            $.get(base_url + "admin/campaigns/lookbook/set_des_slug_session/index/" + objectData.des_slug + "/" + objectData.page + ".html");
+            $.get(base_url + "my_account/sales/lookbook/set_des_slug_session/index/" + objectData.des_slug + "/" + objectData.page + ".html");
             // enable load preset dropdown
             $('.preset-dropdown-wrapper.tooltips').attr('data-original-title', '');
             $('[name="preset"]').removeAttr('disabled');
@@ -535,7 +535,7 @@ var ComponentsEditors = function () {
             var objectData = $(this).serializeArray();
             var search_for_thumbs = $.ajax({
                 type:    "POST",
-                url:     base_url + "admin/campaigns/lookbook/search_multiple.html",
+                url:     base_url + "my_account/sales/lookbook/search_multiple.html",
                 data:    objectData
             });
             search_for_thumbs.done(function(data){

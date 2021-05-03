@@ -41,16 +41,16 @@ class Set_info extends MY_Controller {
 		switch ($param)
 		{
 			case 'lookbook_name':
-				if ($page == 'create') $this->session->set_userdata('admin_lb_name', $val);
-				else $this->session->set_userdata('admin_lb_mode_name', $val);
+				if ($page == 'create') $this->session->set_userdata('lb_name', $val);
+				else $this->session->set_userdata('lb_mode_name', $val);
 			break;
 			case 'email_subject':
-				if ($page == 'create') $this->session->set_userdata('admin_lb_email_subject', $val);
-				else $this->session->set_userdata('admin_lb_mod_email_subject', $val);
+				if ($page == 'create') $this->session->set_userdata('lb_email_subject', $val);
+				else $this->session->set_userdata('lb_mod_email_subject', $val);
 			break;
 			case 'email_message':
-				if ($page == 'create') $this->session->set_userdata('admin_lb_email_message', $val);
-				else $this->session->set_userdata('admin_lb_mode_email_message', $val);
+				if ($page == 'create') $this->session->set_userdata('lb_email_message', $val);
+				else $this->session->set_userdata('lb_mode_email_message', $val);
 			break;
 		}
 

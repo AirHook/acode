@@ -180,7 +180,10 @@ class Lookbook_details
 
 		// get recrods
 		$this->DB->where($params);
-		$this->DB->join('designer', 'designer.webspace_id = lookbook.webspace_id', 'left');
+		$this->DB->select('lookbook.*, lookbook.options AS lb_options');
+		$this->DB->select('designer.*');
+		$this->DB->select('tbladmin_sales.*');
+		$this->DB->join('designer', 'designer.url_structure = lookbook.designer', 'left');
 		$this->DB->join('tbladmin_sales', 'tbladmin_sales.admin_sales_id = lookbook.user_id', 'left');
 		$query = $this->DB->get('lookbook');
 
@@ -214,7 +217,7 @@ class Lookbook_details
 			//$this->prices = $row->edited_prices != '' ? json_decode($row->edited_prices , TRUE) : array();
 			$this->items_count = count($this->items);
 
-			$this->options = $row->options != '' ? json_decode($row->options , TRUE) : array();
+			$this->options = $row->lb_options != '' ? json_decode($row->lb_options , TRUE) : array();
 
 			return $this;
 		}

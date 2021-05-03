@@ -36,6 +36,7 @@ class View extends MY_Controller
 		$this->load->library('users/wholesale_user_details');
 		$this->load->library('users/consumer_user_details');
 		$this->load->library('products/product_details');
+		$this->load->library('products/size_names');
 		$this->load->library('orders/order_details');
 		$this->load->library('products/size_names');
 		$this->load->library('categories/categories_tree');
@@ -138,14 +139,14 @@ class View extends MY_Controller
 			//'D1241LR_NAVYNUDE1'
 			//'D7806L_BLACSILV1',
 			//'9566V_BLAC1'
-			//'D9998L_RED1',
+			'D9998L_RED1' => array('RED', 'evening_dresses')
 			//'D9979L_PEACO1'
-			'ZW17062_GREY1'
+			//'ZW17062_GREY1'
 		);
 
 		$i = 2;
 		$html = '';
-		foreach ($items_array as $item)
+		foreach ($items_array as $item => $options)
 		{
 			// get product details
 			$exp = explode('_', $item);
@@ -169,6 +170,18 @@ class View extends MY_Controller
 			$color_name = $this->product_details->get_color_name($color_code);
 			$price = ''; // @$options[2] ?: $product->wholesale_price;
 			$category = $this->categories_tree->get_name($options[1]) ?: 'Elegant Fully Covered Dresses';
+
+			// get available sizes
+			$size_names = $this->size_names->get_size_names($product->size_mode);
+			$available_sizes = array();
+			foreach ($size_names as $size_label => $s)
+			{
+				// do not show zero stock sizes
+				if ($product->$size_label === '0') continue;
+
+				// create available sizes with stocks array
+				$available_sizes[$s] = $product->$size_label;
+			}
 
 			/**
 			// get logo and set it on lookbook_temp folder
@@ -216,6 +229,7 @@ class View extends MY_Controller
 			*/
 			$this->load->helper('create_linesheet');
 			$create = create_lookbook(
+				$i,
 				$prod_no,
 				$color_name,
 				$price,
@@ -224,7 +238,7 @@ class View extends MY_Controller
 				$product->media_name,
 				$lookbook_temp_dir.$logo_image_file,
 				$category,
-				$i
+				$available_sizes
 			);
 
 			if ( ! $create)
@@ -256,10 +270,10 @@ class View extends MY_Controller
 		$pdf_file_path = 'assets/pdf/pdf_lookbook.pdf';
 
 		// download it "D" - download, "I" - inline, "F" - local file, "S" - string
-		//$this->m_pdf_lookbook->pdf->Output(); // output to browser
-		$this->m_pdf_lookbook->pdf->Output($pdf_file_path, "F");
+		$this->m_pdf_lookbook->pdf->Output(); // output to browser
+		//$this->m_pdf_lookbook->pdf->Output($pdf_file_path, "F");
 
-		/* */
+		/* *
 		// The location of the PDF file
 		// on the server
 		$filename = $pdf_file_path;

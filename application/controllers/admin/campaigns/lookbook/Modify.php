@@ -44,6 +44,7 @@ class Modify extends Admin_Controller {
 		$this->load->library('lookbook/lookbook_list');
 		$this->load->library('lookbook/lookbook_details');
 		$this->load->library('products/product_details');
+		$this->load->library('products/size_names');
 		$this->load->library('designers/designers_list');
 		$this->load->library('categories/categories_tree');
 		$this->load->library('color_list');
@@ -53,33 +54,33 @@ class Modify extends Admin_Controller {
 		$this->form_validation->set_rules('lookbook_name', 'Lookbook Name', 'trim|required');
 		$this->form_validation->set_rules('email_subject', 'Email Subject', 'trim|required');
 
+		// capture package id being modified
+		if ( ! $this->session->admin_lb_mod_id)
+		{
+			$this->session->admin_lb_mod_id = $id;
+		}
+
+		// check for different id's
+		if ($this->session->admin_lb_mod_id != $id)
+		{
+			// ooops... different id
+			// reset and reload
+			redirect('admin/campaigns/lookbook/reset/index/'.$id);
+		}
+
+		// get color list
+		// used for "add product not in list"
+		$this->data['colors'] = $this->color_list->select();
+
+		// initialize sales package properties
+		$this->data['sa_details'] = $this->lookbook_details->initialize(
+			array(
+				'lookbook_id'=>$id
+			)
+		);
+
 		if ($this->form_validation->run() == FALSE)
 		{
-			// capture package id being modified
-			if ( ! $this->session->admin_lb_mod_id)
-			{
-				$this->session->admin_lb_mod_id = $id;
-			}
-
-			// check for different id's
-			if ($this->session->admin_lb_mod_id != $id)
-			{
-				// ooops... different id
-				// reset and reload
-				redirect('admin/campaigns/lookbook/reset/index/'.$id);
-			}
-
-			// get color list
-			// used for "add product not in list"
-			$this->data['colors'] = $this->color_list->select();
-
-			// initialize sales package properties
-			$this->data['sa_details'] = $this->lookbook_details->initialize(
-				array(
-					'lookbook_id'=>$id
-				)
-			);
-
 			if ( ! $this->data['sa_details'])
 			{
 				// nothing more to do...
@@ -91,21 +92,13 @@ class Modify extends Admin_Controller {
 			}
 
 			// disect some information from sales package
-			if ( ! $this->session->admin_lb_mod_items)
-			{
-				$this->session->admin_lb_mod_items = json_encode($this->lookbook_details->items);
-			}
-			$this->data['sa_items'] = json_decode($this->session->admin_lb_mod_items, TRUE);
+			$this->data['sa_items'] = $this->data['sa_details']->items;
 			$this->data['sa_items_count'] = count($this->data['sa_items']);
-			if ( ! $this->session->admin_lb_mod_options)
-			{
-				$this->session->admin_lb_mod_options = json_encode($this->lookbook_details->options);
-				$this->data['sa_options'] = $this->lookbook_details->options;
-			}
-			else
-			{
-				$this->data['sa_options'] = json_decode($this->session->admin_lb_mod_options, TRUE);
-			}
+			$this->data['sa_options'] = $this->data['sa_details']->options;
+
+			// set sessions
+			$this->session->admin_lb_mod_items = json_encode($this->data['sa_items']);
+			$this->session->admin_lb_mod_options = json_encode($this->data['sa_options']);
 
 			// at modify, designer is already selected from create
 			// no more need for dropdown
@@ -139,6 +132,7 @@ class Modify extends Admin_Controller {
 			$this->data['des_subcats'] = $this->categories_tree->treelist($param1);
 			$this->data['row_count'] = $this->categories_tree->row_count;
 			$this->data['max_level'] = $this->categories_tree->max_category_level;
+			$this->data['primary_subcat'] = $this->categories_tree->get_primary_subcat($this->session->admin_lb_mod_des_slug);
 
 			// check of last active slugs selected for category tree
 			if ($this->session->admin_lb_mod_slug_segs)
@@ -146,31 +140,16 @@ class Modify extends Admin_Controller {
 				// get last category slug
 				//$this->data['slug_segs'] = explode('/', $this->session->admin_lb_mod_slug_segs);
 				$this->data['slug_segs'] = json_decode($this->session->admin_lb_mod_slug_segs, TRUE);
-				$category_slug = end($this->data['slug_segs']);
-				$category_id = $this->categories_tree->get_id($category_slug);
+				$this->data['category_slug'] = end($this->data['slug_segs']);
+				$category_id = $this->categories_tree->get_id($this->data['category_slug']);
 				$designer_slug = reset($this->data['slug_segs']);
 				$where_more['designer.url_structure'] = $designer_slug;
 			}
 			else
 			{
-				if ($designer_slug != 'shop7thavenue')
-				{
-					foreach ($this->data['des_subcats'] as $category)
-					{
-						// let's get the first max cat level category
-						if ($category->category_level == $this->data['max_level'])
-						{
-							$category_id = $category->category_id;
-							break;
-						}
-						else continue;
-					}
-				}
-				else
-				{
-					// by default...
-					$category_id = '195';
-				}
+				$designer_slug = $this->session->admin_lb_mod_des_slug;
+				$this->data['category_slug'] = $this->data['primary_subcat'];
+				$category_id = $this->categories_tree->get_id($this->data['primary_subcat']);
 			}
 
 			$where_more['tbl_product.categories LIKE'] = $category_id;
@@ -216,7 +195,7 @@ class Modify extends Admin_Controller {
 			$this->data['author_id'] = $this->lookbook_details->user_id;
 
 			// need to show loading at start
-			$this->data['show_loading'] = @$this->data['products_count'] > 0 ? FALSE : FALSE;
+			$this->data['show_loading'] = @$this->data['products_count'] > 0 ? TRUE : FALSE;
 			$this->data['search_string'] = FALSE;
 
 			// set data variables...
@@ -277,7 +256,6 @@ class Modify extends Admin_Controller {
 			$post_ary['designer'] = $this->session->admin_lb_mod_des_slug;
 			// keeping options for future use (unset it first)
 			// so as not to record the sales packaeg like options for now
-			unset($post_ary['options']);
 			$post_ary['options']['des_slug'] = $this->session->admin_lb_mod_des_slug;
 			if ($this->session->admin_lb_mod_designers) $post_ary['options']['designers'] = $this->session->admin_lb_mod_designers;
 			$post_ary['options'] = json_encode($post_ary['options']);
@@ -288,7 +266,7 @@ class Modify extends Admin_Controller {
 			unset($post_ary['items_count']);
 
 			// set sales package items
-			$post_ary['items'] = $this->session->admin_lb_mod_items;
+			$post_ary['items'] = $this->session->admin_lb_mod_items ?: $this->data['sa_details']->items;
 
 			// update records
 			$DB->set($post_ary);

@@ -36,18 +36,16 @@ class Get_thumbs extends MY_Controller {
 
 		// load pertinent library/model/helpers
 		$this->load->library('categories/categories_tree');
-		$this->load->library('users/admin_user_details');
+		$this->load->library('users/sales_user_details');
 
-		// get admin login details
-		if ($this->session->admin_loggedin)
-		{
-			$this->admin_user_details->initialize(
-				array(
-					'admin_id' => $this->session->admin_id
-				)
-			);
-		}
-		else
+		$sales_user_details = $this->sales_user_details->initialize(
+			array(
+				'admin_id' => $this->session->admin_sales_id
+			)
+		);
+
+		// get sales login details
+		if ( ! $sales_user_details)
 		{
 			echo 'loggedout';
 			exit;
@@ -113,7 +111,7 @@ class Get_thumbs extends MY_Controller {
 		$where_more['tbl_stock.new_color_publish !='] = '0';
 
 		// don't show clearance cs only items for non-super admin
-		if ($this->admin_user_details->access_level != '0')
+		if ($sales_user_details->access_level != '0')
 		{
 			// don't show clearance cs only items
 			$where_more['tbl_stock.options NOT LIKE'] = '"clearance_consumer_only":"1"';
@@ -218,6 +216,8 @@ class Get_thumbs extends MY_Controller {
 					.$product->prod_no.'_'.$product->color_code
 					.'" data-page="'
 					.($page ?: 'create')
+					.'" data-category_slug="'
+					.$category_slug
 					.'" data-access_level="'
 					.(@$this->sales_user_details->access_level ?: '0')
 					.'">'

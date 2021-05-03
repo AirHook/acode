@@ -35,8 +35,11 @@ class Index extends Sales_user_Controller {
 		$this->load->library('users/wholesale_users_list');
 
 		// get designer list for the dropdown filter
-		$this->designers_list->initialize(array('with_products'=>TRUE));
-		$this->data['designers'] = $this->designers_list->select();
+		$des_list_params['with_products'] = @$this->sales_user_details->designer == '1' ? FALSE : TRUE;
+		$this->designers_list->initialize($des_list_params);
+		$des_list_where['designer.url_structure'] = @$this->sales_user_details->designer ?: $this->webspace_details->slug;;
+		$this->data['designers'] = $this->designers_list->select($des_list_where);
+		$this->data['designers'] = FALSE; // to ensuer no list is querried
 
 		// set some variables
 		// we need a real variable to process some calculations
@@ -49,10 +52,11 @@ class Index extends Sales_user_Controller {
 		// check for site type, and des_slug, and other data
 		$this->data['des_slug'] = '';
 		$where = array();
-		// this is sales user pages
+
 		$this->data['des_slug'] = @$this->sales_user_details->designer ?: $this->webspace_details->slug;
+		$where['lookbook.user_id'] = @$this->sales_user_details->admin_sales_id;
+		$where['lookbook.user_email'] = @$this->sales_user_details->email;
 		$where['lookbook.designer'] = $this->data['des_slug'];
-		$where['lookbook.user_id'] = @$this->sales_user_details->designer;
 		$where['lookbook.webspace_id'] = $this->webspace_details->id;
 
 		// get the list
@@ -78,11 +82,6 @@ class Index extends Sales_user_Controller {
 			: $this->data['total_users']
 		;
 
-		// breadcrumbs
-		$this->data['page_breadcrumb'] = array(
-			'sales_package' => 'Lookbook'
-		);
-
 		// set data variables...
 		$this->data['role'] = 'sales';
 		$this->data['file'] = 'sa_lookbook_list';
@@ -90,7 +89,7 @@ class Index extends Sales_user_Controller {
 		$this->data['page_description'] = 'List of Sales Lookbook';
 
 		// load views...
-		$this->load->view('admin/metronic/template_my_account/template', $this->data);
+		$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template/template', $this->data);
 	}
 
 	// ----------------------------------------------------------------------

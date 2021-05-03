@@ -165,37 +165,56 @@
 									}
 
 									// set some data
-									$price = ''; // hiding price at the moment
-									/* *
-										@$options[2]
-										?: (
-											($product->clearance == '3' OR $product->custom_order == '3')
-											? $product->wholesale_price_clearance
-											: $product->wholesale_price
-										)
-									;
-									// */
+									$price = @$options[2] ?: 0;
+									$size_names = $this->size_names->get_size_names($product->size_mode);
 									$category = $this->categories_tree->get_name($options[1]); // get category name of category slug
+
+									$show_price = @$sa_options['w_prices'] == 'Y' ? '' : "display-none";
+									$show_sizes = @$sa_options['w_sizes'] == 'Y' ? '' : "display-none";
 									?>
 
 							<div class="lookbook-item " style="min-height:340px;padding:3%;border:1px solid #ccc;margin: 0 3px 8px;background:white;">
 								<div class="pull-left" style="width:48%;position:relative;">
 									<img src="<?php echo $img_front_new; ?>" style="width:100%;" />
 									<img src="<?php echo $logo; ?>" style="position:absolute;top:5px;left:5px;width:100px;height:auto;" />
-									<p style="color:white;position:absolute;top:85%;left:5px;font-size:90%;transform-origin: 0 0;transform:rotate(270deg);">
+									<p style="color:white;position:absolute;top:83%;left:6px;font-size:90%;transform-origin: 0 0;transform:rotate(270deg);">
 										<?php echo strtoupper($category); ?>
 									</p>
-									<p style="color:white;position:absolute;top:90%;left:10px;font-size:60%;">
-										<?php echo $prod_no; ?> &nbsp; &nbsp; <?php echo $color_name; ?> &nbsp; &nbsp; <?php echo $price ? '$'.$price : ''; ?>
+									<p style="color:white;position:absolute;bottom:-10px;left:10px;font-size:60%;">
+										<?php echo $prod_no; ?> &nbsp; &nbsp; <?php echo $color_name; ?> &nbsp; &nbsp; <span class="lb-items-w_prices <?php echo $show_price; ?>">$<?php echo $price; ?></span>
+										<?php
+										$i = 0;
+										$span_size = FALSE; // assume initially there is no available sizes
+										foreach ($size_names as $size_label => $s)
+										{
+											// do not show zero stock sizes
+											if ($product->$size_label === '0') continue;
+
+											// it is now assumed that this next size after is with stocks
+											//<br />
+											//Sizes: 0(2) 2(2) 4(6) 6(2) 12(2)
+											if ($i === 0)
+											{
+												// this means there is a size with stock
+												echo '<br class="lb-items-w_sizes '.$show_sizes.'" /><span class="lb-items-w_sizes '.$show_sizes.'">Sizes: ';
+												$span_size = TRUE;
+											}
+
+											echo $s.'('.$product->$size_label.') ';
+
+											$i++;
+										}
+										if ($span_size) echo '</span>';
+										?>
 									</p>
 								</div>
 								<div class="pull-right" style="width:48%;position:relative;">
 									<img src="<?php echo $img_back_new; ?>" style="width:100%;" />
-									<p style="color:white;position:absolute;top:90%;right:10px;font-size:60%;">
+									<p style="color:white;position:absolute;bottom:-10px;right:10px;font-size:60%;">
 										<?php echo $i; ?>
 									</p>
 									<p class="tooltips" data-original-title="Remove Item" data-placement="left" style="color:black;position:absolute;top:-12px;right:5px;cursor:pointer;">
-										<i class="fa fa-2x fa-times-circle package_items" data-prod_no="<?php echo $prod_no; ?>" data-style_no="<?php echo $item; ?>" data-sku="<?php echo $style_no; ?>" data-page="create"></i>
+										<i class="fa fa-2x fa-times-circle package_items" data-prod_no="<?php echo $prod_no; ?>" data-item="<?php echo $item; ?>" data-category_slug="<?php echo @$options[1] ?: ''; ?>" data-style_no="<?php echo $item; ?>" data-sku="<?php echo $style_no; ?>" data-page="create"></i>
 									</p>
 								</div>
 								<div class="clearfix"></div>

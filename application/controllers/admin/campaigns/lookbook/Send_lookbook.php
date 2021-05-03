@@ -22,12 +22,29 @@ class Send_lookbook extends Admin_Controller {
 	 */
 	public function index()
 	{
+		if (
+			! $this->session->admin_lb_items
+			OR ! $this->session->admin_lb_user_id
+			OR ! $this->session->admin_lb_user_role
+			OR ! $this->session->admin_lb_user_name
+			OR ! $this->session->admin_lb_user_email
+		)
+		{
+			// set flash data
+			//$this->session->set_flashdata('error', 'no_id_passed');
+			$this->session->set_flashdata('error', 'session_expired');
+
+			// redirect user
+			redirect('admin/campaigns/lookbook', 'location');
+		}
+
 		// generate the plugin scripts and css
 		$this->_create_plugin_scripts();
 
 		// load pertinent library/model/helpers
 		$this->load->helpers('state_country');
 		$this->load->library('products/product_details');
+		$this->load->library('products/size_names');
 		$this->load->library('users/wholesale_users_list');
 		$this->load->library('users/sales_user_details');
 		$this->load->library('categories/categories_tree');
@@ -43,28 +60,12 @@ class Send_lookbook extends Admin_Controller {
 		$this->data['lb_items'] = json_decode($this->session->admin_lb_items, TRUE);
 		$this->data['lb_items_count'] = count($this->data['lb_items']);
 
-		// this is super admin
-		// sales user is the default sales user of the site
-		// get default sales user
-		$sales_user_details = $this->sales_user_details->initialize(
-			array(
-				// default is webspace info email
-				// however, we need to create a condition for when a designer
-				// admin logs in on satellite sites
-				// and the designger/owner will be the default sales user
-				// like in the case of davi of basix and raffi of tempo
-				'admin_sales_email' => (
-					$this->webspace_details->info_email == 'help@instylenewyork.com'
-					? 'help@shop7thavenue.com'
-					: $this->webspace_details->info_email
-				)
-			)
-		);
-		$this->data['sales_user'] = $sales_user_details->admin_sales_id;
-		$this->data['author_name'] = $sales_user_details->fname.' '.$sales_user_details->lname;
-		$this->data['author'] = $this->data['author_name'];
-		$this->data['author_email'] = $sales_user_details->email;
-		$this->data['author_id'] = $sales_user_details->admin_sales_id;
+		// this is admin
+		$this->data['sales_user'] = '';
+		$this->data['author_name'] = $this->session->admin_lb_user_name;
+		$this->data['author'] = $this->session->admin_lb_user_name;
+		$this->data['author_email'] = $this->session->admin_lb_user_email;
+		$this->data['author_id'] = $this->session->admin_lb_user_id;
 
 		// get user list data
 		// limits and per page
@@ -181,6 +182,7 @@ class Send_lookbook extends Admin_Controller {
 		$this->load->library('email');
 		$this->load->library('users/wholesale_user_details');
 		$this->load->library('products/product_details');
+		$this->load->library('products/size_names');
 		$this->load->library('categories/categories_tree');
 		$this->load->library('lookbook/m_pdf_lookbook');
 
@@ -271,6 +273,9 @@ class Send_lookbook extends Admin_Controller {
 			// code to send to all users...
 		}
 
+		// get options
+		$lb_options = json_decode($this->session->admin_lb_options, TRUE);
+
 		// if new user, user is already added from above code
 		// if current user, user is current...
 		$email_ary = is_array($emails) ? $emails : array($emails);
@@ -304,8 +309,29 @@ class Send_lookbook extends Admin_Controller {
 			$prod_no = $exp[0];
 			$color_code = $exp[1];
 			$color_name = $this->product_details->get_color_name($color_code);
-			$price = ''; // @$options[2] ?: $product->wholesale_price;
+			$price =
+				isset($lb_options['w_prices'])
+				? (@$options[2] ?: $product->wholesale_price)
+				: ''
+			;
 			$category = $this->categories_tree->get_name($options[1]);
+
+			// get available sizes
+			$size_names = $this->size_names->get_size_names($product->size_mode);
+			$sizes = array();
+			foreach ($size_names as $size_label => $s)
+			{
+				// do not show zero stock sizes
+				if ($product->$size_label === '0') continue;
+
+				// create available sizes with stocks array
+				$sizes[$s] = $product->$size_label;
+			}
+			$available_sizes =
+				isset($lb_options['w_sizes'])
+				? $sizes
+				: array()
+			;
 
 			/**
 			* get logo and set it on lookbook_temp folder
@@ -347,6 +373,7 @@ class Send_lookbook extends Admin_Controller {
 			*/
 			$this->load->helper('create_linesheet');
 			$create = create_lookbook(
+				$i,
 				$prod_no,
 				$color_name,
 				$price,
@@ -355,7 +382,7 @@ class Send_lookbook extends Admin_Controller {
 				$product->media_name,
 				$lookbook_temp_dir.$logo_image_file,
 				$category,
-				$i
+				$available_sizes
 			);
 
 			if ( ! $create)
@@ -458,10 +485,25 @@ class Send_lookbook extends Admin_Controller {
 
 			$this->email->clear(TRUE);
 
-			$this->email->from($this->webspace_details->info_email, $this->webspace_details->name);
-			$this->email->reply_to($this->webspace_details->info_email);
-			//$this->email->cc($this->config->item('info_email'));
+			if ($this->webspace_details->options['site_type'] == 'hub_site')
+			{
+				$this->email->from($this->webspace_details->info_email, $this->webspace_details->name);
+				$this->email->reply_to($this->webspace_details->info_email);
+
+				$cc_email = $this->webspace_details->info_email;
+			}
+			else
+			{
+				$this->email->from($this->session->admin_lb_user_email, $this->session->admin_lb_user_name);
+				$this->email->reply_to($this->session->admin_lb_user_email);
+
+				$cc_email = $this->webspace_details->info_email.','.$this->session->admin_lb_user_email;
+			}
+
+			/* *
+			$this->email->cc($cc_email);
 			$this->email->bcc($this->config->item('dev1_email'));
+			// */
 
 			$this->email->subject($this->session->admin_lb_email_subject);
 

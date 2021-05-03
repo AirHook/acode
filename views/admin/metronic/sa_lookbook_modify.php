@@ -593,7 +593,7 @@
         									<div class="thumb-tile image bg-blue-hoki <?php echo $classes.' '.$product->new_color_publish; ?> " style="<?php echo $styles; ?>">
 
                                                 <!--<a href="<?php echo $img_large; ?>" class="fancybox tooltips" data-original-title="Click to zoom">-->
-                                                <a href="javascript:;" class="package_items" data-prod_no="<?php echo $product->prod_no; ?>" data-item="<?php echo $product->prod_no.'_'.$product->color_code; ?>" data-page="modify" data-access_level="<?php echo @$this->sales_user_details->access_level ?: '0'; ?>">
+                                                <a href="javascript:;" class="package_items" data-prod_no="<?php echo $product->prod_no; ?>" data-item="<?php echo $product->prod_no.'_'.$product->color_code; ?>" data-page="modify" data-category_slug="<?php echo $category_slug; ?>" data-access_level="<?php echo @$this->sales_user_details->access_level ?: '0'; ?>">
 
                                                     <div style="position:absolute;top:-3px;">
 
@@ -1029,7 +1029,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="form-group hide">
+                                        <div class="form-group ">
                                             <label class="col-md-2 control-label">Options</label>
                                             <div class="col-md-10">
                                                 <div class="mt-radio-list">
@@ -1043,10 +1043,23 @@
                                                             <span></span>
                                                         </label>
                                                         <label class="" style="margin-bottom:0px;">
-                                                            - Send with prices
+                                                            - Show prices
                                                         </label>
                                                     </div>
-                                                    <div class="mt-radio-inline <?php echo $hide_attach_linesheets; ?>">
+                                                    <div class="mt-radio-inline">
+                                                        <label class="mt-radio mt-radio-outline" style="margin-bottom:0px;">
+                                                            <input id="w_prices-Y" class="radio-options" type="radio" name="options[w_sizes]" value="Y" data-page="modify" data-option="w_sizes" <?php echo @$sa_options['w_sizes'] == 'Y' ? 'checked="checked"' : ''; ?>> Yes
+                                                            <span></span>
+                                                        </label>
+                                                        <label class="mt-radio mt-radio-outline" style="margin-bottom:0px;">
+                                                            <input id="w_prices-N" class="radio-options" type="radio" name="options[w_sizes]" value="N" data-page="modify" data-option="w_sizes" <?php echo @$sa_options['w_sizes'] == 'Y' ? '' : 'checked="checked"'; ?>> No
+                                                            <span></span>
+                                                        </label>
+                                                        <label class="" style="margin-bottom:0px;">
+                                                            - Show availalbe sizes
+                                                        </label>
+                                                    </div>
+                                                    <div class="mt-radio-inline hide <?php echo $hide_attach_linesheets; ?>">
                                                         <label class="mt-radio mt-radio-outline" style="margin-bottom:0px;">
                                                             <input id="w_images-Y" class="radio-options" type="radio" name="options[w_images]" value="Y" data-page="modify" data-option="w_images" <?php echo @$sa_options['w_images'] == 'Y' ? 'checked="checked"' : ''; ?>> Yes
                                                             <span></span>
@@ -1059,7 +1072,7 @@
                                                             - Attach Linesheets
                                                         </label>
                                                     </div>
-                                                    <div class="mt-radio-inline <?php echo $hide_send_linesheets_only; ?>">
+                                                    <div class="mt-radio-inline hide <?php echo $hide_send_linesheets_only; ?>">
                                                         <label class="mt-radio mt-radio-outline" style="margin-bottom:0px;">
                                                             <input id="linesheets_only-Y" class="radio-options" type="radio" name="options[linesheets_only]" value="Y" data-page="modify" data-option="linesheets_only" <?php echo @$sa_options['linesheets_only'] == 'Y' ? 'checked="checked"' : ''; ?>> Yes
                                                             <span></span>

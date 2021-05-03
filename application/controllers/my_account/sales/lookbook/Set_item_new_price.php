@@ -41,16 +41,10 @@ class Set_item_new_price extends MY_Controller {
 		// grab the options array
 		$options_array =
 			$page == 'create'
-			$this->session->admin_sa_options
-			? json_decode($this->session->admin_sa_options, TRUE)
-			: array()
-		;
-		$options_array =
-			$page == 'create'
-			? json_decode($this->session->admin_lb_options, TRUE)
+			? json_decode($this->session->lb_options, TRUE)
 			: (
-				$this->session->admin_lb_mod_items
-				? json_decode($this->session->admin_lb_mod_options, TRUE)
+				$this->session->lb_mod_items
+				? json_decode($this->session->lb_mod_options, TRUE)
 				: array()
 			)
 		;
@@ -64,11 +58,11 @@ class Set_item_new_price extends MY_Controller {
 		// reset session value for items array
 		if ($this->input->post('page') == 'create')
 		{
-			$this->session->set_userdata('admin_lb_options', json_encode($options_array));
+			$this->session->set_userdata('lb_options', json_encode($options_array));
 		}
 		if ($this->input->post('page') == 'modify')
 		{
-			$this->session->set_userdata('admin_lb_mod_options', json_encode($options_array));
+			$this->session->set_userdata('lb_mod_options', json_encode($options_array));
 		}
 
 		exit;

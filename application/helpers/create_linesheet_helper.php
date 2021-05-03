@@ -357,6 +357,7 @@ if ( ! defined('BASEPATH')) exit('ERROR: 404 Not Found');
 	if ( ! function_exists('create_lookbook'))
 	{
 		function create_lookbook(
+			$page_count = '',
 			$prod_no = '',
 			$color_name = '',
 			$price = '',
@@ -365,7 +366,7 @@ if ( ! defined('BASEPATH')) exit('ERROR: 404 Not Found');
 			$img_name = '',
 			$des_logo = '',
 			$category = '',
-			$page_count = ''
+			$available_sizes = array()
 		)
 		{
 			if (
@@ -407,6 +408,8 @@ if ( ! defined('BASEPATH')) exit('ERROR: 404 Not Found');
 				// download image via curl
 				if ($CI->webspace_details->slug != 'instylenewyork')
 				{
+					// helpful links:
+					// https://stackoverflow.com/questions/3987006/how-to-catch-curl-errors-in-php
 					$ch = curl_init();
 				    curl_setopt($ch, CURLOPT_URL, PROD_IMG_URL.$img_path.$img_name.'_f.jpg');
 				    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); // good edit, thanks!
@@ -421,6 +424,7 @@ if ( ! defined('BASEPATH')) exit('ERROR: 404 Not Found');
 				    $image = imagecreatefromstring($data);
 					imagejpeg($image, $lookbook_temp_dir.'lbf.jpg', 90);
 					$src_front_image = $lookbook_temp_dir.'lbf.jpg';
+					imagedestroy($image);
 				}
 				else
 				{
@@ -444,7 +448,6 @@ if ( ! defined('BASEPATH')) exit('ERROR: 404 Not Found');
 				imagejpeg($dest, $lookbook_temp_dir.'zz_temp_0002.jpg', 90);
 				imagedestroy($dest);
 				imagedestroy($src);
-				imagedestroy($image);
 
 			// -----------------------------------------
 			// ---> Step 3
@@ -502,6 +505,7 @@ if ( ! defined('BASEPATH')) exit('ERROR: 404 Not Found');
 						$image = imagecreatefromstring($data);
 						imagejpeg($image, $lookbook_temp_dir.'lbb.jpg', 90);
 						$src_back_image = $lookbook_temp_dir.'lbb.jpg';
+						imagedestroy($image);
 					}
 				}
 				else
@@ -531,7 +535,6 @@ if ( ! defined('BASEPATH')) exit('ERROR: 404 Not Found');
 				imagejpeg($dest, $lookbook_temp_dir.'zz_temp_0003.jpg', 90);
 				imagedestroy($dest);
 				imagedestroy($src);
-				imagedestroy($image);
 
 			// -----------------------------------------
 			// ---> Step 4
@@ -562,7 +565,7 @@ if ( ! defined('BASEPATH')) exit('ERROR: 404 Not Found');
 				imagedestroy($dest);
 				imagedestroy($src);
 				imagedestroy($src_temp);
-				imagedestroy($cropped);
+				//imagedestroy($cropped);
 				imagedestroy($cut);
 
 			// -----------------------------------------
@@ -571,10 +574,10 @@ if ( ! defined('BASEPATH')) exit('ERROR: 404 Not Found');
 				$dest = imagecreatefromjpeg($lookbook_temp_dir.'zz_temp_0004.jpg'); // --> backdrop from step 4
 				$text_color = imagecolorallocate($dest, 255, 255, 255); // white
 				$font = 'ArialCE.ttf'; // font
-				imagettftext($dest, 18, 90, 40, 825, $text_color, $font, strtoupper($category));
+				imagettftext($dest, 18, 90, 39, 825, $text_color, $font, strtoupper($category));
 				imagejpeg($dest, $lookbook_temp_dir.'zz_temp_0005.jpg', 90);
 				imagedestroy($dest);
-				imagedestroy($text_color);
+				//imagedestroy($text_color);
 
 			// -----------------------------------------
 			// ---> Step 6
@@ -582,8 +585,21 @@ if ( ! defined('BASEPATH')) exit('ERROR: 404 Not Found');
 				$dest = imagecreatefromjpeg($lookbook_temp_dir.'zz_temp_0005.jpg'); // --> backdrop from step 5
 				$text_color = imagecolorallocate($dest, 255, 255, 255); // white
 				$font = 'ArialCE.ttf'; // font
-				$string = $prod_no.'    '.$color_name.'    '.$price;
-				imagettftext($dest, 10, 0, 20, 880, $text_color, $font, $string);
+				$string = $prod_no.'    '.$color_name.'    '.($price ? '$'.$price : '');
+				$i = 0;
+				$margin_from_top = 880;
+				foreach ($available_sizes as $size => $qty)
+				{
+					if ($i == 0) $string.= "\nSizes: "; // /n break lines work when using double quotes
+
+					$string.= $size.'('.$qty.') ';
+
+					// by this line, it only means there is a size and stock of the item
+					$margin_from_top = 860;
+
+					$i++;
+				}
+				imagettftext($dest, 10, 0, 20, $margin_from_top, $text_color, $font, $string);
 				imagettftext($dest, 10, 0, 1215, 880, $text_color, $font, $page_count);
 				imagejpeg($dest, $lookbook_temp_dir.'lbimg_'.$page_count.'.jpg', 90);
 				imagedestroy($dest);

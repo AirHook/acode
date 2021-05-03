@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Reset extends Admin_Controller {
+class Reset extends Sales_user_Controller {
 
 	/**
 	 * Constructor
@@ -47,6 +47,10 @@ class Reset extends Admin_Controller {
 			unset($_SESSION['lb_email_subject']);
 			unset($_SESSION['lb_email_message']);
 			unset($_SESSION['lb_options']);
+			unset($_SESSION['lb_user_id']);
+			unset($_SESSION['lb_user_role']);
+			unset($_SESSION['lb_user_name']);
+			unset($_SESSION['lb_user_email']);
 
 			redirect('my_account/sales/lookbook/create', 'location');
 		}

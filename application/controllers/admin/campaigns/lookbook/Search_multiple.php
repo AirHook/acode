@@ -88,7 +88,7 @@ class Search_multiple extends MY_Controller {
 		// don't show clearance cs only items
 		$con_published = '(tbl_product.publish = \'1\' OR tbl_product.publish = \'11\' OR tbl_product.publish = \'12\' OR tbl_product.publish = \'2\')';
 		$con_clearance_cs_only = 'tbl_stock.options NOT LIKE \'%"clearance_consumer_only":"1"%\' ESCAPE \'!\'';
-		$where['condition'] = $con_published.' AND '.$con_clearance_cs_only;
+		$where['condition'][] = $con_published.' AND '.$con_clearance_cs_only;
 
 		// NOTE: we need to consider the designer slug so as not to mix products
 
@@ -145,6 +145,9 @@ class Search_multiple extends MY_Controller {
 			$cnti = 0;
 			foreach ($products as $product)
 			{
+				// lets get the product category slug
+				$category_slug = $this->products_list->get_product_category_slug($product->categories);
+
 				// set image paths
 				// the image filename
 				$image = $product->prod_no.'_'.$product->primary_img_id.'_f3.jpg';
@@ -175,8 +178,8 @@ class Search_multiple extends MY_Controller {
 				//$styles.= ($product->publish == '0' OR $product->publish == '3' OR $product->view_status == 'N') ? 'cursor:not-allowed;' : '';
 
 				// ribbon color - assuming that other an not published or pending (danger/unpublished), the item is private (info/private)
-				//$ribbon_color = ($product->publish == '0' OR $product->publish == '3' OR $product->view_status == 'N') ? 'danger' : 'info';
-				//$tooltip = $product->publish == '3' ? 'Pending' : (($product->publish == '0' OR $product->view_status == 'N') ? 'Unpubished' : 'Private');
+				$ribbon_color = $product->publish == '0' ? 'danger' : 'info';
+				$tooltip = $product->publish == '3' ? 'Pending' : ($product->publish == '0' ? 'Unpubished' : 'Private');
 
 				// due to showing of all colors in thumbs list, we now consider the color code
 				// we check if item has color_code. if it has only product number use the primary image instead
@@ -187,6 +190,9 @@ class Search_multiple extends MY_Controller {
 					$checkbox_check = 'checked';
 				}
 
+				// check if item is on sale
+				$onsale = (@$product->clearance == '3' OR $product->custom_order == '3') ? TRUE : FALSE;
+
 				// get options if any
 				$color_options = json_decode($product->color_options, TRUE);
 
@@ -196,11 +202,15 @@ class Search_multiple extends MY_Controller {
 					.$styles
 					.'">'
 				;
-				$html.= '<a href="javascript:;" class="package_items" data-item="'
+				$html.= '<a href="javascript:;" class="package_items" data-prod_no="'
+					.$product->prod_no
+					.'" data-item="'
 					.$product->prod_no.'_'.$product->color_code
 					.'" data-page="'
 					.($page ?: 'create')
-					.'">'
+					.'" data-category_slug="'
+					.$category_slug
+					.'" >'
 				;
 
 				$html.= '<div class="corner"></div><div class="check"> </div><div class="tile-body"><img class="img-b_ img-unveil" '

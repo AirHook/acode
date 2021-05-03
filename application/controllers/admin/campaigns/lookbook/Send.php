@@ -41,6 +41,7 @@ class Send extends Admin_Controller {
 		$this->load->library('sales_package/sales_package_details');
 		$this->load->library('lookbook/lookbook_details');
 		$this->load->library('products/product_details');
+		$this->load->library('products/size_names');
 		$this->load->library('designers/designers_list');
 		$this->load->library('categories/categories_tree');
 		$this->load->library('users/wholesale_user_details');
@@ -67,9 +68,9 @@ class Send extends Admin_Controller {
 		}
 
 		// disect some information from sales package
-		$this->data['lb_items'] = $this->lookbook_details->items;
+		$this->data['lb_items'] = $this->data['sa_details']->items;
 		$this->data['sa_items_count'] = count($this->data['lb_items']);
-		$this->data['sa_options'] = $this->lookbook_details->options;
+		$this->data['lb_options'] = $this->data['sa_details']->options;
 
 		// check for presence of wholesale user_id coming from
 		// create sales package by product clicks report
@@ -241,6 +242,7 @@ class Send extends Admin_Controller {
 		$this->load->library('email');
 		$this->load->library('users/wholesale_user_details');
 		$this->load->library('products/product_details');
+		$this->load->library('products/size_names');
 		$this->load->library('categories/categories_tree');
 		$this->load->library('lookbook/m_pdf_lookbook');
 
@@ -338,6 +340,9 @@ class Send extends Admin_Controller {
 			// code to send to all users...
 		}
 
+		// get options
+		$lb_options = $lookbook_details->options;
+
 		// if new user, user is already added from above code
 		// if current user, user is current...
 		$email_ary = is_array($emails) ? $emails : array($emails);
@@ -371,8 +376,29 @@ class Send extends Admin_Controller {
 			$prod_no = $exp[0];
 			$color_code = $exp[1];
 			$color_name = $this->product_details->get_color_name($color_code);
-			$price = ''; // @$options[2] ?: $product->wholesale_price;
+			$price =
+				@$lb_options['w_prices'] == 'Y'
+				? (@$options[2] ?: $product->wholesale_price)
+				: ''
+			;
 			$category = $this->categories_tree->get_name($options[1]);
+
+			// get available sizes
+			$size_names = $this->size_names->get_size_names($product->size_mode);
+			$sizes = array();
+			foreach ($size_names as $size_label => $s)
+			{
+				// do not show zero stock sizes
+				if ($product->$size_label === '0') continue;
+
+				// create available sizes with stocks array
+				$sizes[$s] = $product->$size_label;
+			}
+			$available_sizes =
+				@$lb_options['w_sizes'] == 'Y'
+				? $sizes
+				: array()
+			;
 
 			/**
 			* get logo and set it on lookbook_temp folder
@@ -414,6 +440,7 @@ class Send extends Admin_Controller {
 			*/
 			$this->load->helper('create_linesheet');
 			$create = create_lookbook(
+				$i,
 				$prod_no,
 				$color_name,
 				$price,
@@ -422,7 +449,7 @@ class Send extends Admin_Controller {
 				$product->media_name,
 				$lookbook_temp_dir.$logo_image_file,
 				$category,
-				$i
+				$available_sizes
 			);
 
 			if ( ! $create)
@@ -525,10 +552,25 @@ class Send extends Admin_Controller {
 
 			$this->email->clear(TRUE);
 
-			$this->email->from($this->webspace_details->info_email, $this->webspace_details->name);
-			$this->email->reply_to($this->webspace_details->info_email);
-			//$this->email->cc($this->config->item('info_email'));
+			if ($this->webspace_details->options['site_type'] == 'hub_site')
+			{
+				$this->email->from($this->webspace_details->info_email, $this->webspace_details->name);
+				$this->email->reply_to($this->webspace_details->info_email);
+
+				$cc_email = $this->webspace_details->info_email;
+			}
+			else
+			{
+				$this->email->from($lookbook_details->user_email, $lookbook_details->user_name);
+				$this->email->reply_to($lookbook_details->user_email);
+
+				$cc_email = $this->webspace_details->info_email.','.$lookbook_details->user_email;
+			}
+
+			/* *
+			$this->email->cc($cc_email);
 			$this->email->bcc($this->config->item('dev1_email'));
+			// */
 
 			$this->email->subject($lookbook_details->email_subject);
 

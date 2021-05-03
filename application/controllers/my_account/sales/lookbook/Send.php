@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Send extends Admin_Controller {
+class Send extends Sales_user_Controller {
 
 	/**
 	 * Constructor
@@ -29,7 +29,7 @@ class Send extends Admin_Controller {
 			$this->session->set_flashdata('error', 'no_id_passed');
 
 			// redirect user
-			redirect('admin/campaigns/lookbook', 'location');
+			redirect('my_account/sales/lookbook', 'location');
 		}
 
 		// generate the plugin scripts and css
@@ -41,6 +41,7 @@ class Send extends Admin_Controller {
 		$this->load->library('sales_package/sales_package_details');
 		$this->load->library('lookbook/lookbook_details');
 		$this->load->library('products/product_details');
+		$this->load->library('products/size_names');
 		$this->load->library('designers/designers_list');
 		$this->load->library('categories/categories_tree');
 		$this->load->library('users/wholesale_user_details');
@@ -63,13 +64,13 @@ class Send extends Admin_Controller {
 			$this->session->set_flashdata('error', 'no_id_passed');
 
 			// redirect user
-			redirect('admin/campaigns/lookbook', 'location');
+			redirect('my_account/sales/lookbook', 'location');
 		}
 
 		// disect some information from sales package
-		$this->data['lb_items'] = $this->lookbook_details->items;
+		$this->data['lb_items'] = $this->data['sa_details']->items;
 		$this->data['sa_items_count'] = count($this->data['lb_items']);
-		$this->data['sa_options'] = $this->lookbook_details->options;
+		$this->data['lb_options'] = $this->data['sa_details']->options;
 
 		// check for presence of wholesale user_id coming from
 		// create sales package by product clicks report
@@ -166,7 +167,7 @@ class Send extends Admin_Controller {
 		);
 
 		// set data variables...
-		$this->data['role'] = 'admin';
+		$this->data['role'] = 'sales';
 		$this->data['file'] = 'sa_lookbook_send'; // 'sa_send';
 		$this->data['page_title'] = 'Lookbook Sending';
 		$this->data['page_description'] = 'Send Lookbook To Users';
@@ -208,6 +209,9 @@ class Send extends Admin_Controller {
 				//new_user
 				[email] => // new user input field
 
+				//sent to a friedn
+				[email_a_friend] => rsbgm@rcpixel.com
+
 		    [firstname] =>
 		    [lastname] =>
 		    [store_name] =>
@@ -230,7 +234,7 @@ class Send extends Admin_Controller {
 			$this->session->set_flashdata('error', 'no_input_data');
 
 			// redirect user
-			redirect('admin/campaigns/lookbook/modify/index/'.$id, 'location');
+			redirect('my_account/sales/lookbook/modify/index/'.$id, 'location');
 		}
 
 		// load pertinent library/model/helpers
@@ -238,6 +242,7 @@ class Send extends Admin_Controller {
 		$this->load->library('email');
 		$this->load->library('users/wholesale_user_details');
 		$this->load->library('products/product_details');
+		$this->load->library('products/size_names');
 		$this->load->library('categories/categories_tree');
 		$this->load->library('lookbook/m_pdf_lookbook');
 
@@ -251,6 +256,10 @@ class Send extends Admin_Controller {
 		/***********
 		 * Process Users
 		 */
+		// doing the sending in this class directly
+		// capture the email input first
+		$emails = $this->input->post('email');
+
 		if ($this->input->post('send_to') === 'new_user')
 		{
 			// add new user
@@ -319,14 +328,23 @@ class Send extends Admin_Controller {
 			$query = $DB->insert('tbluser_data_wholesale', $post_ary);
 			$insert_id = $DB->insert_id();
 		}
+		else if ($this->input->post('send_to') === 'a_friend')
+		{
+			// code to send to a friend
+			// currently nothing to process when sending to a friend
+			// overrides the initial capturing of the email input above
+			$emails = $this->input->post('email_a_friend');
+		}
 		else if ($this->input->post('send_to') === 'all_users')
 		{
 			// code to send to all users...
 		}
 
+		// get options
+		$lb_options = $lookbook_details->options;
+
 		// if new user, user is already added from above code
 		// if current user, user is current...
-		$emails = $this->input->post('email');
 		$email_ary = is_array($emails) ? $emails : array($emails);
 
 		/**
@@ -358,8 +376,29 @@ class Send extends Admin_Controller {
 			$prod_no = $exp[0];
 			$color_code = $exp[1];
 			$color_name = $this->product_details->get_color_name($color_code);
-			$price = ''; // @$options[2] ?: $product->wholesale_price;
+			$price =
+				@$lb_options['w_prices'] == 'Y'
+				? (@$options[2] ?: $product->wholesale_price)
+				: ''
+			;
 			$category = $this->categories_tree->get_name($options[1]);
+
+			// get available sizes
+			$size_names = $this->size_names->get_size_names($product->size_mode);
+			$sizes = array();
+			foreach ($size_names as $size_label => $s)
+			{
+				// do not show zero stock sizes
+				if ($product->$size_label === '0') continue;
+
+				// create available sizes with stocks array
+				$sizes[$s] = $product->$size_label;
+			}
+			$available_sizes =
+				@$lb_options['w_sizes'] == 'Y'
+				? $sizes
+				: array()
+			;
 
 			/**
 			* get logo and set it on lookbook_temp folder
@@ -401,6 +440,7 @@ class Send extends Admin_Controller {
 			*/
 			$this->load->helper('create_linesheet');
 			$create = create_lookbook(
+				$i,
 				$prod_no,
 				$color_name,
 				$price,
@@ -409,7 +449,7 @@ class Send extends Admin_Controller {
 				$product->media_name,
 				$lookbook_temp_dir.$logo_image_file,
 				$category,
-				$i
+				$available_sizes
 			);
 
 			if ( ! $create)
@@ -459,19 +499,27 @@ class Send extends Admin_Controller {
 		*/
 		foreach ($email_ary as $email)
 		{
-			$this->wholesale_user_details->initialize(array('email' => $email));
+			if ($this->input->post('send_to') === 'a_friend')
+			{
+				$data['username'] = '';
+			}
+			else
+			{
+				$this->wholesale_user_details->initialize(array('email' => $email));
 
-			// set emailtracker_id
-			$data['emailtracker_id'] =
-				$this->wholesale_user_details->user_id
-				.'wi0014t'
-				.time()
-			;
+				// set emailtracker_id
+				$data['emailtracker_id'] =
+					$this->wholesale_user_details->user_id
+					.'wi0014t'
+					.time()
+				;
 
-			// lets set the hashed time code here so that the batched hold the same tc only
-			//$tc = md5(@date('Y-m-d', time()));
+				// lets set the hashed time code here so that the batched hold the same tc only
+				//$tc = md5(@date('Y-m-d', time()));
 
-			$data['username'] = $this->input->post('store_name') ?: $this->wholesale_user_details->store_name;
+				$data['username'] = $this->input->post('store_name') ?: $this->wholesale_user_details->store_name;
+			}
+
 			$data['email_message'] = $lookbook_details->email_message;
 
 			// access link
@@ -493,8 +541,9 @@ class Send extends Admin_Controller {
 
 			$email_message = '
 				<img src="'.base_url().'link/open.html?id='.@$emailtracker_id.'" alt="" />
-				<br /><br />
-				Dear '.$data['username'].',
+				<br /><br />'
+				.($data['username'] ? 'Dear '.$data['username'] : 'Hello')
+				.',
 				<br /><br />
 				'.$data['email_message'].'<br />
 				<br /><br />
@@ -503,10 +552,14 @@ class Send extends Admin_Controller {
 
 			$this->email->clear(TRUE);
 
-			$this->email->from($this->wholesale_user_details->admin_sales_email, $this->wholesale_user_details->designer);
-			$this->email->reply_to($this->wholesale_user_details->admin_sales_email);
-			$this->email->cc($this->config->item('info_email'));
+			$this->email->from($this->sales_user_details->email, $this->sales_user_details->fname.' '.$this->sales_user_details->lname);
+			$this->email->reply_to($this->sales_user_details->email);
+
+			/* *
+			$cc_email = 'help@instylenewyork.com,'$this->webspace_details->info_email;
+			$this->email->cc($cc_email);
 			$this->email->bcc($this->config->item('dev1_email'));
+			// */
 
 			$this->email->subject($lookbook_details->email_subject);
 
@@ -527,7 +580,7 @@ class Send extends Admin_Controller {
 				echo $message;
 				echo '<br />';
 				echo '<br />';
-				echo '<a href="'.site_url('admin/campaigns/lookbook').'">continue...</a>';
+				echo '<a href="'.site_url('my_account/sales/lookbook').'">continue...</a>';
 				$this->session->set_flashdata('success', 'send_product_clicks');
 				echo '<br />';
 				die();
@@ -544,7 +597,7 @@ class Send extends Admin_Controller {
 					$this->session->set_flashdata('error', 'no_id_passed');
 
 					// send user back
-					redirect('admin/campaigns/lookbook/send/index/'.$id, 'location');
+					redirect('my_account/sales/lookbook/send/index/'.$id, 'location');
 				}
 			}
 		}
@@ -553,7 +606,7 @@ class Send extends Admin_Controller {
 		$this->session->set_flashdata('success', 'sa_email_sent');
 
 		// send user back
-		redirect('admin/campaigns/lookbook/send/index/'.$id, 'location');
+		redirect('my_account/sales/lookbook/send/index/'.$id, 'location');
 	}
 
 	// ----------------------------------------------------------------------
@@ -668,7 +721,7 @@ class Send extends Admin_Controller {
 			';
 			// handle form validation, datepickers, and scripts
 			$this->data['page_level_scripts'].= '
-				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/admin-sa_send-components.js" type="text/javascript"></script>
+				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/sales-lb_send-components.js" type="text/javascript"></script>
 			';
 	}
 

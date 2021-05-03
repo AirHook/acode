@@ -35,13 +35,22 @@ class Set_options extends MY_Controller {
 
 		// grab the post variable
 		$param = $this->input->post('param');
+		$page = $this->input->post('page');
 		$val = $this->input->post('val');
 
 		// grab the options array
 		$options_array =
-			$this->session->admin_sa_options
-			? json_decode($this->session->admin_sa_options, TRUE)
-			: array()
+			$page == 'create'
+			? (
+				$this->session->admin_lb_options
+				? json_decode($this->session->admin_lb_options, TRUE)
+				: array()
+			)
+			: (
+				$this->session->admin_lb_mod_options
+				? json_decode($this->session->admin_lb_mod_options, TRUE)
+				: array()
+			)
 		;
 
 		switch ($param)
@@ -49,6 +58,10 @@ class Set_options extends MY_Controller {
 			case 'w_prices':
 				if ($val == 'Y') $options_array['w_prices'] = 'Y';
 				else $options_array['w_prices'] = 'N';
+			break;
+			case 'w_sizes':
+				if ($val == 'Y') $options_array['w_sizes'] = 'Y';
+				else $options_array['w_sizes'] = 'N';
 			break;
 			case 'w_images':
 				if ($val == 'Y') $options_array['w_images'] = 'Y';
@@ -60,7 +73,16 @@ class Set_options extends MY_Controller {
 			break;
 		}
 
-		$this->session->set_userdata('admin_sa_options', json_encode($options_array));
+		// reset session value for items array
+		if ($this->input->post('page') == 'create')
+		{
+			$this->session->set_userdata('admin_lb_options', json_encode($options_array));
+		}
+		if ($this->input->post('page') == 'modify')
+		{
+			$this->session->set_userdata('admin_lb_mod_options', json_encode($options_array));
+		}
+
 		exit;
 	}
 

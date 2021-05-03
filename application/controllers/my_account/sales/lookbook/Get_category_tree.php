@@ -31,14 +31,14 @@ class Get_category_tree extends MY_Controller {
 		$this->load->library('designers/designers_list');
 		$this->load->library('designers/designer_details');
 		$this->load->library('categories/categories_tree');
-		$this->load->library('users/admin_user_details');
+		$this->load->library('users/sales_user_details');
 
 		// get admin login details
-		if ($this->session->admin_loggedin)
+		if ($this->session->admin_sales_loggedin)
 		{
-			$this->admin_user_details->initialize(
+			$this->sales_user_details->initialize(
 				array(
-					'admin_id' => $this->session->admin_id
+					'admin_sales_id' => $this->session->admin_sales_id
 				)
 			);
 		}

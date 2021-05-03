@@ -90,6 +90,11 @@
 							<button class="close" data-close="alert"></button> An error occured. Please try again.
 						</div>
 						<?php } ?>
+						<?php if ($this->session->flashdata('error') == 'session_expired') { ?>
+						<div class="alert alert-danger auto-remove">
+							<button class="close" data-close="alert"></button> Session has expired. Please try again.
+						</div>
+						<?php } ?>
 					</div>
 
                     <div class="table-toolbar">

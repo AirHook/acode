@@ -34,6 +34,7 @@ class Index extends Sales_user_Controller {
 		$this->load->library('lookbook/lookbook_list');
 		$this->load->library('lookbook/lookbook_details');
 		$this->load->library('products/product_details');
+		$this->load->library('products/size_names');
 		$this->load->library('designers/designers_list');
 		$this->load->library('categories/categories_tree');
 		$this->load->library('color_list');
@@ -96,13 +97,14 @@ class Index extends Sales_user_Controller {
 				if ($this->session->lb_slug_segs)
 				{
 					$this->data['slug_segs'] = json_decode($this->session->lb_slug_segs, TRUE);
-					$category_slug = end($this->data['slug_segs']);
-					$category_id = $this->categories_tree->get_id($category_slug);
+					$this->data['category_slug'] = end($this->data['slug_segs']);
+					$category_id = $this->categories_tree->get_id($this->data['category_slug']);
 					$designer_slug = reset($this->data['slug_segs']);
 				}
 				else
 				{
 					$designer_slug = $this->session->lb_des_slug;
+					$this->data['category_slug'] = $this->data['primary_subcat'];
 					$category_id = $this->categories_tree->get_id($this->data['primary_subcat']);
 				}
 
@@ -124,8 +126,8 @@ class Index extends Sales_user_Controller {
 				$where_more['tbl_product.publish !='] = '0';
 				$where_more['tbl_stock.new_color_publish !='] = '0';
 
-				// don't show clearance cs only items for level 2 users
-				if ($this->sales_user_details->access_level == '2')
+				// don't show clearance cs only items for non-super admin
+				if (@$this->admin_user_details->access_level != '0')
 				{
 					$where_more['tbl_stock.options NOT LIKE'] = '"clearance_consumer_only":"1"';
 				}
@@ -139,7 +141,7 @@ class Index extends Sales_user_Controller {
 				//$params['variant_view_at_hub'] = TRUE; // variant level public at hub site
 				//$params['variant_view_at_satellite'] = TRUE; // varian level public at satellite site
 
-				$params['with_stocks'] = $this->sales_user_details->access_level == '2' ? TRUE : FALSE; // TRUE shows instock items only
+				$params['with_stocks'] = FALSE; // TRUE shows instock items only
 
 				$params['group_products'] = FALSE; // group per product number or per variant
 				$params['special_sale'] = FALSE; // special sale items only
@@ -167,7 +169,7 @@ class Index extends Sales_user_Controller {
 				: array()
 			;
 			$this->data['lb_items_count'] = count($this->data['lb_items']);
-			$this->data['lb_options'] =
+			$this->data['sa_options'] =
 				$this->session->lb_options
 				? json_decode($this->session->lb_options, TRUE)
 				: array()
@@ -285,6 +287,10 @@ class Index extends Sales_user_Controller {
 				$_SESSION['lb_name'] = $this->input->post('lookbook_name');
 				$_SESSION['lb_email_subject'] = $this->input->post('email_subject');
 				$_SESSION['lb_email_message'] = $this->input->post('email_message');
+				$_SESSION['lb_user_id'] = $this->input->post('user_id');
+				$_SESSION['lb_user_role'] = $this->input->post('user_role');
+				$_SESSION['lb_user_name'] = $this->input->post('user_name');
+				$_SESSION['lb_user_email'] = $this->input->post('user_email');
 
 				// redirect user
 				redirect('my_account/sales/lookbook/send_lookbook', 'location');
@@ -404,7 +410,7 @@ class Index extends Sales_user_Controller {
 			';
 			// handle form validation, datepickers, and scripts
 			$this->data['page_level_scripts'].= '
-				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/admin-lb-components.js?z='.time().'" type="text/javascript"></script>
+				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/sales-lb-components.js?z='.time().'" type="text/javascript"></script>
 			';
 	}
 

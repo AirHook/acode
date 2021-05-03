@@ -745,7 +745,7 @@
                                 <div class="form-group search-multiple-items-wrapper display-none">
                                     <div class="col-md-12 search-multiple-items">
 
-                                        <h3 style="margin-top:0px;">SEARCH MULTIPLE ITEMS</h3>
+                                        <h3 style="margin-top:0px;">SEARCH MULTIPLE ITEMS_</h3>
 
                                         <?php
                                         /***********
@@ -769,7 +769,7 @@
                                         		(@$role == 'sales' ? 'my_account/sales' : 'admin/campaigns').'/lookbook/search_multiple',
                                         		array(
                                         			'class' => 'sa-multi-search-form', // need this for the styling
-                                                    'id' => 'lb-multi-search-form'
+                                                    'id' => 'sa-multi-search-form'
                                         		)
                                         	); ?>
 
@@ -1073,18 +1073,18 @@
                                             </div>
                                         </div>
 
-                                        <div class="form-group hide">
+                                        <div class="form-group ">
                                             <label class="col-md-3 control-label">Options</label>
                                             <div class="col-md-9">
                                                 <div class="mt-radio-list">
                                                     <div class="mt-radio-inline">
                                                         <?php
-                                                        // w_prices is checked by default
+                                                        // w_prices is ! checked by default
                                         				// we need to set 'w_prices' condition properly
                                                         if ( ! isset($sa_options['w_prices']))
                                                         {
-                                                            $Y_prices = 'checked="checked"';
-                                                            $N_prices = '';
+                                                            $Y_prices = '';
+                                                            $N_prices = 'checked="checked"';
                                                         }
                                                         else
                                                         {
@@ -1101,7 +1101,34 @@
                                                             <span></span>
                                                         </label>
                                                         <label class="" style="margin-bottom:0px;">
-                                                            - Send with prices
+                                                            - Show prices
+                                                        </label>
+                                                    </div>
+                                                    <div class="mt-radio-inline">
+                                                        <?php
+                                                        // w_sizes is ! checked by default
+                                        				// we need to set 'w_prices' condition properly
+                                                        if ( ! isset($sa_options['w_sizes']))
+                                                        {
+                                                            $Y_sizes = '';
+                                                            $N_sizes = 'checked="checked"';
+                                                        }
+                                                        else
+                                                        {
+                                                            $Y_sizes = $sa_options['w_sizes'] == 'Y' ? 'checked="checked"' : '';
+                                                            $N_sizes = $sa_options['w_sizes'] == 'N' ? 'checked="checked"' : '';
+                                                        }
+                                                        ?>
+                                                        <label class="mt-radio mt-radio-outline" style="margin-bottom:0px;">
+                                                            <input id="w_prices-Y" class="radio-options" type="radio" name="options[w_sizes]" data-page="create" data-option="w_sizes" value="Y" <?php echo $Y_sizes; ?>> Yes
+                                                            <span></span>
+                                                        </label>
+                                                        <label class="mt-radio mt-radio-outline" style="margin-bottom:0px;">
+                                                            <input id="w_prices-N" class="radio-options" type="radio" name="options[w_sizes]" data-page="create" data-option="w_sizes" value="N" <?php echo $N_sizes; ?>> No
+                                                            <span></span>
+                                                        </label>
+                                                        <label class="" style="margin-bottom:0px;">
+                                                            - Show available sizes
                                                         </label>
                                                     </div>
                                                     <div class="mt-radio-inline hide <?php echo $hide_attach_linesheets; ?>">

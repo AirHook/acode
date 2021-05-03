@@ -40,6 +40,7 @@ class Addrem extends MY_Controller {
 		$page = $this->input->post('page');
 		$color_name = $this->input->post('color_name');
 		$category = $this->input->post('category');
+		$price = $this->input->post('price');
 
 		// set the items array
 		$items_array =
@@ -60,7 +61,8 @@ class Addrem extends MY_Controller {
 		if ($this->input->post('action') == 'add_item')
 		{
 			// simply add item... overwrite where existing
-			$items_array[$item] = array($color_name, $category); // $color_name, $category, $price
+			// $color_name, $category, $price where price is editable
+			$items_array[$item] = array($color_name, $category, $price);
 		}
 		if ($this->input->post('action') == 'rem_item')
 		{
