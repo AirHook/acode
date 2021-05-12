@@ -189,10 +189,16 @@ class Orders_list
 			END) AS status_text
 		');
 		$this->DB->select('tbl_order_log.options AS order_options');
+		// select data for sales user association
+		$this->DB->select('tbladmin_sales.admin_sales_email');
 
 		// set joins
 		$this->DB->join('tbl_order_log_details', 'tbl_order_log_details.order_log_id = tbl_order_log.order_log_id', 'left');
+		$this->DB->join('designer', 'designer.designer = tbl_order_log_details.designer', 'left');
 		$this->DB->join('tbluser_data_wholesale', '(tbluser_data_wholesale.user_id = tbl_order_log.user_id AND tbl_order_log.c = \'ws\')', 'left');
+		// this join allows us to identify if order is made by a wholesale user
+		// and associate it with the user's assigned sales agent
+		$this->DB->join('tbladmin_sales', 'tbladmin_sales.admin_sales_email = tbl_order_log.order_log_id', 'left');
 
 		if ($having_des_group)
 		{

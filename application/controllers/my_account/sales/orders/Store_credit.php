@@ -94,8 +94,9 @@ class Store_credit extends Sales_user_Controller {
 		// list orders of ws users under the sales user for level 2
 		if ($this->sales_user_details->access_level == '2')
 		{
-			$where['tbluser_data_wholesale.admin_sales_email'] = $this->sales_user_details->email;
+			//$where['tbluser_data_wholesale.admin_sales_email'] = $this->sales_user_details->email;
 		}
+		$where['tbladmin_sales.admin_sales_email'] = $this->sales_user_details->email;
 		// check for date ranges in uri query strings
 		$this->data['from_date'] = @$_GET['from_date'] ?: '';
 		$this->data['to_date'] = @$_GET['to_date'] ?: '';

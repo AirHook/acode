@@ -105,8 +105,8 @@ class Send extends Sales_user_Controller {
 				)
 			);
 
-			$this->data['author_name'] = $this->sales_user_details->fname.' '.$this->sales_user_details->lname;
-			$this->data['author'] = $this->data['author_name'];
+			$this->data['author_name'] = ucwords(strtolower($this->sales_user_details->fname.' '.$this->sales_user_details->lname));
+			$this->data['author'] = 'sales';
 			$this->data['author_email'] = $this->sales_user_details->email;
 			$this->data['author_id'] = $this->sales_user_details->admin_sales_id;
 			$this->data['sales_user'] = $this->sales_user_details->email;
@@ -173,7 +173,7 @@ class Send extends Sales_user_Controller {
 		$this->data['page_description'] = 'Send Lookbook To Users';
 
 		// load views...
-		$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template/template', $this->data);
+		$this->load->view('admin/metronic/template_my_account/template', $this->data);
 	}
 
 	// ----------------------------------------------------------------------
@@ -260,7 +260,7 @@ class Send extends Sales_user_Controller {
 		// capture the email input first
 		$emails = $this->input->post('email');
 
-		if ($this->input->post('send_to') === 'new_user')
+		if ($this->input->post('send_to') == 'new_user')
 		{
 			// add new user
 			$post_ary = $this->input->post();
@@ -351,6 +351,15 @@ class Send extends Sales_user_Controller {
 		// create the lookbook pdf
 		*/
 		$lookbook_temp_dir = 'uploads/lookbook_temp/';
+
+		// add directory where necessary
+		if ( ! file_exists($img_path.'product_linesheet'))
+		{
+			$old = umask(0);
+			if ( ! mkdir($img_path.'product_linesheet', 0777, TRUE)) die('Unable to create "'.$img_path.'product_linesheet'.'" folder. (L867)');
+			umask($old);
+		}
+
 		$items_array = $lookbook_details->items;
 		$i = 2;
 		$html = '';

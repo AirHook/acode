@@ -38,37 +38,36 @@ class Set_item_new_price extends MY_Controller {
 		$price = $this->input->post('price');
 		$page = $this->input->post('page');
 
-		// grab the options array
-		$options_array =
+		// set the items array
+		$items_array =
 			$page == 'create'
-			$this->session->admin_sa_options
-			? json_decode($this->session->admin_sa_options, TRUE)
-			: array()
-		;
-		$options_array =
-			$page == 'create'
-			? json_decode($this->session->admin_lb_options, TRUE)
+			? (
+				$this->session->admin_lb_items
+				? json_decode($this->session->admin_lb_items, TRUE)
+				: array()
+			)
 			: (
 				$this->session->admin_lb_mod_items
-				? json_decode($this->session->admin_lb_mod_options, TRUE)
+				? json_decode($this->session->admin_lb_mod_items, TRUE)
 				: array()
 			)
 		;
 
-		// re-setting 'w_prices' options just to be sure
-		$options_array['w_prices'] = '1';
-
-		// save new edited price
-		$options_array['e_prices'][$item] = $price;
+		// grab item details
+		$color_name = $items_array[$item][0];
+		$category = $items_array[$item][1];
+		$new_price = isset($price) ? $price : @$items_array[$item][2];
+		// update item element
+		$items_array[$item] = array($color_name, $category, $price);
 
 		// reset session value for items array
-		if ($this->input->post('page') == 'create')
+		if ($page == 'create')
 		{
-			$this->session->set_userdata('admin_lb_options', json_encode($options_array));
+			$this->session->set_userdata('admin_lb_items', json_encode($items_array));
 		}
-		if ($this->input->post('page') == 'modify')
+		if ($page == 'modify')
 		{
-			$this->session->set_userdata('admin_lb_mod_options', json_encode($options_array));
+			$this->session->set_userdata('admin_lb_mod_items', json_encode($items_array));
 		}
 
 		exit;

@@ -82,6 +82,12 @@ class Index extends Sales_user_Controller {
 			: $this->data['total_users']
 		;
 
+		// breadcrumbs
+		$this->data['page_breadcrumb'] = array(
+			'sales_package' => 'Lookbook',
+			'send' => 'List'
+		);
+
 		// set data variables...
 		$this->data['role'] = 'sales';
 		$this->data['file'] = 'sa_lookbook_list';
@@ -89,7 +95,7 @@ class Index extends Sales_user_Controller {
 		$this->data['page_description'] = 'List of Sales Lookbook';
 
 		// load views...
-		$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template/template', $this->data);
+		$this->load->view('admin/metronic/template_my_account/template', $this->data);
 	}
 
 	// ----------------------------------------------------------------------

@@ -310,7 +310,7 @@ class Send_lookbook extends Admin_Controller {
 			$color_code = $exp[1];
 			$color_name = $this->product_details->get_color_name($color_code);
 			$price =
-				isset($lb_options['w_prices'])
+				@$lb_options['w_prices'] == 'Y'
 				? (@$options[2] ?: $product->wholesale_price)
 				: ''
 			;
@@ -328,7 +328,7 @@ class Send_lookbook extends Admin_Controller {
 				$sizes[$s] = $product->$size_label;
 			}
 			$available_sizes =
-				isset($lb_options['w_sizes'])
+				@$lb_options['w_sizes'] == 'Y'
 				? $sizes
 				: array()
 			;

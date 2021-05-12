@@ -192,9 +192,9 @@ var ComponentsEditors = function () {
             var sales_user = $('[name="sales_user"]').val();
             if (search_string != '') {
                 if (role == 'sales') {
-                    thisUrl = base_url + "my_account/sales/sales_package/search_current_user.html"
+                    thisUrl = base_url + "my_account/sales/lookbook/search_current_user.html"
                 } else {
-                    thisUrl = base_url + "admin/campaigns/sales_package/search_current_user.html";
+                    thisUrl = base_url + "admin/campaigns/lookbook/search_current_user.html";
                 }
                 objectData = object_data;
                 objectData.per_page = per_page;
@@ -245,9 +245,9 @@ var ComponentsEditors = function () {
             objectDataReset.cur = '1';
             objectDataReset.end_cur = $(this).data('end_cur');
             if (role == 'sales') {
-                thisUrl = base_url + "my_account/sales/sales_package/reset_search_current_user.html"
+                thisUrl = base_url + "my_account/sales/lookbook/reset_search_current_user.html"
             } else {
-                thisUrl = base_url + "admin/campaigns/sales_package/reset_search_current_user.html";
+                thisUrl = base_url + "admin/campaigns/lookbook/reset_search_current_user.html";
             }
             var reset_search = $.ajax({
                 type:    "POST",
@@ -317,7 +317,7 @@ var ComponentsEditors = function () {
         function getPagination(objectDataPage){
             var get_pagination = $.ajax({
                 type:    "POST",
-                url:     base_url + "admin/campaigns/sales_package/get_pagination.html",
+                url:     base_url + "admin/campaigns/lookbook/get_pagination.html",
                 data:    objectDataPage
             });
             get_pagination.done(function(data){
@@ -335,7 +335,7 @@ var ComponentsEditors = function () {
         function getPageList(objectDataPage){
             var get_pagination = $.ajax({
                 type:    "POST",
-                url:     base_url + "admin/campaigns/sales_package/page_current_user.html",
+                url:     base_url + "admin/campaigns/lookbook/page_current_user.html",
                 data:    objectDataPage
             });
             get_pagination.done(function(data){

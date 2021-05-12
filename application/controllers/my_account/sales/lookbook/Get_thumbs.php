@@ -40,7 +40,7 @@ class Get_thumbs extends MY_Controller {
 
 		$sales_user_details = $this->sales_user_details->initialize(
 			array(
-				'admin_id' => $this->session->admin_sales_id
+				'admin_sales_id' => $this->session->admin_sales_id
 			)
 		);
 

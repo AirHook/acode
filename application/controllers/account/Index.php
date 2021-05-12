@@ -191,6 +191,9 @@ class Index extends Frontend_Controller {
 				redirect('account/request/activation', 'location');
 			}
 
+			// authenticate and set sessions
+			redirect(site_url('account/authenticate').'?param='.$this_login.'&uid='.$this_user_id, 'location');
+			/* *
 			// NOTE:
 			// we need to redirect user first before setting sessions
 			// send user to hub if not already at hub
@@ -205,6 +208,7 @@ class Index extends Frontend_Controller {
 			{
 				redirect('https://www.'.$this->webspace_details->parent_site().'/account/authenticate.html?param='.$this_login.'&uid='.$this_user_id, 'location');
 			}
+			// */
 		}
 	}
 

@@ -282,6 +282,7 @@
                                         if (
                                             $this->webspace_details->options['site_type'] == 'hub_site'
                                             OR $role == 'admin'
+                                            OR $role == 'sales'
                                         )
                                         {
                                             $col_md = 3;

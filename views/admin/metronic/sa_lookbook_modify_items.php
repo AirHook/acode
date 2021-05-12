@@ -181,7 +181,11 @@
 										<?php echo strtoupper($category); ?>
 									</p>
 									<p style="color:white;position:absolute;bottom:-10px;left:10px;font-size:60%;">
-										<?php echo $prod_no; ?> &nbsp; &nbsp; <?php echo $color_name; ?> &nbsp; &nbsp; <span class="lb-items-w_prices <?php echo $show_price; ?>">$<?php echo $price; ?></span>
+										<?php echo $prod_no; ?> &nbsp; &nbsp; <?php echo $color_name; ?> &nbsp; &nbsp;
+										<span class="lb-items-w_prices <?php echo $show_price; ?>">
+											$<?php echo $price; ?> &nbsp; &nbsp;
+											<i class="fa fa-2x fa-pencil-square tooltips btn-edit_item_price" style="cursor:pointer;" data-original-title="Edit Price" data-item="<?php echo $item; ?>" data-price="<?php echo $price; ?>"></i>
+										</span>
 										<?php
 										$i = 0;
 										$span_size = FALSE; // assume initially there is no available sizes

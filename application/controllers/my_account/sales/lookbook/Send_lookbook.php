@@ -78,8 +78,8 @@ class Send_lookbook extends Sales_user_Controller {
 			)
 		);
 		$this->data['sales_user'] = $sales_user_details->admin_sales_id;
-		$this->data['author_name'] = $sales_user_details->fname.' '.$sales_user_details->lname;
-		$this->data['author'] = $this->data['author_name'];
+		$this->data['author_name'] = ucwords(strtolower($sales_user_details->fname.' '.$sales_user_details->lname));
+		$this->data['author'] = 'sales';
 		$this->data['author_email'] = $sales_user_details->email;
 		$this->data['author_id'] = $sales_user_details->admin_sales_id;
 
@@ -118,7 +118,7 @@ class Send_lookbook extends Sales_user_Controller {
 
 		// breadcrumbs
 		$this->data['page_breadcrumb'] = array(
-			'sales_package' => 'Sales Packages',
+			'sales_package' => 'Lookbook',
 			'send' => 'Send'
 		);
 
@@ -129,7 +129,7 @@ class Send_lookbook extends Sales_user_Controller {
 		$this->data['page_description'] = 'Send Lookbook To Users';
 
 		// load views...
-		$this->load->view('admin/metronic/template/template', $this->data);
+		$this->load->view('admin/metronic/template_my_account/template', $this->data);
 	}
 
 	// ----------------------------------------------------------------------
@@ -214,7 +214,7 @@ class Send_lookbook extends Sales_user_Controller {
 			// add new user
 			$post_ary = $this->input->post();
 			unset($post_ary['send_to']);
-			unset($post_ary['sales_package_id']);
+			unset($post_ary['lookbook_id']);
 			unset($post_ary['sales_user']);
 			unset($post_ary['emails']);
 			unset($post_ary['search_string']);
@@ -300,6 +300,15 @@ class Send_lookbook extends Sales_user_Controller {
 		// create the lookbook pdf
 		*/
 		$lookbook_temp_dir = 'uploads/lookbook_temp/';
+
+		// add directory where necessary
+		if ( ! file_exists($lookbook_temp_dir)
+		{
+			$old = umask(0);
+			if ( ! mkdir($lookbook_temp_dir, 0777, TRUE)) die('Unable to create "'.$lookbook_temp_dir.'" folder.');
+			umask($old);
+		}
+
 		$items_array = json_decode($this->session->lb_items, TRUE);
 		$i = 2;
 		$html = '';
@@ -326,7 +335,7 @@ class Send_lookbook extends Sales_user_Controller {
 			$color_code = $exp[1];
 			$color_name = $this->product_details->get_color_name($color_code);
 			$price =
-				isset($lb_options['w_prices'])
+				@$lb_options['w_prices'] == 'Y'
 				? (@$options[2] ?: $product->wholesale_price)
 				: ''
 			;
@@ -344,7 +353,7 @@ class Send_lookbook extends Sales_user_Controller {
 				$sizes[$s] = $product->$size_label;
 			}
 			$available_sizes =
-				isset($lb_options['w_sizes'])
+				@$lb_options['w_sizes'] == 'Y'
 				? $sizes
 				: array()
 			;
@@ -676,7 +685,7 @@ class Send_lookbook extends Sales_user_Controller {
 			';
 			// handle form validation, datepickers, and scripts
 			$this->data['page_level_scripts'].= '
-				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/admin-lb_send-components.js" type="text/javascript"></script>
+				<script src="'.base_url().'assets/custom/js/metronic/pages/scripts/sales-lb_send-components.js" type="text/javascript"></script>
 			';
 	}
 

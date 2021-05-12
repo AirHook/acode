@@ -176,14 +176,20 @@ class Index extends Sales_user_Controller {
 			;
 
 			// set author to 1 for Inhouse as this is admin panel
-			$this->data['author_name'] = 'In-House';
-			$this->data['author'] = 'admin'; // admin/system
-			$this->data['author_email'] = $this->webspace_details->info_email;
-			$this->data['author_id'] = $this->session->admin_id;
+			$this->data['author_name'] = ucwords(strtolower($this->sales_user_details->fname.' '.$this->sales_user_details->lname));
+			$this->data['author'] = 'sales'; // admin/system
+			$this->data['author_email'] = $this->sales_user_details->email;
+			$this->data['author_id'] = $this->sales_user_details->admin_sales_id;
 
 			// need to show loading at start
 			$this->data['show_loading'] = @$this->data['products_count'] > 0 ? TRUE : TRUE;
 			$this->data['search_string'] = FALSE;
+
+			// breadcrumbs
+			$this->data['page_breadcrumb'] = array(
+				'sales_package' => 'Lookbook',
+				'send' => 'Create'
+			);
 
 			// set data variables...
 			$this->data['role'] = 'sales';
@@ -192,7 +198,7 @@ class Index extends Sales_user_Controller {
 			$this->data['page_description'] = 'Create Lookbook';
 
 			// load views...
-			$this->load->view('admin/metronic/template/template', $this->data);
+			$this->load->view('admin/metronic/template_my_account/template', $this->data);
 		}
 		else
 		{

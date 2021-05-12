@@ -159,7 +159,7 @@ class Modify extends Sales_user_Controller {
 			$where_more['tbl_stock.new_color_publish !='] = '0';
 
 			// don't show clearance cs only items for non-super admin
-			if ($this->admin_user_details->access_level != '0')
+			if ($this->sales_user_details->access_level != '1')
 			{
 				// don't show clearance cs only items
 				$where_more['tbl_stock.options NOT LIKE'] = '"clearance_consumer_only":"1"';
@@ -198,6 +198,12 @@ class Modify extends Sales_user_Controller {
 			$this->data['show_loading'] = @$this->data['products_count'] > 0 ? TRUE : FALSE;
 			$this->data['search_string'] = FALSE;
 
+			// breadcrumbs
+			$this->data['page_breadcrumb'] = array(
+				'sales_package' => 'Lookbook',
+				'send' => 'Modify'
+			);
+
 			// set data variables...
 			$this->data['role'] = 'sales';
 			$this->data['file'] = 'sa_lookbook_modify';
@@ -205,7 +211,7 @@ class Modify extends Sales_user_Controller {
 			$this->data['page_description'] = 'Modify Sales Packages';
 
 			// load views...
-			$this->load->view($this->config->slash_item('admin_folder').($this->config->slash_item('admin_template') ?: 'metronic/').'template/template', $this->data);
+			$this->load->view('admin/metronic/template_my_account/template', $this->data);
 		}
 		else
 		{

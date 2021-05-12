@@ -166,7 +166,12 @@ class Set_items extends MY_Controller {
 					.$show_price
 					.'">$'
 					.$price
-					.'</span>'
+					.' &nbsp; &nbsp;
+					<i class="fa fa-2x fa-pencil-square tooltips btn-edit_item_price" style="cursor:pointer;" data-original-title="Edit Price" data-item="'
+					.$item
+					.'" data-price="'
+					.$price
+					.'"></i></span>'
 				;
 
 				$i = 0;

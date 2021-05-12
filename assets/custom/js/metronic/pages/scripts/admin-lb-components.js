@@ -473,6 +473,7 @@ var ComponentsEditors = function () {
         // edit price pencil button action
         $('.thumb-tiles.sales-package').on('click', '.btn-edit_item_price', function(){
             var item = $(this).data('item');
+            var price = $(this).data('price');
             $('#modal-edit_item_price .modal-body .eip-modal-item').html(item);
             $('#modal-edit_item_price .modal-footer .submit-edit_item_prices').attr('data-item', item);
             $('#modal-edit_item_price').modal('show');
