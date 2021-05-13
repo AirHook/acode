@@ -69,7 +69,7 @@ class Send_lookbook extends Admin_Controller {
 
 		// get user list data
 		// limits and per page
-		$per_page = 20;
+		$per_page = 0;
 		$limit = $per_page > 0 ? array($per_page) : array();
 		// where clauses
 		$where['tbluser_data_wholesale.is_active'] = '1';

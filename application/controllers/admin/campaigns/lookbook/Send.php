@@ -123,8 +123,8 @@ class Send extends Admin_Controller {
 		;
 
 		// get data
-		// limits and per page
-		$per_page = 300;
+		// limits and per page example: 300
+		$per_page = 0;
 		$limit = $per_page > 0 ? array($per_page) : array();
 
 		// active user list

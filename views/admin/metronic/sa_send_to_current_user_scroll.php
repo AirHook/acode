@@ -100,11 +100,11 @@
 													Search result for: "<span class="search_string"></span>"
 												</span>
 
-												<span class="caption showing">
+												<span class="caption showing hide">
 													Showing <span class="pagination-caption-showing"><?php echo ($page * $users_per_page) - ($users_per_page - 1); ?></span> to <span class="pagination-caption-per-page"><?php echo $total_users > $users_per_page ? $users_per_page : $total_users; ?></span> of <span class="pagination-caption-total_users"><?php echo $total_users; ?></span>
 												</span>
 
-												<ul class="pagination pagination-xs pull-right" data-per_page="<?php echo $users_per_page; ?>" data-total_users="<?php echo $total_users; ?>" data-end_cur="<?php echo $number_of_pages; ?>">
+												<ul class="pagination pagination-xs pull-right hide" data-per_page="<?php echo $users_per_page; ?>" data-total_users="<?php echo $total_users; ?>" data-end_cur="<?php echo $number_of_pages; ?>">
 
 													<?php if ($total_users > $users_per_page)
 													{
@@ -159,9 +159,9 @@
 			                                 * Scrollable Style
 			                                 */
 			                                ?>
-											<div class="form-control height-auto">
+											<div class="form-control height-auto" style="min-height:350px;max-height:600px;overflow-y:scroll;">
 
-												<div class="">
+												<div class="scroller-wrapper">
 
 													<div id="email_array_error"> </div>
 
@@ -173,7 +173,7 @@
 															foreach ($users as $user)
 															{ ?>
 
-                                                        <label class="mt-checkbox mt-checkbox-outline" style="font-size:0.8em;">
+                                                        <label class="mt-checkbox mt-checkbox-outline col-sm-6" style="font-size:0.7em;">
 															<?php echo $user->store_name ?: ucwords(strtolower($user->firstname.' '.$user->lastname)); ?>
 															<br />
 															<cite class="small"><?php echo $user->email; ?></cite>

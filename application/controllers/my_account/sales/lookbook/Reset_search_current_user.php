@@ -53,32 +53,32 @@ class Reset_search_current_user extends MY_Controller {
 			exit;
 		}
 
-		// get data
 		// where clauses
 		$where['tbluser_data_wholesale.is_active'] = '1';
 		if (@$this->webspace_details->options['site_type'] != 'hub_site')
 		{
 			$where['tbluser_data_wholesale.reference_designer'] = $this->webspace_details->slug;
 		}
+		$limit = $this->input->post('reset') > 0 ? array($this->input->post('reset')) : array();
+
+		// get data
 		$users = $this->wholesale_users_list->select(
 			$where, // where
 			array( // order by
 				'tbluser_data_wholesale.store_name' => 'asc'
 			),
-			array($this->input->post('reset')) // limit
+			$limit // limit
 		);
 
 		$html = '';
 		foreach ($users as $user)
 		{
 			$html.=
-				'<label class="mt-checkbox mt-checkbox-outline" style="font-size:0.8em;">'
-				.ucwords($user->store_name)
-				.' - '
-				.ucwords(strtolower($user->firstname.' '.$user->lastname))
-				.' <cite class="small">('
+				'<label class="mt-checkbox mt-checkbox-outline col-sm-6" style="font-size:0.7em;">'
+				.($user->store_name ?: ucwords(strtolower($user->firstname.' '.$user->lastname)))
+				.'<br /><cite class="small">'
 				.$user->email
-				.')</cite> '
+				.'</cite> '
 				.'<input type="checkbox" class="send_to_current_user list" name="" value="'
 				.$user->email
 				.'" data-error-container="email_array_error" data-store_name="'

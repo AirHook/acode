@@ -400,7 +400,7 @@
 
                                 <?php $this->load->view('admin/metronic/sa_send_to_new_user'); ?>
 
-                                <?php $this->load->view('admin/metronic/sa_send_to_current_user'); ?>
+                                <?php $this->load->view('admin/metronic/sa_send_to_current_user_scroll'); ?>
 
                                 <?php $this->load->view('admin/metronic/sa_send_to_all_users'); ?>
 

@@ -124,7 +124,7 @@ class Send extends Sales_user_Controller {
 
 		// get data
 		// limits and per page
-		$per_page = 300;
+		$per_page = 0;
 		$limit = $per_page > 0 ? array($per_page) : array();
 
 		// active user list
