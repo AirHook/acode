@@ -113,6 +113,13 @@ class Order_details
 
 
 	/**
+	 * Revision - revision number
+	 * added by Noel B. 5/21/2021
+	 * @var	string
+	 */
+	public $rev = '';
+
+	/**
 	 * DB Reference
 	 *
 	 * @var	object
@@ -285,6 +292,8 @@ class Order_details
 			$this->options = ($row->order_options && $row->order_options != '') ? json_decode($row->order_options , TRUE) : array();
 			$this->webspace_id = $row->webspace_id;
 			$this->invoice_id = $row->invoice_id;
+
+			$this->rev = $row->rev; // added by Noel B. 5/21/2021
 
 			// get items
 			$this->designers = explode(',', $row->designers);
