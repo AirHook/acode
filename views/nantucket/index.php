@@ -1,4 +1,3 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
@@ -20,8 +19,8 @@ upcycled furniture, accessories, fashion and lighting in-store or online" />
 <!--[if lt IE 7]>
 <script type="text/javascript">
 //<![CDATA[
-    var BLANK_URL = 'https://www.theoldcinema.co.uk/js/blank.html';
-    var BLANK_IMG = 'https://www.theoldcinema.co.uk/js/spacer.gif';
+    var BLANK_URL = 'https://www.nantucketyardsailing.com/js/blank.html';
+    var BLANK_IMG = 'https://www.nantucketyardsailing.com/js/spacer.gif';
 //]]>
 </script>
 <![endif]-->
@@ -40,7 +39,7 @@ else window.onload = downloadJSAtOnload;
 <script type="text/javascript">
 //<![CDATA[
 Mage.Cookies.path     = '/';
-Mage.Cookies.domain   = '.www.nantucketyardsailing.com';
+Mage.Cookies.domain   = '.www.nantucketyardsailing.com'; // https://www.theoldcinema.co.uk
 //]]>
 </script>
 
