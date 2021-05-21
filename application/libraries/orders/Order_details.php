@@ -435,10 +435,13 @@ class Order_details
 
 	// --------------------------------------------------------------------
 
-	// --------------------------------------------------------------------
-  // created by Noel B. 5/21/2021 to be used for split order
 	/**
-	 * Max Order Number 
+	 * Max Order Number
+	 *
+	 * created by Noel B. 5/21/2021 to be used for split order
+	 * <additional comments go hear>
+	 *
+	 * <add space like above where necessary to segregate comments> 
 	 *
 	 * @return	object/boolean false
 	 */
