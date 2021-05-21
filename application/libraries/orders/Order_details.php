@@ -435,4 +435,22 @@ class Order_details
 
 	// --------------------------------------------------------------------
 
+	// --------------------------------------------------------------------
+  // created by Noel B. 5/21/2021 to be used for split order
+	/**
+	 * Max Order Number 
+	 *
+	 * @return	object/boolean false
+	 */
+	public function max_order_number()
+	{
+		$this->DB->select_max('order_log_id');
+		$query = $this->DB->get('tbl_order_log');
+		$row = $query->row();
+		if ($row) return $row->order_log_id;
+		else return FALSE;
+	}
+
+	// --------------------------------------------------------------------
+
 }
