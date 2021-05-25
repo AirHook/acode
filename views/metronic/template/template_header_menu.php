@@ -449,24 +449,24 @@
 											$more_than_half = count($main_categories) / 2;
 											$cnt = 1;
 
-                                            //Used to fix the Navigational Menu error - added by _noel(20210526) 
-                                            $totalMenu = 0;
-                                            foreach ($main_categories as $main_category) // ---> start category tree
-											{
-                                                if (
-													$main_category->view_status == '1'
-													&& $main_category->with_products > 0
-													&& (
-														$main_category->category_slug !== 'accessories'
-														//&& $main_category->category_slug !== 'outerwear'
-													)
-												)
-												{
-                                                    $totalMenu++;
-                                                }
-                                            }
-                                            $totalMenu++;
-                                            $min_width = 1270 / $totalMenu;
+                                            //Used to fix the Navigational Menu error - added by _noel(20210526)
+                                            // $totalMenu = 0;
+                                            // foreach ($main_categories as $main_category) // ---> start category tree
+											// {
+                                            //     if (
+											// 		$main_category->view_status == '1'
+											// 		&& $main_category->with_products > 0
+											// 		&& (
+											// 			$main_category->category_slug !== 'accessories'
+											// 			//&& $main_category->category_slug !== 'outerwear'
+											// 		)
+											// 	)
+											// 	{
+                                            //         $totalMenu++;
+                                            //     }
+                                            // }
+                                            // $totalMenu++;
+                                            // $min_width = 1270 / $totalMenu;
                                             // added fix up to here for Navigational Menu error
 
 											foreach ($main_categories as $main_category) // ---> start category tree
@@ -483,8 +483,9 @@
 													// lets set the group's category array to store icons
 													$array_icons[$main_category->category_slug] = array();
 													?>
-                                        <!-- added style min-width:150px by _noel(20210526) -->
-                                        <li aria-haspopup="true" class="menu-dropdown mega-menu-dropdown" style="min-width: <?php echo $min_width; ?>px;">
+                                        <!-- added style min-width:150px by _noel(20210526)
+                                        <li aria-haspopup="true" class="menu-dropdown mega-menu-dropdown" style="min-width: <?php echo $min_width; ?>px;"> -->
+                                        <li aria-haspopup="true" class="menu-dropdown mega-menu-dropdown">
 
 											<!-- NAVBAR Item -->
 											<!-- Desktop Item -->
@@ -685,8 +686,8 @@
                                         )
                                         {
                                             ?>
-
-                                        <li aria-haspopup="true" class="menu-dropdown classic-menu-dropdown" style="min-width: <?php echo $min_width; ?>px;text-align: right;">
+                                        <!-- <li aria-haspopup="true" class="menu-dropdown classic-menu-dropdown" style="min-width: <?php echo $min_width; ?>px;text-align: right;"> -->
+                                        <li aria-haspopup="true" class="menu-dropdown classic-menu-dropdown">
                                             <a class="margin-right-0 font-red" href="<?php echo ENVIRONMENT == 'development' ? base_url() : $this->config->item('PROD_IMG_URL'); ?>shop/<?php echo $this->webspace_details->options['site_type'] == 'sat_site' ? $this->webspace_details->slug.'/' : ''; ?>womens_apparel.html?filter=&availability=onsale" <?php echo $this->webspace_details->options['site_type'] == 'sat_site' ? 'target="_blank"' : ''; ?>>
                                                 <?php echo $link_label; ?>
                                                 <span class="arrow hide"></span>
