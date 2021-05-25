@@ -449,7 +449,7 @@
 											$more_than_half = count($main_categories) / 2;
 											$cnt = 1;
 
-                                            //Used to fix the Navigational Menu error - added by _noel(20210526)
+                                            //Used to fix the Navigational Menu error - added by _noel(20210526) 
                                             $totalMenu = 0;
                                             foreach ($main_categories as $main_category) // ---> start category tree
 											{
