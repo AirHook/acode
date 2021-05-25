@@ -449,6 +449,26 @@
 											$more_than_half = count($main_categories) / 2;
 											$cnt = 1;
 
+                                            //Used to fix the Navigational Menu error - added by _noel(20210526)
+                                            $totalMenu = 0;
+                                            foreach ($main_categories as $main_category) // ---> start category tree
+											{
+                                                if (
+													$main_category->view_status == '1'
+													&& $main_category->with_products > 0
+													&& (
+														$main_category->category_slug !== 'accessories'
+														//&& $main_category->category_slug !== 'outerwear'
+													)
+												)
+												{
+                                                    $totalMenu++;
+                                                }
+                                            }
+                                            $totalMenu++;
+                                            $min_width = 1270 / $totalMenu;
+                                            // added fix up to here for Navigational Menu error
+
 											foreach ($main_categories as $main_category) // ---> start category tree
 											{
 												if (
@@ -463,8 +483,8 @@
 													// lets set the group's category array to store icons
 													$array_icons[$main_category->category_slug] = array();
 													?>
-
-                                        <li aria-haspopup="true" class="menu-dropdown mega-menu-dropdown ">
+                                        <!-- added style min-width:150px by _noel(20210526) -->
+                                        <li aria-haspopup="true" class="menu-dropdown mega-menu-dropdown" style="min-width: <?php echo $min_width; ?>px;">
 
 											<!-- NAVBAR Item -->
 											<!-- Desktop Item -->
@@ -475,9 +495,11 @@
                                             <a class="hidden-sm hidden-md hidden-lg" href="javascript:;"> <?php echo $main_category->category_name; ?>
                                                 <span class="arrow"></span>
                                             </a>
-											<!-- DROPDOWN Item --
+											<!-- DROPDOWN Item -->
+                                            <!--
                                             <ul class="dropdown-menu" style="min-width: 250px;<?php echo $cnt > $more_than_half ? 'right:0;' : '';?>">
-                                            -->
+                                             -->
+
                                             <ul class="dropdown-menu" style="min-width: 250px;">
 												<li>
                                                     <div class="mega-menu-content">
@@ -664,7 +686,7 @@
                                         {
                                             ?>
 
-                                        <li aria-haspopup="true" class="menu-dropdown classic-menu-dropdown">
+                                        <li aria-haspopup="true" class="menu-dropdown classic-menu-dropdown" style="min-width: <?php echo $min_width; ?>px;text-align: right;">
                                             <a class="margin-right-0 font-red" href="<?php echo ENVIRONMENT == 'development' ? base_url() : $this->config->item('PROD_IMG_URL'); ?>shop/<?php echo $this->webspace_details->options['site_type'] == 'sat_site' ? $this->webspace_details->slug.'/' : ''; ?>womens_apparel.html?filter=&availability=onsale" <?php echo $this->webspace_details->options['site_type'] == 'sat_site' ? 'target="_blank"' : ''; ?>>
                                                 <?php echo $link_label; ?>
                                                 <span class="arrow hide"></span>
