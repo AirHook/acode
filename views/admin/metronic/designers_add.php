@@ -1,7 +1,7 @@
                     <!-- BEGIN FORM-->
                     <!-- FORM =======================================================================-->
                     <?php echo form_open(
-                        $this->config->slash_item('admin_folder').'designers/edit/index/'.$this->designer_details->des_id,
+                        $this->config->slash_item('admin_folder').'designers/add',
                         array(
                             'class'=>'form-horizontal',
                             'id'=>'form-designer_edit'

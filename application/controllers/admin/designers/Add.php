@@ -83,9 +83,11 @@ class Add extends Admin_Controller {
 				$post_ary['url_structure'] = $domain;
 				$post_ary['designer_site_domain'] = 'www.' . $webspace_domain_name;
 			}
+			$post_ary['logo_image'] = $this->input->post('logo_light'); // renaming field for logo_light data
 			// unset unneeded variables
 			//unset($post_ary['passconf']);
 			unset($post_ary['webspace_domain_name']);
+			unset($post_ary['logo_light']);
 
 			// insert record
 			$query = $this->DB->insert('designer', $post_ary);
@@ -101,7 +103,7 @@ class Add extends Admin_Controller {
 			$this->session->set_flashdata('success', 'add');
 
 			// redirect user
-			redirect($this->config->slash_item('admin_folder').'designers/edit/index/'.$insert_id);
+			redirect($this->config->slash_item('admin_folder').'designers/edit/index/'.$insert_id, 'location');
 		}
 	}
 
