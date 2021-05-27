@@ -114,7 +114,7 @@ class Order_details
 
 	/**
 	 * Revision - revision number
-	 * added by Noel B. 5/21/2021
+	 * added by _noel(20210521)
 	 * @var	string
 	 */
 	public $rev = '';
@@ -293,7 +293,7 @@ class Order_details
 			$this->webspace_id = $row->webspace_id;
 			$this->invoice_id = $row->invoice_id;
 
-			$this->rev = $row->rev; // added by Noel B. 5/21/2021
+			$this->rev = $row->rev;
 
 			// get items
 			$this->designers = explode(',', $row->designers);
@@ -435,10 +435,13 @@ class Order_details
 
 	// --------------------------------------------------------------------
 
-	// --------------------------------------------------------------------
-  // created by Noel B. 5/21/2021 to be used for split order
 	/**
-	 * Max Order Number 
+	 * Max Order Number
+	 *
+	 * created by _noel(20210521)
+	 * This is used for split order
+	 *
+	 * <add space like above where necessary to segregate comments>
 	 *
 	 * @return	object/boolean false
 	 */

@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class About_product extends Frontend_Controller {
 
 	/**
-	 * DB Object
+	 * DB Object - 0
 	 *
 	 * @return	object
 	 */

@@ -91,6 +91,37 @@
 
 								<hr style="margin:15px 0 15px;" />
 
+								<label>
+									Actions:
+								</label>
+								<?php if ($order_details->status == '0')
+								{
+									if (@$role == 'sales' && @$this->sales_user_details->access_level == '2') $hide_approve = 'hide';
+									else $hide_approve = '';
+									?>
+
+								<button href="#modal-split_order" data-toggle="modal" class="btn grey-gallery btn-block btn-sm filter-options-field-details <?php echo $hide_approve; ?>" style="text-align:left;padding-left:10px;">
+									<i class="fa fa-cut"></i>
+									Split Order
+								</button>
+
+								<hr style="margin:15px 0 15px;" />
+
+								<label>
+									Options:
+								</label>
+
+								<a href="#modal-send_invoice_to_user" data-toggle="modal" class="btn grey-gallery btn-block btn-sm">
+									Send Invoice To User
+								</a>
+
+								<a href="#modal-send_invoice_to_admin" data-toggle="modal" class="btn grey-gallery btn-block btn-sm">
+									Send Invoice To Admin
+								</a>
+
+								<?php
+							} ?>
+
 								<a class="btn btn-secondary-outline btn-sm btn-block" href="<?php echo site_url('admin/orders/details/index/'.$order_details->order_id); ?>">
 	                                <i class="fa fa-reply"></i> Back to Order Details
 								</a>
@@ -148,7 +179,7 @@
 														<h4>
 					                                        <strong>
 																ORDER INQUIRY #<?php echo $order_details->order_id.'-'.strtoupper(substr(($order_details->designer_group == 'Mixed Designers' ? 'SHO' : $order_details->designer_group),0,3)); ?> <?php echo @$order_details->options['sales_order'] ? '| SO' : ''; ?>
-															</strong>
+															</strong><?php echo $this->order_details->rev ? '<small><b>rev</b></small><strong>'.$this->order_details->rev.'</strong>' : ''; ?>
 															<br />
 					                                        <small> Date: <?php echo $order_details->order_date; ?> </small>
 					                                    </h4>
@@ -178,6 +209,23 @@
 																	<option value="wt">Wire Transfer</option>
 																</select>
 															</div>
+															<?php
+
+																if (isset($this->order_details->options['0']))
+																	$split_info1 = $this->order_details->options['0']['split_from'];
+																else
+																	$split_info1 = "";
+																$split_info2 = $this->order_details->order_id;
+
+																if ($split_info1!="")
+																{
+																	?>
+																	<div class="col-xs-5 col-sm-4 name"> Split Info: </div>
+																	<div class="col-xs-7 col-sm-8 value"> <?php echo$split_info1.', '.$split_info2; ?> </div>
+																	<?php
+																}
+															?>
+
 														</div>
 													</div>
 												</div>
@@ -353,7 +401,9 @@
 															{
 																$overall_total = 0;
 																$i = 1;
-																foreach ($order_details->items() as $item)
+																$total_qty = 0;
+																foreach ($order_details->order_items as $item)
+																//foreach ($order_details->items() as $item)
 																{
 																	// get product details
 	                                                                $exp = explode('_', $item->prod_sku);
@@ -480,6 +530,7 @@
 
 																	<?php
 																	$overall_total += $this_size_total;
+																	$total_qty += $item->qty;
 																	$i++;
 																}
 															}
@@ -492,6 +543,12 @@
 
 															<?php
 															} ?>
+
+															<tr>
+																<td colspan="4" style="border: none;">Total # of Items: <?php echo $i; ?></td>
+																<td align="right" style="border: none;">Total Quantity</td>
+																<td colspan="5" style="border: none;"> <?php echo $total_qty; ?> &nbsp;</td>
+															</tr>
 
 														</tbody>
 													</table>
@@ -585,6 +642,110 @@
 			                    </div>
 			                    <!-- END PAGE CONTENT BODY -->
 
+								<!-- SET AS SPLIT ORDER added by noel (20210521) -->
+								<div class="modal fade bs-modal-sm" id="modal-split_order" tabindex="-1" role="dialog" aria-hidden="true">
+									<div class="modal-dialog modal-sm">
+										<div class="modal-content">
+											<div class="modal-header">
+												<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+												<h4 class="modal-title">Split Order</h4>
+											</div>
+											<div class="modal-body"> Confirm splitting order. </div>
+											<div class="modal-footer">
+												<button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
+												<a href="<?php echo site_url($pre_link.'/orders/split_order/index/'.$this->order_details->order_id); ?>" type="button" class="btn dark">
+													Confirm?
+												</a>
+											</div>
+										</div>
+										<!-- /.modal-content -->
+									</div>
+									<!-- /.modal-dialog -->
+								</div>
+								<!-- /.modal -->
+
+								<!-- SEND INVOICE TO ADMIN -->
+								<div id="modal-send_invoice_to_admin" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+									<div class="modal-dialog modal-sm">
+										<div class="modal-content">
+
+											<!-- BEGIN FORM =======================================================-->
+											<?php echo form_open(
+												$pre_link.'/orders/send_invoice/index/'.$order_details->order_id,
+												array(
+													'class' => 'enter-user-form ws clearfix',
+													'id' => 'form-send_invoice_to_user'
+												)
+											); ?>
+											<input type="hidden" name="isadmin" value="1" />
+											<div class="modal-header">
+												<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+												<h4 class="modal-title">Send Invoice To Admin</h4>
+											</div>
+											<div class="modal-body">
+												<div class="form-group clearfix">
+		                                            <label class="control-label">Select email address to send copy of invoice:
+		                                            </label><br /><br />
+		                                            <div class="col-md-4">
+														<select name="admin_email" class="form-control input-sm" style="width:200px;">
+															<option value="joe@rcpixel.com">joe@rcpixel.com</option>
+															<option value="rsbgm@rcpixel.com">rsbgm@rcpixel.com</option>
+															<option value="weng_0000@yahoo.com">weng_0000@yahoo.com</option>
+															<option value="help@shop7thavenue.com">help@shop7thavenue.com</option>
+															<option value="help@instylenewyork.com">help@instylenewyork.com</option>
+														</select>
+		                                            </div>
+		                                        </div>
+											</div>
+											<div class="modal-footer">
+												<button type="button" class="btn dark btn-outline" data-dismiss="modal" tabindex="-1">Close</button>
+												<button type="submit" class="btn dark submit-send_invoice_to_user">Confirm?</button>
+											</div>
+
+											</form>
+											<!-- END FORM =========================================================-->
+
+										</div>
+										<!-- /.modal-content -->
+									</div>
+									<!-- /.modal-dialog -->
+								</div>
+								<!-- /.modal -->
+
+								<!-- SEND INVOICE TO USER -->
+								<div id="modal-send_invoice_to_user" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+									<div class="modal-dialog modal-sm">
+										<div class="modal-content">
+
+											<!-- BEGIN FORM =======================================================-->
+											<?php echo form_open(
+												$pre_link.'/orders/send_invoice/index/'.$order_details->order_id,
+												array(
+													'class' => 'enter-user-form ws clearfix',
+													'id' => 'form-send_invoice_to_user'
+												)
+											); ?>
+
+											<div class="modal-header">
+												<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+												<h4 class="modal-title">Send Invoice To User</h4>
+											</div>
+											<div class="modal-body"> Sending invoice to user via email. </div>
+											<div class="modal-footer">
+												<button type="button" class="btn dark btn-outline" data-dismiss="modal" tabindex="-1">Close</button>
+												<button type="submit" class="btn dark submit-send_invoice_to_user">Confirm?</button>
+											</div>
+
+											</form>
+											<!-- END FORM =========================================================-->
+
+										</div>
+										<!-- /.modal-content -->
+									</div>
+									<!-- /.modal-dialog -->
+								</div>
+								<!-- /.modal -->
+
 								<!-- EDIT STORE DETAILS (for wholesale) -->
 		                        <div id="modal-edit_store_details" class="modal fade bs-modal-md" tabindex="-1" role="dialog" aria-hidden="true">
 		                            <div class="modal-dialog modal-md">
@@ -599,6 +760,7 @@
 												)
 											); ?>
 
+											<input type="hidden" name="revision" value="<?php echo $order_details->rev; ?>" />
 											<input type="hidden" name="user_id" value="<?php echo $order_details->user_id; ?>" />
 
 		                                    <div class="modal-header">
@@ -731,6 +893,8 @@
 												)
 											); ?>
 
+											<input type="hidden" name="rev" value="<?php echo $order_details->rev; ?>" />
+
 		                                    <div class="modal-header">
 		                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
 		                                        <h4 class="modal-title">Edit Ship To Address</h4>
@@ -856,6 +1020,7 @@
 												)
 											); ?>
 
+											<input type="hidden" name="revision" value="<?php echo $order_details->rev; ?>" />
 											<input type="hidden" name="user_id" value="<?php echo $order_details->user_id; ?>" />
 
 		                                    <div class="modal-header">
@@ -989,6 +1154,7 @@
 												)
 											); ?>
 
+											<input type="hidden" name="revision" value="<?php echo $order_details->rev; ?>" />
 											<input type="hidden" name="order_log_detail_id" value="" />
 
 			                				<div class="modal-header">
@@ -1025,6 +1191,7 @@
 												)
 											); ?>
 
+											<input type="hidden" name="revision" value="<?php echo $order_details->rev; ?>" />
 											<input type="hidden" name="order_log_detail_id" value="" />
 
 		                                    <div class="modal-header">
@@ -1073,6 +1240,7 @@
 												)
 											); ?>
 
+											<input type="hidden" name="revision" value="<?php echo $order_details->rev; ?>" />
 											<input type="hidden" name="order_log_detail_id" value="" />
 
 		                                    <div class="modal-header">
@@ -1121,6 +1289,8 @@
 												)
 											); ?>
 
+											<input type="hidden" name="revision" value="<?php echo $order_details->rev; ?>" />
+
 			                				<div class="modal-header">
 			                					<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
 			                					<h4 class="modal-title">Edit Remarks</h4>
@@ -1165,6 +1335,8 @@
 													'id' => 'form-add_discount'
 												)
 											); ?>
+
+											<input type="hidden" name="revision" value="<?php echo $order_details->rev; ?>" />
 
 		                                    <div class="modal-header">
 		                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
@@ -1219,6 +1391,8 @@
 													'id' => 'form-edit_user_details'
 												)
 											); ?>
+
+											<input type="hidden" name="revision" value="<?php echo $order_details->rev; ?>" />
 
 		                                    <div class="modal-header">
 		                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
