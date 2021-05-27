@@ -4,11 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class About_product extends Frontend_Controller {
 
 	/**
-<<<<<<< Updated upstream
 	 * DB Object - 012
-=======
-	 * DB Object - 01
->>>>>>> Stashed changes
 	 *
 	 * @return	object
 	 */
