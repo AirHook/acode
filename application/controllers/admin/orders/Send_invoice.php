@@ -108,6 +108,11 @@ class Send_invoice extends Admin_Controller
 		$this->data['status'] = $this->order_details->status_text;
 		//$this->data['order_items'] = $this->order_details->items();
 
+		if ($this->input->post('isadmin')!=null)
+		{
+				$this->data['view_params'] = 'admin_email';
+		}
+
 		// create access link to payment options
 		$this->data['access_link'] = site_url(
 			'my_account/wholesale/orders/link/index/'
@@ -178,7 +183,11 @@ class Send_invoice extends Admin_Controller
 
 		$this->email->from($this->webspace_details->info_email, $this->webspace_details->name);
 
-		$this->email->to($this->data['user_details']->email);
+		// Check if send to admin
+		if ($this->input->post('isadmin')!=null)
+			$this->email->to($this->input->post('admin_email'));
+		else
+			$this->email->to($this->data['user_details']->email);
 		$this->email->bcc('help@shop7thavenue.com');
 		//$this->email->to('rsbgm@rcpixel.com');
 
@@ -208,6 +217,11 @@ class Send_invoice extends Admin_Controller
 				return FALSE;
 			}
 		}
+
+		//set status to pending payment if not yet pending payment _noel(20210526)
+		$this->DB->set('status',7);
+		$this->DB->where('order_log_id',  $order_id);
+		$this->DB->update('tbl_order_log');
 
 		// set flash data
 		$this->session->set_flashdata('success', 'invoice_sent');

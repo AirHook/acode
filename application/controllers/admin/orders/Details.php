@@ -55,6 +55,7 @@ class Details extends Admin_Controller {
 			)
 		;
 
+
 		if (@$this->webspace_details->options['site_type'] != 'hub_site')
 		{
 			if ($this->webspace_details->id != $this->order_details->webspace_id)

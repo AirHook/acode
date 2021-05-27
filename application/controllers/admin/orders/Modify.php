@@ -126,6 +126,15 @@ class Modify extends Admin_Controller {
 
 		// unset items
 		unset($post_ary['user_id']);
+		unset($post_ary['revision']);
+		// set revision #
+  	//$post_ary['rev'] = $this->purchase_order_details->rev + 1;
+
+		// set revision # added by _noel(20210521)
+		$rev = @$this->input->post('revision') ? $this->input->post('revision') : 0;
+		$this->DB->set('rev', $rev+1);
+		$this->DB->where('order_log_id', $order_id);
+		$this->DB->update('tbl_order_log');
 
 		// update records
 		$this->DB->set($post_ary);
@@ -166,6 +175,101 @@ class Modify extends Admin_Controller {
 		$this->DB->where('order_log_id', $order_id);
 		$this->DB->update('tbl_order_log');
 
+		// get order details
+		$this->data['order_details'] =
+			$this->order_details->initialize(
+				array(
+					'tbl_order_log.order_log_id'=>$order_id
+				)
+			)
+		;
+
+		// based on order details, get user details
+		if ($this->data['order_details']->c == 'ws')
+		{
+			$this->data['user_details'] =
+				$this->wholesale_user_details->initialize(
+					array(
+						'user_id' => $this->data['order_details']->user_id
+					)
+				)
+			;
+		}
+		else
+		{
+			$this->data['user_details'] =
+				$this->consumer_user_details->initialize(
+					array(
+						'user_id' => $this->data['order_details']->user_id
+					)
+				)
+			;
+		}
+
+		$addresses = $this->data['user_details']->alt_address;
+
+		//look for if record exists - _noel(20210526)
+		$address_exists = false;
+		for ($i = 2; $i < count($addresses); $i++)
+		{
+			//echo "ARRAY".$i;
+			if (($addresses[$i]['address1']==$this->data['order_details']->ship_address1) &&
+					($addresses[$i]['address2']==$this->data['order_details']->ship_address2) &&
+						($addresses[$i]['city']==$this->data['order_details']->ship_city) &&
+							($addresses[$i]['state']==$this->data['order_details']->ship_state) &&
+								($addresses[$i]['country']==$this->data['order_details']->ship_country) &&
+									($addresses[$i]['zipcode']==$this->data['order_details']->ship_zipcode))
+			{
+				$addresses[$i]['firstname'] = $this->data['order_details']->firstname;
+				$addresses[$i]['lastname'] = $this->data['order_details']->lastname;
+				$addresses[$i]['store_name'] = $this->data['order_details']->store_name;
+				$addresses[$i]['telephone'] = $this->data['order_details']->telephone;
+				$addresses[$i]['address1'] = $this->data['order_details']->ship_address1;
+				$addresses[$i]['address2'] = $this->data['order_details']->ship_address2;
+				$addresses[$i]['city'] = $this->data['order_details']->ship_city;
+				$addresses[$i]['state'] = $this->data['order_details']->ship_state;
+				$addresses[$i]['country'] = $this->data['order_details']->ship_country;
+				$addresses[$i]['zipcode'] = $this->data['order_details']->ship_zipcode;
+				$address_exists = true;
+				break;
+			}
+		}
+
+		//look for available slot - _noel(20210526)
+		if ($address_exists==false)
+		{
+			$slot_found=false;
+			$i=2;
+			do
+			{
+				if (($addresses[$i]['address1']=="") &&
+						($addresses[$i]['address2']=="") &&
+							($addresses[$i]['city']=="") &&
+								($addresses[$i]['state']=="") &&
+									($addresses[$i]['country']=="") &&
+										($addresses[$i]['zipcode']==""))
+				{
+					$addresses[$i]['firstname'] = $this->data['order_details']->firstname;
+					$addresses[$i]['lastname'] = $this->data['order_details']->lastname;
+					$addresses[$i]['store_name'] = $this->data['order_details']->store_name;
+					$addresses[$i]['telephone'] = $this->data['order_details']->telephone;
+					$addresses[$i]['address1'] = $this->data['order_details']->ship_address1;
+					$addresses[$i]['address2'] = $this->data['order_details']->ship_address2;
+					$addresses[$i]['city'] = $this->data['order_details']->ship_city;
+					$addresses[$i]['state'] = $this->data['order_details']->ship_state;
+					$addresses[$i]['country'] = $this->data['order_details']->ship_country;
+					$addresses[$i]['zipcode'] = $this->data['order_details']->ship_zipcode;
+					$slot_found=true;
+				}
+				$i++;
+			} while ($slot_found==false);
+		}
+		//update also tbluser_data_wholesale for alt_address - _noel(20210526)
+		$this->DB->set('alt_address',json_encode($addresses));
+		$this->DB->where('user_id',  $this->data['order_details']->user_id);
+		$this->DB->update('tbluser_data_wholesale');
+
+
 		// set flash data
 		$this->session->set_flashdata('success', 'edit');
 
@@ -197,6 +301,13 @@ class Modify extends Admin_Controller {
 
 		// unset items
 		unset($post_ary['user_id']);
+		unset($post_ary['revision']);
+
+		// set revision # added by _noel(20210521)
+		$rev = @$this->input->post('revision') ? $this->input->post('revision') : 0;
+		$this->DB->set('rev', $rev+1);
+		$this->DB->where('order_log_id', $order_id);
+		$this->DB->update('tbl_order_log');
 
 		// update records
 		$this->DB->set($post_ary);
@@ -229,6 +340,12 @@ class Modify extends Admin_Controller {
 			redirect('admin/orders/modify/index/'.$order_id, 'location');
 		}
 
+		// set revision # added by _noel(20210521)
+		$rev = @$this->input->post('revision') ? $this->input->post('revision') : 0;
+		$this->DB->set('rev', $rev+1);
+		$this->DB->where('order_log_id', $order_id);
+		$this->DB->update('tbl_order_log');
+
 		// update records
 		$this->DB->where('order_log_detail_id', $this->input->post('order_log_detail_id'));
 		$this->DB->delete('tbl_order_log_details');
@@ -258,6 +375,13 @@ class Modify extends Admin_Controller {
 			// redirect user
 			redirect('admin/orders/modify/index/'.$order_id, 'location');
 		}
+
+		// set revision # added by _noel(20210521)
+		$rev = @$this->input->post('revision') ? $this->input->post('revision') : 0;
+		$this->DB->set('rev', $rev+1);
+		$this->DB->where('order_log_id', $order_id);
+		$this->DB->update('tbl_order_log');
+		//echo $rev; echo $rev+1; die();
 
 		// update records
 		$this->DB->set('qty', $this->input->post('qty'));
@@ -290,6 +414,12 @@ class Modify extends Admin_Controller {
 			redirect('admin/orders/modify/index/'.$order_id, 'location');
 		}
 
+		// set revision # added by _noel(20210521)
+		$rev = @$this->input->post('revision') ? $this->input->post('revision') : 0;
+		$this->DB->set('rev', $rev+1);
+		$this->DB->where('order_log_id', $order_id);
+		$this->DB->update('tbl_order_log');
+
 		// update records
 		$this->DB->set('unit_price', $this->input->post('unit_price'));
 		$this->DB->where('order_log_detail_id', $this->input->post('order_log_detail_id'));
@@ -320,6 +450,12 @@ class Modify extends Admin_Controller {
 			// redirect user
 			redirect('admin/orders', 'location');
 		}
+
+		// set revision # added by _noel(20210521)
+		$rev = @$this->input->post('revision') ? $this->input->post('revision') : 0;
+		$this->DB->set('rev', $rev+1);
+		$this->DB->where('order_log_id', $order_id);
+		$this->DB->update('tbl_order_log');
 
 		// update records
 		$this->DB->set('remarks', $this->input->post('remarks'));
@@ -374,6 +510,12 @@ class Modify extends Admin_Controller {
 			$options['discount'] = $this->input->post('discount');
 		}
 
+		// set revision # added by _noel(20210521)
+		$rev = @$this->input->post('revision') ? $this->input->post('revision') : 0;
+		$this->DB->set('rev', $rev+1);
+		$this->DB->where('order_log_id', $order_id);
+		$this->DB->update('tbl_order_log');
+
 		// update records
 		$this->DB->set('options', json_encode($options));
 		$this->DB->where('order_log_id', $order_id);
@@ -404,6 +546,12 @@ class Modify extends Admin_Controller {
 			// redirect user
 			redirect('admin/orders/modify/index/'.$order_id, 'location');
 		}
+
+		// set revision # added by _noel(20210521)
+		$rev = @$this->input->post('revision') ? $this->input->post('revision') : 0;
+		$this->DB->set('rev', $rev+1);
+		$this->DB->where('order_log_id', $order_id);
+		$this->DB->update('tbl_order_log');
 
 		// update records
 		$this->DB->set('shipping_fee', $this->input->post('shipping_fee'));
