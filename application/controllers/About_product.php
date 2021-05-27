@@ -4,7 +4,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class About_product extends Frontend_Controller {
 
 	/**
+<<<<<<< Updated upstream
 	 * DB Object - 012
+=======
+	 * DB Object - 01
+>>>>>>> Stashed changes
 	 *
 	 * @return	object
 	 */
@@ -231,6 +235,11 @@ class About_product extends Frontend_Controller {
 		| ------------------------------------------------------------------------------
 		| Create the HTML email content
 		*/
+		// set size chart image to using webspace slug to show correct chart
+		// this is doen for the introduction of graciafashions
+		// the rest defaults to basix size chart
+		// this needs more fixing to adapt to proper uploaded size chart for respective designer
+		// _rey (20210526)
 		$email_message = '
 			<div style="font-family: arial,sans-serif;">
 				<br />
@@ -238,7 +247,7 @@ class About_product extends Frontend_Controller {
 				<table width="650" border="0" cellspacing="0" cellpadding="5">
 					<tr style="background-color:'.($this->webspace_details->slug == 'basixbridal' ? '#e0b2aa;' : 'black;').'">
 						<td>
-							<img src="'.base_url().'assets/roden_assets/images/logo-'.$this->webspace_details->slug.'.png" alt="'.$this->webspace_details->name.'" style="border:none;margin:2px;width:292px;" width="292" />
+							<img src="'.base_url().'assets/roden_assets/images/logo-'.$this->webspace_details->slug.'.png" alt="'.$this->webspace_details->name.'" style="border:none;margin:2px;width:292px;" width="292" height="47" />
 						</td>
 						<td align="right">
 							<a href='.$access_link.' style="color:red;text-decoration:none;vertical-align:middle;font-family:Arial;font-size:10px;">CLICK PHOTO TO SEE PRICING AND ORDER OPTIONS</a>
@@ -272,7 +281,7 @@ class About_product extends Frontend_Controller {
 				<br />
 				<table width="650" border="0" cellsapcing="0" cellpadding="0">
 					<tr><td>
-						<img src="'.base_url().'images/basix_size_chart-web.jpg" alt="'.$this->webspace_details->name.' Size Chart" style="border:none;" width="600" />
+						<img src="'.base_url().($this->webspace_details->slug == 'graciafashions' ? 'images/size_chart-web-graciafashions.jpg' : 'images/basix_size_chart-web.jpg').'" alt="'.$this->webspace_details->name.' Size Chart" style="border:none;" width="600" />
 					</td></tr>
 				</table>
 			</div>
