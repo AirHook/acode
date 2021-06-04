@@ -402,8 +402,8 @@
 																$overall_total = 0;
 																$i = 1;
 																$total_qty = 0;
-																foreach ($order_details->order_items as $item)
-																//foreach ($order_details->items() as $item)
+																//foreach ($order_details->order_items as $item)
+																foreach ($order_details->items() as $item)
 																{
 																	// get product details
 	                                                                $exp = explode('_', $item->prod_sku);

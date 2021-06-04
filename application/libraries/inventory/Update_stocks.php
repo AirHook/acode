@@ -732,8 +732,8 @@ class Update_stocks {
 		}
 
 		// admin physical
-		if (is_null($product->admin_physical_st_id)!=true)
-		{
+		//if (is_null($product->admin_physical_st_id)!=true)
+		//{
 			if ($product->admin_physical_st_id)
 			{
 				$this->DB->where('st_id', $product->admin_physical_st_id);
@@ -745,10 +745,10 @@ class Update_stocks {
 				$this->DB->set($size_label, $final_admin_physical_stock);
 				$this->DB->insert('tbl_stock_admin_physical');
 			}
-		}
+		//}
 		// admin available
-		if (is_null($product->admin_st_id)!=true)
-		{
+		//if (is_null($product->admin_st_id)!=true)
+		//{
 			if ($product->admin_st_id)
 			{
 				$this->DB->where('st_id', $product->admin_st_id);
@@ -760,7 +760,7 @@ class Update_stocks {
 				$this->DB->set($size_label, $final_admin_available_stock);
 				$this->DB->insert('tbl_stock_admin');
 			}
-		}
+		//}
 		// admin onorder
 		if ($product->admin_onorder_st_id)
 		{
