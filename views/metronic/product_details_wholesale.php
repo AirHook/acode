@@ -755,7 +755,7 @@
                                                                                     } ?>
 
                                                                                 </div>
-                                                                                <input type="hidden" class="size_key" name="size[<?php echo $skey; ?>]" value="<?php echo $size; ?>" />
+                                                                                <input type="hidden" class="size_key" name="size[<?php echo $skey; ?>]" value="" />
 
                                                                             </div>
 
