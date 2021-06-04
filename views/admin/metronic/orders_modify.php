@@ -401,9 +401,10 @@
 															{
 																$overall_total = 0;
 																$i = 1;
-																$total_qty = 0;
-																//foreach ($order_details->order_items as $item)
-																foreach ($order_details->items() as $item)
+																$total_qty = 0;																
+																//print_r($order_details->items());//die();
+																//foreach ($order_details->items() as $item)
+																foreach ($order_details->order_items as $item)
 																{
 																	// get product details
 	                                                                $exp = explode('_', $item->prod_sku);
@@ -545,7 +546,7 @@
 															} ?>
 
 															<tr>
-																<td colspan="4" style="border: none;">Total # of Items: <?php echo $i; ?></td>
+																<td colspan="4" style="border: none;">Total # of Items: <?php echo $i-1; ?></td>
 																<td align="right" style="border: none;">Total Quantity</td>
 																<td colspan="5" style="border: none;"> <?php echo $total_qty; ?> &nbsp;</td>
 															</tr>

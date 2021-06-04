@@ -180,8 +180,8 @@ class Bulk_actions extends Admin_Controller {
 		$order = $this->order_details->initialize(array('tbl_order_log.order_log_id'=>$order_id));
 
 		//modified by _noel(20210529)
-		foreach ($order->items() as $item)
-		//foreach ($order->order_items as $item)
+		//foreach ($order->items() as $item)
+		foreach ($order->order_items as $item)
 		{
 			$item_options = json_decode($item->options, TRUE);
 			// process inventory by removing from onorder and physical
@@ -260,8 +260,8 @@ class Bulk_actions extends Admin_Controller {
 		// get order details to get the items ordered
 		$order = $this->order_details->initialize(array('tbl_order_log.order_log_id'=>$order_id));
 		//modified by _noel(20210529)
-		foreach ($order->items() as $item)
-		//foreach ($order->order_items as $item)
+		//foreach ($order->items() as $item)
+		foreach ($order->order_items as $item)
 		{
 			// process inventory by removing from onorder and physical
 			// items needed are prod_no, color_code, size, qty
