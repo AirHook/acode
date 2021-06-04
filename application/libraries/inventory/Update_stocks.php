@@ -730,30 +730,36 @@ class Update_stocks {
 			$this->DB->set($size_label, $final_onorder_stock);
 			$this->DB->insert('tbl_stock_onorder');
 		}
-		
+
 		// admin physical
-		if ($product->admin_physical_st_id)
+		if (is_null($product->admin_physical_st_id)!=true)
 		{
-			$this->DB->where('st_id', $product->admin_physical_st_id);
-			$this->DB->update('tbl_stock_admin_physical', array($size_label => $final_admin_physical_stock));
-		}
-		else
-		{
-			$this->DB->set('st_id', $product->admin_physical_st_id);
-			$this->DB->set($size_label, $final_admin_physical_stock);
-			$this->DB->insert('tbl_stock_admin_physical');
+			if ($product->admin_physical_st_id)
+			{
+				$this->DB->where('st_id', $product->admin_physical_st_id);
+				$this->DB->update('tbl_stock_admin_physical', array($size_label => $final_admin_physical_stock));
+			}
+			else
+			{
+				$this->DB->set('st_id', $product->admin_physical_st_id);
+				$this->DB->set($size_label, $final_admin_physical_stock);
+				$this->DB->insert('tbl_stock_admin_physical');
+			}
 		}
 		// admin available
-		if ($product->admin_st_id)
+		if (is_null($product->admin_st_id)!=true)
 		{
-			$this->DB->where('st_id', $product->admin_st_id);
-			$this->DB->update('tbl_stock_admin', array($size_label => $final_admin_available_stock));
-		}
-		else
-		{
-			$this->DB->set('st_id', $product->admin_st_id);
-			$this->DB->set($size_label, $final_admin_available_stock);
-			$this->DB->insert('tbl_stock_admin');
+			if ($product->admin_st_id)
+			{
+				$this->DB->where('st_id', $product->admin_st_id);
+				$this->DB->update('tbl_stock_admin', array($size_label => $final_admin_available_stock));
+			}
+			else
+			{
+				$this->DB->set('st_id', $product->admin_st_id);
+				$this->DB->set($size_label, $final_admin_available_stock);
+				$this->DB->insert('tbl_stock_admin');
+			}
 		}
 		// admin onorder
 		if ($product->admin_onorder_st_id)

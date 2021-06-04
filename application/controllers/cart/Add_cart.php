@@ -249,7 +249,7 @@ class Add_cart extends Frontend_Controller
 				'price'   => ($price != '0' ? $price : 1),
 				'name'    => $prod_name,
 				'options' => array(
-					'size' 				=> $size_ary[$key],
+					'size' 				=> ($key-1)*2,// $size_ary[$key], updated by _noel(20210604)
 					'prod_no' 			=> $prod_no,
 					'color_code' 		=> $color_code,
 					'des_id'			=> $des_id,

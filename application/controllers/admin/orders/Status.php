@@ -160,7 +160,9 @@ class Status extends Admin_Controller {
 			$config['size'] = $item->size;
 			$config['qty'] = $item->qty;
 			$config['order_id'] = $order_id;
-			$config['admin_stocks'] = $item_options['admin_stocks_only'];
+			if (array_key_exists('admin_stocks_only',$item_options))
+				$config['admin_stocks'] = $item_options['admin_stocks_only'];
+
 			$this->update_stocks->initialize($config);
 			$this->update_stocks->return();
 		}
@@ -238,7 +240,8 @@ class Status extends Admin_Controller {
 			$config['size'] = $item->size;
 			$config['qty'] = $item->qty;
 			$config['order_id'] = $order_id;
-			$config['admin_stocks'] = $item_options['admin_stocks_only'];
+			if (array_key_exists('admin_stocks_only',$item_options))
+				$config['admin_stocks'] = $item_options['admin_stocks_only'];
 			$this->update_stocks->initialize($config);
 			$this->update_stocks->remove();
 		}

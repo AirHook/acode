@@ -597,13 +597,34 @@
 										</td>
 									</tr>
 
+									<?php
+										if ($this->order_details->ship_state == 'New York')
+										{
+											$sales_tax = ($this->order_details->order_amount) * 0.0875;
+									?>
+									<tr style="font-family:sans-serif;font-size:10px;">
+										<td colspan="4" align="right" style="font-family:sans-serif;font-size:8px;vertical-align:top;padding:5px;">
+											Sales Tax (NY, USA only)
+										</td>
+										<td colspan="2" align="right" style="font-family:sans-serif;font-size:8px;vertical-align:top;padding:5px;">
+											<?php echo '$ '.number_format($sales_tax, 2); ?>
+										</td>
+									</tr>
+									<?php
+										}
+										else
+										{
+											$sales_tax = 0;
+										}
+									?>
+
 									<tr><td colspan="6" style="height:10px;border-bottom:1px solid #ccc;"> </td></tr>
 									<tr><td colspan="6" style="height:10px;"> </td></tr>
 
 									<tr style="font-family:sans-serif;font-size:10px;">
-										<td colspan="4" align="right" style="font-family:sans-serif;font-size:8px;vertical-align:top;padding:5px;font-weight:bold;"> Grand Total </td>
+										<td colspan="<?php echo count($size_names) + 5; ?>" align="right" style="font-family:sans-serif;font-size:8px;vertical-align:top;padding:5px;font-weight:bold;"> Grand Total </td>
 										<td colspan="2" align="right" style="font-family:sans-serif;font-size:8px;vertical-align:top;padding:5px;font-weight:bold;">
-											$ <?php echo @number_format((($overall_total - $discount) + $order_details->shipping_fee), 2); ?>
+											$ <?php echo @number_format((($overall_total - $discount) + $order_details->shipping_fee + $sales_tax), 2); ?>
 										</td>
 									</tr>
 

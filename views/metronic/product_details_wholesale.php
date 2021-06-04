@@ -688,7 +688,11 @@
                                                                                 ';
                                                                             }
 
-                                                                            $qty = $this->product_details->$size_label;
+                                                                            //updated by _noel(20210604)
+                                                                            //$qty = $this->product_details->$size_label;
+                                                                            $available_label = str_replace('size','available',$size_label);
+                                                                            $qty = $this->product_details->$available_label;
+                                                                            //echo 'NOEL:'.str_replace('size','available',$size_label);
 
                                                                             // don't show preorer to level 2 ws users
                                                                             if (
