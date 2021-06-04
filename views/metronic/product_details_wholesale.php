@@ -692,7 +692,6 @@
                                                                             //$qty = $this->product_details->$size_label;
                                                                             $available_label = str_replace('size','available',$size_label);
                                                                             $qty = $this->product_details->$available_label;
-                                                                            //echo 'NOEL:'.str_replace('size','available',$size_label);
 
                                                                             // don't show preorer to level 2 ws users
                                                                             if (
@@ -756,7 +755,7 @@
                                                                                     } ?>
 
                                                                                 </div>
-                                                                                <input type="hidden" class="size_key" name="size[<?php echo $skey; ?>]" value="" />
+                                                                                <input type="hidden" class="size_key" name="size[<?php echo $skey; ?>]" value="<?php echo $size; ?>" />
 
                                                                             </div>
 
