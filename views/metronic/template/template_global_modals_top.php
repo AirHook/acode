@@ -1,4 +1,4 @@
-		<!-- BEGIN GLOBAL MODALS -->
+		<!-- BEGIN TOP GLOBAL MODALS -->
 		<?php
 		/**
 		 * A way to show modal loading at start of page load
@@ -54,4 +54,37 @@
 			<?php
 		} ?>
 		<!-- /modal -->
-		<!-- END GLOBAL MODALS -->
+
+		<?php
+		/**
+		 * A way to show modal loading at start of page load
+		 */
+		if (@$cart_mem)
+		{ ?>
+		<!-- CART MEMORY NOTICE -->
+		<div class="loading-modal" id="modal-cart_mem" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+			<div class="modal-dialog modal-md">
+				<div class="modal-content">
+					<div class="modal-header">
+						<!--<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>-->
+						<h4 class="modal-title">Notice!</h4>
+					</div>
+					<div class="modal-body">
+						<p class="modal-body-text">
+							We noticed that you were shopping during your last session.<br />
+							Would you like to continue with your shopping cart?
+						</p>
+					</div>
+					<div class="modal-footer">
+						<a href="<?php echo site_url('cart/reset_cart'); ?>" class="btn dark btn-outline">Reset Cart</a>
+						<a href="<?php echo site_url('cart'); ?>" class="btn dark">View Cart...</a>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+		<!-- /modal -->
+			<?php
+		} ?>
+		<!-- END TOP GLOBAL MODALS -->

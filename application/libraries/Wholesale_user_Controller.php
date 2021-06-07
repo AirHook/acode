@@ -14,8 +14,7 @@ class Wholesale_user_Controller extends Frontend_Controller {
 		$this->load->library('users/wholesale_user_details');
 
 		/*****
-		 * ...is there a session for admin already?
-		 * check for admin_loggedin session
+		 * ...is there a session for user already?
 		 */
 		if(
 			! $this->session->userdata('user_loggedin')

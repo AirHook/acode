@@ -243,6 +243,27 @@ class Frontend_Controller extends MY_Controller {
 			}
 
 			$this->data['logindata'] = $this->wholesale_user_details->get_logindata();
+
+			/*****
+			 * check for cart memory at user options
+			 */
+			// if there is cart in memory, add it to cart accordingly
+			if ( ! $this->cart->contents() && @$this->wholesale_user_details->options['cart'])
+			{
+				foreach ($this->wholesale_user_details->options['cart'] as $rowid => $item)
+				{
+					// need to unset a couple of reserved words
+					unset($item['rowid']);
+					unset($item['subtotal']);
+
+					// add items to cart
+					$this->cart->insert($item);
+
+					// set a boolean variable to check on this
+					$this->data['cart_mem'] = TRUE;
+				}
+			}
+			else $this->data['cart_mem'] = FALSE;
 		}
 
 		// if not within shop/ class directory,

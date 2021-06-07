@@ -54,6 +54,7 @@ class Submit extends Frontend_Controller
 		$this->load->library('products/product_details');
 		$this->load->library('orders/order_details');
 		$this->load->library('products/size_names');
+		$this->load->library('cart/cart_memory');
 
 		// initialize consumer details
 		//$this->consumer_user_details->initialize(array('user_id'=>$this->session->user_id));
@@ -203,6 +204,27 @@ class Submit extends Frontend_Controller
 				'shipping_id'		=> ''
 			);
 			$this->session->unset_userdata($data);
+
+			// remove from memory
+			if ($this->session->user_loggedin && $this->session->user_role == 'wholesale')
+			{
+				// set user details before updating cart memory
+				$this->cart_memory->user_details = array(
+					'user_id' => $this->wholesale_user_details->user_id,
+					'options' => $this->wholesale_user_details->options
+				);
+				// remove from memory
+				$this->cart_memory->unset_ws();
+			}
+			else
+			{
+				// this part of the code is an anticipation for guest cart session
+				// save to cookie as memory which is part of the wholesale cart session
+				// memory saving program. something is wrong with the setcookie.
+				// deferring this anticipation at the moment - _rey 20200604
+				// remove from memory
+				//$this->cart_memory->unset_cookie();
+			}
 
 			echo '<a href="'.site_url('checkout/receipt/index/'.$order_log_id).'">Continue...</a>';
 			echo '<br /><br />';
@@ -357,6 +379,27 @@ class Submit extends Frontend_Controller
 
 		// destroy cart
 		$this->cart->destroy();
+
+		// remove from memory
+		if ($this->session->user_loggedin && $this->session->user_role == 'wholesale')
+		{
+			// set user details before updating cart memory
+			$this->cart_memory->user_details = array(
+				'user_id' => $this->wholesale_user_details->user_id,
+				'options' => $this->wholesale_user_details->options
+			);
+			// remove from memory
+			$this->cart_memory->unset_ws();
+		}
+		else
+		{
+			// this part of the code is an anticipation for guest cart session
+			// save to cookie as memory which is part of the wholesale cart session
+			// memory saving program. something is wrong with the setcookie.
+			// deferring this anticipation at the moment - _rey 20200604
+			// remove from memory
+			//$this->cart_memory->unset_cookie();
+		}
 
 		// send user to order receipt page
 		redirect('checkout/receipt/index/'.$order_log_id);

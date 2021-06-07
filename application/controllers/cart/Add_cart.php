@@ -27,6 +27,9 @@ class Add_cart extends Frontend_Controller
 	 */
 	function index()
 	{
+		// load pertinent library/model/helpers
+		$this->load->library('cart/cart_memory');
+
 		// grab the post information
 		// common between consumer and wholesale users
 		$prod_name			= $this->input->post('prod_name');
@@ -116,6 +119,14 @@ class Add_cart extends Frontend_Controller
 
 		$this->cart->insert($cart_item);
 
+		// this part of the code is an anticipation for guest cart session
+		// save to cookie as memory which is part of the wholesale cart session
+		// memory saving program. something is wrong with the setcookie.
+		// deferring this anticipation at the moment - _rey 20200604
+		// save to memory
+		//$this->cart_memory->cart_mem_cookie();
+		//$this->cart_memory->unset_cookie();
+
 		// redirect user to cart basket
 		redirect('cart', 'location');
 	}
@@ -197,6 +208,9 @@ class Add_cart extends Frontend_Controller
 		//print_r(array_filter($this->input->post('qty')));
 		//die();
 
+		// load pertinent library/model/helpers
+		$this->load->library('cart/cart_memory');
+
 		// we need to put a check for when ordering is done via satellite site
 		// only logged in wholesale users are allowed to order on satellite site
 		if (
@@ -267,7 +281,16 @@ class Add_cart extends Frontend_Controller
 				)
 			);
 
+			// add to cart
 			$this->cart->insert($this->data);
+
+			// set user details before updating cart memory
+			$this->cart_memory->user_details = array(
+				'user_id' => $this->wholesale_user_details->user_id,
+				'options' => $this->wholesale_user_details->options
+			);
+			// save to memory
+			$this->cart_memory->cart_mem_ws();
 		}
 
 		// redirect user to cart basket
