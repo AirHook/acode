@@ -13,7 +13,7 @@
             <div style="display:inline-block;text-align:justify;margin:0 auto;">
                 <svg class="barcode"
                     jsbarcode-format="upc"
-                    jsbarcode-value="<?php echo $barcode ?: ; ?>"
+                    jsbarcode-value="<?php echo $barcode ?: ''; ?>"
                     jsbarcode-textmargin="0"
                     jsbarcode-width="1"
                     jsbarcode-height="40"
