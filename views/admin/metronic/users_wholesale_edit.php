@@ -70,6 +70,7 @@
                                 </label>
                                 <div class="col-md-4">
                                     <select class="form-control select2me" name="is_active">
+                                        <option value="">Select</option>
                                         <option value="1" <?php echo $this->wholesale_user_details->status === '1' ? 'selected="selected"' : ''; ?>>Active</option>
                                         <option value="0" <?php echo $this->wholesale_user_details->status === '0' ? 'selected="selected"' : ''; ?>>Inactive</option>
                                     </select>
