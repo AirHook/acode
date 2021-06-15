@@ -111,7 +111,7 @@
 
                                             <br />
 
-                                            <img src="<?php echo base_url(); ?>assets/images/logo/logo-<?php echo @$reference_designer ?: 'shop7thavenue'; ?>.png" width="300" style="margin-top:10px;margin-bottom:5px;" />
+                                            <img src="<?php echo base_url(); ?>assets/images/logo/logo-<?php echo @$reference_designer ?: 'shop7thavenue'; ?>.png" width="300" height="50" style="margin-top:10px;margin-bottom:5px;" />
 
                                             <br />
 
@@ -640,7 +640,7 @@
                                                     .'.html'
                                                 ;
                                                 // append $access_link with items
-                                                $access_link.= '?email='.$email.'&av=onsale&items_csv='.implode(',', $onsale_products);
+                                                $access_link.= '?email='.@$email.'&av=onsale&items_csv='.implode(',', $onsale_products);
 
                 								foreach($onsale_products as $item)
                 								{
