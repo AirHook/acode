@@ -113,7 +113,19 @@
                                                     { ?>
 
                                                     <li style="float:left;" data-here="here">
+
+                                                        <?php
+                                                        if ($this->wholesale_user_details->designer_logo)
+                                                        { ?>
                                                         <img src="<?php echo $this->config->item('PROD_IMG_URL').$this->wholesale_user_details->designer_logo; ?>" alt="logo" class="logo-default logo-list-slider-for-wholesale" />
+                                                            <?php
+                                                        }
+                                                        else
+                                                        { ?>
+                                                        <img src="<?php echo base_url(); ?>assets/images/logo/logo-<?php echo $this->webspace_details->slug; ?>.png" alt="logo" class="logo-default else-logo-list-slider-single" />
+                                                            <?php
+                                                        } ?>
+                                                        
                 									</li>
 
                                                         <?php
@@ -137,7 +149,7 @@
                                                     { ?>
 
                                                     <li style="float:left;">
-                                                        <img src="<?php echo base_url(); ?>assets/images/logo/logo-<?php echo $this->webspace_details->slug; ?>-dark.png" alt="logo" class="logo-default else-logo-list-slider-single" />
+                                                        <img src="<?php echo base_url(); ?>assets/images/logo/logo-<?php echo $this->webspace_details->slug; ?>.png" alt="logo" class="logo-default else-logo-list-slider-single" />
                                                     </li>
 
                                                         <?php
