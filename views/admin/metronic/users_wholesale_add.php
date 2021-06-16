@@ -88,7 +88,7 @@
                                         <option value="1" <?php echo set_select('access_level', '1'); ?>>Level 1</option>
                                         <option value="2" <?php echo set_select('access_level', '2'); ?>>Level 2</option>
                                     </select>
-                                    <cite class="help-block small hide">
+                                    <cite class="help-block small">
                                         LEVEL 1: Access to INSTOCK, PREORDER, ONSALE, all sizes<br />
                                         LEVEL 2: Access to INSTOCK and ONSALE, available size only<br />
                                         * Wholesale users cannot see CS Clearance Items
