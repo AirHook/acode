@@ -61,18 +61,25 @@ class Inactive extends Admin_Controller {
 		$DB = $this->load->database('instyle', TRUE);
 		$DB->select('*');
 		$DB->where('is_active', '0');
-		if ($this->data['des_slug'])
+		if (@$this->webspace_details->options['site_type'] != 'hub_site')
 		{
-			if ($this->data['des_slug'] == $this->webspace_details->slug)
+			$DB->where('tbluser_data_wholesale.reference_designer', $this->webspace_details->slug);
+		}
+		else
+		{
+			if ($this->data['des_slug'])
 			{
-				$DB->where("(
-					tbluser_data_wholesale.reference_designer IS NULL
-					OR tbluser_data_wholesale.reference_designer = ''
-					OR tbluser_data_wholesale.reference_designer = 'instylenewyork'
-					OR tbluser_data_wholesale.reference_designer = '".$this->data['des_slug']."'
-				)");
+				if ($this->data['des_slug'] == $this->webspace_details->slug)
+				{
+					$DB->where("(
+						tbluser_data_wholesale.reference_designer IS NULL
+						OR tbluser_data_wholesale.reference_designer = ''
+						OR tbluser_data_wholesale.reference_designer = 'instylenewyork'
+						OR tbluser_data_wholesale.reference_designer = '".$this->data['des_slug']."'
+					)");
+				}
+				else $DB->where('tbluser_data_wholesale.reference_designer', $this->data['des_slug']);
 			}
-			else $DB->where('tbluser_data_wholesale.reference_designer', $this->data['des_slug']);
 		}
 		$q1 = $DB->get('tbluser_data_wholesale');
 		$this->data['count_all'] = $q1->num_rows();
