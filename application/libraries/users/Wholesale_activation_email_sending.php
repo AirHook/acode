@@ -130,9 +130,19 @@ class Wholesale_activation_email_sending
 			;
 
 			// get product list
-			//$data['instock_products'] = $this->_get_thumbs('instock');
-			//$data['preorder_products'] = $this->_get_thumbs('preorder');
-			$data['onsale_products'] = $this->_get_thumbs('onsale');
+			if ($this->CI->webspace_details->slug == 'chaarmfurs')
+			{
+				$data['instock_products'] = $this->_get_thumbs('instock');
+			}
+			else
+			{
+				//$data['instock_products'] = $this->_get_thumbs('instock');
+				//$data['preorder_products'] = $this->_get_thumbs('preorder');
+				$data['onsale_products'] = $this->_get_thumbs('onsale');
+			}
+
+			//echo '<pre>';
+			//print_r($data['instock_products']); die();
 
 			$this->CI->email->clear();
 
@@ -257,7 +267,10 @@ class Wholesale_activation_email_sending
 		else $where['designer.url_structure'] = $this->CI->wholesale_user_details->reference_designer;
 
 		// set reference category
-		$where['tbl_product.categories LIKE'] = $category;
+		if ($this->CI->wholesale_user_details->reference_designer != 'chaarmfurs')
+		{
+			$where['tbl_product.categories LIKE'] = $category;
+		}
 
 		// PUBLISH PUBLIC
 		$where_public = "(
