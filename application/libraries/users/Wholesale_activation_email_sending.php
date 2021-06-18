@@ -141,9 +141,6 @@ class Wholesale_activation_email_sending
 				$data['onsale_products'] = $this->_get_thumbs('onsale');
 			}
 
-			//echo '<pre>';
-			//print_r($data['instock_products']); die();
-
 			$this->CI->email->clear();
 
 			$this->CI->email->from($this->CI->wholesale_user_details->designer_info_email, $this->CI->wholesale_user_details->designer);
