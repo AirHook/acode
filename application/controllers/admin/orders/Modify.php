@@ -89,6 +89,8 @@ class Modify extends Admin_Controller {
 			;
 		}
 
+		unset($_SESSION['Modify-Order']);
+
 		// other data
 		$this->data['status'] = $this->order_details->status_text;
 
@@ -105,465 +107,855 @@ class Modify extends Admin_Controller {
 	// ----------------------------------------------------------------------
 
 	/**
-	 * PUBLIC - Edit Store Details / Wholesale User Details
+	 * PUBLIC - Update all orders info in session _noel(20210619)
 	 *
 	 * @return	void
 	 */
-	public function edit_store_details($order_id = '')
+	public function update_order($order_id = '')
 	{
-		if ( ! $order_id)
-		{
-			// nothing more to do...
-			// set flash data
-			$this->session->set_flashdata('error', 'no_id_passed');
-
-			// redirect user
-			redirect('admin/orders/modify/index/'.$order_id, 'location');
-		}
-
-		// grab input post
-		$post_ary = array_filter($this->input->post(), 'strlen');
-
-		// unset items
-		unset($post_ary['user_id']);
-		unset($post_ary['revision']);
-		// set revision #
-  	//$post_ary['rev'] = $this->purchase_order_details->rev + 1;
-
-		// set revision # added by _noel(20210521)
-		$rev = @$this->input->post('revision') ? $this->input->post('revision') : 0;
-		$this->DB->set('rev', $rev+1);
-		$this->DB->where('order_log_id', $order_id);
-		$this->DB->update('tbl_order_log');
-
-		// update records
-		$this->DB->set($post_ary);
-		$this->DB->where('user_id', $this->input->post('user_id'));
-		$this->DB->update('tbluser_data_wholesale');
-
-		// set flash data
-		$this->session->set_flashdata('success', 'edit');
-
-		// return to modify order page
-		redirect('admin/orders/modify/index/'.$order_id, 'location');
-	}
-
-	// ----------------------------------------------------------------------
-
-	/**
-	 * PUBLIC - Edit Order Ship To Address
-	 *
-	 * @return	void
-	 */
-	public function edit_ship_to($order_id = '')
-	{
-		if ( ! $order_id)
-		{
-			// nothing more to do...
-			// set flash data
-			$this->session->set_flashdata('error', 'no_id_passed');
-
-			// redirect user
-			redirect('admin/orders/modify/index/'.$order_id, 'location');
-		}
-
-		// grab input post
-		$post_ary = array_filter($this->input->post(), 'strlen');
-
-		// update records
-		$this->DB->set($post_ary);
-		$this->DB->where('order_log_id', $order_id);
-		$this->DB->update('tbl_order_log');
-
-		// get order details
-		$this->data['order_details'] =
-			$this->order_details->initialize(
-				array(
-					'tbl_order_log.order_log_id'=>$order_id
-				)
-			)
-		;
-
-		// based on order details, get user details
-		if ($this->data['order_details']->c == 'ws')
-		{
-			$this->data['user_details'] =
-				$this->wholesale_user_details->initialize(
-					array(
-						'user_id' => $this->data['order_details']->user_id
-					)
-				)
-			;
-		}
-		else
-		{
-			$this->data['user_details'] =
-				$this->consumer_user_details->initialize(
-					array(
-						'user_id' => $this->data['order_details']->user_id
-					)
-				)
-			;
-		}
-
-		$addresses = $this->data['user_details']->alt_address;
-
-		//look for if record exists - _noel(20210526)
-		$address_exists = false;
-		for ($i = 2; $i < count($addresses); $i++)
-		{
-			//echo "ARRAY".$i;
-			if (($addresses[$i]['address1']==$this->data['order_details']->ship_address1) &&
-					($addresses[$i]['address2']==$this->data['order_details']->ship_address2) &&
-						($addresses[$i]['city']==$this->data['order_details']->ship_city) &&
-							($addresses[$i]['state']==$this->data['order_details']->ship_state) &&
-								($addresses[$i]['country']==$this->data['order_details']->ship_country) &&
-									($addresses[$i]['zipcode']==$this->data['order_details']->ship_zipcode))
+			if ( ! $order_id)
 			{
-				$addresses[$i]['firstname'] = $this->data['order_details']->firstname;
-				$addresses[$i]['lastname'] = $this->data['order_details']->lastname;
-				$addresses[$i]['store_name'] = $this->data['order_details']->store_name;
-				$addresses[$i]['telephone'] = $this->data['order_details']->telephone;
-				$addresses[$i]['address1'] = $this->data['order_details']->ship_address1;
-				$addresses[$i]['address2'] = $this->data['order_details']->ship_address2;
-				$addresses[$i]['city'] = $this->data['order_details']->ship_city;
-				$addresses[$i]['state'] = $this->data['order_details']->ship_state;
-				$addresses[$i]['country'] = $this->data['order_details']->ship_country;
-				$addresses[$i]['zipcode'] = $this->data['order_details']->ship_zipcode;
-				$address_exists = true;
-				break;
+				// nothing more to do...
+				// set flash data
+				$this->session->set_flashdata('error', 'no_id_passed');
+
+				// redirect user
+				redirect('admin/orders/modify/index/'.$order_id, 'location');
 			}
-		}
 
-		//look for available slot - _noel(20210526)
-		if ($address_exists==false)
-		{
-			$slot_found=false;
-			$i=2;
-			do
-			{
-				if (($addresses[$i]['address1']=="") &&
-						($addresses[$i]['address2']=="") &&
-							($addresses[$i]['city']=="") &&
-								($addresses[$i]['state']=="") &&
-									($addresses[$i]['country']=="") &&
-										($addresses[$i]['zipcode']==""))
+			if (isset($_SESSION['Modify-Order']['User_Details'])) {
+				// grab session data
+				$post_ary = array_filter($_SESSION['Modify-Order']['User_Details'], 'strlen');
+				$user_id = $post_ary['user_id'];
+				// unset items
+				unset($post_ary['user_id']);
+
+				// update records
+				$this->DB->set($post_ary);
+				$this->DB->where('user_id', $user_id);
+				$this->DB->update('tbluser_data');
+			}
+
+			if (isset($_SESSION['Modify-Order']['Store_Details'])) {
+				// grab session data
+				$post_ary = array_filter($_SESSION['Modify-Order']['Store_Details'], 'strlen');
+				$user_id = $post_ary['user_id'];
+				// unset items
+				unset($post_ary['user_id']);
+
+				// update records
+				$this->DB->set($post_ary);
+				$this->DB->where('user_id', $user_id);
+				$this->DB->update('tbluser_data_wholesale');
+			}
+
+			if (isset($_SESSION['Modify-Order']['Ship_To'])) {
+				// grab session data
+				$post_ary = array_filter($_SESSION['Modify-Order']['Ship_To'], 'strlen');
+
+				// update records
+				$this->DB->set($post_ary);
+				$this->DB->where('order_log_id', $order_id);
+				$this->DB->update('tbl_order_log');
+
+				// get order details
+				$this->data['order_details'] =
+					$this->order_details->initialize(
+						array(
+							'tbl_order_log.order_log_id'=>$order_id
+						)
+					)
+				;
+
+				// based on order details, get user details
+				if ($this->data['order_details']->c == 'ws')
 				{
-					$addresses[$i]['firstname'] = $this->data['order_details']->firstname;
-					$addresses[$i]['lastname'] = $this->data['order_details']->lastname;
-					$addresses[$i]['store_name'] = $this->data['order_details']->store_name;
-					$addresses[$i]['telephone'] = $this->data['order_details']->telephone;
-					$addresses[$i]['address1'] = $this->data['order_details']->ship_address1;
-					$addresses[$i]['address2'] = $this->data['order_details']->ship_address2;
-					$addresses[$i]['city'] = $this->data['order_details']->ship_city;
-					$addresses[$i]['state'] = $this->data['order_details']->ship_state;
-					$addresses[$i]['country'] = $this->data['order_details']->ship_country;
-					$addresses[$i]['zipcode'] = $this->data['order_details']->ship_zipcode;
-					$slot_found=true;
+					$this->data['user_details'] =
+						$this->wholesale_user_details->initialize(
+							array(
+								'user_id' => $this->data['order_details']->user_id
+							)
+						)
+					;
 				}
-				$i++;
-			} while ($slot_found==false);
-		}
-		//update also tbluser_data_wholesale for alt_address - _noel(20210526)
-		$this->DB->set('alt_address',json_encode($addresses));
-		$this->DB->where('user_id',  $this->data['order_details']->user_id);
-		$this->DB->update('tbluser_data_wholesale');
+				else
+				{
+					$this->data['user_details'] =
+						$this->consumer_user_details->initialize(
+							array(
+								'user_id' => $this->data['order_details']->user_id
+							)
+						)
+					;
+				}
 
+				$addresses = $this->data['user_details']->alt_address;
 
-		// set flash data
-		$this->session->set_flashdata('success', 'edit');
+				//look for if record exists - _noel(20210526)
+				$address_exists = false;
+				for ($i = 2; $i < count($addresses); $i++)
+				{
+					if (($addresses[$i]['address1']==$this->data['order_details']->ship_address1) &&
+							($addresses[$i]['address2']==$this->data['order_details']->ship_address2) &&
+								($addresses[$i]['city']==$this->data['order_details']->ship_city) &&
+									($addresses[$i]['state']==$this->data['order_details']->ship_state) &&
+										($addresses[$i]['country']==$this->data['order_details']->ship_country) &&
+											($addresses[$i]['zipcode']==$this->data['order_details']->ship_zipcode))
+					{
+						$addresses[$i]['firstname'] = $this->data['order_details']->firstname;
+						$addresses[$i]['lastname'] = $this->data['order_details']->lastname;
+						$addresses[$i]['store_name'] = $this->data['order_details']->store_name;
+						$addresses[$i]['telephone'] = $this->data['order_details']->telephone;
+						$addresses[$i]['address1'] = $this->data['order_details']->ship_address1;
+						$addresses[$i]['address2'] = $this->data['order_details']->ship_address2;
+						$addresses[$i]['city'] = $this->data['order_details']->ship_city;
+						$addresses[$i]['state'] = $this->data['order_details']->ship_state;
+						$addresses[$i]['country'] = $this->data['order_details']->ship_country;
+						$addresses[$i]['zipcode'] = $this->data['order_details']->ship_zipcode;
+						$address_exists = true;
+						break;
+					}
+				}
 
-		// return to modify order page
-		redirect('admin/orders/modify/index/'.$order_id, 'location');
-	}
+				//look for available slot - _noel(20210526)
+				if ($address_exists==false)
+				{
+					$slot_found=false;
+					$i=2;
+					do
+					{
+						if (($addresses[$i]['address1']=="") &&
+								($addresses[$i]['address2']=="") &&
+									($addresses[$i]['city']=="") &&
+										($addresses[$i]['state']=="") &&
+											($addresses[$i]['country']=="") &&
+												($addresses[$i]['zipcode']==""))
+						{
+							$addresses[$i]['firstname'] = $this->data['order_details']->firstname;
+							$addresses[$i]['lastname'] = $this->data['order_details']->lastname;
+							$addresses[$i]['store_name'] = $this->data['order_details']->store_name;
+							$addresses[$i]['telephone'] = $this->data['order_details']->telephone;
+							$addresses[$i]['address1'] = $this->data['order_details']->ship_address1;
+							$addresses[$i]['address2'] = $this->data['order_details']->ship_address2;
+							$addresses[$i]['city'] = $this->data['order_details']->ship_city;
+							$addresses[$i]['state'] = $this->data['order_details']->ship_state;
+							$addresses[$i]['country'] = $this->data['order_details']->ship_country;
+							$addresses[$i]['zipcode'] = $this->data['order_details']->ship_zipcode;
+							$slot_found=true;
+						}
+						$i++;
+					} while ($slot_found==false);
+				}
+				//update also tbluser_data_wholesale for alt_address - _noel(20210526)
+				$this->DB->set('alt_address',json_encode($addresses));
+				$this->DB->where('user_id',  $this->data['order_details']->user_id);
+				$this->DB->update('tbluser_data_wholesale');
+			}
 
-	// ----------------------------------------------------------------------
+			if (isset($_SESSION['Modify-Order']['Remarks'])) {
+				// grab session data
+				$post_ary = array_filter($_SESSION['Modify-Order']['Remarks'], 'strlen');
 
-	/**
-	 * PUBLIC - Edit User Details for Consumers
-	 *
-	 * @return	void
-	 */
-	public function edit_user_details($order_id = '')
-	{
-		if ( ! $order_id)
-		{
-			// nothing more to do...
+				// update records
+				$this->DB->set('remarks', $post_ary['remarks']);
+				$this->DB->where('order_log_id', $order_id);
+				$this->DB->update('tbl_order_log');
+			}
+
+			if (isset($_SESSION['Modify-Order']['Discount'])) {
+				// grab session data
+				$post_ary = array_filter($_SESSION['Modify-Order']['Discount'], 'strlen');
+
+				// get order details
+				$order_details =
+					$this->order_details->initialize(
+						array(
+							'tbl_order_log.order_log_id'=>$order_id
+						)
+					)
+				;
+
+				// get order options
+				$options = $order_details->options;
+
+				// add/edit/remove options for discount
+				if ($post_ary['discount'] === '0')
+				{
+					unset($options['discount']);
+				}
+				else
+				{
+					$options['discount'] = $post_ary['discount'];
+				}
+
+				// update records
+				$this->DB->set('options', json_encode($options));
+				$this->DB->where('order_log_id', $order_id);
+				$this->DB->update('tbl_order_log');
+			}
+
+			if (isset($_SESSION['Modify-Order']['Shipping_Fee'])) {
+				// grab session data
+				$post_ary = array_filter($_SESSION['Modify-Order']['Shipping_Fee'], 'strlen');
+
+				// update records
+				$this->DB->set('shipping_fee', $post_ary['shipping_fee']);
+				$this->DB->where('order_log_id', $order_id);
+				$this->DB->update('tbl_order_log');
+			}
+
+			if (isset($_SESSION['Modify-Order']['Quantity'])) {
+				// grab session data
+				$post_ary = array_filter($_SESSION['Modify-Order']['Quantity'], 'strlen');
+
+				// update records
+				foreach ($post_ary as $order_log_detail_id => $qty) {
+					$this->DB->set('qty', $qty);
+					$this->DB->where('order_log_detail_id', $order_log_detail_id);
+					$this->DB->update('tbl_order_log_details');
+				}
+			}
+
+			if (isset($_SESSION['Modify-Order']['Price'])) {
+				// grab session data
+				$post_ary = array_filter($_SESSION['Modify-Order']['Price'], 'strlen');
+
+				// update records
+				foreach ($post_ary as $order_log_detail_id => $price) {
+					$this->DB->set('unit_price', $price);
+					$this->DB->where('order_log_detail_id', $order_log_detail_id);
+					$this->DB->update('tbl_order_log_details');
+				}
+			}
+
+			if (isset($_SESSION['Modify-Order']['Remove'])) {
+				// grab session data
+				$post_ary = array_filter($_SESSION['Modify-Order']['Remove'], 'strlen');
+
+				// update records
+				foreach ($post_ary as $order_log_detail_id => $value) {
+					//Update stocks
+					$this->DB->select('tbl_order_log_details.*');
+					$this->DB->where('order_log_detail_id', $order_log_detail_id);
+					$query = $this->DB->get('tbl_order_log_details');
+					$item = $query->row();
+					if (isset($item)) {
+						$item_options = json_decode($item->options, TRUE);
+						$this->load->library('inventory/update_stocks');
+						$config['prod_sku'] = $item->prod_sku;
+						$config['size'] = $item->size;
+						$config['qty'] = $item->qty;
+						$config['order_id'] = $order_id;
+						if (array_key_exists('admin_stocks_only',$item_options))
+						 	$config['admin_stocks'] = $item_options['admin_stocks_only'];						
+						$this->update_stocks->initialize($config);
+						$this->update_stocks->return();
+					}
+
+					$this->DB->where('order_log_detail_id', $order_log_detail_id);
+					$this->DB->delete('tbl_order_log_details');
+				}
+			}
+
+			// set revision # added by _noel(20210521)
+			$rev = @$this->input->post('revision') ? $this->input->post('revision') : 0;
+			$this->DB->set('rev', $rev + 1);
+			$this->DB->set('last_modified', time());
+			$this->DB->where('order_log_id', $order_id);
+			$this->DB->update('tbl_order_log');
+
 			// set flash data
-			$this->session->set_flashdata('error', 'no_id_passed');
+			$this->session->set_flashdata('success', 'edit');
 
-			// redirect user
+			// return to modify order page
 			redirect('admin/orders/modify/index/'.$order_id, 'location');
-		}
-
-		// grab input post
-		$post_ary = array_filter($this->input->post(), 'strlen');
-
-		// unset items
-		unset($post_ary['user_id']);
-		unset($post_ary['revision']);
-
-		// set revision # added by _noel(20210521)
-		$rev = @$this->input->post('revision') ? $this->input->post('revision') : 0;
-		$this->DB->set('rev', $rev+1);
-		$this->DB->where('order_log_id', $order_id);
-		$this->DB->update('tbl_order_log');
-
-		// update records
-		$this->DB->set($post_ary);
-		$this->DB->where('user_id', $this->input->post('user_id'));
-		$this->DB->update('tbluser_data');
-
-		// set flash data
-		$this->session->set_flashdata('success', 'edit');
-
-		// return to modify order page
-		redirect('admin/orders/modify/index/'.$order_id, 'location');
 	}
+
+	// // ----------------------------------------------------------------------
+	//
+	// /**
+	//  * PUBLIC - Edit Store Details / Wholesale User Details
+	//  *
+	//  * @return	void
+	//  */
+	// public function edit_store_details($order_id = '')
+	// {
+	// 	if ( ! $this->input->post())
+	// 	{
+	// 		// nothing more to do...
+	// 		$data = array('status'=>'false','error'=>'no_post');
+	// 		echo json_encode($data);
+	// 	}
+	// 	else
+	// 	{
+	// 		unset($_SESSION['edit_store_details']);
+	// 		unset($_SESSION['edit_user_details']);
+	// 		$_SESSION['edit_store_details'] = json_encode($this->input->post());
+	// 		$data = $this->input->post();
+	// 	}
+	// 	echo json_encode($data);
+	// 	exit;
+	// // 	if ( ! $order_id)
+	// // 	{
+	// // 		// nothing more to do...
+	// // 		// set flash data
+	// // 		$this->session->set_flashdata('error', 'no_id_passed');
+	// //
+	// // 		// redirect user
+	// // 		redirect('admin/orders/modify/index/'.$order_id, 'location');
+	// // 	}
+	// //
+	// // 	// grab input post
+	// // 	$post_ary = array_filter($this->input->post(), 'strlen');
+	// //
+	// // 	// unset items
+	// // 	unset($post_ary['user_id']);
+	// // 	unset($post_ary['revision']);
+	// // 	// set revision #
+  	// // //$post_ary['rev'] = $this->purchase_order_details->rev + 1;
+	// //
+	// // 	// set revision # added by _noel(20210521)
+	// // 	$rev = @$this->input->post('revision') ? $this->input->post('revision') : 0;
+	// // 	$this->DB->set('rev', $rev+1);
+	// // 	$this->DB->where('order_log_id', $order_id);
+	// // 	$this->DB->update('tbl_order_log');
+	// //
+	// // 	// update records
+	// // 	$this->DB->set($post_ary);
+	// // 	$this->DB->where('user_id', $this->input->post('user_id'));
+	// // 	$this->DB->update('tbluser_data_wholesale');
+	// //
+	// // 	// set flash data
+	// // 	$this->session->set_flashdata('success', 'edit');
+	// //
+	// // 	// return to modify order page
+	// // 	redirect('admin/orders/modify/index/'.$order_id, 'location');
+	// }
 
 	// ----------------------------------------------------------------------
 
-	/**
-	 * PUBLIC - Remove an item from the order
-	 *
-	 * @return	void
-	 */
-	public function remove_item($order_id = '')
-	{
-		if ( ! $order_id)
-		{
-			// nothing more to do...
-			// set flash data
-			$this->session->set_flashdata('error', 'no_id_passed');
-
-			// redirect user
-			redirect('admin/orders/modify/index/'.$order_id, 'location');
-		}
-
-		// set revision # added by _noel(20210521)
-		$rev = @$this->input->post('revision') ? $this->input->post('revision') : 0;
-		$this->DB->set('rev', $rev+1);
-		$this->DB->where('order_log_id', $order_id);
-		$this->DB->update('tbl_order_log');
-
-		// update records
-		$this->DB->where('order_log_detail_id', $this->input->post('order_log_detail_id'));
-		$this->DB->delete('tbl_order_log_details');
-
-		// set flash data
-		$this->session->set_flashdata('success', 'edit');
-
-		// return to modify order page
-		redirect('admin/orders/modify/index/'.$order_id, 'location');
-	}
-
-	// ----------------------------------------------------------------------
-
-	/**
-	 * PUBLIC - Remove an item from the order
-	 *
-	 * @return	void
-	 */
-	public function edit_item_qty($order_id = '')
-	{
-		if ( ! $order_id)
-		{
-			// nothing more to do...
-			// set flash data
-			$this->session->set_flashdata('error', 'no_id_passed');
-
-			// redirect user
-			redirect('admin/orders/modify/index/'.$order_id, 'location');
-		}
-
-		// set revision # added by _noel(20210521)
-		$rev = @$this->input->post('revision') ? $this->input->post('revision') : 0;
-		$this->DB->set('rev', $rev+1);
-		$this->DB->where('order_log_id', $order_id);
-		$this->DB->update('tbl_order_log');
-		//echo $rev; echo $rev+1; die();
-
-		// update records
-		$this->DB->set('qty', $this->input->post('qty'));
-		$this->DB->where('order_log_detail_id', $this->input->post('order_log_detail_id'));
-		$this->DB->update('tbl_order_log_details');
-
-		// set flash data
-		$this->session->set_flashdata('success', 'edit');
-
-		// return to modify order page
-		redirect('admin/orders/modify/index/'.$order_id, 'location');
-	}
-
-	// ----------------------------------------------------------------------
-
-	/**
-	 * PUBLIC - Remove an item from the order
-	 *
-	 * @return	void
-	 */
-	public function edit_item_price($order_id = '')
-	{
-		if ( ! $order_id)
-		{
-			// nothing more to do...
-			// set flash data
-			$this->session->set_flashdata('error', 'no_id_passed');
-
-			// redirect user
-			redirect('admin/orders/modify/index/'.$order_id, 'location');
-		}
-
-		// set revision # added by _noel(20210521)
-		$rev = @$this->input->post('revision') ? $this->input->post('revision') : 0;
-		$this->DB->set('rev', $rev+1);
-		$this->DB->where('order_log_id', $order_id);
-		$this->DB->update('tbl_order_log');
-
-		// update records
-		$this->DB->set('unit_price', $this->input->post('unit_price'));
-		$this->DB->where('order_log_detail_id', $this->input->post('order_log_detail_id'));
-		$this->DB->update('tbl_order_log_details');
-
-		// set flash data
-		$this->session->set_flashdata('success', 'edit');
-
-		// return to modify order page
-		redirect('admin/orders/modify/index/'.$order_id, 'location');
-	}
-
-	// ----------------------------------------------------------------------
-
-	/**
-	 * PUBLIC - Remove an item from the order
-	 *
-	 * @return	void
-	 */
-	public function edit_remarks($order_id = '')
-	{
-		if ( ! $order_id)
-		{
-			// nothing more to do...
-			// set flash data
-			$this->session->set_flashdata('error', 'no_id_passed');
-
-			// redirect user
-			redirect('admin/orders', 'location');
-		}
-
-		// set revision # added by _noel(20210521)
-		$rev = @$this->input->post('revision') ? $this->input->post('revision') : 0;
-		$this->DB->set('rev', $rev+1);
-		$this->DB->where('order_log_id', $order_id);
-		$this->DB->update('tbl_order_log');
-
-		// update records
-		$this->DB->set('remarks', $this->input->post('remarks'));
-		$this->DB->where('order_log_id', $order_id);
-		$this->DB->update('tbl_order_log');
-
-		// set flash data
-		$this->session->set_flashdata('success', 'edit');
-
-		// return to modify order page
-		redirect('admin/orders/modify/index/'.$order_id, 'location');
-	}
+	// /**
+	//  * PUBLIC - Edit Order Ship To Address
+	//  *
+	//  * @return	void
+	//  */
+	// public function edit_ship_to($order_id = '')
+	// {
+	// 	if ( ! $this->input->post())
+	// 	{
+	// 		// nothing more to do...
+	// 		$data = array('status'=>'false','error'=>'no_post');
+	// 		echo json_encode($data);
+	// 	}
+	// 	else
+	// 	{
+	// 		$_SESSION['edit_ship_to'] = json_encode($this->input->post());
+	// 		$data = $this->input->post();
+	// 	}
+	// 	echo json_encode($data);
+	// 	exit;
+	// 	// if ( ! $order_id)
+	// 	// {
+	// 	// 	// nothing more to do...
+	// 	// 	// set flash data
+	// 	// 	$this->session->set_flashdata('error', 'no_id_passed');
+	// 	//
+	// 	// 	// redirect user
+	// 	// 	redirect('admin/orders/modify/index/'.$order_id, 'location');
+	// 	// }
+	// 	//
+	// 	// // grab input post
+	// 	// $post_ary = array_filter($this->input->post(), 'strlen');
+	// 	//
+	// 	// // update records
+	// 	// $this->DB->set($post_ary);
+	// 	// $this->DB->where('order_log_id', $order_id);
+	// 	// $this->DB->update('tbl_order_log');
+	// 	//
+	// 	// // get order details
+	// 	// $this->data['order_details'] =
+	// 	// 	$this->order_details->initialize(
+	// 	// 		array(
+	// 	// 			'tbl_order_log.order_log_id'=>$order_id
+	// 	// 		)
+	// 	// 	)
+	// 	// ;
+	// 	//
+	// 	// // based on order details, get user details
+	// 	// if ($this->data['order_details']->c == 'ws')
+	// 	// {
+	// 	// 	$this->data['user_details'] =
+	// 	// 		$this->wholesale_user_details->initialize(
+	// 	// 			array(
+	// 	// 				'user_id' => $this->data['order_details']->user_id
+	// 	// 			)
+	// 	// 		)
+	// 	// 	;
+	// 	// }
+	// 	// else
+	// 	// {
+	// 	// 	$this->data['user_details'] =
+	// 	// 		$this->consumer_user_details->initialize(
+	// 	// 			array(
+	// 	// 				'user_id' => $this->data['order_details']->user_id
+	// 	// 			)
+	// 	// 		)
+	// 	// 	;
+	// 	// }
+	// 	//
+	// 	// $addresses = $this->data['user_details']->alt_address;
+	// 	//
+	// 	// //look for if record exists - _noel(20210526)
+	// 	// $address_exists = false;
+	// 	// for ($i = 2; $i < count($addresses); $i++)
+	// 	// {
+	// 	// 	//echo "ARRAY".$i;
+	// 	// 	if (($addresses[$i]['address1']==$this->data['order_details']->ship_address1) &&
+	// 	// 			($addresses[$i]['address2']==$this->data['order_details']->ship_address2) &&
+	// 	// 				($addresses[$i]['city']==$this->data['order_details']->ship_city) &&
+	// 	// 					($addresses[$i]['state']==$this->data['order_details']->ship_state) &&
+	// 	// 						($addresses[$i]['country']==$this->data['order_details']->ship_country) &&
+	// 	// 							($addresses[$i]['zipcode']==$this->data['order_details']->ship_zipcode))
+	// 	// 	{
+	// 	// 		$addresses[$i]['firstname'] = $this->data['order_details']->firstname;
+	// 	// 		$addresses[$i]['lastname'] = $this->data['order_details']->lastname;
+	// 	// 		$addresses[$i]['store_name'] = $this->data['order_details']->store_name;
+	// 	// 		$addresses[$i]['telephone'] = $this->data['order_details']->telephone;
+	// 	// 		$addresses[$i]['address1'] = $this->data['order_details']->ship_address1;
+	// 	// 		$addresses[$i]['address2'] = $this->data['order_details']->ship_address2;
+	// 	// 		$addresses[$i]['city'] = $this->data['order_details']->ship_city;
+	// 	// 		$addresses[$i]['state'] = $this->data['order_details']->ship_state;
+	// 	// 		$addresses[$i]['country'] = $this->data['order_details']->ship_country;
+	// 	// 		$addresses[$i]['zipcode'] = $this->data['order_details']->ship_zipcode;
+	// 	// 		$address_exists = true;
+	// 	// 		break;
+	// 	// 	}
+	// 	// }
+	// 	//
+	// 	// //look for available slot - _noel(20210526)
+	// 	// if ($address_exists==false)
+	// 	// {
+	// 	// 	$slot_found=false;
+	// 	// 	$i=2;
+	// 	// 	do
+	// 	// 	{
+	// 	// 		if (($addresses[$i]['address1']=="") &&
+	// 	// 				($addresses[$i]['address2']=="") &&
+	// 	// 					($addresses[$i]['city']=="") &&
+	// 	// 						($addresses[$i]['state']=="") &&
+	// 	// 							($addresses[$i]['country']=="") &&
+	// 	// 								($addresses[$i]['zipcode']==""))
+	// 	// 		{
+	// 	// 			$addresses[$i]['firstname'] = $this->data['order_details']->firstname;
+	// 	// 			$addresses[$i]['lastname'] = $this->data['order_details']->lastname;
+	// 	// 			$addresses[$i]['store_name'] = $this->data['order_details']->store_name;
+	// 	// 			$addresses[$i]['telephone'] = $this->data['order_details']->telephone;
+	// 	// 			$addresses[$i]['address1'] = $this->data['order_details']->ship_address1;
+	// 	// 			$addresses[$i]['address2'] = $this->data['order_details']->ship_address2;
+	// 	// 			$addresses[$i]['city'] = $this->data['order_details']->ship_city;
+	// 	// 			$addresses[$i]['state'] = $this->data['order_details']->ship_state;
+	// 	// 			$addresses[$i]['country'] = $this->data['order_details']->ship_country;
+	// 	// 			$addresses[$i]['zipcode'] = $this->data['order_details']->ship_zipcode;
+	// 	// 			$slot_found=true;
+	// 	// 		}
+	// 	// 		$i++;
+	// 	// 	} while ($slot_found==false);
+	// 	// }
+	// 	// //update also tbluser_data_wholesale for alt_address - _noel(20210526)
+	// 	// $this->DB->set('alt_address',json_encode($addresses));
+	// 	// $this->DB->where('user_id',  $this->data['order_details']->user_id);
+	// 	// $this->DB->update('tbluser_data_wholesale');
+	// 	//
+	// 	//
+	// 	// // set flash data
+	// 	// $this->session->set_flashdata('success', 'edit');
+	// 	//
+	// 	// // return to modify order page
+	// 	// redirect('admin/orders/modify/index/'.$order_id, 'location');
+	// }
 
 	// ----------------------------------------------------------------------
 
-	/**
-	 * PUBLIC - Remove an item from the order
-	 *
-	 * @return	void
-	 */
-	public function add_discount($order_id = '')
-	{
-		if ( ! $order_id)
-		{
-			// nothing more to do...
-			// set flash data
-			$this->session->set_flashdata('error', 'no_id_passed');
+	// /**
+	//  * PUBLIC - Edit User Details for Consumers
+	//  *
+	//  * @return	void
+	//  */
+	// public function edit_user_details($order_id = '')
+	// {
+	// 	if ( ! $this->input->post())
+	// 	{
+	// 		// nothing more to do...
+	// 		$data = array('status'=>'false','error'=>'no_post');
+	// 		echo json_encode($data);
+	// 	}
+	// 	else
+	// 	{
+	// 		unset($_SESSION['edit_store_details']);
+	// 		unset($_SESSION['edit_user_details']);
+	// 		$_SESSION['edit_user_details'] = json_encode($this->input->post());
+	// 		$data = $this->input->post();
+	// 	}
+	// 	echo json_encode($data);
+	// 	exit;
+	// 	// if ( ! $order_id)
+	// 	// {
+	// 	// 	// nothing more to do...
+	// 	// 	// set flash data
+	// 	// 	$this->session->set_flashdata('error', 'no_id_passed');
+	// 	//
+	// 	// 	// redirect user
+	// 	// 	redirect('admin/orders/modify/index/'.$order_id, 'location');
+	// 	// }
+	// 	//
+	// 	// // grab input post
+	// 	// $post_ary = array_filter($this->input->post(), 'strlen');
+	// 	//
+	// 	// // unset items
+	// 	// unset($post_ary['user_id']);
+	// 	// unset($post_ary['revision']);
+	// 	//
+	// 	// // set revision # added by _noel(20210521)
+	// 	// $rev = @$this->input->post('revision') ? $this->input->post('revision') : 0;
+	// 	// $this->DB->set('rev', $rev+1);
+	// 	// $this->DB->where('order_log_id', $order_id);
+	// 	// $this->DB->update('tbl_order_log');
+	// 	//
+	// 	// // update records
+	// 	// $this->DB->set($post_ary);
+	// 	// $this->DB->where('user_id', $this->input->post('user_id'));
+	// 	// $this->DB->update('tbluser_data');
+	// 	//
+	// 	// // set flash data
+	// 	// $this->session->set_flashdata('success', 'edit');
+	// 	//
+	// 	// return to modify order page
+	// 	// redirect('admin/orders/modify/index/'.$order_id, 'location');
+	// }
 
-			// redirect user
-			redirect('admin/orders/modify/index/'.$order_id, 'location');
-		}
-
-		// get order details
-		$order_details =
-			$this->order_details->initialize(
-				array(
-					'tbl_order_log.order_log_id'=>$order_id
-				)
-			)
-		;
-
-		// get order options
-		$options = $order_details->options;
-
-		// add/edit/remove options for discount
-		if ($this->input->post('discount') === '0')
-		{
-			unset($options['discount']);
-		}
-		else
-		{
-			$options['discount'] = $this->input->post('discount');
-		}
-
-		// set revision # added by _noel(20210521)
-		$rev = @$this->input->post('revision') ? $this->input->post('revision') : 0;
-		$this->DB->set('rev', $rev+1);
-		$this->DB->where('order_log_id', $order_id);
-		$this->DB->update('tbl_order_log');
-
-		// update records
-		$this->DB->set('options', json_encode($options));
-		$this->DB->where('order_log_id', $order_id);
-		$this->DB->update('tbl_order_log');
-
-		// set flash data
-		$this->session->set_flashdata('success', 'edit');
-
-		// return to modify order page
-		redirect('admin/orders/modify/index/'.$order_id, 'location');
-	}
+	// // ----------------------------------------------------------------------
+	//
+	// /**
+	//  * PUBLIC - Remove an item from the order
+	//  *
+	//  * @return	void
+	//  */
+	// public function remove_item($order_id = '')
+	// {
+	// 	if ( ! $this->input->post())
+	// 	{
+	// 		// nothing more to do...
+	// 		$data = array('status'=>'false','error'=>'no_post');
+	// 		echo json_encode($data);
+	// 	}
+	// 	else
+	// 	{
+	// 		$_SESSION['edit_remove_item_'.$this->input->post('order_log_detail_id')] = json_encode($this->input->post());
+	// 		$data = $this->input->post();
+	// 	}
+	// 	echo json_encode($data);
+	// 	exit;
+	// 	// if ( ! $order_id)
+	// 	// {
+	// 	// 	// nothing more to do...
+	// 	// 	// set flash data
+	// 	// 	$this->session->set_flashdata('error', 'no_id_passed');
+	// 	//
+	// 	// 	// redirect user
+	// 	// 	redirect('admin/orders/modify/index/'.$order_id, 'location');
+	// 	// }
+	// 	//
+	// 	// // set revision # added by _noel(20210521)
+	// 	// $rev = @$this->input->post('revision') ? $this->input->post('revision') : 0;
+	// 	// $this->DB->set('rev', $rev+1);
+	// 	// $this->DB->where('order_log_id', $order_id);
+	// 	// $this->DB->update('tbl_order_log');
+	// 	//
+	// 	// // update records
+	// 	// $this->DB->where('order_log_detail_id', $this->input->post('order_log_detail_id'));
+	// 	// $this->DB->delete('tbl_order_log_details');
+	// 	//
+	// 	// // set flash data
+	// 	// $this->session->set_flashdata('success', 'edit');
+	// 	//
+	// 	// // return to modify order page
+	// 	// redirect('admin/orders/modify/index/'.$order_id, 'location');
+	// }
 
 	// ----------------------------------------------------------------------
 
-	/**
-	 * PUBLIC - Edit Order Ship To Address
-	 *
-	 * @return	void
-	 */
-	public function edit_shipping_fee($order_id = '')
-	{
-		if ( ! $order_id)
-		{
-			// nothing more to do...
-			// set flash data
-			$this->session->set_flashdata('error', 'no_id_passed');
+	// /**
+	//  * PUBLIC - Remove an item from the order
+	//  *
+	//  * @return	void
+	//  */
+	// public function edit_item_qty($order_id = '')
+	// {
+	// 	if ( ! $this->input->post())
+	// 	{
+	// 		// nothing more to do...
+	// 		$data = array('status'=>'false','error'=>'no_post');
+	// 		echo json_encode($data);
+	// 	}
+	// 	else
+	// 	{
+	// 		$_SESSION['edit_item_qty_'.$this->input->post('order_log_detail_id')] = json_encode($this->input->post());
+	// 		$data = $this->input->post();
+	// 	}
+	// 	echo json_encode($data);
+	// 	exit;
+	// 	// if ( ! $order_id)
+	// 	// {
+	// 	// 	// nothing more to do...
+	// 	// 	// set flash data
+	// 	// 	$this->session->set_flashdata('error', 'no_id_passed');
+	// 	//
+	// 	// 	// redirect user
+	// 	// 	redirect('admin/orders/modify/index/'.$order_id, 'location');
+	// 	// }
+	// 	//
+	// 	// // set revision # added by _noel(20210521)
+	// 	// $rev = @$this->input->post('revision') ? $this->input->post('revision') : 0;
+	// 	// $this->DB->set('rev', $rev+1);
+	// 	// $this->DB->where('order_log_id', $order_id);
+	// 	// $this->DB->update('tbl_order_log');
+	// 	// //echo $rev; echo $rev+1; die();
+	// 	//
+	// 	// // update records
+	// 	// $this->DB->set('qty', $this->input->post('qty'));
+	// 	// $this->DB->where('order_log_detail_id', $this->input->post('order_log_detail_id'));
+	// 	// $this->DB->update('tbl_order_log_details');
+	// 	//
+	// 	// // set flash data
+	// 	// $this->session->set_flashdata('success', 'edit');
+	// 	//
+	// 	// // return to modify order page
+	// 	// redirect('admin/orders/modify/index/'.$order_id, 'location');
+	// }
 
-			// redirect user
-			redirect('admin/orders/modify/index/'.$order_id, 'location');
-		}
+	// ----------------------------------------------------------------------
 
-		// set revision # added by _noel(20210521)
-		$rev = @$this->input->post('revision') ? $this->input->post('revision') : 0;
-		$this->DB->set('rev', $rev+1);
-		$this->DB->where('order_log_id', $order_id);
-		$this->DB->update('tbl_order_log');
+	// /**
+	//  * PUBLIC - Remove an item from the order
+	//  *
+	//  * @return	void
+	//  */
+	// public function edit_item_price($order_id = '')
+	// {
+	// 	if ( ! $this->input->post())
+	// 	{
+	// 		// nothing more to do...
+	// 		$data = array('status'=>'false','error'=>'no_post');
+	// 		echo json_encode($data);
+	// 	}
+	// 	else
+	// 	{
+	// 		$_SESSION['edit_item_price_'.$this->input->post('order_log_detail_id')] = json_encode($this->input->post());
+	// 		$data = $this->input->post();
+	// 	}
+	// 	echo json_encode($data);
+	// 	exit;
+	// 	// if ( ! $order_id)
+	// 	// {
+	// 	// 	// nothing more to do...
+	// 	// 	// set flash data
+	// 	// 	$this->session->set_flashdata('error', 'no_id_passed');
+	// 	//
+	// 	// 	// redirect user
+	// 	// 	redirect('admin/orders/modify/index/'.$order_id, 'location');
+	// 	// }
+	// 	//
+	// 	// // set revision # added by _noel(20210521)
+	// 	// $rev = @$this->input->post('revision') ? $this->input->post('revision') : 0;
+	// 	// $this->DB->set('rev', $rev+1);
+	// 	// $this->DB->where('order_log_id', $order_id);
+	// 	// $this->DB->update('tbl_order_log');
+	// 	//
+	// 	// // update records
+	// 	// $this->DB->set('unit_price', $this->input->post('unit_price'));
+	// 	// $this->DB->where('order_log_detail_id', $this->input->post('order_log_detail_id'));
+	// 	// $this->DB->update('tbl_order_log_details');
+	// 	//
+	// 	// // set flash data
+	// 	// $this->session->set_flashdata('success', 'edit');
+	// 	//
+	// 	// // return to modify order page
+	// 	// redirect('admin/orders/modify/index/'.$order_id, 'location');
+	// }
 
-		// update records
-		$this->DB->set('shipping_fee', $this->input->post('shipping_fee'));
-		$this->DB->where('order_log_id', $order_id);
-		$this->DB->update('tbl_order_log');
+	// ----------------------------------------------------------------------
 
-		// set flash data
-		$this->session->set_flashdata('success', 'edit');
+	// /**
+	//  * PUBLIC - Remove an item from the order
+	//  *
+	//  * @return	void
+	//  */
+	// public function edit_remarks($order_id = '')
+	// {
+	// 	if ( ! $this->input->post())
+	// 	{
+	// 		// nothing more to do...
+	// 		$data = array('status'=>'false','error'=>'no_post');
+	// 		echo json_encode($data);
+	// 	}
+	// 	else
+	// 	{
+	// 		$_SESSION['edit_remarks'] = json_encode($this->input->post());
+	// 		$data = $this->input->post();
+	// 	}
+	// 	echo json_encode($data);
+	// 	exit;
+	// 	// if ( ! $order_id)
+	// 	// {
+	// 	// 	// nothing more to do...
+	// 	// 	// set flash data
+	// 	// 	$this->session->set_flashdata('error', 'no_id_passed');
+	// 	//
+	// 	// 	// redirect user
+	// 	// 	redirect('admin/orders', 'location');
+	// 	// }
+	// 	//
+	// 	// // set revision # added by _noel(20210521)
+	// 	// $rev = @$this->input->post('revision') ? $this->input->post('revision') : 0;
+	// 	// $this->DB->set('rev', $rev+1);
+	// 	// $this->DB->where('order_log_id', $order_id);
+	// 	// $this->DB->update('tbl_order_log');
+	// 	//
+	// 	// // update records
+	// 	// $this->DB->set('remarks', $this->input->post('remarks'));
+	// 	// $this->DB->where('order_log_id', $order_id);
+	// 	// $this->DB->update('tbl_order_log');
+	// 	//
+	// 	// // set flash data
+	// 	// $this->session->set_flashdata('success', 'edit');
+	// 	//
+	// 	// // return to modify order page
+	// 	// redirect('admin/orders/modify/index/'.$order_id, 'location');
+	// }
 
-		// return to modify order page
-		redirect('admin/orders/modify/index/'.$order_id, 'location');
-	}
+	// ----------------------------------------------------------------------
+
+	// /**
+	//  * PUBLIC - Remove an item from the order
+	//  *
+	//  * @return	void
+	//  */
+	// public function add_discount($order_id = '')
+	// {
+	// 	if ( ! $this->input->post())
+	// 	{
+	// 		// nothing more to do...
+	// 		$data = array('status'=>'false','error'=>'no_post');
+	// 		echo json_encode($data);
+	// 	}
+	// 	else
+	// 	{
+	// 		$_SESSION['edit_add_discount'] = json_encode($this->input->post());
+	// 		$data = $this->input->post();
+	// 	}
+	// 	echo json_encode($data);
+	// 	exit;
+	//
+	//
+	// 	// if ( ! $order_id)
+	// 	// {
+	// 	// 	// nothing more to do...
+	// 	// 	// set flash data
+	// 	// 	$this->session->set_flashdata('error', 'no_id_passed');
+	// 	//
+	// 	// 	// redirect user
+	// 	// 	redirect('admin/orders/modify/index/'.$order_id, 'location');
+	// 	// }
+	// 	//
+	// 	// // get order details
+	// 	// $order_details =
+	// 	// 	$this->order_details->initialize(
+	// 	// 		array(
+	// 	// 			'tbl_order_log.order_log_id'=>$order_id
+	// 	// 		)
+	// 	// 	)
+	// 	// ;
+	// 	//
+	// 	// // get order options
+	// 	// $options = $order_details->options;
+	// 	//
+	// 	// // add/edit/remove options for discount
+	// 	// if ($this->input->post('discount') === '0')
+	// 	// {
+	// 	// 	unset($options['discount']);
+	// 	// }
+	// 	// else
+	// 	// {
+	// 	// 	$options['discount'] = $this->input->post('discount');
+	// 	// }
+	// 	//
+	// 	// // set revision # added by _noel(20210521)
+	// 	// $rev = @$this->input->post('revision') ? $this->input->post('revision') : 0;
+	// 	// $this->DB->set('rev', $rev+1);
+	// 	// $this->DB->where('order_log_id', $order_id);
+	// 	// $this->DB->update('tbl_order_log');
+	// 	//
+	// 	// // update records
+	// 	// $this->DB->set('options', json_encode($options));
+	// 	// $this->DB->where('order_log_id', $order_id);
+	// 	// $this->DB->update('tbl_order_log');
+	// 	//
+	// 	// // set flash data
+	// 	// $this->session->set_flashdata('success', 'edit');
+	// 	//
+	// 	// // return to modify order page
+	// 	// redirect('admin/orders/modify/index/'.$order_id, 'location');
+	// }
+
+	// ----------------------------------------------------------------------
+
+	// /**
+	//  * PUBLIC - Edit Order Ship To Address
+	//  *
+	//  * @return	void
+	//  */
+	// public function edit_shipping_fee($order_id = '')
+	// {
+	// 	if ( ! $this->input->post())
+	// 	{
+	// 		// nothing more to do...
+	// 		$data = array('status'=>'false','error'=>'no_post');
+	// 		echo json_encode($data);
+	// 	}
+	// 	else
+	// 	{
+	// 		$_SESSION['edit_shipping_fee'] = json_encode($this->input->post());
+	// 		$data = $this->input->post();
+	// 	}
+	// 	echo json_encode($data);
+	// 	exit;
+	// 	// if ( ! $order_id)
+	// 	// {
+	// 	// 	// nothing more to do...
+	// 	// 	// set flash data
+	// 	// 	$this->session->set_flashdata('error', 'no_id_passed');
+	// 	//
+	// 	// 	// redirect user
+	// 	// 	redirect('admin/orders/modify/index/'.$order_id, 'location');
+	// 	// }
+	// 	//
+	// 	// // set revision # added by _noel(20210521)
+	// 	// $rev = @$this->input->post('revision') ? $this->input->post('revision') : 0;
+	// 	// $this->DB->set('rev', $rev+1);
+	// 	// $this->DB->where('order_log_id', $order_id);
+	// 	// $this->DB->update('tbl_order_log');
+	// 	//
+	// 	// // update records
+	// 	// $this->DB->set('shipping_fee', $this->input->post('shipping_fee'));
+	// 	// $this->DB->where('order_log_id', $order_id);
+	// 	// $this->DB->update('tbl_order_log');
+	// 	//
+	// 	// // set flash data
+	// 	// $this->session->set_flashdata('success', 'edit');
+	// 	//
+	// 	// // return to modify order page
+	// 	// redirect('admin/orders/modify/index/'.$order_id, 'location');
+	// }
 
 	// ----------------------------------------------------------------------
 

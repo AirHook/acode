@@ -245,14 +245,14 @@
 															<?php } ?>
 														</h4>
 
-														<?php echo @$user_details->store_name ?: $user_details->firstname.' '.$user_details->lastname; ?>
-														<br> <?php echo $user_details->address1; ?>
-														<?php echo $user_details->address2 ? '<br>'.$user_details->address2 : ''; ?>
-														<br> <?php echo $user_details->city; ?>
-														<br> <?php echo $user_details->zipcode.' '.$user_details->state; ?>
-														<br> <?php echo $user_details->country; ?>
-														<?php echo $user_details->telephone ? '<br >T: '.$user_details->telephone : ''; ?>
-														<br> ATTN: <?php echo $user_details->firstname.' '.$user_details->lastname; ?> <?php echo '<cite class="small">('.$user_details->email.')</cite>'; ?>
+														<span id='bill_to_name'><?php echo @$user_details->store_name ?: $user_details->firstname.' '.$user_details->lastname; ?></span>
+														<br> <span id='bill_to_address1'><?php echo $user_details->address1; ?></span>
+														<span id='bill_to_address2'><?php echo $user_details->address2 ? '<br>'.$user_details->address2 : ''; ?></span>
+														<br> <span id='bill_to_city'><?php echo $user_details->city; ?></span>
+														<br> <span id='bill_to_zipcode'><?php echo $user_details->zipcode.' '.$user_details->state; ?></span>
+														<br> <span id='bill_to_country'><?php echo $user_details->country; ?></span>
+														<span id='bill_to_telephone'><?php echo $user_details->telephone ? '<br >T: '.$user_details->telephone : ''; ?></span>
+														<br> ATTN: <span id='attn_name'><?php echo $user_details->firstname.' '.$user_details->lastname; ?></span> <span id='attn_email'><?php echo '<cite class="small">('.$user_details->email.')</cite>'; ?></span>
 
 													</div>
 													<div class="col-md-6 col-sm-12">
@@ -264,14 +264,14 @@
 															</a>
 														</h4>
 
-														<?php echo $order_details->store_name ?: $order_details->firstname.' '.$order_details->lastname; ?>
-														<br> <?php echo $order_details->ship_address1; ?>
-														<?php echo $order_details->ship_address2 ? '<br>'.$order_details->ship_address2 : ''; ?>
-														<br> <?php echo $order_details->ship_city; ?>
-														<br> <?php echo $order_details->ship_zipcode.' '.$order_details->ship_state; ?>
-														<br> <?php echo $order_details->ship_country; ?>
-														<?php echo $order_details->telephone ? '<br >T: '.$order_details->telephone : ''; ?>
-														<br> ATTN: <?php echo $order_details->firstname.' '.$order_details->lastname; ?> <?php echo '<cite class="small">('.$order_details->email.')</cite>'; ?>
+														<span id='ship_to_name'><?php echo $order_details->store_name ?: $order_details->firstname.' '.$order_details->lastname; ?></span>
+														<br> <span id='ship_to_address1'><?php echo $order_details->ship_address1; ?></span>
+														<span id='ship_to_address2'><?php echo $order_details->ship_address2 ? '<br>'.$order_details->ship_address2 : ''; ?></span>
+														<br> <span id='ship_to_city'><?php echo $order_details->ship_city; ?></span>
+														<br> <span id='ship_to_zipcode'><?php echo $order_details->ship_zipcode.' '.$order_details->ship_state; ?></span>
+														<br> <span id='ship_to_country'><?php echo $order_details->ship_country; ?></span>
+														<span id='ship_to_telephone'><?php echo $order_details->telephone ? '<br >T: '.$order_details->telephone : ''; ?></span>
+														<br> ATTN: <span id='attn_ship_name'><?php echo $order_details->firstname.' '.$order_details->lastname; ?></span> <span id='attn_ship_email'><?php echo '<cite class="small">('.$order_details->email.')</cite>'; ?></span>
 
 													</div>
 												</div>
@@ -394,16 +394,14 @@
 																<th class="text-right" style="width:70px;"> Extended Price </th>
 															</tr>
 														</thead>
-														<tbody>
+														<tbody id="order_list">
 
 															<?php
 															if ($order_details->items())
 															{
 																$overall_total = 0;
 																$i = 1;
-																$total_qty = 0;																
-																//print_r($order_details->items());//die();
-																//foreach ($order_details->items() as $item)
+																$total_qty = 0;
 																foreach ($order_details->order_items as $item)
 																{
 																	// get product details
@@ -435,7 +433,7 @@
 																	$price = $item->unit_price;
 																	?>
 
-															<tr class="odd gradeX" onmouseover="$(this).find('.hidden_first_edit_link').show();" onmouseout="$(this).find('.hidden_first_edit_link').hide();">
+															<tr id="order_item_<?php echo $item->order_log_detail_id; ?>" class="odd gradeX" onmouseover="$(this).find('.hidden_first_edit_link').show();" onmouseout="$(this).find('.hidden_first_edit_link').hide();">
 																<td class="hidden-xs hidden-sm text-center">
 																	<?php echo $i; ?>
 																</td>
@@ -473,8 +471,8 @@
 																<!-- Color -->
 																<td class="text-center"> <?php echo $item->color; ?> </td>
 																<!-- Qty -->
-																<td class="text-center">
-																	<span>
+																<td name="order_quantity" class="text-center">
+																	<span id='qty_<?php echo $item->order_log_detail_id; ?>'>
 																		<?php echo $item->qty; ?>
 																	</span>
 																	<br />
@@ -492,11 +490,11 @@
 																		)
 																	)
 																	{
-																		echo '<span style="text-decoration:line-through;">$ '.number_format((@$options['orig_price'] ?: $orig_price), 2).'</span>';
+																		echo '<span id="orig_price_'.$item->order_log_detail_id.'" style="text-decoration:line-through;">$ '.number_format((@$options['orig_price'] ?: $orig_price), 2).'</span>';
 																	}
 																	else
 																	{
-																		echo '$ '.number_format($item->unit_price, 2);
+																		echo '<span id="orig_price_'.$item->order_log_detail_id.'">$ '.number_format($item->unit_price, 2).'</span>';
 																	} ?>
 																</td>
 																<!-- Disc Price -->
@@ -509,11 +507,11 @@
 																		)
 																	)
 																	{
-																		echo '<span style="color:red;">$ '.number_format($item->unit_price, 2).'</span>';
+																		echo '<span style="color:red;" id="discounted_price_'.$item->order_log_detail_id.'">$ '.number_format($item->unit_price, 2).'</span>';
 																	}
 																	else
 																	{
-																		echo '--';
+																		echo '<span id="discounted_price_'.$item->order_log_detail_id.'">--</span>';
 																	} ?>
 																	<br />
 																	<a href="#modal-edit_discount" data-toggle="modal" class="btn btn-xs grey-gallery" style="font-size:90%;" data-item_id="<?php echo $item->order_log_detail_id; ?>" data-prod_no="<?php echo $item->prod_sku; ?>" data-unit_price="<?php echo $item->unit_price; ?>" data-orig_price="<?php echo @$options['orig_price'] ?: $orig_price; ?>">
@@ -524,7 +522,9 @@
 																<td class="text-right">
 																	<?php
 																	$this_size_total = $item->unit_price * $item->qty;
+																	echo '<span style="color:red;" id="extended_price_'.$item->order_log_detail_id.'">';
 																	echo $this_size_total ? '$ '.number_format($this_size_total, 2) : '$0.00';
+																	echo '</span>';
 																	?>
 																</td>
 															</tr>
@@ -539,16 +539,16 @@
 															{ ?>
 
 															<tr class="odd gradeX">
-																<td colspan="9">No recods found.</td>
+																<td colspan="9">No records found.</td>
 															</tr>
 
 															<?php
 															} ?>
 
 															<tr>
-																<td colspan="4" style="border: none;">Total # of Items: <?php echo $i-1; ?></td>
-																<td align="right" style="border: none;">Total Quantity</td>
-																<td colspan="5" style="border: none;"> <?php echo $total_qty; ?> &nbsp;</td>
+																<td colspan="3" style="border: none;">Total # of Items: <?php echo $i-1; ?></td>
+																<td colspan="2" align="right" style="border: none;">Total Quantity</td>
+																<td colspan="5" style="border: none;"> <span id='total_qty'><?php echo $total_qty; ?></span> &nbsp;</td>
 															</tr>
 
 														</tbody>
@@ -558,7 +558,7 @@
 												<div class="row">
 													<div class="col-md-6">
 														<p class="block">Remarks/Instructions:</p>
-														<p>
+														<p id="order_remarks">
 															<?php echo @$order_details->remarks; ?>
 														</p>
 														<a href="#modal-edit_remarks" data-toggle="modal" class="btn btn-xs grey-gallery" style="font-size:80%;">
@@ -567,39 +567,39 @@
 													</div>
 													<div class="col-md-6">
 
-														<table class="table table-condensed">
+														<table class="table table-condensed" id="table_add_discount">
 															<!-- Order Amount -->
 															<tr>
 																<td>Subtotal</td>
 																<td class="text-right">
 																	<?php if ( ! @$order_details->options['discount']) { ?>
-																	<a href="#modal-add_discount" data-toggle="modal" class="btn btn-xs grey-gallery" style="font-size:80%;">
+																	<a href="#modal-add_discount" data-toggle="modal" class="btn btn-xs grey-gallery" style="font-size:80%;" id="add_discount_button">
 																		Add Discount
 																	</a>
 																	<?php } ?>
-																	$ <?php echo number_format($overall_total, 2); ?>
+																	$ <?php echo '<span id="subtotal_price">'.number_format($overall_total, 2).'</span>'; ?>
 																</td>
 															</tr>
+															<tr id="order_discount">
 															<?php if (@$order_details->options['discount'])
 															{
 																$discount = $overall_total * ($order_details->options['discount'] / 100);
 																?>
 															<!-- Discount -->
-															<tr>
 																<td>Discount</td>
 																<td class="text-right">
 																	<a href="#modal-add_discount" data-toggle="modal" class="btn btn-xs grey-gallery" style="font-size:80%;">
 																		Edit/Remove Discount
 																	</a>
-																	<?php echo $order_details->options['discount'] ? '@'.$order_details->options['discount'].'%' : ''; ?> &nbsp; &nbsp;
-																	($ <?php echo number_format($discount, 2); ?>)
+																	<span id="order_discount_percent"><?php echo $order_details->options['discount'] ? '@'.$order_details->options['discount'].'%' : ''; ?></span> &nbsp; &nbsp;
+																	($ <span id="order_discount_amount"><?php echo number_format($discount, 2); ?></span>)
 																</td>
-															</tr>
 																<?php
 															}
 															else{
 																$discount = 0;
 															} ?>
+															</tr>
 															<!-- Shipping & Handling -->
 															<tr>
 																<td>Shipping &amp; Handling</td>
@@ -607,17 +607,17 @@
 																	<a href="#modal-edit_shipping_fee" data-toggle="modal" class="btn btn-xs grey-gallery" style="font-size:80%;">
 																		Edit Shipping Fee
 																	</a>
-																	<?php echo '$ '.number_format($order_details->shipping_fee, 2); ?>
+																	<span id="order_shipping_fee"><?php echo '$ '.number_format($order_details->shipping_fee, 2); ?></span>
 																</td>
 															</tr>
 															<!-- Taxes -->
 															<tr>
 																<td>Sales Tax (NY, USA only)</td>
-																<td class="text-right">
+																<td class="text-right"><span id="order_sales_tax">
 																	<?php
 																	$sales_tax = $order_details->ship_state == 'New York' ? ($order_details->order_amount) * 0.0875 : 0;
 																	echo '$ '.number_format($sales_tax, 2);
-																	?>
+																	?></span>
 																</td>
 															</tr>
 															<tr>
@@ -628,7 +628,7 @@
 															<tr>
 																<td><strong>Order Subtotal</strong></td>
 																<td class="text-right">
-																	$ <?php echo number_format((($overall_total - $discount) + $order_details->shipping_fee + $sales_tax), 2); ?>
+																	$ <span id="grand_total_price"><?php echo number_format((($overall_total - $discount) + $order_details->shipping_fee + $sales_tax), 2); ?></span>
 																</td>
 															</tr>
 														</table>
@@ -641,6 +641,27 @@
 			                        </div>
 
 			                    </div>
+								<!-- BEGIN FORM-->
+								<!-- FORM =======================================================================-->
+								<?php
+								echo form_open(
+									$pre_link.'/orders/modify/update_order/'.$order_details->order_id,
+									array(
+										'class' => 'enter-user-form ws clearfix',
+										'id' => 'form-update_order'
+									)
+								);
+								?>
+								<input type="hidden" name="revision" value="<?php echo $order_details->rev; ?>" />
+								<div class="floatbar display-hide">
+									<div class="actions btn-set">
+										<button type="submit" class="btn blue btn-lg btn-block mt-ladda-btn ladda-button mt-progress-demo" data-style="slide-left" onclick="$('#loading .modal-title').html('Updating...');$('#loading').modal('show');">
+											<span class="ladda-label">Update <?php echo $order_details->order_id ? '&nbsp; <i class="fa fa-edit"></i> '.$order_details->order_id : ''; ?></span>
+											<span class="ladda-spinner"></span>
+										</button>
+									</div>
+								</div>
+								</form>
 			                    <!-- END PAGE CONTENT BODY -->
 
 								<!-- SET AS SPLIT ORDER added by noel (20210521) -->
@@ -753,15 +774,24 @@
 		                                <div class="modal-content">
 
 											<!-- BEGIN FORM =======================================================-->
-											<?php echo form_open(
-												$pre_link.'/orders/modify/edit_store_details/'.$order_details->order_id,
+											<?php
+											// echo form_open(
+											// 	$pre_link.'/orders/modify/edit_store_details/'.$order_details->order_id,
+											// 	array(
+											// 		'class' => 'enter-user-form ws clearfix',
+											// 		'id' => 'form-edit_store_details'
+											// 	)
+											// );
+											echo form_open(
+												$pre_link.'/orders/mod_store_details/',
 												array(
 													'class' => 'enter-user-form ws clearfix',
 													'id' => 'form-edit_store_details'
 												)
-											); ?>
+											);
+											?>
 
-											<input type="hidden" name="revision" value="<?php echo $order_details->rev; ?>" />
+											<!-- <input type="hidden" name="revision" value="<?php echo $order_details->rev; ?>" /> -->
 											<input type="hidden" name="user_id" value="<?php echo $order_details->user_id; ?>" />
 
 		                                    <div class="modal-header">
@@ -886,15 +916,17 @@
 		                                <div class="modal-content">
 
 											<!-- BEGIN FORM =======================================================-->
-											<?php echo form_open(
-												$pre_link.'/orders/modify/edit_ship_to/'.$order_details->order_id,
+											<?php
+											echo form_open(
+												$pre_link.'/orders/mod_ship_to/',
 												array(
 													'class' => 'enter-user-form ws clearfix',
 													'id' => 'form-edit_ship_to'
 												)
-											); ?>
+											);
+											?>
 
-											<input type="hidden" name="rev" value="<?php echo $order_details->rev; ?>" />
+											<!-- <input type="hidden" name="rev" value="<?php echo $order_details->rev; ?>" /> -->
 
 		                                    <div class="modal-header">
 		                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
@@ -1014,14 +1046,14 @@
 
 											<!-- BEGIN FORM =======================================================-->
 											<?php echo form_open(
-												$pre_link.'/orders/modify/edit_user_details/'.$order_details->order_id,
+												$pre_link.'/orders/mod_user_details/',
 												array(
 													'class' => 'enter-user-form ws clearfix',
 													'id' => 'form-edit_user_details'
 												)
 											); ?>
 
-											<input type="hidden" name="revision" value="<?php echo $order_details->rev; ?>" />
+											<!-- <input type="hidden" name="revision" value="<?php echo $order_details->rev; ?>" /> -->
 											<input type="hidden" name="user_id" value="<?php echo $order_details->user_id; ?>" />
 
 		                                    <div class="modal-header">
@@ -1128,7 +1160,6 @@
 		                                    <div class="modal-footer">
 		                                        <button type="button" class="btn dark btn-outline" data-dismiss="modal" tabindex="-1">Cancel</button>
 												<button type="submit" class="btn dark pull-right submit-edit_user_details" data-user_cat="<?php echo $order_details->c; ?>"> Submit </button>
-
 		                                    </div>
 
 											</form>
@@ -1148,14 +1179,13 @@
 
 											<!-- BEGIN FORM =======================================================-->
 											<?php echo form_open(
-												$pre_link.'/orders/modify/remove_item/'.$order_details->order_id,
+												$pre_link.'/orders/mod_remove_item/',
 												array(
 													'class' => 'enter-user-form ws clearfix',
 													'id' => 'form-remove_item'
 												)
 											); ?>
 
-											<input type="hidden" name="revision" value="<?php echo $order_details->rev; ?>" />
 											<input type="hidden" name="order_log_detail_id" value="" />
 
 			                				<div class="modal-header">
@@ -1185,14 +1215,14 @@
 
 											<!-- BEGIN FORM =======================================================-->
 											<?php echo form_open(
-												$pre_link.'/orders/modify/edit_item_qty/'.$order_details->order_id,
+												$pre_link.'/orders/mod_item_qty/',
 												array(
 													'class' => 'enter-user-form ws clearfix',
-													'id' => 'form-edit_user_details'
+													'id' => 'form-edit_item_qty'
 												)
 											); ?>
 
-											<input type="hidden" name="revision" value="<?php echo $order_details->rev; ?>" />
+											<!-- <input type="hidden" name="revision" value="<?php echo $order_details->rev; ?>" /> -->
 											<input type="hidden" name="order_log_detail_id" value="" />
 
 		                                    <div class="modal-header">
@@ -1234,14 +1264,14 @@
 
 											<!-- BEGIN FORM =======================================================-->
 											<?php echo form_open(
-												$pre_link.'/orders/modify/edit_item_price/'.$order_details->order_id,
+												$pre_link.'/orders/mod_item_price/',
 												array(
 													'class' => 'enter-user-form ws clearfix',
-													'id' => 'form-edit_user_details'
+													'id' => 'form-edit_discount'
 												)
 											); ?>
 
-											<input type="hidden" name="revision" value="<?php echo $order_details->rev; ?>" />
+											<!-- <input type="hidden" name="revision" value="<?php echo $order_details->rev; ?>" /> -->
 											<input type="hidden" name="order_log_detail_id" value="" />
 
 		                                    <div class="modal-header">
@@ -1283,14 +1313,14 @@
 
 											<!-- BEGIN FORM =======================================================-->
 											<?php echo form_open(
-												$pre_link.'/orders/modify/edit_remarks/'.$order_details->order_id,
+												$pre_link.'/orders/mod_remarks/',
 												array(
 													'class' => 'enter-user-form ws clearfix',
 													'id' => 'form-edit_remarks'
 												)
 											); ?>
 
-											<input type="hidden" name="revision" value="<?php echo $order_details->rev; ?>" />
+											<!-- <input type="hidden" name="revision" value="<?php echo $order_details->rev; ?>" /> -->
 
 			                				<div class="modal-header">
 			                					<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
@@ -1330,14 +1360,14 @@
 
 											<!-- BEGIN FORM =======================================================-->
 											<?php echo form_open(
-												$pre_link.'/orders/modify/add_discount/'.$order_details->order_id,
+												$pre_link.'/orders/mod_add_discount/',
 												array(
 													'class' => 'enter-user-form ws clearfix',
 													'id' => 'form-add_discount'
 												)
 											); ?>
 
-											<input type="hidden" name="revision" value="<?php echo $order_details->rev; ?>" />
+											<!-- <input type="hidden" name="revision" value="<?php echo $order_details->rev; ?>" /> -->
 
 		                                    <div class="modal-header">
 		                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
@@ -1386,14 +1416,14 @@
 
 											<!-- BEGIN FORM =======================================================-->
 											<?php echo form_open(
-												$pre_link.'/orders/modify/edit_shipping_fee/'.$order_details->order_id,
+												$pre_link.'/orders/mod_shipping_fee/',
 												array(
 													'class' => 'enter-user-form ws clearfix',
-													'id' => 'form-edit_user_details'
+													'id' => 'form-edit_shipping_fee'
 												)
 											); ?>
 
-											<input type="hidden" name="revision" value="<?php echo $order_details->rev; ?>" />
+											<!-- <input type="hidden" name="revision" value="<?php echo $order_details->rev; ?>" /> -->
 
 		                                    <div class="modal-header">
 		                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>

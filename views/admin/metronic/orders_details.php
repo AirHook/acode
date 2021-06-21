@@ -690,8 +690,8 @@
 															} ?>
 
 															<tr>
-																<td colspan="4" style="border: none;">Total # of Items: <?php echo $i-1; ?></td>
-																<td align="right" style="border: none;">Total Quantity</td>
+																<td colspan="3" style="border: none;">Total # of Items: <?php echo $i-1; ?></td>
+																<td colspan="2" align="right" style="border: none;">Total Quantity</td>
 																<td colspan="5" style="border: none;"> <?php echo $total_qty; ?> &nbsp;</td>
 															</tr>
 
