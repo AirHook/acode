@@ -133,6 +133,13 @@ class Order_details
 	 */
 	protected $CI;
 
+	/**
+	 * Last modified date
+	 * added by _noel(20210622)
+	 * @var	string
+	 */
+	public $last_modified = '';
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -294,6 +301,7 @@ class Order_details
 			$this->invoice_id = $row->invoice_id;
 
 			$this->rev = $row->rev;
+			$this->last_modified = $row->last_modified;
 
 			// get items
 			$this->designers = explode(',', $row->designers);

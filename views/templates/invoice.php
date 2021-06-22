@@ -193,7 +193,14 @@
 											<br />
 											Customer: #<?php echo @$order_details->user_id ?: '--'; ?>
 											<br />
-											Date: <?php echo date('F j, Y', strtotime(@$order_details->order_date)) ?: '2020-06-01'; ?>
+											<?php
+												$date_ordered = date('F j, Y', strtotime(@$order_details->order_date));
+												if (is_null($order_details->last_modified)==FALSE)
+												{
+													$date_ordered = date('F j, Y', $order_details->last_modified);
+												}
+											?>
+											Date: <?php echo date('F j, Y', strtotime(@$date_ordered)) ?: '2020-06-01'; ?>
 										</small>
 									</td>
 								</tr>

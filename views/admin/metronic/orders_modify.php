@@ -397,9 +397,9 @@
 														<tbody id="order_list">
 
 															<?php
+															$overall_total = 0;
 															if ($order_details->items())
 															{
-																$overall_total = 0;
 																$i = 1;
 																$total_qty = 0;
 																foreach ($order_details->order_items as $item)
@@ -534,6 +534,13 @@
 																	$total_qty += $item->qty;
 																	$i++;
 																}
+																?>
+																<tr>
+																	<td colspan="3" style="border: none;">Total # of Items: <?php echo $i-1; ?></td>
+																	<td colspan="2" align="right" style="border: none;">Total Quantity</td>
+																	<td colspan="5" style="border: none;"> <span id='total_qty'><?php echo $total_qty; ?></span> &nbsp;</td>
+																</tr>
+																<?php
 															}
 															else
 															{ ?>
@@ -545,12 +552,6 @@
 															<?php
 															} ?>
 
-															<tr>
-																<td colspan="3" style="border: none;">Total # of Items: <?php echo $i-1; ?></td>
-																<td colspan="2" align="right" style="border: none;">Total Quantity</td>
-																<td colspan="5" style="border: none;"> <span id='total_qty'><?php echo $total_qty; ?></span> &nbsp;</td>
-															</tr>
-
 														</tbody>
 													</table>
 												</div>
@@ -558,9 +559,9 @@
 												<div class="row">
 													<div class="col-md-6">
 														<p class="block">Remarks/Instructions:</p>
-														<p id="order_remarks">
+														<span id="order_remarks"><p>
 															<?php echo @$order_details->remarks; ?>
-														</p>
+														</p></span>
 														<a href="#modal-edit_remarks" data-toggle="modal" class="btn btn-xs grey-gallery" style="font-size:80%;">
 															Add/Edit Remarks
 														</a>

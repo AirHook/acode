@@ -526,9 +526,9 @@
 														<tbody>
 
 															<?php
+															$overall_total = 0;
 															if ($this->order_details->order_items)
 															{
-																$overall_total = 0;
 																$i = 1;
 																$total_qty = 0;
 																foreach ($this->order_details->order_items as $item)
@@ -678,22 +678,25 @@
 																	$total_qty += $item->qty;
 																	$i++;
 																}
-															}
-															else
-															{ ?>
-
-															<tr class="odd gradeX">
-																<td colspan="9">No recods found.</td>
-															</tr>
-
-															<?php
-															} ?>
-
+															?>
 															<tr>
 																<td colspan="3" style="border: none;">Total # of Items: <?php echo $i-1; ?></td>
 																<td colspan="2" align="right" style="border: none;">Total Quantity</td>
 																<td colspan="5" style="border: none;"> <?php echo $total_qty; ?> &nbsp;</td>
 															</tr>
+															<?php
+															}
+															else
+															{ ?>
+
+															<tr class="odd gradeX">
+																<td colspan="9">No records found.</td>
+															</tr>
+
+															<?php
+															} ?>
+
+
 
 														</tbody>
 													</table>
