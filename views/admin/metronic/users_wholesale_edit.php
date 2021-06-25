@@ -837,7 +837,7 @@
                                 <div class="col-md-4">
                                     <select class="form-control select2me" name="options[patron_discount]">
                                         <option value="">Select...</option>
-                                        <?php for($i=1;$i<100;$i++) { ?>
+                                        <?php for($i=0;$i<100;$i++) { ?>
                                         <option value="<?php echo $i; ?>" <?php echo @$this->wholesale_user_details->options['patron_discount'] == $i ? 'selected="selected"' : ''; ?>><?php echo $i.' %'; ?></option>
                                         <?php } ?>
                                     </select>
