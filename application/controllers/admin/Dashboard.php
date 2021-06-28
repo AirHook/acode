@@ -20,7 +20,8 @@ class Dashboard extends Admin_Controller {
 		$this->load->library('orders/orders_list');
 
 		// get the orders
-		$where = array();
+		$this->orders_list->pagination = 1;
+		$where_orders = array();
 		$having_des_group = FALSE;
 		if (@$this->webspace_details->options['site_type'] == 'sal_site')
 		{
@@ -32,13 +33,20 @@ class Dashboard extends Admin_Controller {
 		}
 		// 0-new,1-complete,2-onhold,3-canclled,4-returned/refunded,5-shipment_pending,6-store_credit,7-payment_pending
 		$where_orders['status'] = '0';
+		// removing tempoparis on list for shop7
+		if ($this->webspace_details->slug !== 'tempoparis')
+		{
+			$where_orders['condition'] = '(tbl_order_log.webspace_id != "4" AND tbl_order_log.webspace_id != "67")';
+		}
 		$this->data['orders'] = $this->orders_list->select(
 			$where_orders,
 			array(), // order_by
-			array('10'), // limit, offset
+			array('10'), // limit, offset ... limiting 10 in list for dashboard
 			$having_des_group // $having_des_group
 		);
 		$this->data['count_all_orders'] = $this->orders_list->count_all;
+
+		//echo $this->orders_list->last_query; die();
 
 		// get users
 		if (@$this->webspace_details->options['site_type'] != 'hub_site')
@@ -49,7 +57,7 @@ class Dashboard extends Admin_Controller {
 		$this->data['users'] = $this->wholesale_users_list->select(
 			$where_users,
 			array(),
-			array('5')
+			array(($this->data['count_all_orders'] ?: '5'))
 		);
 		$this->data['count_all_users'] = $this->wholesale_users_list->count_all;
 
