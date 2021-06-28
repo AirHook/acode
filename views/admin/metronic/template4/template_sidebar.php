@@ -122,6 +122,10 @@
                         </li>
                             <?php
                         } ?>
+                        <?php
+                        // available only on hub sites for now
+                        if ($this->webspace_details->options['site_type'] == 'hub_site')
+                        { ?>
                         <li class="nav-item with-heading <?php echo $this->uri->segment(2) == 'categories' ? 'active' : ''; ?>">
                             <a href="<?php echo site_url('admin/categories'); ?>" class="nav-link ">
                                 <span class="title uppercase">Categories</span>
@@ -140,6 +144,8 @@
                                 </li>
                             </ul>
                         </li>
+                            <?php
+                        } ?>
                         <?php
                         // available only on hub sites for now
                         if ($this->webspace_details->options['site_type'] == 'hub_site')
@@ -410,6 +416,12 @@
                                 </li>
                             </ul>
                         </li>
+
+                        <?php
+                        // available only on hub sites for now
+                        if ($this->webspace_details->options['site_type'] == 'hub_site')
+                        { ?>
+
                         <li class="nav-item with-heading <?php echo $this->uri->segment(3) == 'admin' ? 'active' : ''; ?>">
                             <a href="<?php echo site_url('admin/users/admin'); ?>" class="nav-link ">
                                 <span class="title uppercase">Admin Users Manager</span>
@@ -428,6 +440,9 @@
                                 </li>
                             </ul>
                         </li>
+
+                            <?php
+                        } ?>
 
                         <?php
                         // available only on hub sites for now
@@ -492,6 +507,11 @@
                             <?php
                         } ?>
 
+                        <?php
+                        // available only on hub sites for now
+                        if ($this->webspace_details->options['site_type'] == 'hub_site')
+                        { ?>
+
                         <!-- =============-->
                 		<li class="heading">
                 			<h3 class="uppercase">Marketing</h3>
@@ -515,11 +535,6 @@
                 					</a>
                 				</li>
 
-                                <?php
-                                // available only on hub sites for now
-                                if ($this->webspace_details->options['site_type'] == 'hub_site')
-                                { ?>
-
                 				<li class="nav-item  ">
                 					<a href="javascript:;" class="nav-link tooltips" data-original-title="Currently Under Construction" data-placement="right">
                 						<span class="title">Wholesale Special Sale Email Carousel</span>
@@ -536,11 +551,16 @@
                 					</a>
                 				</li>
 
-                                    <?php
-                                } ?>
-
                 			</ul>
                 		</li>
+
+                            <?php
+                        } ?>
+
+                        <?php
+                        // available only on hub sites for now
+                        if ($this->webspace_details->options['site_type'] == 'hub_site')
+                        { ?>
 
                         <!-- =============-->
                         <li class="heading">
@@ -561,10 +581,7 @@
                                 <span class="title">Site Options</span>
                             </a>
                         </li>
-                        <?php
-                        // available only on hub sites for now
-                        if ($this->webspace_details->options['site_type'] == 'hub_site')
-                        { ?>
+
                         <li class="nav-item <?php echo $this->uri->uri_string() == 'admin/chagne_pass' ? 'active' : ''; ?>">
                             <a href="<?php echo site_url('admin/change_pass'); ?>" class="nav-link ">
                                 <span class="title">Admin Change Password</span>
@@ -601,9 +618,6 @@
                             </a>
                         </li>
 
-                            <?php
-                        } ?>
-
                         <li class="nav-item with-heading <?php echo $this->uri->segment(2) == 'pages' ? 'active' : ''; ?>">
                             <a href="<?php echo site_url('admin/pages'); ?>" class="nav-link ">
                                 <span class="title uppercase">Pages Manager</span>
@@ -623,10 +637,6 @@
                             </ul>
                         </li>
 
-                        <?php
-                        // available only on hub sites for now
-                        if ($this->webspace_details->options['site_type'] == 'hub_site')
-                        { ?>
                         <li class="nav-item with-heading ">
                             <a href="javascript:;" class="nav-link tooltips" data-original-title="Currently Under Construction" data-placement="right">
                                 <span class="title uppercase">Reports Manager</span>
@@ -675,7 +685,9 @@
                             </ul>
                         </li>
                         -->
+
                             <?php
                         } ?>
+
                     </ul>
                     <!-- END SIDEBAR MENU -->

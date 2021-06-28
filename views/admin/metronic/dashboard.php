@@ -12,7 +12,7 @@ $pre_link =
             <div class="display">
                 <div class="number">
                     <h3 class="font-blue-sharp">
-                        <span data-counter="counterup" data-value="567"></span>
+                        <span data-counter="counterup" data-value="<?php echo $count_all_orders ?: '0'; ?>"></span>
                     </h3>
                     <small>NEW ORDERS</small>
                 </div>
@@ -124,9 +124,9 @@ $pre_link =
             <div class="display">
                 <div class="number">
                     <h3 class="font-purple-soft">
-                        <span data-counter="counterup" data-value="276"></span>
+                        <span data-counter="counterup" data-value="<?php echo $count_all_users ?: '0'; ?>"></span>
                     </h3>
-                    <small>RECENT ACTIVE WHOLESALE USERS</small>
+                    <small>ACTIVE WHOLESALE USERS</small>
                 </div>
                 <div class="icon">
                     <i class="icon-user"></i>
