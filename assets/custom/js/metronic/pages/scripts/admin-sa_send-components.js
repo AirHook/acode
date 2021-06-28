@@ -38,6 +38,8 @@ var ComponentsEditors = function () {
             $('.select-send-options.send-to-current-user').addClass('btn-active');
             $('[name="send_to"]').val('current_user');
             $('.notice-select-action').hide();
+            $('.send_to_a_friend').hide();
+            $('.input_send_to_a_friend').hide();
             $('.send_to_new_user').hide();
             $('.send_to_all_users').hide();
             $('.send_to_current_user').fadeIn();
@@ -58,6 +60,8 @@ var ComponentsEditors = function () {
             $('.select-send-options.send-to-new-user').addClass('btn-active');
             $('[name="send_to"]').val('new_user');
             $('.notice-select-action').hide();
+            $('.send_to_a_friend').hide();
+            $('.input_send_to_a_friend').hide();
             $('.send_to_current_user').hide();
             $('.send_to_all_users').hide();
             $('.send_to_new_user').fadeIn();
@@ -81,11 +85,35 @@ var ComponentsEditors = function () {
             $(this).addClass('btn-active');
             $('[name="send_to"]').val('all_users');
             $('.notice-select-action').hide();
+            $('.send_to_a_friend').hide();
+            $('.input_send_to_a_friend').hide();
             $('.send_to_all_users').fadeIn();
             $('.send_to_current_user').hide();
             $('.send_to_new_user').hide();
             $('.selected-users-list').html('');
             $('.selected-users-list-wrapper').hide();
+            $('#form-send_sales_package').trigger("reset");
+            $('.alert-danger').hide();
+        });
+
+        // select action option buttons function - send to a friend
+        $('.send-to-a-friend').on('click', function(){
+            // set all buttons to default
+            $('.select-send-options').css('background-color', '#2f353b');
+            $('.select-send-options').css('color', 'white');
+            $('.select-send-options').removeClass('btn-active');
+            // set this button to active
+            //$(this).css('background-color', '#696969');
+            $('.select-send-options.send-to-a-friend').css('background-color', '#E5E5E5');
+            $('.select-send-options.send-to-a-friend').css('color', 'black');
+            $('.select-send-options.send-to-a-friend').addClass('btn-active');
+            $('[name="send_to"]').val('a_friend');
+            $('.notice-select-action').hide();
+            $('.send_to_new_user').hide();
+            $('.send_to_all_users').hide();
+            $('.send_to_current_user').hide();
+            $('.send_to_a_friend').fadeIn();
+            $('.input_send_to_a_friend').fadeIn();
             $('#form-send_sales_package').trigger("reset");
             $('.alert-danger').hide();
         });

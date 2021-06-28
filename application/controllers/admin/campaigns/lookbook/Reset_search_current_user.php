@@ -67,7 +67,7 @@ class Reset_search_current_user extends MY_Controller {
 			array( // order by
 				'tbluser_data_wholesale.store_name' => 'asc'
 			),
-			$limit // limit
+			array() // limit
 		);
 
 		$html = '';

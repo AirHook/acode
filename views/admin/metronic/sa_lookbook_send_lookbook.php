@@ -390,7 +390,7 @@
 
                                 <?php $this->load->view('admin/metronic/sa_send_to_new_user'); ?>
 
-                                <?php $this->load->view('admin/metronic/sa_send_to_current_user'); ?>
+                                <?php $this->load->view('admin/metronic/sa_send_to_current_user_scroll'); ?>
 
                                 <h3 class="notice-select-action hide"><cite>Select action...</cite></h3>
 

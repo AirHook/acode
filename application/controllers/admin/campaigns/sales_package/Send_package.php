@@ -90,6 +90,11 @@ class Send_package extends Admin_Controller {
 		// this is super admin
 		// sales user is the default sales user of the site
 		// get default sales user
+		$default_sales_user =
+			$this->webspace_details->info_email == 'help@instylenewyork.com'
+			? 'help@shop7thavenue.com'
+			: $this->webspace_details->info_email
+		;
 		$sales_user_details = $this->sales_user_details->initialize(
 			array(
 				// default is webspace info email
@@ -97,7 +102,7 @@ class Send_package extends Admin_Controller {
 				// admin logs in on satellite sites
 				// and the designger/owner will be the default sales user
 				// like in the case of davi of basix and raffi of tempo
-				'admin_sales_email' => $this->webspace_details->info_email
+				'admin_sales_email' => $default_sales_user
 			)
 		);
 		$this->data['sales_user'] = $sales_user_details->admin_sales_id;
@@ -108,7 +113,7 @@ class Send_package extends Admin_Controller {
 
 		// get user list data
 		// limits and per page
-		$per_page = 20;
+		$per_page = 300;
 		$limit = $per_page > 0 ? array($per_page) : array();
 		// where clauses
 		$where['tbluser_data_wholesale.is_active'] = '1';
@@ -117,7 +122,7 @@ class Send_package extends Admin_Controller {
 			array( // order by
 				'tbluser_data_wholesale.store_name' => 'asc'
 			),
-			$limit
+			array()
 		);
 		//$this->data['user_id'] = '';
 		$this->data['users_per_page'] = $per_page;

@@ -142,7 +142,7 @@ class Send extends Admin_Controller {
 			array( // order by
 				'tbluser_data_wholesale.store_name' => 'asc'
 			),
-			$limit
+			array()
 		);
 		//$this->data['user_id'] = '';
 		$this->data['users_per_page'] = $per_page;

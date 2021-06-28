@@ -335,16 +335,41 @@
         	                                <i class="fa fa-pencil"></i> Modify Sales Package
         								</a>
                                     </div>
+                                    <div class="form-group" style="margin:0px -10px 0px 0px;">
+                                        <cite style="font-size:120%;">SEND TO:</cite>
+                                    </div>
                                     <div class="form-group">
+                                        <?php
+        								/***********
+        								 * Only super admin for 'Send to a friend'
+        								 */
+                                        if (
+                                            $this->webspace_details->options['site_type'] == 'hub_site'
+                                            OR $role == 'admin'
+                                            OR $role == 'sales'
+                                        )
+                                        {
+                                            $col_md = 3;
+                                            $show_sent_to_friend = ''; // show
+                                        }
+                                        else
+                                        {
+                                            $col_md = 4;
+                                            $show_sent_to_friend = 'hide';
+                                        }
+        								?>
                                         <div class="col-md-12">
-                                            <a href="javascript:;" class="btn dark btn-md select-send-options send-to-current-user col-md-4 btn-active" style="font-size:0.9em;background-color:#E5E5E5;color:black;">
-                                                Send To Existing User(s)
+                                            <a href="javascript:;" class="btn dark btn-md select-send-options send-to-current-user col-md-3 btn-active" style="font-size:0.9em;background-color:#E5E5E5;color:black;">
+                                                Existing User(s)
                                             </a>
-                                            <a href="javascript:;" class="btn dark btn-md select-send-options send-to-new-user col-md-4" style="font-size:0.9em;">
-                                                Send To New Wholesale User
+                                            <a href="javascript:;" class="btn dark btn-md select-send-options send-to-new-user col-md-3" style="font-size:0.9em;">
+                                                New Wholesale User
                                             </a>
-                                            <button type="button" class="btn dark btn-md select-send-options send-to-all-users_ col-md-4 tooltips" data-original-title="Under Construction" style="font-size:0.9em;">
-                                                Send To All Users
+                                            <button type="button" class="btn dark btn-md select-send-options send-to-all-users_ col-md-3 tooltips" data-original-title="Under Construction" style="font-size:0.9em;">
+                                                All Users
+                                            </button>
+                                            <button type="button" class="btn dark btn-md select-send-options send-to-a-friend col-md-3 <?php echo $show_sent_to_friend; ?>" style="font-size:0.9em;">
+                                                A Friend
                                             </button>
                                         </div>
                                     </div>
@@ -398,9 +423,36 @@
                                     <?php } ?>
                                 </div>
 
+                                <div class="send_to_a_friend display-none">
+
+									<h4> <cite>SEND TO A FRIEND:</cite> </h4>
+
+									<div class="form-body col-md-12">
+
+										<div class="form-group">
+											<label>Email<span class="required"> * </span>
+											</label>
+											<div class="input-group">
+												<span class="input-group-addon">
+													<i class="fa fa-envelope"></i>
+												</span>
+												<input type="email" name="email_a_friend" class="form-control input_send_to_a_friend display-none" value="<?php echo set_value('email'); ?>" />
+											</div>
+										</div>
+
+                                    </div>
+
+                                    <button type="submit" class="btn-send-lookbook-to-a-friend btn dark btn-sm margin-bottom-10">
+                                        Send Lookbook
+                                    </button>
+
+                                </div>
+
                                 <?php $this->load->view('admin/metronic/sa_send_to_new_user'); ?>
 
-                                <?php $this->load->view('admin/metronic/sa_send_to_current_user'); ?>
+                                <?php $this->load->view('admin/metronic/sa_send_to_current_user_scroll'); ?>
+
+                                <?php $this->load->view('admin/metronic/sa_send_to_all_users'); ?>
 
                                 <h3 class="notice-select-action hide"><cite>Select action...</cite></h3>
 

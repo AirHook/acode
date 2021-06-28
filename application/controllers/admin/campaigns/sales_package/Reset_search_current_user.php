@@ -65,14 +65,14 @@ class Reset_search_current_user extends MY_Controller {
 			array( // order by
 				'tbluser_data_wholesale.store_name' => 'asc'
 			),
-			array($this->input->post('reset')) // limit
+			array() //array($this->input->post('reset')) // limit
 		);
 
 		$html = '';
 		foreach ($users as $user)
 		{
 			$html.=
-				'<label class="mt-checkbox mt-checkbox-outline" style="font-size:0.8em;">'
+				'<label class="mt-checkbox mt-checkbox-outline col-sm-6" style="font-size:0.7em;">'
 				.ucwords($user->store_name)
 				.' - '
 				.ucwords(strtolower($user->firstname.' '.$user->lastname))
