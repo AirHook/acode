@@ -95,15 +95,16 @@
 									Actions:
 								</label>
 
-								<?php if ($order_details->status == '0')
+								<?php
+								if (@$role == 'sales' && @$this->sales_user_details->access_level == '2') $hide_approve = 'hide';
+								else $hide_approve = '';
+								if ($order_details->status == '0')
 								{
-									if (@$role == 'sales' && @$this->sales_user_details->access_level == '2') $hide_approve = 'hide';
-									else $hide_approve = '';
 									?>
 
 								<button href="#modal-payment_pending" data-toggle="modal" class="btn grey-gallery btn-block btn-sm filter-options-field-details <?php echo $hide_approve; ?>" style="text-align:left;padding-left:10px;">
 									<i class="fa fa-check"></i>
-									Set as Pending Payment
+									Set Pending Payment
 								</button>
 								<button href="#modal-cancel" data-toggle="modal" class="btn grey-gallery btn-block btn-sm filter-options-field-details" style="text-align:left;padding-left:10px;">
 									<i class="fa fa-ban"></i>
@@ -113,7 +114,6 @@
 									<i class="fa fa-pencil"></i>
 									Modify Order
 								</a>
-
 								<button href="#modal-split_order" data-toggle="modal" class="btn grey-gallery btn-block btn-sm filter-options-field-details <?php echo $hide_approve; ?>" style="text-align:left;padding-left:10px;">
 									<i class="fa fa-cut"></i>
 									Split Order
@@ -125,13 +125,21 @@
 								<?php if ($order_details->status == '7')
 								{ ?>
 
-								<button href="#modal-shipment_pending" data-toggle="modal" class="btn grey-gallery btn-block btn-sm filter-options-field-details" style="text-align:left;padding-left:20px;">
+								<button href="#modal-shipment_pending" data-toggle="modal" class="btn grey-gallery btn-block btn-sm filter-options-field-details" style="text-align:left;padding-left:10px;">
 									<i class="fa fa-check"></i>
-									Set Order Shipment Pending
+									Set Shipment Pending
 								</button>
-								<button href="#modal-cancel" data-toggle="modal" class="btn grey-gallery btn-block btn-sm filter-options-field-details" style="text-align:left;padding-left:20px;">
+								<button href="#modal-cancel" data-toggle="modal" class="btn grey-gallery btn-block btn-sm filter-options-field-details" style="text-align:left;padding-left:10px;">
 									<i class="fa fa-ban"></i>
 									Cancel Order
+								</button>
+								<a href="<?php echo site_url($pre_link.'/orders/modify/index/'.$this->order_details->order_id); ?>" class="btn grey-gallery btn-block btn-sm filter-options-field-details" style="text-align:left;padding-left:10px;">
+									<i class="fa fa-pencil"></i>
+									Modify Order
+								</a>
+								<button href="#modal-split_order" data-toggle="modal" class="btn grey-gallery btn-block btn-sm filter-options-field-details <?php echo $hide_approve; ?>" style="text-align:left;padding-left:10px;">
+									<i class="fa fa-cut"></i>
+									Split Order
 								</button>
 
 									<?php
@@ -140,18 +148,22 @@
 								<?php if ($order_details->status == '5')
 								{ ?>
 
-								<button href="#modal-complete" data-toggle="modal" class="btn grey-gallery btn-block btn-sm filter-options-field-details" style="text-align:left;padding-left:20px;">
+								<button href="#modal-complete" data-toggle="modal" class="btn grey-gallery btn-block btn-sm filter-options-field-details" style="text-align:left;padding-left:10px;">
 									<i class="fa fa-check"></i>
 									Set Order as Shipped
 								</button>
-								<button href="#modal-cancel" data-toggle="modal" class="btn grey-gallery btn-block btn-sm filter-options-field-details" style="text-align:left;padding-left:20px;">
+								<button href="#modal-cancel" data-toggle="modal" class="btn grey-gallery btn-block btn-sm filter-options-field-details" style="text-align:left;padding-left:10px;">
 									<i class="fa fa-ban"></i>
 									Cancel Order
 								</button>
-								<button href="#modal-store_credit" data-toggle="modal" class="btn grey-gallery btn-block btn-sm filter-options-field-details" style="text-align:left;padding-left:20px;">
+								<button href="#modal-store_credit" data-toggle="modal" class="btn grey-gallery btn-block btn-sm filter-options-field-details" style="text-align:left;padding-left:10px;">
 									<i class="fa fa-credit-card"></i>
 									Set as Store Credit
 								</button>
+								<a href="<?php echo site_url($pre_link.'/orders/modify/index/'.$this->order_details->order_id); ?>" class="btn grey-gallery btn-block btn-sm filter-options-field-details" style="text-align:left;padding-left:10px;">
+									<i class="fa fa-pencil"></i>
+									Modify Order
+								</a>
 
 									<?php
 								} ?>
