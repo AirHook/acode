@@ -114,8 +114,16 @@
 																			}
 																			else
 																			{
-																				$summary_shipping = 0;
-																				echo 'TBD';
+																				if ($this->session->fix_fee)
+																				{
+																					$summary_shipping = $this->session->fix_fee;
+																					echo '$ '.$this->cart->format_number($this->session->fix_fee);
+																				}
+																				else
+																				{
+																					$summary_shipping = 0;
+																					echo 'TBD';
+																				}
 																			}
 																			?>
 																		</td>

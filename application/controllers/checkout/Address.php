@@ -282,6 +282,13 @@ class Address extends Frontend_Controller
 					'agree_to_policy'		=> $this->input->post('agree_to_policy')
 				);
 				$this->session->set_userdata($newdata);
+
+				// this snippet checks for ship countries other than USA
+				if ($this->session->sh_country != 'United States')
+				{
+					$fix_fee = $this->_get_fix_fee_for_consumers($this->session->sh_country);
+					$this->session->set_userdata('fix_fee', $fix_fee);
+				}
 			}
 
 			redirect('checkout/delivery', 'location');
@@ -311,6 +318,146 @@ class Address extends Frontend_Controller
 			}
 			else return TRUE;
 		}
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Get shipping fix fee for consumers
+	 *
+	 * @return	string
+	 */
+	private function _get_fix_fee_for_consumers($str)
+	{
+		$city_fee = array(
+			// All Middle East - $95
+			'Bahrain' => '95',
+			'Cyprus' => '95',
+			'Egypt' => '95',
+			'Iran' => '95',
+			'Iraq' => '95',
+			'Israel' => '95',
+			'Jordan' => '95',
+			'Kuwait' => '95',
+			'Lebanon' => '95',
+			'Oman' => '95',
+			'Qatar' => '95',
+			'Saudi Arabia' => '95',
+			'Syria' => '95',
+			'Turkey' => '95',
+			'United Arab Emirates' => '95',
+			'Yemen' => '95',
+			// All Europe - $75
+			'Albania' => '75',
+			'Andorra' => '75',
+			'Austria' => '75',
+			'Belarus' => '75',
+			'Belgium' => '75',
+			'Bosnia and Herzegowina' => '75',
+			'Bulgaria' => '75',
+			'Croatia' => '75',
+			'Czech Republic' => '75',
+			'Denmark' => '75',
+			'Estonia' => '75',
+			'Finland' => '75',
+			'France' => '75',
+			'Germany' => '75',
+			'Greece' => '75',
+			'Holy See' => '75',
+			'Hungary' => '75',
+			'Iceland' => '75',
+			'Ireland' => '75',
+			'Italy' => '75',
+			'Latvia' => '75',
+			'Liechtenstein' => '75',
+			'Lithuania' => '75',
+			'Luxembourg' => '75',
+			'Malta' => '75',
+			'Moldova' => '75',
+			'Monaco' => '75',
+			'Montenegro' => '75',
+			'Netherlands' => '75',
+			'Macedonia, The Former Yugoslav Republic of' => '75',
+			'North Macedonia' => '75',
+			'Norway' => '75',
+			'Poland' => '75',
+			'Portugal' => '75',
+			'Romania' => '75',
+			'Russia' => '75',
+			'San Marino' => '75',
+			'Serbia' => '75',
+			'Slovakia' => '75',
+			'Slovakia (Slovak Republic)' => '75',
+			'Slovenia' => '75',
+			'Spain' => '75',
+			'Sweden' => '75',
+			'Switzerland' => '75',
+			'Ukraine' => '75',
+			'United Kingdom' => '75',
+			// Asia
+			'Australia' => '125',
+			'Japan' => '125',
+			'Korea' => '125',
+			'Afghanistan' => '125',
+			'Armenia' => '125',
+			'Azerbaijan' => '125',
+			'Bangladesh' => '125',
+			'Bhutan' => '125',
+			'Brunei' => '125',
+			'Cambodia' => '125',
+			'China' => '125',
+			'Georgia' => '125',
+			'India' => '125',
+			'Indonesia' => '125',
+			'Kazakhstan' => '125',
+			'Kyrgyzstan' => '125',
+			'Laos' => '125',
+			'Malaysia' => '125',
+			'Maldives' => '125',
+			'Mongolia' => '125',
+			'Myanmar' => '125',
+			'Nepal' => '125',
+			'North Korea' => '125',
+			"Korea, Democratic People's Republic of" => '125',
+			'South Korea' => '125',
+			'Korea, Republic of' => '125',
+			'Pakistan' => '125',
+			'Philippines' => '125',
+			'Singapore' => '125',
+			'Sri Lanka' => '125',
+			'State of Palestine' => '125',
+			'Tajikistan' => '125',
+			'Thailand' => '125',
+			'Timor-Leste' => '125',
+			'Turkmenistan' => '125',
+			'Uzbekistan' => '125',
+			'Vietnam' => '125',
+			// South America  - 85
+			'Argentina' => '85',
+			'Bolivia' => '85',
+			'Brazil' => '85',
+			'Chile' => '85',
+			'Colombia' => '85',
+			'Ecuador' => '85',
+			'Falkland Islands' => '85',
+			'Falkland Islands (Malvinas)' => '85',
+			'French Guiana' => '85',
+			'Guyana' => '85',
+			'Paraguay' => '85',
+			'Peru' => '85',
+			'Suriname' => '85',
+			'Uruguay' => '85',
+			'Venezuela' => '85',
+			// Others
+			'Mexico' => '75',
+			'Canada' => '65'
+		);
+
+		if (isset($city_fee[$str]))
+		{
+			return $city_fee[$str];
+		}
+		else return '125';
 	}
 
 	// ----------------------------------------------------------------------
