@@ -226,11 +226,12 @@ var ComponentsProductEdit = function () {
                 var stocksArray = stocks.split(',');
 				stocksArray.forEach(function(item, index){
 					switch (index) {
-						case 0: var size = 'size_ss'; break;
-						case 1: var size = 'size_sm'; break;
-						case 2: var size = 'size_sl'; break;
-						case 3: var size = 'size_sxl'; break;
-						case 4: var size = 'size_sxxl'; break;
+                        case 0: var size = 'size_sxs'; break;
+						case 1: var size = 'size_ss'; break;
+						case 2: var size = 'size_sm'; break;
+						case 3: var size = 'size_sl'; break;
+						case 4: var size = 'size_sxl'; break;
+						case 5: var size = 'size_sxxl'; break;
 					}
 					$('#' + size).val(item);
 				});
