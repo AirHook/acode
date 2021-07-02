@@ -290,8 +290,16 @@
 																}
 																else
 																{
-																	$fix_fee = 0;
-																	echo 'TBD';
+                                                                    if ($this->session->fix_fee)
+                                                                    {
+                                                                        $fix_fee = $this->session->fix_fee;
+                                                                        echo '$ '.$this->cart->format_number($fix_fee);
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        $fix_fee = 0;
+    																	echo 'TBD';
+                                                                    }
 																}
 																?>
 															</td>
