@@ -691,35 +691,20 @@ class Products_list
 			// filter products
 			if (isset($this->facets['filter']) AND $this->facets['filter'] !== '')
 			{
-				/* *
-				// one option new arrival filter where a new_arrival db field is used
-				// we use hyphen on the filter name
-				if ($this->facets['filter'] == 'new_arrival')
-				{
-					$and_filter = "AND (p.new_arrival='Yes' OR p.new_arrival='yes' OR p.new_arrival='y' OR p.new_arrival='Y' OR p.new_arrival='New Arrival')";
-					$this->DB->where($and_filter);
-					$faceted = TRUE;
-				}
-
-				// another option for new arrival filter where we use a mix of prod_date and publish_date as reference
-				// with items falling within 90 days of publish/upload
-				// we user underscore on the filter name
-				if ($this->facets['filter'] == 'new-arrival')
-				{
-					$and_filter = "";
-					$this->DB->where($and_filter);
-					$faceted = TRUE;
-				}
-				// */
-
+				/* *	// by _rey 20210706
+				// 1.0
 				// db field new_arrival will be used an overriding params for New Arrivals
+				// filter params to use for this is same as "new_arrival"
 				// Warning: new_arrival field allows old stocks to be turned into new arrivals
+				// 2.0
 				// default param for New Arrival will be based on prod_date and publish_date fields
-				// using new-arrival filter params
+				// using "new-arrival" filter params for this
+				// */
 				if ($this->facets['filter'] == 'new-arrival' OR $this->facets['filter'] == 'new_arrival')
 				{
-					$and_filter = " ";
-					$and_filter.= "(";
+					// conditions for both and for any single filter only
+					// concatinate query string
+					$and_filter = "(";
 
 					if ($this->facets['filter'] == 'new_arrival')
 					{
@@ -730,10 +715,6 @@ class Products_list
 
 					if ($this->facets['filter'] == 'new-arrival')
 					{
-						//$and_filter.= "(CAST(tbl_product.prod_date as date) BETWEEN DATEADD(DAY,-90,GETDATE()) AND GETDATE())";
-						//$and_filter.= "(DATEDIFF(DAY,CAST(tbl_product.prod_date as date),GETDATE()) BETWEEN 0 AND 30)";
-						//$and_filter.= "( CAST(tbl_product.prod_date as date) >= DATEADD(DY,-90,GETDATE()) AND CAST(tbl_product.prod_date as date) <= GETDATE() )";
-						//$and_filter.= "( tbl_product.prod_date >= DATEADD(DY,-90,GETDATE()) AND tbl_product.prod_date <= GETDATE() )";
 						$and_filter.= "( CAST(tbl_product.prod_date as date) >= DATE_ADD(NOW(), INTERVAL -90 DAY) )";
 
 						$this->DB->order_by('product_date', 'DESC');
@@ -744,6 +725,7 @@ class Products_list
 					$this->DB->where($and_filter);
 					$faceted = TRUE;
 				}
+				// *********
 
 				if ($this->facets['filter'] == 'clearance')
 				{
@@ -775,8 +757,8 @@ class Products_list
 		$this->DB->select('tbl_product.options');
 		$this->DB->select('tbl_product.clearance');
 		// casting prod_date from string to date
+		// for use on date range based query on where and order clauses
 		$this->DB->select("CAST(tbl_product.prod_date as date) as product_date");
-		//$this->DB->select("DATE_ADD(NOW(), INTERVAL -90 DAY) as days_ago");
 		// pricing
 		$this->DB->select('tbl_product.less_discount');	// retail
 		$this->DB->select('tbl_product.less_discount AS retail_price');	// retail (alias)
