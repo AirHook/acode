@@ -663,6 +663,27 @@ class Products_list
 					case 'instock':
 						$facet_where .= " AND (tbl_product.size_mode = '1' AND (tbl_stock.size_0 > '0' OR tbl_stock.size_2 > '0' OR tbl_stock.size_4 > '0' OR tbl_stock.size_6 > '0' OR tbl_stock.size_8 > '0' OR tbl_stock.size_10 > '0' OR tbl_stock.size_12 > '0' OR tbl_stock.size_14 > '0' OR tbl_stock.size_16 > '0' OR tbl_stock.size_18 > '0' OR tbl_stock.size_20 > '0' OR tbl_stock.size_22 > '0') OR tbl_product.size_mode = '0' AND (tbl_stock.size_sxs > '0' OR tbl_stock.size_ss > '0' OR tbl_stock.size_sm > '0' OR tbl_stock.size_sl > '0' OR tbl_stock.size_sxl > '0' OR tbl_stock.size_sxxl > '0' OR tbl_stock.size_sxl1 > '0' OR tbl_stock.size_sxl2 > '0') OR tbl_product.size_mode = '2' AND (tbl_stock.size_sprepack1221 > '0') OR tbl_product.size_mode = '3' AND (tbl_stock.size_ssm > '0' AND tbl_stock.size_sml > '0') OR tbl_product.size_mode = '4' AND (tbl_stock.size_sonesizefitsall > '0'))";
 					break;
+
+					/* *
+					// by _rey 20210706
+					// combining both database reference to new arrivals
+					// db table field new_arrival
+					// db table field prod_date cast as date as product_date
+					// */
+					case 'new_arrival':
+						// combining both database reference to new arrivals
+						// concatinate query string
+						$facet_where.= " AND ";
+						$facet_where.= "(";
+						// db table field new_arrival
+						$facet_where.= "(tbl_product.new_arrival='Yes' OR tbl_product.new_arrival='yes' OR tbl_product.new_arrival='y' OR tbl_product.new_arrival='Y' OR tbl_product.new_arrival='New Arrival')";
+						$facet_where.= " OR ";
+						// db table field prod_date cast as date as product_date
+						$facet_where.= "(CAST(tbl_product.prod_date as date) >= DATE_ADD(NOW(), INTERVAL -90 DAY))";
+						$facet_where.= ")";
+
+						$this->DB->order_by('product_date', 'DESC');
+					break;
 				}
 			}
 
@@ -691,34 +712,26 @@ class Products_list
 			// filter products
 			if (isset($this->facets['filter']) AND $this->facets['filter'] !== '')
 			{
-				/* *	// by _rey 20210706
-				// 1.0
-				// db field new_arrival will be used an overriding params for New Arrivals
-				// filter params to use for this is same as "new_arrival"
-				// Warning: new_arrival field allows old stocks to be turned into new arrivals
-				// 2.0
-				// default param for New Arrival will be based on prod_date and publish_date fields
-				// using "new-arrival" filter params for this
+				/* *
+				// by _rey 20210706
+				// combining both database reference to new arrivals
+				// db table field new_arrival
+				// db table field prod_date cast as date as product_date
+				// NOTE: new_arrival is included in AVAILABILITY so this is already redundant - for depracation
 				// */
 				if ($this->facets['filter'] == 'new-arrival' OR $this->facets['filter'] == 'new_arrival')
 				{
-					// conditions for both and for any single filter only
+					// combining both database reference to new arrivals
 					// concatinate query string
 					$and_filter = "(";
 
-					if ($this->facets['filter'] == 'new_arrival')
-					{
-						$and_filter.= "(tbl_product.new_arrival='Yes' OR tbl_product.new_arrival='yes' OR tbl_product.new_arrival='y' OR tbl_product.new_arrival='Y' OR tbl_product.new_arrival='New Arrival')";
+					// db table field new_arrival
+					$and_filter.= "(tbl_product.new_arrival='Yes' OR tbl_product.new_arrival='yes' OR tbl_product.new_arrival='y' OR tbl_product.new_arrival='Y' OR tbl_product.new_arrival='New Arrival')";
 
-						if ($this->facets['filter'] == 'new-arrival') $and_filter.= " OR ";
-					}
+					$and_filter.= " OR ";
 
-					if ($this->facets['filter'] == 'new-arrival')
-					{
-						$and_filter.= "( CAST(tbl_product.prod_date as date) >= DATE_ADD(NOW(), INTERVAL -90 DAY) )";
-
-						$this->DB->order_by('product_date', 'DESC');
-					}
+					// db table field prod_date cast as date as product_date
+					$and_filter.= "(CAST(tbl_product.prod_date as date) >= DATE_ADD(NOW(), INTERVAL -90 DAY))";
 
 					$and_filter.= ")";
 

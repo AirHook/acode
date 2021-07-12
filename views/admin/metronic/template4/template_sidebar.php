@@ -25,6 +25,11 @@
                                 <span class="arrow <?php echo $this->uri->segment(2) == 'products' ? 'open' : 'open'; ?>"></span>
                             </a>
                             <ul class="sub-menu always-open">
+                                <li class="nav-item  <?php echo $this->uri->segment(3) == 'new_arrival' ? 'active open' : ''; ?>">
+                                    <a href="<?php echo site_url('admin/products/new_arrival'); ?>" class="nav-link  ">
+                                        <span class="title">New Arrival</span>
+                                    </a>
+                                </li>
                                 <li class="nav-item  <?php echo $this->uri->segment(3) == 'is_public' ? 'active open' : ''; ?>">
                                     <a href="<?php echo site_url('admin/products/is_public'); ?>" class="nav-link  ">
                                         <span class="title">Public</span>

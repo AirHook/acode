@@ -569,9 +569,11 @@
                                                                             <option value="preorder" <?php echo @$_GET['availability'] == 'preorder' ? 'selected': '';?> class="">
                                                                                 Pre Order
                                                                             </option>
-
                                                                             <option value="onsale" <?php echo @$_GET['availability'] == 'onsale' ? 'selected': '';?>>
                                                                                 On Sale
+                                                                            </option>
+                                                                            <option value="new_arrival" <?php echo @$_GET['availability'] == 'new_arrival' ? 'selected': '';?>>
+                                                                                New Arrivals
                                                                             </option>
 
                                                                         </select>
@@ -1115,6 +1117,9 @@
                                                                                         <option value="onsale" <?php echo @$_GET['availability'] == 'onsale' ? 'selected': '';?>>
                             																On Sale
                             															</option>
+                                                                                        <option value="new_arrival" <?php echo @$_GET['availability'] == 'new_arrival' ? 'selected': '';?>>
+                                                                                            New Arrivals
+                                                                                        </option>
 
                                                                                     </select>
 
@@ -1990,6 +1995,9 @@
                                                                                         <option value="onsale" <?php echo @$_GET['availability'] == 'onsale' ? 'selected': '';?>>
                             																On Sale
                             															</option>
+                                                                                        <option value="new_arrival" <?php echo @$_GET['availability'] == 'new_arrival' ? 'selected': '';?>>
+                                                                                            New Arrivals
+                                                                                        </option>
 
                                                                                     </select>
 
@@ -2458,6 +2466,9 @@
                                                                             </option>
                                                                             <option value="onsale" <?php echo @$_GET['availability'] == 'onsale' ? 'selected': '';?>>
                                                                                 On Sale
+                                                                            </option>
+                                                                            <option value="new_arrival" <?php echo @$_GET['availability'] == 'new_arrival' ? 'selected': '';?>>
+                                                                                New Arrivals
                                                                             </option>
 
                                                                         </select>

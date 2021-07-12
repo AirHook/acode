@@ -57,6 +57,19 @@
 								background-color: #333;
 								color: #eee;
 							}
+							a.product-list-nav {
+								background-color: #eee;
+								font-size: 10px;
+								padding: 3px 12px;
+							}
+							a.product-list-nav:hover {
+								background-color: #333;
+								color: white;
+							}
+							a.product-list-nav.active {
+								background-color: #333;
+								color: white;
+							}
 						</style>
 
 						<?php
@@ -78,10 +91,84 @@
 						else $link_prefix = 'admin';
 						?>
 
-						<ul class="nav nav-tabs">
+						<div class="clearfix margin-top-10">
+							<a href="<?php echo site_url($link_prefix.'/products/all'); ?>" class="btn btn-xs btn-default dark-hover product-list-nav <?php echo ($this->uri->segment(3) == 'all' OR $this->uri->segment(4) == 'all') ? 'active' : ''; ?>">
+								All
+							</a>
+							<a href="<?php echo site_url($link_prefix.'/products/new_arrival'); ?>" class="btn btn-xs btn-default dark-hover product-list-nav <?php echo ($this->uri->segment(3) == 'new_arrival'  OR $this->uri->segment(4) == 'new_arrival') ? 'active' : ''; ?>">
+								New Arrival
+							</a>
+							<a href="<?php echo site_url($link_prefix.'/products/is_public'); ?>" class="btn btn-xs btn-default dark-hover product-list-nav <?php echo ($this->uri->segment(3) == 'is_public'  OR $this->uri->segment(4) == 'is_public') ? 'active' : ''; ?>">
+								Public
+							</a>
+							<a href="<?php echo site_url($link_prefix.'/products/not_public'); ?>" class="btn btn-xs btn-default dark-hover product-list-nav <?php echo ($this->uri->segment(3) == 'not_public' OR $this->uri->segment(4) == 'not_public') ? 'active' : ''; ?>">
+								Private
+							</a>
+							<a href="<?php echo site_url($link_prefix.'/products/clearance'); ?>" class="btn btn-xs btn-default dark-hover product-list-nav <?php echo ($this->uri->segment(3) == 'clearance' OR $this->uri->segment(4) == 'clearance') ? 'active' : ''; ?>">
+								Sale
+							</a>
+							<?php
+							// available only on hub sites for now
+							if (
+								$this->webspace_details->options['site_type'] == 'hub_site'
+								&& ! @$role
+							)
+							{ ?>
+							<a href="<?php echo site_url($link_prefix.'/products/clearance_cs_only'); ?>" class="btn btn-xs btn-default dark-hover product-list-nav <?php echo ($this->uri->segment(3) == 'clearance_cs_only' OR $this->uri->segment(4) == 'clearance_cs_only') ? 'active' : ''; ?>">
+								Clearance CS
+							</a>
+							<a href="<?php echo site_url($link_prefix.'/products/admin_stocks'); ?>" class="btn btn-xs btn-default dark-hover product-list-nav <?php echo ($this->uri->segment(3) == 'admin_stocks' OR $this->uri->segment(4) == 'admin_stocks') ? 'active' : ''; ?>">
+								Admin Stocks
+							</a>
+							<a href="<?php echo site_url($link_prefix.'/products/at_google'); ?>" class="btn btn-xs btn-default dark-hover product-list-nav <?php echo ($this->uri->segment(3) == 'at_google' OR $this->uri->segment(4) == 'at_google') ? 'active' : ''; ?>">
+								Google
+							</a>
+							<a href="<?php echo site_url($link_prefix.'/products/dsco_stocks'); ?>" class="btn btn-xs btn-default dark-hover product-list-nav <?php echo ($this->uri->segment(3) == 'dsco_stocks' OR $this->uri->segment(4) == 'dsco_stocks') ? 'active' : ''; ?>">
+								DSCO
+							</a>
+								<?php
+							} ?>
+							<a href="<?php echo site_url($link_prefix.'/products/unpublished'); ?>" class="btn btn-xs btn-default dark-hover product-list-nav <?php echo ($this->uri->segment(3) == 'unpublished' OR $this->uri->segment(4) == 'unpublished') ? 'active' : ''; ?>">
+								Unpublished
+							</a>
+							<a href="<?php echo site_url($link_prefix.'/products/instock'); ?>" class="btn btn-xs btn-default dark-hover product-list-nav <?php echo ($this->uri->segment(3) == 'instock' OR $this->uri->segment(4) == 'instock') ? 'active' : ''; ?>">
+								In Stock
+							</a>
+							<a href="<?php echo site_url($link_prefix.'/products/by_vendor'); ?>" class="btn btn-xs btn-default dark-hover product-list-nav <?php echo ($this->uri->segment(3) == 'by_vendor' OR $this->uri->segment(4) == 'by_vendor') ? 'active' : ''; ?>">
+								By Vendor
+							</a>
+							<a href="javascript:;" class="btn btn-xs btn-default dark-hover product-list-nav <?php echo ($this->uri->segment(3) == 'onorder' OR $this->uri->segment(4) == 'onorder') ? 'active' : ''; ?> tooltips" data-original-title="Currently under construction">
+								On Order
+							</a>
+							<?php
+							// available only on hub sites for now
+							if (
+								$this->webspace_details->options['site_type'] == 'hub_site'
+								&& ! @$role
+							)
+							{ ?>
+							<!--
+							<a href="<?php echo site_url('admin/products/add'); ?>">
+								Add Product <i class="fa fa-plus"></i>
+							</a>
+							-->
+							<a href="<?php echo site_url('admin/products/add/multiple_upload_images'); ?>" class="btn btn-xs btn-default dark-hover product-list-nav">
+								Add Multiple Products <i class="fa fa-plus"></i>
+							</a>
+							<?php } ?>
+						</div>
+
+						<br />
+
+						<ul class="nav nav-tabs hide">
 							<li class="<?php echo ($this->uri->segment(3) == 'all' OR $this->uri->segment(4) == 'all') ? 'active' : ''; ?>">
 								<a href="<?php echo site_url($link_prefix.'/products/all'); ?>">
 									All
+								</a>
+							</li>
+							<li class="<?php echo ($this->uri->segment(3) == 'new_arrival'  OR $this->uri->segment(4) == 'new_arrival') ? 'active' : ''; ?>">
+								<a href="<?php echo site_url($link_prefix.'/products/new_arrival'); ?>">
+									New Arrival
 								</a>
 							</li>
 							<li class="<?php echo ($this->uri->segment(3) == 'is_public'  OR $this->uri->segment(4) == 'is_public') ? 'active' : ''; ?>">

@@ -173,6 +173,7 @@ var TableDatatablesManaged = function () {
         }
         $('#bulk_actions_select').selectpicker("refresh");
     });
+
 	// apply button scripts
 	$('#apply_bulk_actions').click(function(){
 		var x = document.getElementById("bulk_actions_select").selectedIndex;

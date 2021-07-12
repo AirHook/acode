@@ -703,7 +703,7 @@
 					<!-- /.modal -->
 
 					<!-- BULK DEACTIVATE -->
-					<div class="modal fade bs-modal-sm" id="confirm_bulk_actions-su" tabindex="-1" role="dialog" aria-hidden="true">
+					<div class="modal fade bs-modal-sm" id="confirm_bulk_actions-deac" tabindex="-1" role="dialog" aria-hidden="true">
 						<div class="modal-dialog modal-sm">
 							<div class="modal-content">
 								<div class="modal-header">

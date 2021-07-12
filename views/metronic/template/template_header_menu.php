@@ -439,6 +439,30 @@
                                         </li>
                                         <?php } ?>
 
+                                        <?php
+                                        /**********
+                                         * NEW ARRIVALS
+                                         * Adding new arrivals menu
+                                         * by _rey 20210707
+                                         */
+                                        ?>
+                                        <li aria-haspopup="true" class="menu-dropdown classic-menu-dropdown">
+
+                                            <!-- NAVBAR Item -->
+											<!-- Desktop Item -->
+                                            <a class="hidden-xs" href="<?php echo site_url('shop/womens_apparel'); ?>?availability=new_arrival">
+                                                New Arrivals
+                                                <span class="arrow"></span>
+                                            </a>
+											<!-- Mobile Item -->
+                                            <a class="hidden-sm hidden-md hidden-lg" href="<?php echo site_url('shop/womens_apparel'); ?>?availability=new_arrival">
+                                                New Arrivals
+                                                <span class="arrow"></span>
+                                            </a>
+											<!-- DROPDOWN Item -->
+
+                                        </li>
+
 										<?php
                                         /**********
 										 * Dynamic Nav
