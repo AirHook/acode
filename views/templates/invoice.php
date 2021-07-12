@@ -54,10 +54,10 @@
 		}
 
 	</style>
-
 </head>
 
 <?php
+set_time_limit(300);
 /***********
  * Hiding Mobile Styles From Yahoo!
  *
@@ -324,6 +324,8 @@
 										</th>
 										<th align="left" style="font-family:sans-serif;font-size:8px;vertical-align:bottom;padding:3px 5px 0;border-right:1px solid #ccc;">
 										</th>
+										<th align="left" style="font-family:sans-serif;font-size:8px;vertical-align:bottom;padding:3px 5px 0;border-right:1px solid #ccc;">
+										</th>
 										<th align="center" colspan="<?php echo count($size_names); ?>" style="font-family:sans-serif;font-size:8px;vertical-align:bottom;padding:3px 5px 0;border-right:1px solid #ccc;border-bottom:1px solid #ccc;">
 											Size
 										</th>
@@ -341,6 +343,9 @@
 										</th>
 									</tr>
 									<tr style="background-color:#e9edef;">
+										<th align="left" style="width:50px;font-family:sans-serif;font-size:8px;vertical-align:bottom;padding:0 5px 3px;border-right:1px solid #ccc;border-bottom:1px solid #ccc;">
+											Image
+										</th>
 										<th align="left" style="width:50px;font-family:sans-serif;font-size:8px;vertical-align:bottom;padding:0 5px 3px;border-right:1px solid #ccc;border-bottom:1px solid #ccc;">
 											Style No.
 										</th>
@@ -379,6 +384,7 @@
 
 								<tbody>
 									<tr>
+										<td style="height:20px;border-right:1px solid #ccc;"> </td>
 										<td style="height:20px;border-right:1px solid #ccc;"> </td>
 										<td style="height:20px;border-right:1px solid #ccc;"> </td>
 										<td style="height:20px;border-right:1px solid #ccc;"> </td>
@@ -425,7 +431,7 @@
 
 											if ($product)
 											{
-												$img_front_new = $this->config->item('PROD_IMG_URL').$product->media_path.$item->prod_sku.'_f1.jpg';
+												$img_front_new = $this->config->item('PROD_IMG_URL').$product->media_path.$item->prod_sku.'_f3.jpg';
 											}
 											else
 											{
@@ -434,8 +440,8 @@
 
 											// get size label
 											$size = $item->size;
-											$size_names = $this->size_names->get_size_names($product->size_mode);
-											$size_label = array_search($size, $size_names);
+											$size_names2 = $this->size_names->get_size_names($product->size_mode);
+											$size_label = array_search($size, $size_names2);
 
 											// get items options
 											$options = $item->options ? json_decode($item->options, TRUE) : array();
@@ -459,6 +465,9 @@
 										 * Prod No
 										 */
 										?>
+										<td style="padding:0 5px 3px;border-right:1px solid #ccc;">
+											<img src="<?php echo $img_front_new; ?>" alt="" width="60px" height="90px" />
+										</td>
 										<td style="font-family:sans-serif;font-size:8px;vertical-align:top;border-right:1px solid #ccc;padding:3px 5px;">
 											<?php echo $item->prod_no; ?>
 										</td>
@@ -529,14 +538,38 @@
 										</td>
 									</tr>
 
+									<tr>
+										<td style="height:10px;border-right:1px solid #ccc;"> </td>
+										<td style="height:10px;border-right:1px solid #ccc;"> </td>
+										<td style="height:10px;border-right:1px solid #ccc;"> </td>
+										<td style="height:10px;border-right:1px solid #ccc;"> </td>
+										<?php
+										foreach ($size_names as $size_label => $size)
+										{ ?>
+
+										<td style="height:10px;border-right:1px solid #ccc;"> </td>
+
+											<?php
+										} ?>
+										<td style="height:10px;border-right:1px solid #ccc;"> </td>
+										<td style="height:10px;border-right:1px solid #ccc;"> </td>
+										<td style="height:10px;border-right:1px solid #ccc;"> </td>
+										<td style="height:10px;"> </td>
+									</tr>
+
 											<?php
 											$i++;
 											$overall_qty += $item->qty;
 											$overall_total += $this_size_total;
+											// if (($i % 8)==0)
+											// {
+											// 	$this->m_pdf->pdf->WriteHTML('<pagebreak>');
+											// }
 										}
 									} ?>
 
 									<tr>
+										<td style="height:20px;border-right:1px solid #ccc;"> </td>
 										<td style="height:20px;border-right:1px solid #ccc;"> </td>
 										<td style="height:20px;border-right:1px solid #ccc;"> </td>
 										<td style="height:20px;border-right:1px solid #ccc;"> </td>
@@ -551,20 +584,26 @@
 										<td style="height:20px;border-right:1px solid #ccc;"> </td>
 										<td style="height:20px;border-right:1px solid #ccc;"> </td>
 										<td style="height:20px;border-right:1px solid #ccc;"> </td>
-										<td style="height:<?php echo $items_count < 20 ? ((20 - $items_count) * 15) : '20'; ?>px;"> </td>
+										<td style="height:<?php echo $items_count < 20 ? ((20 - $items_count) * 15) : '20'; ?>px;border-bottom:1px solid #ccc;"> </td>
 									</tr>
 									<!-- bottom border -->
 									<tr>
-										<td colspan="3" style="height:20px;border-top:1px solid #ccc;"> </td>
-										<td colspan="<?php echo count($size_names); ?>" style="height:20px;border-top:1px solid #ccc;"> </td>
-										<td colspan="4" style="height:20px;border-top:1px solid #ccc;"> </td>
+										<td colspan="<?php echo count($size_names)+1; ?>" style="height:20px;border-top:1px solid #ccc;padding-left:5px;"> Total # of items: <?php echo $i-1; ?> </td>
+										<td align="right" colspan="3" style="height:20px;border-top:1px solid #ccc;"> Total Qty </td>
+										<td align="center" style="height:20px;border-top:1px solid #ccc;"> <?php echo $overall_qty; ?> </td>
+										<td colspan="5" style="height:20px;border-top:1px solid #ccc;"> </td>
+									</tr>
+									<tr>
+										<td colspan="3" style="height:20px;"> </td>
+										<td colspan="<?php echo count($size_names); ?>" style="height:20px;"> </td>
+										<td colspan="4" style="height:20px;"> </td>
 									</tr>
 
 									<tr style="font-family:sans-serif;font-size:10px;">
 										<td colspan="<?php echo count($size_names) + 1; ?>" rowspan="<?php echo @$order_details->options['discount'] ? '6' : '5'; ?>" align="left" style="vertical-align:top;padding-left:5px;">
 											Remarks/Instructions:<br /><br />
 										</td>
-										<td colspan="4" align="right" style="font-family:sans-serif;font-size:8px;vertical-align:top;padding:5px;"> Sub Total </td>
+										<td colspan="5" align="right" style="font-family:sans-serif;font-size:8px;vertical-align:top;padding:5px;"> Sub Total </td>
 										<td colspan="2" align="right" style="font-family:sans-serif;font-size:8px;vertical-align:top;padding:5px;">
 											<?php echo @$overall_total ? '$ '.number_format($overall_total, 2) : '$ 0.00'; ?>
 										</td>
@@ -577,7 +616,7 @@
 
 									<!-- Discount -->
 									<tr style="font-family:sans-serif;font-size:10px;">
-										<td colspan="4" align="right" style="font-family:sans-serif;font-size:8px;vertical-align:top;padding:5px;">
+										<td colspan="5" align="right" style="font-family:sans-serif;font-size:8px;vertical-align:top;padding:5px;">
 											Discount <?php echo @$order_details->options['discount'] ? '@'.$order_details->options['discount'].'%' : ''; ?>
 										</td>
 										<td colspan="2" align="right" style="font-family:sans-serif;font-size:8px;vertical-align:top;padding:5px;">
@@ -590,7 +629,7 @@
 									else $discount = 0; ?>
 
 									<tr style="font-family:sans-serif;font-size:10px;">
-										<td colspan="4" align="right" style="font-family:sans-serif;font-size:8px;vertical-align:top;padding:5px;">
+										<td colspan="5" align="right" style="font-family:sans-serif;font-size:8px;vertical-align:top;padding:5px;">
 											Shipping &amp; Handling
 											<?php
 											if (@$order_details->shipping_fee === '0')
@@ -610,7 +649,7 @@
 											$sales_tax = ($this->order_details->order_amount) * 0.0875;
 									?>
 									<tr style="font-family:sans-serif;font-size:10px;">
-										<td colspan="4" align="right" style="font-family:sans-serif;font-size:8px;vertical-align:top;padding:5px;">
+										<td colspan="5" align="right" style="font-family:sans-serif;font-size:8px;vertical-align:top;padding:5px;">
 											Sales Tax (NY, USA only)
 										</td>
 										<td colspan="2" align="right" style="font-family:sans-serif;font-size:8px;vertical-align:top;padding:5px;">
@@ -625,18 +664,18 @@
 										}
 									?>
 
-									<tr><td colspan="6" style="height:10px;border-bottom:1px solid #ccc;"> </td></tr>
-									<tr><td colspan="6" style="height:10px;"> </td></tr>
+									<tr><td colspan="7" style="height:10px;border-bottom:1px solid #ccc;"> </td></tr>
+									<tr><td colspan="7" style="height:10px;"> </td></tr>
 
 									<tr style="font-family:sans-serif;font-size:10px;">
-										<td colspan="<?php echo count($size_names) + 5; ?>" align="right" style="font-family:sans-serif;font-size:8px;vertical-align:top;padding:5px;font-weight:bold;"> Grand Total </td>
+										<td colspan="5" align="right" style="font-family:sans-serif;font-size:8px;vertical-align:top;padding:5px;font-weight:bold;"> Grand Total </td>
 										<td colspan="2" align="right" style="font-family:sans-serif;font-size:8px;vertical-align:top;padding:5px;font-weight:bold;">
 											$ <?php echo @number_format((($overall_total - $discount) + $order_details->shipping_fee + $sales_tax), 2); ?>
 										</td>
 									</tr>
 
 									<tr>
-										<td colspan="<?php echo count($size_names) + 7; ?>" style="height:10px;"> </td>
+										<td colspan="<?php echo count($size_names); ?>" style="height:10px;"> </td>
 									</tr>
 
 								</tbody>
