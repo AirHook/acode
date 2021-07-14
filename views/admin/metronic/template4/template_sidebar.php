@@ -593,10 +593,19 @@
                             </a>
                         </li>
 
+                            <?php
+                        } ?>
+
                         <!-- =============-->
                         <li class="heading">
                             <h3 class="uppercase">Tools</h3>
                         </li>
+
+                        <?php
+                        // available only on hub sites for now
+                        if ($this->webspace_details->options['site_type'] == 'hub_site')
+                        { ?>
+
                         <li class="nav-item <?php echo $this->uri->uri_string() == 'admin/dcn/create' ? 'active' : ''; ?>">
                             <a href="<?php echo site_url('admin/dcn/create'); ?>" class="nav-link ">
                                 <span class="title">Documentation</span>
@@ -623,6 +632,9 @@
                             </a>
                         </li>
 
+                            <?php
+                        } ?>
+
                         <li class="nav-item with-heading <?php echo $this->uri->segment(2) == 'pages' ? 'active' : ''; ?>">
                             <a href="<?php echo site_url('admin/pages'); ?>" class="nav-link ">
                                 <span class="title uppercase">Pages Manager</span>
@@ -641,6 +653,11 @@
                                 </li>
                             </ul>
                         </li>
+
+                        <?php
+                        // available only on hub sites for now
+                        if ($this->webspace_details->options['site_type'] == 'hub_site')
+                        { ?>
 
                         <li class="nav-item with-heading ">
                             <a href="javascript:;" class="nav-link tooltips" data-original-title="Currently Under Construction" data-placement="right">
@@ -690,6 +707,45 @@
                             </ul>
                         </li>
                         -->
+
+                        <li class="nav-item with-heading ">
+                            <a href="javascript:;" class="nav-link ">
+                                <span class="title uppercase">Links to Admin</span>
+                                <span class="arrow open"></span>
+                            </a>
+                            <ul class="sub-menu always-open">
+                                <li class="nav-item ">
+                                    <a href="https://www.basixblacklabel.com/admin" class="nav-link " target="_blank">
+                                        <span class="title">Basix Black Label</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item ">
+                                    <a href="https://www.chaarmfurs.com/admin" class="nav-link " target="_blank">
+                                        <span class="title">Chaarm Furs</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item ">
+                                    <a href="https://www.issueny.com/admin" class="nav-link " target="_blank">
+                                        <span class="title">Isseu New York</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item ">
+                                    <a href="https://www.tempoparis.com/admin" class="nav-link " target="_blank">
+                                        <span class="title">Tempo Pairs</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item ">
+                                    <a href="https://www.graciafashions.com/admin" class="nav-link " target="_blank">
+                                        <span class="title">Gracia Fashions</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item ">
+                                    <a href="https://www.oriacouture.com/admin" class="nav-link " target="_blank">
+                                        <span class="title">Oria Couture</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
 
                             <?php
                         } ?>
